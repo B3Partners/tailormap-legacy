@@ -22,15 +22,11 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.operation.buffer.BufferOp;
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -83,10 +79,10 @@ public class BufferActionBean implements ActionBean {
     private Integer maxFeatures = 250;
     @Validate
     private String color;
-    
+
     @Validate
     private String[] features;
-    
+
     @Validate
     private String filter;
     private final Integer MAX_FEATURES = 250;
@@ -181,12 +177,12 @@ public class BufferActionBean implements ActionBean {
         this.features = features;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
     public Resolution image() {
         final CombineImageSettings cis = new CombineImageSettings();
         try {
-            
+
             cis.setBbox(bbox);
             cis.setWidth(width);
             cis.setHeight(height);
@@ -208,11 +204,11 @@ public class BufferActionBean implements ActionBean {
                     }
                 };
                 return res;
-            }else{     
-                log.info("No geometries used to draw a buffer");               
+            }else{
+                log.info("No geometries used to draw a buffer");
             }
         } catch (Exception e) {
-            log.error("Error generating buffered image", e);            
+            log.error("Error generating buffered image", e);
         }
         //if not returned, return a empty image
         final BufferedImage empty = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
@@ -245,11 +241,11 @@ public class BufferActionBean implements ActionBean {
         } catch (ParseException ex) {
             log.error("could not parse: ", ex);
             json.put("errorMessage",ex.getLocalizedMessage());
-        }  
-        
-        return new StreamingResolution("application/json", new StringReader(json.toString()));  
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-    
+
     private List<CombineImageWkt> getFeatures(Bbox bbox) throws Exception {
         List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
         GeoService gs = Stripersist.getEntityManager().find(GeoService.class, serviceId);
@@ -272,7 +268,7 @@ public class BufferActionBean implements ActionBean {
         if(filter != null){
             Filter attributeFilter = CQL.toFilter(filter);
             attributeFilter = (Filter)attributeFilter.accept(new ChangeMatchCase(false), null);
-            
+
             if(filter.indexOf("POINT") == -1){
                 Filter and = ff.and(featureFilter, attributeFilter);
                 featureFilter = and;
@@ -282,7 +278,7 @@ public class BufferActionBean implements ActionBean {
         }
         Query q = new Query(fs.getName().toString());
         q.setFilter(featureFilter);
-        
+
         q.setMaxFeatures(Math.min(maxFeatures, MAX_FEATURES));
 
         FeatureIterator<SimpleFeature> it = fs.getFeatures(q).features();
@@ -292,7 +288,7 @@ public class BufferActionBean implements ActionBean {
                 SimpleFeature f = it.next();
                 Geometry g = (Geometry) f.getDefaultGeometry();
                 if (g!=null){
-                    g = g.buffer(buffer);                
+                    g = g.buffer(buffer);
                     wkts.add(new CombineImageWkt(g.toText()));
                 }
             }

@@ -32,7 +32,6 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.csw.jaxb.gml.MultiGeometry;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.LayarService;
 import nl.b3p.viewer.config.services.LayarSource;
@@ -66,7 +65,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class LayarActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(LayarActionBean.class);
     private static final Integer TIMEOUT=10000;
-    private static final Integer DEFAULT_RADIUS=5000;    
+    private static final Integer DEFAULT_RADIUS=5000;
     private static Integer MAX_FEATURES=500;
     private static GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     private static CoordinateReferenceSystem DEFAULT_CRS;
@@ -78,19 +77,19 @@ public class LayarActionBean implements ActionBean {
     static{
         try {
             layarCRS=CRS.decode("EPSG:4326");
-            DEFAULT_CRS=CRS.decode("EPSG:28992");            
+            DEFAULT_CRS=CRS.decode("EPSG:28992");
         } catch (Exception e){
             log.error("Error while getting CRS.",e);
         }
     }
-    
+
     private ActionBeanContext context;
     /**
      * Layar request param's
      * see: http://layar.com/documentation/browser/api/getpois-request/
      */
     @Validate (required=true)
-    private String lon;    
+    private String lon;
     @Validate (required=true)
     private String lat;
     @Validate
@@ -99,12 +98,12 @@ public class LayarActionBean implements ActionBean {
     private String userId;
     @Validate
     private Integer radius;
-    @Validate (required=true)    
+    @Validate (required=true)
     private String layerName;
     @Validate
     private String version;
     @Validate
-    private Integer accuracy;    
+    private Integer accuracy;
     @Validate
     private String lang;
     //action: update or refresh
@@ -117,20 +116,20 @@ public class LayarActionBean implements ActionBean {
     public Resolution json() throws JSONException{
         String error="";
         Integer errorCode=0;
-        
+
         JSONObject root = new JSONObject();
         root.put("layar",this.layerName);
-        
+
         LayarService layarService =(LayarService) Stripersist.getEntityManager().createQuery("from LayarService where name=:n")
                     .setParameter("n", this.layerName).getSingleResult();
-        
+
         if (this.radius==null){
             this.radius=DEFAULT_RADIUS;
-        }        
-        if (layarService!=null){            
+        }
+        if (layarService!=null){
             root.put("layer", layarService.getName());
             List<LayarSource> layarSources = layarService.getLayarSources();
-            Iterator<LayarSource> lit = layarSources.iterator();            
+            Iterator<LayarSource> lit = layarSources.iterator();
             JSONArray hotspots = new JSONArray();
             while(lit.hasNext() && MAX_FEATURES > hotspots.length()){
                 LayarSource layarSource = lit.next();
@@ -145,7 +144,7 @@ public class LayarActionBean implements ActionBean {
                         Filter filter = createFilter(fs,featureCrs);
                         Query q= new Query(fs.getName().toString(),filter);
                         q.setMaxFeatures(MAX_FEATURES-hotspots.length());
-                        it = fs.getFeatures(q).features();                    
+                        it = fs.getFeatures(q).features();
                         while(it.hasNext()){
                             SimpleFeature f = it.next();
                             try{
@@ -167,10 +166,10 @@ public class LayarActionBean implements ActionBean {
                         }
                     }
                 }
-                
+
             }
             root.put("hotspots",hotspots);
-        }        
+        }
         root.put("errorString",error);
         if (error.length()>0){
             //if error, errorCode must be at least 20
@@ -179,30 +178,30 @@ public class LayarActionBean implements ActionBean {
             }
         }
         root.put("errorCode",errorCode);
-        
+
         root.put("radius",this.radius);
-        return new StreamingResolution("application/json", new StringReader(root.toString()));                
+        return new StreamingResolution("application/json", new StringReader(root.toString()));
     }
     /**
      * Create the filter for retrieving the features.
-     * @param fs 
+     * @param fs
      * @param featureCRS The CRS of the features.
      * @return
      * @throws FactoryException
      * @throws MismatchedDimensionException
-     * @throws TransformException 
+     * @throws TransformException
      */
-    private Filter createFilter(FeatureSource fs, CoordinateReferenceSystem featureCRS) throws FactoryException, MismatchedDimensionException, TransformException {        
+    private Filter createFilter(FeatureSource fs, CoordinateReferenceSystem featureCRS) throws FactoryException, MismatchedDimensionException, TransformException {
         //transform to feature CRS
         Point requestPoint = geometryFactory.createPoint(
                 new Coordinate(Double.parseDouble(lon),Double.parseDouble(lat)));
         Geometry targetGeometry=transform(requestPoint, layarCRS, featureCRS);
-        
+
         String geomAttr = fs.getSchema().getGeometryDescriptor().getLocalName();
-        Filter f;        
+        Filter f;
         f = ff.intersects(ff.property(geomAttr), ff.literal(targetGeometry.buffer(this.radius)));
         return f;
-        
+
     }
     /**
      * Get the CRS for this FeatureSource, if not found return the DEFAULT_CRS
@@ -224,7 +223,7 @@ public class LayarActionBean implements ActionBean {
      * @throws FactoryException
      * @throws MismatchedDimensionException
      * @throws TransformException
-     * @throws Exception 
+     * @throws Exception
      */
     private JSONObject createHotspot(SimpleFeature feature,LayarSource layarSource) throws JSONException, FactoryException, MismatchedDimensionException, TransformException, Exception{
         JSONObject hotspot = new JSONObject();
@@ -243,7 +242,7 @@ public class LayarActionBean implements ActionBean {
      * @throws FactoryException
      * @throws MismatchedDimensionException
      * @throws TransformException
-     * @throws Exception 
+     * @throws Exception
      */
     private JSONObject createAnchor(SimpleFeature f) throws FactoryException, MismatchedDimensionException, TransformException, Exception{
         if (f.getDefaultGeometry()==null){
@@ -259,7 +258,7 @@ public class LayarActionBean implements ActionBean {
         }
         CoordinateReferenceSystem sourceCRS = f.getDefaultGeometryProperty().getDescriptor().getCoordinateReferenceSystem();
         Point latLonPoint = (Point) transform(featurePoint,sourceCRS,layarCRS);
-        
+
         JSONObject geolocation = new JSONObject();
         geolocation.put("lat", latLonPoint.getY());
         geolocation.put("lon", latLonPoint.getX());
@@ -268,11 +267,11 @@ public class LayarActionBean implements ActionBean {
     }
     /**
      * Create the text node in the hotspot.
-     * @param f 
-     * @param layarSource 
+     * @param f
+     * @param layarSource
      * @return
      * @throws JSONException
-     * @throws Exception 
+     * @throws Exception
      */
     private JSONObject createText(SimpleFeature f,LayarSource layarSource) throws JSONException, Exception{
         JSONObject text = new JSONObject();
@@ -297,7 +296,7 @@ public class LayarActionBean implements ActionBean {
      * @param string
      * @param f
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private String replaceValuesInString(String string, SimpleFeature f) throws Exception {
         if (string==null){
@@ -306,7 +305,7 @@ public class LayarActionBean implements ActionBean {
             return string;
         }
         StringBuilder url = new StringBuilder(string);
-        
+
         int begin = -1;
         int end = -1;
         for (int i = 0; i < url.length(); i++) {
@@ -326,14 +325,14 @@ public class LayarActionBean implements ActionBean {
                         value="";
                     }else{
                         value = f.getAttribute(attribName);
-                    }                    
+                    }
                     if (value == null) {
                         value = "";
                     }
                     url.replace(begin, end + 1, value.toString().trim());
                     i = begin;
                     begin = -1;
-                    end = -1;                    
+                    end = -1;
                 } else {
                     throw new Exception("Configuration of \"" + string + "\" not correct. Missing '[' .");
                 }
@@ -343,7 +342,7 @@ public class LayarActionBean implements ActionBean {
         }
         return url.toString();
     }
-    
+
     /**
      * Transform geometry to an CRS
      * @param sourceGeometry the geometry
@@ -352,25 +351,25 @@ public class LayarActionBean implements ActionBean {
      * @return
      * @throws FactoryException
      * @throws MismatchedDimensionException
-     * @throws TransformException 
+     * @throws TransformException
      */
-    private static Geometry transform(Geometry sourceGeometry, CoordinateReferenceSystem fromCrs, CoordinateReferenceSystem toCrs) throws FactoryException, MismatchedDimensionException, TransformException {        
+    private static Geometry transform(Geometry sourceGeometry, CoordinateReferenceSystem fromCrs, CoordinateReferenceSystem toCrs) throws FactoryException, MismatchedDimensionException, TransformException {
         MathTransform transform = CRS.findMathTransform(fromCrs, toCrs);
         Geometry targetGeometry = JTS.transform(sourceGeometry, transform);
         return targetGeometry;
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     @Override
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
+
     public String getLon() {
         return lon;
     }
@@ -442,5 +441,5 @@ public class LayarActionBean implements ActionBean {
     public void setVersion(String version) {
         this.version = version;
     }
-    //</editor-fold>   
+    //</editor-fold>
 }

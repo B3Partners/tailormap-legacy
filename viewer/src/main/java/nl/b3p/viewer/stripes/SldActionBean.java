@@ -61,55 +61,55 @@ import org.w3c.dom.NodeList;
 @StrictBinding
 public class SldActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(SldActionBean.class);
-    
+
     private ActionBeanContext context;
-    
+
     public static final String FORMAT_JSON = "json";
     public static final String FORMAT_XML = "xml";
-    
+
     @Validate
     private Long id;
-    
+
     @Validate
     private String layer;
-    
+
     @Validate
     private String style;
-    
+
     @Validate
     private String filter;
 
     @Validate
     private String color;
-    
+
     @Validate
     private String commonAndFilter;
-    
+
     @Validate
     private String commonOrFilter;
-    
+
     @Validate
     private Boolean useRuleFilter=false;
-    
+
     @Validate
     private String featureTypeName;
-    
+
     @Validate
     private String format;
-    
-    @Validate 
+
+    @Validate
     private ApplicationLayer applicationLayer;
-    
+
     private byte[] sldXml;
     private StyledLayerDescriptor newSld;
     private StyleFactory sldFactory;
-    
+
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
@@ -138,7 +138,7 @@ public class SldActionBean implements ActionBean {
     public void setFeatureTypeName(String featureTypeName) {
         this.featureTypeName = featureTypeName;
     }
-    
+
     public String getLayer() {
         return layer;
     }
@@ -162,14 +162,14 @@ public class SldActionBean implements ActionBean {
     public void setFormat(String format) {
         this.format = format;
     }
-    
+
     public ApplicationLayer getApplicationLayer(){
         return applicationLayer;
     }
-    
+
     public void setApplicationLayer(ApplicationLayer appLayer){
         this.applicationLayer=appLayer;
-    }    
+    }
 
     public String getColor() {
         return color;
@@ -195,9 +195,9 @@ public class SldActionBean implements ActionBean {
         this.commonOrFilter = commonOrFilter;
     }
     //</editor-fold>
-    
+
     private void getSldXmlOrCreateNewSld() throws Exception {
-        
+
         if(id != null) {
             StyleLibrary sld = Stripersist.getEntityManager().find(StyleLibrary.class, id);
             if(sld == null) {
@@ -223,13 +223,13 @@ public class SldActionBean implements ActionBean {
             // No SLD from database or external SLD; create new empty SLD
 
             newSld = sldFactory.createStyledLayerDescriptor();
-            
+
             FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
             String[] layers=null;
             String[] filters=null;
             String[] styles=null;
             String[] colors=null;
-            
+
             if (layer!=null){
                 layers = layer.split(",");
             }if (filter!=null){
@@ -243,19 +243,19 @@ public class SldActionBean implements ActionBean {
                     log.warn("error while parsing filters to JSON",je);
                     filters = filter.split(",");
                 }
-                
+
             }if(color!=null){
                 colors = color.split(",");
             }if(style!=null){
                 styles = style.split(",");
             }
-            
+
             Filter andFilter = null;
             Filter orFilter = null;
             if (commonAndFilter!=null){
                 //GeoServer encodes the sld url even if its a valid url
                 if (commonAndFilter.indexOf("%")>0){
-                    commonAndFilter = URI.decode(commonAndFilter);  
+                    commonAndFilter = URI.decode(commonAndFilter);
                 }
                 andFilter = ECQL.toFilter(commonAndFilter);
             }
@@ -267,17 +267,17 @@ public class SldActionBean implements ActionBean {
                 orFilter = ECQL.toFilter(commonOrFilter);
             }
             if(layers != null) {
-                
+
                 for(int i = 0; i < layers.length; i++) {
                     Filter filter=null;
                     if(filters != null && i < filters.length && !"none".equals(filters[i]) && filters[i].length()>0) {
                          filter = ECQL.toFilter(filters[i]);
                     }
                     NamedLayer nl = sldFactory.createNamedLayer();
-                    nl.setName(layers[i]);                    
-                    
+                    nl.setName(layers[i]);
+
                     newSld.addStyledLayer(nl);
-                    //Combine filter with allAndFilter and allOrFilter                     
+                    //Combine filter with allAndFilter and allOrFilter
                     if (andFilter!=null){
                         if (filter==null){
                             filter=andFilter;
@@ -296,16 +296,16 @@ public class SldActionBean implements ActionBean {
                         ns.setName(styles[i]);
                         nl.addStyle(ns);
                     }
-                    else if (colors!=null && i < colors.length){      
+                    else if (colors!=null && i < colors.length){
                         //create featureTypeStyle
                         FeatureTypeStyle fts=sldFactory.createFeatureTypeStyle();
                         Rule r=sldFactory.createRule();
                         if (useRuleFilter && filter!=null){
-                            r.setFilter(filter);                        
+                            r.setFilter(filter);
                         }
-                        PolygonSymbolizer ps = createPolygonSymbolizer(sldFactory,colors[i]);                        
+                        PolygonSymbolizer ps = createPolygonSymbolizer(sldFactory,colors[i]);
                         r.symbolizers().add(ps);
-                        fts.rules().add(r);      
+                        fts.rules().add(r);
                         // add style to namedlayer
                         Style style = sldFactory.createStyle();
                         style.setDefault(true);
@@ -317,7 +317,7 @@ public class SldActionBean implements ActionBean {
                         ns.setName("default");
                         nl.addStyle(ns);
                     }
-                    
+
                     //if no featuretypestyle (created with color) then make featuretypeconstraint
                     if (!useRuleFilter && filter!=null){
                         // XXX name should be a feature type name from DescribeLayer response
@@ -329,34 +329,34 @@ public class SldActionBean implements ActionBean {
             }
         }
     }
-    
+
     private static final String NS_SLD = "http://www.opengis.net/sld";
     private static final String NS_SE = "http://www.opengis.net/se";
-    
+
     private void addFilterToExistingSld() throws Exception {
         Filter f = CQL.toFilter(filter);
-        
+
         f = (Filter) f.accept(new ChangeMatchCase(false),null);
-        
+
         if(featureTypeName == null) {
             featureTypeName = layer;
         }
         FeatureTypeConstraint ftc = sldFactory.createFeatureTypeConstraint(featureTypeName, f, new Extent[] {});
-        
+
         if(newSld == null) {
 
-            SLDTransformer sldTransformer = new SLDTransformer();             
+            SLDTransformer sldTransformer = new SLDTransformer();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             sldTransformer.transform(ftc, bos);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             DocumentBuilder db = dbf.newDocumentBuilder();
-            
+
             Document sldXmlDoc = db.parse(new ByteArrayInputStream(sldXml));
-            
+
             Document ftcDoc = db.parse(new ByteArrayInputStream(bos.toByteArray()));
-            
+
             String sldVersion = sldXmlDoc.getDocumentElement().getAttribute("version");
             if("1.1.0".equals(sldVersion)) {
                 // replace sld:FeatureTypeName element generated by GeoTools
@@ -373,13 +373,13 @@ public class SldActionBean implements ActionBean {
             // Ignore namespaces to tackle both SLD 1.0.0 and SLD 1.1.0
             // Add constraint to all NamedLayers, not only to the layer specified
             // in layers parameter
-            
+
             NodeList namedLayers = sldXmlDoc.getElementsByTagNameNS(NS_SLD, "NamedLayer");
             for(int i = 0; i < namedLayers.getLength(); i++) {
                 Node namedLayer = namedLayers.item(i);
 
                 // Search where to insert the FeatureTypeConstraint from our ftcDoc
-                
+
                 // Insert LayerFeatureConstraints after sld:Name, se:Name or se:Description
                 // and before sld:NamedStyle or sld:UserStyle so search backwards.
                 // If we find an existing LayerFeatureConstraints, use that
@@ -389,7 +389,7 @@ public class SldActionBean implements ActionBean {
                 int j = childs.getLength() - 1;
                 do {
                     Node child = childs.item(j);
-                    
+
                     if("LayerFeatureConstraints".equals(child.getLocalName())) {
                         layerFeatureConstraints = child;
                         break;
@@ -419,10 +419,10 @@ public class SldActionBean implements ActionBean {
             sldXml = bos.toByteArray();
         }
     }
-    
-    private PolygonSymbolizer createPolygonSymbolizer(StyleFactory styleFactory,String color) { 
+
+    private PolygonSymbolizer createPolygonSymbolizer(StyleFactory styleFactory,String color) {
         FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
-            
+
         Color col = Color.GRAY;
         if (color.startsWith("#")){
             col= new Color(Integer.parseInt(color.substring(1),16));
@@ -437,11 +437,11 @@ public class SldActionBean implements ActionBean {
         Fill fill = styleFactory.createFill(
                 filterFactory.literal(col),
                 filterFactory.literal(0.9));
-        
+
         PolygonSymbolizer sym = styleFactory.createPolygonSymbolizer(stroke, fill, null);
         return sym;
-    } 
-    
+    }
+
     @DefaultHandler
     public Resolution create() throws JSONException, UnsupportedEncodingException {
         JSONObject json = new JSONObject();
@@ -450,37 +450,37 @@ public class SldActionBean implements ActionBean {
 
         try {
             sldFactory = CommonFactoryFinder.getStyleFactory();
-            
+
             getSldXmlOrCreateNewSld();
 
             if(newSld ==null && filter != null) {
                 addFilterToExistingSld();
             }
-            
+
             if(newSld != null) {
-                SLDTransformer sldTransformer = new SLDTransformer();             
+                SLDTransformer sldTransformer = new SLDTransformer();
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 sldTransformer.transform(newSld, bos);
                 sldXml = bos.toByteArray();
             }
-            
+
         } catch(Exception e) {
             log.error(String.format("Error creating sld for layer=%s, style=%s, filter=%s, id=%d",
                     layer,
                     style,
                     filter,
                     id), e);
-            
+
             error = e.toString();
             if(e.getCause() != null) {
                 error += "; cause: " + e.getCause().toString();
             }
         }
-        
+
         if(error != null) {
             if(FORMAT_JSON.equals(format)) {
                 json.put("error", error);
-                return new StreamingResolution("application/json", new StringReader(json.toString()));                     
+                return new StreamingResolution("application/json", new StringReader(json.toString()));
             } else {
                 return new ErrorResolution(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, error);
             }
@@ -490,7 +490,7 @@ public class SldActionBean implements ActionBean {
                 json.put("success", Boolean.TRUE);
                 return new StreamingResolution("application/json", new StringReader(json.toString()));
             } else {
-                return new StreamingResolution("text/xml", new ByteArrayInputStream(sldXml));             
+                return new StreamingResolution("text/xml", new ByteArrayInputStream(sldXml));
             }
         }
     }
@@ -511,10 +511,10 @@ public class SldActionBean implements ActionBean {
                     Filter f = CQL.toFilter(filter);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
                     f = FeatureToJson.reformatFilter(f, sft);
-                    json.put("filter",CQL.toCQL(f));                
+                    json.put("filter",CQL.toCQL(f));
                     json.put("success", Boolean.TRUE);
                 }
-                
+
             }else{
                 error="No filter to transform or no applicationlayer";
             }

@@ -30,13 +30,13 @@ import org.w3c.dom.Node;
  */
 @XmlType//(propOrder = {"className","componentName","info"})
 public class PrintExtraInfo {
-    
+
     private String className;
     private String componentName;
-    
+
     private Node info;
 
-    
+
     @XmlAttribute(name="classname")
     public String getClassName() {
         return className;
@@ -45,7 +45,7 @@ public class PrintExtraInfo {
     public void setClassName(String className) {
         this.className = className;
     }
-    
+
     @XmlAttribute(name ="componentname")
     public String getComponentName() {
         return componentName;
@@ -54,7 +54,7 @@ public class PrintExtraInfo {
     public void setComponentName(String componentName) {
         this.componentName = componentName;
     }
-   
+
     @XmlAnyElement
     public Node getInfo() {
         return info;
@@ -66,7 +66,7 @@ public class PrintExtraInfo {
         root.put("root", j);
         String s = org.json.XML.toString( root);
         this.info =dbf.newDocumentBuilder().parse(new ByteArrayInputStream(s.getBytes("UTF-8"))).getDocumentElement();
-        
+
     }
-    
+
 }

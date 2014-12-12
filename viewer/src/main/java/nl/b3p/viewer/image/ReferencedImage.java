@@ -30,7 +30,7 @@ public class ReferencedImage {
     private Integer height=null;
 
     private Float alpha;
-    
+
     ReferencedImage(BufferedImage bufferedImage) {
         this.image=bufferedImage;
     }
@@ -41,11 +41,11 @@ public class ReferencedImage {
     public BufferedImage getImage() {
         return image;
     }
-    
+
     public void setImage(BufferedImage image) {
         this.image = image;
     }
-        
+
     public Integer getX() {
         return x;
     }
@@ -86,5 +86,5 @@ public class ReferencedImage {
         this.height = height;
     }
 
-    //</editor-fold>    
+    //</editor-fold>
 }

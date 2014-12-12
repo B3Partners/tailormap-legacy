@@ -15,9 +15,9 @@ import org.junit.Before;
  * @author Roy Braam
  */
 public class HttpTestSupport{
-    
+
     protected HttpServer httpServer;
-    
+
     public HttpTestSupport(){
         try{
             httpServer = HttpServer.create(new InetSocketAddress(8888),0);
@@ -25,12 +25,12 @@ public class HttpTestSupport{
             ioe.printStackTrace();
         }
     }
-    
+
     @Before
     public void setUpHttpServer() {
         httpServer.start();
     }
-    
+
     @After
     public void tearDownHttpServer() {
         httpServer.stop(0);

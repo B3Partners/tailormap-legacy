@@ -43,13 +43,13 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Meine Toonen
  */
 public class SolrSearchClient extends SearchClient {
-    private static final Log log = LogFactory.getLog(SolrSearchClient.class);  
+    private static final Log log = LogFactory.getLog(SolrSearchClient.class);
 
     private JSONObject config;
     private List<Long> visibleLayers;
-    
+
     private Map<Long, SolrConf> configMap = new HashMap();
-    
+
     @Override
     public SearchResult search(String term) {
         SearchResult result = new SearchResult();
@@ -73,7 +73,7 @@ public class SolrSearchClient extends SearchClient {
             query.setRequestHandler("/select");
             QueryResponse rsp = server.query(query);
             SolrDocumentList list = rsp.getResults();
-            
+
             for (SolrDocument solrDocument : list) {
                 JSONObject doc = solrDocumentToResult(solrDocument);
                 if(doc != null){
@@ -82,17 +82,17 @@ public class SolrSearchClient extends SearchClient {
             }
             result.setResults(respDocs);
             result.setLimitReached( list.getNumFound()> list.size() );
-           
+
 
         } catch (SolrServerException ex) {
             log.error(ex);
         } catch (JSONException ex) {
             log.error(ex);
-        } 
-        
+        }
+
         return result;
     }
-    
+
     @Override
     public JSONArray autosuggest(String term) throws JSONException {
        JSONObject obj = new JSONObject();
@@ -129,7 +129,7 @@ public class SolrSearchClient extends SearchClient {
         }
         return respDocs;
     }
-    
+
     private String createAttributeSourceQuery() throws JSONException{
         String extraQuery = "";
         JSONObject solrConfigsJson = config.getJSONObject("solrConfig");
@@ -145,7 +145,7 @@ public class SolrSearchClient extends SearchClient {
         }
         return extraQuery;
     }
-    
+
     private boolean canBeSearched(String key) throws JSONException{
         JSONObject solrConfigsJson = config.getJSONObject("solrConfig");
         JSONObject solrConfig = solrConfigsJson.getJSONObject(key);
@@ -166,9 +166,9 @@ public class SolrSearchClient extends SearchClient {
             }
         }
         return allVisible;
-      
+
     }
-    
+
     private JSONObject solrDocumentToResult(SolrDocument doc){
         JSONObject result = null;
         try {

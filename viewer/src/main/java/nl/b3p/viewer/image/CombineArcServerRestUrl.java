@@ -33,21 +33,21 @@ public class CombineArcServerRestUrl extends CombineImageUrl{
         super();
     }
 
-    
+
     public List<CombineImageUrl> calculateNewUrl(ImageBbox bbox) {
         CombineArcServerRestUrl ciu=null;
         if (bbox.getHeight()!=null && bbox.getWidth()!=null){
             ciu = new CombineArcServerRestUrl(this);
             ciu.changeParameter("bbox", bbox.getBbox().toString());
-            ciu.changeParameter("size", bbox.getWidth() + "," +bbox.getHeight());            
+            ciu.changeParameter("size", bbox.getWidth() + "," +bbox.getHeight());
         }else{
             ciu = this;
         }
         List<CombineImageUrl> list= new ArrayList<CombineImageUrl>();
-        list.add(ciu);        
+        list.add(ciu);
         return list;
-    }    
-    
+    }
+
     protected void changeParameter(String key,String newValue) {
         String lowerUrl = url.toLowerCase();
         if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {

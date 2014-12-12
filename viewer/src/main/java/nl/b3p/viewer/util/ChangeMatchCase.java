@@ -29,36 +29,36 @@ import org.opengis.filter.PropertyIsNotEqualTo;
  * @author Roy Braam
  */
 public class ChangeMatchCase extends DuplicatingFilterVisitor{
-    
+
     private FilterFactory2 factory;
     private boolean matchCase = true;
-    
+
     public ChangeMatchCase(){
         super();
         this.factory = CommonFactoryFinder.getFilterFactory2();
     }
-    
+
     public ChangeMatchCase(boolean newMatchCase){
         this();
         this.matchCase=newMatchCase;
-        
+
     }
-    
+
     @Override
     public Object visit (PropertyIsEqualTo filter ,Object data){
         return factory.equal(filter.getExpression1(), filter.getExpression2(), matchCase);
     }
-    
+
     @Override
     public Object visit (PropertyIsGreaterThan filter ,Object data){
         return factory.greater(filter.getExpression1(),filter.getExpression2(), matchCase);
     }
-    
+
     @Override
     public Object visit (PropertyIsGreaterThanOrEqualTo filter ,Object data){
         return factory.greaterOrEqual(filter.getExpression1(), filter.getExpression2(), matchCase);
     }
-    
+
     @Override
     public Object visit (PropertyIsLessThanOrEqualTo filter ,Object data){
         return factory.lessOrEqual(filter.getExpression1(), filter.getExpression2(), matchCase);

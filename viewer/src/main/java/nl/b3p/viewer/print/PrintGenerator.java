@@ -16,8 +16,6 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.util.JAXBSource;
@@ -28,7 +26,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import nl.b3p.mail.Mailer;
-import nl.b3p.viewer.stripes.PrintActionBean;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +39,7 @@ import org.apache.fop.apps.FopFactory;
  */
 public class PrintGenerator  implements Runnable{
     private static final Log log = LogFactory.getLog(PrintGenerator.class);
-    
+
     private final PrintInfo info;
     private final String mimeType;
     private final File xsl;
@@ -74,7 +71,7 @@ public class PrintGenerator  implements Runnable{
             }
         }
     }
-    
+
     public void mailPrint() throws Exception{
         File temp = File.createTempFile("flamingo", "print");
         try {
@@ -88,8 +85,8 @@ public class PrintGenerator  implements Runnable{
             temp.delete();
         }
     }
-    
-    
+
+
     public static void createOutput(PrintInfo info, String mimeType, File xslFile,
             boolean addJavascript, HttpServletResponse response, String filename) throws MalformedURLException, IOException {
 
@@ -111,12 +108,12 @@ public class PrintGenerator  implements Runnable{
      * @param addJavascript addJavascript?
      * @param response the response for the outputstream
      * @throws MalformedURLException
-     * @throws IOException 
+     * @throws IOException
      */
     public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath,
             boolean addJavascript, HttpServletResponse response, String filename) throws MalformedURLException, IOException {
 
-  
+
         /* Setup output stream */
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         createOutput(info, mimeType, xslIs, basePath, out,filename);
@@ -127,7 +124,7 @@ public class PrintGenerator  implements Runnable{
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
 
        //TODO: Postprocess pages to add javascript print
-       /* use postprocessing with itext to add Javascript to output 
+       /* use postprocessing with itext to add Javascript to output
          if (addJavascript) {
          addJsToPdfOutput(out, response);
          } else {
@@ -138,10 +135,10 @@ public class PrintGenerator  implements Runnable{
         response.getOutputStream().flush();
 
     }
-    
-    
+
+
     public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream out, String filename) throws MalformedURLException, IOException {
-        
+
         /* Setup fopfactory */
         FopFactory fopFactory = FopFactory.newInstance();
 
@@ -164,7 +161,7 @@ public class PrintGenerator  implements Runnable{
             /* Setup Jaxb */
             JAXBContext jc = JAXBContext.newInstance(PrintInfo.class);
             JAXBSource src = new JAXBSource(jc, info);
-            
+
             JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
             if(log.isDebugEnabled()) {
                 StringWriter sw = new StringWriter();
@@ -181,12 +178,12 @@ public class PrintGenerator  implements Runnable{
             Result res = new SAXResult(fop.getDefaultHandler());
 
             transformer.transform(src, res);
-          
+
         } catch (Exception ex) {
             log.error("Fout tijdens print output: ", ex);
         } finally {
             out.close();
         }
     }
-    
+
 }

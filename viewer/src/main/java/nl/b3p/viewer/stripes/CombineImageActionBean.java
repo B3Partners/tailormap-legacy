@@ -18,9 +18,6 @@ package nl.b3p.viewer.stripes;
 
 import nl.b3p.viewer.image.CombineImageSettings;
 import nl.b3p.viewer.image.CombineImageWkt;
-import nl.b3p.viewer.image.CombineArcIMSUrl;
-import nl.b3p.viewer.image.CombineImageUrl;
-import nl.b3p.viewer.image.CombineArcServerUrl;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.*;
@@ -30,7 +27,6 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.image.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -44,36 +44,36 @@ public class ImageBbox {
     public Bbox getBbox() {
         return bbox;
     }
-    
+
     public void setBbox(Bbox bbox) {
         this.bbox = bbox;
     }
-    
+
     public Integer getWidth() {
         return width;
     }
-    
+
     public void setWidth(Integer width) {
         this.width = width;
     }
-    
+
     public Integer getHeight() {
         return height;
     }
-    
+
     public void setHeight(Integer height) {
         this.height = height;
     }
     /**
      * Get the units per pixel x
-     * @return 
+     * @return
      */
     public double getUnitsPixelY() {
         return bbox.getHeight()/height;
     }
     /**
      * Get the units per pixel y
-     * @return 
+     * @return
      */
     public double getUnitsPixelX() {
         return bbox.getWidth()/width;

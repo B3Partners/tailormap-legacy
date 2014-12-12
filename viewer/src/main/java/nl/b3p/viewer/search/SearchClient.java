@@ -26,21 +26,21 @@ import org.json.JSONObject;
  */
 public abstract class SearchClient {
     public static final String SEARCHTERM_HOLDER="[ZOEKWOORD]";
-    
+
     /**
-     *  
+     *
      * @param query The term which must be found
      * @return An JSONArray with the answer. This must be in the following format:
-     * 
+     *
      *<pre>
      * [
-     *      { 
-     *          location :{ 
+     *      {
+     *          location :{
      *              minx: <double>,
      *              miny: <double>,
      *              maxx: <double>,
      *              maxy: <double>
-     *          }, 
+     *          },
      *          type: <string>, // For openLS this is one of: Street, MunicipalitySubdivision, Municipality,CountrySubdivision, for solr it is the name of the configuration
      *          label: <string>
      *      }
@@ -48,9 +48,9 @@ public abstract class SearchClient {
      * </pre>
      */
     public abstract SearchResult search(String query);
-    
+
     public abstract JSONArray autosuggest(String query) throws JSONException;
-    
+
     public JSONObject locationToBBOX(int zoomboxSize, double x, double y) throws JSONException{
         JSONObject extent = new JSONObject();
         double zoomBoxSize = zoomboxSize / 2;

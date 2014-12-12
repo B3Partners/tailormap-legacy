@@ -68,5 +68,5 @@ public class Legend {
 
     public void setLegendParts(List<LegendPart> legendParts) {
         this.legendParts = legendParts;
-    }    
+    }
 }

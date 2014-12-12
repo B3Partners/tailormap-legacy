@@ -19,7 +19,7 @@ class CombineWmscUrl extends CombineTileImageUrl {
     }
 
     @Override
-    protected String createUrl(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY, int zoomlevel) {        
+    protected String createUrl(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY, int zoomlevel) {
         String sizes = null;
         if (this.getTileWidth() != null && this.getTileHeight() != null) {
             sizes = "&WIDTH=" + this.getTileWidth() + "&HEIGHT=" + this.getTileHeight();
@@ -27,7 +27,7 @@ class CombineWmscUrl extends CombineTileImageUrl {
         String bboxString = "&BBOX=" + tileBbox.toString();
         String newUrl = this.url + sizes + bboxString;
         return newUrl;
-    
+
     }
-    
+
 }

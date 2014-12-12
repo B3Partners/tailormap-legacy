@@ -34,12 +34,12 @@ public class ArcGisRestSearchClient extends SearchClient{
     private static final Log log = LogFactory.getLog(ArcGisRestSearchClient.class);
     private String url;
     private static final int DEFAULT_ZOOMBOX_SIZE = 200;
-    
+
     public ArcGisRestSearchClient(String url){
         this.url = url;
     }
     @Override
-    public SearchResult search(String query){      
+    public SearchResult search(String query){
         SearchResult result = new SearchResult();
         String queryUrl;
         if (this.url.contains(SEARCHTERM_HOLDER)){
@@ -48,21 +48,21 @@ public class ArcGisRestSearchClient extends SearchClient{
             queryUrl = this.url + query;
         }
         JSONArray returnValue= new JSONArray();
-        try{            
+        try{
             JSONObject obj= new JSONObject(IOUtils.toString(new URL(queryUrl).openStream(), "UTF-8"));
-            JSONArray candidates = (JSONArray)obj.get("candidates");            
+            JSONArray candidates = (JSONArray)obj.get("candidates");
             returnValue = candidateToResult(candidates);
             result.setResults(returnValue);
             result.setLimitReached(false);
         }catch(JSONException je){
             log.error("Search error while creating json objects",je);
-            
+
         } catch (IOException ex) {
             log.error("Error while requesting url: "+queryUrl,ex);
         }
         return result;
     }
-    
+
     private JSONArray candidateToResult(JSONArray candidates) throws JSONException{
         JSONArray results = new JSONArray();
         for (int i=0; i < candidates.length(); i++){
@@ -71,7 +71,7 @@ public class ArcGisRestSearchClient extends SearchClient{
         }
         return results;
     }
-    
+
     private JSONObject candidateToResult(JSONObject candidate) throws JSONException{
         JSONObject result = new JSONObject();
         result.put("label", candidate.optString("address"));
@@ -92,5 +92,5 @@ public class ArcGisRestSearchClient extends SearchClient{
     public JSONArray autosuggest(String query) {
         throw new UnsupportedOperationException("Not supported.");
     }
-    
+
 }

@@ -38,7 +38,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 // 2014, Eddy Scheper, ARIS B.V. - Added.
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
 @XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle","overviewUrl","extra"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
-    
+
     private String title;
     private String subtitle;
     private String date;
@@ -63,13 +62,13 @@ public class PrintInfo {
     private int angle;
     private List<PrintExtraInfo> extra = new ArrayList();
     private List<Legend> legendUrls = new ArrayList();
-    
+
     private List<File> tempFiles = new ArrayList();
-    
+
     private String overviewUrl;
-    
+
     public PrintInfo() {
-    }    
+    }
 
     @XmlElement(name="title")
     public String getTitle() {
@@ -128,7 +127,7 @@ public class PrintInfo {
     public String getSubtitle() {
         return subtitle;
     }
-    
+
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }
@@ -136,7 +135,7 @@ public class PrintInfo {
     public void setLegendUrls(List<Legend> legendUrls) {
         this.legendUrls=legendUrls;
     }
-    
+
     @XmlElementWrapper(name="legendUrls")
     @XmlElement(name="legendUrl")
     public List<Legend> getLegendUrls(){
@@ -183,7 +182,7 @@ public class PrintInfo {
                     URL u = new URL(lp.getUrl());
                     in = u.openStream();
                     IOUtils.copy(in, legendMemoryCache);
-                    
+
                     legendFile = File.createTempFile("legend_img_", null);
                     tempFiles.add(legendFile);
                     legendFile.deleteOnExit();
@@ -192,7 +191,7 @@ public class PrintInfo {
                     fos.flush();
                     lp.setUrl(legendFile.toURI().toString());
                     log.debug("Legend part url changed to point to temporary file: " + lp.getUrl());
-                    
+
                     Dimension dim = getImageDimension(new ByteArrayInputStream(legendMemoryCache.toByteArray()));
                     if(dim == null) {
                         log.debug("No dimensions could be determined");
@@ -201,7 +200,7 @@ public class PrintInfo {
                         lp.setHeight((int)dim.getHeight());
                         log.debug(String.format("Dimensions: %d x %d", lp.getWidth(), lp.getHeight()));
                     }
-                    
+
                 } catch(Exception e) {
                     log.warn("Exception loading legend dimensions from URL " + lp.getUrl(), e);
                 } finally {
@@ -221,13 +220,13 @@ public class PrintInfo {
             }
         }
     }
-    
+
     /**
      * Load image dimensions, ideally without decoding the entire image.
      */
     private static Dimension getImageDimension(InputStream image) throws IOException {
         // http://stackoverflow.com/questions/1559253/java-imageio-getting-image-dimension-without-reading-the-entire-file
-        
+
         ImageInputStream in = ImageIO.createImageInputStream(image);
         try {
             final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
@@ -247,7 +246,7 @@ public class PrintInfo {
         }
         return null;
     }
-    
+
     public void removeLegendImagesCache() {
         for(File tempFile: tempFiles) {
             try {
@@ -260,5 +259,5 @@ public class PrintInfo {
                 }
             }
         }
-    }    
+    }
 }

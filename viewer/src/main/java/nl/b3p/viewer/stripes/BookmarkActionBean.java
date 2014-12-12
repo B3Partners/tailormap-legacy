@@ -36,9 +36,9 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class BookmarkActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(BookmarkActionBean.class);
-    
+
     private ActionBeanContext context;
-    
+
     @Validate
     @ValidateNestedProperties(
            @Validate(field="params")
@@ -49,26 +49,26 @@ public class BookmarkActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
+
     public Bookmark getBookmark() {
         return bookmark;
     }
-    
+
     public void setBookmark(Bookmark bookmark) {
         this.bookmark = bookmark;
     }
     //</editor-fold>
-    
+
     public Resolution create() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
         String error = null;
-        
+
         if(bookmark == null || bookmark.getParams() == null) {
             error = "Invalid parameters";
         } else {
@@ -79,7 +79,7 @@ public class BookmarkActionBean implements ActionBean {
                 }
                 if(context.getRequest().getRemoteUser() != null) {
                     createdBy += ", user: " + context.getRequest().getRemoteUser();
-                }            
+                }
                 bookmark.setCreatedBy(createdBy);
                 bookmark.setCreatedAt(new Date());
 
@@ -98,14 +98,14 @@ public class BookmarkActionBean implements ActionBean {
                 }
             }
         }
-        
+
         if(error != null) {
             json.put("error", error);
         }
-        
-        return new StreamingResolution("application/json", new StringReader(json.toString()));    
+
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-    
+
     public Resolution load() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -115,8 +115,8 @@ public class BookmarkActionBean implements ActionBean {
         } else {
             json.put("success", Boolean.TRUE);
             json.put("params", bookmark.getParams());
-        }    
-        
-        return new StreamingResolution("application/json", new StringReader(json.toString()));              
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 }

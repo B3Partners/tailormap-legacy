@@ -46,10 +46,10 @@ import org.apache.commons.io.IOUtils;
 @StrictBinding
 public class ProxyActionBean implements ActionBean {
     private ActionBeanContext context;
-    
+
     @Validate
     private String url;
-    
+
     @Validate
     private String mode;
 
@@ -78,27 +78,27 @@ public class ProxyActionBean implements ActionBean {
     public void setMode(String mode) {
         this.mode = mode;
     }
-    
+
     @DefaultHandler
     public Resolution proxy() throws Exception {
 
         HttpServletRequest request = getContext().getRequest();
-        
+
         // Session must exist
         HttpSession sess = request.getSession(false);
         if(sess == null || url == null) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy requests forbidden");
         }
-        
+
         // TODO maybe add some other checks against illegal proxy use
-        
+
         // We don't do a host check because the user can add custom services
         // using any URL. If the proxying viewer webapp is on a IP whitelist
-        // and an attacker knows the URL of the IP-whitelist protected service 
+        // and an attacker knows the URL of the IP-whitelist protected service
         // this may allow the attacker to request maps from that service if that
         // service does not verify IP using the X-Forwarded-For header we send.
-        
-        // We only proxy ArcIMS for OpenLayers for the moment        
+
+        // We only proxy ArcIMS for OpenLayers for the moment
         if(ArcIMSService.PROTOCOL.equals(mode)) {
             return proxyArcIMS();
         } else if(WMSService.PROTOCOL.equals(mode)){
@@ -115,8 +115,8 @@ public class ProxyActionBean implements ActionBean {
 
         if(!"POST".equals(request.getMethod())) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
-        }   
-        
+        }
+
         Map params = new HashMap(getContext().getRequest().getParameterMap());
         // Only allow these parameters in proxy request
         params.keySet().retainAll(Arrays.asList(
@@ -137,12 +137,12 @@ public class ProxyActionBean implements ActionBean {
             path += URLEncoder.encode(param.getKey(), "UTF-8") + "=" + URLEncoder.encode(param.getValue()[0], "UTF-8");
         }
         theUrl = new URL("http", theUrl.getHost(), theUrl.getPort(), path);
-        
+
         // TODO logging for inspecting malicious proxy use
-        
+
         ByteArrayOutputStream post = new ByteArrayOutputStream();
         IOUtils.copy(request.getInputStream(), post);
-        
+
         // This check makes some assumptions on how browsers serialize XML
         // created by OpenLayers' ArcXML.js write() function (whitespace etc.),
         // but all major browsers pass this check
@@ -155,15 +155,15 @@ public class ProxyActionBean implements ActionBean {
         connection.setDoOutput(true);
         connection.setAllowUserInteraction(false);
         connection.setRequestProperty("X-Forwarded-For", request.getRemoteAddr());
-        
+
         connection.connect();
-        try { 
+        try {
             IOUtils.copy(new ByteArrayInputStream(post.toByteArray()), connection.getOutputStream());
         } finally {
             connection.getOutputStream().flush();
-            connection.getOutputStream().close();        
+            connection.getOutputStream().close();
         }
-        
+
         return new StreamingResolution(connection.getContentType()) {
             @Override
             protected void stream(HttpServletResponse response) throws IOException {
@@ -172,19 +172,19 @@ public class ProxyActionBean implements ActionBean {
                 } finally {
                     connection.disconnect();
                 }
-                
+
             }
         };
-    }  
-    
+    }
+
     private Resolution proxyWMS() throws IOException{
-        
+
         HttpServletRequest request = getContext().getRequest();
-        
+
         if(!"GET".equals(request.getMethod())) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
-        
+
         List allowedParams = new ArrayList<String>();
         allowedParams.add("VERSION");
         allowedParams.add("SERVICE");
@@ -212,12 +212,12 @@ public class ProxyActionBean implements ActionBean {
         allowedParams.add("SLD_BODY");
         //vendor
         allowedParams.add("MAP");
-        
+
         URL theUrl = new URL(url);
-        
+
         String query = theUrl.getQuery();
         //only WMS request param's allowed
-        String[] params = query.split("&");        
+        String[] params = query.split("&");
         StringBuilder sb = new StringBuilder();
         for (String param : params){
             if (allowedParams.contains((param.split("=")[0]).toUpperCase())){
@@ -225,13 +225,13 @@ public class ProxyActionBean implements ActionBean {
             }
         }
         theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+sb.toString());
-        
+
         //TODO: Check if response is a getFeatureInfo response.
         final URLConnection connection = theUrl.openConnection();
         return new StreamingResolution(connection.getContentType()) {
             @Override
             protected void stream(HttpServletResponse response) throws IOException {
-                IOUtils.copy(connection.getInputStream(), response.getOutputStream());                
+                IOUtils.copy(connection.getInputStream(), response.getOutputStream());
             }
         };
     }

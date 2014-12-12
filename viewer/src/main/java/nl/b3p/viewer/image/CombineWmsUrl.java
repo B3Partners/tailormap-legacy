@@ -27,10 +27,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class CombineWmsUrl extends CombineImageUrl{
     private static final Log log = LogFactory.getLog(CombineWmsUrl.class);
-    
+
     private Integer maxTileWidth = 2048;
     private Integer maxTileHeight= 2048;
-    
+
     private CombineWmsUrl(CombineWmsUrl cwu) {
         super(cwu);
     }
@@ -38,7 +38,7 @@ public class CombineWmsUrl extends CombineImageUrl{
     public CombineWmsUrl() {
         super();
     }
-    
+
     public List<CombineImageUrl> calculateNewUrl(ImageBbox bbox) {
         CombineWmsUrl ciu = new CombineWmsUrl(this);
         Integer width = bbox.getWidth();
@@ -63,14 +63,14 @@ public class CombineWmsUrl extends CombineImageUrl{
                     if (beginY < 0) {
                         beginY = 0;
                     }
-                    
+
                     Bbox curBbox = new Bbox(
                             newBbox.getMinx() + beginX * resolutionWidth,
                             newBbox.getMiny() + (height-endY) * resolutionHeight,
                             newBbox.getMinx() + endX * resolutionWidth,
                             newBbox.getMiny() + (height-beginY) * resolutionHeight);
 
-                    CombineWmsUrl newCiu = new CombineWmsUrl(this);                
+                    CombineWmsUrl newCiu = new CombineWmsUrl(this);
                     newCiu.changeParameter("bbox", curBbox.toString());
                     newCiu.changeParameter("width", "" + (endX-beginX));
                     newCiu.changeParameter("height", "" + (endY-beginY));
@@ -94,10 +94,10 @@ public class CombineWmsUrl extends CombineImageUrl{
         }
         return list;
     }
-    
+
     /**
      * Try to resolve the width and height from the given CombineImageUrl
-     * @param ciu 
+     * @param ciu
      * @return Array of int's width is the first in the array, height second
      */
     public Integer[] getWidthAndHeightFromUrl() {
@@ -154,7 +154,7 @@ public class CombineWmsUrl extends CombineImageUrl{
         }
     }
     /**
-     * Returned a url with changed param     
+     * Returned a url with changed param
      * @param key the param name
      * @param newValue the new value
      * @return the changed url
@@ -187,9 +187,9 @@ public class CombineWmsUrl extends CombineImageUrl{
         }
     }
     /**
-      * Get a parameter from this url.      
+      * Get a parameter from this url.
       * @param key
-      * @return 
+      * @return
       */
     public String getParameter(String key) {
         String lowerUrl = url.toLowerCase();

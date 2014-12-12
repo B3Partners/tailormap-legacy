@@ -26,12 +26,12 @@ import net.sourceforge.stripes.validation.Validate;
 @UrlBinding("/action/login")
 @StrictBinding
 public class LoginActionBean implements ActionBean {
-    
+
     private ActionBeanContext context;
 
     @Validate
     private boolean actuallyLogin;
-    
+
     public ActionBeanContext getContext() {
         return context;
     }
@@ -47,17 +47,17 @@ public class LoginActionBean implements ActionBean {
     public void setActuallyLogin(boolean actuallyLogin) {
         this.actuallyLogin = actuallyLogin;
     }
-    
+
     @DefaultHandler
     public Resolution forward() {
         return new RedirectResolution(ApplicationActionBean.class).includeRequestParameters(true);
     }
-    
+
     public Resolution logout() {
         if(actuallyLogin) {
             return forward();
         }
-        
+
         context.getRequest().getSession().invalidate();
 
         // Avoid immediately logging out again because include request parameters

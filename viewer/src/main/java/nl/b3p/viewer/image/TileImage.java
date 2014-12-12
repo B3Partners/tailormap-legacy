@@ -5,14 +5,14 @@ package nl.b3p.viewer.image;
  * @author Boy de Wit
  */
 public class TileImage {
-    
+
     private int posX;
     private int posY;
     private int imageWidth;
     private int imageHeight;
-    
+
     private CombineImageUrl combineImageUrl;
-    
+
     private int mapWidth;
     private int mapHeight;
 

@@ -65,7 +65,6 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -195,15 +194,15 @@ public class DownloadFeaturesActionBean implements ActionBean {
         this.type = type;
     }
     // </editor-fold>
-    
+
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
     }
-    
+
     @Before(stages=LifecycleStage.EventHandling)
     public void checkAuthorization() {
-        if(application == null || appLayer == null 
+        if(application == null || appLayer == null
                 || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
             unauthorized = true;
         }
@@ -216,7 +215,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
-        
+
         File output = null;
         try {
             if (featureType != null || (layer != null && layer.getFeatureType() != null)) {
@@ -225,7 +224,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
                 if (ft == null) {
                     ft = layer.getFeatureType();
                 }
-                
+
                 if (isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
@@ -241,11 +240,11 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
                 Map<String, AttributeDescriptor> featureTypeAttributes = new HashMap<String, AttributeDescriptor>();
                 featureTypeAttributes = makeAttributeDescriptorList(ft);
-                
+
                 List<ConfiguredAttribute> attributes =  appLayer.getAttributes();
 
                 output = convert(ft, fs, q, type, attributes,featureTypeAttributes);
-                
+
                 json.put("success", true);
             }
         } catch (Exception e) {
@@ -261,7 +260,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
             }
             json.put("message", message);
         }
-        
+
         if(json.getBoolean("success")){
             final FileInputStream fis = new FileInputStream(output);
             try{
@@ -272,7 +271,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
                         IOUtils.copy(fis, out);
                         fis.close();
                     }
-                };          
+                };
                 String name = output.getName();
                 String extension = name.substring(name.lastIndexOf("."));
                 String newName = "Download-"+ appLayer.getDisplayName() + "-"+type + extension;
@@ -300,16 +299,16 @@ public class DownloadFeaturesActionBean implements ActionBean {
         for (AttributeDescriptor ad : ft.getAttributes()) {
             propertyNames.add(ad.getName());
         }
-        
+
         /* Use the first property as sort field, otherwise geotools while give a error when quering
          * a JDBC featureType without a primary key.
-         */ 
+         */
         if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()) {
             setSortBy(q, propertyNames.get(0));
         }
         SimpleFeatureCollection fc =(SimpleFeatureCollection) fs.getFeatures(q);
         File f = null;
-        
+
         FeatureDownloader downloader = null;
         if (type.equalsIgnoreCase("SHP")) {
             downloader = new ShapeDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes,attributeAliases);
@@ -342,7 +341,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
         }
         return f;
     }
-    
+
     /**
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)
@@ -359,12 +358,12 @@ public class DownloadFeaturesActionBean implements ActionBean {
         }
         if (ft.getRelations()!=null){
             for (FeatureTypeRelation rel : ft.getRelations()){
-                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));                
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
             }
         }
         return featureTypeAttributes;
     }
-    
+
     private void setFilter(Query q, SimpleFeatureType ft) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);

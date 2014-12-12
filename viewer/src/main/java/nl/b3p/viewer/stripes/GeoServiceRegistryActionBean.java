@@ -37,28 +37,28 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/geoserviceregistry/")
 @StrictBinding
 public class GeoServiceRegistryActionBean implements ActionBean {
-    
+
     private ActionBeanContext context;
 
     @Validate
     private String nodeId;
-    
+
     @Validate
     private String q;
-    
+
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
+
     public String getNodeId() {
         return nodeId;
     }
-    
+
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
     }
@@ -71,21 +71,21 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         this.q = q;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
     public Resolution load() throws JSONException {
 
         EntityManager em = Stripersist.getEntityManager();
-        
+
         final JSONArray children = new JSONArray();
-        
+
         String type = nodeId.substring(0, 1);
         int id = Integer.parseInt(nodeId.substring(1));
-        
+
         if(type.equals("c")) {
             Category c = em.find(Category.class, new Long(id));
-            
-            // TODO check readers            
+
+            // TODO check readers
             for(Category sub: c.getChildren()) {
                 JSONObject j = new JSONObject();
                 j.put("id", "c" + sub.getId());
@@ -111,11 +111,11 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             }
         } else if(type.equals("s")) {
             // TODO check readers
-            
+
             GeoService gs = em.find(GeoService.class, new Long(id));
             // GeoService may be invalid and not have a top layer
             if(gs.getTopLayer() != null && Authorizations.isLayerReadAuthorized(gs.getTopLayer(), context.getRequest())) {
-                
+
                 for(Layer sublayer: gs.getTopLayer().getChildren()) {
                     if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest())) {
                         JSONObject j = layerJSON(sublayer);
@@ -137,10 +137,10 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 }
             }
         }
-        
-        return new StreamingResolution("application/json", new StringReader(children.toString()));          
-    }    
-    
+
+        return new StreamingResolution("application/json", new StringReader(children.toString()));
+    }
+
     private static JSONObject layerJSON(Layer l) throws JSONException {
         JSONObject j = new JSONObject();
         j.put("id", "l" + l.getId());
@@ -157,11 +157,11 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         j.put("isVirtual", l.isVirtual());
         return j;
     }
-    
+
     public Resolution search() throws JSONException {
-        
+
         EntityManager em = Stripersist.getEntityManager();
-        
+
         q = "%" + q.toLowerCase() + "%";
         List<GeoService> results = em.createQuery("select distinct gs from GeoService gs "
                 + "left join gs.keywords kw "
@@ -171,9 +171,9 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 .setParameter("q2", q)
                 .setMaxResults(10)
                 .getResultList();
-        
+
         JSONArray jresults = new JSONArray();
-        
+
         for(GeoService service: results) {
             JSONObject j = new JSONObject();
             j.put("id", "s" + service.getId());
@@ -184,7 +184,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             j.put("status", service.isMonitoringStatusOK() ? "ok" : "error");
             jresults.put(j);
         }
-        
-        return new StreamingResolution("application/json", new StringReader(jresults.toString(4)));          
+
+        return new StreamingResolution("application/json", new StringReader(jresults.toString(4)));
     }
 }
