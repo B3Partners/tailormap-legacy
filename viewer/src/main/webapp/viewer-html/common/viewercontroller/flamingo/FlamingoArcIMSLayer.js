@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
- * @description Flamingo ArcIMS layer class 
+ * @description Flamingo ArcIMS layer class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         this.type=viewer.viewercontroller.controller.Layer.ARCIMS_TYPE;
         return this;
     },
-    
+
     getTagName: function(){
         return "LayerArcIMS";
     },
@@ -47,12 +47,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     setQuery : function (filter){
         if(filter){
             var me = this;
-            var f = function(query) { 
+            var f = function(query) {
                 me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
                 me.reload();
             };
             var util = Ext.create("viewer.ArcQueryUtil");
-            util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
+            util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);
         }else{
             this.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",null);
             this.reload();

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,29 +16,29 @@
  */
 /**
  * Navigation Panel
- * Creates a Navigation Panel component in the framework 
+ * Creates a Navigation Panel component in the framework
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.NavigationPanel",{
-    extend: "viewer.components.Component",    
-    
+    extend: "viewer.components.Component",
+
     config: {
         top:null,
         left:null
     },
-    constructor: function (conf){ 
+    constructor: function (conf){
         conf.top = conf.top === undefined ? 20 : conf.top;
         conf.left = conf.left === undefined ? 0 : conf.left;
         viewer.components.NavigationPanel.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        
+
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.NAVIGATIONPANEL;
-        
+
         var comp = this.viewerController.mapComponent.createComponent(conf);
         this.viewerController.mapComponent.addComponent(comp);
-        
+
         return this;
     },
     getExtComponents: function() {

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -71,13 +71,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
             ]
 		});
-        
+
         var extraText = document.createElement('div')
         extraText.innerHTML="* De ingevulde zoekwaarden wordt achter deze url geplaatst. \n\
             Als de ingevulde zoekwaarde ergens anders moet komen in de url dan kan op die plek '[ZOEKWOORD]' worden opgegeven.\n\
             Voorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='";
         Ext.get("config").appendChild(new Ext.Element(extraText));
-        
+
         if(config != null) {
             if(config.nextSearchConfigId != null) {
                 me.nextId = config.nextSearchConfigId;
@@ -120,7 +120,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             titleCollapse: true,
             hideCollapseTool: true,
             items: [
-                { 
+                {
                     xtype: 'fieldset',
                     defaultType: 'textfield',
                     border: 0,
@@ -133,30 +133,30 @@ Ext.define("viewer.components.CustomConfiguration",{
                         { fieldLabel: 'Naam', name: 'name', value: config.name, id: 'name'+config.id },
                         { fieldLabel: 'Gebruik alleen via url', name: 'urlOnly'+config.id, id: 'urlOnly'+config.id, checked: config.urlOnly, xtype:'checkbox'},
                         { fieldLabel: 'Id', id: 'idField'+config.id,name: 'idField'+config.id, value: config.id,readOnly:true, readOnlyCls:'disabledTextField'},
-                        {                           
+                        {
                             xtype: 'radiogroup',
                             id: 'type' + config.id,
                             fieldLabel: 'Type',
                             vertical: true,
                             name: "type" + config.id,
                             items: [{
-                                boxLabel: 'OpenLS', 
-                                name: 'type' + config.id, 
+                                boxLabel: 'OpenLS',
+                                name: 'type' + config.id,
                                 inputValue: 'openls',
                                 checked: config.type=="openls" || config.type==undefined
                             },{
-                                boxLabel: 'ArcGISRest', 
-                                name: 'type' + config.id, 
+                                boxLabel: 'ArcGISRest',
+                                name: 'type' + config.id,
                                 inputValue: 'arcgisrest',
                                 checked: config.type=="arcgisrest"
                             },{
-                                boxLabel: 'Solr', 
-                                name: 'type' + config.id, 
+                                boxLabel: 'Solr',
+                                name: 'type' + config.id,
                                 inputValue: 'solr',
                                 checked: config.type=="solr"
                             },{
-                                boxLabel: 'Eenvoudig', 
-                                name: 'type' + config.id, 
+                                boxLabel: 'Eenvoudig',
+                                name: 'type' + config.id,
                                 inputValue: 'simplelist',
                                 checked: config.type=="simplelist"
                             }],
@@ -395,7 +395,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var checkboxId = 'checkbox-' + target.id.replace('_layers', '');
         // Get checkbox
         var checkbox = document.getElementById(checkboxId);
-        // Get solrSearchConfigId 
+        // Get solrSearchConfigId
         var solrConfigId = checkbox.value;
         // Show layers config window
         if(me.layerSelectionWindow === null) {
@@ -544,7 +544,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
     /**
      * Helper function to get searchconfig for searchconfigId
-     */     
+     */
     getConfig: function(searchconfigId) {
         for(var x in this.searchconfigs) {
             if(this.searchconfigs[x].id === searchconfigId) {

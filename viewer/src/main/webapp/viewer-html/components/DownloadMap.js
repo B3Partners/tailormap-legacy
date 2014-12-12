@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,11 +27,11 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     iconUrl_up: null,
     iconUrl_over: null,
     button: null,
-    constructor: function (conf){        
+    constructor: function (conf){
         this.hasButton = false;
         viewer.components.tools.DownloadMap.superclass.constructor.call(this, conf);
-        this.initConfig(conf);   
-        
+        this.initConfig(conf);
+
         if(this.isPopup){
             var me = this;
             this.renderButton({
@@ -56,15 +56,15 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         return this;
     },
     /**
-     * When the button is hit 
+     * When the button is hit
      * @param button the button
-     * @param object the options.        
+     * @param object the options.
      */
-    buttonDown : function(button,object){        
+    buttonDown : function(button,object){
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
     },
-    imageSuccess: function(imageUrl){        
+    imageSuccess: function(imageUrl){
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
         if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
         else {

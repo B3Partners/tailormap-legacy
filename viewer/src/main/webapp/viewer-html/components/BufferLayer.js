@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ Ext.define ("viewer.components.BufferLayer",{
         iconUrl:null,
         label: ""
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.BufferLayer.superclass.constructor.call(this, conf);
-        this.initConfig(conf);     
+        this.initConfig(conf);
         var me = this;
         this.renderButton({
             handler: function(){
@@ -42,7 +42,7 @@ Ext.define ("viewer.components.BufferLayer",{
             icon: me.iconUrl,
             tooltip: me.tooltip,
             label: me.label
-        });      
+        });
         this.loadWindow();
         return this;
     },
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.BufferLayer",{
             fieldLabel: "Straal",
             renderTo: this.getContentDiv()
         });
-        
+
         this.button1 = Ext.create("Ext.button.Button",{
             name: "buffer" ,
             text: "Buffer",
@@ -91,7 +91,7 @@ Ext.define ("viewer.components.BufferLayer",{
                 }
             }
         });
-        
+
         this.button2 = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             text: "Huidige buffer verwijderen",

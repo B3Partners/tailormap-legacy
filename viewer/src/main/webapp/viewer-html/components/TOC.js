@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ Ext.define ("viewer.components.TOC",{
         if (config.showToggleAllLayers!==undefined){
             this.showAllLayersOff=config.showToggleAllLayers;
             this.showAllLayersOn=config.showToggleAllLayers;
-        }   
+        }
         this.toggleAllLayersState = this.initToggleAllLayers;
         this.loadTree();
         this.loadInitLayers();
@@ -80,7 +80,7 @@ Ext.define ("viewer.components.TOC",{
         view.panel.getLayout().layout();
     },
     // Build the tree
-    loadTree : function(){        
+    loadTree : function(){
         // Get the current state of the map
         this.backgroundLayers = new Array();
         this.selectedContent = this.viewerController.app.selectedContent;
@@ -98,13 +98,13 @@ Ext.define ("viewer.components.TOC",{
                 children: []
             }
         });
-        
+
         store.addListener("beforeexpand",this.beforeExpand, this);
         store.addListener("expand",this.onExpand,this);
-        
+
         var title = "";
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;
-        
+
         var tools = [];
         // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
         if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
@@ -115,7 +115,7 @@ Ext.define ("viewer.components.TOC",{
                 }
             }];
         }
-        
+
         var dockedItems = [];
         if(this.showAllLayersOn || this.showAllLayersOff){
             dockedItems = [
@@ -187,22 +187,22 @@ Ext.define ("viewer.components.TOC",{
         // Create background
         this.createBackgroundLevel(nodes);
         this.insertLayer(nodes);
-        
+
         var map = this.viewerController.mapComponent.getMap();
         var scale = map.getResolution();
         this.checkScaleLayer(this.panel.getRootNode(),scale);
-        
+
         this.registerQtips();
         // Apply the scroll fix when all layers are added
         this.applyTreeScrollFix();
         this.applyHorizontalScrolling();
     },
-           
+
     /*
      * Applies horizontal scrolling to treepanel (if configured)
      * Needs workaround because horizontal scrolling is broken in Ext 4.0.7
      * http://stackoverflow.com/questions/9388916/horizontal-scroller-on-tree-panel
-     * 
+     *
      * What this function does is compute the max width of the longest label and sets
      * the width of the parent and also sets overflowX to auto
      */
@@ -247,7 +247,7 @@ Ext.define ("viewer.components.TOC",{
             }
         }
     },
-    
+
     isExpanded : function(level , triState){
         var expand = this.expandOnStartup;
         if(this.expandOnEnabledLayer && triState >= 0){
@@ -255,8 +255,8 @@ Ext.define ("viewer.components.TOC",{
         }
         if (level.background) {
             expand = false;
-        }  
-        
+        }
+
         return expand;
     },
     // Add a level to the tree, and load all it's levels and applayers
@@ -268,7 +268,7 @@ Ext.define ("viewer.components.TOC",{
         }
         var levelId = "level-"+level.id;
         var treeNodeLayer = {
-            text: '<span id="span_'+levelId+'">'+level.name+'</span>', 
+            text: '<span id="span_'+levelId+'">'+level.name+'</span>',
             id: levelId,
             expandable: !level.background,
             collapsible: !level.background,
@@ -292,10 +292,10 @@ Ext.define ("viewer.components.TOC",{
             this.addQtip("Informatie over de kaart", 'span_'+levelId);
             treeNodeLayer.layerObj.url = level.url;
         }
-        
+
         var childsChecked = 0;
         var totalChilds = 0;
-        
+
         if(level.children != undefined ){
             for(var i = 0 ; i < level.children.length; i++){
                 var l = this.addLevel(level.children[i]);
@@ -332,7 +332,7 @@ Ext.define ("viewer.components.TOC",{
             }
         }
         var triState = this.calculateTriState(childsChecked, totalChilds);
-        
+
         var expand = this.isExpanded(level, triState);
         treeNodeLayer.children= nodes;
         treeNodeLayer.expanded = expand;
@@ -378,12 +378,12 @@ Ext.define ("viewer.components.TOC",{
                 this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
                 treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
             }
-            
+
             if(serviceLayer.details ["download.url"] != undefined){
                 this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
-            
+
         }
         var retChecked = false;
         if(this.layersChecked){
@@ -392,7 +392,7 @@ Ext.define ("viewer.components.TOC",{
         } else if(appLayerObj.checked) {
             treeNodeLayer.hidden_check = appLayerObj.checked;
             retChecked = appLayerObj.checked;
-        }        
+        }
         return {
             node: treeNodeLayer,
             checked: retChecked
@@ -420,7 +420,7 @@ Ext.define ("viewer.components.TOC",{
                 }
             }
             var background = {
-                text: "Achtergrond", 
+                text: "Achtergrond",
                 id: this.name + "Achtergrond",
                 expanded: this.expandOnStartup,
                 expandable: true,
@@ -451,7 +451,7 @@ Ext.define ("viewer.components.TOC",{
     },
     setLayerQtip: function (text,layerId){
         this.setQtip(text,"span_layer-"+layerId);
-    },            
+    },
     setLevelQtip: function (text,levelid){
         this.setQtip(text,"span_level-"+levelid);
     },
@@ -493,7 +493,7 @@ Ext.define ("viewer.components.TOC",{
         if (this.toggleAllLayersState && this.showAllLayersOff ||
             !this.toggleAllLayersState && this.showAllLayersOn){
             this.toggleAllLayersState = !this.toggleAllLayersState;
-            
+
             if (Ext.get("toggleAllLayersButton")){
                 Ext.getCmp("toggleAllLayersButton").setText(this.toggleAllLayersState ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
             }
@@ -509,7 +509,7 @@ Ext.define ("viewer.components.TOC",{
     },
     /**
      * Is called when a node is expanding.
-     * Call register quickTips after a small timeout to make sure the element is 
+     * Call register quickTips after a small timeout to make sure the element is
      * created in the DOM
      */
     onExpand: function(node){
@@ -535,7 +535,7 @@ Ext.define ("viewer.components.TOC",{
         }
         return null;
     },
-    
+
     setTriState: function(node) {
         var me = this;
         var checked = me.getNodeChecked(node);
@@ -561,7 +561,7 @@ Ext.define ("viewer.components.TOC",{
             }
         }
     },
-    
+
     updateTriState: function(node) {
         var me = this;
         var totalChecked = 0;
@@ -592,14 +592,14 @@ Ext.define ("viewer.components.TOC",{
         }
         return tristate;
     },
-    
+
     updateTriStateClass: function(node, totalChecked, totalNodes) {
         var tristate = 0;
         if(!this.groupCheck){
             return tristate;
         }
         tristate = this.calculateTriState(totalChecked, totalNodes);
-        
+
         if(node != null) {
             if(tristate === -1) {
                 node.data.tristate = -1;
@@ -617,11 +617,11 @@ Ext.define ("viewer.components.TOC",{
         }
         return tristate;
     },
-    
+
     checkChildNodes: function(node, checked) {
         var me = this;
         node.eachChild(function(childNode) {
-            if((!childNode.hasChildNodes() && me.layersChecked) || (childNode.hasChildNodes() && me.groupCheck)){ 
+            if((!childNode.hasChildNodes() && me.layersChecked) || (childNode.hasChildNodes() && me.groupCheck)){
                 childNode.set('checked', checked);
             }else {
                 childNode.set('hidden_check', checked);
@@ -633,7 +633,7 @@ Ext.define ("viewer.components.TOC",{
             }
         });
     },
-    
+
     getNodeChecked: function(node) {
         if(Ext.isDefined(node.data)) {
             if(node.data.checked !== undefined && node.data.checked !== null) return node.data.checked;
@@ -645,14 +645,14 @@ Ext.define ("viewer.components.TOC",{
         }
         return false;
     },
-    
+
     hasTriState: function(node) {
         if(Ext.isDefined(node.data) && Ext.isDefined(node.data.tristate)) {
             if(node.data.tristate === 0) return true;
         }
         return false;
     },
-    
+
     layerVisibilityChanged : function (map,object){
         var layer = object.layer;
         var vis = object.visible;
@@ -667,7 +667,7 @@ Ext.define ("viewer.components.TOC",{
             this.setTriState(node);
         }
     },
-    
+
     updateMap: function(nodeObj, checked) {
         if(nodeObj.isLeaf()){
             var node = nodeObj.raw;
@@ -675,7 +675,7 @@ Ext.define ("viewer.components.TOC",{
                 node = nodeObj.data;
             }
             var layer = node.layerObj;
-    
+
             if(checked){
                 this.viewerController.setLayerVisible(layer.appLayer, true);
             }else{
@@ -684,13 +684,13 @@ Ext.define ("viewer.components.TOC",{
         }
     },
     /*************************  Event handlers ***********************************************************/
-     
+
     checkboxClicked : function(nodeObj,checked,toc){
         this.updateMap(nodeObj, checked);
         this.setTriState(nodeObj);
-        
+
         var scale = this.viewerController.mapComponent.getMap().getScale();
-        
+
         this.checkScaleLayer(nodeObj,scale);
     },
     // Open the popup with the metadata/info of the level/applayer
@@ -721,7 +721,7 @@ Ext.define ("viewer.components.TOC",{
             if(child.raw && child.raw.layerObj) layerObj = child.raw.layerObj;
             if(child.data && child.data.layerObj) layerObj = child.data.layerObj;
             var record = this.panel.getView().getNodeByRecord(child);
-            // Check for not existing/visible layers (ie. layers in (background) levels 
+            // Check for not existing/visible layers (ie. layers in (background) levels
             if(record != null){
                 var extElement = Ext.fly(record);
                 //if(this.isInScale(scale, layer.minScale, layer.maxScale)){
@@ -735,7 +735,7 @@ Ext.define ("viewer.components.TOC",{
                     extElement.addCls( "toc-outofscale");
                     if (child.data.checked){
                         var parent =spanEl.parent();
-                        parent.addCls('toc-zoomtoscale');    
+                        parent.addCls('toc-zoomtoscale');
                         var ztsId="span_"+child.data.id+"_zoomtoscale";
                         var zts=Ext.get(ztsId);
                         //if ZoomToScale object !exists create one.
@@ -748,7 +748,7 @@ Ext.define ("viewer.components.TOC",{
                             zts.addCls("toc-zoomtoscale-text");
                             var me = this;
                             zts.addListener("click",
-                                function (evt,el,o){ 
+                                function (evt,el,o){
                                     me.zoomToScale(layerObj.appLayer);
                                 },
                                 this);
@@ -763,7 +763,7 @@ Ext.define ("viewer.components.TOC",{
                 this.checkScaleLayer (childNode, scale);
             }
         }
-        
+
     },
     getExtComponents: function() {
         return [ this.panel.getId() ];
@@ -777,5 +777,5 @@ Ext.define ("viewer.components.TOC",{
         me.panel.doLayout();
         me.applyTreeScrollFix();
         me.applyHorizontalScrolling();
-    } 
+    }
 });

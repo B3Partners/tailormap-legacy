@@ -1,6 +1,6 @@
 /**
- * @class 
- * @description The superclass for all maps 
+ * @class
+ * @description The superclass for all maps
  * @param frameworkMap The frameworkspecific layer
  * Map object interface class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -29,7 +29,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     constructor: function(config){
         this.initConfig(config);
-        
+
         this.addEvents(
             viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,
             viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,
@@ -37,10 +37,10 @@ Ext.define("viewer.viewercontroller.controller.Map",{
             viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,
             viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
             viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED);
-            
+
         return this;
     },
-    
+
     fire : function (event,options){
         this.fireEvent (event,this,options);
     },
@@ -51,11 +51,11 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     getFrameworkMap: function(){
         return this.frameworkMap;
     },
-    
+
     /**
      *Add a Array of layers(services) to the map
      *@param layers a array of layers
-     **/    
+     **/
     addLayers : function(layers){
         for (var i=0; i < layers.length; i++){
             this.addLayer(layers[i]);
@@ -132,11 +132,11 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclas! The subclass needs to do the remove from the framework!
      **/
     removeLayer:function(layer){
-        
+
         var index=this.getLayerIndex(layer);
         if (index==-1){
             this.viewerController.logger.warning("Map.removeLayer(): Layer not available in map!");
-        }else{            
+        }else{
             this.layers.splice(index,1);
         }
     },
@@ -169,7 +169,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         this.layers=newLayerArray;
         return currentIndex;
     },
-    
+
     /**
      * Sets a layer visible/invisible
      */
@@ -186,14 +186,14 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         Ext.Error.raise({msg: "Map.getId() Not implemented! Must be implemented in sub-class"});
     },
 
-    /** 
+    /**
      *Gets all the wms layers in this map
      */
     getAllWMSLayers : function(){
         Ext.Error.raise({msg: "Map.getAllWMSLayers() Not implemented! Must be implemented in sub-class"});
     },
 
-    /** 
+    /**
      *Gets all the vector layers in this map
      */
     getAllVectorLayers : function(){

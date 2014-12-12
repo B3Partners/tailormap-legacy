@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ Ext.define ("viewer.components.Buffer",{
     },
     constructor: function (conf){
         viewer.components.Buffer.superclass.constructor.call(this, conf);
-        this.initConfig(conf);     
+        this.initConfig(conf);
         if(this.maxFeatures == null){
             this.maxFeatures = 50;
         }
@@ -50,7 +50,7 @@ Ext.define ("viewer.components.Buffer",{
             icon: me.iconUrl,
             tooltip: me.tooltip,
             label: me.label
-        });      
+        });
         this.imageLayers = new Array();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
@@ -60,26 +60,26 @@ Ext.define ("viewer.components.Buffer",{
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
         }
     },
-    buttonClick : function (){ 
+    buttonClick : function (){
         if (this.panel ==null){
             this.loadWindow();
         }
         this.layerSelector.initLayers();
         this.popup.show();
     },
-    loadWindow : function(){        
+    loadWindow : function(){
         var me = this;
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             id: this.name + "Radius",
             fieldLabel: "Straal"
         });
-        
-        this.colorPicker = Ext.create("Ext.ux.ColorField",{ 
+
+        this.colorPicker = Ext.create("Ext.ux.ColorField",{
             showText: true,
             name: 'color',
             fieldLabel : "Kleur buffer",
-            id:'color' + this.name,            
+            id:'color' + this.name,
             value: "FF0000",
             listeners :{
                 select : {
@@ -88,7 +88,7 @@ Ext.define ("viewer.components.Buffer",{
                 }
             }
         });
-        
+
         this.buffer = Ext.create("Ext.button.Button",{
             name: "buffer" ,
             id: this.name + "BufferButton",
@@ -102,13 +102,13 @@ Ext.define ("viewer.components.Buffer",{
                 }
             }
         });
-        
+
         this.remove = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
-            text: "Huidige buffer verwijderen", 
+            text: "Huidige buffer verwijderen",
             componentCls: 'mobileLarge',
-            margin: '10px 0px 0px 10px',           
+            margin: '10px 0px 0px 10px',
             listeners: {
                 click:{
                     scope: this,
@@ -121,7 +121,7 @@ Ext.define ("viewer.components.Buffer",{
                 }
             }
         });
-        
+
         var layerSelectorId = Ext.id();
         this.panel = Ext.create ("Ext.container.Container",{
             id: this.name +"Container",
@@ -135,8 +135,8 @@ Ext.define ("viewer.components.Buffer",{
                 this.remove
             ]
         });
-        
-        
+
+
         this.layerSelector = Ext.create("viewer.components.LayerSelector",{
             viewerController : this.viewerController,
             div: layerSelectorId,
@@ -175,7 +175,7 @@ Ext.define ("viewer.components.Buffer",{
             this.viewerController.mapComponent.getMap().addLayer(imageLayer);
             if(MobileManager.isMobile()) {
                 this.popup.hide();
-            }            
+            }
         }
     },
     removeBuffer : function(){

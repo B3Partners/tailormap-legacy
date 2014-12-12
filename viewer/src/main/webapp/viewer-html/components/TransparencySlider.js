@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,17 +28,17 @@ Ext.define ("viewer.components.TransparencySlider",{
         sliderForUserAdded: null,
         sliderForUserAddedText: null,
         sliderForUserAddedInitTransparency: 0
-        
+
     },
     sliderObjects : [],
-    
-    constructor: function (conf){        
+
+    constructor: function (conf){
         viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
-        this.initConfig(conf); 
+        this.initConfig(conf);
         if(this.config.layers != null) {
             transparencySlider_layersArrayIndexesToAppLayerIds(this.config);
         }
-        
+
         var me = this;
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
@@ -60,14 +60,14 @@ Ext.define ("viewer.components.TransparencySlider",{
             tools: tools
         });
         conf.sliderContainer = this.name + 'slidersContainer';
-        
+
         for(var i = 0 ; i < this.sliders.length ; i ++){
-            
+
             var config = Ext.Object.merge(conf, this.sliders[i]);
             var slider =Ext.create("viewer.components.Slider", config);
             this.sliderObjects.push(slider);
         }
-        
+
         if(this.sliderForUserAdded){
             var me =this;
             var c = {
@@ -77,12 +77,12 @@ Ext.define ("viewer.components.TransparencySlider",{
                 initialTransparency: this.sliderForUserAddedInitTransparency
             }
             c = Ext.Object.merge(conf, c);
-            var s =Ext.create("viewer.components.NonInitLayerSlider", c);                        
+            var s =Ext.create("viewer.components.NonInitLayerSlider", c);
             this.sliderObjects.push(s);
         }
         return this;
     },
-        
+
     getExtComponents: function() {
         var components = [ this.panel.getId() ];
         for(var slider in this.sliderObjects) {

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
- * @description Flamingo Image layer class 
+ * @description Flamingo Image layer class
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
-    extend: "viewer.viewercontroller.controller.ImageLayer", 
+    extend: "viewer.viewercontroller.controller.ImageLayer",
     mixins: {
         flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
     },
@@ -34,7 +34,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
     },
     getTagName : function(){
         return "LayerImage";
-    },    
+    },
     /**
      *makes a xml string so the object can be added to flamingo
      *@return a xml string of this object
@@ -44,11 +44,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.id+"\"";
-     
+
         xml+=" url=\""+this.url+"\"";
         xml+=" extent=\""+this.extent +"\"";
         xml+=" visible=\""+this.visible+"\"";
-        
+
         xml+="></fmc:"+this.getTagName()+">";
 
         return xml;
@@ -67,7 +67,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         if (this.getFrameworkLayer()!=null && this.map!=null){
             this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","extent",extent.toString());
         }
-    },    
+    },
     getLastMapRequest: function(){
         var url= this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getServiceUrl");
         return [{
@@ -111,7 +111,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
      */
     getType : function(){
         return this.mixins.flamingoLayer.getType.call(this);
-    },    
+    },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#destroy
      */

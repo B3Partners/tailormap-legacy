@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             if(config.html) value=config.html;
             if(config.title) title=config.title;
         }
-        
+
         Ext.tip.QuickTipManager.init();  // enable tooltips
         this.titleField = Ext.create('Ext.form.field.Text', {
             fieldLabel: 'Titel (optioneel, wordt gebruikt voor tabbladen)',
@@ -48,7 +48,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: 275,
             width: 500,
             renderTo: Ext.get(parentid)
-        });        
+        });
         this.htmlEditor=Ext.create('Ext.form.HtmlEditor', {
             width: 750,
             height: 460,

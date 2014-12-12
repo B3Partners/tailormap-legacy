@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -115,20 +115,20 @@ Ext.define ("viewer.components.AttributeFilter",{
         }
         cql += "\"" +  this.attribute + "\"";
         cql += this.operator.getValue();
-            
+
         if(this.attributeType && this.attributeType.toLowerCase() == "string"){
             cql += "\'";
-        }  
+        }
         cql += this.value.getValue();
         if(this.attributeType && this.attributeType.toLowerCase() == "string"){
             cql += "\'";
-        }      
+        }
         return cql;
     },
     /**
      * Set the unique list of values.
      */
-    setUniqueList: function(list){  
+    setUniqueList: function(list){
         if (list.length>0){
             this.value.setHideTrigger(false);
         }else{
@@ -136,7 +136,7 @@ Ext.define ("viewer.components.AttributeFilter",{
         }
         this.valueStore.removeAll();
         this.valueStore.loadData(list);
-        
+
     },
 	// We have to remove all items from the attribute filter due to some weird Ext bug
 	removeItems: function() {

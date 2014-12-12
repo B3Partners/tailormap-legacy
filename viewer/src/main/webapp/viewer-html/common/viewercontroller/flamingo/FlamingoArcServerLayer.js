@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
- * @description Flamingo ArcServer layer class 
+ * @class
+ * @description Flamingo ArcServer layer class
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
     extend: "viewer.viewercontroller.flamingo.FlamingoArcLayer",
     /**
-     * @constructor 
+     * @constructor
      */
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoArcServerLayer.superclass.constructor.call(this, config);
@@ -30,15 +30,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE;
         return this;
     },
-    
+
     getTagName: function(){
         return "LayerArcServer";
     },
     setQuery : function (filter){
-        var cql = filter != null ? filter.getCQL() : "";        
+        var cql = filter != null ? filter.getCQL() : "";
         if(cql != ""){
             var me = this;
-            var f = function(ids,colName) { 
+            var f = function(ids,colName) {
                 // Hack: An empty query returns all the features
                 var query = "-1";
                 if(ids.length != 0) {
@@ -55,5 +55,5 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
             this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.config.options.name);
             this.reload();
         }
-    }    
+    }
 });

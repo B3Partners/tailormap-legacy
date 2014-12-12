@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor",{
-    extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
+    extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",
     config:{
         top:null,
         left:null,
         timeout:null
     },
-    
-    constructor: function (conf){        
+
+    constructor: function (conf){
         viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor.superclass.constructor.call(this, conf);
         // Make the control and add it to the openlayersmap
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
@@ -39,17 +39,17 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor
         if(this.left && this.top){
             this.setPosition(this.top, this.left);
         }
-        
+
         return this;
     },
-    
+
     // Set the position of the loadingpanel
     setPosition : function (top, left){
         var div = this.frameworkObject.div;
         div.style.top = top + "px";
         div.style.left = left+ "px";
     },
-    
+
     getExtComponents: function() {
         return [];
     }

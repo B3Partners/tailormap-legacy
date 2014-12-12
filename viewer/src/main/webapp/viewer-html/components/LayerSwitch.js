@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,42 +17,42 @@
 
 /**
  * LayerSwitch component
- * 
+ *
  * Creates a Ext.button.Cycle to allow the user to quickly change the background
  * layer without the complexity of a TOC component.
- * 
+ *
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.LayerSwitch",{
     extend: "viewer.components.Component",
     container: null,
-    
+
     items: null,
     selectedBackgroundLevels: null,
     control: null,
-    
+
     config: {
         top:null,
         left:null
     },
-    
+
     constructor: function (conf){
         conf.top = conf.top === undefined ? 5 : conf.top;
         conf.left = conf.left === undefined ? 5 : conf.left;
         viewer.components.LayerSwitch.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.loadComponent();
-        
+
         this.viewerController.on(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function() {
             this.loadComponent();
         }, this);
-        
-        this.viewerController.mapComponent.getMap().on(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, 
+
+        this.viewerController.mapComponent.getMap().on(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
             this.layerVisibilityChanged, this);
-        
+
         return this;
     },
-    
+
     loadComponent : function (){
         this.loadItems();
         if(this.button) {
@@ -81,11 +81,11 @@ Ext.define ("viewer.components.LayerSwitch",{
         this.button.zIndexManager.bringToFront(this.button);
         this.button.setPosition(Number(this.left), Number(this.top));
     },
-    
+
     levelItemId: function(level) {
         return this.name + "_l" + level.id;
     },
-    
+
     levelFromItemId: function(id) {
         var levelId = Number(id.substring(this.name.length+"_i".length));
         var l = null;
@@ -98,10 +98,10 @@ Ext.define ("viewer.components.LayerSwitch",{
         });
         return l;
     },
-    
+
     loadItems: function() {
         var me = this;
-        
+
         // Find out which background levels are in the selected content
         me.selectedBackgroundLevels = [];
         this.viewerController.traverseSelectedContent(function(level) {
@@ -125,7 +125,7 @@ Ext.define ("viewer.components.LayerSwitch",{
 
     /**
      * Assume only one background level is 'checked' by checking if any of the
-     * layers in the level is checked. 
+     * layers in the level is checked.
      */
     getCheckedBackgroundLevel: function() {
         var me = this;
@@ -142,7 +142,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         });
         return foundLevel;
     },
-    
+
     controlItemChanged: function(control, item) {
         var me = this;
         // XXX either change background when layers initialized or only enable
@@ -153,12 +153,12 @@ Ext.define ("viewer.components.LayerSwitch",{
                 var checked = level == selectedLevel;
                 Ext.each(level.layers, function(appLayerId) {
                     var appLayer = me.viewerController.getAppLayerById(appLayerId);
-                    me.viewerController.setLayerVisible(appLayer, checked);                    
+                    me.viewerController.setLayerVisible(appLayer, checked);
                 });
             });
         }
     },
-    
+
     layerVisibilityChanged: function(map, event) {
 
         var eventLevel = this.viewerController.getAppLayerParent(event.layer.id);
@@ -170,7 +170,7 @@ Ext.define ("viewer.components.LayerSwitch",{
             }
             return true;
         });
-        
+
         if(backgroundLevel == null) {
             return;
         }
@@ -181,7 +181,7 @@ Ext.define ("viewer.components.LayerSwitch",{
             this.button.setActiveItem(activeItem, true);
         }
     },
-    
+
     getExtComponents: function() {
         return [this.button];
     }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
  * @description A drawable vector layer
  */
@@ -36,7 +36,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         config.colorPrefix = '#';
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
-   
+
         var styleMap = new OpenLayers.StyleMap (
         {
             "default" :this.getCurrentStyleHash(),
@@ -51,12 +51,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
         },{extendDefault:false});
         config.styleMap = styleMap;
-        
+
         // Delete style from config, because it messes up the styling in the vectorlayer.
         delete config.style;
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
-        
+
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
         this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
@@ -77,14 +77,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
                 irregular: true
             }
         });
-        
+
         this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon',
             handlerOptions: {
               freehand: true
             }
         });
-            
+
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
         this.drawFeatureControls.push(this.polygon);
@@ -92,10 +92,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.point);
         this.drawFeatureControls.push(this.box);
         this.drawFeatureControls.push(this.freehand);
-        
+
         // The modifyfeature control allows us to edit and select features.
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : true,vertexRenderIntent: "select"});
-        
+
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
         map.addControl(this.point);
         map.addControl(this.line);
@@ -104,12 +104,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.box);
         map.addControl(this.freehand);
         map.addControl(this.modifyFeature);
-        
+
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
-        
+
         this.modifyFeature.activate();
     },
     /**
@@ -125,7 +125,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         };
         return hash;
     },
-    
+
     /**
      * Does nothing, but is needed for API compliance
      */
@@ -139,7 +139,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.stopDrawing();
     },
 
-    getActiveFeature : function(){        
+    getActiveFeature : function(){
         var olFeature = this.getFrameworkLayer().features[0];
         if (olFeature){
             var feature = this.fromOpenLayersFeature(olFeature);
@@ -154,7 +154,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     /**
-     * Gets a feature by the id. 
+     * Gets a feature by the id.
      *
      */
     getFeatureById : function (id){
@@ -187,7 +187,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.modifyFeature.unselectFeature(olFeature);
         this.getFrameworkLayer().removeFeatures([olFeature]);
     },
-    
+
     addFeatures : function(features){
         var olFeatures = new Array();
         for(var i = 0 ; i < features.length ; i++){
@@ -245,7 +245,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.freehand.deactivate();
         }
     },
-    
+
     /**
      * Called when a feature is selected
      */
@@ -253,7 +253,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var feature = this.fromOpenLayersFeature (object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
-    
+
     /**
      * Called when a feature is modified.
      */
@@ -261,7 +261,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var featureObject = this.fromOpenLayersFeature(evt.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
-    
+
     /**
      * Called when a feature is added to the vectorlayer. It deactivates all drawFeature controls, makes the added feature editable and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
      */
@@ -278,7 +278,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.editFeature(object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
     },
-    
+
     /**
      * Puts an openlayersfeature in editmode and fires an event: viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED
      * TODO: fix the selecting of a newly added point (after adding another geometry first)
@@ -289,14 +289,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var featureObject = this.fromOpenLayersFeature (feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
-    
+
     /**
      * Converts this feature to a OpenLayersFeature
      * @return The OpenLayerstype feature
      */
     toOpenLayersFeature : function(feature){
         var geom = OpenLayers.Geometry.fromWKT(feature.wktgeom);
-        var style = this.frameworkLayer.styleMap.styles["default"];    
+        var style = this.frameworkLayer.styleMap.styles["default"];
         style.label = feature.label;
         var olFeature = new OpenLayers.Feature.Vector(geom,{id: feature.id},{style:style});
         return olFeature;
@@ -322,8 +322,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             feature.color = color;
         }
         return feature;
-    }, 
-    
+    },
+
     setLabel : function (id, label){
         var olFeature = this.getFrameworkLayer().getFeatureById(id);
         if(olFeature){
@@ -331,8 +331,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.reload();
         }
     },
-    
-    /******** overwrite functions to make use of the mixin functions **********/    
+
+    /******** overwrite functions to make use of the mixin functions **********/
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
@@ -342,7 +342,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    getVisible: function(){        
+    getVisible: function(){
        return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**

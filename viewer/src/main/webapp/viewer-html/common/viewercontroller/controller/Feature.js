@@ -1,5 +1,5 @@
 /**
- * @class 
+ * @class
  * @constructor
  * @param id The id of the Feature
  * @param wkt The wkt describing the Feature
@@ -21,8 +21,8 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
        // this.wktParser = new OpenLayers.Format.WKT();
     },
 
-    
-    
+
+
     /**
      * Function to get the JSON representation for this feature object.
      */

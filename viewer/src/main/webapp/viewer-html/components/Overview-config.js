@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -56,35 +56,35 @@ Ext.define("viewer.components.CustomConfiguration",{
                     text: "Instellingen knop voor overviewkaart",
                     style: "font-weight: bold;"
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'Plaatje normaal',
                     name: 'picNormal',
                     value: config.picNormal,
                     labelWidth:me.labelWidth
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'Plaatje over',
                     name: 'picOver',
                     value: config.picOver,
                     labelWidth:me.labelWidth
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'Plaatje geselecteerd',
                     name: 'picSelected',
                     value: config.picSelected,
                     labelWidth:me.labelWidth
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'Positie links',
                     name: 'picLeft',
                     value: config.picLeft,
                     labelWidth:me.labelWidth
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'Positie boven',
                     name: 'picTop',
@@ -98,14 +98,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 text: "Afmetingen",
                 style: "font-weight: bold;"
             },
-            { 
+            {
                 xtype: 'textfield',
                 fieldLabel: 'Breedte',
                 name: 'width',
                 value: config.width,
                 labelWidth:me.labelWidth
             },
-            { 
+            {
                 xtype: 'textfield',
                 fieldLabel: 'Hoogte',
                 name: 'height',
@@ -113,11 +113,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },
             {
-                fieldLabel: 'Positie', 
+                fieldLabel: 'Positie',
                 store: positionStore,
                 xtype: 'combobox',
-                name: 'position', 
-                id: 'editvalues', 
+                name: 'position',
+                id: 'editvalues',
                 queryMode: 'local',
                 displayField: 'label',
                 valueField: 'type',
@@ -125,13 +125,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: config.position,
                 labelWidth:me.labelWidth
             }
-            ,{ 
+            ,{
                 xtype: 'textfield',
                 fieldLabel: 'URL naar achtergrondkaart (afbeelding, WMS-request of swf)',
                 name: 'url',
                 value: config.url,
                 labelWidth:me.labelWidth
-            },{ 
+            },{
                 xtype: 'textfield',
                 fieldLabel: 'Layers (optioneel)',
                 name: 'layers',
@@ -143,15 +143,15 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "followZoom",
                 fieldLabel: "Volg zoomen",
                 labelWidth:me.labelWidth
-            },{ 
+            },{
                 xtype:'container',
                 margin: 5,
                 title: 'Extentie van de afbeelding',
                 collapsible: false,
                 defaultType: 'textfield',
-                layout: 'column', 
+                layout: 'column',
                 items:[
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'lo-x',
                     name: 'lox',
@@ -160,7 +160,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     margin: 5,
                     width:150
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'lo-y',
                     name: 'loy',
@@ -169,7 +169,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     margin: 5,
                     width:150
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'rb-x',
                     name: 'rbx',
@@ -178,7 +178,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     margin: 5,
                     width:150
                 },
-                { 
+                {
                     xtype: 'textfield',
                     fieldLabel: 'rb-y',
                     name: 'rby',
@@ -189,6 +189,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }]
             }],
             renderTo: this.parentId
-        });     
-    }    
+        });
+    }
 });

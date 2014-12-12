@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,12 +39,12 @@ Ext.define("viewer.components.ConfigObject",{
     },
     /**
      * Must return the configuration that is set by the user.
-     * 
+     *
      */
     getConfiguration: function(){
-        var config=new Object();        
+        var config=new Object();
         if (this.checkBoxes!=null){
-            config.layers=this.checkBoxes.getChecked();  
+            config.layers=this.checkBoxes.getChecked();
         }
         Ext.apply(config,this.getValuesFromContainer(this.form));
         return config;
@@ -57,7 +57,7 @@ Ext.define("viewer.components.ConfigObject",{
         for( var i = 0 ; i < container.items.length ; i++){
             //if its a radiogroup get the values with the function and apply the values to the config.
             if ("radiogroup"==container.items.get(i).xtype){
-                Ext.apply(config, container.items.get(i).getValue());       
+                Ext.apply(config, container.items.get(i).getValue());
             }else if("htmleditor"==container.items.get(i).xtype) {
                 config[container.items.get(i).getName()] = container.items.get(i).getValue();
             }else if ("container"==container.items.get(i).xtype || "checkboxgroup"==container.items.get(i).xtype){
@@ -78,11 +78,11 @@ Ext.define("viewer.components.ConfigObject",{
         }
         //add the application id that needs to be send with the ajax
         requestParams.appId=applicationId;
-        
+
         if (checkedIds==undefined)
             checkedIds=[];
         //create the formpanel
-        var me=this;                
+        var me=this;
         this.checkPanel=Ext.create("Ext.form.FormPanel",{
             title: "Selecteer de kaartlagen waarop deze tool van toepassing is",
             id: "layerListContainer",
@@ -94,14 +94,14 @@ Ext.define("viewer.components.ConfigObject",{
             width: me.formWidth,
             height: me.checkPanelHeight,
             renderTo: this.parentId
-        });        
+        });
         this.checkBoxes=Ext.create("Ext.ux.b3p.FilterableCheckboxes",{
             requestUrl: me.requestPath,
             requestParams: requestParams,
             renderTo: "layerListContainer-body",
             checked: checkedIds,
             layerFilter: me.configObject.layerFilter
-        });   
+        });
     }
 });
 

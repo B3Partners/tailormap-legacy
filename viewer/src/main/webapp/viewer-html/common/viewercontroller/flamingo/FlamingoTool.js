@@ -1,11 +1,11 @@
-/** 
- * @class 
+/**
+ * @class
  * @constructor
- * @description The flamingo Tool Class 
+ * @description The flamingo Tool Class
  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     extend: "viewer.viewercontroller.controller.Tool",
-    enabledEvents: null,    
+    enabledEvents: null,
     config: {
         width: null,
         height: null,
@@ -18,7 +18,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         decimals: null,
         magicnumber: null,
         units: null
-    },       
+    },
     /** Create a new FlamingoTool
      *@construct
      *@param config.id id of this object
@@ -56,7 +56,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
      * Create a xml string for this object.
      * @return string of the xml.
      */
-    toXML: function (){        
+    toXML: function (){
         var xml="<fmc:";
         xml+=this.getTagName(this.getType());
         if (this.getId()!=null)
@@ -82,12 +82,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         if (this.getListenTo()!=null){
             xml+=" listento='"+this.getListenTo()+"'";
         }
-        xml+=">";    
+        xml+=">";
         if (this.getTooltip()!=null)
             xml+="<string id='tooltip' en='"+this.getTooltip()+"'/>";
         xml+="</fmc:"+this.getTagName(this.getType())+">"
         return xml;
-    },    
+    },
     getTagName: function (toolType){
         if (toolType == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
             return "ToolZoomin";
@@ -113,7 +113,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
             return null;
         }
     },
-    
+
     /**
      * @see viewer.viewercontroller.controller.Tool#activate
      */
@@ -140,6 +140,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
                 this.getFrameworkTool().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
                 this.enabledEvents[flamEvent]=true;
             }
-        }     
+        }
     }
 });

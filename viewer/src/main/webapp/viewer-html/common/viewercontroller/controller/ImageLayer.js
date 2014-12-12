@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 Ext.define("viewer.viewercontroller.controller.ImageLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
-    
+
     config:{
         extent:null
     },
@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.controller.ImageLayer",{
      */
     setExtent: function(extent){
         Ext.Error.raise({msg: "ImageLayer.setExtent() Not implemented! Must be implemented in sub-class"});
-        
+
     },
     /**
      * @see viewer.viewercontroller.controller.Layer#getLayerLegendInfo
@@ -39,6 +39,6 @@ Ext.define("viewer.viewercontroller.controller.ImageLayer",{
     getLayerLegendInfo: function (){
         return null;
     }
-    
+
 });
 

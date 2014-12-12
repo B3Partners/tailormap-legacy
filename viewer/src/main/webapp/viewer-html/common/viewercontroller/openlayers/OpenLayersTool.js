@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     controls:null,
     enabledEvents: null,
     constructor : function (conf,frameworkObject){
-        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);                       
+        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
         this.enabledEvents= new Object();
@@ -54,12 +54,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             if (this.iconUrl_sel!= null){
                 html += ".olControlPanel ."+this.frameworkObject.displayClass+"ItemActive";
                 html += "{ background-image: url(\""+this.iconUrl_sel+"\")}";
-            }           
-            Ext.util.CSS.createStyleSheet(html);            
+            }
+            Ext.util.CSS.createStyleSheet(html);
         }
 
-    },            
-    
+    },
+
     /**
      * @see viewer.viewercontroller.controller.Tool#setToolVisible
      */
@@ -73,7 +73,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             }
         }
     },
-    
+
     /**
      * @see viewer.viewercontroller.controller.Tool#isActive
      */
@@ -92,12 +92,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     deactivate: function(){
         this.getFrameworkTool().deactivate();
     },
-    
+
     /**
      * @see Ext.util.Observable#addListener
      * @param event the event
      * @param handler the handler
-     * @param scope the scope 
+     * @param scope the scope
      * Overwrite the addListener. Register event on the OpenLayers tool (only once)
      * If the event is thrown by the OpenLayers Tool, the given handlers are called.
      */
@@ -107,26 +107,26 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             if(!scope){
                 scope = this;
             }
-            /* Add event to OpenLayers Layer only once, to prevent multiple fired events.    
+            /* Add event to OpenLayers Layer only once, to prevent multiple fired events.
              * count the events for removing the listener again.
-             */            
+             */
             if(this.enabledEvents[olSpecificEvent]){
-                this.enabledEvents[olSpecificEvent]++;                
+                this.enabledEvents[olSpecificEvent]++;
             }else{
                 this.enabledEvents[olSpecificEvent] = 1;
                 this.frameworkObject.events.register(olSpecificEvent, this, this.handleEvent);
             }
-            
-        }        
+
+        }
         viewer.viewercontroller.openlayers.OpenLayersTool.superclass.addListener.call(this,event,handler,scope);
     },
     /**
      * @see Ext.util.Observable#removeListener
      * @param event the event
      * @param handler the handler
-     * @param scope the scope 
+     * @param scope the scope
      * Overwrite the removeListener. Unregister the event on the OpenLayers Control if there
-     * are no listeners anymore.     
+     * are no listeners anymore.
      */
     removeListener : function (event,handler,scope){
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
@@ -135,7 +135,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
                 scope = this;
             }
             /* Remove event from OpenLayers Layer if the number of events == 0
-             * If there are no listeners for the OpenLayers event, remove the listener.             
+             * If there are no listeners for the OpenLayers event, remove the listener.
              */
             if(this.enabledEvents[olSpecificEvent]){
                 this.enabledEvents[olSpecificEvent]--;
@@ -143,7 +143,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
                     this.enabledEvents[olSpecificEvent]=0;
                     this.frameworkObject.events.unregister(olSpecificEvent, this, this.handleEvent);
                 }
-            }            
+            }
         }
         viewer.viewercontroller.openlayers.OpenLayersTool.superclass.removeListener.call(this,event,handler,scope);
     },
@@ -158,5 +158,5 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
         }
         this.fire(eventName,{});
     }
-    
+
 });

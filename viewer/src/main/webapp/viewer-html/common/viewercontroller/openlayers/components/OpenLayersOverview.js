@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
-    extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
+    extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",
     config:{
         top:null,
         left:null,
@@ -36,31 +36,31 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         rby: null,
         followZoom:null
     },
-    
-    constructor: function (conf){        
+
+    constructor: function (conf){
         this.height = 300;
         this.width= 300;
         viewer.viewercontroller.openlayers.components.OpenLayersOverview.superclass.constructor.call(this, conf);
-        
+
         if (Ext.isEmpty(this.url)){
             throw new Error("No URL set for Overview component, unable to load component");
         }
         var maxBounds =this.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
         var bounds;
         if (this.getLox()!=null && this.getLoy()!=null && this.getRbx()!=null && this.getRby()!=null
-            && this.getLox()!=this.getRbx() && this.getLoy() != this.getRby()){            
+            && this.getLox()!=this.getRbx() && this.getLoy() != this.getRby()){
             bounds = new OpenLayers.Bounds(this.getLox(),this.getLoy(),this.getRbx(),this.getRby());
         }else{
             bounds= maxBounds;
         }
         var size=new OpenLayers.Size(""+this.width,""+this.height);
         var layer =  new OpenLayers.Layer.Image(
-            "OverviewLaag", 
+            "OverviewLaag",
             this.url,
             bounds,
             size
         );
-        
+
         this.frameworkObject = new OpenLayers.Control.OverviewMap({
             maximized: true,
             mapOptions: {
@@ -77,11 +77,11 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
 
         return this;
     },
-    
+
     getExtComponents: function() {
         return [];
     },
-    
+
     //setters for bounds, make sure it are numbers
     setLox: function (value){
         if (isNaN(value)){
@@ -127,7 +127,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         }else if (!Ext.isEmpty(value) && value > 0){
             this.width = Number(value);
         }
-        
+
     }
 });
 

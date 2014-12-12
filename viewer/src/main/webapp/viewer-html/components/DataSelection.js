@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ Ext.define ("viewer.components.DataSelection",{
         if(!Ext.isDefined(conf.maxFeatures)){
             conf.maxFeatures=250;
         }
-		
+
         this.attributes =[];
         viewer.components.DataSelection.superclass.constructor.call(this, conf);
         this.filters = new Array();
-        this.initConfig(conf); 
+        this.initConfig(conf);
         var me = this;
         this.renderButton({
             handler: function(){
@@ -81,7 +81,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.layerSelector.initLayers();
         this.popup.show();
     },
-    /** Add layer to layerSelector, even if it is not visible in the map. 
+    /** Add layer to layerSelector, even if it is not visible in the map.
      * @param layer the application Layer
      */
     showAndForceLayer : function (layer){
@@ -201,13 +201,13 @@ Ext.define ("viewer.components.DataSelection",{
         var dataSelectieAttributes = new Array();
         this.uniqueValuesAttributes = new Array();
         var minMaxAttrs = new Array();
-        
+
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.selectable){
                 var defaultVal = "";
                 if(attribute.defaultValue != undefined){
-                    defaultVal = attribute.defaultValue; 
+                    defaultVal = attribute.defaultValue;
                     if(defaultVal == "#MAX#" || defaultVal == "#MIN#"){
                         minMaxAttrs.push({
                             attribute : attribute,
@@ -248,7 +248,7 @@ Ext.define ("viewer.components.DataSelection",{
                         data : []
                     }
                 });
-                
+
                 this.uniqueValuesAttributes.push(attribute.name);
             }
         }
@@ -278,7 +278,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.filterTab.removeAll();
         // Reset filters to empty array
         this.filters = [];
-       
+
         this.filterTab.add({
             xtype: 'container',
             width: '95%',
@@ -311,17 +311,17 @@ Ext.define ("viewer.components.DataSelection",{
     getMinMax : function (operator, attribute,appLayer){
         var cb = Ext.getCmp(attribute.name);
         cb.setDisabled(true);
-        Ext.Ajax.request({ 
-            url: actionBeans.unique, 
+        Ext.Ajax.request({
+            url: actionBeans.unique,
             timeout: 240000,
             scope:this,
-            params: { 
+            params: {
                 attribute: attribute.name,
                 applicationLayer: appLayer.id,
                 getMinMaxValue: 't',
                 operator: operator
-            }, 
-            success: function ( result, request ) { 
+            },
+            success: function ( result, request ) {
                 var res = Ext.JSON.decode(result.responseText);
                 if(res.success){
                     var value = res.value;
@@ -329,15 +329,15 @@ Ext.define ("viewer.components.DataSelection",{
                 }else{
                     Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + res.msg);
                 }
-                
+
                 this.itemsLoaded--;
                 cb.setDisabled(false);
-            }, 
+            },
             failure: function ( result, request) {
                 Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + result.responseText);
                 cb.setDisabled(false);
                 this.itemsLoaded--;
-            } 
+            }
         });
     },
     getUniques : function (){
@@ -345,15 +345,15 @@ Ext.define ("viewer.components.DataSelection",{
         if(this.uniqueValuesAttributes.length > 0){
             this.itemsLoaded++;
             this.dataTab.setLoading("Laad unieke waardes...");
-            Ext.Ajax.request({ 
-                url: actionBeans.unique, 
+            Ext.Ajax.request({
+                url: actionBeans.unique,
                 timeout: 240000,
                 scope:this,
-                params: { 
+                params: {
                     attributes: this.uniqueValuesAttributes,
                     applicationLayer: appLayer.id
-                }, 
-                success: function ( result, request ) { 
+                },
+                success: function ( result, request ) {
                     var res = Ext.JSON.decode(result.responseText);
                     if(res.success){
                         var values = res.uniqueValues;
@@ -364,11 +364,11 @@ Ext.define ("viewer.components.DataSelection",{
                     }else{
                         Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
                     }
-                }, 
+                },
                 failure: function ( result, request) {
                     Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
                     this.itemsLoaded--;
-                } 
+                }
             });
         }
     },
@@ -378,7 +378,7 @@ Ext.define ("viewer.components.DataSelection",{
             this.addValuesToCombobox(unique, attribute);
         }
         this.dataTab.setLoading(false);
-        this.itemsLoaded--;        
+        this.itemsLoaded--;
     },
     addValuesToCombobox : function (values, attribute){
         var combobox = Ext.getCmp (attribute);
@@ -387,7 +387,7 @@ Ext.define ("viewer.components.DataSelection",{
             var SingleArray = Ext.define('SingleArray', {
                 extend: 'Ext.data.Model',
                 fields: [{
-                    name: 'id'  , 
+                    name: 'id'  ,
                     convert:function(v,row){
                         if(row.raw){
                             return row.raw;
@@ -404,7 +404,7 @@ Ext.define ("viewer.components.DataSelection",{
             combobox.getStore().add(rs.records);
         }
     },
-    
+
     /**
      *  Add a filter to the current filterlist.
      */
@@ -481,7 +481,7 @@ Ext.define ("viewer.components.DataSelection",{
     },
     applyFilter : function (){
         var cql = "";
-     
+
         cql += this.getDataTabCQL();
         var filterActive = Ext.getCmp(this.name + 'FilterActive');
         if(filterActive && filterActive.getValue()){
@@ -492,7 +492,7 @@ Ext.define ("viewer.components.DataSelection",{
                 var filter = this.filters[i];
                 cql += filter.getCQL();
             }
-        
+
         }
         if(cql != ""){
             cql = "(" + cql + ")";
@@ -508,7 +508,7 @@ Ext.define ("viewer.components.DataSelection",{
 
             this.viewerController.setFilter(filterWrapper,layer);
         }
-        
+
     //console.log("CQL: " + layer.filter.getCQL());
     },
     getDataTabCQL : function (){
@@ -524,7 +524,7 @@ Ext.define ("viewer.components.DataSelection",{
                 var attributeType = item.dataType;
                 if(attributeType && attributeType.toLowerCase() == "string"){
                     cql += "\'";
-                }  
+                }
                 cql += item.getValue();
                 if(attributeType && attributeType.toLowerCase() == "string"){
                     cql += "\'";
@@ -550,7 +550,7 @@ Ext.define ("viewer.components.DataSelection",{
      */
     layerChanged : function (item,prev){
         this.appLayer = item;
-        
+
         if(this.appLayer != null){
             this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
             var me = this;
@@ -561,9 +561,9 @@ Ext.define ("viewer.components.DataSelection",{
                 });
             } else {
                 this.changeAttributes(me.appLayer);
-            }    
+            }
         }
-        
+
         if(prev != undefined){
             if(this.appLayer){
                 var prevLayer = this.viewerController.getLayer(this.appLayer);

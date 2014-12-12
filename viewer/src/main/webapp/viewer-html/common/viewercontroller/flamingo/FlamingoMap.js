@@ -1,9 +1,9 @@
-/** 
- * Flamingomap 
- * @class 
+/**
+ * Flamingomap
+ * @class
  * @constructor
  * @description
- * 
+ *
  */
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
@@ -15,7 +15,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     /**
      * @constructor
      * @see viewer.viewercontroller.controller.Map#constructor
-     */    
+     */
     constructor: function(config){
         //reformat the options.
         if (config.options.startExtent){
@@ -27,7 +27,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             delete config.options.maxExtent;
         }
         config.options["bottom"] = "bottom -" + config.options["bottom"];
-        viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);        
+        viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
         this.frameworkMap = this.mapComponent.viewerObject;
         //if fire fox pass mouse event.
         if(Ext.isGecko){
@@ -35,13 +35,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             //works only for ff but as designed.
             this.frameworkMap.addEventListener('DOMMouseScroll', function(event){
                 //switch delta (negative to pos and pos to negative) for Flamingo-flash
-                var delta= 0-event.detail;                 
+                var delta= 0-event.detail;
                 me.frameworkMap.callMethod(me.id,'mouseWheelUsed',delta);
             },false);
         }
         return this;
     },
-    
+
     /**
      *See @link Map.getId
      */
@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         this.superclass.addLayer.call(this,layer);
         if (layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer){
             if (this.editMapId==null){
-                this.addEditMap();             
+                this.addEditMap();
             }
             layer.setGisId(this.gisId);
             this.addLayerToGis(layer);
@@ -117,14 +117,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             this.getFrameworkMap().callMethod(this.gisId,'removeLayer',layer.getId());
         }else{
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
-            
+
         }
         //call super function
         this.superclass.removeLayer.call(this,layer);
     },
-    
+
     addEditMap: function(){
-        this.editMapId='editMap';        
+        this.editMapId='editMap';
         //add gis
         this.getFrameworkMap().callMethod(
             this.getMapComponent().mainContainerId,
@@ -132,16 +132,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             "<fmc:GIS xmlns:fmc='fmc' id='"+this.gisId+"' geometryeditable='true' alwaysdrawpoints='false'></fmc:GIS>");
         //add editMap
         var positionAttributesMap=this.getPositionAttributes();
-        var editmapXml="<fmc:EditMap xmlns:fmc='fmc' id='"+this.editMapId+"' editable='true'";        
+        var editmapXml="<fmc:EditMap xmlns:fmc='fmc' id='"+this.editMapId+"' editable='true'";
         for (var key in positionAttributesMap){
             editmapXml+=" "+key+"='"+positionAttributesMap[key]+"'";
         }
         editmapXml+="listento='"+this.gisId+","+this.id+"'/>";
-        
+
         this.getFrameworkMap().callMethod(
             this.getMapComponent().mainContainerId,
             "addComponent",
-            editmapXml);                
+            editmapXml);
     },
     /**
      * Get layer with flamingo layer id (with mapid_ as prefix)
@@ -159,7 +159,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     /**
      *see @link Map.setLayerIndex
      */
-    setLayerIndex : function (layer, newIndex){        
+    setLayerIndex : function (layer, newIndex){
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),"swapLayer",this.getId()+'_'+layer.getId(),newIndex);
         }
@@ -196,7 +196,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     zoomToScale : function(resolution){
         this.zoomToResolution(resolution);
     },
-    
+
     /**
     * See @link viewer.viewercontroller.controller.Map#moveTo
     */
@@ -211,7 +211,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     setMaxExtent:function(extent){
         this.getFrameworkMap().callMethod(this.getId(), "setFullExtent", extent);
     },
-    /**     
+    /**
      *See @link Map.getFullExtent()
      */
     getMaxExtent:function(){
@@ -240,14 +240,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     update : function (){
         this.getFrameworkMap().callMethod(this.getId(),'update', 100, true);
     },
-    
+
     forceUpdate : function (){
         var me = this;
         if(!this.isUpdating()){
             this.update();
         }else{
             setTimeout( function () {me.forceUpdate();},100);
-        }    
+        }
     },
 
     /**
@@ -296,7 +296,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         }
         return null;
     },
-    
+
     /**
      * see @link Map.coordinateToPixel
      */
@@ -324,11 +324,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     getHeight : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "getMovieClipHeight");
     },
-    
+
     updateSize : function(){
         // Empty. Is not needed for flamingo, only for OpenLayers. updating the size to the size of the container is automatically done in flash.
     },
-    
+
     isUpdating : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "isUpdating");
     },
@@ -336,7 +336,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      * returns all the position attributes configured for this element.
      * @returns object with the set positionattributes (left,bottom,widht etc.)
      */
-    getPositionAttributes: function(){        
+    getPositionAttributes: function(){
         var attr={};
         for (var i= 0; i < this.posAttrNames.length; i++){
             var attrName=this.posAttrNames[i];
@@ -345,7 +345,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             }
         }
         return attr;
-        
+
     },
     toXML: function(){
         var xml="";
@@ -355,7 +355,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         for (var key in this.options){
             xml+=" "+key+"=\""+this.options[key]+"\"";
         }
-        xml+=">";        
+        xml+=">";
 		xml+="</fmc:Map>";
         return xml;
     },
@@ -375,13 +375,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             this.addExternalInterface(flamEvent);
         }
     },
-    
+
     addExternalInterface : function (flamEvent){
         if (flamEvent!=undefined){
             //if not enabled yet, enable
             if (this.enabledEvents[flamEvent]==undefined){
-                
-                this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);                
+
+                this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
                 //on remove layer also listen on Gis.
                 if (flamEvent == "onRemoveLayer" || flamEvent =="onAddLayer"){
                     this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.gisId+"."+flamEvent);

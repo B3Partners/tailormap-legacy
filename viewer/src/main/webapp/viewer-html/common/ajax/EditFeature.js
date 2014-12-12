@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,20 +20,20 @@ Ext.define("viewer.EditFeature", {
         actionBeanUrl: null,
         viewerController: null
     },
-    constructor: function(config) {        
-        this.initConfig(config);      
+    constructor: function(config) {
+        this.initConfig(config);
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["editfeature"];
-        }        
+        }
     },
     edit: function(appLayer, feature, successFunction, failureFunction) {
-        
+
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: {application: this.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
+
                 if(response.success) {
                     if(response.hasOwnProperty("__fid")) {
                         successFunction(response.__fid);
@@ -51,7 +51,7 @@ Ext.define("viewer.EditFeature", {
                     failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
-        });        
+        });
     },
     remove: function(appLayer, feature,successFunction, failureFunction){
         Ext.Ajax.request({
@@ -59,8 +59,8 @@ Ext.define("viewer.EditFeature", {
             params: {application: this.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature),"delete": "d"},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
-                if(response.success) {                    
+
+                if(response.success) {
                     successFunction();
                 } else {
                     if(failureFunction != undefined) {

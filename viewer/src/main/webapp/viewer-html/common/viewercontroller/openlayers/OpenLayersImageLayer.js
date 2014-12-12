@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
  * @description
  */
@@ -27,14 +27,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
     constructor : function (config){
         viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
-        
+
         this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
-        
+
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
-        
+
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
-        
+
         if (this.options==null){
             this.options={};
         }
@@ -48,7 +48,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         }
         //set the start visibility
         this.options.visibility = this.visible;
-        
+
         var me=this;
         this.frameworkLayer = new OpenLayers.Layer.Image(
              this.name,
@@ -57,7 +57,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
              new OpenLayers.Size(width,height),
              me.options
          );
-            
+
     },
     /**
      * @see viewer.viewercontroller.controller.ImageLayer#setExtent
@@ -68,13 +68,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
             this.frameworkLayer.extent=this.utils.createBounds(extent)
         }
     },
-    
+
     setUrl: function(newUrl){
         viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.setUrl.call(this,newUrl);
         if (this.frameworkLayer){
             this.frameworkLayer.setUrl(newUrl);
         }
-        
+
     },
     /**
      *@see viewer.viewercontroller.controller.Layer#getLastMapRequest
@@ -85,7 +85,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
             extent: this.extent
         }];
     },
-    /******** overwrite functions to make use of the mixin functions **********/    
+    /******** overwrite functions to make use of the mixin functions **********/
     /**
      *Get the type of the layer
      */
@@ -101,7 +101,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    getVisible: function(){        
+    getVisible: function(){
         return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**

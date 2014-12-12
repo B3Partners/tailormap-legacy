@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@ Ext.define("viewer.CombineImage", {
     config: {
         actionbeanUrl: null
     },
-    constructor: function(config) {        
-        this.initConfig(config);      
+    constructor: function(config) {
+        this.initConfig(config);
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["combineimage"];
-        }        
+        }
     },
     /**
      * submits the params to the image action and returns a url to the image.
@@ -33,12 +33,12 @@ Ext.define("viewer.CombineImage", {
      * @param succesFunction the function that is called when success
      * @param failureFunction the function that is called when failed
      */
-    getImageUrl: function(params, successFunction, failureFunction) {        
+    getImageUrl: function(params, successFunction, failureFunction) {
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {create: true, "params": params}, 
+            params: {create: true, "params": params},
             success: function(result) {
-                var response = Ext.JSON.decode(result.responseText);                
+                var response = Ext.JSON.decode(result.responseText);
                 if(response.success) {
                     successFunction(response.imageUrl);
                 } else {
@@ -53,7 +53,7 @@ Ext.define("viewer.CombineImage", {
                 }
             }
         });
-    }    
+    }
 });
 
 

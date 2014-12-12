@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     removeAllFeatures : function(){
         Ext.Error.raise({msg: "VectorLayer.removeAllFeatures() Not implemented! Must be implemented in sub-class"});
     },
-    removeFeature : function (feature){    
-        Ext.Error.raise({msg: "VectorLayer.removeFeature() Not implemented! Must be implemented in sub-class"});    
+    removeFeature : function (feature){
+        Ext.Error.raise({msg: "VectorLayer.removeFeature() Not implemented! Must be implemented in sub-class"});
     },
     getActiveFeature : function(){
         Ext.Error.raise({msg: "VectorLayer.getActiveFeature() Not implemented! Must be implemented in sub-class"});
@@ -71,7 +71,7 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         Ext.Error.raise({msg: "VectorLayer.addFeatures() Not implemented! Must be implemented in sub-class"});
     },
     drawFeature : function(type){
-        Ext.Error.raise({msg: "VectorLayer.drawFeature() Not implemented! Must be implemented in sub-class"});  
+        Ext.Error.raise({msg: "VectorLayer.drawFeature() Not implemented! Must be implemented in sub-class"});
     },
     stopDrawing : function(){
         Ext.Error.raise({msg: "VectorLayer.stopDrawing() Not implemented! Must be implemented in sub-class"});

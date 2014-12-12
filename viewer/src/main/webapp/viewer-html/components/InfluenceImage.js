@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ Ext.define ("viewer.components.InfluenceImage",{
      * Constructor for influenceImage
      * @constructor
      */
-    constructor: function (conf){               
+    constructor: function (conf){
         viewer.components.InfluenceImage.superclass.constructor.call(this, conf);
-        //this.initConfig(conf);  
+        //this.initConfig(conf);
         if (this.vectorLayer!=null){
             this.viewerController.mapComponent.getMap().removeLayer(this.vectorLayer);
             delete this.vectorLayer;
@@ -58,7 +58,7 @@ Ext.define ("viewer.components.InfluenceImage",{
      * @param radius the radius of th influence
      * @see viewer.components.Influence#showGeometry
      */
-    showInfluence: function(x,y,radius){  
+    showInfluence: function(x,y,radius){
         var geom=this.makeCircleAsPolygon(x,y,radius,32);
         var properties={};
         //make bbox around the point
@@ -66,7 +66,7 @@ Ext.define ("viewer.components.InfluenceImage",{
         var maxx=Number(x+radius);
         var miny=Number(y-radius)
         var maxy=Number(y+radius);
-        properties.bbox = minx+","+miny+","+maxx+","+maxy;        
+        properties.bbox = minx+","+miny+","+maxx+","+maxy;
         //image size
         properties.width = 800;
         properties.height = 800;
@@ -75,18 +75,18 @@ Ext.define ("viewer.components.InfluenceImage",{
         var me = this;
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),function(url){
             me.addImage(url,new viewer.viewercontroller.controller.Extent(properties.bbox));
-            },this.imageFailure);        
+            },this.imageFailure);
     },
     /**
      * Add the image as influence area.
      * @param imageUrl the image url
      * @param bbox the bbox for this image (as new viewer.viewercontroller.controller.Extent)
      */
-    addImage: function(imageUrl,bbox){                
+    addImage: function(imageUrl,bbox){
         if (this.imageLayer==null){
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + "ImageLayer", imageUrl, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
-        }else{            
+        }else{
             this.imageLayer.setUrl(imageUrl);
             this.imageLayer.setExtent(bbox);
             this.imageLayer.setVisible(true);
@@ -94,13 +94,13 @@ Ext.define ("viewer.components.InfluenceImage",{
         }
     },
     /**
-     * 
+     *
      */
     imageFailure: function(error){
         console.log(error);
     },
     /**
-     * 
+     *
      */
     removeFromMap: function(){
         if (this.imageLayer){

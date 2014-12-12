@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,20 +30,20 @@ Ext.define ("viewer.viewercontroller.controller.ToolMapClick",{
      *@constructor
      *@see viewer.viewercontroller.controller.Tool#constructor
      *Extra options:
-     *@param conf.name the name     
+     *@param conf.name the name
      *@param conf.handler the handling object. 2 values needed:
-     *@param conf.handler.fn the function that is called when clicked on the map with this tool. 
+     *@param conf.handler.fn the function that is called when clicked on the map with this tool.
      * The given function is called with 2 arguments:
      * tool: this tool
      * result: a result object with .coord object that has a .x and .y  as world coords.
      * Optional the result object can also have a x or y as screen pixels.
      *@param conf.handler.scope the scope of the function
-     */    
-    constructor: function (conf){              
+     */
+    constructor: function (conf){
         viewer.viewercontroller.controller.ToolMapClick.superclass.constructor.call(this, conf);
         return this;
     },
-   
+
     activateTool : function(){
         Ext.Error.raise({msg: "ToolMapClick.activateTool() Not implemented! Must be implemented in sub-class"});
     },

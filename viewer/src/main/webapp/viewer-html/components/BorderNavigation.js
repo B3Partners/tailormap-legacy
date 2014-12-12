@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 /**
  * BorderNavigation
- * Creates a Bordernavigation component in the framework 
+ * Creates a Bordernavigation component in the framework
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */

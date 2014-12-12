@@ -1,8 +1,8 @@
-/**  
+/**
  * Layer
- * @class 
+ * @class
  * @constructor
- * @description The superclass for all layers 
+ * @description The superclass for all layers
  * @param frameworkLayer The frameworkspecific layer
  * @param id The id of the layer
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -36,12 +36,12 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         frameworkLayer: null,
         details: null //if not a applayer, this can hold some details / settings
     },
-    
-    constructor: function (config){        
-        this.initConfig(config);        
+
+    constructor: function (config){
+        this.initConfig(config);
         this.callParent(arguments);
     },
-        
+
     /**
      *Gets a option of this layer
      *@return the option value or null if not exists
@@ -54,7 +54,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
             availableOptions+=op+",";
         }
         return null;
-    },    
+    },
     /**
      * Because 1 layer is created per applayer (not combined) every layer has the id:
      * serviceId_appLayerName
@@ -62,7 +62,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      */
     getAppLayerName: function(){
         return this.viewerController.app.appLayers[this.appLayerId].layerName;
-    },   
+    },
     /**
      *Add a maptip to the layer
      */
@@ -108,7 +108,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     setMap: function(map){
         this.map= map;
     },
-    
+
     /**
      * Gets the details for this layer, if this is a layer from the register and has
      * a applayerId, the configured applayer.details are returned. Otherwise the
@@ -156,7 +156,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
     },
     /**
-     * must be implemented in subclass. 
+     * must be implemented in subclass.
      * @see viewer.viewercontroller.ViewerController#getLayerLegendInfo
      * @return object with that gives info about the legend
      * object.name: String, server provided label for the legend of this layer

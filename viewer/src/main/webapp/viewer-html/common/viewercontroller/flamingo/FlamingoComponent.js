@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         decimals: null,
         //for navigation panel
         showZoomerButtons: null
-    },       
+    },
     /** Create a new FlamingoTool
      *@construct
      *@param config.id id of this object
@@ -85,7 +85,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setLeft("50");
             this.setWidth("200");
             if (this.getUnits()==null)
-                this.setUnits("m");                
+                this.setUnits("m");
         }else if(config.type==viewer.viewercontroller.controller.Component.COORDINATES){
             this.setTagName("Coordinates");
             this.setBottom("bottom");
@@ -114,9 +114,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             if (config.tooltip_slider!=undefined){
                 this.addString("tooltip_slider",config.tooltip_slider);
             }
-        }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){           
+        }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){
             this.setTagName("Maptip");
-        }else if (config.type == viewer.viewercontroller.controller.Component.LOADMONITOR){           
+        }else if (config.type == viewer.viewercontroller.controller.Component.LOADMONITOR){
             this.setTagName("MonitorMap");
             if (this.getWidth()==null){
                 this.setWidth("200");
@@ -124,11 +124,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             if (config.loadingText!=undefined){
                 this.addString("loading",config.loadingText);
                 this.addString("waiting",config.loadingText);
-            }           
+            }
         }else if(config.type == viewer.viewercontroller.controller.Component.OVERVIEW){
         } else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
-        }    
+        }
         return this;
     },
     /**
@@ -143,17 +143,17 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
      * Create a xml string for this object.
      * @return string of the xml.
      */
-    toXML: function (){        
+    toXML: function (){
         var xml="<fmc:";
         xml+=this.getTagName();
-        xml+="  xmlns:fmc='fmc' "+this.getParamsAsXml();        
+        xml+="  xmlns:fmc='fmc' "+this.getParamsAsXml();
         xml+=">";
         for (var key in this.strings){
             xml+="<string id='"+key+"' en='"+this.strings[key]+"'/>";
         }
         xml+="</fmc:"+this.getTagName()+">";
         return xml;
-    }, 
+    },
     getParamsAsXml: function(){
         var xml="";
         if (this.getId()!=null)
@@ -169,7 +169,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         if (this.getRight()!=null)
             xml+=" right='"+this.getRight()+"'";
         if (this.getBottom()!=null)
-            xml+=" bottom='"+this.getBottom()+"'";        
+            xml+=" bottom='"+this.getBottom()+"'";
         if (this.getListenTo()!=null)
             xml+=" listento='"+this.getListenTo()+"'";
         if (this.getUnits()!=null)
@@ -199,6 +199,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
     resize : function (){
         // Stub. Openlayers needs a resize on some framework specific components
     }
-    
+
 });
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ Ext.define ("viewer.components.DataSelectionChecker",{
     config:{
         viewerController:null
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         this.initConfig(conf);
-        
+
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
     },
     init : function (){
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);    
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerVisibilityChanged,this);    
+        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerVisibilityChanged,this);
     },
     layerVisibilityChanged : function (map,object){
         var layer = object.layer;
@@ -44,7 +44,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
             });
         }
     },
-    hasLayerDataSelectionAttributes : function(appLayer,callBack){       
+    hasLayerDataSelectionAttributes : function(appLayer,callBack){
         if(appLayer){
             var featureService = this.viewerController.getAppLayerFeatureService(appLayer);
             if(appLayer != null){

@@ -617,7 +617,7 @@ Ext.define('viewer.LayoutManager', {
         });
         me.afterLayout();
     },
-    
+
     afterLayout: function() {
         var me = this;
         Ext.Array.each(me.floatingPanels, function(panel) {

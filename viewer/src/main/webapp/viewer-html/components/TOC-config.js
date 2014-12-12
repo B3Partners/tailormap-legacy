@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 anchor: '100%'
             },
             width: me.formWidth,
-            items: [{ 
+            items: [{
                 xtype: 'textfield',
                 fieldLabel: 'Naam',
                 name: 'title',
@@ -84,7 +84,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 checked: config.showNodeIcon!==undefined? config.showNodeIcon:true,
                 value: true,
                 labelWidth:me.labelWidth
-            },{ 
+            },{
                 xtype: 'textfield',
                 fieldLabel: 'Zoom naar schaal tekst',
                 name: 'zoomToScaleText',
@@ -134,37 +134,37 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 ]
             },
-            { 
+            {
                 xtype: 'textfield',
                 fieldLabel: 'Tekst voor knop om alle layers aan te zetten',
                 name: 'toggleAllLayersOnText',
                 value: config.toggleAllLayersOnText? config.toggleAllLayersOnText:"All layers on",
                 labelWidth:me.labelWidth
-            },{ 
+            },{
                 xtype: 'textfield',
                 fieldLabel: 'Tekst voor knop om alle layers uit te zetten',
                 name: 'toggleAllLayersOffText',
                 value: config.toggleAllLayersOffText? config.toggleAllLayersOffText:"All layers off",
                 labelWidth:me.labelWidth
-            },{                           
+            },{
                 xtype: 'radiogroup',
                 vertical: true,
                 fieldLabel: 'Na het opstarten moet de eerste keer klikken er voor zorgen dat de kaartlagen',
                 name: "initToggleAllLayers",
                 labelWidth: me.labelWidth,
                 items: [{
-                    boxLabel: 'Aan gaan', 
-                    name: 'initToggleAllLayers', 
-                    inputValue: true, 
+                    boxLabel: 'Aan gaan',
+                    name: 'initToggleAllLayers',
+                    inputValue: true,
                     checked: me.configObject.initToggleAllLayers
                 },{
-                    boxLabel: 'Uit gaan', 
-                    name: 'initToggleAllLayers', 
-                    inputValue: false, 
+                    boxLabel: 'Uit gaan',
+                    name: 'initToggleAllLayers',
+                    inputValue: false,
                     checked: !me.configObject.initToggleAllLayers
                 }]
             }],
             renderTo: parentid
-        });      
+        });
     }
 });

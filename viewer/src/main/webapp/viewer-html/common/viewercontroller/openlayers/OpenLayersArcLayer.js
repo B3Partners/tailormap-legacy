@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
  * @description OpenLayers Arc layer super class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -60,7 +60,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     },
     getLayers : function(){
         return this.options["layers"];
-    }, 
+    },
     getLegendGraphic: function (){
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
         return null;
@@ -68,14 +68,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     setBuffer : function (radius,layer){
         console.log("OpenLayersArcLayer.setBuffer: .setBuffer() must be made!");
     },
-    removeBuffer: function(layer){        
+    removeBuffer: function(layer){
         console.log("OpenLayersArcLayer.removeBuffer: .removeBuffer() must be made!");
     },
     getType : function (){
         return this.mixins.openLayersLayer.getType.call(this);
     },
-    
-    /******** overwrite functions to make use of the mixin functions **********/    
+
+    /******** overwrite functions to make use of the mixin functions **********/
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */

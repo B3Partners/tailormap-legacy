@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ Ext.define ("viewer.components.AttributeList",{
         iconUrl:null,
         tooltip:null,
         label: ""
-    },    
+    },
     appLayer: null,
     featureService: null,
     layerSelector:null,
     topContainer: null,
-    constructor: function (conf){        
+    constructor: function (conf){
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
@@ -45,14 +45,14 @@ Ext.define ("viewer.components.AttributeList",{
         this.pagers={};
         this.renderButton({
             handler: function(){
-                me.showWindow();                
+                me.showWindow();
                 me.layerSelector.initLayers();
             },
             text: me.title,
             icon: me.iconUrl,
             tooltip: me.tooltip,
             label: me.label
-        }); 
+        });
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
         return this;
     },
@@ -60,7 +60,7 @@ Ext.define ("viewer.components.AttributeList",{
         //todo: gridpanels van subgrids toevoegen.
         var list= [
             this.name + 'Container',
-            this.name + 'LayerSelectorPanel',            
+            this.name + 'LayerSelectorPanel',
             this.name + 'ClosingPanel'
         ];
         for (var gridId in this.grids){
@@ -130,7 +130,7 @@ Ext.define ("viewer.components.AttributeList",{
                         name:"test",
                         valueField: 'type',
                         store:  Ext.create('Ext.data.Store', {
-                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }] 
+                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
                             })
                     },
                     {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
@@ -139,7 +139,7 @@ Ext.define ("viewer.components.AttributeList",{
                 ]
             }]
         });
-        this.downloadForm = Ext.create('Ext.form.Panel', {            
+        this.downloadForm = Ext.create('Ext.form.Panel', {
             renderTo: me.getContentDiv(),
             url: actionBeans["download"],
             border: 0,
@@ -174,7 +174,7 @@ Ext.define ("viewer.components.AttributeList",{
             div: this.name + 'LayerSelectorPanel'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
 
     },
     showWindow : function (){
@@ -197,9 +197,9 @@ Ext.define ("viewer.components.AttributeList",{
     },
     loadAttributes: function(appLayer) {
         this.clear();
-        
+
         this.appLayer = appLayer;
-        
+
         var me = this;
         var downloadButton = Ext.getCmp("downloadButton");
         var downloadType = Ext.getCmp("downloadType");
@@ -207,7 +207,7 @@ Ext.define ("viewer.components.AttributeList",{
             downloadButton.setDisabled(false);
             downloadType.setDisabled(false);
             this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
-            
+
             // check if featuretype was loaded
             if(this.appLayer.attributes == undefined) {
                 this.featureService.loadAttributes(me.appLayer, function(attributes) {
@@ -215,13 +215,13 @@ Ext.define ("viewer.components.AttributeList",{
                 });
             } else {
                 this.initGrid(me.appLayer);
-            }    
+            }
         }else{
             downloadButton.setDisabled(true);
             downloadType.setDisabled(true);
         }
     },
-    // Called when the layerSelector was changed. 
+    // Called when the layerSelector was changed.
     layerChanged : function (appLayer){
         this.loadAttributes(appLayer);
     },
@@ -251,7 +251,7 @@ Ext.define ("viewer.components.AttributeList",{
                     break;
                 }
             }
-        }                
+        }
         this.createGrid("main",document.getElementById(this.name + 'Container'), appLayer, null, filter,true,showExpand);
     },
     onExpandRow: function(rowNode,record,expandRow,recordIndex,eOpts){
@@ -275,15 +275,15 @@ Ext.define ("viewer.components.AttributeList",{
                 }
             },this)
         }
-        
+
     },
-    onCollapseBody: function (rowNode,record,expandRow,eOpts){        
+    onCollapseBody: function (rowNode,record,expandRow,eOpts){
     },
-            
+
     deleteGridWithId: function (gridId){
         if(this.grids[gridId]){
             this.grids[gridId].destroy();
-            delete this.grids[gridId];            
+            delete this.grids[gridId];
         }if (this.pagers[gridId]){
             this.pagers[gridId].destroy();
             delete this.pagers[gridId];
@@ -313,7 +313,7 @@ Ext.define ("viewer.components.AttributeList",{
                 id: name + 'GridPanel',
                 autoScroll: true,
                 width: '100%',
-                flex: 1, 
+                flex: 1,
                 renderTo: renderToEl.id
             });
             if(addPager){
@@ -335,9 +335,9 @@ Ext.define ("viewer.components.AttributeList",{
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.visible){
-                
+
                 var attIndex = index++;
-                
+
                 var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
                 attributeList.push({
                     name: "c" + attIndex,
@@ -367,7 +367,7 @@ Ext.define ("viewer.components.AttributeList",{
         if (featureTypeId){
             featureType="&featureType="+featureTypeId;
         }
-        
+
         var store = Ext.create('Ext.data.Store', {
             storeId: name+"Store",
             pageSize: 10,
@@ -386,7 +386,7 @@ Ext.define ("viewer.components.AttributeList",{
                 simpleSortMode: true,
                 listeners: {
                     exception: function(store, response, op) {
-                        
+
                         msg = response.responseText;
                         if(response.status == 200) {
                             try {
@@ -397,7 +397,7 @@ Ext.define ("viewer.components.AttributeList",{
                             } catch(e) {
                             }
                         }
-                        
+
                         if(msg == null) {
                             if(response.timedout) {
                                 msg = "Request timed out";
@@ -409,9 +409,9 @@ Ext.define ("viewer.components.AttributeList",{
                         }
 
                         Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
-                            
+
                         Ext.MessageBox.alert("Foutmelding", msg);
-                        
+
                     }
                 }
             },
@@ -423,7 +423,7 @@ Ext.define ("viewer.components.AttributeList",{
                 ptype: 'rowexpander',
                 rowBodyTpl: [
                     ""
-                ]           
+                ]
             });
         }
         var g = Ext.create('Ext.grid.Panel',  {
@@ -431,7 +431,7 @@ Ext.define ("viewer.components.AttributeList",{
             store: store,
             columns: columns,
             plugins: plugins,
-            viewConfig:{        
+            viewConfig:{
                 trackOver: false,
                 listeners: {
                     expandbody : {
@@ -474,7 +474,7 @@ Ext.define ("viewer.components.AttributeList",{
         Ext.getCmp('application').setValue(appId);
         Ext.getCmp('filter').setValue(filter);
         Ext.getCmp('type').setValue(Ext.getCmp("downloadType").getValue());
-        this.downloadForm.submit({            
+        this.downloadForm.submit({
             target: '_blank'
         });
     }

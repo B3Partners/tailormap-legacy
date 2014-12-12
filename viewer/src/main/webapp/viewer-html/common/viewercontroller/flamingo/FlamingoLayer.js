@@ -1,13 +1,13 @@
 /** The FlamingLayer Class **/
 
-/**  
+/**
  * @constructor
  * @augments Layer
- * @description The superclass for all flamingolayers 
+ * @description The superclass for all flamingolayers
  * @param id The id of the layer
  * @param options The options to be given to the layer
  * @param flamingoObject The flamingo object of the layer
- * 
+ *
  */
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         }
         return this.map.getFrameworkMap();
     },
-    
+
     toXML : function(){
         Ext.Error.raise({msg: "FlamingoLayer.toXML(): .toXML() must be made!"});
     },
@@ -106,13 +106,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         }
         //viewer.viewercontroller.controller.Layer.superclass.addListener.call(this,event,handler,scope);
     },
-    setVisible : function (visible){  
+    setVisible : function (visible){
         this.visible = visible;
-        
+
         if (this.options!=null){
             this.options["visible"] = visible;
         }
-              
+
         if (this.map !=null){
             this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
         }
@@ -131,7 +131,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     /**
      * Overwrite destroy, clear Listeners and forward to super.destroy
      */
-    destroy: function(){        
+    destroy: function(){
         /* fix for infinite loop:
          * If this is called from a layer that extends the FlamingoArcLayer the superclass is
          * that FlamingoArcLayer and this function is called again when this.superclass.function is called
@@ -142,5 +142,5 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
             this.superclass.destroy.call(this);
         }
     }
-    
+
 });

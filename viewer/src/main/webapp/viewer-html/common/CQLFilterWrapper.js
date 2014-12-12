@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
  */
 
 /**
- * A 
- * 
+ * A
+ *
  */
 
 Ext.define( "viewer.components.CQLFilterWrapper",{
@@ -77,7 +77,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     },
     getInternalCQL : function (){
         var returnValue = "";
-            
+
         if(this.cql != ""){
             returnValue = " " + this.operator + " " + this.cql;
         }

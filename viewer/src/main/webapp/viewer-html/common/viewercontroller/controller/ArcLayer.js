@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,35 +20,35 @@
  */
 Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
-    
+
     /** Cache of http://<arcgis-server>/.../MapServer/legend JSON data keyed by
      * the server URL and then by layer name
-     * 
-     * The object for a server also contains info whether a Ajax call is in 
-     * progress to prevent duplicate Ajax calls  
+     *
+     * The object for a server also contains info whether a Ajax call is in
+     * progress to prevent duplicate Ajax calls
      */
-    /* static */ legendInfoCache: {}, 
-    
+    /* static */ legendInfoCache: {},
+
     constructor: function(config){
         viewer.viewercontroller.controller.ArcLayer.superclass.constructor.call(this,config);
     },
-    
-    /** 
-     * Get info as specified by ViewerController.getLayerLegendInfo() 
+
+    /**
+     * Get info as specified by ViewerController.getLayerLegendInfo()
      * Exceptions to be catched by the caller.
      */
     getLayerLegendInfo: function(success, failure) {
-    
+
         if(this.getType() == viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE
         || this.getType() == viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE) {
-            
+
             this.getLayerLegendInfoArcGIS(
                 function(agsLegend) {
-                    
-                    // convert from ArcGIS JSON format 
-                    // to format specified by ViewerController.getLayerLegendInfo() 
-                    
-                    var legend = { 
+
+                    // convert from ArcGIS JSON format
+                    // to format specified by ViewerController.getLayerLegendInfo()
+
+                    var legend = {
                         name: agsLegend.layerName,
                         parts: []
                     };
@@ -60,12 +60,12 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                         };
                         legend.parts.push(part);
                     }
-                    
+
                     success(legend);
                 },
                 failure
             );
-            
+
         } else {
             /* ArcXML legends not yet supported, needs server side support for a
              * cross-domain POST
@@ -75,22 +75,22 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             failure();
         }
     },
-    
+
     /* Gets the JSON accessible at http://<server-url>/MapServer/legend for this
      * layer.
-     * 
-     * Uses a cache and transforms the server JSON to avoid looping all layers 
+     *
+     * Uses a cache and transforms the server JSON to avoid looping all layers
      * to find the JSON so it can be looked up by a simple index by layer name.
      */
     getLayerLegendInfoArcGIS: function(success, failure) {
         var me = this;
-        
+
         var errorMsg = "appLayer " + this.getAppLayerId() + ": legend for ArcGIS not available: ";
-        
+
         var appLayerId = this.getAppLayerId();
         var appLayer = this.getViewerController().getAppLayerById(appLayerId);
         var service = this.getViewerController().app.services[appLayer.serviceId];
-        
+
         /* Check the ArcGIS server version: only since version 10 are legends
          * supported
          */
@@ -103,21 +103,21 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
         if(service.arcGISVersion.major < 10) {
             this.getViewerController().logger.warn(errorMsg + "needs at least ArcGIS Server version 10 but version is " + service.arcGISVersion.s);
             failure();
-            return;            
+            return;
         }
-        
+
         var serviceCache = this.legendInfoCache[service.url];
-        
+
         if(serviceCache && serviceCache.failedPreviously) {
-            // Don't try fetching from service everytime, a previous attempt 
+            // Don't try fetching from service everytime, a previous attempt
             // failed and logged an error
             failure();
-            return;            
+            return;
         }
-        
+
         var onServiceCached = function(theServiceCache) {
             var layerLegend = theServiceCache[appLayer.layerName];
-            
+
             if(!layerLegend) {
                 // XXX temp disable
                 //me.getViewerController().logger.warn(errorMsg + "server did not return legend info for layer with id " + appLayer.layerName);
@@ -126,17 +126,17 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                 success(layerLegend);
             }
         };
-            
+
         if(serviceCache && !serviceCache.inProgress) {
             //console.log("using cached legend data for app layer id " + appLayerId);
-            
+
             onServiceCached(serviceCache);
         } else if(serviceCache && serviceCache.inProgress) {
             // An Ajax call is already in progress for this server, join the
             // request
-            
+
             //console.log("joining legend data Ajax call for app layer id " + appLayerId);
-            
+
             serviceCache.joiners.push({
                 success: onServiceCached,
                 failure: failure
@@ -146,12 +146,12 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             //
             // First time requesting legend data from server, requires an Ajax
             // JSONP call
-            serviceCache = { 
-                inProgress: true, 
+            serviceCache = {
+                inProgress: true,
                 joiners: []
             };
             this.legendInfoCache[service.url] = serviceCache;
-            
+
             Ext.data.JsonP.request({
                 url: service.url + "/legend",
                 params: {
@@ -164,14 +164,14 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     // as indexed by layer id
                     for(var i in json.layers) {
                         var layer = json.layers[i];
-                        
+
                         serviceCache[layer.layerId] = layer;
                     }
                     serviceCache.inProgress = false;
-                    
+
                    //console.log("legend data received, calling success function");
                     onServiceCached(serviceCache);
-                    
+
                     for(var i in serviceCache.joiners) {
                         var joiner = serviceCache.joiners[i];
                         //console.log("legend data received, calling joined success function");
@@ -185,7 +185,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
 
                     me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS: " + msg);
                     failure();
-                    
+
                     for(var i in serviceCache.joiners) {
                         //console.log("legend data Ajax failure, calling joined failure function");
                         var joiner = serviceCache.joiners[i];
@@ -194,7 +194,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     delete serviceCache.joiners;
                 }
             });
-        } 
+        }
     },
 
     /* Abstract functions below: */
@@ -231,7 +231,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     },
     passMaptips: function(){
         Ext.Error.raise({msg: "ArcLayer.passMaptips() Not implemented! Must be implemented in sub-class"});
-    },    
+    },
     setVisible : function (visible){
         Ext.Error.raise({msg: "ArcLayer.setVisible() Not implemented! Must be implemented in sub-class"});
     },
@@ -241,7 +241,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     setBuffer : function (radius,layer){
         Ext.Error.raise({msg: "ArcLayer.setBuffer() Not implemented! Must be implemented in sub-class"});
     },
-    removeBuffer: function(layer){        
+    removeBuffer: function(layer){
         Ext.Error.raise({msg: "ArcLayer.removeBuffer() Not implemented! Must be implemented in sub-class"});
     }
 });

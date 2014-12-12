@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         multiGeometries:null,
         label: ""
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         if(conf.details.width === undefined){
             conf.details.width = 330;
         }
@@ -46,12 +46,12 @@ Ext.define ("viewer.components.SpatialFilter",{
         if(conf.applyDirect === undefined){
             conf.applyDirect = true;
         }
-        
+
         if(conf.multiGeometries === undefined){
             conf.multiGeometries = true;
         }
         viewer.components.SpatialFilter.superclass.constructor.call(this, conf);
-        this.initConfig(conf);     
+        this.initConfig(conf);
         var me = this;
         this.features = new Array();
         this.renderButton({
@@ -69,11 +69,11 @@ Ext.define ("viewer.components.SpatialFilter",{
             'circle': Ext.id(),
             'box': Ext.id(),
             'freehand': Ext.id()
-            
+
         };
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
-     
-        this.loadWindow(); 
+
+        this.loadWindow();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
@@ -86,7 +86,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.popup.popupWin.setTitle(this.title);
         this.popup.show();
     },
-    
+
     drawGeometry: function(type){
         var appendFilter = Ext.getCmp (this.name + 'AppendFilter');
         if(!appendFilter.getValue()){
@@ -114,15 +114,15 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.setFilter(multi, appLayer);
     },
     setFilter: function(geometry, appLayer){
-        var me = this;          
-        if(appLayer.attributes === undefined || appLayer.attributes === null) {   
+        var me = this;
+        if(appLayer.attributes === undefined || appLayer.attributes === null) {
             this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
                 me.setFilter(geometry, appLayer);
             },function(e){
                 Ext.MessageBox.alert("Error", e);
             });
         }else{
-            var geomAttr = appLayer.geometryAttribute; 
+            var geomAttr = appLayer.geometryAttribute;
             if (geomAttr !== undefined){
                 var filter = "";
                 if(geometry.length > 0){
@@ -135,9 +135,9 @@ Ext.define ("viewer.components.SpatialFilter",{
                         operator : "AND",
                         type: "GEOMETRY"
                     }),appLayer);
-            }            
+            }
         }
-       
+
     },
     buffer : function(){
         Ext.getCmp(this.name + "BufferContainer").setLoading("Buffer berekenen...");
@@ -147,7 +147,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             return;
         }
         var requestParams = {
-            features: features, 
+            features: features,
             buffer : distance
         };
         Ext.Ajax.request({
@@ -181,7 +181,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
         });
     },
-    
+
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     layerChanged : function (appLayer,afterLoadAttributes,scope){
         var buttons = Ext.getCmp(this.name +"filterButtons");
@@ -193,7 +193,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             this.cancel();
         }
     },
-      
+
     featureAdded : function (obj, feature){
         var applyDirect = Ext.getCmp (this.name + 'ApplyDirect');
         this.features.push(feature.wktgeom);
@@ -210,7 +210,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
     },
     // </editor-fold>
-     
+
     // <editor-fold desc="Initialization methods" defaultstate="collapsed">
     loadWindow : function (){
         var me =this;
@@ -418,7 +418,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             div: this.name + 'LayerSelectorPanel'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
     },
     createVectorLayer : function (){
          this.vectorLayer = this.viewerController.mapComponent.createVectorLayer({
@@ -434,12 +434,12 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        
+
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.featureAdded,this);
     },
-    
+
     //</editor-fold>
-   
+
     // Some helper functions here
     toggleAll : function(state){
         for ( var key in this.drawingButtonIds){
@@ -448,7 +448,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             button.toggle(state);
         }
     },
-    
+
     resetForm : function () {
         var appLayer = this.layerSelector.getSelectedAppLayer();
         if(!appLayer) {

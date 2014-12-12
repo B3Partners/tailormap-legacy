@@ -26,11 +26,11 @@ Ext.define ("viewer.components.Twitter",{
             listeners: {
                 click: function(button) {
                     this.doSearch(this.search);
-                }, 
+                },
                 scope: this
             }
         });*/
-            
+
         this.panel =  Ext.create("Ext.panel.Panel",{
             /*title: 'Tweets',*/
             width: "100%",
@@ -39,8 +39,8 @@ Ext.define ("viewer.components.Twitter",{
             layout: 'anchor',
             renderTo: this.div
         });
-        
-        
+
+
         var me = this;
         setTimeout(function(){
             me.doSearch(me.search);
@@ -72,12 +72,12 @@ Ext.define ("viewer.components.Twitter",{
         }, me.interval);
     },
     processTweet : function (tweet){
-        var tweetPanel = Ext.create("Ext.container.Container",{      
+        var tweetPanel = Ext.create("Ext.container.Container",{
             style: { "margin": "5px"},
             layout: {
                 type: "fit"
             },
-            items:[ 
+            items:[
                 {
                     xtype: 'container',
                     layout: {type: "hbox"},
@@ -106,14 +106,14 @@ Ext.define ("viewer.components.Twitter",{
                     items:
                     [
                     {
-                        xtype: 'label',                           
+                        xtype: 'label',
                         text: tweet.text
                     }]
                 }
             ],
             border: 0
         });
-        
+
         tweetPanel.doLayout();
         if(this.first){
             this.panel.add(tweetPanel);
@@ -122,6 +122,6 @@ Ext.define ("viewer.components.Twitter",{
         }
     },
     error : function (errors){
-            
+
     }
 });

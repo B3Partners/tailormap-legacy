@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             configObject = {};
         }
         configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.form.add([{
             xtype: "label",
             text: "Zoekingang",
@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: (this.configObject != null && this.configObject.searchName != undefined) ? this.configObject.searchName : '',
             labelWidth:this.labelWidth
         },
-        { 
+        {
             xtype: 'textfield',
             fieldLabel: 'URL',
             name: 'searchUrl',
@@ -47,11 +47,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth:this.labelWidth
         }]
         );
-        
+
         this.createCheckBoxes(this.configObject.layers,{
             "influence" :true
         });
-        
+
     }
 });
 

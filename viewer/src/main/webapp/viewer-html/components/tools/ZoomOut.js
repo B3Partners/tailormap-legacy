@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 
 /**
  * ZoomOut component
- * Creates a MapComponent Tool with the given configuration by calling createTool 
+ * Creates a MapComponent Tool with the given configuration by calling createTool
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
@@ -26,7 +26,7 @@ Ext.define ("viewer.components.tools.ZoomOut",{
     config:{
         name: "zoomOut"
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.tools.ZoomOut.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         if( conf.zoomBox === undefined || conf.zoomBox === null || conf.zoomBox === false){

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
     extend: "viewer.viewercontroller.flamingo.FlamingoComponent",
     showButton : null,
     config: {
-        // For overview        
+        // For overview
         position:null,
         url:null,
         lox:null,
@@ -50,7 +50,7 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
         xml += "extent='"+ this.viewerController.mapComponent.getMap().getExtent().toString()+"' fullextent='"+ this.viewerController.mapComponent.getMap().getMaxExtent().toString()+ "'";
         xml += "listento='"+this.viewerController.mapComponent.getMap().getId() +"'>";
         xml +="<fmc:LayerOverview xmlns:fmc='fmc' id='LayerOverview"+ this.name + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "' color='#76B6D1'";
-        
+
         if(this.followZoom !== undefined && this.followZoom !== null && this.followZoom ===false){
             xml += " followfactor='10000'/>";
         }else{
@@ -82,7 +82,7 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
             position += "'";
         }
         var container;
-    
+
         // Make showbutton
         var conf = {};
         conf.toggle = true;
@@ -115,6 +115,6 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
         return [];
     },
     showOverview : function (open){
-        this.viewerController.mapComponent.viewerObject.callMethod( this.name + 'windowcontainer','setVisible',open);  
+        this.viewerController.mapComponent.viewerObject.callMethod( this.name + 'windowcontainer','setVisible',open);
     }
 });

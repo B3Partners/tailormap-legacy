@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             {
                 xtype: 'label',
                 text: 'Toon de links',
-                style: { 
+                style: {
                     fontWeight: 'bold'
                 }
             },{

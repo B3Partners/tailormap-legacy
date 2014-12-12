@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 /**
  * ZoomIn component
- * Creates a MapComponent Tool with the given configuration by calling createTool 
+ * Creates a MapComponent Tool with the given configuration by calling createTool
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
@@ -25,10 +25,10 @@ Ext.define ("viewer.components.tools.ZoomIn",{
     config:{
         name: "zoomIn"
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.tools.ZoomIn.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.ZOOMIN_BOX;        
+        conf.type = viewer.viewercontroller.controller.Tool.ZOOMIN_BOX;
         this.initTool(conf);
         return this;
     }

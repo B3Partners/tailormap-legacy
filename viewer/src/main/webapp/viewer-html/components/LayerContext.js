@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,13 +39,13 @@ Ext.define ("viewer.components.LayerContext",{
         viewer.components.LayerContext.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED,this.layerClicked,this);
-        
+
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
-        
+
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
             this.selectedContentChanged();
         },this);
-        
+
         return this;
     },
     layerClicked: function(layerObj) {
@@ -118,7 +118,7 @@ Ext.define ("viewer.components.LayerContext",{
                 html: layerObj.appLayer.details.context
             });
         }
-        
+
         if(typeof layerObj.info !== 'undefined'){
              this.htmlContainer.add({
                 xtype: 'container',
@@ -126,7 +126,7 @@ Ext.define ("viewer.components.LayerContext",{
                 html: layerObj.info
             });
         }
-        
+
         if(typeof layerObj.url !== 'undefined' && (typeof layerObj.info === 'undefined' || layerObj.info === '<br>' ) ){
              window.open(layerObj.url,'name','height='+this.config.details.height + ',width=' + this.config.details.width + ',location=no,status=no,toolbar=no,menubar=no');
         }else{
@@ -141,8 +141,8 @@ Ext.define ("viewer.components.LayerContext",{
             var tocs= this.viewerController.getComponentsByClassName("viewer.components.TOC");
             this.viewerController.traverseSelectedContent(function(){},function(layer){
                 var serviceLayer=me.viewerController.getServiceLayer(layer);
-                if( (   serviceLayer.details && 
-                        (serviceLayer.details ["metadata.stylesheet"] || serviceLayer.details ["download.url"])) ||  
+                if( (   serviceLayer.details &&
+                        (serviceLayer.details ["metadata.stylesheet"] || serviceLayer.details ["download.url"])) ||
                     (   typeof layer.details !== 'undefined' &&
                         typeof layer.details.context !== 'undefined'
                     )

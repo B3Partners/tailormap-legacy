@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,16 +26,16 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
         navigationPanel : true
     },
     navComp: null,
-    constructor: function (conf){   
+    constructor: function (conf){
         //copy the configuration before it's changed.
         var confNav ={};
         Ext.apply(confNav,conf);
-        
+
         viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, conf);
-        this.initConfig(conf); 
+        this.initConfig(conf);
         conf.type = viewer.viewercontroller.controller.Tool.DEFAULT;
         this.initTool(conf);
-        if (this.getNavigationPanel()){  
+        if (this.getNavigationPanel()){
             confNav.name += "_navPan",
             this.navComp=Ext.create("viewer.components.NavigationPanel",confNav);
         }

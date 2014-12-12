@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){        
+    constructor: function (parentId,configObject){
         if (configObject === null){
             configObject = {};
         }

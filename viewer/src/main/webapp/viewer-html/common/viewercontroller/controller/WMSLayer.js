@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
     constructor : function (config){
         viewer.viewercontroller.controller.WMSLayer.superclass.constructor.call(this, config);
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
-        this.url = config.options.url;  
+        this.url = config.options.url;
     },
-    
-    /** 
-     * Get info as specified by ViewerController.getLayerLegendInfo()  
+
+    /**
+     * Get info as specified by ViewerController.getLayerLegendInfo()
      * @see viewer.viewercontroller.controller.Layer#getLayerLegendInfo
      */
     getLayerLegendInfo: function(success, failure) {
@@ -42,22 +42,22 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
             parts: [
                 {
                     //label: no label? only one per layer for WMS.
-                    url: this.getLegendGraphic() 
+                    url: this.getLegendGraphic()
                 }
             ]
-            
+
         });
     },
-    
+
     getLegendGraphic : function () {
-        
+
         var query = {
             "REQUEST": "GetLegendGraphic",
             "LAYER": this.getAppLayerName(),
             "VERSION": "1.1.1",
             "FORMAT": "image/png"
         };
-        
+
         if(this.getOption("sld")) {
             query["SLD"] = this.getOption("SLD");
         }
@@ -70,7 +70,7 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
         if(this.config.extraLegendParameters) {
             Ext.Object.merge(query, this.config.extraLegendParameters);
         }
-        
+
         url = Ext.urlAppend(this.url, Ext.Object.toQueryString(query));
 
         return url;

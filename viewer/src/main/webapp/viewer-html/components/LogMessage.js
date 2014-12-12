@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  * Logger component.
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.LogMessage",{    
+Ext.define ("viewer.components.LogMessage",{
     statics:{
         ERROR: "error",
         WARNING: "warning",
@@ -34,12 +34,12 @@ Ext.define ("viewer.components.LogMessage",{
     /**
      * @constructor for logger
      */
-    constructor: function (conf){        
-        this.initConfig(conf);        
+    constructor: function (conf){
+        this.initConfig(conf);
         this.date = new Date();
     },
     toHtmlElement: function(){
-        var el=new Ext.Element(document.createElement("div"));        
+        var el=new Ext.Element(document.createElement("div"));
         el.addCls('logger_'+this.getType());
         el.insertHtml("beforeEnd",this.date.toString()+": <br/>"+this.getMessage());
         return el;

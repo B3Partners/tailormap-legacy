@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ Ext.define ("viewer.components.ExtentFilter",{
     layers:null,
     config:{
     },
-    constructor: function (conf){ 
+    constructor: function (conf){
         this.initConfig(conf);
         this.layers = [];
         this.initializeLayers();
@@ -38,7 +38,7 @@ Ext.define ("viewer.components.ExtentFilter",{
         for(var i = 0 ; i < this.layers.length ;i++){
             this.setFilter(polygon, this.layers[i]);
         }
-        var a = 0; 
+        var a = 0;
     },
     initializeLayers : function(){
         this.layers = [];

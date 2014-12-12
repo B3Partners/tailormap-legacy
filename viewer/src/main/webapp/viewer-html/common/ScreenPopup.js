@@ -59,7 +59,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.x = parseInt(this.details.x) + wrapper.getX();
             config.y = parseInt(this.details.y) + wrapper.getY();
         }
-        
+
         if(MobileManager.isMobile()) {
             config.modal = true;
             config.width = '90%';
@@ -68,7 +68,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.resizable = false;
             this.currentOrientation = MobileManager.getOrientation();
         }
-		
+
         if(this.details.items){
             config.items = this.details.items;
             config.bodyStyle= { background: '#fff'};
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             con.style.width=  "100%";
             config.contentEl = con;
         }
-        
+
         // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
         if(conf && (conf.hasOwnProperty('showHelpButton') && (conf.showHelpButton === "true" || conf.showHelpButton===true))) {
             config.tools = [{
@@ -89,7 +89,7 @@ Ext.define ("viewer.components.ScreenPopup",{
                 }
             }];
         }
-        
+
         this.popupWin = Ext.create('Ext.window.Window', config);
         if(this.showOnStartup){
             this.popupWin.show();

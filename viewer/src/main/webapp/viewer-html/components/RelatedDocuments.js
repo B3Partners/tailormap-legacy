@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  * StreetView component
  * Creates a Related document window that can be opened bij clicking a button.
  * It generates a list of Documents and tries to get the file extension from the url
- * With the file extention it tries to get the file icon_[fileextension].png in the 
+ * With the file extention it tries to get the file icon_[fileextension].png in the
  * resources/images/relatedDocuments/ folder.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
@@ -35,14 +35,14 @@ Ext.define ("viewer.components.RelatedDocuments",{
         tooltip : "",
         label: ""
     },
-    constructor: function (conf){   
-        conf.isPopup=true;        
-        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);        
+    constructor: function (conf){
+        conf.isPopup=true;
+        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        
+
         this.documentImg = new Object();
         this.iconPath=contextPath+"/viewer-html/components/resources/images/relatedDocuments/"
-        
+
         this.popup.hide();
         var me = this;
         this.renderButton({
@@ -53,7 +53,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
             icon: me.titlebarIcon,
             tooltip: me.tooltip,
             label: me.label
-        });        
+        });
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.reinit,this);
         return this;
     },
@@ -135,7 +135,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
             }else if(contentItem.type == "appLayer"){
                 var parentLevel = this.viewerController.getAppLayerParent(contentItem.id);
                 if(parentLevel != null){
-                    parentDocuments=this.viewerController.getDocumentsInLevel(parentLevel);    
+                    parentDocuments=this.viewerController.getDocumentsInLevel(parentLevel);
                 }
             }
             Ext.apply(documents,parentDocuments);
@@ -147,7 +147,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
      * @param documents the document objects
      * @return Ext.Element with html in it that represents the documents.
      */
-    createHtml: function(documents){        
+    createHtml: function(documents){
         var html="";
         this.documentImg={};
         html+="<div class='documents_documents'>";
@@ -165,7 +165,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
         html+="</div>"
         var element=new Ext.Element(document.createElement("div"));
         element.insertHtml("beforeEnd",html);
-        
+
         return element;
     },
     /**
@@ -181,11 +181,11 @@ Ext.define ("viewer.components.RelatedDocuments",{
      * @param imgId the id of the img element
      * @param path the path of the document.
      */
-    loadImage: function (imgId,path){       
-        var defaultSrc=this.iconPath+"icon_default.png";        
+    loadImage: function (imgId,path){
+        var defaultSrc=this.iconPath+"icon_default.png";
         var extension=path.substring(path.lastIndexOf(".")+1);
         //check if the extension has a length > 2 and < 4
-        if (extension.length <= 4 && extension.length>=2){            
+        if (extension.length <= 4 && extension.length>=2){
             var image = new Image();
             //var extension=path.substring(lio);
             image.onload=function(){
@@ -204,5 +204,5 @@ Ext.define ("viewer.components.RelatedDocuments",{
         if(this.contentId !== '') c.push(this.name + 'Container');
         return c;
     }
-    
+
 });

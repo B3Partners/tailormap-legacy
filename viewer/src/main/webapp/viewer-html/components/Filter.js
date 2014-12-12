@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ Ext.define ("viewer.components.Filter",{
     extend: "viewer.components.Component",
     attributeCombobox: null,
     attributeStore:null,
-    attributeFilters : null,    
+    attributeFilters : null,
     id: null,
     container : null,
 	leftWidth: 150,
@@ -40,7 +40,7 @@ Ext.define ("viewer.components.Filter",{
 	parentMainContainer:null,
         showList:true,
         parentComponent: null
-        
+
     },
     constructor: function(config){
         this.initConfig(config);
@@ -71,7 +71,7 @@ Ext.define ("viewer.components.Filter",{
         });
         this.attributeFilters.push(attribuutFilter);
         var attributeFilterUI = attribuutFilter.getUI();
-        attributeFilterUI.add({ 
+        attributeFilterUI.add({
 			xtype: 'button',
 			text : '+',
 			width: 20,
@@ -135,17 +135,17 @@ Ext.define ("viewer.components.Filter",{
         var appLayer = this.parentComponent.layerSelector.getValue();
         if(attributeName){
             this.parentMainContainer.setLoading("Laad unieke waardes...");
-            Ext.Ajax.request({ 
-                url: actionBeans.unique, 
+            Ext.Ajax.request({
+                url: actionBeans.unique,
                 timeout: 240000,
                 scope:this,
-                params: { 
+                params: {
                     attributes: [attributeName],
                     applicationLayer: appLayer.id,
                     maxFeatures:this.maxFeatures,
                     featureType: ft
-                }, 
-                success: function ( result, request ) { 
+                },
+                success: function ( result, request ) {
                     var res = Ext.JSON.decode(result.responseText);
                     if(res.success){
                         var values = res.uniqueValues;
@@ -154,43 +154,43 @@ Ext.define ("viewer.components.Filter",{
                         }
                         this.handleUniqueValues(values);
                     }else{
-                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);   
+                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
                         this.parentMainContainer.setLoading(false);
                     }
-                }, 
+                },
                 failure: function ( result, request) {
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);   
+                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
                     this.parentMainContainer.setLoading(false);
-                } 
+                }
             });
         }
     },
     /**
      * Handle the response of the Uniguevalues request.
      */
-    handleUniqueValues : function (values){   
-        values =  this.transformUniqueValuesToStore(values);    
+    handleUniqueValues : function (values){
+        values =  this.transformUniqueValuesToStore(values);
         this.uniqueList=values;
-        this.setUniqueListOnAttributeFilters(values);        
+        this.setUniqueListOnAttributeFilters(values);
         this.parentMainContainer.setLoading(false);
     },
     /**
-     * 
+     *
      */
     setUniqueListOnAttributeFilters: function(values){
         for (var i=0; i < this.attributeFilters.length; i++){
             this.attributeFilters[i].setUniqueList(values);
         }
     },
-     
+
     /**
-     * Transform the uniquelist response of a object with arrays of strings 
+     * Transform the uniquelist response of a object with arrays of strings
      * that points to the string. So it will work for Ext Stores (and comboboxes)
      * @param valueArray A array of values
      */
-    transformUniqueValuesToStore : function(values){        
+    transformUniqueValuesToStore : function(values){
         var newValues=[];
-        for (var attribute in values){            
+        for (var attribute in values){
             for (var i =0; i < values[attribute].length; i++){
                 newValues.push({value: values[attribute][i]});
             }
@@ -218,7 +218,7 @@ Ext.define ("viewer.components.Filter",{
             number: this.attributeFilters.length + 1
         });
         var attributeFilterUI = attributeFilter.getUI();
-        attributeFilterUI.add({ 
+        attributeFilterUI.add({
             xtype: 'button',
 			text : '-',
 			width: 20,
@@ -268,7 +268,7 @@ Ext.define ("viewer.components.Filter",{
             cql += af.getCQL();
         }
         cql+= ")";
-       
+
         return cql;
     },
     getAttributeType : function (name){

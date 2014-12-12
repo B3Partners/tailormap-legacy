@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  * Logger component.
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.Logger",{    
+Ext.define ("viewer.components.Logger",{
     config:{
         title: "Logger",
         logLevel: 0
@@ -31,15 +31,15 @@ Ext.define ("viewer.components.Logger",{
     },
     popup: null,
     messageDiv:null,
-    messages: null, 
+    messages: null,
     iconDiv: null,
     iconSize: 16,
-    constructor: function (conf){        
+    constructor: function (conf){
         this.initConfig(conf);
-        this.messages = new Array();  
+        this.messages = new Array();
         var me = this;
         Ext.EventManager.onWindowResize(function(){
-            me.onResize();            
+            me.onResize();
         }, this);
     },
     error: function(message){
@@ -69,18 +69,18 @@ Ext.define ("viewer.components.Logger",{
         if(this.logLevel <= viewer.components.Logger.LEVEL_DEBUG){
             this.message(message, viewer.components.LogMessage.DEBUG);
         }
-    }, 
-    /**     
+    },
+    /**
      * @param message the message
      * @param type a message type (error,warning,info)
      */
-    message: function(message,type){  
+    message: function(message,type){
         var newMessage=Ext.create("viewer.components.LogMessage",{message: message,type:type})
-        this.messages.push(newMessage);        
+        this.messages.push(newMessage);
         //if popup is created, add the html element for this message.
-        if (this.popup!=null){            
-            this.messageDiv.appendChild(newMessage.toHtmlElement());           
-        }    
+        if (this.popup!=null){
+            this.messageDiv.appendChild(newMessage.toHtmlElement());
+        }
         if(type != viewer.components.LogMessage.DEBUG) {
             this.setIconVisible(true);
         }
@@ -88,10 +88,10 @@ Ext.define ("viewer.components.Logger",{
     show: function(){
         //if popup is null, create new one.
         if (this.popup ==null){
-            this.popup = Ext.create("viewer.components.ScreenPopup",this.config);            
-            var cDiv=Ext.get(this.popup.getContentId());            
+            this.popup = Ext.create("viewer.components.ScreenPopup",this.config);
+            var cDiv=Ext.get(this.popup.getContentId());
             Ext.create('Ext.container.Container',{
-                renderTo: this.popup.getContentId(),                
+                renderTo: this.popup.getContentId(),
                 width: '100%',
                 items:{
                     xtype: 'button',
@@ -107,17 +107,17 @@ Ext.define ("viewer.components.Logger",{
                                 this.clear()
                             }
                         }
-                    }              
+                    }
                 }
-            }); 
-            
+            });
+
             this.messageDiv=new Ext.Element(document.createElement("div"));
             this.messageDiv.addCls("logger_messages");
             cDiv.appendChild(this.messageDiv);
-            
+
             for (var i=0; i < this.messages.length; i++){
                 this.messageDiv.appendChild(this.messages[i].toHtmlElement());
-            }            
+            }
         }
         this.popup.show();
     },
@@ -130,7 +130,7 @@ Ext.define ("viewer.components.Logger",{
      * Set icon visible
      * @param vis boolean, true or false
      */
-    setIconVisible: function(vis){           
+    setIconVisible: function(vis){
         if (vis && this.iconDiv==null){
             this.iconDiv=new Ext.Element(document.createElement("div"));
             this.iconDiv.addCls("logger_icon");
@@ -144,13 +144,13 @@ Ext.define ("viewer.components.Logger",{
                 this.show();
                 this.setIconVisible(false);
             },this);
-            
-            Ext.getBody().appendChild(this.iconDiv);            
+
+            Ext.getBody().appendChild(this.iconDiv);
         }
         if(this.iconDiv!=null){
             this.iconDiv.setVisible(vis);
         }
-    }, 
+    },
     onResize: function(){
         if (this.iconDiv!=null){
             this.iconDiv.applyStyles({

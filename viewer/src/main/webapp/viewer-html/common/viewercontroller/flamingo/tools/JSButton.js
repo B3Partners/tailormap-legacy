@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ Ext.define ("viewer.components.tools.JSButton",{
         selected:false,
         tooltip:null
     },
-    constructor: function (conf){              
+    constructor: function (conf){
         viewer.components.tools.JSButton.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.id = this.name;
@@ -46,7 +46,7 @@ Ext.define ("viewer.components.tools.JSButton",{
      * Create a xml string for this object.
      * @return string of the xml.
      */
-    toXML: function (){        
+    toXML: function (){
         var xml="<fmc:";
         xml+=this.getTagName();
         xml += " xmlns:fmc='fmc'"
@@ -63,7 +63,7 @@ Ext.define ("viewer.components.tools.JSButton",{
         if (this.getRight()!=null)
             xml+=" right='"+this.getRight()+"'";
         if (this.getBottom()!=null)
-            xml+=" bottom='"+this.getBottom()+"'";        
+            xml+=" bottom='"+this.getBottom()+"'";
         if (this.getListenTo()!=null){
             xml+=" listento='"+this.getListenTo()+"'";
         }
@@ -80,7 +80,7 @@ Ext.define ("viewer.components.tools.JSButton",{
         }
         xml += " selected='"+this.selected+"'";
         xml += " toggle='"+this.toggle+"'";
-        xml+=">";    
+        xml+=">";
         if (this.getTooltip()!=null)
             xml+="<string id='tooltip' en='"+this.getTooltip()+"'/>";
         xml+="</fmc:"+this.getTagName(this.getType())+">"
@@ -89,7 +89,7 @@ Ext.define ("viewer.components.tools.JSButton",{
     getTagName: function (){
         return "JsButton";
     },
-    
+
     /**
      * @see viewer.viewercontroller.controller.Tool#activate
      */

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
  * @description
  */
 //TODO: Add getFeatureInfo through the framework (is used when no featuretype for layer)
-Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{        
+Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
     config:{
         name: null
     },
@@ -28,7 +28,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
     events : null,
     type:null,
     alpha:100,
-    constructor :function (config){        
+    constructor :function (config){
         this.initConfig(config);
         this.enabledEvents = new Object();
         this.events = new Object();
@@ -59,14 +59,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         object[optionKey]= optionValue;
         this.getFrameworkLayer().setOptions(object);
     },
-       
+
     setAlpha : function (alpha){
         this.alpha=alpha;
         if(this.frameworkLayer) {
             this.frameworkLayer.setOpacity(alpha/100);
         }
     },
-    
+
     getAlpha : function (){
         return this.alpha;
     },
@@ -87,12 +87,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
     },
     */
-    
+
     /**
      * @see Ext.util.Observable#addListener
      * @param event the event
      * @param handler the handler
-     * @param scope the scope 
+     * @param scope the scope
      * Overwrite the addListener. Register event on the OpenLayers Layer (only once)
      * If the event is thrown by the OpenLayers Layer, the given handlers are called.
      */
@@ -102,27 +102,27 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
             if(!scope){
                 scope = this;
             }
-            /* Add event to OpenLayers Layer only once, to prevent multiple fired events.    
+            /* Add event to OpenLayers Layer only once, to prevent multiple fired events.
              * count the events for removing the listener again.
              */
             if(!olSpecificEvent == "featureadded"){
                 if(this.enabledEvents[olSpecificEvent]){
-                    this.enabledEvents[olSpecificEvent]++;                
+                    this.enabledEvents[olSpecificEvent]++;
                 }else{
                     this.enabledEvents[olSpecificEvent] = 1;
                     this.frameworkLayer.events.register(olSpecificEvent, this, this.handleEvent);
                 }
             }
-        }        
+        }
         viewer.viewercontroller.controller.Layer.superclass.addListener.call(this,event,handler,scope);
     },
     /**
      * @see Ext.util.Observable#removeListener
      * @param event the event
      * @param handler the handler
-     * @param scope the scope 
+     * @param scope the scope
      * Overwrite the removeListener. Unregister the event on the OpenLayers Layer if there
-     * are no listeners anymore.     
+     * are no listeners anymore.
      */
     removeListener : function (event,handler,scope){
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
@@ -131,7 +131,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                 scope = this;
             }
             /* Remove event from OpenLayers Layer if the number of events == 0
-             * If there are no listeners for the OpenLayers event, remove the listener.             
+             * If there are no listeners for the OpenLayers event, remove the listener.
              */
             if(this.enabledEvents[olSpecificEvent]){
                 this.enabledEvents[olSpecificEvent]--;
@@ -139,7 +139,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                     this.enabledEvents[olSpecificEvent]=0;
                     this.frameworkLayer.events.unregister(olSpecificEvent, this, this.handleEvent);
                 }
-            }            
+            }
         }
         viewer.viewercontroller.controller.Layer.superclass.removeListener.call(this,event,handler,scope);
     },
@@ -161,7 +161,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
             eventName = event;
         }
         this.fireEvent(eventName,options);
-    },    
+    },
 
     /**
      * Sets the visibility of the layer
@@ -191,7 +191,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         }
         /* fix for infinite loop:
          * If this is called from a layer that extends the OpenLayersArcLayer the superclass is
-         * that OpenLayersArcLayer and this function is called again when 
+         * that OpenLayersArcLayer and this function is called again when
          * this.superclass.function is called
          **/
         if (this.superclass.$className == "viewer.viewercontroller.openlayers.OpenLayersArcLayer"){
@@ -199,5 +199,5 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         }else{
             this.superclass.destroy.call(this);
         }
-    }    
+    }
 });

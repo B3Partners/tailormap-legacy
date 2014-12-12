@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.Influence",{
-    extend: "viewer.components.Search",  
+    extend: "viewer.components.Search",
     panel: null,
     config: {
         layers: null
@@ -36,7 +36,7 @@ Ext.define ("viewer.components.Influence",{
      * Constructor for influence
      * @constructor
      */
-    constructor: function (conf){     
+    constructor: function (conf){
         if(conf.searchUrl && conf.searchUrl!=""){
             conf.searchconfigs=[{
                 id: 1,
@@ -49,10 +49,10 @@ Ext.define ("viewer.components.Influence",{
         conf.formHeight = MobileManager.isMobile() ? 160 : 150;
         viewer.components.Influence.superclass.constructor.call(this, conf);
         var me = this;
-        
+
         this.removeButton=this.form.getChildByElement(this.name+"_remove")
         this.removeButton.setVisible(false);
-        
+
         this.toolMapClick = this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
@@ -69,15 +69,15 @@ Ext.define ("viewer.components.Influence",{
                 }
             }
             return true;
-        });        
-        
+        });
+
         var config = {
             viewerController : this.viewerController,
             restriction : "influence",
             layers: this.layers,
             div: this.name + 'LayerSelectorPanel'
         };
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);        
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         return this;
     },
     /**
@@ -88,7 +88,7 @@ Ext.define ("viewer.components.Influence",{
         var itemList=viewer.components.Influence.superclass.getFormItems.call(this);
         //the items that must be placed before the search items.
         var formItemsBefore = new Array();
-       
+
         formItemsBefore.push({
             id: this.name + 'LayerSelectorPanel',
             xtype: "container",
@@ -101,7 +101,7 @@ Ext.define ("viewer.components.Influence",{
             itemList.push({
                 xtype: 'label',
                 margin: this.margin,
-                text: 'of'            
+                text: 'of'
             });
         }
         itemList.push({
@@ -114,9 +114,9 @@ Ext.define ("viewer.components.Influence",{
                     scope: this,
                     fn: this.locationOnMap
                 }
-            }            
+            }
         });
-        
+
         itemList.push({
             xtype: 'button',
             text: 'Verwijder invloedsgebied',
@@ -130,7 +130,7 @@ Ext.define ("viewer.components.Influence",{
             },
             id: this.name+"_remove"
         });
-        
+
         return itemList;
     },
     /**
@@ -142,7 +142,7 @@ Ext.define ("viewer.components.Influence",{
         this.popup.hide();
         if(this.results != null){
             this.results.destroy();
-        }         
+        }
     },
     /**
      * Remove the influence filter and the map geom
@@ -155,7 +155,7 @@ Ext.define ("viewer.components.Influence",{
         if (this.getSelectedAppLayer()){
             this.viewerController.removeFilter("filter_"+this.getName(),this.getSelectedAppLayer());
         }
-    },    
+    },
     /**
      * Remove the influence from the map
      */
@@ -169,8 +169,8 @@ Ext.define ("viewer.components.Influence",{
      * @param toolMapClick the tool that is used for clicking
      * @param comp options.
      */
-    mapClicked : function (toolMapClick,comp){                
-        this.toolMapClick.deactivateTool();        
+    mapClicked : function (toolMapClick,comp){
+        this.toolMapClick.deactivateTool();
         var me = this;
         // Only allow feature info after some time because it is raised directly
         // after this method for the same click
@@ -181,7 +181,7 @@ Ext.define ("viewer.components.Influence",{
         this.popup.show();
         var coords = comp.coord;
         var x = coords.x;
-        var y = coords.y;        
+        var y = coords.y;
         this.handleSearchResult({
             x: x,
             y: y
@@ -205,31 +205,31 @@ Ext.define ("viewer.components.Influence",{
                 maxx: loc.x+zoomInRadius,
                 miny: loc.y-zoomInRadius,
                 maxy: loc.y+zoomInRadius
-            };            
+            };
             this.showInfluence(loc.x,loc.y,radius);
             this.setFilter(extent);
             this.removeButton.setVisible(true);
         }else{
             Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
-        }        
+        }
     },
     /**
      * Create the filter and add it to the selected AppLayer.
      * If no geometryattribute available for layer, don't add the filter.
-     * 
+     *
      */
     setFilter: function(extent){
-        var appLayer=this.getSelectedAppLayer(); 
-        var me = this;          
-        if(appLayer.attributes == undefined) {   
+        var appLayer=this.getSelectedAppLayer();
+        var me = this;
+        if(appLayer.attributes == undefined) {
             this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
-                me.setFilter();                
+                me.setFilter();
             },function(e){
                 Ext.MessageBox.alert("Error", e);
             });
         }else{
             var radius = this.getRadius();
-            var geomAttr= appLayer.geometryAttribute; 
+            var geomAttr= appLayer.geometryAttribute;
             if (geomAttr!=undefined){
                 var filter="DWITHIN(\""+geomAttr+"\", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
                 this.viewerController.setFilter(
@@ -239,7 +239,7 @@ Ext.define ("viewer.components.Influence",{
                         operator : "AND",
                         type: "GEOMETRY"
                     }),appLayer);
-            }            
+            }
         }
         if (extent){
             setTimeout(function (){
@@ -251,13 +251,13 @@ Ext.define ("viewer.components.Influence",{
      * Get the selected appLayer
      */
     getSelectedAppLayer: function(){
-        return this.layerSelector.getSelectedAppLayer();       
+        return this.layerSelector.getSelectedAppLayer();
     },
     /**
      * Get the radius.
      */
     getRadius: function(){
-        var appLayer = this.getSelectedAppLayer();      
+        var appLayer = this.getSelectedAppLayer();
         if (appLayer!=null && appLayer.details!=undefined && appLayer.details.influenceradius!=undefined){
             return Number(appLayer.details.influenceradius);
         }
@@ -282,7 +282,7 @@ Ext.define ("viewer.components.Influence",{
         }
         //close the ring
         coordinates.push(coordinates[0]);
-        
+
         var wkt="POLYGON((";
         for (var i=0; i < coordinates.length; i++){
             if (i!=0){
@@ -299,7 +299,7 @@ Ext.define ("viewer.components.Influence",{
      * @param y the y coordinate of the point
      * @param radius the radius of th influence
      */
-    showInfluence: function(x,y,radius){   
+    showInfluence: function(x,y,radius){
         var geom=this.makeCircleAsPolygon(x,y,radius,32);
         this.vectorLayer.removeAllFeatures();
         var feat = Ext.create("viewer.viewercontroller.controller.Feature",{

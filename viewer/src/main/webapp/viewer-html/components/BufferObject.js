@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ Ext.define ("viewer.components.BufferObject",{
         title:null,
         iconUrl:null,
         label: ""
-    },    
-    constructor: function (conf){        
+    },
+    constructor: function (conf){
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        
+
         this.tmc =this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name,
@@ -67,7 +67,7 @@ Ext.define ("viewer.components.BufferObject",{
     },
     buttonClick : function (){
         this.layerSelector.initLayers();
-        if(this.vectorLayer == null){        
+        if(this.vectorLayer == null){
             this.createVectorLayer();
         }
         this.popup.show();
@@ -88,7 +88,7 @@ Ext.define ("viewer.components.BufferObject",{
           this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     loadWindow : function(){
-        
+
         var config = {
             viewerController : this.viewerController,
             div: this.getContentDiv(),
@@ -97,13 +97,13 @@ Ext.define ("viewer.components.BufferObject",{
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
-        
+
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             fieldLabel: "Straal",
             renderTo: this.getContentDiv()
         });
-        
+
         this.button1 = Ext.create("Ext.button.Button",{
             name: "selectObject" ,
             text: "Selecteer object op de kaart",
@@ -116,7 +116,7 @@ Ext.define ("viewer.components.BufferObject",{
                 }
             }
         });
-        
+
         this.button2 = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             text: "Huidige buffer verwijderen",
@@ -144,7 +144,7 @@ Ext.define ("viewer.components.BufferObject",{
     },
     addWktToMapcomponent : function (wkt){
         this.tmc.activateTool();
-        
+
     },
     removeBuffer : function (){
         this.vectorLayer.removeAllFeatures();

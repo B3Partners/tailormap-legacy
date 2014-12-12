@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ Ext.define ("viewer.components.HTML",{
         title: "",
         loadScripts: false
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.HTML.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.loadHtml();
@@ -43,7 +43,7 @@ Ext.define ("viewer.components.HTML",{
             renderTo: this.div,
             autoScroll: true
         });
-        
+
         this.container.update(this.html, this.loadScripts);
     },
     getExtComponents: function() {

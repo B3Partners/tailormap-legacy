@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,14 +29,14 @@ Ext.override(Ext.form.field.Picker, {
 });
 if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
     Ext.override(Ext.form.field.ComboBox, {
-        editable: false 
+        editable: false
     });
     Ext.override(Ext.form.field.Trigger, {
-        editable: false 
+        editable: false
     });
 }
 
-Ext.override(Ext.form.field.HtmlEditor, 
+Ext.override(Ext.form.field.HtmlEditor,
     // Fix upside down question mark appearing
     // http://www.sencha.com/forum/showthread.php?79190-Mysterious-postdata-from-htmleditor
     { defaultValue: "" }

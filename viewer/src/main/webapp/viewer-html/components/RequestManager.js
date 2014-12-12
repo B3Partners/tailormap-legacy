@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ Ext.define ("viewer.components.RequestManager",{
                 me.responseReceived(data[0].requestId);
                 callback(data);
             }, this.onFailure,me);
-            
+
             if(request){
                 this.previousRequests[id].requests.push(request);
                 this.viewerController.mapComponent.setCursor(true, "wait");
@@ -52,14 +52,14 @@ Ext.define ("viewer.components.RequestManager",{
             }
         }
     },
-    
+
     responseReceived: function (id){
         this.previousRequests[id].done++;
         if(this.previousRequests[id].done === this.previousRequests[id].total){
             this.viewerController.mapComponent.setCursor(false);
         }
     },
-    
+
     cancelPrevious : function(currentId){
         for( var id in this.previousRequests){
             if(id !== currentId){

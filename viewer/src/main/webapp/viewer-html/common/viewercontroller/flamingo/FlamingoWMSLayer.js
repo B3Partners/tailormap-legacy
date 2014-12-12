@@ -1,11 +1,11 @@
 /**
- * @class 
+ * @class
  * @constructor
- * @description Flamingo WMS layer class 
+ * @description Flamingo WMS layer class
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
-    extend: "viewer.viewercontroller.controller.WMSLayer", 
+    extend: "viewer.viewercontroller.controller.WMSLayer",
     mixins: {
         flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
     },
@@ -17,7 +17,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
     getTagName : function(){
         return "LayerOGWMS";
-    },    
+    },
     /**
      *makes a xml string so the object can be added to flamingo
      *@return a xml string of this object
@@ -27,14 +27,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.getId()+"\"";
-        
-        // the values for these attributes are used in a URL but Flamingo does 
+
+        // the values for these attributes are used in a URL but Flamingo does
         // not apply URI encoding
         // use lowercase attribute names
-        var needsURIEncoding = { 
-            'sld': true 
+        var needsURIEncoding = {
+            'sld': true
         };
-        
+
         for (var optKey in this.options){
             var value = this.options[optKey];
             if(needsURIEncoding[optKey.toLowerCase()]) {
@@ -53,15 +53,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
             if (maptip.aka!=null){
                 xml+=" aka=\""+maptip.aka+"\"";
             }
-            xml+="/>"    
+            xml+="/>"
         }
         xml+="</fmc:"+this.getTagName()+">";
         //console.log(xml);
         return xml;
     },
-    
+
     setMaptips: function(maptips){
-        viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.setMaptips.call(this,maptips);        
+        viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.setMaptips.call(this,maptips);
         this.passMaptips();
     },
     passMaptips: function(){
@@ -77,8 +77,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
                     filterable = Ext.JSON.decode(filterable);
                     if(filterable){
                         var url = Ext.create(viewer.SLD).createURL(
-                            this.options["layers"], 
-                            this.getOption("styles") || "default", 
+                            this.options["layers"],
+                            this.getOption("styles") || "default",
                             [filter.getCQL()],
                             layer.hasFeatureType ? layer.featureTypeName : null,
                             this.config.sld ? this.config.sld.id : null
@@ -100,10 +100,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
 
     getLayers : function(){
-        return this.getFrameworkLayer().options.layers;   
+        return this.getFrameworkLayer().options.layers;
     },
     /**
-     *Implement for: 
+     *Implement for:
      * @see viewer.viewercontroller.controller.Layer#setUrl
      */
     setUrl: function (url){
@@ -136,7 +136,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
     },
-    
+
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#reload
      */
@@ -148,7 +148,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
      */
     addListener : function(event,handler,scope){
         this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
-    },    
+    },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#destroy
      */

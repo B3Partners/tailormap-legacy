@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ Ext.define ("viewer.components.LayerSelector",{
         viewerController: new Object(),
         restriction : null,
         layers:null
-    }, 
-    constructor: function (conf){        
-        this.initConfig(conf);   
+    },
+    constructor: function (conf){
+        this.initConfig(conf);
         this.forcedLayers = new Array();
         var layers = Ext.create('Ext.data.Store', {
             fields: ['id', 'title','layer'],
@@ -64,12 +64,12 @@ Ext.define ("viewer.components.LayerSelector",{
             var me = this;
         if(this.layers != null && this.layers.length > 0){
             requestParams["layers"]= this.layers;
-            requestParams["hasConfiguredLayers"]= true;    
+            requestParams["hasConfiguredLayers"]= true;
         }
-        
-        Ext.Ajax.request({ 
-            url: requestPath, 
-            params: requestParams, 
+
+        Ext.Ajax.request({
+            url: requestPath,
+            params: requestParams,
             success: function ( result, request ) {
                 me.layerList = Ext.JSON.decode(result.responseText);
                 me.initLayers();
@@ -116,8 +116,8 @@ Ext.define ("viewer.components.LayerSelector",{
             for (var i = 0 ; i < this.layerList.length ;i++){
                 var l = this.layerList[i];
                 for ( var j = 0 ; j < visibleLayers.length ;j++){
-                    //var appLayer = this.viewerController.getAppLayerById(visibleLayers[j]);                    
-                    if (visibleLayers[j] == l.id || visibleLayers[j] == (""+l.id)){                
+                    //var appLayer = this.viewerController.getAppLayerById(visibleLayers[j]);
+                    if (visibleLayers[j] == l.id || visibleLayers[j] == (""+l.id)){
                         store.add({
                             id: l.id,
                             title: l.alias || l.layerName,
@@ -145,7 +145,7 @@ Ext.define ("viewer.components.LayerSelector",{
             al = this.viewerController.getAppLayerById(appLayer.id);
         }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,al,previousSelected,this);
-        
+
     },
     /**
      * Retrieve the AppLayer that is selected.

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,11 +43,11 @@ Ext.define ("viewer.components.Search",{
         label: "",
         //not yet configurable:
         showRemovePin: true
-    },    
-    constructor: function (conf){            
+    },
+    constructor: function (conf){
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.renderButton(); 
+        this.renderButton();
         var notUrlConfigs = new Array();
         this.onlyUrlConfig = new Array();
         for(var i = 0 ; i < this.searchconfigs.length ;i++){
@@ -58,8 +58,8 @@ Ext.define ("viewer.components.Search",{
                 notUrlConfigs.push(config);
             }
         }
-        this.searchconfigs = notUrlConfigs; 
-        this.currentSeachId = this.searchconfigs.length > 0 ? this.searchconfigs[0].id : null; 
+        this.searchconfigs = notUrlConfigs;
+        this.currentSeachId = this.searchconfigs.length > 0 ? this.searchconfigs[0].id : null;
         this.dynamicSearchEntries = new Array();
         this.loadWindow();
         return this;
@@ -83,7 +83,7 @@ Ext.define ("viewer.components.Search",{
             height: this.formHeight || this.defaultFormHeight,
             items: this.getFormItems(),
             border: 0,
-            style: { 
+            style: {
                 padding: '5px 10px 0px 10px'
             }
         });
@@ -171,7 +171,7 @@ Ext.define ("viewer.components.Search",{
                 var extraParams = {};
                 if(this.searchconfigs.length === 1 && this.searchconfigs[0].type === "solr" ){
                     queryMode = "remote";
-                    
+
                     extraParams["searchName"]=this.searchconfigs[0].id;
                     extraParams["appId"]=appId;
                     extraParams["componentName"]=this.name;
@@ -190,7 +190,7 @@ Ext.define ("viewer.components.Search",{
                     }
                 });
                 var me = this;
-                this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
+                this.searchField = Ext.create( Ext.form.field.ComboBox,{
                     name: 'searchfield',
                     hideTrigger: true,
                     flex:1,
@@ -238,13 +238,13 @@ Ext.define ("viewer.components.Search",{
                     selectHighlighted: function() {
                         var item = this.boundList.highlightedItem;
                         //If an item is selected, the user did that. So go directly to that result. Otherwise search with the user typed string
-                        if (item) { 
+                        if (item) {
                             var node = this.boundList.getRecord(item);
                             me.searchHighlightedSuggestion(node);
                         }
                     }
                 });
-                
+
                 var searchFieldAndButton = Ext.create('Ext.container.Container', {
                     width: '100%',
                     height: 30,
@@ -269,7 +269,7 @@ Ext.define ("viewer.components.Search",{
                 itemList.push(searchFieldAndButton);
             }
         }
-        itemList.push({ 
+        itemList.push({
             xtype: 'button',
             text: 'Zoekactie afbreken',
             margin: this.margin,
@@ -298,7 +298,7 @@ Ext.define ("viewer.components.Search",{
                     fn: this.removePin
                 }
             }
-            
+
         });
         return itemList;
     },
@@ -324,14 +324,14 @@ Ext.define ("viewer.components.Search",{
         }else{
             searchName = this.form.getChildByElement("searchName" + this.name).getValue();
         }
-        
+
         if(searchName !== null && searchText !== ""){
             this.executeSearch(searchText, searchName)
             this.form.getChildByElement("cancel"+ this.name).setVisible(true);
         } else {
             Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevuld te worden.");
             // search request is not complete
-        }        
+        }
     },
     executeSearch: function(searchText, searchName) {
         var requestPath=  contextPath+"/action/search";
@@ -447,7 +447,7 @@ Ext.define ("viewer.components.Search",{
                 multi:true
             },
             autoScroll: false,
-            style: { 
+            style: {
                 padding: '0px 0px 10px 0px'
             },
             items: panelList
@@ -459,7 +459,7 @@ Ext.define ("viewer.components.Search",{
                 this.popup.show();
             }
         }
-        
+
     },
     addResult : function(result,index){
         var type = result.type;
@@ -509,10 +509,10 @@ Ext.define ("viewer.components.Search",{
         this.viewerController.mapComponent.getMap().zoomToExtent(result.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y,"marker");
-        
+
         var type = this.getCurrentSearchType(result);
         if(type === "solr"){
-            
+
             var searchconfig = this.getCurrentSearchconfig();
             if(searchconfig ){
                 var solrConfig = searchconfig.solrConfig[result.searchConfig];
@@ -529,7 +529,7 @@ Ext.define ("viewer.components.Search",{
                         this.viewerController.logger.logLevel = logLevel;
                         if(!layer){
                             var level = this.viewerController.getAppLayerParent(appLayerId);
-                            if(!this.viewerController.doesLevelExist(level)){ 
+                            if(!this.viewerController.doesLevelExist(level)){
                                 this.viewerController.app.selectedContent.push({
                                     id: level.id,
                                     type: "level"
@@ -539,7 +539,7 @@ Ext.define ("viewer.components.Search",{
                             layer = this.viewerController.createLayer(appLayer);
                         }
                         this.viewerController.setLayerVisible(appLayer,true);
-                        
+
                     }
                     if(selectedContentChanged){
                         this.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
@@ -547,7 +547,7 @@ Ext.define ("viewer.components.Search",{
                 }
             }
         }
-        
+
         if(this.isPopup) {
             this.hideWindow();
         }
@@ -560,7 +560,7 @@ Ext.define ("viewer.components.Search",{
         if(this.results) c.push(this.results.getId());
         return c;
     },
-    
+
     searchConfigChanged: function(searchConfig){
         this.currentSeachId = searchConfig;
         for(var i = 0 ; i < this.searchconfigs.length ;i++){
@@ -570,7 +570,7 @@ Ext.define ("viewer.components.Search",{
                     this.searchField.queryMode = "remote";
                     var proxy = this.searchField.getStore().getProxy();
                     var params = proxy.extraParams;
-                    
+
                     params["searchName"]=searchConfig;
                     params["appId"]=appId;
                     params["componentName"]=this.name;
@@ -605,7 +605,7 @@ Ext.define ("viewer.components.Search",{
                 return this.onlyUrlConfig[j];
             }
         }
-        
+
         for (var i = 0; i < this.searchconfigs.length; i++) {
             if (this.searchconfigs[i].id ===  id) {
                 return this.searchconfigs[i];
@@ -626,7 +626,7 @@ Ext.define ("viewer.components.Search",{
         }else{
             // Nothing to do here
         }
-    }, 
+    },
     simpleListSearch:function(term){
         var config = this.getCurrentSearchconfig();
         var values = config.simpleSearchConfig;
@@ -654,7 +654,7 @@ Ext.define ("viewer.components.Search",{
         var searchConfigId = param.substring(0,param.indexOf(":"));
         var term = param.substring(param.indexOf(":") +1, param.length);
         var config = this.getSearchconfigById(searchConfigId);
-        
+
         this.searchField.setValue(term);
         if(!config.urlOnly){
             this.searchName.setValue(searchConfigId);

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,10 +33,10 @@ Ext.define ("viewer.components.CurrentLocation",{
     constructor: function(config){
         this.callParent(arguments);
         //set some defaults.
-       
+
         if (this.interval==null || isNaN(this.interval)){
             this.interval=0;
-        }        
+        }
         if (Proj4js.defs["EPSG:4326"]==undefined){
             Proj4js.defs["EPSG:4236"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
         }
@@ -65,7 +65,7 @@ Ext.define ("viewer.components.CurrentLocation",{
             viewerController: this.viewerController
         });
         this.viewerController.mapComponent.addTool(this.button);
-        
+
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         if (this.interval>0){
             this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);

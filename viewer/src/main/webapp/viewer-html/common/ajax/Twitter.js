@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,21 +19,21 @@ Ext.define("viewer.Twitter", {
     config: {
         actionbeanUrl: null
     },
-    constructor: function(config) {        
-        this.initConfig(config);  
+    constructor: function(config) {
+        this.initConfig(config);
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["twitter"];
         }
     },
 
     getTweets: function(term,numTweets,latestId, successFunction, failureFunction) {
-        
+
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {term: term, rpp: numTweets,latestId:latestId}, 
+            params: {term: term, rpp: numTweets,latestId:latestId},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
+
                 if(response.success) {
                     successFunction(response);
                 } else {

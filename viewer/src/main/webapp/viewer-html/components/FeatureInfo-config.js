@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             configObject={};
         }
         configObject.layerFilter=this.layerFilter;
-        
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        
+
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+
         this.checkPanelHeight=270;
-        
+
         this.form.add([{
             xtype: 'textfield',
             fieldLabel: 'Link naar meer',
@@ -69,7 +69,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             layout : {
                 type: 'table',
                 columns: 2,
-                
+
             },
             items: [
                 {
@@ -116,10 +116,10 @@ Ext.define("viewer.components.CustomConfiguration",{
                     labelWidth:this.labelWidth
                 }
             ]
-        } 
+        }
         ]);
         this.createCheckBoxes(this.configObject.layers,{});
-        
+
     },
     layerFilter: function(layers){
         var filteredLayers=[];
