@@ -2,3 +2,4 @@
 nb-configuration.xml
 */src/main/resources/git.properties
 /solr-commons/target/
+*.war
