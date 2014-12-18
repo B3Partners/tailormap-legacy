@@ -23,7 +23,8 @@
 Ext.define ("viewer.components.tools.ZoomIn",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "zoomIn"
+        name: "zoomIn",
+        tooltip: "Zoom In"
     },
     constructor: function (conf){        
         viewer.components.tools.ZoomIn.superclass.constructor.call(this, conf);

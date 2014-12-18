@@ -23,7 +23,8 @@
 Ext.define ("viewer.components.tools.FullExtent",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "fullExtent"
+        name: "fullExtent",
+        tooltip: "Full extent"
     },
     constructor: function (conf){        
         viewer.components.tools.FullExtent.superclass.constructor.call(this, conf);
