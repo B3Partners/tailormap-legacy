@@ -365,6 +365,9 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(!this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
             
             var searchConfig = me.getConfig(searchconfigId);
+            if(!searchConfig.solrConfig) {
+                searchConfig.solrConfig = {};
+            }
             var checked = [];
             if(searchConfig && searchConfig.hasOwnProperty('solrConfig')) {
                 Ext.Object.each(searchConfig.solrConfig, function(key, value) {
