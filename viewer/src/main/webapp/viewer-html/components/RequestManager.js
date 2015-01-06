@@ -62,7 +62,10 @@ Ext.define ("viewer.components.RequestManager",{
     
     cancelPrevious : function(currentId){
         for( var id in this.previousRequests){
-            if(id !== currentId){
+            if(!this.previousRequests.hasOwnProperty(id)) {
+                continue;
+            }
+            if(id !== currentId) {
                 this.cancel(id);
                 delete this.previousRequests[id];
             }

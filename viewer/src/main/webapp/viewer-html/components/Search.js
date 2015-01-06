@@ -442,6 +442,9 @@ Ext.define ("viewer.components.Search",{
             }
 
             for (var key in this.groupedResult) {
+                if(!this.groupedResult.hasOwnProperty(key)) {
+                    continue;
+                }
                 var list = this.groupedResult[key];
                 var subSetPanel = Ext.create('Ext.panel.Panel', {
                     title: key + " (" + list.length + ")",

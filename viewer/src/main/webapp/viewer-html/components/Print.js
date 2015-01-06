@@ -179,6 +179,9 @@ Ext.define ("viewer.components.Print",{
      */
     legendLoading: function (){
         for (var key in this.legends){
+            if(!this.legends.hasOwnProperty(key)) {
+                continue;
+            }
             //if there is a var for the legend, it's not yet succesfully loaded nor it failed
             if (this.legends[key]==null){
                 return true;
@@ -676,14 +679,15 @@ Ext.define ("viewer.components.Print",{
         newCoords[2] = this.calcRotationX(angle,width2,height2);
         newCoords[3] = this.calcRotationX(angle,-width2,height2);
         //transform the rectangle (or square) back
-        for (var c in newCoords){
+        var c;
+        for (c = 0; c < newCoords.length; c++){
             var coord=newCoords[c];
             coord.x= coord.x + width2;
             coord.y= coord.y + height2;
         }
         //get the bbox of both the extents. (original and rotated)
         var totalBBox= new viewer.viewercontroller.controller.Extent(0,0,width,height);
-        for (var c in newCoords){
+        for (c = 0; c < newCoords.length; c++){
             var coord = newCoords[c];
             if (coord.x > totalBBox.maxx){
                 totalBBox.maxx=coord.x;
@@ -831,8 +835,8 @@ Ext.define ("viewer.components.Print",{
                     printLayers.push(printLayer);
                 }else{
                     var requests=layer.getLastMapRequest();
-                    for (var r in requests){
-                        var request= requests[r];
+                    for (var r = 0; r < requests.length; r++) {
+                        var request = requests[r];
                         if (request){
                             request.protocol=layer.getType();
                             var alpha=layer.getAlpha();
@@ -843,7 +847,6 @@ Ext.define ("viewer.components.Print",{
                             if (request.extent){
                                 request.extent=request.extent.toString();
                             }
-
                         }
                     }
                 }

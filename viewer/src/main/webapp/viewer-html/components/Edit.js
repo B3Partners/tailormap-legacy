@@ -731,6 +731,9 @@ Ext.define ("viewer.components.Edit",{
         var map = this.makeConversionMap();
         var newFeature = {};
         for (var key in feature){
+            if(!feature.hasOwnProperty(key)) {
+                continue;
+            }
             var namedIndex = map[key];
             var value = feature[key];
             if(namedIndex != undefined){

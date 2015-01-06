@@ -48,8 +48,11 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      */
     getOption: function(optionKey){
         var availableOptions=""
-        for (var op in this.options){
-            if (op.toLowerCase()==optionKey.toLowerCase())
+        for (var op in this.options) {
+            if(!this.options.hasOwnProperty(op)) {
+                continue;
+            }
+            if (op.toLowerCase() === optionKey.toLowerCase())
                 return this.options[op];
             availableOptions+=op+",";
         }

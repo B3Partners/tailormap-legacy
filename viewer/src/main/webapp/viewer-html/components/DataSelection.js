@@ -362,8 +362,10 @@ Ext.define ("viewer.components.DataSelection",{
     },
     receiveUniqueValues : function (values){
         for(var attribute in values){
-            var unique = values[attribute];
-            this.addValuesToCombobox(unique, attribute);
+            if(values.hasOwnProperty(attribute)) {
+                var unique = values[attribute];
+                this.addValuesToCombobox(unique, attribute);
+            }
         }
         this.dataTab.setLoading(false);
         this.itemsLoaded--;        

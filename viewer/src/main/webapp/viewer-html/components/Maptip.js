@@ -436,7 +436,10 @@ Ext.define ("viewer.components.Maptip",{
             //attributes:
             if (!Ext.isEmpty(feature)){
                 var html="<table>";
-                for( var key in feature){
+                for( var key in feature) {
+                    if(!feature.hasOwnProperty(key)) {
+                        continue;
+                    }
                     html+="<tr>"
                     html+="<td class='feature_detail_attr_key'>"+key+"</td>";
                     var value = String(feature[key]);
@@ -483,6 +486,9 @@ Ext.define ("viewer.components.Maptip",{
             return "";
         var newText=""+text;
         for (var key in feature){
+            if(!feature.hasOwnProperty(key)) {
+                continue;
+            }
             var regex = new RegExp("\\["+key+"\\]","g");
             var value = String(feature[key]);
             if(!noHtmlEncode) {
@@ -536,6 +542,9 @@ Ext.define ("viewer.components.Maptip",{
         //if there are layers configured, check if the added layer is in the configured list.
         if (this.config.layers && this.config.layers.length >0){
             for (var i in this.config.layers){
+                if(!this.config.layers.hasOwnProperty(i)) {
+                    continue;
+                }
                 if (this.config.layers[i] == mapLayer.appLayerId){
                     return true;
                 }
@@ -563,6 +572,9 @@ Ext.define ("viewer.components.Maptip",{
     getApplicationLayer: function (layerName,serviceId){
         var appLayers=this.config.viewerController.app.appLayers;
         for (var id in appLayers){
+            if(!appLayers.hasOwnProperty(id)) {
+                continue;
+            }
             if (appLayers[id].serviceId==serviceId &&
                 appLayers[id].layerName==layerName){
                 return appLayers[id];

@@ -124,6 +124,9 @@ Ext.define("viewer.components.CustomConfiguration",{
     layerFilter: function(layers){
         var filteredLayers=[];
         for (var i in layers){
+            if(!layers.hasOwnProperty(i)) {
+                continue;
+            }
             var l = layers[i];
             //check if layer has something to show in the maptip
             if (l && l.details !=undefined &&

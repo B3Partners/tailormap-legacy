@@ -25,7 +25,8 @@ Ext.define ("viewer.components.Keyboard",{
     extend: "viewer.components.Component",
     keyboardTool:null,
     config:{
-        name: "keyboard"
+        name: "keyboard",
+        tooltip: "Keyboard navigation"
     },
     constructor: function (conf){        
         viewer.components.Keyboard.superclass.constructor.call(this, conf);

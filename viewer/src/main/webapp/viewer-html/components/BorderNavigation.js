@@ -23,12 +23,22 @@
 Ext.define("viewer.components.BorderNavigation",{
     extend : "viewer.components.Component",
     bordernavigation : null,
+    defaultTooltips: {
+        tooltip_pan_right: "Pan naar rechts",
+        tooltip_pan_left: "Pan naar links",
+        tooltip_pan_up: "Pan omhoog",
+        tooltip_pan_down: "Pan omlaag"
+    },
     constructor : function (conf){
         viewer.components.BorderNavigation.superclass.constructor.call(this,conf);
         this.initConfig(conf);
 
         conf.id = conf.name;
         conf.type = viewer.viewercontroller.controller.Component.BORDER_NAVIGATION;
+        // Set default tooltips of not configured
+        for(var tooltip in this.defaultTooltips) if(this.defaultTooltips.hasOwnProperty(tooltip)) {
+            if(!conf.hasOwnProperty(tooltip)) conf[tooltip] = this.defaultTooltips[tooltip];
+        }
 
         this.bordernavigation = this.config.viewerController.mapComponent.createComponent(conf);
         this.config.viewerController.mapComponent.addComponent(this.bordernavigation);

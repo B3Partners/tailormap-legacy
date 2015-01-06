@@ -160,6 +160,9 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
                     me.itemList=me.layerFilter.call(this,me.itemList);
                 }
                 for(i in me.itemList) {
+                    if(!me.itemList.hasOwnProperty(i)) {
+                        continue;
+                    }
                     var applicationLayer = me.itemList[i];
                     applicationLayer.label = applicationLayer.alias || applicationLayer.layerName;
                 }

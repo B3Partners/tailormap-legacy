@@ -440,6 +440,9 @@ Ext.define ("viewer.components.SpatialFilter",{
     // Some helper functions here
     toggleAll : function(state){
         for ( var key in this.drawingButtonIds){
+            if(!this.drawingButtonIds.hasOwnProperty(key)) {
+                continue;
+            }
             var el = this.drawingButtonIds[key];
             var button = Ext.getCmp(el);
             button.toggle(state);

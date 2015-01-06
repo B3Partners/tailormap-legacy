@@ -530,8 +530,10 @@ Ext.define ("viewer.components.Drawing",{
         
         var features = new Array();
         for (var featurekey in this.features){
-            var feature = this.features[featurekey];
-            features.push(feature.toJsonObject());
+            if(this.features.hasOwnProperty(featurekey)) {
+                var feature = this.features[featurekey];
+                features.push(feature.toJsonObject());
+            }
         }
         form.setValues({
             "saveObject":Ext.JSON.encode(features)
@@ -590,8 +592,10 @@ Ext.define ("viewer.components.Drawing",{
     getBookmarkState: function(shortUrl){
         var features = new Array();
         for (var featurekey in this.features){
-            var feature = this.features[featurekey];
-            features.push(feature.toJsonObject());
+            if(this.features.hasOwnProperty(featurekey)) {
+                var feature = this.features[featurekey];
+                features.push(feature.toJsonObject());
+            }
         }
         var obj={};
         if (features.length > 0){

@@ -64,10 +64,16 @@ Ext.define ("viewer.components.AttributeList",{
             this.name + 'ClosingPanel'
         ];
         for (var gridId in this.grids){
+            if(!this.grids.hasOwnProperty(gridId)) {
+                continue;
+            }
             list.push(this.name+gridId+'Grid');
             list.push(this.name+gridId+'GridPanel');
         }
         for (var pagerId in this.pagers){
+            if(!this.pagers.hasOwnProperty(pagerId)) {
+                continue;
+            }
             list.push(this.name+pagerId+'Pager');
             list.push(this.name+pagerId+'PagerPanel');
         }
@@ -189,11 +195,17 @@ Ext.define ("viewer.components.AttributeList",{
     },
     clear: function() {
         for(var gridId in this.grids) {
+            if(!this.grids.hasOwnProperty(gridId)) {
+                continue;
+            }
             this.grids[gridId].destroy();
         }
         delete this.grids;
         this.grids={};
         for(var pagerId in this.pagers) {
+            if(!this.pagers.hasOwnProperty(pagerId)) {
+                continue;
+            }
             this.pagers[pagerId].destroy();
         }
         delete this.appLayer;

@@ -23,7 +23,8 @@
 Ext.define ("viewer.components.tools.Pan",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "pan"
+        name: "pan",
+        tooltip: "Pan"
     },
     constructor: function (conf){        
         viewer.components.tools.Pan.superclass.constructor.call(this, conf);

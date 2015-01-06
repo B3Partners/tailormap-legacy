@@ -23,7 +23,8 @@
 Ext.define ("viewer.components.tools.NextExtent",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "nextExtent"
+        name: "nextExtent",
+        tooltip: "Next Extent"
     },
     constructor: function (conf){        
         viewer.components.tools.NextExtent.superclass.constructor.call(this, conf);

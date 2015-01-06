@@ -217,7 +217,7 @@
                 nonSticky: "Ga na gebruik naar de eerste tool"
             },
             source: {
-                tooltip: "Measure",
+                tooltip: "Measure line",
                 units: "",
                 decimals: 2,
                 magicnumber: "",
@@ -245,7 +245,7 @@
                 nonSticky: "Ga na gebruik naar de eerste tool"
             },
             source: {
-                tooltip: "Measure",
+                tooltip: "Measure area",
                 units: "",
                 decimals: 2,
                 magicnumber: "",

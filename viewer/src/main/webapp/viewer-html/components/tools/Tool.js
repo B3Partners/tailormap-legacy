@@ -16,8 +16,12 @@ Ext.define("viewer.components.tools.Tool",{
         type: null,
         visible: true
     },
-    constructor: function (config){
-        viewer.components.tools.Tool.superclass.constructor.call(this,config);
+    constructor: function (config) {
+        // Set default tooltips of not configured
+        if(this.config.hasOwnProperty('tooltip') && !config.hasOwnProperty('tooltip')) {
+            config.tooltip = this.config.tooltip;
+        }
+        viewer.components.tools.Tool.superclass.constructor.call(this, config);
         this.events = [];
         return this;
     },

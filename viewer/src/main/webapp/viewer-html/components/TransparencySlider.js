@@ -86,8 +86,8 @@ Ext.define ("viewer.components.TransparencySlider",{
         
     getExtComponents: function() {
         var components = [ this.panel.getId() ];
-        for(var slider in this.sliderObjects) {
-            components.push(this.sliderObjects[slider].getExtComponents());
+        for(var i = 0; i < this.sliderObjects.length; i++) {
+            components.push(this.sliderObjects[i].getExtComponents());
         }
         return components;
     }

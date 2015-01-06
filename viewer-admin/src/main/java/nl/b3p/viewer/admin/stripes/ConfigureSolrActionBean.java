@@ -74,48 +74,48 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/solrconfig.jsp";
     private static final String EDIT_JSP = "/WEB-INF/jsp/services/editsolrsource.jsp";
-    
+
     private static final String PROTOTYPE_JSP = "/WEB-INF/jsp/services/searchPrototype.jsp";
-    
+
     private List<FeatureSource> featureSources = new ArrayList();
     private List<SimpleFeatureType> featureTypes = new ArrayList();
     private ActionBeanContext context;
-    
+
     @Validate
     @ValidateNestedProperties({
             @Validate(field= "simpleFeatureType"),
             @Validate(field= "name",required = true, on = "save")
     })
     private SolrConf solrConfiguration;
-    
+
     @Validate
     private Long simpleFeatureTypeId;
-    
+
     @Validate
     private Long[] indexAttributes;
-    
+
     @Validate
     private Long[] resultAttributes;
-    
+
     private WaitPageStatus status;
-    
+
     @Validate
     private String term;
-    
+
     @Validate
     private Integer page;
-    
+
     @Validate
     private Integer start;
-    
+
     @Validate
     private Integer limit;
-    
+
     @Validate
     private JSONArray filter;
-    
+
     private Boolean solrInitialized = true;
-    
+
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     @Override
     public ActionBeanContext getContext() {
@@ -231,13 +231,14 @@ public class ConfigureSolrActionBean implements ActionBean {
         this.filter = filter;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
     public Resolution view() throws SolrServerException {
         SolrServer server = SolrInitializer.getServerInstance();
         try{
             SolrPingResponse resp = server.ping();
         }catch(Exception e){
+            log.error("Solr ping exception", e);
             this.context.getValidationErrors().addGlobalError(new SimpleError("Solr server niet correct geïnitialiseerd. Neem contact op met de systeembeheerder."));
             solrInitialized = false;
         }
@@ -247,7 +248,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     public Resolution edit() {
         return new ForwardResolution(EDIT_JSP);
     }
-    
+
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution addToIndex() throws InterruptedException {
         removeFromIndex();
@@ -259,7 +260,7 @@ public class ConfigureSolrActionBean implements ActionBean {
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
     }
-    
+
     public Resolution removeFromIndex(){
         EntityManager em = Stripersist.getEntityManager();
         SolrServer server = SolrInitializer.getServerInstance();
@@ -267,7 +268,7 @@ public class ConfigureSolrActionBean implements ActionBean {
         SolrUpdateJob.removeSolrConfigurationFromIndex(solrConfiguration, em, server);
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
-        
+
     }
 
     public Resolution cancel() {
@@ -283,7 +284,7 @@ public class ConfigureSolrActionBean implements ActionBean {
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
             solrConfiguration.getIndexAttributes().add(attribute);
         }
-        
+
         for (int i = 0; i < resultAttributes.length; i++) {
             Long attributeId = resultAttributes[i];
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
@@ -291,7 +292,7 @@ public class ConfigureSolrActionBean implements ActionBean {
         }
         em.persist(solrConfiguration);
         em.getTransaction().commit();
-        
+
         return new ForwardResolution(EDIT_JSP);
     }
 
@@ -299,10 +300,10 @@ public class ConfigureSolrActionBean implements ActionBean {
         solrConfiguration = new SolrConf();
         return new ForwardResolution(EDIT_JSP);
     }
-    
+
     @After(on = {"edit", "save", "newSearchConfig"}, stages = LifecycleStage.BindingAndValidation)
     public void loadLists(){
-        
+
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
         if(solrConfiguration != null && solrConfiguration.getSimpleFeatureType() != null){
             featureTypes = solrConfiguration.getSimpleFeatureType().getFeatureSource().getFeatureTypes();
@@ -319,12 +320,12 @@ public class ConfigureSolrActionBean implements ActionBean {
         return new ForwardResolution(EDIT_JSP);
     }
 
-    public Resolution getGridData() throws JSONException {        
+    public Resolution getGridData() throws JSONException {
         JSONArray jsonData = new JSONArray();
 
         String filterName = "";
         String lastUpdated = "";
-      
+
         if (this.getFilter() != null) {
             for (int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
@@ -360,7 +361,7 @@ public class ConfigureSolrActionBean implements ActionBean {
 
         for (Iterator it = sources.iterator(); it.hasNext();) {
             SolrConf config = (SolrConf) it.next();
-           
+
             JSONObject j = config.toJSON();
             jsonData.put(j);
         }
@@ -371,7 +372,7 @@ public class ConfigureSolrActionBean implements ActionBean {
 
         return new StreamingResolution("application/json", grid.toString());
     }
-    
+
     public Resolution getSearchconfigData() throws JSONException {
         EntityManager em =Stripersist.getEntityManager();
         List<SolrConf> configs = em.createQuery("FROM SolrConf").getResultList();
@@ -384,10 +385,10 @@ public class ConfigureSolrActionBean implements ActionBean {
         }
         return new StreamingResolution("application/json", searchconfigs.toString(4));
     }
-    
-    public Resolution getAttributesList() throws JSONException { 
+
+    public Resolution getAttributesList() throws JSONException {
         JSONArray jsonData = new JSONArray();
-                
+
         List<SimpleFeatureType> featureTypes= new ArrayList();
         if(simpleFeatureTypeId != null && simpleFeatureTypeId != -1){
             SimpleFeatureType sft = (SimpleFeatureType)Stripersist.getEntityManager().find(SimpleFeatureType.class, simpleFeatureTypeId);
@@ -397,12 +398,12 @@ public class ConfigureSolrActionBean implements ActionBean {
         }else{
             throw new IllegalArgumentException ("No simpleFeatureType id provided");
         }
-        
+
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(AttributeDescriptor.class);
-        
- 
-        /* Criteria for the all attribute descriptor ids of the feature types 
+
+
+        /* Criteria for the all attribute descriptor ids of the feature types
          * in featureTypes
          */
         DetachedCriteria c2 = DetachedCriteria.forClass(SimpleFeatureType.class);
@@ -416,8 +417,8 @@ public class ConfigureSolrActionBean implements ActionBean {
 
         c.add(org.hibernate.criterion.Property.forName("id").in(c2));
         int rowCount = c.list().size();
- 
-        
+
+
         List<AttributeDescriptor> attrs = c.list();
 
         for(Iterator<AttributeDescriptor> it = attrs.iterator(); it.hasNext();){
@@ -446,11 +447,11 @@ public class ConfigureSolrActionBean implements ActionBean {
             j.put("resultChecked", resultChecked);
             jsonData.put(j);
         }
-        
+
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-    
+
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
