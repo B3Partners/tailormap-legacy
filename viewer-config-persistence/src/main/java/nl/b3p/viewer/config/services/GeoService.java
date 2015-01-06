@@ -354,7 +354,15 @@ public abstract class GeoService {
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
-        
+
+
+        if (details.containsKey(GeoService.DETAIL_USE_PROXY)) {
+            ClobElement ce = details.get(GeoService.DETAIL_USE_PROXY);
+            boolean useProxy = Boolean.parseBoolean(ce.getValue());
+            o.put(GeoService.DETAIL_USE_PROXY, useProxy);
+        }else{
+            o.put(GeoService.DETAIL_USE_PROXY, false);
+        }
         if(this instanceof WMSService){
             WMSExceptionType extype = ((WMSService)this).getException_type() != null ? ((WMSService)this).getException_type() : WMSExceptionType.Inimage;
             o.put("exception_type", extype.getDescription());

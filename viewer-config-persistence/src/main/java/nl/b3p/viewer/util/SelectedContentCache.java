@@ -77,6 +77,7 @@ public class SelectedContentCache {
         JSONObject levels = cached.getJSONObject("levels");
         JSONObject appLayers = cached.getJSONObject("appLayers");
         JSONArray selectedContent = cached.getJSONArray("selectedContent");
+        JSONObject services = cached.getJSONObject("services");
 
         for (Iterator<String> it = appLayers.sortedKeys(); it.hasNext();) {
             String key = it.next();
@@ -107,6 +108,28 @@ public class SelectedContentCache {
              }
         }
 
+        String scheme = request.getScheme();             
+        String serverName = request.getServerName();     
+        int serverPort = request.getServerPort();        
+        String contextPath = request.getContextPath();   
+        StringBuilder url =  new StringBuilder();
+        String servletPath = "/action/proxy/wms";
+        url.append(scheme).append("://").append(serverName);
+
+        if ((serverPort != 80) && (serverPort != 443)) {
+            url.append(":").append(serverPort);
+        }
+
+        url.append(contextPath).append(servletPath);
+
+        for (Iterator<String> it = services.sortedKeys(); it.hasNext();) {
+
+            String key = it.next();
+            JSONObject service = services.getJSONObject(key);
+            if(service.has(GeoService.DETAIL_USE_PROXY) && service.getBoolean(GeoService.DETAIL_USE_PROXY)){
+                service.put("url", url);
+            }
+        }
 
         JSONArray newSelectedContent = new JSONArray();
         for (int i = 0; i < selectedContent.length(); i++) {
