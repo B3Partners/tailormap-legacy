@@ -130,6 +130,8 @@ public class GeoServiceActionBean implements ActionBean {
     @Validate
     private boolean useIntersect;
     @Validate
+    private boolean useProxy;
+    @Validate
     private WMSExceptionType exception_type;
 
     private WaitPageStatus status;
@@ -381,6 +383,13 @@ public class GeoServiceActionBean implements ActionBean {
         this.exception_type = exception_type;
     }
 
+    public boolean isUseProxy() {
+        return useProxy;
+    }
+
+    public void setUseProxy(boolean useProxy) {
+        this.useProxy = useProxy;
+    }
 
     //</editor-fold>
 
@@ -444,6 +453,11 @@ public class GeoServiceActionBean implements ActionBean {
                 ClobElement ce =service.getDetails().get(GeoService.DETAIL_USE_INTERSECT);
                 useIntersect = Boolean.parseBoolean(ce.getValue());
             }
+
+            if(service.getDetails().containsKey(GeoService.DETAIL_USE_PROXY)){
+                ClobElement ce =service.getDetails().get(GeoService.DETAIL_USE_PROXY);
+                useProxy = Boolean.parseBoolean(ce.getValue());
+            }
             name = service.getName();
             username = service.getUsername();
             password = service.getPassword();
@@ -497,6 +511,7 @@ public class GeoServiceActionBean implements ActionBean {
         }
 
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
+        service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement(""+useProxy));
 
         service.setUsername(username);
         service.setPassword(password);

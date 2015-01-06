@@ -43,6 +43,7 @@ public abstract class GeoService {
     public static final String DETAIL_ORIGINAL_NAME = "originalName";
     
     public static final String DETAIL_USE_INTERSECT = "useIntersect";
+    public static final String DETAIL_USE_PROXY = "useProxy";
     
     @Id
     private Long id;
