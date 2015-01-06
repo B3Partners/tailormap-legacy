@@ -484,11 +484,6 @@ public class GeoServiceActionBean implements ActionBean {
                 l.getDetails().remove("image_extension");
             }
 
-            // For the moment only for tiled services, the caches of the applictions which use the service are worth invalidating
-            List<Application> apps = findApplications();
-            for (Application application : apps) {
-                SelectedContentCache.setApplicationCacheDirty(application, true);
-            }
         }
 
         if (service instanceof WMSService) {
@@ -496,6 +491,12 @@ public class GeoServiceActionBean implements ActionBean {
             ((WMSService)service).setException_type(exception_type);
         }
 
+        // Invalidate the cache of the applications using this service. Options like username/password, useProxy, etc. might have changed, which
+        // affect the selectedContent
+        List<Application> apps = findApplications();
+        for (Application application : apps) {
+            SelectedContentCache.setApplicationCacheDirty(application, true);
+        }
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
 
         service.setUsername(username);
