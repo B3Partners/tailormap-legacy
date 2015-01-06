@@ -55,12 +55,6 @@ public class SelectedContentCache {
             return processCache(request,createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations));
         }
 
-        // Don't use cache when validXmlTags parameters is true, cache only
-        // the JSON variant used when starting up the viewer
-        if(validXmlTags) {
-            return processCache(request,createSelectedContent(app, validXmlTags,includeAppLayerAttributes, includeRelations));
-        }
-
         JSONObject cached = null;
         if(mustCreateNewCache(app)){
             cached = createSelectedContent(app, validXmlTags,includeAppLayerAttributes, includeRelations);
