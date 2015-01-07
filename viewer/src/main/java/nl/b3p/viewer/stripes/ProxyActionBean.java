@@ -185,7 +185,7 @@ public class ProxyActionBean implements ActionBean {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
 
-        List allowedParams = new ArrayList<String>();
+        List<String> allowedParams = new ArrayList<String>();
         allowedParams.add("VERSION");
         allowedParams.add("SERVICE");
         allowedParams.add("REQUEST");
@@ -218,13 +218,15 @@ public class ProxyActionBean implements ActionBean {
         String query = theUrl.getQuery();
         //only WMS request param's allowed
         String[] params = query.split("&");
-        StringBuilder sb = new StringBuilder();
-        for (String param : params){
-            if (allowedParams.contains((param.split("=")[0]).toUpperCase())){
-                sb.append(param+"&");
-            }
-        }
-        theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+sb.toString());
+        
+        StringBuilder sb = validateParams(params, allowedParams);
+        StringBuilder sb2 = validateParams(request.getParameterMap(),allowedParams);
+        sb.append(sb2);
+        int index = sb.charAt(0) == '&' ? 1 : 0;
+        
+        String paramString = sb.substring(index);
+
+        theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+paramString);
 
         //TODO: Check if response is a getFeatureInfo response.
         final URLConnection connection = theUrl.openConnection();
@@ -234,5 +236,36 @@ public class ProxyActionBean implements ActionBean {
                 IOUtils.copy(connection.getInputStream(), response.getOutputStream());
             }
         };
+    }
+
+    private StringBuilder validateParams (String [] params,List<String> allowedParams){
+        StringBuilder sb = new StringBuilder();
+        for (String param : params){
+            if (allowedParams.contains((param.split("=")[0]).toUpperCase())){
+                sb.append(param);
+                sb.append("&");
+            }
+        }
+        return sb;
+    }
+
+    private StringBuilder validateParams (Map<String,String[]> params,List<String> allowedParams){
+        StringBuilder sb = new StringBuilder();
+        for (String param : params.keySet()){
+            if (allowedParams.contains((param).toUpperCase())){
+                sb.append(param);
+                sb.append("=");
+                String[] paramValue = params.get(param);
+                for (int i = 0; i < paramValue.length; i++) {
+                    String val = paramValue[i];
+                    if(i > 0){
+                        sb.append(",");
+                    }
+                    sb.append(val);
+                }
+                sb.append("&");
+            }
+        }
+        return sb;
     }
 }
