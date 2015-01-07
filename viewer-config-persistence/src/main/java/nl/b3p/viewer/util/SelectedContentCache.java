@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +34,8 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +47,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 public class SelectedContentCache {
 
+    private static final Log log = LogFactory.getLog(SelectedContentCache.class);
     public static final String AUTHORIZATIONS_KEY = "authorizations";
     public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
     public static final String DETAIL_CACHED_SELECTED_CONTENT_DIRTY = "cachedSelectedContentDirty";
@@ -127,7 +132,15 @@ public class SelectedContentCache {
             String key = it.next();
             JSONObject service = services.getJSONObject(key);
             if(service.has(GeoService.DETAIL_USE_PROXY) && service.getBoolean(GeoService.DETAIL_USE_PROXY)){
-                service.put("url", url);
+                try {
+                    String actualURL = service.getString("url");
+                    String param = URLEncoder.encode(actualURL, "UTF-8");
+                    url.append("?url=");
+                    url.append(param);
+                    service.put("url", url);
+                } catch (UnsupportedEncodingException ex) {
+                    log.error("Cannot add proxy url for service: ",ex);
+                }
             }
         }
 
