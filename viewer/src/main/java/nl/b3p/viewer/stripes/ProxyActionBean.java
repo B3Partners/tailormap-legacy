@@ -215,15 +215,22 @@ public class ProxyActionBean implements ActionBean {
         URL theUrl = new URL(url);
 
         String query = theUrl.getQuery();
+        Map paramsMap = new HashMap(getContext().getRequest().getParameterMap());
+        StringBuilder paramsFromRequest = validateParams(paramsMap,allowedParams);
+
+        if((query == null || query.length() == 0) && paramsFromRequest.length() == 0){
+            // Must have parameters, so when none are existent, it is possibly a malicious use of this proxy.
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
+        }
         //only WMS request param's allowed
         String[] params = query.split("&");
         
-        StringBuilder sb = validateParams(params, allowedParams);
-        StringBuilder sb2 = validateParams(request.getParameterMap(),allowedParams);
-        sb.append(sb2);
-        int index = sb.charAt(0) == '&' ? 1 : 0;
+        StringBuilder paramsFromUrl = validateParams(params, allowedParams);
+        paramsFromUrl.append(paramsFromRequest);
+  
+        int index = paramsFromUrl.charAt(0) == '&' ? 1 : 0;
         
-        String paramString = sb.substring(index);
+        String paramString = paramsFromUrl.substring(index);
 
         theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+paramString);
 
