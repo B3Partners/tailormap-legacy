@@ -19,6 +19,7 @@ package nl.b3p.viewer.stripes;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -243,22 +244,22 @@ public class ProxyActionBean implements ActionBean {
         };
     }
 
-    private StringBuilder validateParams (String [] params,List<String> allowedParams){
+    private StringBuilder validateParams (String [] params,List<String> allowedParams) throws UnsupportedEncodingException{
         StringBuilder sb = new StringBuilder();
         for (String param : params){
             if (allowedParams.contains((param.split("=")[0]).toUpperCase())){
-                sb.append(param);
+                sb.append(URLEncoder.encode(param, "UTF-8"));
                 sb.append("&");
             }
         }
         return sb;
     }
 
-    private StringBuilder validateParams (Map<String,String[]> params,List<String> allowedParams){
+    private StringBuilder validateParams (Map<String,String[]> params,List<String> allowedParams) throws UnsupportedEncodingException{
         StringBuilder sb = new StringBuilder();
         for (String param : params.keySet()){
             if (allowedParams.contains((param).toUpperCase())){
-                sb.append(param);
+                sb.append(URLEncoder.encode(param, "UTF-8"));
                 sb.append("=");
                 String[] paramValue = params.get(param);
                 for (int i = 0; i < paramValue.length; i++) {
@@ -266,7 +267,7 @@ public class ProxyActionBean implements ActionBean {
                     if(i > 0){
                         sb.append(",");
                     }
-                    sb.append(val);
+                    sb.append(URLEncoder.encode(val, "UTF-8"));
                 }
                 sb.append("&");
             }
