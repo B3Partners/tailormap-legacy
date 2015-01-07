@@ -80,6 +80,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.fly('serviceBboxTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
             Ext.fly('extensionTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
             Ext.fly('crsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
+            Ext.fly('useProxy').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "wms");
         }
         Ext.onReady(function() {
             appendPanel('headertext', 'formcontent');
@@ -208,7 +209,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:checkbox name="useIntersect"/> Gebruik 'intersect' filter (in plaats van 'DWithin') om data op te halen.
             </td>
         </tr>
-        <tr>
+        <tr id="useProxy">
             <td colspan="2">
                 <stripes:checkbox name="useProxy"/> Gebruik proxy om kaarten op te halen.
             </td>
