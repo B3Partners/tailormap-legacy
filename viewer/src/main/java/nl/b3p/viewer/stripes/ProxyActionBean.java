@@ -30,14 +30,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.ArcIMSService;
+import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -54,6 +58,13 @@ public class ProxyActionBean implements ActionBean {
     @Validate
     private String mode;
 
+    @Validate
+    private boolean mustLogin;
+
+    @Validate
+    private Long serviceId;
+
+    // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
     @Override
     public ActionBeanContext getContext() {
         return context;
@@ -79,6 +90,24 @@ public class ProxyActionBean implements ActionBean {
     public void setMode(String mode) {
         this.mode = mode;
     }
+
+    public boolean isMustLogin() {
+        return mustLogin;
+    }
+
+    public void setMustLogin(boolean mustLogin) {
+        this.mustLogin = mustLogin;
+    }
+
+    public Long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    // </editor-fold>
 
     @DefaultHandler
     public Resolution proxy() throws Exception {
@@ -224,7 +253,7 @@ public class ProxyActionBean implements ActionBean {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
         //only WMS request param's allowed
-        String[] params = query.split("&");
+        String[] params = query != null ? query.split("&") : new String[0];
         
         StringBuilder paramsFromUrl = validateParams(params, allowedParams);
         paramsFromUrl.append(paramsFromRequest);
@@ -237,12 +266,35 @@ public class ProxyActionBean implements ActionBean {
 
         //TODO: Check if response is a getFeatureInfo response.
         final URLConnection connection = theUrl.openConnection();
+
+        if (mustLogin && serviceId != null) {
+            authenticate(connection);
+        }
+
         return new StreamingResolution(connection.getContentType()) {
             @Override
-            protected void stream(HttpServletResponse response) throws IOException {
-                IOUtils.copy(connection.getInputStream(), response.getOutputStream());
+            protected void stream(HttpServletResponse response) {
+                try {
+                    IOUtils.copy(connection.getInputStream(), response.getOutputStream());
+                } catch (IOException ex) {
+                    int a = 0;
+                }
             }
         };
+    }
+
+    private void authenticate(URLConnection uc) {
+        EntityManager em = Stripersist.getEntityManager();
+        GeoService gs = em.find(GeoService.class, serviceId);
+
+        String username = gs.getUsername();
+        String password = gs.getPassword();
+        String userPassword = username + ":" + password;
+
+        Base64 encoder = new Base64();
+        String encoding = encoder.encodeToString(userPassword.getBytes());
+
+        uc.setRequestProperty("Authorization", "Basic " + encoding);
     }
 
     private StringBuilder validateParams (String [] params,List<String> allowedParams) throws UnsupportedEncodingException{
