@@ -19,8 +19,10 @@ package nl.b3p.viewer.stripes;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -36,11 +38,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -50,6 +59,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/proxy/{mode}")
 @StrictBinding
 public class ProxyActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(ProxyActionBean.class);
     private ActionBeanContext context;
 
     @Validate
@@ -206,7 +216,7 @@ public class ProxyActionBean implements ActionBean {
         };
     }
 
-    private Resolution proxyWMS() throws IOException{
+    private Resolution proxyWMS() throws IOException, URISyntaxException{
 
         HttpServletRequest request = getContext().getRequest();
 
@@ -264,23 +274,58 @@ public class ProxyActionBean implements ActionBean {
 
         theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+paramString);
 
-        //TODO: Check if response is a getFeatureInfo response.
-        final URLConnection connection = theUrl.openConnection();
 
+        //TODO: Check if response is a getFeatureInfo response.
         if (mustLogin && serviceId != null) {
-            authenticate(connection);
+            //authenticate(connection);
+
+            EntityManager em = Stripersist.getEntityManager();
+            GeoService gs = em.find(GeoService.class, serviceId);
+
+            String username = gs.getUsername();
+            String password = gs.getPassword();
+            HttpClientConfigured client = new HttpClientConfigured(username, password,null);
+            HttpUriRequest req = new HttpGet(theUrl.toURI());
+            HttpResponse response = null;
+            try {
+                response = client.execute(req);
+
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == 200 && response.getEntity() != null) {
+                    HttpEntity entity = response.getEntity();
+                    final InputStream is = entity.getContent();
+                    return new StreamingResolution(entity.getContentType().getValue()) {
+                        @Override
+                        protected void stream(HttpServletResponse response) throws IOException {
+                            IOUtils.copy(is, response.getOutputStream());
+                        }
+                    };
+                } else {
+                    return new ErrorResolution(statusCode, "Service returned: " + response.getStatusLine().getReasonPhrase());
+                }
+            } catch(Exception e){
+                log.error("Failed to write output:",e);
+                return null;
+            }finally {
+                if (response != null) {
+                    client.close(response);
+                }
+                client.close();
+            }
+            
+        } else {
+            final URLConnection connection = theUrl.openConnection();
+            return new StreamingResolution(connection.getContentType()) {
+                @Override
+                protected void stream(HttpServletResponse response) throws IOException {
+
+                    IOUtils.copy(connection.getInputStream(), response.getOutputStream());
+
+                }
+            };
         }
 
-        return new StreamingResolution(connection.getContentType()) {
-            @Override
-            protected void stream(HttpServletResponse response) {
-                try {
-                    IOUtils.copy(connection.getInputStream(), response.getOutputStream());
-                } catch (IOException ex) {
-                    int a = 0;
-                }
-            }
-        };
+      
     }
 
     private void authenticate(URLConnection uc) {
