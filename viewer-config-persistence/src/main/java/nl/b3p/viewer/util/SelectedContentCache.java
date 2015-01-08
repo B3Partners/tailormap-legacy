@@ -126,7 +126,7 @@ public class SelectedContentCache {
         }
 
         url.append(contextPath).append(servletPath);
-
+        final String proxyUrl = url.toString();
         for (Iterator<String> it = services.sortedKeys(); it.hasNext();) {
 
             String key = it.next();
@@ -135,9 +135,14 @@ public class SelectedContentCache {
                 try {
                     String actualURL = service.getString("url");
                     String param = URLEncoder.encode(actualURL, "UTF-8");
-                    url.append("?url=");
-                    url.append(param);
-                    service.put("url", url);
+                    StringBuilder newUrl = new StringBuilder(proxyUrl);
+                    newUrl.append("?url=");
+                    newUrl.append(param);
+                    if(service.has(GeoService.PARAM_MUST_LOGIN) && service.getBoolean(GeoService.PARAM_MUST_LOGIN)){
+                        newUrl.append("&mustLogin=true&serviceId=");
+                        newUrl.append(service.get("id"));
+                    }
+                    service.put("url", newUrl);
                 } catch (UnsupportedEncodingException ex) {
                     log.error("Cannot add proxy url for service: ",ex);
                 }
