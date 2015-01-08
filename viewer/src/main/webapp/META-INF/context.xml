@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
-  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
+  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components,/opt/flamingo_data/flamingo_3rdparty/ro-tercera-component"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>
