@@ -666,6 +666,7 @@ public class GeoServiceActionBean implements ActionBean {
                 params.put(WMSService.PARAM_USERNAME, username);
                 params.put(WMSService.PARAM_PASSWORD, password);
                 service = new WMSService().loadFromUrl(url, params, status);
+                service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement(""+useProxy));
             } else if (protocol.equals(ArcGISService.PROTOCOL)) {
                 params.put(ArcGISService.PARAM_USERNAME, username);
                 params.put(ArcGISService.PARAM_PASSWORD, password);
@@ -707,6 +708,9 @@ public class GeoServiceActionBean implements ActionBean {
         if (password != null) {
             service.setPassword(password);
         }
+
+        service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
+
         category = Stripersist.getEntityManager().find(Category.class, category.getId());
         service.setCategory(category);
         category.getServices().add(service);

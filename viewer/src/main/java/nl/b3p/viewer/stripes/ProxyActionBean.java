@@ -279,7 +279,7 @@ public class ProxyActionBean implements ActionBean {
             password = gs.getPassword();
         }
 
-        final HttpClientConfigured client = new HttpClientConfigured(username, password, null);
+        final HttpClientConfigured client = new HttpClientConfigured(username, password, theUrl.toString());
         HttpUriRequest req = new HttpGet(theUrl.toURI());
         
         HttpResponse response = null;
