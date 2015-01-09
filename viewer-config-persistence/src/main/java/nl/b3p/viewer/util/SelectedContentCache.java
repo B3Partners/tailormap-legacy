@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +34,8 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +47,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 public class SelectedContentCache {
 
+    private static final Log log = LogFactory.getLog(SelectedContentCache.class);
     public static final String AUTHORIZATIONS_KEY = "authorizations";
     public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
     public static final String DETAIL_CACHED_SELECTED_CONTENT_DIRTY = "cachedSelectedContentDirty";
@@ -53,12 +58,6 @@ public class SelectedContentCache {
         // the JSON variant used when starting up the viewer
         if(validXmlTags || includeAppLayerAttributes || includeRelations) {
             return processCache(request,createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations));
-        }
-
-        // Don't use cache when validXmlTags parameters is true, cache only
-        // the JSON variant used when starting up the viewer
-        if(validXmlTags) {
-            return processCache(request,createSelectedContent(app, validXmlTags,includeAppLayerAttributes, includeRelations));
         }
 
         JSONObject cached = null;
@@ -83,6 +82,7 @@ public class SelectedContentCache {
         JSONObject levels = cached.getJSONObject("levels");
         JSONObject appLayers = cached.getJSONObject("appLayers");
         JSONArray selectedContent = cached.getJSONArray("selectedContent");
+        JSONObject services = cached.getJSONObject("services");
 
         for (Iterator<String> it = appLayers.sortedKeys(); it.hasNext();) {
             String key = it.next();
@@ -113,6 +113,41 @@ public class SelectedContentCache {
              }
         }
 
+        String scheme = request.getScheme();             
+        String serverName = request.getServerName();     
+        int serverPort = request.getServerPort();        
+        String contextPath = request.getContextPath();   
+        StringBuilder url =  new StringBuilder();
+        String servletPath = "/action/proxy/wms";
+        url.append(scheme).append("://").append(serverName);
+
+        if ((serverPort != 80) && (serverPort != 443)) {
+            url.append(":").append(serverPort);
+        }
+
+        url.append(contextPath).append(servletPath);
+        final String proxyUrl = url.toString();
+        for (Iterator<String> it = services.sortedKeys(); it.hasNext();) {
+
+            String key = it.next();
+            JSONObject service = services.getJSONObject(key);
+            if(service.has(GeoService.DETAIL_USE_PROXY) && service.getBoolean(GeoService.DETAIL_USE_PROXY)){
+                try {
+                    String actualURL = service.getString("url");
+                    String param = URLEncoder.encode(actualURL, "UTF-8");
+                    StringBuilder newUrl = new StringBuilder(proxyUrl);
+                    newUrl.append("?url=");
+                    newUrl.append(param);
+                    if(service.has(GeoService.PARAM_MUST_LOGIN) && service.getBoolean(GeoService.PARAM_MUST_LOGIN)){
+                        newUrl.append("&mustLogin=true&serviceId=");
+                        newUrl.append(service.get("id"));
+                    }
+                    service.put("url", newUrl);
+                } catch (UnsupportedEncodingException ex) {
+                    log.error("Cannot add proxy url for service: ",ex);
+                }
+            }
+        }
 
         JSONArray newSelectedContent = new JSONArray();
         for (int i = 0; i < selectedContent.length(); i++) {

@@ -38,11 +38,13 @@ import org.stripesstuff.stripersist.Stripersist;
 @DiscriminatorColumn(name="protocol")
 public abstract class GeoService {
     public static final String PARAM_ONLINE_CHECK_ONLY = "onlineCheckOnly";
+    public static final String PARAM_MUST_LOGIN = "mustLogin";
     
     public static final String DETAIL_OVERRIDDEN_URL = "overridenUrl";
     public static final String DETAIL_ORIGINAL_NAME = "originalName";
     
     public static final String DETAIL_USE_INTERSECT = "useIntersect";
+    public static final String DETAIL_USE_PROXY = "useProxy";
     
     @Id
     private Long id;
@@ -353,7 +355,19 @@ public abstract class GeoService {
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
-        
+
+
+
+        if (details.containsKey(GeoService.DETAIL_USE_PROXY)) {
+            ClobElement ce = details.get(GeoService.DETAIL_USE_PROXY);
+            boolean useProxy = Boolean.parseBoolean(ce.getValue());
+            o.put(GeoService.DETAIL_USE_PROXY, useProxy);
+            if(getPassword() != null && getUsername() != null){
+                o.put(PARAM_MUST_LOGIN, true);
+            }
+        }else{
+            o.put(GeoService.DETAIL_USE_PROXY, false);
+        }
         if(this instanceof WMSService){
             WMSExceptionType extype = ((WMSService)this).getException_type() != null ? ((WMSService)this).getException_type() : WMSExceptionType.Inimage;
             o.put("exception_type", extype.getDescription());
