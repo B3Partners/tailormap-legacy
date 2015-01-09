@@ -19,12 +19,10 @@ package nl.b3p.viewer.stripes;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +40,6 @@ import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -272,72 +269,54 @@ public class ProxyActionBean implements ActionBean {
 
         theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+paramString);
 
-
-        //TODO: Check if response is a getFeatureInfo response.
+        String username = null;
+        String password = null;
         if (mustLogin && serviceId != null) {
-            //authenticate(connection);
-
             EntityManager em = Stripersist.getEntityManager();
             GeoService gs = em.find(GeoService.class, serviceId);
 
-            String username = gs.getUsername();
-            String password = gs.getPassword();
-            HttpClientConfigured client = new HttpClientConfigured(username, password,null);
-            HttpUriRequest req = new HttpGet(theUrl.toURI());
-            HttpResponse response = null;
-            try {
-                response = client.execute(req);
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200 && response.getEntity() != null) {
-                    HttpEntity entity = response.getEntity();
-                    final InputStream is = entity.getContent();
-                    return new StreamingResolution(entity.getContentType().getValue()) {
-                        @Override
-                        protected void stream(HttpServletResponse response) throws IOException {
-                            IOUtils.copy(is, response.getOutputStream());
-                        }
-                    };
-                } else {
-                    return new ErrorResolution(statusCode, "Service returned: " + response.getStatusLine().getReasonPhrase());
-                }
-            } catch(Exception e){
-                log.error("Failed to write output:",e);
-                return null;
-            }finally {
-                if (response != null) {
-                    client.close(response);
-                }
-                client.close();
-            }
-            
-        } else {
-            final URLConnection connection = theUrl.openConnection();
-            return new StreamingResolution(connection.getContentType()) {
-                @Override
-                protected void stream(HttpServletResponse response) throws IOException {
-
-                    IOUtils.copy(connection.getInputStream(), response.getOutputStream());
-
-                }
-            };
+            username = gs.getUsername();
+            password = gs.getPassword();
         }
 
-      
-    }
+        final HttpClientConfigured client = new HttpClientConfigured(username, password, null);
+        HttpUriRequest req = new HttpGet(theUrl.toURI());
+        
+        HttpResponse response = null;
+        try {
+            //TODO: Check if response is a getFeatureInfo or getmap response.
+            response = client.execute(req);
 
-    private void authenticate(URLConnection uc) {
-        EntityManager em = Stripersist.getEntityManager();
-        GeoService gs = em.find(GeoService.class, serviceId);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode >= 200 && statusCode < 300){
+                final HttpResponse finalResponse = response;
+                final HttpEntity entity = response.getEntity();
 
-        String username = gs.getUsername();
-        String password = gs.getPassword();
-        String userPassword = username + ":" + password;
-
-        Base64 encoder = new Base64();
-        String encoding = encoder.encodeToString(userPassword.getBytes());
-
-        uc.setRequestProperty("Authorization", "Basic " + encoding);
+                return new StreamingResolution(entity.getContentType().getValue()) {
+                    @Override
+                    protected void stream(HttpServletResponse resp) throws IOException {
+                        try {
+                            entity.writeTo(resp.getOutputStream());
+                        } finally {
+                            if (finalResponse != null) {
+                                client.close(finalResponse);
+                            }
+                            client.close();
+                        }
+                    }
+                };
+            } else {
+                return new ErrorResolution(statusCode, "Service returned: " + response.getStatusLine().getReasonPhrase());
+            }
+        } catch(Exception e){
+            log.error("Failed to write output:",e);
+            return null;
+        }finally {
+            if (response != null) {
+                client.close(response);
+            }
+            client.close();
+        }
     }
 
     private StringBuilder validateParams (String [] params,List<String> allowedParams) throws UnsupportedEncodingException{
