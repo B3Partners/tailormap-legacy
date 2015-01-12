@@ -311,11 +311,6 @@ public class ProxyActionBean implements ActionBean {
         } catch(Exception e){
             log.error("Failed to write output:",e);
             return null;
-        }finally {
-            if (response != null) {
-                client.close(response);
-            }
-            client.close();
         }
     }
 
@@ -323,7 +318,9 @@ public class ProxyActionBean implements ActionBean {
         StringBuilder sb = new StringBuilder();
         for (String param : params){
             if (allowedParams.contains((param.split("=")[0]).toUpperCase())){
-                sb.append(URLEncoder.encode(param, "UTF-8"));
+                sb.append(param.split("=")[0]);
+                sb.append("=");
+                sb.append(param.split("=")[1]);
                 sb.append("&");
             }
         }
