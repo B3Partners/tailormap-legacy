@@ -319,10 +319,16 @@ public class ProxyActionBean implements ActionBean {
     private StringBuilder validateParams (String [] params,List<String> allowedParams) throws UnsupportedEncodingException{
         StringBuilder sb = new StringBuilder();
         for (String param : params){
-            if (allowedParams.contains((param.split("=")[0]).toUpperCase())){
-                sb.append(param.split("=")[0]);
-                sb.append("=");
-                sb.append(param.split("=")[1]);
+            String[] splitted = param.split("=");
+            if (allowedParams.contains((splitted[0]).toUpperCase())){
+                if(splitted.length > 1){
+                    sb.append(param.split("=")[0]);
+                    sb.append("=");
+                    sb.append(param.split("=")[1]);
+                }else{
+                    sb.append(splitted[0]);
+                }
+
                 sb.append("&");
             }
         }
