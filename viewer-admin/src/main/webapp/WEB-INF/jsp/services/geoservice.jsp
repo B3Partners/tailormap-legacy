@@ -212,11 +212,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:checkbox name="useProxy"/> Gebruik proxy om kaarten op te halen.
             </td>
         </tr>
-        <tr>
-            <td colspan="2">
-                <stripes:checkbox name="useProxy"/> Gebruik proxy om kaarten op te halen.
-            </td>
-        </tr>
         <c:if test="${!edit}">
             <tr>
                 <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service
