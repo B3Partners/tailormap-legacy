@@ -677,7 +677,10 @@ Ext.define ("viewer.components.TOC",{
             var layerObj = null;
             if(child.data && child.data.layerObj) layerObj = child.data.layerObj;
             // if(child.raw && child.raw.layerObj) layerObj = child.raw.layerObj;
-            var record = this.panel.getView().getNodeByRecord(child);
+            var record = null;
+            if(this.panel.getView().el) {
+                record = this.panel.getView().getNodeByRecord(child);
+            }
             // Check for not existing/visible layers (ie. layers in (background) levels
             if(record != null){
                 var extElement = Ext.fly(record);
