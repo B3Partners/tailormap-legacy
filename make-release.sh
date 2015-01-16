@@ -44,10 +44,10 @@ echo "Release maken voor flamingo, versie "$VERSION
 
 echo "Purge possible previous attempts..."
 git checkout master
-git branch -d release/v4.4.9
-git branch -d v4.4.9
-git push origin --delete release/v4.4.9
-git push origin --delete v4.4.9
+git branch -d release/v$VERSION
+git branch -d v$VERSION
+git push origin --delete release/v$VERSION
+git push origin --delete v$VERSION
 git reset HEAD --hard
 rm *.war 
 rm *.zip
