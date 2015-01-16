@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
         
         var errorMsg = "appLayer " + this.getAppLayerId() + ": legend for ArcGIS not available: ";
         
-        var appLayerId = this.getAppLayerId();
+        var appLayerId = this.appLayerId;
         var appLayer = this.getViewerController().getAppLayerById(appLayerId);
         var service = this.getViewerController().app.services[appLayer.serviceId];
         
