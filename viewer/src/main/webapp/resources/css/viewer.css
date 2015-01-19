@@ -147,6 +147,16 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     z-index: 15000;
 }
 
+.direct-search-result {
+    position: absolute;
+}
+
+.round-shadows {
+    -webkit-box-shadow: 0px 0px 5px -2px rgba(41,41,41,.75);
+    -moz-box-shadow: 0px 0px 5px -2px rgba(41,41,41,.75);
+    box-shadow: 0px 0px 5px -2px rgba(41,41,41,.75);
+}
+
 /**
 * Fix for ExtJS not setting the cursor to move for draggable windows.
 */

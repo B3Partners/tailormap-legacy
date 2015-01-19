@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Custom configuration object for LayerSwitch configuration
- * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * Custom configuration object for Zoom configuration
+ * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
@@ -55,14 +55,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Top/bottom positie',
                 name: 'top',
-                value: (config != null && config.top != undefined) ? config.top : '5',
+                value: (config != null && config.top != undefined) ? config.top : '10',
                 labelWidth:me.labelWidth
             },
             {
                 xtype: 'textfield',
                 fieldLabel: 'Linker/rechter positie',
                 name: 'left',
-                value: (config != null && config.left != undefined) ? config.left : '5',
+                value: (config != null && config.left != undefined) ? config.left : '10',
                 labelWidth:me.labelWidth
             },
             { 

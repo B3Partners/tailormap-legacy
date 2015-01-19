@@ -147,13 +147,22 @@ Ext.define('viewer.LayoutManager', {
                     // Create floating region
                     var componentsList = me.filterComponentList(regionitems[i].regionConfig.components);
                     var componentItems = me.createComponents(componentsList, regionitems[i].regionDefaultConfig, regionitems[i].regionConfig.layout, regionitems[i].name);
+                    var floatLayout = { width: 58, height: componentsList.length * 46 }; // default
+                    if(regionitems[i].regionConfig.layout.width) {
+                        floatLayout.width = regionitems[i].regionConfig.layout.width;
+                    }
+                    if(regionitems[i].regionConfig.layout.height) {
+                        floatLayout.height = regionitems[i].regionConfig.layout.height;
+                    }
                     // Create the floating panel
                     me.createFloatingPanel(
                         /*regionLayout=*/{ panelTitle: '' },
                         /*region=*/'center',
                         /*componentItems=*/componentItems,
-                        /*layout=*/{ width: 58, height: componentsList.length * 46 }, // default button width/height + padding
-                        /*extLayout=*/{ type: 'vbox', align: 'stretch' }
+                        /*layout=*/floatLayout, // default button width/height + padding
+                        /*extLayout=*/{ type: 'vbox', align: 'stretch' },
+                        /*regionClass=*/'left_menu',
+                        /*alignment=*/regionitems[i].regionConfig.layout.floatingPosition
                     );
                     // Add some CSS to move tools to the right place
                     var css = '.olControlPanel { left: 68px; } .olControlPanWestItemInactive { left: 68px !important; }';
@@ -337,7 +346,7 @@ Ext.define('viewer.LayoutManager', {
      * @param layout            The layout (width and height) from the layoutmanager
      * @param extLayout         The Ext.Layout type (vbox or hbox)
      */
-    createFloatingPanel: function(regionLayout, region, componentItems, layout, extLayout) {
+    createFloatingPanel: function(regionLayout, region, componentItems, layout, extLayout, regionClass, extAlignment) {
         // Determine alignment based on region
         var alignment = region === 'west' ?
                             'left' :
@@ -347,6 +356,7 @@ Ext.define('viewer.LayoutManager', {
         // popupwindow config
         var windowPadding = 12;
         var config = {
+            cls: regionClass ? 'floating-window floating-' + regionClass : 'floating-window',
             title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
             autoShow: true,
             closable: false,
@@ -360,17 +370,19 @@ Ext.define('viewer.LayoutManager', {
             autoScroll: true,
             items: componentItems,
             minWidth: layout.width,
-            cls: 'floating-window'
+            floating: true
         };
         // Create a window to act as floating panel
         var popupWindow = Ext.create('Ext.window.Window', config);
-        // Align the floating panel to the left or right of the screen
-        this.alignFloatingPanel(popupWindow, alignment);
         // Save panels in store so they can be re-aligned when resizing the screen
-        this.floatingPanels.push({
+        var floatingPanel = {
             window: popupWindow,
-            alignment: alignment
-        });
+            alignment: alignment,
+            extAlignment: extAlignment
+        };
+        this.floatingPanels.push(floatingPanel);
+        // Align the floating panel to the left or right of the screen
+        this.alignFloatingPanel(floatingPanel);
         // Return empty object
         return {};
     },
@@ -642,7 +654,7 @@ Ext.define('viewer.LayoutManager', {
     afterLayout: function() {
         var me = this;
         Ext.Array.each(me.floatingPanels, function(panel) {
-            me.alignFloatingPanel(panel.window, panel.alignment);
+            me.alignFloatingPanel(panel);
         });
     },
 
@@ -689,15 +701,35 @@ Ext.define('viewer.LayoutManager', {
         this.popupWin.hide();
     },
 
-    alignFloatingPanel: function(panel, alignment) {
-        if(alignment === 'center') {
+    alignFloatingPanel: function(panel) {
+        // Default alignment = top-left
+        var extAlignment = 'tl';
+        // Default parent = body
+        var alignmentParent = Ext.getBody();
+        // Default position = 10, 10
+        var extAlignmentPos = [10, 10];
+        // Special settings for right alignment
+        if(panel.alignment === 'right') {
+            extAlignment = 'tr';
+        }
+        // Special settings for center alignment
+        if(panel.alignment === 'center') {
             var centerpart = Ext.select('.layout-content');
             if(centerpart.elements.length !== 0) {
-                panel.alignTo(centerpart.elements[0], 'tl-tl' , [5, 5]);
+                alignmentParent = centerpart.elements[0];
             }
-            return;
+            extAlignmentPos = [5, 5];
         }
-        panel.alignTo(Ext.getBody(), (alignment === 'left' ? 'tl-tl' : 'tr-tr'), (alignment === 'left' ? [10, 10] : [-10, 10]));
+        // Direct setting of extAlignment
+        if(panel.extAlignment) {
+            extAlignment = panel.extAlignment;
+        }
+        // If right aligned, first pos needs to be negative
+        if(extAlignment.substr(1) === 'r') {
+            extAlignmentPos[0] = extAlignmentPos[0] * -1;
+        }
+        // Align panel
+        panel.window.alignTo(alignmentParent, [extAlignment, extAlignment].join('-'), extAlignmentPos);
     },
 
     resizeLayout: function(continueFunction) {
@@ -712,7 +744,7 @@ Ext.define('viewer.LayoutManager', {
         me.mainLayoutContainer.updateLayout();
         // Re-align floating panels so they do not fall off-screen
         Ext.Array.each(me.floatingPanels, function(panel) {
-            me.alignFloatingPanel(panel.window, panel.alignment);
+            me.alignFloatingPanel(panel);
         });
         setTimeout(function(){
             if(continueFunction != undefined){

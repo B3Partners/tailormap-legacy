@@ -97,7 +97,18 @@
             }
         }
     },
-
+    {
+        className: "viewer.components.tools.Zoom",
+        name: "Zoom",
+        group: "Tools",
+        shortName: "Zm",
+        sources: ["tools/Tool.js","tools/Zoom.js"],
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+        closureCompilerSafe: true,
+        singleton: true,
+        restrictions: ["content"],
+        configSource: ["ConfigObject.js","Zoom-config.js"]
+    },
     {
         className: "viewer.components.tools.ZoomIn",
         name: "ZoomIn",
@@ -382,12 +393,14 @@
     {
         className: "viewer.components.TOC",
         name: "TOC",
+        shortName: "TOC",
         group: "Component",
         sources: ["TOC.js"],
         configSource: ["ConfigObject.js","TOC-config.js"],
         singleton: true,
-        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"],
-        showHelp: true
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
+        showHelp: true,
+        type: "popup"
     },
     {
         className: "viewer.components.tools.GoogleNavigation",
@@ -476,21 +489,11 @@
         sources: ["Legend.js"],
         group: "Component",
         closureCompilerSafe: true,
-        extPropertyGridConfigs: {
-            propertyNames: {
-                title: "Titel",
-                showBackground: "Toon achtergrond kaarten",
-                margin: "Marge rond legenda (bijv. \"3px\")"
-            },
-            source: {
-                title: "Legenda",
-                showBackground: false,
-                margin: "0px"
-            }
-        },
         singleton: true,
-        restrictions: ["leftmargin_top", "rightmargin_top","leftmargin_bottom", "rightmargin_bottom","popupwindow"],
-        showHelp: true
+        restrictions: ["leftmargin_top", "rightmargin_top","leftmargin_bottom", "rightmargin_bottom","popupwindow","left_menu"],
+        showHelp: true,
+        type: "popup",
+        configSource: ["ConfigObject.js","Legend-config.js"]
     },
     {
         className: "viewer.components.RelatedDocuments",
@@ -657,10 +660,21 @@
         shortName: "Se",
         group: "Component",
         sources: ["Search.js"],
-        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js","Search-configwrapper.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],
         type: "popup",
         showHelp: true
+     },
+     {
+        className: "viewer.components.DirectSearch",
+        name: "DirectSearch",
+        singleton: true,
+        shortName: "Dse",
+        group: "Component",
+        sources: ["Search.js", "DirectSearch.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js","DirectSearch-config.js"],
+        restrictions: ["content"],
+        showHelp: false
      },
    /*  {
         className: "viewer.components.fmc.Window",

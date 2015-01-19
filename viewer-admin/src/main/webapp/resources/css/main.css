@@ -268,6 +268,9 @@ input[type="submit"]:hover,
 #layoutManagerApplicationSettings input {
   width: 50px;
 }
+#layoutManagerApplicationSettings input[type=checkbox] {
+  width: auto;
+}
 #layoutManagerApplicationSettings input.wide, #layoutManagerApplicationSettings select.wide {
   width: 150px;
 }
@@ -343,14 +346,12 @@ input[type="submit"]:hover,
 #layout-container .content-container.dropallowed {
   background-color: #EEEEEE;
 }
-#layout-container .content-container .regionconfig, .globalconfig {
-  margin: 5px;
-  border: 1px solid #1c6ca7;
-  background-color: White;
-  padding: 5px;
-  float: left;
-}
 .globalconfig {
+    margin: 5px;
+    border: 1px solid #1c6ca7;
+    background-color: White;
+    padding: 5px;
+    float: left;
     position: absolute;
     display: none;
     margin-left: 75px;
@@ -374,25 +375,11 @@ input[type="submit"]:hover,
     min-height: 75px;
     display: block;
 }
-#layout-container .content-container .regionconfig .widthconfig,
-#layout-container .content-container .regionconfig .heightconfig,
-#layout-container .content-container .regionconfig .tabsconfig {
-  float: left;
-  margin-right: 10px;
-}
 #layout-container .content-container .regionconfig input {
   width: 25px;
 }
 #layout-container .content-container .regionconfig input[type='checkbox'] {
   width: auto;
-}
-#layout-container .content-container .regionconfig#regionconfig_left_menu {
-  /* Exception for left menu config, need to be absolute, otherwise
-                   it would render below components and other regions */
-
-  width: 130px;
-  position: absolute;
-  z-index: 50;
 }
 #layout-container .content-container .component-block {
   margin-top: 10px;
@@ -466,7 +453,7 @@ input[type="submit"]:hover,
 #layout-container #layout-center #center_center #layout_left_menu {
   float: left;
   margin-right: 10px;
-  width: 100px;
+  width: 120px;
 }
 #layout-container #layout-center #center_center #center_center_center {
   overflow: hidden;

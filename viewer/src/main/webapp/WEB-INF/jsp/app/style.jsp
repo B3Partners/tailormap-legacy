@@ -50,6 +50,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     background-color: #FFFFFF;
                 }
                 
+                .x-window.floating-left_menu {
+                    border-color: transparent;
+                    box-shadow: none;
+                    background-color: transparent;
+                }
+                
                 .x-window.floating-window .x-window-header-default-top {
                     background-color: #FFFFFF; /* Header background color */
                     box-shadow: 0 1px 0 0 #FFFFFF inset, -1px 0 0 0 #FFFFFF inset, 1px 0 0 0 #FFFFFF inset;
@@ -59,6 +65,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-window.floating-window .x-window-body-default {
                     background-color: #FFFFFF;  /* Visible when dragging the popup  */
                     border-color: #FFFFFF; /* Border round the content */
+                }
+                
+                .x-window.floating-left_menu .x-window-body-default {
+                    border-color: transparent;
+                    background-color: transparent;
                 }
                 
                 /* Panel header colors */

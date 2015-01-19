@@ -449,6 +449,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomBox(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON){//6,
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomOut(frameworkOptions));
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM){//6,
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Zoom(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions))
         }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,

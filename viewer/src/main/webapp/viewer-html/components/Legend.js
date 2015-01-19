@@ -58,9 +58,11 @@ Ext.define("viewer.components.Legend", {
         titlebarIcon: "",
         tooltip: "",
         margin: "0px",
-        showBackground: false
+        showBackground: false,
+        infoText: ""
     },
     constructor: function (conf){
+        conf.details.useExtLayout = true;
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;
@@ -98,7 +100,7 @@ Ext.define("viewer.components.Legend", {
         Ext.util.CSS.createStyleSheet(css, "legend");
         
         var title = "";
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) title = this.config.title;
         var tools = [];
         // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
@@ -109,22 +111,71 @@ Ext.define("viewer.components.Legend", {
                 }
             }];
         }
-        this.panel = Ext.create('Ext.panel.Panel', {
-            renderTo: this.getContentDiv(),
+        
+        this.renderButton();
+
+        this.legendContainer = document.createElement('div');
+        this.legendContainer.className = 'legend';
+        // Hide legend container in popup mode
+        if(this.config.isPopup) {
+            this.legendContainer.style.display = 'none';
+        }
+        document.body.appendChild(this.legendContainer);
+
+        var config = {
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'legendContainer" class="legend"></div>',
-            tools: tools,
-            autoScroll: true
-        });
-        
-        this.legendContainer = document.getElementById(this.name + 'legendContainer');
+            tools: tools
+        };
+
+        if(this.config.infoText) {
+            config.layout = {
+                type: 'vbox',
+                align: 'stretch'
+            };
+            config.items = [{
+                xtype: 'container',
+                html: this.config.infoText,
+                padding: '0 0 5 0'
+            },{
+                xtype: 'container',
+                contentEl: this.legendContainer,
+                flex: 1,
+                autoScroll: true
+            }];
+        } else {
+            config.contentEl = this.legendContainer;
+            config.autoScroll = true;
+        }
+
+        this.panel = Ext.create('Ext.panel.Panel', config);
+
+        var parent = this.getContentContainer();
+        parent.add(this.panel);
         
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChange,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
         
         return this;
+    },
+    
+    renderButton: function() {
+        var me = this;
+        if(!this.config.isPopup) {
+            return;
+        }
+        viewer.components.Legend.superclass.renderButton.call(this,{
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label,
+            handler: function() {
+                me.popup.show();
+                // make sure legendcontainer is visible
+                me.legendContainer.style.display = 'block';
+            }
+        });
     },
     
     getExtComponents: function() {

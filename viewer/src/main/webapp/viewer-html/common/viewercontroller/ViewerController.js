@@ -31,7 +31,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     layers : null,
     /** A logger    */
     logger: null,
-
+    /* Keep track of open popups to close previous when configured */
+    singlePopup: false,
+    previousPopup: null,
     dataSelectionChecker:null,
     /** Layers initialized?*/
     layersInitialized: false,
@@ -85,6 +87,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             );
         }
         this.layers = {};
+
+        // Check if single popup is configured
+        try {
+            if(app.details && app.details.globalLayout) {
+                var globalLayout = Ext.JSON.decode(app.details.globalLayout);
+                if(globalLayout.hasOwnProperty('singlePopup') && globalLayout.singlePopup) {
+                    this.singlePopup = globalLayout.singlePopup;
+                }
+            }
+        } catch(e) {}
 
         //get the map id
         var mapId = this.layoutManager.getMapId();
@@ -1632,6 +1644,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return layoutObject.layout;
         }
         return null;
+    },
+    
+    /**
+     * Registers all open windows to close previous windows if needed
+     * @param ScreenPopup popup
+     */
+    registerPopupShow: function(popup) {
+        if(this.singlePopup && this.previousPopup) {
+            this.previousPopup.hide();
+        }
+        this.previousPopup = popup;
     },
 
     getTopMenuHeightInPixels: function (){

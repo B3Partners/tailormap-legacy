@@ -29,8 +29,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             y: 100,
             width : 400,
             height: 600,
-            changeablePosition:true,
-            changeableSize:true,
+            changeablePosition:false,
+            changeableSize:false,
             items:null,
             position : 'center',
             useExtLayout: false
@@ -41,6 +41,7 @@ Ext.define ("viewer.components.ScreenPopup",{
     constructor: function (conf){
         var me = this;
         this.initConfig(conf);
+
         var config = {
             title: this.config.title || 'Titel',
             closable: true,
@@ -48,18 +49,13 @@ Ext.define ("viewer.components.ScreenPopup",{
             hideMode: 'offsets',
             width: ("" + this.config.details.width).indexOf('%') !== -1 ? this.config.details.width : parseInt(this.config.details.width),
             height: ("" + this.config.details.height).indexOf('%') !== -1 ? this.config.details.height : parseInt(this.config.details.height),
-            resizable: "true" == ""+this.config.details.changeableSize,
-            draggable: "true" == ""+this.config.details.changeablePosition,
+            resizable: "true" === ""+this.config.details.changeableSize,
+            draggable: "true" === ""+this.config.details.changeablePosition,
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
             autoScroll: true
         };
-        if(this.config.details.position == 'fixed' && !MobileManager.isMobile()) {
-            var wrapper = Ext.get('wrapper');
-            config.x = parseInt(this.config.details.x) + wrapper.getX();
-            config.y = parseInt(this.config.details.y) + wrapper.getY();
-        }
         
         if(MobileManager.isMobile()) {
             config.modal = true;
@@ -104,18 +100,22 @@ Ext.define ("viewer.components.ScreenPopup",{
                 }
             };
         }
+
         this.popupWin = Ext.create('Ext.window.Window', config);
         if(this.config.showOnStartup){
             this.popupWin.show();
         }
+        
+        var positionChanged = false;
         if(config.draggable){
-            this.popupWin.addListener("dragstart",this.disableBody,this);
-            this.popupWin.addListener("dragend",this.enableBody,this);
+            this.popupWin.addListener("dragstart", function() {
+                me.disableBody();
+            });
+            this.popupWin.addListener("dragend", function() {
+                me.enableBody();
+                positionChanged = true;
+            });
         }
-        /*if(config.resizable){
-            this.popupWin.resizer.addListener("beforeresize",this.disableBody,this);
-            this.popupWin.resizer.addListener("resize",this.enableBody,this);
-        }*/
         this.popupWin.addListener('hide', function() {
             if(me.component) {
                 me.component.setButtonState('normal', true);
@@ -123,6 +123,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             me.enableBody();
         });
         this.popupWin.addListener('show', function() {
+            conf.viewerController.registerPopupShow(me.popupWin);
             if(me.component) {
                 me.component.setButtonState('click', true);
             }
@@ -134,6 +135,20 @@ Ext.define ("viewer.components.ScreenPopup",{
                 me.popupWin.mon(Ext.getBody(), 'click', function(el, e){
                     me.popupWin.close();
                 }, me, { delegate: '.x-mask' });
+            } else if(me.config.details.position === 'fixed' && !positionChanged) {
+                // Align popupWindow
+                var pos = [parseInt(me.config.details.x), parseInt(me.config.details.y)];
+                var alignment = 'tl';
+                if(me.config.details.alignposition) {
+                    alignment = me.config.details.alignposition;
+                }
+                if(alignment.substr(0, 1) === 'b') {
+                    pos[1] = pos[1] * -1;
+                }
+                if(alignment.substr(1) === 'r') {
+                    pos[0] = pos[0] * -1;
+                }
+                me.popupWin.alignTo(Ext.get('wrapper'), [alignment, alignment].join('-'), pos);
             }
         });
         return this;

@@ -50,6 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                     <div class="configrow"><label for="app_background_position">Achtergrond positie:</label><input id="app_background_position" type="text" name="app_background_position" value="" /></div>
                     <div class="configrow"><label for="app_extracss">Extra CSS code:</label><textarea id="app_extracss" name="app_extracss" class="extliketextarea"></textarea></div>
+                    <div class="configrow"><label for="app_singlepopup">Max. 1 popup tegelijk:</label><input id="app_singlepopup" type="checkbox" name="app_singlepopup" value="true" /></div>
                 </div>
                 <a href="#Toevoegen_Componenten_Layout_Help" title="Help" class="helplink"></a>
             </div>

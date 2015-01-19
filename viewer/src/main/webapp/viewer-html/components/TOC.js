@@ -42,10 +42,13 @@ Ext.define ("viewer.components.TOC",{
     service : null,
     levels : null,
     backgroundLayers: null,
-    popup:null,
+    // popup:null,
     qtips:null,
     toggleAllLayersState:true,
     config: {
+        label: null,
+        iconUrl: null,
+        tooltip: null,
         groupCheck:true,
         layersChecked:true,
         showBaselayers:true,
@@ -62,6 +65,7 @@ Ext.define ("viewer.components.TOC",{
         expandOnEnabledLayer:false
     },
     constructor: function (config){
+        config.details.useExtLayout = true;
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.initConfig(config);
         /*backwards compatible, if 'showToggleAllLayers' is configured in the past
@@ -71,6 +75,7 @@ Ext.define ("viewer.components.TOC",{
             this.showAllLayersOn=config.showToggleAllLayers;
         }
         this.toggleAllLayersState = this.config.initToggleAllLayers;
+        this.renderButton();
         this.loadTree();
         this.loadInitLayers();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
@@ -103,7 +108,7 @@ Ext.define ("viewer.components.TOC",{
         store.addListener("expand",this.onExpand,this);
 
         var title = "";
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) title = this.config.title;
 
         var tools = [];
         // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
@@ -164,7 +169,23 @@ Ext.define ("viewer.components.TOC",{
             tools: tools,
             dockedItems: dockedItems
         });
-        this.getContentContainer().add(this.panel);
+        var parent = this.getContentContainer();
+        parent.add(this.panel);
+    },
+    renderButton: function() {
+        var me = this;
+        if(!this.config.isPopup) {
+            return;
+        }
+        viewer.components.TOC.superclass.renderButton.call(this,{
+            text: 'TOC',
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label,
+            handler: function() {
+                me.popup.show();
+            }
+        });
     },
     // Start the treetraversal
     loadInitLayers : function(){

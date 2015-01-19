@@ -53,10 +53,13 @@ Ext.define("viewer.components.Component",{
         me.initConfig(config);
         me.createIconStylesheet();
         var screenAreas = ['header', 'leftmargin_top', 'leftmargin_bottom', 'rightmargin_top', 'rightmargin_bottom', 'footer'];
+        if(!me.config.hasOwnProperty('isPopup')) {
+            me.config.isPopup = true;
+        }
         if(config.hasOwnProperty('regionName') && Ext.Array.indexOf(screenAreas, config.regionName) !== -1) {
             me.config.isPopup = false;
         }
-        if(me.config.isPopup){
+        if(me.config.isPopup) {
             me.popup = Ext.create("viewer.components.ScreenPopup",config);
             me.popup.setComponent(me);
             me.popup.popupWin.addListener("resize", function() {
@@ -83,7 +86,7 @@ Ext.define("viewer.components.Component",{
     
     getContentContainer: function() {
         if(this.config.isPopup) {
-            return this.popup.getContainer();
+            return this.popup.getContentContainer();
         }
         return Ext.getCmp(this.config.containerId);
     },

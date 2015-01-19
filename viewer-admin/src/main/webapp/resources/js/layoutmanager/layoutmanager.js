@@ -73,7 +73,7 @@ Ext.define('LayoutManager', {
         {id:'header', htmlId:'layout_header', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
         {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[], configureCollapsible: true, configureFloating: true},
         {id:'leftmargin_bottom', htmlId:'layout_left_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
-        {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, configureHeight: false, configureWidth: true, addedComponents:[], configureFloating: true},
+        {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, configureHeight: false, configureWidth: true, addedComponents:[], configureFloating: true, configureFloatingPosition: true },
         {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: true, configureWidth: false, addedComponents:[]},
         {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[], titleOverride: 'Map' },
         {id:'content_bottom', htmlId:'layout_content_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, addedComponents:[], titleOverride: 'Map bottom'},
@@ -85,6 +85,7 @@ Ext.define('LayoutManager', {
     layoutRegionsStore: null,
     popupWin: null,
     tooltips: {},
+    configWindows: {},
     config: {
         layoutJson: {},
         globalLayout: {},
@@ -148,7 +149,7 @@ Ext.define('LayoutManager', {
                     hasLayoutConfiguration = true;
                     layoutRegionConfigHtml += me.getWidthHeightHtml(layoutRegion.get('id'), 'width');
                 }
-                if(layoutRegion.get('configureHeight')) {
+                if(layoutRegion.get('configureHeight') || layoutRegion.get('configureFloating')) {
                     hasLayoutConfiguration = true;
                     layoutRegionConfigHtml += me.getWidthHeightHtml(layoutRegion.get('id'), 'height');
                 }
@@ -172,6 +173,12 @@ Ext.define('LayoutManager', {
                     layoutRegionConfigHtml += '<div class="tabsconfig">' +
                                                     'Maak balk zwevend : ' +
                                                     '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableFloating" />' +
+                                                '</div>';
+                }
+                if(layoutRegion.get('configureFloatingPosition')) {
+                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
+                                                    'Positie zwevende balk : ' +
+                                                    '<select id="' + layoutRegion.get('id') + '_floatingPosition"><option value="tl">Links-boven</option><option value="bl">Links-onder</option><option value="tr">Rechts-boven</option><option value="br">Rechts-onder</option></select>' +
                                                 '</div>';
                 }
                 if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
@@ -211,15 +218,25 @@ Ext.define('LayoutManager', {
                 );
                 if(hasLayoutConfiguration) {
                     layoutRegionElement.child('.layout_title').child('.layoutregion_title').on('click', function(event, obj) {
-                        layoutRegionElement.child('.layout_title').child('.regionconfig').toggle(false);
-                        /* Below is a layout fix for component items, preventing them to be partially invisible when a scrollbar appeared */
-                        me.layoutRegionsStore.each(function(region) {
-                            if(Ext.Array.contains(['content', 'content_bottom', 'popupwindow'], region.get('id'))) {
-                                if(region.regionContainer && region.regionContainer.items) {
-                                    me.resetWidthHeight(region.regionContainer, region.get('floatComponents'));
-                                }
-                            }
-                        });
+                        if(!me.configWindows.hasOwnProperty(layoutRegion.get('id'))) {
+                            me.configWindows[layoutRegion.get('id')] = Ext.create('Ext.window.Window', {
+                                title: 'Configuratie ' + layoutRegionTitle,
+                                closable: true,
+                                closeAction: 'hide',
+                                width: 400,
+                                height: 400,
+                                layout: 'fit',
+                                modal: true,
+                                contentEl: 'regionconfig_' + layoutRegion.get('id'),
+                                resizable: false,
+                                bodyPadding: 10,
+                                fbar: [
+                                    { type: 'button', text: 'Opslaan', handler: function() { me.configWindows[layoutRegion.get('id')].hide(); } }
+                                ]
+                            });
+                        }
+                        me.configWindows[layoutRegion.get('id')].show();
+                        Ext.get('regionconfig_' + layoutRegion.get('id')).setVisible(true);
                     });
                 }
                 layoutRegionElement.child('.layout_title').child('.regionconfig').setVisibilityMode(2).setVisible(false);
@@ -312,7 +329,7 @@ Ext.define('LayoutManager', {
                 if(layoutRegion.get('configureWidth')) {
                     me.applyConfig(regionId, 'width');
                 }
-                if(layoutRegion.get('configureHeight')) {
+                if(layoutRegion.get('configureHeight') || layoutRegion.get('configureFloating')) {
                     me.applyConfig(regionId, 'height');
                 }
                 if(layoutRegion.get('configureTabs')) {
@@ -344,7 +361,24 @@ Ext.define('LayoutManager', {
                     if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['enableFloating']) && me.config.layoutJson[regionId]['layout']['enableFloating']) {
                         floatingChecked = me.config.layoutJson[regionId]['layout']['enableFloating'];
                     }
-                    Ext.fly(regionId + '_enableFloating').dom.checked = floatingChecked;
+                    var enableFloatingCheck = Ext.get(regionId + '_enableFloating');
+                    enableFloatingCheck.dom.checked = floatingChecked;
+                    if(!layoutRegion.get('configureHeight')) {
+                        var heightconfig = document.getElementById(regionId + '_height_container');
+                        if(!floatingChecked) {
+                            heightconfig.style.display = 'none';
+                        }
+                        enableFloatingCheck.on('click', function() {
+                            heightconfig.style.display = enableFloatingCheck.dom.checked ? 'block' : 'none';
+                        });
+                    }
+                }
+                if(layoutRegion.get('configureFloatingPosition')) {
+                    var floatingPosition = 'tl';
+                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['floatingPosition'])) {
+                        floatingPosition = me.config.layoutJson[regionId]['layout']['floatingPosition'];
+                    }
+                    document.getElementById(regionId + '_floatingPosition').value = floatingPosition;
                 }
                 if(layoutRegion.get('configureCollapsible')) {
                     var collapseChecked = false;
@@ -434,6 +468,7 @@ Ext.define('LayoutManager', {
             });
             Ext.get('app_background_position').set({value: this.config.globalLayout.backgroundPosition || ''});
             Ext.get('app_extracss').dom.value = this.config.globalLayout.extraCss || '';
+            Ext.get('app_singlepopup').dom.checked = this.config.globalLayout.singlePopup || false;
         }
     },
     
@@ -444,7 +479,7 @@ Ext.define('LayoutManager', {
      * @returns string
      */
     getWidthHeightHtml: function(id, type) {
-        return '<div class="' + type + 'config">' + 
+        return '<div class="' + type + 'config" id="' + id + '_' + type + '_container">' + 
             (type === 'width' ? 'Breedte' : 'Hoogte') + ':<br />' + 
             '<input type="text" id="' + id + '_' + type + '" />' +
             '<select id="' + id + '_' + type + 'measure">' +
@@ -831,7 +866,7 @@ Ext.define('LayoutManager', {
                     'maxwidth': Ext.get(regionId + '_maxwidth').getValue() || ''
                 });
             }
-            if(region.get('configureHeight')) {
+            if(region.get('configureHeight') || region.get('configureFloating')) {
                 Ext.apply(layoutConfig, {
                     'height': Ext.get(regionId + '_height').getValue() || '',
                     'heightmeasure': Ext.get(regionId + '_heightmeasure').getValue() || '',
@@ -866,6 +901,11 @@ Ext.define('LayoutManager', {
                     'enableFloating': Ext.fly(regionId + '_enableFloating').dom.checked
                 });
             }
+            if(region.get('configureFloatingPosition')) {
+                Ext.apply(layoutConfig, {
+                    'floatingPosition': Ext.fly(regionId + '_floatingPosition').getValue()
+                });
+            }
             if(region.get('configureCollapsible') || region.get('configureFloating')) {
                 Ext.apply(layoutConfig, {
                     'panelTitle': Ext.fly(regionId + '_panelTitle').getValue() || ''
@@ -891,7 +931,8 @@ Ext.define('LayoutManager', {
             backgroundImage: Ext.get('app_background_image').getValue() || "",
             backgroundRepeat: Ext.get('app_background_repeat').getValue() || "no-repeat",
             backgroundPosition: Ext.get('app_background_position').getValue() || "",
-            extraCss: Ext.get('app_extracss').getValue() || ""
+            extraCss: Ext.get('app_extracss').getValue() || "",
+            singlePopup: Ext.get('app_singlepopup').dom.checked
         };
         Ext.Ajax.request({ 
             url: this.config.layoutSaveUrl, 

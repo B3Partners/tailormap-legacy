@@ -126,6 +126,24 @@ function createLayoutTab(){
     var centerChecked = details.position == "center";
     var fixedChecked = details.position == "fixed";
     
+    var alignStore = Ext.create('Ext.data.ArrayStore', {
+        autoDestroy: true,
+        idIndex: 0,
+        fields: [{
+            name: 'name',
+            type: 'string'
+        }, {
+            name: 'value',
+            type: 'string'
+        }],
+        data: [
+            ['Links-boven', 'tl'],
+            ['Rechts-boven', 'tr'],
+            ['Links-onder', 'bl'],
+            ['Rechts-onder', 'br']
+        ]
+    });
+    
     layoutForm = new Ext.form.FormPanel({
         frame: false,
         width: 480,
@@ -182,6 +200,19 @@ function createLayoutTab(){
                 value: details.y,
                 hidden : true,
                 labelWidth:100
+            },
+            { 
+                xtype: 'combobox',
+                fieldLabel: 'Uitlijning',
+                id: "alignposition",
+                name: 'alignposition',
+                value: details.alignposition,
+                hidden : true,
+                labelWidth:100,
+                store: alignStore,
+                displayField: 'name',
+                valueField: 'value',
+                queryMode: 'local'
             },
             {
                 xtype: 'checkbox',
@@ -264,9 +295,11 @@ function toggleXY(show){
     if(show){
         Ext.getCmp('x').show();
         Ext.getCmp('y').show();
+        Ext.getCmp('alignposition').show();
     }else{
         Ext.getCmp('x').hide();
         Ext.getCmp('y').hide();
+        Ext.getCmp('alignposition').hide();
     }
 }
 

@@ -18,12 +18,13 @@
  * Custom configuration object for AttributeList configuration
  * @author <a href="mailto:geertplaisier@b3partners.nl">Roy Braam</a>
  */
-Ext.define("viewer.components.CustomConfiguration",{
+Ext.define("viewer.components.SearchConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     panel: null,
     panelHeight: 120,
     searchconfigs: [],
     nextId: 1,
+    maxSearchConfigs: -1,
     solrSearchconfigs: {},
     simpleListConfigs: {},
     layerSelectionWindow: null,
@@ -33,7 +34,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         if (configObject === null){
             configObject = {};
         }
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.form.add({
             xtype: 'checkbox',
             boxLabel: 'Toon knop voor het verwijderen van marker',
@@ -60,7 +61,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             autoScroll: true,
             items: [],
             renderTo: 'config',
-            tbar: [
+            tbar: this.maxSearchConfigs === 1 ? null : [
                 "->",
                 {
                     xtype:'button',
@@ -80,20 +81,27 @@ Ext.define("viewer.components.CustomConfiguration",{
             Als de ingevulde zoekwaarde ergens anders moet komen in de url dan kan op die plek '[ZOEKWOORD]' worden opgegeven.\n\
             Voorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='";
         document.getElementById("config").appendChild(extraText);
-        
+
         if(config != null) {
-            if(config.nextSearchConfigId != null) {
-                me.nextId = config.nextSearchConfigId;
-            }
             if(config.searchconfigs != null) {
                 Ext.Array.each(config.searchconfigs, function(searchconfig) {
                     me.appendSearchField(searchconfig);
                 });
             }
+            if(config.nextSearchConfigId != null) {
+                me.nextId = config.nextSearchConfigId;
+            }
+        }
+        if(this.maxSearchConfigs === 1 && (!config || !config.searchconfigs || config.searchconfigs.length === 0)) {
+            me.appendSearchField();
         }
     },
     appendSearchField: function(config) {
         var me = this;
+        // Check maxSearchConfigs
+        if(me.maxSearchConfigs !== -1 && me.maxSearchConfigs < me.nextId) {
+            return;
+        }
         var nextId = me.nextId;
         var newconfig = config || {
             id: 'search' + nextId,
@@ -184,7 +192,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     ]
                 }
             ],
-            tbar: ["->", {
+            tbar: this.maxSearchConfigs === 1 ? null : ["->", {
                 xtype:'button',
                 iconCls: 'removebutton-icon',
                 text: 'Zoekingang verwijderen',
@@ -277,7 +285,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
     getConfiguration: function(){
         var me = this;
-        var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
+        var config = viewer.components.SearchConfiguration.superclass.getConfiguration.call(this);
         me.saveConfig();
         config['searchconfigs'] = me.searchconfigs;
         config['nextSearchConfigId'] = me.nextId;
@@ -565,4 +573,3 @@ Ext.define("viewer.components.CustomConfiguration",{
         return null;
     }
 });
-

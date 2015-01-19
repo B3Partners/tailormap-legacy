@@ -52,6 +52,10 @@ Ext.define ("viewer.components.Search",{
     onlyUrlConfig:null,
     currentSeachId:null,
     dynamicSearchEntries:null,
+    loadingContainer: null,
+    showSearchButtons: true,
+    simpleSearchResults: false,
+    searchFieldTriggers: null,
     config:{
         title: null,
         iconUrl: null,
@@ -161,6 +165,7 @@ Ext.define ("viewer.components.Search",{
             this.popup.getContentContainer().add(this.mainContainer);
         }
         this.form.query("#cancel"+ this.name)[0].setVisible(false);
+        this.loadingContainer = Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0];
     },
     getFormItems: function(){
         var me = this;
@@ -204,7 +209,7 @@ Ext.define ("viewer.components.Search",{
                 }
                 this.autosuggestStore = Ext.create('Ext.data.Store',  {
                     autoLoad: false,
-                    fields: ['label', 'searchConfig'],
+                    fields: ['label', 'searchConfig', 'type'],
                     // model: 'Doc',
                     proxy: {
                         type: 'ajax',
@@ -219,7 +224,8 @@ Ext.define ("viewer.components.Search",{
                 var me = this;
                 this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
                     name: 'searchfield',
-                    hideTrigger: true,
+                    hideTrigger: me.searchFieldTriggers === null,
+                    triggers: me.searchFieldTriggers === null ? {} : me.searchFieldTriggers,
                     flex:1,
                     anchor: '100%',
                     triggerAction: 'query',
@@ -240,7 +246,10 @@ Ext.define ("viewer.components.Search",{
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() === e.ENTER) {
-                                var item = field.picker.pickerField.listKeyNav.boundList.highlightedItem;
+                                var item = null;
+                                if(field.picker.pickerField && field.picker.pickerField.listKeyNav && field.picker.pickerField.listKeyNav.boundList.highlightedItem) {
+                                    item = field.picker.pickerField.listKeyNav.boundList.highlightedItem;
+                                }
                                 if(!item){
                                     me.search();
                                 }
@@ -263,12 +272,12 @@ Ext.define ("viewer.components.Search",{
                 });
                 Ext.view.BoundListKeyNav.override({
                     selectHighlighted: function() {
-                        var item = this.boundList.highlightedItem;
-                        //If an item is selected, the user did that. So go directly to that result. Otherwise search with the user typed string
-                        if (item) { 
-                            var node = this.boundList.getRecord(item);
-                            me.searchHighlightedSuggestion(node);
+                        if(!this.record) {
+                            me.search();
+                            return;
                         }
+                        //If an item is selected, the user did that. So go directly to that result. Otherwise search with the user typed string
+                        me.searchHighlightedSuggestion(this.record);
                     }
                 });
                 
@@ -276,7 +285,7 @@ Ext.define ("viewer.components.Search",{
                     width: '100%',
                     height: 30,
                     layout: {
-                        type: 'hbox'
+                        type: this.showSearchButtons ? 'hbox' : 'fit'
                     },
                     autoScroll: true,
                     items: [this.searchField,{
@@ -285,6 +294,7 @@ Ext.define ("viewer.components.Search",{
                             componentCls: 'mobileLarge',
                             margin: this.margin,
                             width: 60,
+                            hidden: !this.showSearchButtons,
                             listeners: {
                                 click: {
                                     scope: this,
@@ -303,6 +313,7 @@ Ext.define ("viewer.components.Search",{
             componentCls: 'mobileLarge',
             name: 'cancel',
             itemId: 'cancel'+ this.name,
+            hidden: !this.showSearchButtons,
             listeners: {
                 click:{
                     scope: this,
@@ -331,8 +342,9 @@ Ext.define ("viewer.components.Search",{
     },
     searchHighlightedSuggestion: function(node){
         var data = node.raw !== undefined ? node.raw : node.data;
-        this.searchField.setValue(data.label);
+        this.searchField.setValue(data.originalLabel || data.label);
         this.handleSearchResult(data);
+        this.searchField.collapse();
     },
     hideWindow : function(){
         this.searchField.collapse();
@@ -390,7 +402,7 @@ Ext.define ("viewer.components.Search",{
             requestParams["searchRequestId"]= this.searchRequestId;
             this.getExtraRequestParams(requestParams,searchName);
             var me = this;
-            Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0].setLoading({
+            me.loadingContainer.setLoading({
                 msg: 'Bezig met zoeken'
             });
             Ext.Ajax.request({
@@ -408,12 +420,12 @@ Ext.define ("viewer.components.Search",{
                             me.results.setTitle(me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
                         }
                     }
-                    Ext.ComponentQuery.query('#' + me.name + 'ContentPanel')[0].setLoading(false);
+                    me.loadingContainer.setLoading(false);
                 },
                 failure: function(result, request) {
                     var response = Ext.JSON.decode(result.responseText);
                     Ext.MessageBox.alert("Foutmelding", response.error);
-                    Ext.ComponentQuery.query('#' + me.name + 'ContentPanel')[0].setLoading(false);
+                    me.loadingContainer.setLoading(false);
                 }
             });
         }
@@ -429,6 +441,10 @@ Ext.define ("viewer.components.Search",{
         }
         var me = this;
         this.form.query("#cancel"+ this.name)[0].setVisible(false);
+        if(me.simpleSearchResults) {
+            me.showResultsPicker();
+            return;
+        }
         var panelList = [{
                 xtype: 'panel', // << fake hidden panel
                 hidden: true,
@@ -519,12 +535,29 @@ Ext.define ("viewer.components.Search",{
         };
         return item;
     },
+    showResultsPicker: function() {
+        this.autosuggestStore.removeAll();
+        if (Ext.isDefined(this.searchResult) && this.searchResult.length) {
+            var searchResults = [],
+                result = null;
+            for(var i = 0; i < this.searchResult.length; i++) {
+                result = this.searchResult[i];
+                if(result.hasOwnProperty('type')) {
+                    result.originalLabel = result.label;
+                    result.label += ' (' + result.type + ')';
+                }
+                searchResults.push(result);
+            }
+            this.autosuggestStore.add(searchResults);
+            this.searchField.expand();
+        }
+    },
     cancel: function(){
         this.searchField.setValue("");
         if (this.searchName) {
             this.searchName.setValue("");
         }
-        Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0].setLoading(false);
+        this.loadingContainer.setLoading(false);
         this.form.query("#cancel" + this.name)[0].setVisible(false);
         this.results.destroy();
     },
@@ -678,7 +711,7 @@ Ext.define ("viewer.components.Search",{
 
         this.searchResult = this.searchResult.concat(results);
         this.showSearchResults();
-        Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0].setLoading(false);
+        this.loadingContainer.setLoading(false);
     },
     loadVariables: function(param){
         var searchConfigId = param.substring(0,param.indexOf(":"));

@@ -15,15 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Custom configuration object for LayerSwitch configuration
- * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * Custom configuration object for DirectSearch configuration
+ * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
-Ext.define("viewer.components.CustomConfiguration",{
-    extend: "viewer.components.ConfigObject",
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        var me = this;
-        
+Ext.define('viewer.components.CustomConfiguration', {
+    extend: 'viewer.components.SearchConfiguration',
+    maxSearchConfigs: 1,
+    constructor: function(parentId, configObject) {
+        if (configObject === null){
+            configObject = {};
+        }
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         var alignmentStore = Ext.create('Ext.data.ArrayStore', {
             autoDestroy: true,
             idIndex: 0,
@@ -41,50 +43,30 @@ Ext.define("viewer.components.CustomConfiguration",{
                 ['Rechts-onder', 'br']
             ]
         });
-        
-        this.form = new Ext.form.FormPanel({
-            url: 'Home/SubmitForm',
-            frame: false,
-            title: 'Configureer dit component',
-            bodyPadding: me.formPadding,
-            defaults: {
-                anchor: '100%'
-            },
-            width: me.formWidth,
-            items: [{
+        this.form.add([{
                 xtype: 'textfield',
                 fieldLabel: 'Top/bottom positie',
                 name: 'top',
-                value: (config != null && config.top != undefined) ? config.top : '5',
-                labelWidth:me.labelWidth
+                value: (configObject != null && configObject.top != undefined) ? configObject.top : '10',
+                labelWidth:this.labelWidth
             },
             {
                 xtype: 'textfield',
                 fieldLabel: 'Linker/rechter positie',
                 name: 'left',
-                value: (config != null && config.left != undefined) ? config.left : '5',
-                labelWidth:me.labelWidth
+                value: (configObject != null && configObject.left != undefined) ? configObject.left : '10',
+                labelWidth:this.labelWidth
             },
             { 
                 xtype: 'combobox',
                 fieldLabel: 'Uitlijning',
                 name: 'alignposition',
-                value: (config != null && config.alignposition != undefined) ? config.alignposition : 'tl',
-                labelWidth: me.labelWidth,
+                value: (configObject != null && configObject.alignposition != undefined) ? configObject.alignposition : 'tl',
+                labelWidth: this.labelWidth,
                 store: alignmentStore,
                 displayField: 'name',
                 valueField: 'value',
                 queryMode: 'local'
-            }],
-            renderTo: parentid
-        });
-        return this;
-    },
-    getConfiguration: function(){
-        var config = new Object();
-        for( var i = 0 ; i < this.form.items.length ; i++){
-            config[this.form.items.get(i).name] = this.form.items.get(i).value;
-        }
-        return config;
+            }]);
     }
 });

@@ -69,13 +69,12 @@ Ext.define ("viewer.components.LayerSwitch",{
                 floating: true,
                 border: false,
                 shadow: false,
-                top:  '30px',
+                // top:  '30px',
                 style: {
                     'zIndex': 1002
                 }
             });
             // this.container.zIndexManager.bringToFront(this.container, true);
-            this.container.setPosition(Number(this.config.left), Number(this.config.top));
         }
         if(this.button) {
             this.button.destroy();
@@ -94,6 +93,23 @@ Ext.define ("viewer.components.LayerSwitch",{
             }
         });
         this.container.add(this.button);
+        this.alignContainer();
+    },
+    
+    alignContainer: function() {
+        var pos = [Number(this.config.left), Number(this.config.top)];
+        var align = 'tl';
+        if(this.config.alignposition) {
+            align = this.config.alignposition;
+        }
+        if(align.substr(0, 1) === 'b') {
+            pos[1] = pos[1] * -1;
+        }
+        if(align.substr(1) === 'r') {
+            pos[0] = pos[0] * -1;
+        }
+        this.container.alignTo(Ext.getBody(), [align, align].join('-'), pos);
+        this.container.anchorTo(Ext.getBody(), [align, align].join('-'), pos);
     },
     
     levelItemId: function(level) {
