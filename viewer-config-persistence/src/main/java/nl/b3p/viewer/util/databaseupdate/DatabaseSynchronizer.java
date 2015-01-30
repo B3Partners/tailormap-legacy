@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -90,6 +90,8 @@ public class DatabaseSynchronizer implements Servlet {
 
         updates.put("5", new ArrayList());
         updates.get("5").add("add_cyclorama_account.sql");
+
+        updates.put("6", Collections.singletonList("alter_layer_children_child_unique.sql"));
     }
     /**
      * Function is called in init() of servlet.

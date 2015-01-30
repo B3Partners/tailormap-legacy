@@ -37,29 +37,29 @@ import org.stripesstuff.stripersist.Stripersist;
 @Entity
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class Layer implements Cloneable {
-    private static final Log log = LogFactory.getLog(Layer.class);    
-    
+    private static final Log log = LogFactory.getLog(Layer.class);
+
     public static final String EXTRA_KEY_METADATA_URL = "metadata.url";
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
     public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
     public static final String EXTRA_KEY_FILTERABLE = "filterable";
     public static final String EXTRA_IMAGE_EXTENSION ="image_extension";
-    
+
     /**
      * JSON representation of wms:Style elements from capabilities for this layer
      */
     public static final String DETAIL_WMS_STYLES = "wms.styles";
-    
+
     /**
-     * Layer.details map key for comma separated list of layer names of children 
+     * Layer.details map key for comma separated list of layer names of children
      * of this layer.
-     */ 
+     */
     public static final String DETAIL_ALL_CHILDREN = "all_children";
-    
+
     public static final String DETAIL_ALTERNATE_LEGEND_IMAGE_URL = "alternateLegendImageUrl";
-    
-    private static Set<String> interestingDetails = new HashSet<String>(Arrays.asList(new String[] { 
-        EXTRA_KEY_METADATA_URL, 
+
+    private static Set<String> interestingDetails = new HashSet<String>(Arrays.asList(new String[] {
+        EXTRA_KEY_METADATA_URL,
         EXTRA_KEY_METADATA_STYLESHEET_URL,
         EXTRA_KEY_DOWNLOAD_URL,
         EXTRA_KEY_FILTERABLE,
@@ -67,14 +67,14 @@ public class Layer implements Cloneable {
         DETAIL_ALL_CHILDREN,
         DETAIL_WMS_STYLES,
         DETAIL_ALTERNATE_LEGEND_IMAGE_URL
-    }));  
-    
-    private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] { 
+    }));
+
+    private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] {
         EXTRA_KEY_METADATA_URL,
         DETAIL_ALL_CHILDREN,
         DETAIL_WMS_STYLES
-    }));        
-            
+    }));
+
     @Id
     private Long id;
 
@@ -135,7 +135,7 @@ public class Layer implements Cloneable {
     private Set<String> writers = new HashSet<String>();
 
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="child", unique=true))
     @OrderColumn(name="list_index")
     private List<Layer> children = new ArrayList<Layer>();
 
@@ -146,7 +146,7 @@ public class Layer implements Cloneable {
 
     public Layer() {
     }
-    
+
     public Layer(org.geotools.data.ows.Layer l, GeoService service) {
         name = l.getName();
         virtual = name == null;
@@ -165,7 +165,7 @@ public class Layer implements Cloneable {
          * various for implementing service products.
          * Scalehint indicates the diagonal size of a pixel in map units, to calculate
          * the scale use Pythagorean theorem
-         */        
+         */
         if (minScale==null && maxScale ==null){
             minScale = l.getScaleHintMin();
             maxScale = l.getScaleHintMax();
@@ -196,7 +196,7 @@ public class Layer implements Cloneable {
             BoundingBox b = new BoundingBox(e);
             boundingBoxes.put(b.getCrs(), b);
         }
-        
+
         for(String s: l.getSrs()) {
             crsList.add(new CoordinateReferenceSystem(s));
         }
@@ -204,11 +204,11 @@ public class Layer implements Cloneable {
         if(l.getKeywords() != null) {
             keywords.addAll(Arrays.asList(l.getKeywords()));
         }
-        
+
         if(!l.getMetadataURL().isEmpty()) {
             details.put(EXTRA_KEY_METADATA_URL, new ClobElement(l.getMetadataURL().get(0).getUrl().toString()));
         }
-        
+
         if(!l.getStyles().isEmpty()) {
             try {
                 JSONArray styles = new JSONArray();
@@ -235,7 +235,7 @@ public class Layer implements Cloneable {
                 log.error("Error creating styles JSON", e);
             }
         }
-        
+
         if(l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0) {
             String legendUrl = (String)l.getStyles().get(0).getLegendURLs().get(0);
             legendImageUrl = legendUrl;
@@ -245,29 +245,29 @@ public class Layer implements Cloneable {
             Layer childLayer = new Layer(child, service);
             childLayer.setParent(this);
             children.add(childLayer);
-        }             
+        }
     }
-    
+
     protected void update(Layer update) {
         update(update, null);
     }
-    
+
     protected void update(Layer update, Set<String> additionalUpdatableDetails) {
         if(!getName().equals(update.getName())) {
             throw new IllegalArgumentException("Cannot update layer with properties from layer with different name!");
         }
-        
+
         virtual = update.virtual;
         queryable = update.queryable;
         filterable = update.filterable;
         title = update.title;
         minScale = update.minScale;
         maxScale = update.maxScale;
-        
+
         if(!boundingBoxes.equals(update.boundingBoxes)) {
             boundingBoxes.clear();
             boundingBoxes.putAll(update.boundingBoxes);
-        }        
+        }
         if(!crsList.equals(update.crsList)) {
             crsList.clear();
             crsList.addAll(update.crsList);
@@ -276,45 +276,45 @@ public class Layer implements Cloneable {
             keywords.clear();
             keywords.addAll(update.keywords);
         }
-        
-        // updateableDetails maps are used for clearing only details which are 
+
+        // updateableDetails maps are used for clearing only details which are
         // set by loading metadata, leave details set by other code alone
-        
+
         for(String s: updatableDetails) {
             details.remove(s);
         }
         if(additionalUpdatableDetails != null) {
             for(String s: additionalUpdatableDetails) {
                 details.remove(s);
-            }        
+            }
         }
         // update all metadata loaded details
         details.putAll(update.getDetails());
         removeEmptyMapValues(details);
-        
+
         legendImageUrl = update.legendImageUrl;
-        
+
         // tileSet ignored -- only for tile services!
     }
 
     /**
      * Copy user modified properties of given layer onto this instance. Used for
-     * updating the topLayer. Not called for other layers, those instances are 
+     * updating the topLayer. Not called for other layers, those instances are
      * updated with update().
      */
-    protected void copyUserModifiedProperties(Layer other) {     
+    protected void copyUserModifiedProperties(Layer other) {
         setTitleAlias(other.getTitleAlias());
         getReaders().clear();
         getReaders().addAll(other.getReaders());
         getWriters().clear();
         getWriters().addAll(other.getWriters());
     }
-    
+
     /**
      * Clone this layer and remove it from the tree of the GeoService this Layer
      * is part of. Used for updating service, call only on non-persistent objects.
      * @return a clone of this Layer with its parent and service set to null and
-     * children set to a new, empty list. 
+     * children set to a new, empty list.
      */
     public Layer pluckCopy() {
         if(Stripersist.getEntityManager().contains(this)) {
@@ -325,7 +325,7 @@ public class Layer implements Cloneable {
             clone.setParent(null);
             clone.setChildren(new ArrayList());
             clone.setService(null);
-            
+
             return clone;
         } catch(CloneNotSupportedException e) {
             return null;
@@ -338,7 +338,7 @@ public class Layer implements Cloneable {
      * return true, otherwise return false
      */
     public boolean isBufferable(){
-        return getService().getProtocol().equals(ArcIMSService.PROTOCOL) || 
+        return getService().getProtocol().equals(ArcIMSService.PROTOCOL) ||
                 this.getFeatureType() != null;
     }
 
@@ -359,7 +359,7 @@ public class Layer implements Cloneable {
         }
         return visitor.visit(this);
     }
-    
+
     public String getDisplayName() {
         if(StringUtils.isNotBlank(titleAlias)) {
             return titleAlias;
@@ -369,18 +369,18 @@ public class Layer implements Cloneable {
             return name;
         }
     }
-    
+
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();
-        
+
         o.put("id", id);
         o.put("serviceId", service.getId());
         o.put("name", name);
-        
+
         o.put("virtual", virtual);
         o.put("queryable", queryable);
-        o.put("filterable", filterable);       
-        
+        o.put("filterable", filterable);
+
         if(title != null) {
             o.put("title", title);
         }
@@ -404,15 +404,15 @@ public class Layer implements Cloneable {
                 o.put("maxScale", maxScale);
             }
         }
-        
+
         o.put("hasFeatureType", featureType != null);
         if(featureType != null) {
             o.put("featureTypeName", featureType.getTypeName());
             o.put("featureTypeId",featureType.getId());
         }
-        
+
         /* Only include "interesting" details in JSON */
-        
+
         if(!details.isEmpty()) {
             JSONObject d = new JSONObject();
             o.put("details", d);
@@ -420,9 +420,9 @@ public class Layer implements Cloneable {
                 if(interestingDetails.contains(e.getKey())) {
                     d.put(e.getKey(), e.getValue());
                 }
-            }        
+            }
         }
-        
+
         if (tileset!=null){
             o.put("tileHeight",tileset.getHeight());
             o.put("tileWidth",tileset.getWidth());
@@ -440,17 +440,17 @@ public class Layer implements Cloneable {
                 BoundingBox bbox=boundingBoxes.values().iterator().next();
                 o.put("bbox",bbox.toJSONObject());
             }
-            
+
         }
-        
-        
+
+
         return o;
     }
 
-    public List<Layer> getCachedChildren() {        
+    public List<Layer> getCachedChildren() {
         return service.getLayerChildrenCache(this);
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Layer getParent() {
         return parent;
@@ -559,7 +559,7 @@ public class Layer implements Cloneable {
     public List<Layer> getChildren() {
         return children;
     }
-    
+
     public void setChildren(List<Layer> children) {
         this.children = children;
     }
@@ -602,7 +602,7 @@ public class Layer implements Cloneable {
 
     public void setTileset(TileSet tileset) {
         this.tileset = tileset;
-    }    
+    }
 
     public String getLegendImageUrl() {
         return legendImageUrl;
@@ -619,6 +619,6 @@ public class Layer implements Cloneable {
     public void setBoundingBoxes(Map<CoordinateReferenceSystem, BoundingBox> boundingBoxes) {
         this.boundingBoxes = boundingBoxes;
     }
-    
+
     //</editor-fold>
 }

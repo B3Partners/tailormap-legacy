@@ -1,0 +1,1 @@
+alter table level_children add constraint ayer_children_child_key unique (child);
