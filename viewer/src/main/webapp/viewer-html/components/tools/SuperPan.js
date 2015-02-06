@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,19 +16,20 @@
  */
 /**
  * SuperPan Tool component
- * Creates a MapComponent Tool with the given configuration by calling createTool
+ * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.tools.SuperPan",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "superPan"
+        name: "superPan",
+        tooltip: "SuperPan"
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.tools.SuperPan.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.SUPERPAN;
+        conf.type = viewer.viewercontroller.controller.Tool.SUPERPAN;        
         this.initTool(conf);
         return this;
     }

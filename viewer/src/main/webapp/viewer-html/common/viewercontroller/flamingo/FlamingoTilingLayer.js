@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class
+ * @class 
  * @description Flamingo Tiling layer
  **/
 
@@ -37,12 +37,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoTilingLayer.superclass.constructor.call(this, config);
         this.mixins.flamingoLayer.constructor.call(this,config);
-
+        
         return this;
     },
     getTagName : function(){
         return "TilingLayer";
-    },
+    },    
     /**
      *makes a xml string so the object can be added to flamingo
      *@return a xml string of this object
@@ -56,11 +56,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
                 url += "/tile/";
             }
         }
-
+        
         var xml="<fmc:";
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
-        xml+=" id=\""+this.getId()+"\"";
+        xml+=" id=\""+this.getId()+"\"";     
         xml+=" serviceurl=\""+url+"\"";
         xml+=" resolutions=\""+this.getResolutions().join(",")+"\"";
         xml+=" serviceenvelope=\""+this.getServiceEnvelope()+"\"";
@@ -123,7 +123,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
     },
-
+    
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#reload
      */
@@ -141,7 +141,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      */
     getType : function(){
         return this.mixins.flamingoLayer.getType.call(this);
-    },
+    },    
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#destroy
      */

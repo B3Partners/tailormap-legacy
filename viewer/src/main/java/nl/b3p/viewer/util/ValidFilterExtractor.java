@@ -48,7 +48,7 @@ import org.opengis.filter.expression.PropertyName;
 
 /**
  * Class makes the filter valid according the given relation.
- * The parts of the filter that corresponds to the relation are replaced with a filter
+ * The parts of the filter that corresponds to the relation are replaced with a filter  
  * with the result of the subquery.
  * @author Roy Braam
  */
@@ -60,7 +60,7 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
     public ValidFilterExtractor(FeatureTypeRelation relation) {
         this.relation = relation;
     }
-
+   
     @Override
     public Object visit( PropertyIsBetween filter, Object data ) {
         List<Expression> expressions = new ArrayList<Expression>();
@@ -75,7 +75,7 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
     }
 
     @Override
-    public Object visit( PropertyIsEqualTo filter, Object data ) {
+    public Object visit( PropertyIsEqualTo filter, Object data ) {        
         Filter f = visitAbstract(filter,data);
         if (f==null){
             return super.visit(filter, data);
@@ -138,14 +138,14 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
         }
         return f;
     }
-
+    
     private Filter visitAbstract(BinaryComparisonOperator bco, Object o) {
         List<Expression> expressions = new ArrayList<Expression>();
         expressions.add(bco.getExpression1());
-        expressions.add(bco.getExpression2());
+        expressions.add(bco.getExpression2());        
         return visit(expressions,bco, o);
     }
-
+    
     private Filter visit(List<Expression> expressions, Filter f,Object o) {
         List<String> propertyNames = new ArrayList<String>();
         for (Expression exp : expressions){
@@ -164,8 +164,8 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
      * @param filter the filter
      * @param o
      * @return the new Filter.
-     */
-    private Filter doVisit(List<String> names, Filter filter,Object o){
+     */    
+    private Filter doVisit(List<String> names, Filter filter,Object o){        
         boolean found = false;
         SimpleFeatureType featureType = relation.getForeignFeatureType();
         for (AttributeDescriptor ad : featureType.getAttributes()) {

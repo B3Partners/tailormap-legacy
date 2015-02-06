@@ -33,19 +33,19 @@ import org.w3c.dom.Node;
  * @author Roy Braam
  */
 public class CombineArcIMSUrl extends CombineXMLBodyUrl{
-
+    
     private static final Log log = LogFactory.getLog(CombineArcServerUrl.class);
-
+    
     private static XPathExpression xPathEnvelope;
     private static XPathExpression xPathImageSize;
-
+    
     static{
         XPathFactory factory = XPathFactory.newInstance();
-        XPath xPath =  factory.newXPath();
+        XPath xPath =  factory.newXPath();        
         try {
             xPathEnvelope = xPath.compile("//ENVELOPE");
             xPathImageSize = xPath.compile("//IMAGESIZE");
-
+            
         } catch (Exception ex) {
             log.error("Error while creating xpath expr",ex);
         }
@@ -64,8 +64,8 @@ public class CombineArcIMSUrl extends CombineXMLBodyUrl{
      * @param height height
      * @param bbox bbox
      * @return new clone of this CombineImageUrl but with changed values.
-     * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox)
-     */
+     * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox) 
+     */    
     @Override
     public List<CombineImageUrl> calculateNewUrl(ImageBbox bbox) {
         Integer width = bbox.getWidth();
@@ -87,7 +87,7 @@ public class CombineArcIMSUrl extends CombineXMLBodyUrl{
             nnm=imageSize.getAttributes();
             nnm.getNamedItem("width").setNodeValue(width.toString());
             nnm.getNamedItem("height").setNodeValue(height.toString());
-
+            
             ciu.setBody(doc);
         }catch(Exception e){
             log.warn("Error while changing body fragment", e);

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
  */
 
 /**
- * Slider
- * Controls the opacity of the layers that are not added in the
- * selected content at the start of the application.
+ * Slider 
+ * Controls the opacity of the layers that are not added in the 
+ * selected content at the start of the application. 
  * Used by the TransparencySlider component.
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
@@ -29,8 +29,8 @@ Ext.define("viewer.components.NonInitLayerSlider",{
         initSelectedContent: null
     },
     /*constructor : function (conf){
-        viewer.components.Slider.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        viewer.components.Slider.superclass.constructor.call(this, conf);        
+        this.initConfig(conf);  
         return this;
     },*/
     onAddLayer: function(map,options){
@@ -57,30 +57,30 @@ Ext.define("viewer.components.NonInitLayerSlider",{
      *@return true if in the original/init selected content
      */
     isInitSelectedContent: function(appLayerId){
-        if (this.initSelectedContent){
-            for (var i=0; i < this.initSelectedContent.length; i++){
-                if (this.initSelectedContent[i].type=="appLayer"){
-                    if (this.initSelectedContent[i].id==appLayerId){
+        if (this.config.initSelectedContent){
+            for (var i=0; i < this.config.initSelectedContent.length; i++){
+                if (this.config.initSelectedContent[i].type=="appLayer"){
+                    if (this.config.initSelectedContent[i].id==appLayerId){
                         return true;
                     }
                 }else {
-                    if(this.checkInitSelectedLevel(this.initSelectedContent[i].id,appLayerId)){
+                    if(this.checkInitSelectedLevel(this.config.initSelectedContent[i].id,appLayerId)){
                         return true;
-                    }
+                    }                    
                 }
             }
         }
         return false;
     },
     /**
-     * Check if this level (or childs of this level) with id == levelId
+     * Check if this level (or childs of this level) with id == levelId 
      * contains a layer with id == appLayerId
      * @param levelId the id of the level that needs to be checked
      * @param appLayerId the applayer id
      * @return true if its in, otherwise falso
      */
     checkInitSelectedLevel: function(levelId,appLayerId){
-        var level = this.viewerController.app.levels[levelId];
+        var level = this.config.viewerController.app.levels[levelId];
         if (level.layers){
             for (var i=0; i < level.layers.length; i++){
                 if (level.layers[i]==appLayerId){

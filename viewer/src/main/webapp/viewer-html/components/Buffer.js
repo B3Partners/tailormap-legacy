@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,49 +37,49 @@ Ext.define ("viewer.components.Buffer",{
     },
     constructor: function (conf){
         viewer.components.Buffer.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        if(this.maxFeatures == null){
-            this.maxFeatures = 50;
+        this.initConfig(conf);     
+        if(this.config.maxFeatures == null){
+            this.config.maxFeatures = 50;
         }
         var me = this;
         this.renderButton({
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
-        });
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
+        });      
         this.imageLayers = new Array();
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
     selectedContentChanged : function (){
         for(var i = 0 ;i < this.imageLayers.length ;i++){
-            this.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
         }
     },
-    buttonClick : function (){
+    buttonClick : function (){ 
         if (this.panel ==null){
             this.loadWindow();
         }
         this.layerSelector.initLayers();
         this.popup.show();
     },
-    loadWindow : function(){
+    loadWindow : function(){        
         var me = this;
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             id: this.name + "Radius",
             fieldLabel: "Straal"
         });
-
-        this.colorPicker = Ext.create("Ext.ux.ColorField",{
+        
+        this.colorPicker = Ext.create("Ext.ux.ColorField",{ 
             showText: true,
             name: 'color',
             fieldLabel : "Kleur buffer",
-            id:'color' + this.name,
+            id:'color' + this.name,            
             value: "FF0000",
             listeners :{
                 select : {
@@ -88,7 +88,7 @@ Ext.define ("viewer.components.Buffer",{
                 }
             }
         });
-
+        
         this.buffer = Ext.create("Ext.button.Button",{
             name: "buffer" ,
             id: this.name + "BufferButton",
@@ -102,13 +102,13 @@ Ext.define ("viewer.components.Buffer",{
                 }
             }
         });
-
+        
         this.remove = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
-            text: "Huidige buffer verwijderen",
+            text: "Huidige buffer verwijderen", 
             componentCls: 'mobileLarge',
-            margin: '10px 0px 0px 10px',
+            margin: '10px 0px 0px 10px',           
             listeners: {
                 click:{
                     scope: this,
@@ -121,28 +121,24 @@ Ext.define ("viewer.components.Buffer",{
                 }
             }
         });
-
-        var layerSelectorId = Ext.id();
+        
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",{
+            viewerController : this.config.viewerController,
+            layers : this.config.layers,
+            restriction: "bufferable"
+        });
+        
         this.panel = Ext.create ("Ext.container.Container",{
             id: this.name +"Container",
             renderTo : this.getContentDiv(),
             margin: '0px 0px 0px 10px',
             items:[
-                { xtype: 'container', html: '<div id="' + layerSelectorId + '"></div>' },
+                this.layerSelector.combobox,
                 this.radius,
                 this.colorPicker,
                 this.buffer,
                 this.remove
             ]
-        });
-
-
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",{
-            viewerController : this.viewerController,
-            div: layerSelectorId,
-            id: this.name + "LayerSelector",
-            layers : this.layers,
-            restriction: "bufferable"
         });
     },
     buffer : function (){
@@ -154,11 +150,11 @@ Ext.define ("viewer.components.Buffer",{
             if(layer.filter){
                 filterParams = "&filter=" + encodeURIComponent(layer.filter.getCQL());
             }
-            var bbox = this.viewerController.mapComponent.getMap().getExtent();
-            var width = this.viewerController.mapComponent.getMap().getWidth();
-            var height = this.viewerController.mapComponent.getMap().getHeight();
+            var bbox = this.config.viewerController.mapComponent.getMap().getExtent();
+            var width = this.config.viewerController.mapComponent.getMap().getWidth();
+            var height = this.config.viewerController.mapComponent.getMap().getHeight();
             var url = absoluteURIPrefix + contextPath + "/action/Buffer";
-            var attrs ="?bbox="+ bbox.toString() + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.maxFeatures;
+            var attrs ="?bbox="+ bbox.toString() + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.config.maxFeatures;
             if(this.color != null){
                     attrs += "&color="+this.color;
             }
@@ -167,19 +163,19 @@ Ext.define ("viewer.components.Buffer",{
                 var filterUrl = url + filterParams;
                 url = filterUrl;
                 if(filterUrl.length > 1024){
-                    this.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
+                    this.config.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
                 }
             }
-            var imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + "_" + layer.id, url, bbox);
+            var imageLayer = this.config.viewerController.mapComponent.createImageLayer(this.name + "_" + layer.id, url, bbox);
             this.imageLayers.push(imageLayer);
-            this.viewerController.mapComponent.getMap().addLayer(imageLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(imageLayer);
             if(MobileManager.isMobile()) {
                 this.popup.hide();
-            }
+            }            
         }
     },
     removeBuffer : function(){
-        var map = this.viewerController.mapComponent.getMap();
+        var map = this.config.viewerController.mapComponent.getMap();
         var layer = this.layerSelector.getValue();
         if(layer != null){
             var bufferId = this.name + "_" + layer.id;

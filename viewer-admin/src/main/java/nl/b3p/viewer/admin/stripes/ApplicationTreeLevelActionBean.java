@@ -41,12 +41,12 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtreelevel")
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ApplicationTreeLevelActionBean.class);
-
+    
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLevel.jsp";
-
+    
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="info", label="Info"),
@@ -54,30 +54,30 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 @Validate(field="url", label="url")
     })
     private Level level;
-
+    
     private List<Group> allGroups;
-
+    
     private boolean layersAllowed;
-
+    
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
-
+    
     @Validate
     private String selectedlayers;
-
+    
     @Validate
     private String selecteddocs;
-
+    
     @DefaultHandler
     @DontValidate
     public Resolution view() {
-
+        
         return new ForwardResolution(JSP);
     }
-
+    
     public Resolution delete() {
         boolean inUse = false;
-
+        
         if(level.getParent() == null) {
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het bovenste niveau kan niet worden verwijderd"));
@@ -91,7 +91,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat."));
         }
-
+        
         if(!inUse){
             Level parent = level.getParent();
             parent.getChildren().remove(level);
@@ -99,21 +99,21 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().remove(level);
             getContext().getMessages().add(new SimpleMessage("Het niveau is verwijderd"));
         }
-
-        application.authorizationsModified();
+        
+        application.authorizationsModified();        
         SelectedContentCache.setApplicationCacheDirty(application, true);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         return new ForwardResolution(JSP);
     }
-
+    
     @DontValidate
     public Resolution edit() {
         Level rootLevel = application.getRoot();
-
+        
         if(level != null){
             groupsRead.addAll(level.getReaders());
-
+            
             if(level.isBackground()){
                 layersAllowed = false;
             }else if(level.getParent() == null || level.getParent().getId().equals(rootLevel.getId())){
@@ -122,23 +122,23 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 layersAllowed = true;
             }
         }
-
+        
         return new ForwardResolution(JSP);
     }
-
+    
     @Before(stages=LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
     }
-
+    
     @DontValidate
     public Resolution saveName() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
         String error = null;
-
+        
         if(level == null) {
             error = "Niveau niet gevonden";
         } else if(level.getName() == null) {
@@ -157,22 +157,22 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 while(t.getCause() != null) {
                     t = t.getCause();
                     error += "; " + t;
-                }
+                }                
             }
         }
         if(error != null) {
             json.put("error", error);
-        }
+        }              
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-
+    
     @DontValidate
     public Resolution deleteAjax() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
         String error = null;
-
+        
         if(level == null) {
             error = "Niveau niet gevonden";
         } else if(level.getParent() == null) {
@@ -200,22 +200,22 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 while(t.getCause() != null) {
                     t = t.getCause();
                     error += "; " + t;
-                }
+                }                
             }
         }
-
+        
         if(error != null) {
             json.put("error", error);
-        }
+        }              
         return new StreamingResolution("application/json", new StringReader(json.toString()));
-    }
-
-    public Resolution save() {
+    }    
+    
+    public Resolution save() {                
         level.getReaders().clear();
         for(String groupName: groupsRead) {
             level.getReaders().add(groupName);
         }
-
+        
         level.getLayers().clear();
         if(selectedlayers != null && selectedlayers.length() > 0){
             String[] layerIds = selectedlayers.split(",");
@@ -231,7 +231,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                         appLayer = new ApplicationLayer();
                         appLayer.setService(layer.getService());
                         appLayer.setLayerName(layer.getName());
-
+                        
                         if(layer.getFeatureType() != null){
                             SimpleFeatureType sft = layer.getFeatureType();
                             for(Iterator it = sft.getAttributes().iterator(); it.hasNext();){
@@ -244,11 +244,11 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                             }
                         }
                     }
-                }
+                }                
                 level.getLayers().add(appLayer);
             }
         }
-
+        
         level.getDocuments().clear();
         if(selecteddocs != null && selecteddocs.length() > 0){
             String[] docIds = selecteddocs.split(",");
@@ -258,12 +258,12 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 level.getDocuments().add(doc);
              }
         }
-
+        
         Stripersist.getEntityManager().persist(level);
         application.authorizationsModified();
         SelectedContentCache.setApplicationCacheDirty(application, true);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
         return edit();
     }
@@ -308,14 +308,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     public void setSelecteddocs(String selecteddocs) {
         this.selecteddocs = selecteddocs;
     }
-
+    
     public Level getLevel() {
         return level;
     }
-
+    
     public void setLevel(Level level) {
         this.level = level;
     }
     //</editor-fold>
-
+    
 }

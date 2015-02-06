@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ Ext.define ("viewer.components.Presentation",{
                 {imageUrl: "http://localhost/osgeonlPresentatie/onderdelenOverzicht.png",extent: new viewer.viewercontroller.controller.Extent("0,17500,30000,40000")},
                 {imageUrl: "http://localhost/osgeonlPresentatie/viewerHTML.png",extent: new viewer.viewercontroller.controller.Extent("20000,42500,30000,50000")},
                 {imageUrl: "http://localhost/osgeonlPresentatie/viewerCompleet.png",extent: new viewer.viewercontroller.controller.Extent("30000,50000,70000,70000")},
-                {imageUrl: "http://localhost/osgeonlPresentatie/jsonconfig.png",extent: new viewer.viewercontroller.controller.Extent("40833,56041,41666,56666")},
+                {imageUrl: "http://localhost/osgeonlPresentatie/jsonconfig.png",extent: new viewer.viewercontroller.controller.Extent("40833,56041,41666,56666")},            
                 {imageUrl: "http://localhost/osgeonlPresentatie/viewerServerHTML.png",extent: new viewer.viewercontroller.controller.Extent("40000,20000,50000,27500")},
                 {imageUrl: "http://localhost/osgeonlPresentatie/databaseOpslag.png",extent: new viewer.viewercontroller.controller.Extent("40000,32500,50000,40000")},
                 {imageUrl: "http://localhost/osgeonlPresentatie/screenAdminServices.png",extent: new viewer.viewercontroller.controller.Extent("80000,70000,90000,77773")},
@@ -92,9 +92,9 @@ Ext.define ("viewer.components.Presentation",{
                 {extent: new viewer.viewercontroller.controller.Extent("60000,25000,70000,40000")},
                 //screen services
                 {extent: new viewer.viewercontroller.controller.Extent("40000,2500,50000,10000")}
-
+                
             ];
-        }
+        }        
         viewer.components.Presentation.superclass.constructor.call(this,config);
         this.index=this.getStartIndex();
         this.imageLayers=new Array();
@@ -105,17 +105,17 @@ Ext.define ("viewer.components.Presentation",{
     /**
      * Add all the images in the path
      */
-    addAllImages: function(){
+    addAllImages: function(){        
         for (var i=0; i < this.images.length; i++){
-            var layer= this.viewerController.mapComponent.createImageLayer(this.getName()+"_"+i,this.images[i].imageUrl,this.images[i].extent);
+            var layer= this.config.viewerController.mapComponent.createImageLayer(this.getName()+"_"+i,this.images[i].imageUrl,this.images[i].extent);
             this.imageLayers.push(layer);
-            this.viewerController.mapComponent.getMap().addLayer(layer);
+            this.config.viewerController.mapComponent.getMap().addLayer(layer);
         }
     },
     /**
      * Move the extent to the given index.
      */
-    moveTo: function (newIndex){
+    moveTo: function (newIndex){ 
         this.index=newIndex;
         if (this.index <= 0){
             this.previousButton.setVisible(false);
@@ -123,14 +123,14 @@ Ext.define ("viewer.components.Presentation",{
         }else{
             this.previousButton.setVisible(true);
         }
-        if (this.index >= this.path.length-1){
+        if (this.index >= this.path.length-1){            
             this.nextButton.setVisible(false);
             this.index=this.path.length-1;
         }else{
             this.nextButton.setVisible(true);
-        }
+        }        
         var newExtent=this.path[this.index].extent;
-        this.viewerController.mapComponent.getMap().zoomToExtent(newExtent);
+        this.config.viewerController.mapComponent.getMap().zoomToExtent(newExtent);
     },
     createGui: function (){
         var me = this;
@@ -176,7 +176,7 @@ Ext.define ("viewer.components.Presentation",{
         this.index--;
         this.moveTo(this.index);
     }
-
+    
 });
-
+    
 

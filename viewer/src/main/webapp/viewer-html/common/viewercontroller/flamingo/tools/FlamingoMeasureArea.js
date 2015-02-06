@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,11 +35,11 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
     },
     vectorLayer : null,
     button:null,
-    constructor: function (conf){
+    constructor: function (conf){              
         viewer.components.tools.FlamingoMeasureArea.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.id = this.name;
-
+        
         conf.iconUrl_up = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square.png";
         conf.iconUrl_over = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square_over.png";
         conf.iconUrl_sel = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square_over.png";
@@ -54,12 +54,12 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
         }, this);
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,function () {
             me.startMeasure(false);
-        }, this);
-        this.vectorLayer = this.viewerController.mapComponent.createVectorLayer({
+        }, this); 
+        this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name:'measureAreaVector',
             geometrytypes:["Polygon"],
             showmeasures:true,
-            viewerController: this.viewerController,
+            viewerController: this.config.viewerController,
             style: {
                 'fillcolor': 'FF0000',
                 'fillopacity': 50,
@@ -67,14 +67,14 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
                 'strokeopacity': 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-
+        this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,function(){
             this.startMeasure(false);
         }, this);
-        this.mapComponent = this.viewerController.mapComponent;
-        this.frameworkObject = this.viewerController.mapComponent.viewerObject;
-        this.viewerController.mapComponent.addTool(this);
+        this.mapComponent = this.config.viewerController.mapComponent;
+        this.frameworkObject = this.config.viewerController.mapComponent.viewerObject;
+        this.config.viewerController.mapComponent.addTool(this);
         return this;
     },
     startMeasure:function(on){
@@ -88,14 +88,14 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
      * Create a xml string for this object.
      * @return string of the xml.
      */
-    toXML: function (){
-        var xml="";
+    toXML: function (){        
+        var xml="";       
         return xml;
     },
     getTagName: function (){
         return "";
     },
-
+    
     /**
      * @see viewer.viewercontroller.controller.Tool#activate
      */

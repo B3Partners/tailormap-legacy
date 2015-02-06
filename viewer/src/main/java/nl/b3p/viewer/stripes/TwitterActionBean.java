@@ -39,23 +39,23 @@ import twitter4j.TwitterFactory;
  */
 public class TwitterActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(SldActionBean.class);
-
+    
     private ActionBeanContext context;
 
     @Validate
     private String term;
-
+    
     @Validate
     private String rpp;
-
+    
     @Validate
     private String latestId;
-
+    
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -85,7 +85,7 @@ public class TwitterActionBean implements ActionBean {
     }
 
     //</editor-fold>
-
+    
     public Resolution create() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -100,18 +100,18 @@ public class TwitterActionBean implements ActionBean {
                 Long longVal = Long.valueOf(latestId);
                 query.setSinceId(longVal);
             }
-
+            
             QueryResult result = twitter.search(query);
             JSONArray tweets = new JSONArray();
             for (Status tweet : result.getTweets()) {
-
+                
                 //System.out.println(tweet.getFromUser() + ":" + tweet.getText());
                 JSONObject t = new JSONObject();
                 t.put("id_str",String.valueOf( tweet.getId()));
                 t.put("text",tweet.getText());
                 t.put("user_from",tweet.getUser().getScreenName());
                 t.put("img_url",tweet.getUser().getProfileImageURL());
-
+                
                 JSONObject geo = new JSONObject();
                 if(tweet.getGeoLocation() != null){
                     geo.put("lat",tweet.getGeoLocation().getLatitude());
@@ -128,18 +128,18 @@ public class TwitterActionBean implements ActionBean {
             }
             json.put("success", Boolean.TRUE);
         } catch(Exception e) {
-
+    
             error = e.toString();
             if(e.getCause() != null) {
                 error += "; cause: " + e.getCause().toString();
             }
         }
-
+        
         if(error != null) {
             json.put("error", error);
         }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString()));
+        
+        return new StreamingResolution("application/json", new StringReader(json.toString()));                
     }
-
+    
 }

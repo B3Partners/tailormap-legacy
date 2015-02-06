@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ Ext.define ("viewer.components.LayerContext",{
         conf.isPopup = true;
         viewer.components.LayerContext.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED,this.layerClicked,this);
-
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
-
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED,this.layerClicked,this);
+        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
+        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
             this.selectedContentChanged();
         },this);
-
+        
         return this;
     },
     layerClicked: function(layerObj) {
@@ -118,7 +118,7 @@ Ext.define ("viewer.components.LayerContext",{
                 html: layerObj.appLayer.details.context
             });
         }
-
+        
         if(typeof layerObj.info !== 'undefined'){
              this.htmlContainer.add({
                 xtype: 'container',
@@ -126,7 +126,7 @@ Ext.define ("viewer.components.LayerContext",{
                 html: layerObj.info
             });
         }
-
+        
         if(typeof layerObj.url !== 'undefined' && (typeof layerObj.info === 'undefined' || layerObj.info === '<br>' ) ){
              window.open(layerObj.url,'name','height='+this.config.details.height + ',width=' + this.config.details.width + ',location=no,status=no,toolbar=no,menubar=no');
         }else{
@@ -137,18 +137,18 @@ Ext.define ("viewer.components.LayerContext",{
     },
     selectedContentChanged: function(){
         var me = this;
-        if (this.tooltip){
-            var tocs= this.viewerController.getComponentsByClassName("viewer.components.TOC");
-            this.viewerController.traverseSelectedContent(function(){},function(layer){
-                var serviceLayer=me.viewerController.getServiceLayer(layer);
-                if( (   serviceLayer.details &&
-                        (serviceLayer.details ["metadata.stylesheet"] || serviceLayer.details ["download.url"])) ||
+        if (this.config.tooltip){
+            var tocs= this.config.viewerController.getComponentsByClassName("viewer.components.TOC");
+            this.config.viewerController.traverseSelectedContent(function(){},function(layer){
+                var serviceLayer=me.config.viewerController.getServiceLayer(layer);
+                if( (   serviceLayer.details && 
+                        (serviceLayer.details ["metadata.stylesheet"] || serviceLayer.details ["download.url"])) ||  
                     (   typeof layer.details !== 'undefined' &&
                         typeof layer.details.context !== 'undefined'
                     )
                 ){
                     for (var i = 0; i < tocs.length; i++){
-                        tocs[i].setLayerQtip(me.tooltip,layer.id);
+                        tocs[i].setLayerQtip(me.config.tooltip,layer.id);
                     }
                 }
             });

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class
+ * @class 
  * @constructor
  * @description Flamingo Arc layer super class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -40,7 +40,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
         var xml="<fmc:";
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
-        xml+=" id=\""+this.getId()+"\"";
+        xml+=" id=\""+this.getId()+"\"";        
         for (var optKey in this.options){
             //skip these options.
             if (optKey.toLowerCase()== "url" ||
@@ -48,7 +48,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
             else{
                 xml+=" "+optKey+"=\""+this.options[optKey]+"\"";
             }
-        }
+        }        
         xml+=">";
         //add the maptips
         for (var i=0; i < this.getMaptips().length; i++){
@@ -60,7 +60,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
             if (maptip.aka!=null){
                 xml+=" aka=\""+maptip.aka+"\"";
             }
-            xml+="/>"
+            xml+="/>"    
         }
         xml+="</fmc:"+this.getTagName()+">";
         //console.log(xml);
@@ -72,7 +72,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
      */
     getId :function (){
         return this.id;
-    },
+    },   
 
     getName : function (){
         return this.options["name"];
@@ -97,12 +97,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
         return this.options["visibleids"];
     },
     setMaptips: function(maptips){
-        viewer.viewercontroller.flamingo.FlamingoArcLayer.superclass.setMaptips.call(this,maptips);
+        viewer.viewercontroller.flamingo.FlamingoArcLayer.superclass.setMaptips.call(this,maptips);        
         this.passMaptips();
     },
     passMaptips: function(){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
-    },
+    },   
     getLegendGraphic: function (){
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
         return null;
@@ -110,7 +110,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     setBuffer : function (radius,layer){
         console.log("FlamingoArcLayer.setBuffer: .setBuffer() must be made!");
     },
-    removeBuffer: function(layer){
+    removeBuffer: function(layer){        
         console.log("FlamingoArcLayer.removeBuffer: .removeBuffer() must be made!");
     },
     getLastMapRequest : function () {
@@ -121,11 +121,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
      */
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
-    },
+    }, 
     setVisible : function (vis){
         this.mixins.flamingoLayer.setVisible.call(this,vis);
     },
-
+    
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
      */
@@ -150,7 +150,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
      */
     addListener : function(event,handler,scope){
         this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
-    },
+    },    
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#destroy
      */

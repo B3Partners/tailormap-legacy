@@ -36,14 +36,14 @@ public class CombineTMSUrl extends CombineTileImageUrl {
     @Override
     public Integer getTileIndexX(Double xCoord, Double res, boolean max) {
         Double tileSpanX = res * getTileWidth();
-
+        
         Double tileIndexX = (xCoord - this.getServiceBbox().getMinx()) / (tileSpanX + epsilon);
         if(max){
             tileIndexX = Math.ceil(tileIndexX);
         }else{
             tileIndexX = Math.floor(tileIndexX);
         }
-
+        
         if (tileIndexX < 0) {
             tileIndexX = 0.0;
         }
@@ -77,7 +77,7 @@ public class CombineTMSUrl extends CombineTileImageUrl {
         if (tileIndexY > maxBboxY) {
             tileIndexY = maxBboxY;
         }
-
+        
         return tileIndexY.intValue();
     }
 

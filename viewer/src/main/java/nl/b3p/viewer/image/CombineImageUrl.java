@@ -6,12 +6,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Class to store a image request. Extend this to overwrite functions.
+ * Class to store a image request. Extend this to overwrite functions. 
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  * Created on 20-okt-2009, 10:30:38
  */
 public abstract class CombineImageUrl {
-    private static final Log log = LogFactory.getLog(CombineImageSettings.class);
+    private static final Log log = LogFactory.getLog(CombineImageSettings.class);    
     protected String url=null;
     private String body=null;
     private URL realUrl;
@@ -19,14 +19,14 @@ public abstract class CombineImageUrl {
 
     public CombineImageUrl() {
     }
-
+    
     public CombineImageUrl(CombineImageUrl ciu){
         url=ciu.getUrl();
         alpha=ciu.getAlpha();
         body=ciu.getBody();
         realUrl=ciu.getRealUrl();
     }
-
+    
 
     public CombineImageUrl(String url, Float alpha) {
         setUrl(url);
@@ -45,29 +45,29 @@ public abstract class CombineImageUrl {
     public String getUrl() {
         return url;
     }
-
+    
     /**
      * @param url the url to set
      */
     public void setUrl(String url) {
         this.url = url;
     }
-
+    
     public URL getRealUrl() {
         return realUrl;
     }
-
+    
     public void setRealUrl(URL realUrl) {
         this.realUrl = realUrl;
     }
-
+    
     /**
      * @return the alpha
      */
     public Float getAlpha() {
         return alpha;
     }
-
+    
     /**
      * @param alpha the alpha to set
      */
@@ -81,15 +81,15 @@ public abstract class CombineImageUrl {
         }
         this.alpha = alpha;
     }
-
+    
     public void setBody(String body) {
         this.body=body;
     }
-
+    
     public String getBody() {
         return this.body;
     }
-
+    
     public String toString(){
         String returnValue="";
         if (url!=null){
@@ -99,7 +99,7 @@ public abstract class CombineImageUrl {
             returnValue+="("+alpha+")";
         }
         return returnValue;
-    }
+    }    
     //</editor-fold>
 
     public abstract List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox);

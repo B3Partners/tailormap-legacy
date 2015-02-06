@@ -85,14 +85,14 @@ public class AttributeSourceActionBean implements ActionBean {
     private FeatureSource featureSource;
 
     private boolean updatable;
-
+    
     //for updatable reporting
     @Validate
     private Map<UpdateResult.Status,List<SimpleFeatureType>> changedFeatureTypes;
     @Validate
     private Long changedFeatureSourceId;
-
-
+    
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -201,7 +201,7 @@ public class AttributeSourceActionBean implements ActionBean {
 
         return edit();
     }
-
+    
     public Resolution update() throws Exception{
         if(!isUpdatable()) {
             getContext().getMessages().add(new SimpleMessage("Attribuutbron van protocol {0} kunnen niet worden geupdate",
@@ -209,14 +209,14 @@ public class AttributeSourceActionBean implements ActionBean {
             return new ForwardResolution(EDITJSP);
         }
         FeatureSourceUpdateResult result = ((UpdatableFeatureSource)featureSource).update();
-
+        
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
             Stripersist.getEntityManager().getTransaction().rollback();
             return new ForwardResolution(EDITJSP);
         }
-
-        Map<UpdateResult.Status,List<String>> byStatus = result.getLayerNamesByStatus();
+        
+        Map<UpdateResult.Status,List<String>> byStatus = result.getLayerNamesByStatus();        
         log.info(String.format("Update featuretypes stats: unmodified %d, updated %d, new %d, missing %d",
                 byStatus.get(UpdateResult.Status.UNMODIFIED).size(),
                 byStatus.get(UpdateResult.Status.UPDATED).size(),
@@ -227,20 +227,20 @@ public class AttributeSourceActionBean implements ActionBean {
         log.info("Updated featuretypes: " + byStatus.get(UpdateResult.Status.UPDATED));
         log.info("New featuretypes: " + byStatus.get(UpdateResult.Status.NEW));
         log.info("Missing featuretypes: " + byStatus.get(UpdateResult.Status.MISSING));
-
+        
         this.changedFeatureTypes = result.getFeatureTypeByStatus();
         this.changedFeatureSourceId = featureSource.getId();
-
+        
         getContext().getMessages().add(new SimpleMessage(String.format("De attribuutbron is geupdate. Er is/zijn %d featuretypes gewijzigd, %d ongewijzigd, %d nieuw en %d verwijderd",
             byStatus.get(UpdateResult.Status.UPDATED).size(),
             byStatus.get(UpdateResult.Status.UNMODIFIED).size(),
             byStatus.get(UpdateResult.Status.NEW).size(),
             byStatus.get(UpdateResult.Status.MISSING).size()
         )));
-
+        
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         return new ForwardResolution(EDITJSP);
     }
 
@@ -395,11 +395,11 @@ public class AttributeSourceActionBean implements ActionBean {
         j.put("protocol", type);
         return j;
     }
-
+    
     @Before
     public void setUpdatable() {
         updatable = featureSource instanceof UpdatableFeatureSource;
-    }
+    }       
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public void setContext(ActionBeanContext context) {
@@ -553,7 +553,7 @@ public class AttributeSourceActionBean implements ActionBean {
     public void setUsername(String username) {
         this.username = username;
     }
-
+    
     public boolean isUpdatable() {
         return updatable;
     }
@@ -561,7 +561,7 @@ public class AttributeSourceActionBean implements ActionBean {
     public void setUpdatable(boolean updatable) {
         this.updatable = updatable;
     }
-
+    
     public Map<UpdateResult.Status,List<SimpleFeatureType>> getChangedFeatureTypes() {
         return changedFeatureTypes;
     }
@@ -569,7 +569,7 @@ public class AttributeSourceActionBean implements ActionBean {
     public void setChangedFeatureTypes(Map<UpdateResult.Status,List<SimpleFeatureType>> changedFeatureTypes) {
         this.changedFeatureTypes = changedFeatureTypes;
     }
-
+    
     public Long getChangedFeatureSourceId() {
         return changedFeatureSourceId;
     }

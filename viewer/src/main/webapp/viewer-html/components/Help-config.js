@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     htmlEditor: null,
-    constructor: function (parentId,configObject){
+    constructor: function (parentId,configObject){        
         if (configObject === null){
             configObject = {};
         }
         configObject.showLabelconfig = false;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
-
+        
         var defaultText="";
         if (configObject && configObject.defaultText) {
             defaultText = configObject.defaultText;

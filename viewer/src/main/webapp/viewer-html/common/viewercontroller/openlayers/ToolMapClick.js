@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class
+ * @class 
  * @constructor
  * @description A drawable vector layer
  */
@@ -38,22 +38,22 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         this.initConfig(conf);
         //this.visible=false;
         var me = this;
-
+        
         this.type = viewer.viewercontroller.controller.Tool.MAP_CLICK;
         this.initConfig(conf);
         this.handler = conf.handler.fn;
         this.scope = conf.handler.scope;
-        this.olMap=this.viewerController.mapComponent.getMap().getFrameworkMap();
-
-        //create a click control that handles only single click
+        this.olMap=this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+        
+        //create a click control that handles only single click        
         this.clickControl = new OpenLayers.Control.Click({
-            handlerOptions: me.handlerOptions,
+            handlerOptions: me.config.handlerOptions,
             click: function(evt){
                 me.handleClick(evt)
             }
         });
         this.olMap.addControl(this.clickControl);
-
+        
         return this;
     },
     /**
@@ -62,7 +62,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
      */
     handleClick : function(event){
         var opx = this.olMap.getLonLatFromPixel(event.xy)
-        var options = {
+        var options = {            
             x: event.xy.x,
             y: event.xy.y,
             coord: {
@@ -71,7 +71,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
             }
         };
         this.handler.call(this.scope, this,options);
-
+        
     },
     /**
      * Activate the tool

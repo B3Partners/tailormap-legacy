@@ -1,7 +1,7 @@
 /**
- * @class
+ * @class 
  * @constructor
- * @description The FlamingoVectorLayer class. In flamingo also known as EditMap.
+ * @description The FlamingoVectorLayer class. In flamingo also known as EditMap. 
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
         return this;
     },
-
+    
     /**
      * Overwrite getFrameworkId With javascript the vector layer cant be called directly
      * To call functions on it and register on events we need the id of the map where it's added
@@ -39,8 +39,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     getFrameworkId: function (){
         return this.map.editMapId;
     },
-
-    toXML : function(){
+    
+    toXML : function(){    
         var xml= "<fmc:Layer ";
         xml+= "id='"+this.id+"' ";
         xml+= "name='"+this.id+"' ";
@@ -68,7 +68,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         xml+="/></fmc:Layer>";
         return xml;
     },
-
+    
     adjustStyle : function (){
         var xml ="<fmc:Style ";
         if (this.style.fillcolor!=null)
@@ -81,7 +81,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
             xml+="strokeopacity='"+this.style.strokeopacity+"' ";
         xml+="/>";
         this.map.getFrameworkMap().callMethod(this.gisId,'setCompositeInLayer',xml,"Style",this.getId());
-
+        
     },
 
     getLayerName : function(){
@@ -95,7 +95,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         var flamingoObj = this.map.getFrameworkMap();//this.getFrameworkLayer();
         flamingoObj.callMethod(this.gisId,'removeAllLayerFeatures',this.getId(),false);
     },
-
+    
     /**
      * Removes the given feature from this vectorlayer
      * @param feature The feature to be removed
@@ -154,7 +154,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         }
         return features;
     },
-
+    
     getFeatureById : function (featureId){
         var flamingoFeature=this.map.getFrameworkMap().callMethod(this.getGisId(),"getFeature",this.getId(),featureId);
         if(flamingoFeature != null){
@@ -168,7 +168,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * Orders the flamingo map to start drawing a geometry type
      * @param type the type of the geometry (Point, Polygon, LineString, MultiPolygon)
      */
-    drawFeature : function(type){
+    drawFeature : function(type){     
         if (this.map!=null && this.map.editMapId!=null)
            this.map.getFrameworkMap().callMethod(this.map.editMapId,"editMapDrawNewGeometry",this.getId(),type );
     },
@@ -239,7 +239,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      */
     addListener : function(event,handler,scope){
         this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
-    },
+    },    
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#destroy
      */

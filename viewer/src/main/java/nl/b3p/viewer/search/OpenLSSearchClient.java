@@ -136,7 +136,7 @@ public class OpenLSSearchClient extends SearchClient {
                     if (type != null) {
                         result.put("type", convertType(type));
                     }
-
+                    
                     Point p = geoAdress.getPoint();
                     int zoomboxSize = getZoomBoxSize(type);
                     JSONObject bbox = locationToBBOX(zoomboxSize,p.getPosAt(0).getX(), p.getPosAt(0).getY());
@@ -147,7 +147,7 @@ public class OpenLSSearchClient extends SearchClient {
         }
         return results;
     }
-
+    
     private String convertType(String openLSType) {
         if (openLSType.equalsIgnoreCase("Street")) {
             return "Straat";
@@ -164,9 +164,9 @@ public class OpenLSSearchClient extends SearchClient {
 
     @Override
     public JSONArray autosuggest(String query) {
-        throw new UnsupportedOperationException("Not supported.");
+        throw new UnsupportedOperationException("Not supported."); 
     }
-
+    
     public int getZoomBoxSize(String type){
         return this.zoomboxSizes.get(type);
     }

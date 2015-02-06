@@ -19,6 +19,7 @@ package nl.b3p.viewer.stripes;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
+import javax.persistence.NoResultException;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
@@ -43,8 +44,9 @@ import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
+import org.stripesstuff.stripersist.Stripersist;
 
-
+     
     // </editor-fold>
 
 /**
@@ -64,7 +66,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
     private ApplicationLayer appLayer;
     @Validate
     private Application application;
-
+    
     private boolean unauthorized;
     private Layer layer = null;
     private ActionBeanContext context;
@@ -110,7 +112,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
         this.application = application;
     }
     // </editor-fold>
-
+   
     @After(stages = LifecycleStage.BindingAndValidation, on="!arcXML")
     public void loadLayer() {
         layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
@@ -135,7 +137,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
 
             Filter filter = CQL.toFilter(cql);
             String where = visitor.encodeToString(filter);
-
+            
             if(whereOnly) {
                 json.put("where", where);
             } else {

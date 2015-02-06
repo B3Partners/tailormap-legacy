@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 /**
  * StreetView component
- * Creates a MapComponent Tool with the given configuration by calling createTool
+ * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
@@ -38,7 +38,7 @@ Ext.define ("viewer.components.tools.StreetView",{
     button: null,
     popupWindow:null,
     url: "",
-    constructor: function (conf){
+    constructor: function (conf){        
         if(conf.title === null || conf.title === undefined){
             conf.title = "Streetview";
         }
@@ -58,64 +58,64 @@ Ext.define ("viewer.components.tools.StreetView",{
             conf.nonSticky = false;
         }
         viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        this.initConfig(conf);   
 
         this.markerName = this.id + "MARKER";
-
-        this.toolMapClick = this.viewerController.mapComponent.createTool({
+        
+        this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
-            id: this.name,
+            id: this.config.name,
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
-
+        
         this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVATE,this.onActivate,this);
         this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_DEACTIVATE,this.onDeactivate,this);
-
-        this.button= this.viewerController.mapComponent.createTool({
+        
+        this.button= this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
             id:this.getName(),
             name: this.getName(),
             tooltip: this.config.tooltip || null,
             displayClass : "streetView",
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
-        this.viewerController.mapComponent.addTool(this.button);
-
+        this.config.viewerController.mapComponent.addTool(this.button);
+        
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);
-
-        //TODO don't set SRS hardcoded
+        
+        //TODO don't set SRS hardcoded        
 		Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
 		Proj4js.defs["EPSG:4236"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
-
+        
         this.url="http://maps.google.nl/maps?q=[y],[x]&z=16&layer=c&cbll=[y],[x]&cbp=12,0,,0,0";
         return this;
     },
-    mapClicked : function (toolMapClick,comp){
+    mapClicked : function (toolMapClick,comp){        
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
         var point = this.transformLatLon(x,y);
-        if(this.useMarker){
-            this.viewerController.mapComponent.getMap().setMarker(this.markerName,x,y);
+        if(this.config.useMarker){
+            this.config.viewerController.mapComponent.getMap().setMarker(this.markerName,x,y);
         }
         var newUrl = ""+this.url;
         newUrl=newUrl.replace(/\[x\]/g, point.x);
         newUrl=newUrl.replace(/\[y\]/g, point.y);
-        if(this.usePopup){
-           this.popupWindow = window.open(newUrl,'name','height='+this.height + ',width=' + this.width + ',location=no,status=no,toolbar=no,menubar=no');
+        if(this.config.usePopup){        
+           this.popupWindow = window.open(newUrl,'name','height='+this.config.height + ',width=' + this.config.width + ',location=no,status=no,toolbar=no,menubar=no');
            if(window.focus){
                this.popupWindow.focus();
            }
         }else{
             window.open(newUrl);
         }
-        if(this.nonSticky){
-            this.viewerController.mapComponent.activateTool(null,true);
+        if(this.config.nonSticky){
+            this.config.viewerController.mapComponent.activateTool(null,true);
         }
     },
     transformLatLon : function(x,y){
@@ -132,38 +132,38 @@ Ext.define ("viewer.components.tools.StreetView",{
     /**
      * When the button is hit and toggled true
      * @param button the button
-     * @param object the options.
+     * @param object the options.        
      */
-    buttonDown : function(button,object){
+    buttonDown : function(button,object){        
         this.toolMapClick.activateTool();
-
-        this.viewerController.mapComponent.setCursor(true, "crosshair");
+        
+        this.config.viewerController.mapComponent.setCursor(true, "crosshair");
     },
     /**
      * When the button is hit and toggled false
      */
     buttonUp: function(button,object){
-        this.viewerController.mapComponent.setCursor(false);
-        if(this.useMarker){
-            this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        this.config.viewerController.mapComponent.setCursor(false);
+        if(this.config.useMarker){
+            this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
         }
         this.toolMapClick.deactivateTool();
-    },
+    },    
     /**
      * raised when the tool is activated.
-     */
+     */    
     onActivate: function (){
-        this.viewerController.mapComponent.setCursor(true, "crosshair");
+        this.config.viewerController.mapComponent.setCursor(true, "crosshair");
         this.button.setSelectedState(true);
     },
     /**
      * raised when the tool is deactivated.
      */
     onDeactivate: function(){
-        if(this.useMarker){
-            this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        if(this.config.useMarker){
+            this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
         }
         this.button.setSelectedState(false);
-        this.viewerController.mapComponent.setCursor(false);
+        this.config.viewerController.mapComponent.setCursor(false);
     }
 });

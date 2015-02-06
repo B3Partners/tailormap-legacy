@@ -11,25 +11,25 @@ div {
 }
 
 #loadwrapper {
-    position: relative; 
-    margin: 0 auto; 
-    text-align: left; 
+    position: relative;
+    margin: 0 auto;
+    text-align: left;
     width: 100px
 }
 
 #loader {
     position: absolute;
-        
+
     display: none;
-    text-align: center;    
+    text-align: center;
     padding: 5px;
     font: bold small sans-serif;
     background-color: #ffffaa;
     border: 1px solid #888888;
-    
+
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    border-radius: 4px; 
+    border-radius: 4px;
 }
 
 /* messages */
@@ -106,7 +106,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 }
 
 .tristatenode .x-tree-checkbox {
-    background-position: 0 -39px;
+    background-position: 0 -30px;
 }
 
 .toc-outofscale {
@@ -120,6 +120,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     float: right;
     margin-right: 10px;
     font-style: italic;
+    cursor: pointer;
 }
 .toc-inscale {
     color: black;
@@ -127,7 +128,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .no_treenode_icon{
     background-image: none;
     width: 1px;
-} 
+}
 .customIconButton button {
     width: 100% !important;
     height: 100%;
@@ -144,4 +145,97 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 }
 .layout-left_menu{
     z-index: 15000;
+}
+
+.direct-search-result {
+    position: absolute;
+}
+
+.round-shadows {
+    -webkit-box-shadow: 0px 0px 5px -2px rgba(41,41,41,.75);
+    -moz-box-shadow: 0px 0px 5px -2px rgba(41,41,41,.75);
+    box-shadow: 0px 0px 5px -2px rgba(41,41,41,.75);
+}
+
+/**
+* Fix for ExtJS not setting the cursor to move for draggable windows.
+*/
+.x-header-draggable {
+  cursor: move;
+}
+
+/* Override ExtJS style */
+.x-btn-default, .x-btn-default-large, .x-btn-default-small, .x-tab-default {
+    background-color: #f5f5f5 !important;
+    border-color: #d8d8d8 !important;
+}
+/* Add border in IE */
+.x-nlg .x-btn-default, .x-nlg .x-btn-default-large, .x-nlg .x-btn-default-small, .x-nlg .x-tab-default {
+    border: 1px solid #d8d8d8 !important;
+}
+.x-btn-default-large .x-btn-inner, .x-btn-default-small .x-btn-inner, .x-tab-default .x-tab-inner {
+    color: #000000 !important;
+}
+/* Remove button color in IE */
+.x-nlg .x-btn-default-small-tl,
+.x-nlg .x-btn-default-small-tc,
+.x-nlg .x-btn-default-small-tr,
+.x-nlg .x-btn-default-small-ml,
+.x-nlg .x-btn-default-small-mc,
+.x-nlg .x-btn-default-small-mr,
+.x-nlg .x-btn-default-small-bl,
+.x-nlg .x-btn-default-small-bc,
+.x-nlg .x-btn-default-small-br,
+.x-nlg .x-btn-default-large-tl,
+.x-nlg .x-btn-default-large-tc,
+.x-nlg .x-btn-default-large-tr,
+.x-nlg .x-btn-default-large-ml,
+.x-nlg .x-btn-default-large-mc,
+.x-nlg .x-btn-default-large-mr,
+.x-nlg .x-btn-default-large-bl,
+.x-nlg .x-btn-default-large-bc,
+.x-nlg .x-btn-default-large-br,
+.x-nlg .x-tab-default-tl,
+.x-nlg .x-tab-default-tc,
+.x-nlg .x-tab-default-tr,
+.x-nlg .x-tab-default-ml,
+.x-nlg .x-tab-default-mc,
+.x-nlg .x-tab-default-mr,
+.x-nlg .x-tab-default-bl,
+.x-nlg .x-tab-default-bc,
+.x-nlg .x-tab-default-br{
+    background-image: none;
+    background-color: #f5f5f5;
+}
+.x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/crisp/checkbox.png);
+}
+.x-btn-wrap-default-small.x-btn-split-right:after {
+    background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
+}
+/* End Override ExtJS style */
+
+/*
+   IOS7 on iPad has an issue with height of the html/body
+   http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
+   To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
+*/
+@media (orientation:landscape) {
+    html.ipad.ios7 #wrapper {
+        height: 672px !important;
+    }
+}
+
+.mobile-mode, .mobile-mode * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.mobile-mode .tristatenode .x-tree-checkbox {
+    background-position: 0 -44px;
+}
+/* ExtJS override images */
+.mobile-mode .x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/touch-crisp/checkbox.png);
+}
+.mobile-mode .x-btn-wrap-default-small.x-btn-split-right:after {
+    background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
 }

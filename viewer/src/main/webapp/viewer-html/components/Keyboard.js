@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 /**
  * Keyboard navigation
- * Creates a MapComponent Tool with the given configuration by calling createTool
+ * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * This tool enables the usage of the keyboard for navigation.
  * @author <a href="mailto:meinetoonen.nl">Meine Toonen</a>
@@ -25,9 +25,10 @@ Ext.define ("viewer.components.Keyboard",{
     extend: "viewer.components.Component",
     keyboardTool:null,
     config:{
-        name: "keyboard"
+        name: "keyboard",
+        tooltip: "Keyboard navigation"
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.Keyboard.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.keyboardTool = new OpenLayers.Control.KeyboardDefaults();

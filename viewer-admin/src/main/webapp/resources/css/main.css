@@ -1,5 +1,5 @@
 .gridcontainer {
-  height: 315px;
+  height: 360px;
 }
 .status_ok {
   color: #00990f;
@@ -23,17 +23,26 @@ body.x-body {
   color: #1c6ca7;
   background-color: #ffffff;
 }
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+}
+h1 {
+    margin: 0;
+    padding: 8px 0;
+}
 input,
 textarea.extliketextarea {
-  background: url("../../extjs/resources/themes/images/gray/form/text-bg.gif") repeat-x scroll 0 0 #ffffff;
-  border: 1px solid #B5B8C8;
-  padding: 1px 3px;
-  line-height: 18px;
+  border: 1px solid #cecece;
+  padding: 4px 6px 3px 6px;
+  font: 300 13px/15px helvetica, arial, verdana, sans-serif;
   vertical-align: middle;
-  height: 22px;
+  min-height: 22px;
 }
-textarea.extliketextarea {
+/* textarea.extliketextarea {
   height: auto !important;
+} */
+.x-form-checkbox, .x-form-radio, .x-tree-checkbox {
+    min-height: 0;
 }
 input[type="radio"],
 input[type="checkbox"] {
@@ -41,46 +50,24 @@ input[type="checkbox"] {
   border: 0px none;
   padding: 0px;
   height: auto;
+  min-height: 0;
   margin-top: 3px;
   margin-bottom: 5px;
 }
 input[type="submit"],
 .extlikebutton {
-  background-color: #f8f8f8;
-  background-image: url("../../extjs/resources/themes/images/gray/btn/btn-default-small-bg.gif");
-  background-repeat: repeat-x;
-  background-image: linear-gradient(top, #ffffff, #eeeeee);
-  background-image: -moz-linear-gradient(top, #ffffff, #eeeeee);
-  background-image: -ms-linear-gradient(top, #ffffff, #eeeeee);
-  background-image: -o-linear-gradient(top, #ffffff, #eeeeee);
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eeeeee));
-  background-image: -webkit-linear-gradient(top, #ffffff, #eeeeee);
+  background-color: #f5f5f5;
+  border: 1px solid #d8d8d8;
   border-radius: 3px;
-  border-style: solid;
-  border-width: 1px;
-  khtml-border-radius: 3px;
-  moz-border-radius: 3px;
-  ms-border-radius: 3px;
-  o-border-radius: 3px;
-  padding: 2px 2px 2px 2px;
-  webkit-border-radius: 3px;
-  border-color: #bbbbbb;
-  padding: 2px 4px;
-  color: #333333;
+  padding: 3px 4px;
+  color: #000000;
   cursor: pointer;
   height: auto;
 }
 input[type="submit"]:hover,
 .extlikebutton:hover {
-  background-color: #f3f3f3;
-  background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: none;
-  background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbfbfb), color-stop(100%, #e9e9e9));
-  background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
-  border-color: #9d9d9d;
+  background-color: #ebebeb;
+  border-color: #cfcfcf;
 }
 .submitbuttons {
   margin-top: 10px;
@@ -108,6 +95,8 @@ input[type="submit"]:hover,
   position: absolute;
   z-index: 90;
   list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 #header #menu ul li {
   float: left;
@@ -189,6 +178,9 @@ input[type="submit"]:hover,
   height: 100%;
   min-width: 960px;
 }
+#content > h1 {
+    position: absolute;
+}
 .textcontent {
     padding: 10px;
     padding-top: 0px;
@@ -209,12 +201,12 @@ input[type="submit"]:hover,
 #tree-container {
   width: 350px;
   float: left;
-  margin-top: 10px;
+  margin-top: 40px;
 }
 #form-container.services {
   overflow: hidden;
-  height: 99%;
-  padding-top: 10px;
+  height: 100%;
+  padding-top: 40px;
   padding-bottom: 20px;
 }
 #form-container.documenten {
@@ -259,25 +251,9 @@ input[type="submit"]:hover,
   border: 0px none;
 }
 #grid-container {
-  min-height: 315px;
-}
-#grid-container.attributesources {
-  height: 315px;
-}
-#grid-container.documenten {
-  height: 315px;
-}
-#grid-container.applicaties {
-  height: 315px;
-}
-#grid-container.attribute {
-  height: 315px;
-}
-#grid-container.groups {
-  height: 315px;
-}
-#grid-container.user {
-  height: 315px;
+  min-height: 395px;
+  height: 395px;
+  padding-top: 40px;
 }
 #layoutManagerTitle {
   width: 250px;
@@ -291,6 +267,9 @@ input[type="submit"]:hover,
 }
 #layoutManagerApplicationSettings input {
   width: 50px;
+}
+#layoutManagerApplicationSettings input[type=checkbox] {
+  width: auto;
 }
 #layoutManagerApplicationSettings input.wide, #layoutManagerApplicationSettings select.wide {
   width: 150px;
@@ -367,14 +346,12 @@ input[type="submit"]:hover,
 #layout-container .content-container.dropallowed {
   background-color: #EEEEEE;
 }
-#layout-container .content-container .regionconfig, .globalconfig {
-  margin: 5px;
-  border: 1px solid #1c6ca7;
-  background-color: White;
-  padding: 5px;
-  float: left;
-}
 .globalconfig {
+    margin: 5px;
+    border: 1px solid #1c6ca7;
+    background-color: White;
+    padding: 5px;
+    float: left;
     position: absolute;
     display: none;
     margin-left: 75px;
@@ -398,25 +375,11 @@ input[type="submit"]:hover,
     min-height: 75px;
     display: block;
 }
-#layout-container .content-container .regionconfig .widthconfig,
-#layout-container .content-container .regionconfig .heightconfig,
-#layout-container .content-container .regionconfig .tabsconfig {
-  float: left;
-  margin-right: 10px;
-}
 #layout-container .content-container .regionconfig input {
   width: 25px;
 }
 #layout-container .content-container .regionconfig input[type='checkbox'] {
   width: auto;
-}
-#layout-container .content-container .regionconfig#regionconfig_left_menu {
-  /* Exception for left menu config, need to be absolute, otherwise
-                   it would render below components and other regions */
-
-  width: 130px;
-  position: absolute;
-  z-index: 50;
 }
 #layout-container .content-container .component-block {
   margin-top: 10px;
@@ -466,7 +429,7 @@ input[type="submit"]:hover,
 }
 #layout-container #layout-center #center_left,
 #layout-container #layout-center #center_right {
-  width: 150px;
+  width: 180px;
   float: left;
   margin-right: 10px;
 }
@@ -490,7 +453,7 @@ input[type="submit"]:hover,
 #layout-container #layout-center #center_center #layout_left_menu {
   float: left;
   margin-right: 10px;
-  width: 100px;
+  width: 120px;
 }
 #layout-container #layout-center #center_center #center_center_center {
   overflow: hidden;
@@ -534,12 +497,12 @@ input[type="submit"]:hover,
 .main-slider-container .slider-container .sliderbox {
   text-align: center;
   float: left;
-  width: 60px;
+  width: 65px;
 }
 #sliderheader-container .sliderheader {
   text-align: center;
   float: left;
-  width: 60px;
+  width: 65px;
 }
 .appSettingsRight {
   float: left;
@@ -575,4 +538,152 @@ input[type="submit"]:hover,
 }
 .checkbox-table input[type=checkbox] {
     margin-left: 8px;
+}
+.plain-button {
+    background-color: #f5f5f5 !important;
+    border-color: #d8d8d8 !important;
+}
+/* messages */
+
+.box {
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.messages .box {
+    width: 400px;
+    padding: 5px;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+.wideMessages .box {
+    width: 700px;
+    padding: 5px;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+.box div {
+    padding-left: 20px;
+    padding-bottom: 1px;
+}
+
+.security {
+    border: 1px solid #7f7f00;
+    background-color: #ffffee;
+}
+
+.security div {
+    background: url(../images/lock.gif) no-repeat;
+    color: #7f7f00;
+}
+
+.errors {
+    border: 1px solid red;
+	background-color: #fff5f5;
+}
+
+.errors div {
+    background: url(../images/error.gif) no-repeat;
+    color: red;
+}
+
+.info {
+    border: 1px solid blue;
+    background-color: #f5f5ff;
+}
+
+.info div {
+    background: url(../images/info.gif) no-repeat;
+    color: blue;
+}
+
+.warnings {
+    border: 1px solid #7f7f00;
+    background-color: #ffffee;
+}
+
+.warnings div {
+    background: url(../images/warning.gif) no-repeat;
+    color: #7f7f00;
+}
+
+/* validation styles */
+
+input.error, textarea.error {
+    color: red;
+    background-color: #ffffaa;
+}
+
+input.error[type="radio"], input.error[type="checkbox"], select.error {
+    background-color: white;
+    border: 2px solid red;
+}
+
+.attributeListClass{
+    width: 30%;
+    float: left;
+    overflow: auto; 
+    height: 200px;
+}
+#attributeContainer{
+    margin-top: 10px;
+    padding: 10px;
+    border-top: #D0D0D0 solid 1px;
+    width: 100%;
+    height: 100px;
+}
+.relation_left_side{
+    margin-right: 40px;
+}
+.relation_right_side{
+    margin-left: 40px;
+}
+
+.usageMatrixFeatureSource{
+    float: left;
+    clear: both;    
+    width: 100%;
+    margin-bottom: 20px;
+}
+.usageMatrixFeatureSource table{    
+    width: 100%;
+}
+.usageMatrixFeatureSource table td{
+    width: 25%;
+}
+.usageMatrixFeatureSource table th{
+    font-weight: bold;
+    background-color: lightgray;
+    color: black;
+}
+.featureType-missing{
+    color: red;
+}
+.featureType-new{
+    color: green;
+}
+.featureType-updated{
+    font-weight: bold;
+}
+.featureType-unmodified{
+    
+}
+
+.disabledTextField input{
+    opacity: .3;
+    -moz-opacity: .3;
+    filter: alpha(opacity=30);
+}
+
+#startmapform {
+    margin-top: 40px;
+}
+
+/* At page init Ext context menus take some space at the bottom, resulting in a scrollbar? */
+.x-menu {
+    top: 0;
+    left: 0;
 }

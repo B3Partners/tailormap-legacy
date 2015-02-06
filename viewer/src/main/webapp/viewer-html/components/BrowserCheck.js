@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 
 Ext.define("viewer.components.BrowserCheck", {
     extend: "viewer.components.Component",
-
+    
     unsupported: false,
-
+    
     config: {
         showPopup: true,
         test: false,
@@ -29,23 +29,23 @@ Ext.define("viewer.components.BrowserCheck", {
     constructor: function (conf){
         viewer.components.BrowserCheck.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-
+        
         this.unsupported = (Ext.isIE && Ext.ieVersion < 8)
             || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari));
         this.unsupported = MobileManager.isMobile() ? false : this.unsupported;
-
+        
         if((this.config.test || this.unsupported) && this.config.showPopup) {
             Ext.MessageBox.show({
                 buttons: Ext.Msg.OK,
-                msg: this.message,
-                title: this.title,
+                msg: this.config.message,
+                title: this.config.title,
                 icon: Ext.window.MessageBox.WARNING
             });
         }
-
+        
         return this;
     },
-
+    
     getExtComponents: function() {
         return [  ];
     }

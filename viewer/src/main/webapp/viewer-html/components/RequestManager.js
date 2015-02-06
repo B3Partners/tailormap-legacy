@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ Ext.define ("viewer.components.RequestManager",{
     constructor: function(featureInfo,viewerController){
         this.previousRequests = new Object();
         this.featureInfo = featureInfo;
-        this.viewerController = viewerController;
+        this.config.viewerController = viewerController;
     },
     request: function(id, options, radius, layers, callback, failure) {
         var me = this;
@@ -44,25 +44,28 @@ Ext.define ("viewer.components.RequestManager",{
                 me.responseReceived(data[0].requestId);
                 callback(data);
             }, this.onFailure,me);
-
+            
             if(request){
                 this.previousRequests[id].requests.push(request);
-                this.viewerController.mapComponent.setCursor(true, "wait");
+                this.config.viewerController.mapComponent.setCursor(true, "wait");
                 this.previousRequests[id].total++;
             }
         }
     },
-
+    
     responseReceived: function (id){
         this.previousRequests[id].done++;
         if(this.previousRequests[id].done === this.previousRequests[id].total){
-            this.viewerController.mapComponent.setCursor(false);
+            this.config.viewerController.mapComponent.setCursor(false);
         }
     },
-
+    
     cancelPrevious : function(currentId){
         for( var id in this.previousRequests){
-            if(id !== currentId){
+            if(!this.previousRequests.hasOwnProperty(id)) {
+                continue;
+            }
+            if(id !== currentId) {
                 this.cancel(id);
                 delete this.previousRequests[id];
             }

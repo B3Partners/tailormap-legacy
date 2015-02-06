@@ -25,11 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
 
 <div id="formcontent" style="height: 620px">
-<p>
-    <stripes:errors/>
-    <stripes:messages/>
-</p>
-
+<stripes:errors/>
+<stripes:messages/>
 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
 
     <stripes:hidden name="service"/>
@@ -49,11 +46,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var type = Ext.query("input:checked[name='sldType']")[0].value;
             Ext.fly('external').setVisibilityMode(Ext.Element.DISPLAY).setVisible(type == "external");
             Ext.fly('body').setVisibilityMode(Ext.Element.DISPLAY).setVisible(type == "body");
-            Ext.EventManager.fireResize();   
         }
-        Ext.onReady(checkType);
-        
         Ext.onReady(function() {
+            checkType();
             appendPanel('headertext', 'formcontent');
         });
     </script>

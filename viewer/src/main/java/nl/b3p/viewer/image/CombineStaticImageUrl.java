@@ -25,7 +25,7 @@ import java.util.List;
  * @author Roy Braam
  */
 public class CombineStaticImageUrl extends CombineImageUrl{
-
+    
     private Bbox bbox;
     private Integer x;
     private Integer y;
@@ -36,7 +36,7 @@ public class CombineStaticImageUrl extends CombineImageUrl{
     public CombineStaticImageUrl(URL url, Float alpha){
         super(url, alpha);
     }
-    private CombineStaticImageUrl(CombineStaticImageUrl csiu) {
+    private CombineStaticImageUrl(CombineStaticImageUrl csiu) {        
         super(csiu);
         this.bbox= new Bbox(csiu.bbox);
         this.x=csiu.getX();
@@ -44,32 +44,32 @@ public class CombineStaticImageUrl extends CombineImageUrl{
         this.width=csiu.getWidth();
         this.height=csiu.getHeight();
     }
-
+    
     @Override
     public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox) {
         CombineStaticImageUrl csiu = new CombineStaticImageUrl(this);
         double unitsX =imbbox.getUnitsPixelX();
         double unitsY =imbbox.getUnitsPixelY();
-
-        csiu.width= (int)Math.round(csiu.getBbox().getWidth()/unitsX);
-        csiu.height= (int)Math.round(csiu.getBbox().getHeight()/unitsY);
-
+        
+        csiu.width= (int)Math.round(csiu.getBbox().getWidth()/unitsX);       
+        csiu.height= (int)Math.round(csiu.getBbox().getHeight()/unitsY);       
+        
         csiu.x= (int)Math.round((csiu.getBbox().getMinx()-imbbox.getBbox().getMinx())/unitsX);
         csiu.y= (int)Math.round((imbbox.getBbox().getMaxy()-csiu.getBbox().getMaxy())/unitsY);
-
+        
         List<CombineImageUrl> list= new ArrayList<CombineImageUrl>();
         list.add(csiu);
         return list;
     }
-
+    
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">
     public Bbox getBbox() {
         return bbox;
     }
-
+    
     public void setBbox(Bbox bbox) {
         this.bbox = bbox;
-    }
+    }  
 
     public Integer getX() {
         return x;
@@ -102,8 +102,8 @@ public class CombineStaticImageUrl extends CombineImageUrl{
     public void setHeight(Integer height) {
         this.height = height;
     }
-
+    
     //</editor-fold>
-
-
+    
+    
 }

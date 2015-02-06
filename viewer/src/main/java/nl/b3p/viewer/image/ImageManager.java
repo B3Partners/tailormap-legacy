@@ -3,25 +3,26 @@
  * for authentication/authorization, pricing and usage reporting.
  *
  * Copyright 2006, 2007, 2008 B3Partners BV
- *
+ * 
  * This file is part of B3P Kaartenbalie.
- *
+ * 
  * B3P Kaartenbalie is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * B3P Kaartenbalie is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with B3P Kaartenbalie.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.image;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletionService;
@@ -49,7 +50,7 @@ public class ImageManager {
     private int MAX_TREADS = 8;
     private ExecutorService threadPool;
     private CompletionService<ImageCollector> pool;
-
+    
     protected static final String host = AuthScope.ANY_HOST;
     protected static final int port = AuthScope.ANY_PORT;
 
@@ -58,15 +59,15 @@ public class ImageManager {
     }
 
     public ImageManager(List<CombineImageUrl> urls, int maxResponseTime, String uname, String pw) {
-
+        
         threadPool = Executors.newFixedThreadPool(MAX_TREADS);
         pool = new ExecutorCompletionService<ImageCollector>(threadPool);
-
+        
         this.maxResponseTime = maxResponseTime;
         if (urls == null || urls.size() <= 0) {
             return;
         }
-        MultiThreadedHttpConnectionManager connectionManager =
+        MultiThreadedHttpConnectionManager connectionManager = 
       		new MultiThreadedHttpConnectionManager();
         HttpClient client = new HttpClient(connectionManager);
         client.getHttpConnectionManager().
@@ -101,17 +102,17 @@ public class ImageManager {
         }
         //wait for all to complete. Wait max 5 min
         for (int i = 0; i < ics.size(); i++) {
-            pool.poll(5, TimeUnit.MINUTES).get();
-        }
+            pool.poll(5, TimeUnit.MINUTES).get();            
+        }             
     }
-
+    
     public void shutdown(){
         threadPool.shutdown();
     }
     /**
      * Combine all the images recieved
      * @return a combined image
-     * @throws Exception
+     * @throws Exception 
      */
     public List<ReferencedImage> getCombinedImages() throws Exception {
         ImageCollector ic = null;
@@ -125,7 +126,7 @@ public class ImageManager {
             } else if (status != ImageCollector.COMPLETED) {
                 // problem with one of sp's, but we continue with the rest!
                 log.error(ic.getMessage() + " (Status: " + status + ")");
-            } else {
+            } else {          
                 ReferencedImage image =new ReferencedImage(ic.getBufferedImage());
                 CombineImageUrl ciu = ic.getCombinedImageUrl();
                 image.setAlpha(ciu.getAlpha());

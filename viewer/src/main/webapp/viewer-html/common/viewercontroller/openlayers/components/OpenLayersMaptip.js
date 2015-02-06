@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
-    extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",
+    extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
     map: null,
     constructor: function(conf,map){
         viewer.viewercontroller.openlayers.components.OpenLayersMaptip.superclass.constructor.call(this,conf);
@@ -42,7 +42,10 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
             }
         );
     },
-    onPause: function(object){
+    getFrameworkObject: function() {
+        return this.frameworkObject;
+    },
+    onPause: function(object){         
         /**
          * @field
          * Occures when the map wants a maptip.

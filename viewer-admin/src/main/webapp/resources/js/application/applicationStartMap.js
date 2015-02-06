@@ -27,37 +27,22 @@ Ext.onReady(function() {
     Ext.define('TreeNode', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'id', type: 'string'},
-            {name: 'children', type: 'array'},
             {name: 'name', type: 'string'},
             {name: 'type',  type: 'string'},
             {name: 'status', type: 'string'},
             {name: 'class', type: 'string'},
             {name: 'parentid', type: 'string'},
             {name: 'isLeaf', type: 'boolean'},
-            {name: 'checkedlayers', type: 'array'},
+            {name: 'checkedlayers', type: 'auto'},
             // Text is used by tree, mapped to name
-            {name: 'text', type: 'string', mapping: 'name'}
-        ],
-        get: function(fieldName) {
-            var nodeType = '';
-            if(fieldName == "icon") {
-                nodeType = this.get('type');
+            {name: 'text', type: 'string', mapping: 'name'},
+            {name: 'icon', type: 'string', convert: function(fieldName, record) {
+                var nodeType = record.get('type');
                 if(nodeType == "category" || nodeType == "level") return foldericon;
                 if(nodeType == "layer") return layericon;
-                /*if(nodeType == "document") return documenticon;
-                if(nodeType == "service") {
-                    var nodeStatus = this.get('status');
-                    if(nodeStatus == "ok") return serviceokicon;
-                    if(nodeStatus == "error") return serviceerroricon;
-                }*/
-            }
-            if(fieldName == "leaf") {
-                return this.get('isLeaf');
-            }
-            // Return default value, taken from ExtJS source
-            return this[this.persistenceProperty][fieldName];
-        }
+            }},
+            {name: 'leaf', type: 'boolean', mapping: 'isLeaf'}
+        ]
     });
 
     // Buttonconfig is probably the same for every TreeSelection component
@@ -66,7 +51,7 @@ Ext.onReady(function() {
         movelefticon: movelefticon,
         moveupicon: moveupicon,
         movedownicon: movedownicon
-    }
+    };
 
     // Creation of TreeSelection component
     var kaartSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {

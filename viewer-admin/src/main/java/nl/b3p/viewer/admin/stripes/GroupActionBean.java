@@ -40,9 +40,9 @@ public class GroupActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/editgroup.jsp";
-
+        
     private ActionBeanContext context;
-
+    
     @Validate
     private int page;
     @Validate
@@ -55,10 +55,10 @@ public class GroupActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-
+    
     @Validate
     private Group group;
-
+    
     @Validate
     private String name;
     @Validate
@@ -190,7 +190,7 @@ public class GroupActionBean implements ActionBean {
                 errors.add("name", new SimpleError("Naam is verplicht"));
                 return;
             }
-
+            
             try {
                 Object o = Stripersist.getEntityManager().createQuery("select 1 from Group where name = :name").setMaxResults(1).setParameter("name", name).getSingleResult();
 
@@ -227,7 +227,7 @@ public class GroupActionBean implements ActionBean {
 
         String filterName = "";
         String filterDescription = "";
-        /*
+        /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
@@ -272,9 +272,9 @@ public class GroupActionBean implements ActionBean {
             Criterion urlCrit = Restrictions.ilike("description", filterDescription, MatchMode.ANYWHERE);
             c.add(urlCrit);
         }
-
+        
         int rowCount = c.list().size();
-
+        
         c.setMaxResults(limit);
         c.setFirstResult(start);
 
@@ -297,11 +297,11 @@ public class GroupActionBean implements ActionBean {
             }
         };
     }
-
+    
     private boolean groupInUse(){
         boolean inUse = false;
         List<Level> levels = Stripersist.getEntityManager().createQuery("from Level").getResultList();
-
+        
         for(Iterator it = levels.iterator(); it.hasNext();){
             Level level = (Level)it.next();
             if(level.getReaders().contains(group.getName())){
@@ -309,7 +309,7 @@ public class GroupActionBean implements ActionBean {
                 break;
             }
         }
-
+        
         /*
          * not only a check on level.readers, but on every readers or writers
          */

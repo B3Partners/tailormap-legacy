@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
  * StreetView component
  * Creates a Related document window that can be opened bij clicking a button.
  * It generates a list of Documents and tries to get the file extension from the url
- * With the file extention it tries to get the file icon_[fileextension].png in the
+ * With the file extention it tries to get the file icon_[fileextension].png in the 
  * resources/images/relatedDocuments/ folder.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
@@ -35,38 +35,38 @@ Ext.define ("viewer.components.RelatedDocuments",{
         tooltip : "",
         label: ""
     },
-    constructor: function (conf){
-        conf.isPopup=true;
-        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);
+    constructor: function (conf){   
+        conf.isPopup=true;        
+        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);        
         this.initConfig(conf);
-
+        
         this.documentImg = new Object();
         this.iconPath=contextPath+"/viewer-html/components/resources/images/relatedDocuments/"
-
+        
         this.popup.hide();
         var me = this;
         this.renderButton({
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.titlebarIcon,
-            tooltip: me.tooltip,
-            label: me.label
-        });
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.reinit,this);
+            text: me.config.title,
+            icon: me.config.titlebarIcon,
+            tooltip: me.config.tooltip,
+            label: me.config.label
+        });        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.reinit,this);
         return this;
     },
     /**
      *When the button is clicked
      */
     buttonClick: function (){
-        //console.log("!!!"+this.viewerController);
+        //console.log("!!!"+this.config.viewerController);
         var me = this;
         if(this.contentId === '') {
             this.contentId = Ext.id();
             Ext.create('Ext.container.Container', {
-                id: this.name + 'Container',
+                id: this.config.name + 'Container',
                 width: '100%',
                 height: '100%',
                 layout: {
@@ -78,14 +78,14 @@ Ext.define ("viewer.components.RelatedDocuments",{
                 },
                 renderTo: this.getContentDiv(),
                 items: [{
-                    id: this.name + 'GridPanel',
+                    id: this.config.name + 'GridPanel',
                     xtype: "container",
                     autoScroll: true,
                     width: '100%',
                     flex: 1,
                     html: '<div id="' + me.contentId + '" style="width: 100%; height: 100%;"></div>'
                 },{
-                    id: this.name + 'ClosingPanel',
+                    id: this.config.name + 'ClosingPanel',
                     xtype: "container",
                     width: '100%',
                     height: MobileManager.isMobile() ? 45 : 25,
@@ -127,15 +127,15 @@ Ext.define ("viewer.components.RelatedDocuments",{
      */
     getDocuments: function(){
         var documents = new Object();
-        for ( var i = 0 ; i < this.viewerController.app.selectedContent.length ; i ++){
-            var contentItem = this.viewerController.app.selectedContent[i];
+        for ( var i = 0 ; i < this.config.viewerController.app.selectedContent.length ; i ++){
+            var contentItem = this.config.viewerController.app.selectedContent[i];
             var parentDocuments = new Object();
             if(contentItem.type ==  "level"){
-                parentDocuments=this.viewerController.getDocumentsInLevel(this.viewerController.app.levels[contentItem.id]);
+                parentDocuments=this.config.viewerController.getDocumentsInLevel(this.config.viewerController.app.levels[contentItem.id]);
             }else if(contentItem.type == "appLayer"){
-                var parentLevel = this.viewerController.getAppLayerParent(contentItem.id);
+                var parentLevel = this.config.viewerController.getAppLayerParent(contentItem.id);
                 if(parentLevel != null){
-                    parentDocuments=this.viewerController.getDocumentsInLevel(parentLevel);
+                    parentDocuments=this.config.viewerController.getDocumentsInLevel(parentLevel);    
                 }
             }
             Ext.apply(documents,parentDocuments);
@@ -147,11 +147,14 @@ Ext.define ("viewer.components.RelatedDocuments",{
      * @param documents the document objects
      * @return Ext.Element with html in it that represents the documents.
      */
-    createHtml: function(documents){
+    createHtml: function(documents){        
         var html="";
         this.documentImg={};
         html+="<div class='documents_documents'>";
         for (var documentId in documents){
+            if(!documents.hasOwnProperty(documentId)) {
+                continue;
+            }
             var doc=documents[documentId];
             html+="<div class='document_entry'>";
                 html+="<div class='document_icon'>"
@@ -165,7 +168,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
         html+="</div>"
         var element=new Ext.Element(document.createElement("div"));
         element.insertHtml("beforeEnd",html);
-
+        
         return element;
     },
     /**
@@ -173,6 +176,9 @@ Ext.define ("viewer.components.RelatedDocuments",{
      */
     loadImages: function(){
         for (var imgId in this.documentImg){
+            if(!this.documentImg.hasOwnProperty(imgId)) {
+                continue;
+            }
             this.loadImage(imgId,this.documentImg[imgId]);
         }
     },
@@ -181,11 +187,11 @@ Ext.define ("viewer.components.RelatedDocuments",{
      * @param imgId the id of the img element
      * @param path the path of the document.
      */
-    loadImage: function (imgId,path){
-        var defaultSrc=this.iconPath+"icon_default.png";
+    loadImage: function (imgId,path){       
+        var defaultSrc=this.iconPath+"icon_default.png";        
         var extension=path.substring(path.lastIndexOf(".")+1);
         //check if the extension has a length > 2 and < 4
-        if (extension.length <= 4 && extension.length>=2){
+        if (extension.length <= 4 && extension.length>=2){            
             var image = new Image();
             //var extension=path.substring(lio);
             image.onload=function(){
@@ -201,8 +207,8 @@ Ext.define ("viewer.components.RelatedDocuments",{
     },
     getExtComponents: function() {
         var c = [];
-        if(this.contentId !== '') c.push(this.name + 'Container');
+        if(this.contentId !== '') c.push(this.config.name + 'Container');
         return c;
     }
-
+    
 });

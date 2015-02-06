@@ -34,22 +34,22 @@ import org.w3c.dom.NodeList;
  */
 public class CombineArcServerUrl extends CombineXMLBodyUrl{
     private static final Log log = LogFactory.getLog(CombineArcServerUrl.class);
-
+    
     private static XPathExpression xPathExtent;
     private static XPathExpression xPathImageDisplay;
-
+    
     static{
         XPathFactory factory = XPathFactory.newInstance();
-        XPath xPath =  factory.newXPath();
+        XPath xPath =  factory.newXPath();        
         try {
             xPathExtent = xPath.compile("//MapArea/Extent");
             xPathImageDisplay = xPath.compile("//ImageDisplay");
-
+            
         } catch (Exception ex) {
             log.error("Error while creating xpath expr",ex);
         }
     }
-
+    
     public CombineArcServerUrl(){
         super();
     }
@@ -64,14 +64,14 @@ public class CombineArcServerUrl extends CombineXMLBodyUrl{
      * @param height height
      * @param bbox bbox
      * @return new clone of this CombineImageUrl but with changed values.
-     * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox)
-     */
+     * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox) 
+     */    
     @Override
     public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox) {
         Integer width = imbbox.getWidth();
         Integer height = imbbox.getHeight();
         Bbox bbox = imbbox.getBbox();
-
+        
         CombineArcServerUrl ciu = new CombineArcServerUrl(this);
         try{
             Document doc=bodyAsDocument();
@@ -101,15 +101,15 @@ public class CombineArcServerUrl extends CombineXMLBodyUrl{
                 }else if ("ImageWidth".equals(child.getLocalName())){
                     child.setTextContent(width.toString());
                 }
-            }
+            }            
             ciu.setBody(doc);
         }catch(Exception e){
             log.warn("Error while changing body fragment", e);
         }
-
+        
         List<CombineImageUrl> list= new ArrayList<CombineImageUrl>();
         list.add(ciu);
         return list;
     }
-
+    
 }

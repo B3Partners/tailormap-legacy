@@ -24,6 +24,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -150,18 +151,18 @@ public class LayerListActionBean implements ActionBean {
     public void setHasConfiguredLayers(Boolean hasConfiguredLayers) {
         this.hasConfiguredLayers = hasConfiguredLayers;
     }
-
-
+    
+    
 
     //</editor-fold>
-
+    
     public Resolution source() {
         EntityManager em = Stripersist.getEntityManager();
         JSONArray jsonArray = new JSONArray();
 
         if (appId != null) {
             Application app = em.find(Application.class, appId);
-
+            
             // TODO filter layers according to readers
             // set writeable according to writers
 
@@ -178,5 +179,5 @@ public class LayerListActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(jsonArray.toString()));
     }
 
-
+   
 }

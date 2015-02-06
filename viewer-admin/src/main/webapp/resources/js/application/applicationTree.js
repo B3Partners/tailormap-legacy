@@ -22,8 +22,6 @@ Ext.onReady(function() {
     Ext.define('AppLevelTreeModel', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'id', type: 'string'},
-            {name: 'children', type: 'array'},
             {name: 'name', type: 'string'},
             {name: 'type',  type: 'string'},
             {name: 'status', type: 'string'},
@@ -31,53 +29,18 @@ Ext.onReady(function() {
             {name: 'parentid', type: 'string'},
             {name: 'isLeaf', type: 'boolean'},
             // Text is used by tree, mapped to name
-            {name: 'text', type: 'string', mapping: 'name'}
-        ],
-        get: function(fieldName) {
-            var nodeType = '';
-            if(fieldName == "icon") {
-                nodeType = this.get('type');
+            {name: 'text', type: 'string', mapping: 'name'},
+            {name: 'icon', type: 'string', convert: function(fieldName, record) {
+                var nodeType = record.get('type');
                 if(nodeType == "level") return imagesPath + "folder.png";
                 if(nodeType == "layer") return imagesPath + "map.png";
-            }
-            if(fieldName == "leaf") {
-                return this.get('isLeaf');
-            }
-            // Return default value, taken from ExtJS source
-            return this[this.persistenceProperty][fieldName];
-        }
-    });
-
-    // Override van TreeStore to fix load function, used to refresh tree node
-    Ext.define('Ext.ux.b3p.TreeStore', {
-        extend: 'Ext.data.TreeStore',
-        load: function(options) {
-            options = options || {};
-            options.params = options.params || {};
-            var me = this,
-                node = options.node || me.tree.getRootNode(),
-                root;
-            if (!node) {
-                node = me.setRootNode({
-                    expanded: true
-                });
-            }
-            if (me.clearOnLoad) {
-                node.removeAll(false);
-            }
-            Ext.applyIf(options, {
-                node: node
-            });
-            options.params[me.nodeParam] = node ? node.getId() : 'root';
-            if (node) {
-                node.set('loading', true);
-            }
-            return me.callParent([options]);
-        }
+            }},
+            {name: 'leaf', type: 'boolean', mapping: 'isLeaf'}
+        ]
     });
 
     // Definition of the store, which takes care of loading the necessary json
-    var treeStore = Ext.create('Ext.ux.b3p.TreeStore', {
+    var treeStore = Ext.create('Ext.data.TreeStore', {
         autoLoad: true,
         proxy: {
             type: 'ajax',
@@ -98,7 +61,7 @@ Ext.onReady(function() {
             icon: imagesPath + "add.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    addSublevel(item.ownerCt.data.clickedItem);
+                    addSublevel(item.ownerCt.config.data.clickedItem);
                 }
             }
         },{
@@ -106,14 +69,14 @@ Ext.onReady(function() {
             icon: imagesPath + "delete.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    removeLevel(item.ownerCt.data.clickedItem);
+                    removeLevel(item.ownerCt.config.data.clickedItem);
                 }
             }
         },{
             text: 'Naam wijzigen',
             listeners: {
                 click: function(item, e, eOpts) {
-                    changeLevelName(item.ownerCt.data.clickedItem)
+                    changeLevelName(item.ownerCt.config.data.clickedItem)
                 }
             }
         },{
@@ -121,7 +84,7 @@ Ext.onReady(function() {
             icon: imagesPath + "wrench.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    var record = item.ownerCt.data.clickedItem;
+                    var record = item.ownerCt.config.data.clickedItem;
                     tree.fireEvent("itemclick", null, record);
                 }
             }
@@ -139,7 +102,7 @@ Ext.onReady(function() {
             icon: imagesPath + "wrench.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    var record = item.ownerCt.data.clickedItem;
+                    var record = item.ownerCt.config.data.clickedItem;
                     tree.fireEvent("itemclick", null, record);
                 }
             }
@@ -151,7 +114,7 @@ Ext.onReady(function() {
         id: 'applicationtree',
         store: treeStore,
         rootVisible: true,
-        scroll: false,
+        scroll: 'both',
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',
@@ -160,10 +123,10 @@ Ext.onReady(function() {
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
                 if(record.get('type') == "level") {
-                    levelMenu.data.clickedItem = record;
+                    levelMenu.config.data.clickedItem = record;
                     levelMenu.showAt(event.getXY());
                 } else {
-                    appLayerMenu.data.clickedItem = record;
+                    appLayerMenu.config.data.clickedItem = record;
                     appLayerMenu.showAt(event.getXY());
                 }
                 event.stopEvent();
@@ -171,7 +134,7 @@ Ext.onReady(function() {
             containercontextmenu: function(view, event, eOpts) {
                 // When rightclicking in the treecontainer (not on a node) than
                 // show the context menu for adding a new category
-                levelMenu.data.parent = rootid;
+                levelMenu.config.data.parent = rootid;
                 levelMenu.showAt(event.getXY());
                 event.stopEvent();
             },
@@ -186,7 +149,8 @@ Ext.onReady(function() {
                 }
 
                 // Expand tree on click
-                record.set("isLeaf", false);
+                record.set('leaf', false);
+                record.set('isLeaf', false);
                 record.expand(false);
             }
         },
@@ -195,13 +159,11 @@ Ext.onReady(function() {
             text: "Gebruik het contextmenu (rechtermuisknop) om de boomstructuur te bewerken"
         }]
     });
-
-    applyTreeScrollFix(tree.getView());
 });
 
 // Function for adding a node, should not be called directly, but trough the
 // addCategory or addServiceNode functions
-function addNode(node, parentid) {
+function addNode(node, parentid, callback) {
     var record = null;
     var tree = Ext.getCmp('applicationtree');
     if(parentid == rootId || parentid == 'n'+rootId) {
@@ -213,8 +175,13 @@ function addNode(node, parentid) {
         if(record.isLeaf()) {
             // If the parent is currently a Leaf, then setting it to false
             // and expanding it will load the added childnode from backend
+            record.set('leaf', false);
             record.set('isLeaf', false);
-            record.expand(false);
+            record.expand(/*recursive=*/false, function() {
+                if(callback) {
+                    callback();
+                }
+            });
         } else {
             // If it has childnodes then just append the new node
             // First expand, then append child, otherwise childnodes are replaced?
@@ -239,6 +206,9 @@ function addNode(node, parentid) {
                     }
                 } else {
                     //console.log("child already exists even though parent was a leaf!");
+                }
+                if(callback) {
+                    callback();
                 }
             });
         }
@@ -271,8 +241,9 @@ function addSublevel(record) {
                         var objData = Ext.JSON.decode(result.responseText);
                         objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                         var newNode = Ext.create('AppLevelTreeModel', objData);
-                        addNode(newNode, objData.parentid);
-                        Ext.getCmp("applicationtree").fireEvent("itemclick", null, newNode);
+                        addNode(newNode, objData.parentid, function() {
+                            Ext.getCmp("applicationtree").fireEvent("itemclick", null, newNode);
+                        });
                     },
                     failure: function ( result, request) {
                         Ext.MessageBox.alert('Failed', result.responseText);
@@ -379,6 +350,7 @@ function refreshNode(nodeid) {
     var record = treeStore.getNodeById(nodeid)
     // Set isLeaf false so if node did not have children before, it would
     // correctly expand when children are added
+    record.set('leaf', false);
     record.set('isLeaf', false);
     treeStore.load({
         node: record,

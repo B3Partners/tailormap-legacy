@@ -3,19 +3,19 @@
  * for authentication/authorization, pricing and usage reporting.
  *
  * Copyright 2006, 2007, 2008 B3Partners BV
- *
+ * 
  * This file is part of B3P Kaartenbalie.
- *
+ * 
  * B3P Kaartenbalie is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * B3P Kaartenbalie is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with B3P Kaartenbalie.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,11 +24,15 @@ package nl.b3p.viewer.image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Stack;
 import java.util.concurrent.Callable;
 import javax.imageio.ImageIO;
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,7 +56,7 @@ public class ImageCollector implements Callable<ImageCollector> {
     private String password = null;
     private CombineImageUrl combinedImageUrl = null;
     protected HttpClient client =null;
-
+ 
     /*public ImageCollector(String url, int maxResponseTime) {
         this.url = url;
         this.maxResponseTime = maxResponseTime;
@@ -72,7 +76,7 @@ public class ImageCollector implements Callable<ImageCollector> {
         this.password = pw;
     }
 
-    public ImageCollector call() throws Exception {
+    public ImageCollector call() throws Exception {        
         status = ACTIVE;
         if ((getUrl() == null || getUrl().length() == 0) && getRealUrl() == null) {
             return this;
@@ -82,14 +86,14 @@ public class ImageCollector implements Callable<ImageCollector> {
             if (getRealUrl() != null) {
                 setBufferedImage(ImageIO.read(getRealUrl()));
             } else {
-                setBufferedImage(loadImage(getUrl(),getUsername(),getPassword()));
+                setBufferedImage(loadImage(getUrl(),getUsername(),getPassword()));                
             }
             setMessage("");
             setStatus(COMPLETED);
         } catch (Exception ex) {
             log.warn("error callimage collector: ", ex);
             setStatus(ERROR);
-        }
+        } 
         return this;
     }
     /**
@@ -99,11 +103,11 @@ public class ImageCollector implements Callable<ImageCollector> {
      * @param pass password
      * @return The image
      * @throws IOException
-     * @throws Exception
+     * @throws Exception 
      */
     protected BufferedImage loadImage(String url, String user, String pass) throws IOException, Exception {
         HttpMethod method = null;
-        try {
+        try {            
             method = new GetMethod(url);
 
             int statusCode = client.executeMethod(method);
@@ -129,57 +133,57 @@ public class ImageCollector implements Callable<ImageCollector> {
             return null;
         return getCombinedImageUrl().getUrl();
     }
-
-    public URL getRealUrl(){
+    
+    public URL getRealUrl(){ 
         if (combinedImageUrl==null)
             return null;
         return getCombinedImageUrl().getRealUrl();
     }
-
+    
     public BufferedImage getBufferedImage() {
         return bufferedImage;
     }
-
+    
     public void setBufferedImage(BufferedImage bufferedImage) {
         this.bufferedImage = bufferedImage;
     }
-
+    
     public int getStatus() {
         return status;
     }
-
+    
     public void setStatus(int status) {
         this.status = status;
     }
-
+    
     public String getMessage() {
         return message;
     }
-
+    
     public void setMessage(String message) {
         this.message = message;
     }
-
+    
     public String getUsername() {
         return username;
     }
-
+    
     public void setUsername(String username) {
         this.username = username;
     }
-
+    
     public String getPassword() {
         return password;
     }
-
+    
     public void setPassword(String password) {
         this.password = password;
     }
-
+    
     public int getMaxResponseTime() {
         return maxResponseTime;
     }
-
+    
     public void setMaxResponseTime(int maxResponseTime) {
         this.maxResponseTime = maxResponseTime;
     }

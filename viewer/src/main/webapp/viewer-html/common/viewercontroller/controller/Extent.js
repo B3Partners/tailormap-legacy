@@ -1,5 +1,5 @@
 /**
- * @class
+ * @class 
  * @constructor
  * @description There are 2 ways to create a extent:
  *- With 1 string that has 4 comma seperated coords(xxx,xxx,xxx,xxx)
@@ -68,7 +68,7 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         if (extent==null){
             return false;
         }
-        if (this.minx != extent.minx ||
+        if (this.minx != extent.minx || 
             this.miny != extent.miny ||
             this.maxx != extent.maxx ||
             this.maxy != extent.maxy){
@@ -85,5 +85,5 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         val+=this.minx+","+this.miny+","+this.maxx+","+this.maxy;
         return val;
     }
-
+    
 });

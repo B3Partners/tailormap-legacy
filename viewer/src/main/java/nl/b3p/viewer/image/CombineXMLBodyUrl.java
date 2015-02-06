@@ -37,19 +37,19 @@ import org.xml.sax.SAXException;
  * @author Roy Braam
  */
 public abstract class CombineXMLBodyUrl extends CombineImageUrl{
-
+    
     public CombineXMLBodyUrl(){}
-
+    
     public CombineXMLBodyUrl(CombineXMLBodyUrl cxu){
         super(cxu);
     }
-
+        
     /**
      * Returns the body as a xml document
      * @return the body as document
      * @throws ParserConfigurationException
      * @throws SAXException
-     * @throws IOException
+     * @throws IOException 
      */
     protected Document bodyAsDocument() throws ParserConfigurationException, SAXException, IOException{
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -62,7 +62,7 @@ public abstract class CombineXMLBodyUrl extends CombineImageUrl{
      * Set the body with the given doc. Its transforms the document to a string
      * @param doc the Document that's the new body
      * @throws TransformerConfigurationException
-     * @throws TransformerException
+     * @throws TransformerException 
      */
     protected void setBody(Document doc) throws TransformerConfigurationException, TransformerException{
         DOMSource domSource = new DOMSource(doc);

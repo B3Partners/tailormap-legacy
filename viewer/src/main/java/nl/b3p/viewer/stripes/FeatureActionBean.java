@@ -32,10 +32,10 @@ import org.json.JSONObject;
 public class FeatureActionBean implements ActionBean {
 
     private ActionBeanContext context;
-
+    
     @Validate
     private GeoService service;
-
+    
     @Validate
     private String layer;
 
@@ -43,40 +43,40 @@ public class FeatureActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public String getLayer() {
         return layer;
     }
-
+    
     public void setLayer(String layer) {
         this.layer = layer;
     }
-
+    
     public GeoService getService() {
         return service;
     }
-
+    
     public void setService(GeoService service) {
         this.service = service;
     }
     //</editor-fold>
-
+    
     public Resolution getLayerFeatureType() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
         String error = null;
-
+        
         if(service == null || layer == null) {
             error = "Invalid parameters";
         } else {
             service.loadLayerTree();
             Layer l = service.getLayer(layer);
-
+            
             if(l == null) {
                 error = "Can't find layer " + layer;
             } else {
@@ -84,11 +84,11 @@ public class FeatureActionBean implements ActionBean {
                 json.put("success", Boolean.TRUE);
             }
         }
-
+        
         if(error != null) {
             json.put("error", error);
         }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString()));
-    }
+        
+        return new StreamingResolution("application/json", new StringReader(json.toString()));        
+    }    
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,27 +16,27 @@
  */
 /**
  * Coordinates
- * Creates a Coordinates component in the framework
+ * Creates a Coordinates component in the framework 
  * of the MapComponent. Shows the mouse coords when hovering the map
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.Coordinates",{
-    extend: "viewer.components.Component",
+    extend: "viewer.components.Component",    
     constructor: function (conf){
         if (!conf){
-            conf={};
+            conf={};            
         }if (!conf.decimals){
             conf.decimals=2;
         }
-        viewer.components.Coordinates.superclass.constructor.call(this, conf);
+        viewer.components.Coordinates.superclass.constructor.call(this, conf);        
         this.initConfig(conf);
-
+        
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.COORDINATES;
-
-        var comp = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(comp);
-
+        
+        var comp = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(comp);
+        
         return this;
     },
     getExtComponents: function() {

@@ -360,12 +360,12 @@ public class UserActionBean implements ActionBean {
                     if(org.indexOf(filterOrganization.toLowerCase())!=-1){
                         usersToSelect.add(us.getUsername());
                     }
-
+                    
                 }
             }
             c.add(Restrictions.in("username", usersToSelect));
         }
-
+        
         if (filterPosition != null && filterPosition.length() > 0) {
             Criteria posCrit = sess.createCriteria(User.class);
             List<User> users = posCrit.list();
@@ -376,7 +376,7 @@ public class UserActionBean implements ActionBean {
                     if(org.indexOf(filterOrganization.toLowerCase())!=-1){
                         usersToSelect.add(us.getUsername());
                     }
-
+                    
                 }
             }
             c.add(Restrictions.in("username", usersToSelect));
@@ -424,7 +424,7 @@ public class UserActionBean implements ActionBean {
     Set<Level> authorizedLevels = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedAppLayers = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedEditableAppLayers = Collections.EMPTY_SET;
-
+    
     Set<ConfiguredComponent> authorizedComponents = Collections.EMPTY_SET;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters for authorization collections">
@@ -543,14 +543,14 @@ public class UserActionBean implements ActionBean {
                         authorizedEditableAppLayers.add(al);
                     }
                 }
-
+                
                 authorizedComponents = new HashSet();
                 for(ConfiguredComponent cc: application.getComponents()) {
                     if(cc.getReaders().equals(Authorizations.EVERYBODY) || !Collections.disjoint(cc.getReaders(), roles)) {
                         authorizedComponents.add(cc);
-                    }
+                    }                    
                 }
-            }
+            }            
         }
 
         return new ForwardResolution("/WEB-INF/jsp/security/authorizations.jsp");

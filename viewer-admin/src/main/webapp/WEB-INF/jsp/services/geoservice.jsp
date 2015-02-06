@@ -25,10 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
 
 <div id="formcontent">
-<p>
-    <stripes:errors/>
-    <stripes:messages/>
-</p>
+<stripes:errors/>
+<stripes:messages/>
 
 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
 
@@ -208,6 +206,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td colspan="2">
                 <stripes:checkbox name="useIntersect"/> Gebruik 'intersect' filter (in plaats van 'DWithin') om data op te halen.
             </td>
+        </tr>>>
+        <tr id="useProxy">
+            <td colspan="2">
+                <stripes:checkbox name="useProxy"/> Gebruik proxy om kaarten op te halen.
+            </td>
         </tr>
         <tr id="useProxy">
             <td colspan="2">
@@ -262,7 +265,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <c:if test="${actionBean.protocol == 'wms'}">
     <script type="text/javascript">
         Ext.onReady(function() {
-
             var panel = Ext.create('Ext.panel.Panel', {
                 width: '100%',
                 renderTo: Ext.getBody(),
@@ -270,11 +272,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 padding: '10 0 0 0',
                 contentEl: Ext.getDom('sldcontent')
             });
-
-            Ext.EventManager.onWindowResize(function () {
+            Ext.on('resize', function () {
                 panel.doLayout();
             });                
-            Ext.EventManager.fireResize();            
+            panel.doLayout();
         });
     </script>
     <div id="sldcontent" class="insidePanel" style="margin: 5px">

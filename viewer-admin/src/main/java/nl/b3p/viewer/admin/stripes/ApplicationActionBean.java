@@ -34,17 +34,17 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Meine Toonen
  */
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public abstract class ApplicationActionBean implements ActionBean {
 
     protected ActionBeanContext context;
-
+    
     @Validate
     protected Application application;
-
+    
     @Session(key = "applicationId")
     protected Long applicationId;
-
+    
     @Session(key = "applicationName")
     private String applicationName;
 
@@ -67,7 +67,7 @@ public abstract class ApplicationActionBean implements ActionBean {
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
     }
-
+    
     public void setApplication(Application application) {
         this.application = application;
         if(application != null) {

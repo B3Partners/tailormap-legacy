@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 /**
  * Measure Tool component
- * Creates a MapComponent Tool with the given configuration by calling createTool
+ * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -24,12 +24,13 @@
 Ext.define ("viewer.components.tools.Measure.Line",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "measureline"
+        name: "measureline",
+        tooltip: "Measure"
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.tools.Measure.Line.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.MEASURELINE;
+        conf.type = viewer.viewercontroller.controller.Tool.MEASURELINE;        
         this.initTool(conf);
         return this;
     }
@@ -37,12 +38,13 @@ Ext.define ("viewer.components.tools.Measure.Line",{
 Ext.define ("viewer.components.tools.Measure.Area",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "measurearea"
+        name: "measurearea",
+        tooltip: "Measure area"
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.tools.Measure.Area.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.MEASUREAREA;
+        conf.type = viewer.viewercontroller.controller.Tool.MEASUREAREA;        
         this.initTool(conf);
         return this;
     }

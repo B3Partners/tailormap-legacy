@@ -14,3 +14,14 @@
 .x-htmleditor-imageupload-unconstrain{background: url(../images/constrain.gif) 0 -48px no-repeat !important}
 .x-htmleditor-imageupload-name{float:right;padding:20px 10px 0 0;}
 .x-htmleditor-imageupload-thumb{width:56px;height:56px;float:right}
+/***
+ * There is some CSS code missing in the Ext 'Crisp' themes which results in a tiny 'source' editor in the HTML component
+ * The code below is from the 'Neptune' theme
+ */
+.x-htmleditor-iframe, .x-htmleditor-textarea {
+    border: 0 none;
+    display: block;
+    height: 100%;
+    overflow: auto;
+    width: 100%;
+}

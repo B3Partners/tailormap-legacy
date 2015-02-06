@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,18 +29,18 @@ Ext.define("viewer.components.CustomConfiguration",{
             bodyPadding: me.formPadding,
             width: me.formWidth,
             defaultType: 'textfield',
-            items: [{
+            items: [{                  
                 fieldLabel: 'Titel',
                 name: 'title',
                 value: config.title !== null && config.title !== undefined ? config.title : "Titel",
                 labelWidth: me.labelWidth,
                 width: 500
-            },{
+            },{                        
                 fieldLabel: 'Marge',
                 name: 'margin',
                 value: config.margin || "3px 0 3px 0",
                 labelWidth: me.labelWidth,
-                width: 400
+                width: 400                   
             },{
                 fieldLabel: 'Padding',
                 name: 'padding',
@@ -86,7 +86,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }],
             renderTo: this.parentId
         });
-
+        
         return this;
     }
 });

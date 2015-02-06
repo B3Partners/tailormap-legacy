@@ -31,9 +31,9 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/image/{name}")
 @StrictBinding
 public class ImageActionBean implements ActionBean {
-
+    
     private ActionBeanContext context;
-
+    
     @Validate
     private String name;
 
@@ -41,22 +41,22 @@ public class ImageActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
     //</editor-fold>
-
+    
     public Resolution download() throws FileNotFoundException {
-
+        
         final Resource r = Stripersist.getEntityManager().find(Resource.class, name);
         if(r == null) {
             return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND);
@@ -70,7 +70,7 @@ public class ImageActionBean implements ActionBean {
                     return new ErrorResolution(HttpServletResponse.SC_NOT_MODIFIED);
                 }
             }
-        }
+        }     
 
         StreamingResolution res = new StreamingResolution(r.getContentType()) {
             @Override
@@ -82,9 +82,9 @@ public class ImageActionBean implements ActionBean {
                 IOUtils.copy(in, out);
                 in.close();
             }
-        };
+        };            
         res.setLastModified(r.getModified().getTime());
-        res.setFilename(r.getName());
+        res.setFilename(r.getName());       
         res.setLength(r.getSize());
         res.setAttachment(false);
         return res;

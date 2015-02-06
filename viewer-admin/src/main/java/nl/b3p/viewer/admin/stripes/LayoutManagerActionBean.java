@@ -147,7 +147,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public void setLayout(String layout) {
         this.layout = layout;
     }
-
+    
     public String getGlobalLayout() {
         return globalLayout;
     }
@@ -188,7 +188,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.appConfigJSON = appConfigJSON;
     }
     //</editor-fold>
-
+    
     @DefaultHandler
     public Resolution view() throws JSONException {
         if (application == null) {
@@ -209,7 +209,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true);
         } catch(JSONException je) {
         }
-
+        
         try {
             if(component == null){
                 component = (ConfiguredComponent) em.createQuery(

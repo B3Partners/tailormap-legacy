@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  * OpenLayers BorderNavigation Component
  * Creates a BorderNavigation component for OpenLayers with the buttons at the border
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
- */
+ */ 
 Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",
     north: null,
@@ -28,8 +28,8 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
     west: null,
     buttonSize: 0,
     timer:null,
-
-    constructor: function (conf){
+    
+    constructor: function (conf){        
         //arguments.push();
         this.callParent(arguments);
         this.frameworkObject=new OpenLayers.Control.PanPanel();
@@ -39,16 +39,16 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
      * Can be overwritten to do something after the component is added.
      */
     doAfterAdd : function (){
-        this.north = Ext.select(".olControlPanNorthItemInactive");
+        this.north = Ext.select(".olControlPanNorthItemInactive");        
         this.south = Ext.select(".olControlPanSouthItemInactive");
         this.east = Ext.select(".olControlPanEastItemInactive");
-        this.west = Ext.select(".olControlPanWestItemInactive");
-
+        this.west = Ext.select(".olControlPanWestItemInactive");     
+                
         Ext.select(".olControlPanPanel").setStyle("left","0px");
         Ext.select(".olControlPanPanel").setStyle("top","0px");
-
+        
         var me = this;
-        Ext.EventManager.onWindowResize(function (){
+        Ext.on('resize', function (){
             me.resizeOnceAfter(100);
         });
         this.resize();
@@ -58,7 +58,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
      * If this function is called in the mean time, the timer is started again.
      * @param time time in milisecs
      */
-    resizeOnceAfter: function (time){
+    resizeOnceAfter: function (time){       
         var me=this;
         if (this.timer){
             clearTimeout(this.timer);
@@ -79,23 +79,23 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         }
         var height  = Ext.select(".olMap").item(0).getHeight();
         var width  = Ext.select(".olMap").item(0).getWidth();
-
+        
         var halfwayHeight = Number((height-this.buttonSize)/2);
         var halfwayWidth = Number((width-this.buttonSize)/2);
         this.north.setStyle("top","0px");
         this.north.setStyle("left",halfwayWidth+"px");
-
+        
         //set width of top panel if the border nav is added. Otherwise the panel is on top of the north button.
-        Ext.get(this.viewerController.mapComponent.contentTop).setStyle("width",halfwayWidth+"px");
-
+        Ext.get(this.config.viewerController.mapComponent.contentTop).setStyle("width",halfwayWidth+"px");
+        
         this.south.setStyle("top",height-this.buttonSize+"px");
         this.south.setStyle("left",halfwayWidth+"px");
         this.west.setStyle("top",halfwayHeight+"px");
         this.west.setStyle("left","0px");
         this.east.setStyle("top",halfwayHeight+"px");
         this.east.setStyle("left",width-this.buttonSize+"px");
-
-
+        
+        
     }
 });
 

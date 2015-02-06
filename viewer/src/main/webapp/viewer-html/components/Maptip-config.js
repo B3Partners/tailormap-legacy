@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         configObject.layerFilter=this.layerFilter;
         configObject.showLabelconfig = false;
-
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
         this.checkPanelHeight = 210;
         this.form.add([{
             xtype: 'textfield',
@@ -75,7 +75,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             layout : {
                 type: 'table',
                 columns: 2,
-
+                
             },
             items: [
                 {
@@ -125,11 +125,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         ]);
         this.createCheckBoxes(this.configObject.layers,{});
-
+        
     },
     layerFilter: function(layers){
         var filteredLayers=[];
         for (var i in layers){
+            if(!layers.hasOwnProperty(i)) {
+                continue;
+            }
             var l = layers[i];
             //check if layer has something to show in the maptip
             if (l && l.details !=undefined &&

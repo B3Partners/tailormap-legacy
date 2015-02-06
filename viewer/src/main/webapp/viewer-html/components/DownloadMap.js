@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,44 +27,44 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     iconUrl_up: null,
     iconUrl_over: null,
     button: null,
-    constructor: function (conf){
+    constructor: function (conf){        
         this.hasButton = false;
         viewer.components.tools.DownloadMap.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-
+        this.initConfig(conf);   
+        
         if(this.isPopup){
             var me = this;
             this.renderButton({
                 text: me.title,
-                tooltip: me.tooltip,
+                tooltip: me.config.tooltip,
                 label: me.label,
                 handler: function() {
                     me.buttonDown();
                 }
             });
         }else{
-            this.button= this.viewerController.mapComponent.createTool({
+            this.button= this.config.viewerController.mapComponent.createTool({
                 type: viewer.viewercontroller.controller.Tool.BUTTON,
                 displayClass: "downloadMap",
-                tooltip: this.tooltip || null,
-                viewerController: this.viewerController
+                tooltip: this.config.tooltip || null,
+                viewerController: this.config.viewerController
             });
-            this.viewerController.mapComponent.addTool(this.button);
+            this.config.viewerController.mapComponent.addTool(this.button);
 
             this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         }
         return this;
     },
     /**
-     * When the button is hit
+     * When the button is hit 
      * @param button the button
-     * @param object the options.
+     * @param object the options.        
      */
-    buttonDown : function(button,object){
+    buttonDown : function(button,object){        
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
     },
-    imageSuccess: function(imageUrl){
+    imageSuccess: function(imageUrl){        
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
         if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
         else {
@@ -75,7 +75,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         var properties = {};
         /*properties.angle = this.rotateSlider.getValue();
         properties.quality = this.qualitySlider.getValue();*/
-        properties.appId = this.viewerController.app.id;
+        properties.appId = this.config.viewerController.app.id;
         var mapProperties = this.getMapValues();
         Ext.apply(properties, mapProperties);
         return properties;

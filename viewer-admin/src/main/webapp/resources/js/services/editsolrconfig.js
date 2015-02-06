@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ Ext.require([
 ]);
 
 Ext.onReady(function(){
-
+    
 });
 
 function featureSourceChanged(select){
@@ -44,10 +44,10 @@ function featureSourceChanged(select){
                 if(data) {
                     var html="<option value=\"-1\">Maak uw keuze.</option>";
                     for (var id in data){
-                        var ft=data[id];
-                        html+="<option value=\""+ft.id+"\"";
-                        html+=">"+ft.name+"</option>";
-                    }
+                        var ft=data[id];       
+                        html+="<option value=\""+ft.id+"\"";                    
+                        html+=">"+ft.name+"</option>";        
+                    } 
                     resultEl.update(html);
                 }
             },
@@ -98,7 +98,7 @@ function featureTypeChanged(featuretypeId){
                         html += ' />';
                         html += '<td>' +  ft.attribute + '</td>';
                         html += '</td></tr>';
-                    }
+                    } 
                     html += '</table>';
                     Ext.create('Ext.panel.Panel', {
                         title: 'Attributen',

@@ -24,11 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
-
-        <p>
-            <stripes:errors/>
-            <stripes:messages/>
-        </p>
+        <stripes:errors/>
+        <stripes:messages/>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform">
             <stripes:hidden name="level" value="${actionBean.level.id}"/>
             <c:if test="${actionBean.context.eventName!='delete'}">

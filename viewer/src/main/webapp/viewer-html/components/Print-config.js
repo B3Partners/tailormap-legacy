@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,36 +24,36 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId,configObject){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
         //this.createCheckBoxes(this.configObject.layers);
         this.addFormItems(configObject);
     },
     addFormItems: function(){
-        var me =this;
+        var me =this;        
         this.form.add([{
                 xtype: "label",
                 text: "Standaard Oriëntatie",
-                style: "font-weight: bold;"
-            },{
+                style: "font-weight: bold;"                
+            },{                           
                 xtype: 'radiogroup',
                 columns: 1,
                 vertical: true,
                 name: "orientation",
                 items: [{
-                    boxLabel: 'Liggend',
-                    name: 'orientation',
-                    inputValue: 'landscape',
+                    boxLabel: 'Liggend', 
+                    name: 'orientation', 
+                    inputValue: 'landscape', 
                     checked: me.configObject.orientation=="landscape"
                 },{
-                    boxLabel: 'Staand',
-                    name: 'orientation',
-                    inputValue: 'portrait',
+                    boxLabel: 'Staand', 
+                    name: 'orientation', 
+                    inputValue: 'portrait', 
                     checked: !(me.configObject.orientation=="landscape")
                 }]
             },{
                 xtype: "label",
                 text: "Standaard paginaformaat",
-                style: "font-weight: bold;"
+                style: "font-weight: bold;"                
             },{
                 xtype: "combo",
                 fields: ['value','text'],
@@ -70,7 +70,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: "label",
                 text: "Standaard legenda",
-                style: "font-weight: bold;"
+                style: "font-weight: bold;"                
             },{
                 xtype: "checkbox",
                 name: "legend",
@@ -79,7 +79,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: "label",
                 text: "Maximale grote plaatje",
-                style: "font-weight: bold;"
+                style: "font-weight: bold;"                
             },{
                 xtype: "textfield",
                 name: "max_imagesize",
@@ -87,7 +87,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: "label",
                 text: "RTF-Knop",
-                style: "font-weight: bold;"
+                style: "font-weight: bold;"                
             },{
                 xtype: "checkbox",
                 name: "showPrintRtf",
@@ -96,7 +96,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: "label",
                 text: "Overzichtskaart",
-                style: "font-weight: bold;"
+                style: "font-weight: bold;"                
             },{
                 xtype: "checkbox",
                 name: "overview",
@@ -106,7 +106,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             ,{
                 xtype: "label",
                 text: "Mail",
-                style: "font-weight: bold;"
+                style: "font-weight: bold;"                
             },{
                 xtype: "combo",
                 fields: ['value','text'],
@@ -152,7 +152,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 hidden: me.configObject.mailPrint === "cantMail"
             }
         ]);
-
+                 
     }
 });
 

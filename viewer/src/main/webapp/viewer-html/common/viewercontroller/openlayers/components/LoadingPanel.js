@@ -6,8 +6,8 @@
  * @requires OpenLayers/Control.js
  *
  * Class: OpenLayers.Control.LoadingPanel
- * In some applications, it makes sense to alert the user that something is
- * happening while tiles are loading. This control displays a div across the
+ * In some applications, it makes sense to alert the user that something is 
+ * happening while tiles are loading. This control displays a div across the 
  * map when this is going on.
  *
  * Inherits from:
@@ -18,14 +18,14 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
     /**
      * Property: counter
      * {Integer} A counter for the number of layers loading
-     */
+     */ 
     counter: 0,
-
+    
     /**
      * Timeout ID from window.setTimeout()
      */
     minimizeTimeout: null,
-
+    
     /**
      * Config setting for timeout delay. If not set 5000 milliseconds is used.
      */
@@ -45,7 +45,7 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
 
     /**
      * Constructor: OpenLayers.Control.LoadingPanel
-     * Display a panel across the map that says 'loading'.
+     * Display a panel across the map that says 'loading'. 
      *
      * Parameters:
      * options - {Object} additional options.
@@ -123,7 +123,7 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
      * Method: setMap
      * Set the map property for the control and all handlers.
      *
-     * Parameters:
+     * Parameters: 
      * map - {<OpenLayers.Map>} The control's map.
      */
     setMap: function(map) {
@@ -156,13 +156,13 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
             }, timeoutDelay);
         }
         this.counter++;
-        if (this.counter > 0) {
+        if (this.counter > 0) { 
             if (!this.maximized && this.visible) {
-                this.maximizeControl();
+                this.maximizeControl(); 
             }
         }
     },
-
+    
     /**
      * Method: decreaseCounter
      * Decrease the counter and hide the control if finished
@@ -186,7 +186,7 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
         OpenLayers.Control.prototype.draw.apply(this, arguments);
         return this.div;
     },
-
+     
     /**
      * Method: minimizeControl
      * Set the display properties of the control to make it disappear.
@@ -195,14 +195,14 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
      * evt - {Event}
      */
     minimizeControl: function(evt) {
-        this.div.style.display = "none";
+        this.div.style.display = "none"; 
         this.maximized = false;
-
+    
         if (evt != null) {
             OpenLayers.Event.stop(evt);
         }
     },
-
+    
     /**
      * Method: maximizeControl
      * Make the control visible.
@@ -213,13 +213,13 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
     maximizeControl: function(evt) {
         this.div.style.display = "block";
         this.maximized = true;
-
+    
         if (evt != null) {
             OpenLayers.Event.stop(evt);
         }
     },
 
-    /**
+    /** 
      * Method: destroy
      * Destroy control.
      */
@@ -229,15 +229,15 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
             if (this.map.layers) {
                 for (var i = 0; i < this.map.layers.length; i++) {
                     var layer = this.map.layers[i];
-                    layer.events.unregister('loadstart', this,
+                    layer.events.unregister('loadstart', this, 
                         this.increaseCounter);
-                    layer.events.unregister('loadend', this,
+                    layer.events.unregister('loadend', this, 
                         this.decreaseCounter);
                 }
             }
         }
         OpenLayers.Control.prototype.destroy.apply(this, arguments);
-    },
+    },     
 
     CLASS_NAME: "OpenLayers.Control.LoadingPanel"
 

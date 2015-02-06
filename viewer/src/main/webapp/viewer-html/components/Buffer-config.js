@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.createCheckBoxes(this.configObject.layers,{
             bufferable:true
-        });
+        }); 
         this.addFormItems(configObject);
     },
     addFormItems: function(configObject){

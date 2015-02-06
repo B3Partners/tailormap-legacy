@@ -36,16 +36,16 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtree")
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationTreeActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTree.jsp";
-
+    
     @Validate(on="addLevel", required=true)
     private String parentId;
-
+    
     @Validate
     private String nodeId;
-
+    
     @Validate
     private String levelId;
 
@@ -63,40 +63,40 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         this.rootLevel = rootLevel;
     }
 
-
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public String getNodeId() {
         return nodeId;
     }
-
+    
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
     }
-
+    
     public String getLevelId() {
         return levelId;
     }
-
+    
     public void setLevelId(String levelId) {
         this.levelId = levelId;
     }
-
+    
     public String getParentId() {
         return parentId;
     }
-
+    
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
     //</editor-fold>
-
+    
     @DefaultHandler
     public Resolution view() {
         if(application == null){
@@ -105,18 +105,18 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         }else{
             rootLevel = application.getRoot();
         }
-
+        
         return new ForwardResolution(JSP);
     }
-
+    
     public Resolution tree() throws JSONException {
 
         EntityManager em = Stripersist.getEntityManager();
-
+        
         final JSONArray children = new JSONArray();
-
+        
         if(!nodeId.equals("n")){
-
+        
             String type = nodeId.substring(0, 1);
             int id = Integer.parseInt(nodeId.substring(1));
             if(type.equals("n")) {
@@ -136,9 +136,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                 }
 
                 for(ApplicationLayer layer: l.getLayers()) {
-
+                    
                     // XXX code duplication with loadSelectedLayers()
-
+                    
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId()); // XXX WTF? other id prefix than in loadSelectedLayers()
                     j.put("type", "layer");
@@ -147,9 +147,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                     j.put("name", layer.getDisplayName());
                     children.put(j);
                 }
-            }
+            } 
         }
-
+        
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
@@ -157,18 +157,18 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
            }
         };
     }
-
+    
     public Resolution loadSelectedLayers() throws JSONException {
 
         EntityManager em = Stripersist.getEntityManager();
-
+        
         final JSONArray children = new JSONArray();
-
+        
         if(!levelId.equals("")){
             int id = Integer.parseInt(levelId);
             Level l = em.find(Level.class, new Long(id));
             for(ApplicationLayer appl: l.getLayers()) {
-                JSONObject j = new JSONObject();
+                JSONObject j = new JSONObject();                
                 j.put("id", "al" + appl.getId());
                 j.put("type", "layer");
                 j.put("isLeaf", true);
@@ -179,7 +179,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                 j.put("status", serviceLayer != null && appl.getService().isMonitoringStatusOK() ? "ok" : "error");
             }
         }
-
+        
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
@@ -187,12 +187,12 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
            }
         };
     }
-
+    
     public Resolution loadDocumentTree() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
-
+        
         final JSONArray children = new JSONArray();
-
+        
         List documents = em.createQuery("from Document").getResultList();
         for(Iterator it = documents.iterator(); it.hasNext();){
             Document doc = (Document)it.next();
@@ -204,15 +204,15 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             j.put("parentid", nodeId);
             children.put(j);
         }
-
+        
         return new StreamingResolution("application/json") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
                 response.getWriter().print(children.toString());
             }
-        };
+        }; 
     }
-
+            
     public Resolution loadSelectedDocuments() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
 
@@ -235,9 +235,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             public void stream(HttpServletResponse response) throws Exception {
                 response.getWriter().print(children.toString());
             }
-        };
+        }; 
     }
-
+    
     public Resolution addLevel() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
 
@@ -250,17 +250,17 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         }
 
         Level parent = em.find(Level.class, parentIdLong);
-
+        
         if(!parent.isBackground() && parent.getParent() != null){
             if(parent.getParent().isBackground()){
                 /*
-                 * Checks if the new level is not a sub sub level of background.
+                 * Checks if the new level is not a sub sub level of background. 
                  * A background can only have sub levels with layers.
                  */
                 return null;
             }
         }
-
+        
         Level l = new Level();
         l.setName(name);
         l.setParent(parent);
@@ -278,7 +278,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         j.put("type", "level");
         j.put("isLeaf", true);
         j.put("parentid", parentId);
-
+        
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {

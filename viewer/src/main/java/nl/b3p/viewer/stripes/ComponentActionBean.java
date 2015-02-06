@@ -61,7 +61,7 @@ public class ComponentActionBean implements ActionBean {
 
     private Application application;
     private ViewerComponent component;
-
+    
     private ActionBeanContext context;
 
     private static final Map<String,Object[]> minifiedSourceCache = new HashMap<String,Object[]>();
@@ -122,7 +122,7 @@ public class ComponentActionBean implements ActionBean {
         if(application != null && className != null) {
             for(ConfiguredComponent cc: application.getComponents()) {
                 if(cc.getClassName().equals(className)) {
-
+                    
                     if(Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
                         component = cc.getViewerComponent();
                         break;
@@ -139,7 +139,7 @@ public class ComponentActionBean implements ActionBean {
         if(className != null && component == null) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "User not authorized for this components' source");
         }
-
+        
         if(component == null) {
             // All source files for all components for this application
 
@@ -264,7 +264,7 @@ public class ComponentActionBean implements ActionBean {
             if(compiler.hasErrors()) {
                 log.warn(compiler.getErrorCount() + " error(s) minifying source file " + f.getCanonicalPath() + "; using original source");
                 minified = IOUtils.toString(new FileInputStream(f));
-
+                
                 for(int i = 0; i < compiler.getErrorCount(); i++) {
                     JSError error = compiler.getErrors()[i];
                     log.warn(String.format("#%d line %d,%d: %s: %s",
@@ -274,7 +274,7 @@ public class ComponentActionBean implements ActionBean {
                             error.level.toString(),
                             error.description));
                 }
-
+                
             } else {
                 minified = compiler.toSource();
             }

@@ -2,7 +2,7 @@
 <!-- crossContext="true" is required to enable the viewer-admin to load the
   components.json file and component config javascript sources from the viewer -->
 <Context antiJARLocking="true" crossContext="true" disableURLRewriting="true" path="/viewer-admin">
-  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components,/opt/flamingo_data/flamingo_3rdparty/dbk-component,/opt/flamingo_data/flamingo_3rdparty/ro-tercera-component"/>
+  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <!-- Customized context parameters; see web.xml -->
   <!--Parameter name="viewer.url" value="/viewer" override="false"/-->
   <!--Parameter name="monitoring.mail.from.email" value="no-reply@b3partners.nl" override="false"/-->

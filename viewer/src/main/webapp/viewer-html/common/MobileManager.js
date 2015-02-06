@@ -25,14 +25,14 @@ Ext.define ("viewer.components.MobileManager", {
     android : /android/i.test(navigator.userAgent),
     currentPopup : null,
     hammerMask : null,
-
+    
     constructor: function(){
-
+        
     },
     closePopup: function(){
         this.currentPopup.hide();
     },
-    isMobile: function() {
+    isMobile: function() {         
         return this.mobile;
     },
     isIOS: function() { return ios; },

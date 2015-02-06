@@ -29,10 +29,11 @@ Ext.define ("viewer.components.ScreenPopup",{
             y: 100,
             width : 400,
             height: 600,
-            changeablePosition:true,
-            changeableSize:true,
+            changeablePosition:false,
+            changeableSize:false,
             items:null,
-            position : 'center'
+            position : 'center',
+            useExtLayout: false
         }
     },
     component: null,
@@ -40,26 +41,22 @@ Ext.define ("viewer.components.ScreenPopup",{
     constructor: function (conf){
         var me = this;
         this.initConfig(conf);
+
         var config = {
-            title: this.title || 'Titel',
+            title: this.config.title || 'Titel',
             closable: true,
             closeAction: 'hide',
             hideMode: 'offsets',
-            width: parseInt(this.details.width),
-            height: parseInt(this.details.height),
-            resizable: "true" == ""+this.details.changeableSize,
-            draggable: "true" == ""+this.details.changeablePosition,
+            width: ("" + this.config.details.width).indexOf('%') !== -1 ? this.config.details.width : parseInt(this.config.details.width),
+            height: ("" + this.config.details.height).indexOf('%') !== -1 ? this.config.details.height : parseInt(this.config.details.height),
+            resizable: "true" === ""+this.config.details.changeableSize,
+            draggable: "true" === ""+this.config.details.changeablePosition,
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
             autoScroll: true
         };
-        if(this.details.position == 'fixed' && !MobileManager.isMobile()) {
-            var wrapper = Ext.get('wrapper');
-            config.x = parseInt(this.details.x) + wrapper.getX();
-            config.y = parseInt(this.details.y) + wrapper.getY();
-        }
-
+        
         if(MobileManager.isMobile()) {
             config.modal = true;
             config.width = '90%';
@@ -68,20 +65,22 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.resizable = false;
             this.currentOrientation = MobileManager.getOrientation();
         }
-
-        if(this.details.items){
-            config.items = this.details.items;
+		
+        if(this.config.details && this.config.details.items){
+            config.items = this.config.details.items;
             config.bodyStyle= { background: '#fff'};
-        }else{
+        }else if(this.config.details && this.config.details.useExtLayout) {
+            config.bodyStyle= { background: '#fff'};
+        } else {
             var con = document.createElement('div');
             con.style.height=  "100%";
             con.style["background"] = "#FFFFFF";
             con.style.width=  "100%";
             config.contentEl = con;
         }
-
-        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
-        if(conf && (conf.hasOwnProperty('showHelpButton') && (conf.showHelpButton === "true" || conf.showHelpButton===true))) {
+        
+        // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
+        if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
             config.tools = [{
                 type:'help',
                 handler: function(event, toolEl, panel){
@@ -89,18 +88,33 @@ Ext.define ("viewer.components.ScreenPopup",{
                 }
             }];
         }
+        if(config.resizable) {
+            config.resizable = {
+                listeners: {
+                    'beforeresize': function() {
+                        me.disableBody();
+                    },
+                    'resize': function() {
+                        me.enableBody();
+                    }
+                }
+            };
+        }
 
         this.popupWin = Ext.create('Ext.window.Window', config);
-        if(this.showOnStartup){
+        if(this.config.showOnStartup){
             this.popupWin.show();
         }
+        
+        var positionChanged = false;
         if(config.draggable){
-            this.popupWin.addListener("dragstart",this.disableBody,this);
-            this.popupWin.addListener("dragend",this.enableBody,this);
-        }
-        if(config.resizable){
-            this.popupWin.resizer.addListener("beforeresize",this.disableBody,this);
-            this.popupWin.resizer.addListener("resize",this.enableBody,this);
+            this.popupWin.addListener("dragstart", function() {
+                me.disableBody();
+            });
+            this.popupWin.addListener("dragend", function() {
+                me.enableBody();
+                positionChanged = true;
+            });
         }
         this.popupWin.addListener('hide', function() {
             if(me.component) {
@@ -109,6 +123,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             me.enableBody();
         });
         this.popupWin.addListener('show', function() {
+            conf.viewerController.registerPopupShow(me.popupWin);
             if(me.component) {
                 me.component.setButtonState('click', true);
             }
@@ -117,16 +132,25 @@ Ext.define ("viewer.components.ScreenPopup",{
                     me.currentOrientation = MobileManager.getOrientation();
                     setTimeout(function() { me.component.resizeScreenComponent() }, 0);
                 }
-                if(config.modal) MobileManager.closePopupOnTapMask(me.popupWin);
+                me.popupWin.mon(Ext.getBody(), 'click', function(el, e){
+                    me.popupWin.close();
+                }, me, { delegate: '.x-mask' });
+            } else if(me.config.details.position === 'fixed' && !positionChanged) {
+                // Align popupWindow
+                var pos = [parseInt(me.config.details.x), parseInt(me.config.details.y)];
+                var alignment = 'tl';
+                if(me.config.details.alignposition) {
+                    alignment = me.config.details.alignposition;
+                }
+                if(alignment.substr(0, 1) === 'b') {
+                    pos[1] = pos[1] * -1;
+                }
+                if(alignment.substr(1) === 'r') {
+                    pos[0] = pos[0] * -1;
+                }
+                me.popupWin.alignTo(Ext.get('wrapper'), [alignment, alignment].join('-'), pos);
             }
         });
-		if(MobileManager.isMobile() && MobileManager.hasHammer()) {
-			// Hide the window on double tapping the header
-			var hammer = new Hammer(document.getElementById(me.popupWin.header.id));
-			hammer.ondoubletap = function(ev) {
-				me.hide();
-			};
-		}
         return this;
     },
     setComponent: function(component) {
@@ -134,6 +158,9 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     getContentId : function (){
         return this.popupWin.contentEl.id;
+    },
+    getContentContainer: function() {
+        return this.popupWin;
     },
     show : function(){
         this.popupWin.show();
@@ -160,7 +187,7 @@ Ext.define ("viewer.components.ScreenPopup",{
 			// Reset position so popup remains centered
 			this.popupWin.setPosition(Ext.Element.getViewportWidth() * .05, Ext.Element.getViewportHeight() * .05);
     		// doLayout on the window
-            this.popupWin.doLayout();
+            this.popupWin.updateLayout();
 			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
 			this.currentOrientation = MobileManager.getOrientation();
         }

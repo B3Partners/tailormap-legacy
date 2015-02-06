@@ -30,6 +30,7 @@ import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
+import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,63 +41,63 @@ import org.json.JSONObject;
 @UrlBinding("/service/info")
 @StrictBinding
 public class ServiceActionBean implements ActionBean {
-
+    
     private ActionBeanContext context;
-
+    
     @Validate
     private String protocol;
     @Validate
     private String url;
     @Validate
     private String serviceName;
-
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public String getProtocol() {
         return protocol;
     }
-
+    
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
-
+    
     public String getServiceName() {
         return serviceName;
     }
-
+    
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
-
+    
     public String getUrl() {
         return url;
     }
-
+    
     public void setUrl(String url) {
         this.url = url;
     }
     //</editor-fold>
-
+    
     public Resolution info() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
         String error = null;
         GeoService service = null;
-
+        
         if(protocol == null || url == null) {
             error = "Invalid parameters";
         } else {
-
+            
             Map params = new HashMap();
-
+            
             try {
                 if(protocol.equals(WMSService.PROTOCOL)) {
                     //params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
@@ -108,24 +109,24 @@ public class ServiceActionBean implements ActionBean {
                     service = new ArcIMSService().loadFromUrl(url, params);
                 } else {
                     error = "Invalid protocol";
-                }
+                }            
             } catch(Exception e) {
-
+                
                 error = "Fout bij laden service " + e.toString();
                 if(e.getCause() != null) {
                     error += "; oorzaak: " + e.getCause().toString();
                 }
             }
         }
-
+        
         if(service != null) {
             json.put("success", Boolean.TRUE);
             json.put("service", service.toJSONObject(true));
         } else {
             json.put("success", Boolean.FALSE);
             json.put("error", error);
-        }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString()));
+        }      
+        
+        return new StreamingResolution("application/json", new StringReader(json.toString()));        
     }
 }

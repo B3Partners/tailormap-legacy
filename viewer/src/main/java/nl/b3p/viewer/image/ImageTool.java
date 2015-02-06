@@ -3,19 +3,19 @@
  * for authentication/authorization, pricing and usage reporting.
  *
  * Copyright 2006, 2007, 2008 B3Partners BV
- *
+ * 
  * This file is part of B3P Kaartenbalie.
- *
+ * 
  * B3P Kaartenbalie is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * B3P Kaartenbalie is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with B3P Kaartenbalie.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,6 +43,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -85,13 +86,13 @@ public class ImageTool {
                 mime = mime.substring(0, mime.indexOf(";"));
             }
             String mimeType = getMimeType(mime);
-
-            /* TODO: Kijken waarom er geen mime type meer binnenkomt. Wellicht door de
+            
+            /* TODO: Kijken waarom er geen mime type meer binnenkomt. Wellicht door de 
              * HttpClient vernieuwing in kaartenbalie ? */
             if (mimeType == null) {
                 mimeType = "image/png";
             }
-
+            
             if (mimeType == null) {
                 log.error("Response from server not understood (mime = " + mime + "): " + method.getResponseBodyAsString());
                 throw new Exception("Response from server not understood (mime = " + mime + "): " + method.getResponseBodyAsString());
@@ -379,9 +380,9 @@ public class ImageTool {
                 width= bi.getWidth();
             }
         }
-
-        BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
-
+        
+        BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);        
+        
         Graphics2D gbi = newBufIm.createGraphics();
         gbi.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
@@ -410,9 +411,9 @@ public class ImageTool {
             y=0;
         }
         if (image.getHeight()!=null && image.getWidth()!=null){
-            gbi.drawImage(image.getImage(), x, y, image.getWidth(),image.getHeight(),null);
+            gbi.drawImage(image.getImage(), x, y, image.getWidth(),image.getHeight(),null);        
         }else{
-            gbi.drawImage(image.getImage(), x, y, null);
+            gbi.drawImage(image.getImage(), x, y, null);        
         }
     }
     // </editor-fold>
@@ -429,7 +430,7 @@ public class ImageTool {
         /*Crap ESRI, image/jpg is not a content type, needs to be image/jpeg*/
         if ("image/jpg".equalsIgnoreCase(mime)){
             mime="image/jpeg";
-        }
+        }        
         String[] mimeTypes = ImageIO.getReaderMIMETypes();
         for (int i = 0; i < mimeTypes.length; i++) {
             if (mimeTypes[i].equalsIgnoreCase(mime)) {

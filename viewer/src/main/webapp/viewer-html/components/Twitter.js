@@ -25,12 +25,12 @@ Ext.define ("viewer.components.Twitter",{
             text: "Haal Tweets op!",
             listeners: {
                 click: function(button) {
-                    this.doSearch(this.search);
-                },
+                    this.doSearch(this.config.search);
+                }, 
                 scope: this
             }
         });*/
-
+            
         this.panel =  Ext.create("Ext.panel.Panel",{
             /*title: 'Tweets',*/
             width: "100%",
@@ -39,11 +39,11 @@ Ext.define ("viewer.components.Twitter",{
             layout: 'anchor',
             renderTo: this.div
         });
-
-
+        
+        
         var me = this;
         setTimeout(function(){
-            me.doSearch(me.search);
+            me.doSearch(me.config.search);
         }, me.interval);
     },
     doSearch : function (term){
@@ -63,21 +63,21 @@ Ext.define ("viewer.components.Twitter",{
                 this.processTweet(tweet);
 
             }
-            this.panel.doLayout();
+            this.panel.updateLayout();
             this.first = false;
         }
         var me = this;
         setTimeout(function(){
-            me.doSearch(me.search);
+            me.doSearch(me.config.search);
         }, me.interval);
     },
     processTweet : function (tweet){
-        var tweetPanel = Ext.create("Ext.container.Container",{
+        var tweetPanel = Ext.create("Ext.container.Container",{      
             style: { "margin": "5px"},
             layout: {
                 type: "fit"
             },
-            items:[
+            items:[ 
                 {
                     xtype: 'container',
                     layout: {type: "hbox"},
@@ -106,15 +106,15 @@ Ext.define ("viewer.components.Twitter",{
                     items:
                     [
                     {
-                        xtype: 'label',
+                        xtype: 'label',                           
                         text: tweet.text
                     }]
                 }
             ],
             border: 0
         });
-
-        tweetPanel.doLayout();
+        
+        tweetPanel.updateLayout();
         if(this.first){
             this.panel.add(tweetPanel);
         }else{
@@ -122,6 +122,6 @@ Ext.define ("viewer.components.Twitter",{
         }
     },
     error : function (errors){
-
+            
     }
 });

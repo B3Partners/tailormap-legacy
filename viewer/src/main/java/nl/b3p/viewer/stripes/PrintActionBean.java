@@ -59,7 +59,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/print")
 @StrictBinding
 public class PrintActionBean implements ActionBean {
-    private static final Log log = LogFactory.getLog(PrintActionBean.class);
+    private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
     // 2014, Eddy Scheper, ARIS B.V. - Added.
     public static final String A5_Landscape = "A5_Landscape.xsl";
@@ -85,21 +85,21 @@ public class PrintActionBean implements ActionBean {
     public static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", new Locale("NL"));
     @Validate
     private String params;
-
+    
     private ActionBeanContext context;
-
+    
     @DefaultHandler
     public Resolution print() throws JSONException, Exception {
         boolean mailprint=false;
         JSONObject jRequest = new JSONObject(params);
-
+        
         //get the appId:
         Long appId = jRequest.optLong("appId");
         Application app = Stripersist.getEntityManager().find(Application.class, appId);
-
+        
         //get the image url:
         String imageUrl= getImageUrl(params);
-
+        
         //get the form settings
         final PrintInfo info = new PrintInfo();
         if (jRequest.has("title")){
@@ -108,12 +108,12 @@ public class PrintActionBean implements ActionBean {
         if (jRequest.has("subtitle")){
             info.setSubtitle(jRequest.getString("subtitle"));
         }
-        info.setDate(df.format(new Date()));
+        info.setDate(df.format(new Date()));        
         info.setImageUrl(imageUrl);
         if (jRequest.has("bbox")){
             info.setBbox(jRequest.getString("bbox"));
         }
-
+        
         if (jRequest.has("overview")){
             String url = getOverviewUrl(params);
             info.setOverviewUrl(url);
@@ -124,7 +124,7 @@ public class PrintActionBean implements ActionBean {
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
         }
-
+        
         /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
@@ -138,13 +138,13 @@ public class PrintActionBean implements ActionBean {
                 }
                 for (int i=0; i < jarray.length();i++){
                     JSONObject legendJson = new JSONObject(jarray.getString(i));
-                    Legend legend = new Legend(legendJson);
+                    Legend legend = new Legend(legendJson);   
                     info.getLegendUrls().add(legend);
                 }
             }
             info.cacheLegendImagesAndReadDimensions();
         }
-
+        
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;
@@ -152,7 +152,7 @@ public class PrintActionBean implements ActionBean {
             angle = 360-angle;
             info.setAngle(angle);
         }
-
+        
         final String mimeType;
         if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
             mimeType=MimeConstants.MIME_RTF;
@@ -164,7 +164,7 @@ public class PrintActionBean implements ActionBean {
         }else{
             throw new Exception("Unidentified action: " + jRequest.getString("action"));
         }
-
+        
         // The json structure is:
 //            [{
 //                className: <String> entry.component.$className,
@@ -172,9 +172,9 @@ public class PrintActionBean implements ActionBean {
 //                info: <JSONObject> info in JSONObject
 //            }]
         if(jRequest.has("extra")){
-
+            
             log.debug("Print Parse 'extra'");
-
+            
             JSONArray jarray = jRequest.getJSONArray("extra");
             List<PrintExtraInfo> peis = new ArrayList<PrintExtraInfo>();
             for (int i=0; i < jarray.length();i++){
@@ -191,15 +191,15 @@ public class PrintActionBean implements ActionBean {
             }
             info.setExtra(peis);
         }
-
+        
         //determine the correct template
         String pageFormat = jRequest.has("pageformat") ? jRequest.getString("pageformat") : A4;
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PORTRAIT;
         final String templateName= getTemplateName(pageFormat,orientation);
-
+        
         final String templateUrl;
         final boolean useMailer = mailprint;
-        if (app!=null && app.getDetails()!=null && app.getDetails().get("stylesheetPrint")!=null){
+        if (app!=null && app.getDetails()!=null && app.getDetails().get("stylesheetPrint")!=null){            
             ClobElement ce = app.getDetails().get("stylesheetPrint");
             templateUrl=ce.getValue()+templateName;
         }else{
@@ -208,7 +208,7 @@ public class PrintActionBean implements ActionBean {
         final String toMail = jRequest.getString("mailTo");
         final String fromMail = jRequest.has("fromAddress") ? jRequest.getString("fromAddress") : "";
         final String fromName = jRequest.has("fromName") ? jRequest.getString("fromName") : "";
-
+        
         StreamingResolution res = new StreamingResolution(mimeType) {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
@@ -247,29 +247,29 @@ public class PrintActionBean implements ActionBean {
                         info.removeLegendImagesCache();
                     }
                 }
-
+                
             }
         };
         return res;
-    }
-
+    }    
+    
     private String getOverviewUrl(String params) throws JSONException, Exception{
         JSONObject info = new JSONObject(params);
         info.remove("requests"); // Remove old requests, to replace them with overview-only parameters
         info.remove("geometries");
         info.remove("quality");
-
+        
         JSONObject overview = info.getJSONObject("overview");
         info.put("bbox", overview.get("extent"));
         JSONArray reqs = new JSONArray();
-
+        
         JSONObject image = new JSONObject();
         image.put("protocol", CombineImageActionBean.IMAGE);
         image.put("url", overview.get("overviewUrl"));
         image.put("extent", overview.get("extent"));
         reqs.put(image);
         info.put("requests", reqs);
-
+               
         String overviewUrl = getImageUrl(info.toString());
         return overviewUrl;
     }
@@ -278,20 +278,20 @@ public class PrintActionBean implements ActionBean {
      * @param param the json as string with params needed to create the image
      * @return url to (combined)image.
      */
-    private String getImageUrl(String param) throws Exception {
-
+    private String getImageUrl(String param) throws Exception {   
+        
         RedirectResolution cia = new RedirectResolution(CombineImageActionBean.class);
         RedirectResolution pa = new RedirectResolution(PrintActionBean.class);
         //cia.addParameter("params", param);
         String url= context.getRequest().getRequestURL().toString();
         url=url.replace(pa.getUrl(new Locale("NL")), cia.getUrl(new Locale("NL")));
-
+        
         HttpClient client = new HttpClient();
         PostMethod method = null;
         try {
             method = new PostMethod(url);
             method.addParameter("params", param);
-            int statusCode=client.executeMethod(method);
+            int statusCode=client.executeMethod(method);            
             if (statusCode != HttpStatus.SC_OK) {
                 throw new Exception("Error connecting to server. HTTP status code: " + statusCode);
             }
@@ -307,7 +307,7 @@ public class PrintActionBean implements ActionBean {
             }
         }
     }
-
+    
     // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
     private String getTemplateName(String pageFormat, String orientation) {
         if (A5.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
@@ -326,17 +326,17 @@ public class PrintActionBean implements ActionBean {
             return A0_Landscape;
         }else{
             return A4_Portrait;
-        }
+        }       
     }
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public String getParams() {
         return params;
     }
@@ -356,8 +356,8 @@ public class PrintActionBean implements ActionBean {
         return s;
     }
 
+    
 
 
-
-
+    
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ Ext.define ("viewer.components.Filter",{
     extend: "viewer.components.Component",
     attributeCombobox: null,
     attributeStore:null,
-    attributeFilters : null,
+    attributeFilters : null,    
     id: null,
     container : null,
 	leftWidth: 150,
@@ -40,7 +40,7 @@ Ext.define ("viewer.components.Filter",{
 	parentMainContainer:null,
         showList:true,
         parentComponent: null
-
+        
     },
     constructor: function(config){
         this.initConfig(config);
@@ -48,9 +48,9 @@ Ext.define ("viewer.components.Filter",{
 		this.attributeFilters = [];
         this.attributeStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'title', 'value'],
-            data : this.attributes
+            data : this.config.attributes
         });
-        this.attributeCombobox = Ext.create('viewer.components.FlamingoCombobox', {
+        this.attributeCombobox = Ext.create('Ext.form.ComboBox', {
             fieldLabel: '',
             store: this.attributeStore,
             queryMode: 'local',
@@ -71,7 +71,7 @@ Ext.define ("viewer.components.Filter",{
         });
         this.attributeFilters.push(attribuutFilter);
         var attributeFilterUI = attribuutFilter.getUI();
-        attributeFilterUI.add({
+        attributeFilterUI.add({ 
 			xtype: 'button',
 			text : '+',
 			width: 20,
@@ -84,7 +84,7 @@ Ext.define ("viewer.components.Filter",{
 		});
         var firstContainer =  Ext.create('Ext.container.Container', {
 			width: 400,
-			height: MobileManager.isMobile() ? 30 : 25,
+			height: this.getRowHeight(),
 			layout: {
 				type: 'hbox',
 				align:'stretch'
@@ -100,11 +100,14 @@ Ext.define ("viewer.components.Filter",{
         });
         return this;
     },
+    getRowHeight: function() {
+        return MobileManager.isMobile() ? 35 : 25;
+    },
     // Called when a new layer is chosen from the upper combobox
     setNewAttributeList : function (list){
         this.attributeStore.loadData(list,false);
         this.attributeCombobox.clearValue();
-        this.attributes = list;
+        this.config.attributes = list;
     },
     attributeComboboxChanged: function(el,val,prevVal){
         this.uniqueList=[];
@@ -120,7 +123,7 @@ Ext.define ("viewer.components.Filter",{
      * Get the attribute from the selected AppLayer by name.
      */
     getAppLayerAttributeByName: function (name){
-        var appLayer = this.parentComponent.appLayer;
+        var appLayer = this.config.parentComponent.appLayer;
         if(appLayer && appLayer.attributes){
             for (var i=0; i < appLayer.attributes.length; i++){
                 var attribute = appLayer.attributes[i]
@@ -132,20 +135,20 @@ Ext.define ("viewer.components.Filter",{
         return null;
     },
     getAttributeUniques : function (attributeName,ft){
-        var appLayer = this.parentComponent.layerSelector.getValue();
+        var appLayer = this.config.parentComponent.layerSelector.getValue();
         if(attributeName){
-            this.parentMainContainer.setLoading("Laad unieke waardes...");
-            Ext.Ajax.request({
-                url: actionBeans.unique,
+            this.config.parentMainContainer.setLoading("Laad unieke waardes...");
+            Ext.Ajax.request({ 
+                url: actionBeans.unique, 
                 timeout: 240000,
                 scope:this,
-                params: {
+                params: { 
                     attributes: [attributeName],
                     applicationLayer: appLayer.id,
-                    maxFeatures:this.maxFeatures,
+                    maxFeatures:this.config.maxFeatures,
                     featureType: ft
-                },
-                success: function ( result, request ) {
+                }, 
+                success: function ( result, request ) { 
                     var res = Ext.JSON.decode(result.responseText);
                     if(res.success){
                         var values = res.uniqueValues;
@@ -154,45 +157,47 @@ Ext.define ("viewer.components.Filter",{
                         }
                         this.handleUniqueValues(values);
                     }else{
-                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
-                        this.parentMainContainer.setLoading(false);
+                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);   
+                        this.config.parentMainContainer.setLoading(false);
                     }
-                },
+                }, 
                 failure: function ( result, request) {
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
-                    this.parentMainContainer.setLoading(false);
-                }
+                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);   
+                    this.config.parentMainContainer.setLoading(false);
+                } 
             });
         }
     },
     /**
      * Handle the response of the Uniguevalues request.
      */
-    handleUniqueValues : function (values){
-        values =  this.transformUniqueValuesToStore(values);
+    handleUniqueValues : function (values){   
+        values =  this.transformUniqueValuesToStore(values);    
         this.uniqueList=values;
-        this.setUniqueListOnAttributeFilters(values);
-        this.parentMainContainer.setLoading(false);
+        this.setUniqueListOnAttributeFilters(values);        
+        this.config.parentMainContainer.setLoading(false);
     },
     /**
-     *
+     * 
      */
     setUniqueListOnAttributeFilters: function(values){
         for (var i=0; i < this.attributeFilters.length; i++){
             this.attributeFilters[i].setUniqueList(values);
         }
     },
-
+     
     /**
-     * Transform the uniquelist response of a object with arrays of strings
+     * Transform the uniquelist response of a object with arrays of strings 
      * that points to the string. So it will work for Ext Stores (and comboboxes)
      * @param valueArray A array of values
      */
-    transformUniqueValuesToStore : function(values){
+    transformUniqueValuesToStore : function(values){        
         var newValues=[];
         for (var attribute in values){
-            for (var i =0; i < values[attribute].length; i++){
-                newValues.push({value: values[attribute][i]});
+            if(values.hasOwnProperty(attribute)) {
+                for (var i =0; i < values[attribute].length; i++){
+                    newValues.push({value: values[attribute][i]});
+                }
             }
         }
         return newValues;
@@ -202,14 +207,14 @@ Ext.define ("viewer.components.Filter",{
         var me = this;
 		var filterContainer = Ext.create('Ext.container.Container', {
 			width: 400,
-			height: MobileManager.isMobile() ? 30 : 25,
+			height: this.getRowHeight(),
 			layout: {
 				type: 'hbox',
 				align:'stretch'
 			},
 			items:  [
 				// left = leftwidth - 50 (or/and combobox of attributefilter)
-				{ xtype: 'container', width: (this.leftWidth - 50) }
+				{ xtype: 'container', width: (this.leftWidth - (MobileManager.isMobile() ? 70 : 50)) }
 			]
 		});
 		var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
@@ -218,7 +223,7 @@ Ext.define ("viewer.components.Filter",{
             number: this.attributeFilters.length + 1
         });
         var attributeFilterUI = attributeFilter.getUI();
-        attributeFilterUI.add({
+        attributeFilterUI.add({ 
             xtype: 'button',
 			text : '-',
 			width: 20,
@@ -229,11 +234,11 @@ Ext.define ("viewer.components.Filter",{
 			}
         });
 		filterContainer.add(attributeFilterUI);
-		filterContainer.doLayout();
+		filterContainer.updateLayout();
         this.container.add(filterContainer);
         this.attributeFilters.push(attributeFilter);
         attributeFilter.setUniqueList(this.uniqueList);
-        if(this.parentMainContainer) this.parentMainContainer.doLayout();
+        if(this.config.parentMainContainer) this.config.parentMainContainer.updateLayout();
     },
     removeAttributeFilter : function (attributeFilter, filterContainer){
         for ( var i = 0 ; i < this.attributeFilters.length;i++){
@@ -254,8 +259,8 @@ Ext.define ("viewer.components.Filter",{
      */
     getCQL : function (){
         var cql ="";
-        if(this.logicOperator != null){
-            cql += " " + this.logicOperator.getValue() + " ";
+        if(this.config.logicOperator != null){
+            cql += " " + this.config.logicOperator.getValue() + " ";
         }
         cql += "(";
 		var attribute = this.attributeCombobox.getValue();
@@ -268,12 +273,12 @@ Ext.define ("viewer.components.Filter",{
             cql += af.getCQL();
         }
         cql+= ")";
-
+       
         return cql;
     },
     getAttributeType : function (name){
-        for(var i = 0 ; i < this.attributes.length ;i++){
-            var attr = this.attributes[i];
+        for(var i = 0 ; i < this.config.attributes.length ;i++){
+            var attr = this.config.attributes[i];
             if(attr.value == name){
                 return attr.type;
             }

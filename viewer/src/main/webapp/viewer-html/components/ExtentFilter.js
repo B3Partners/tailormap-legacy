@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2014 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ Ext.define ("viewer.components.ExtentFilter",{
     layers:null,
     config:{
     },
-    constructor: function (conf){
+    constructor: function (conf){ 
         this.initConfig(conf);
         this.layers = [];
         this.initializeLayers();
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.initializeLayers,this );
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT, this.changedExtent, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.initializeLayers,this );
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT, this.changedExtent, this);
         return this;
     },
     changedExtent:function(map,obj){
@@ -38,12 +38,12 @@ Ext.define ("viewer.components.ExtentFilter",{
         for(var i = 0 ; i < this.layers.length ;i++){
             this.setFilter(polygon, this.layers[i]);
         }
-        var a = 0;
+        var a = 0; 
     },
     initializeLayers : function(){
         this.layers = [];
         var me = this;
-        this.viewerController.traverseSelectedContent(Ext.emptyFn, function(appLayer) {
+        this.config.viewerController.traverseSelectedContent(Ext.emptyFn, function(appLayer) {
             me.layers.push(appLayer);
         });
     },

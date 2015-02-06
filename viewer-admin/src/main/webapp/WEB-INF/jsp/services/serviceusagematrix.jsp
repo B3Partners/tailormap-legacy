@@ -92,7 +92,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(checkChanged);
         </script>
         <div id="content">
-            <h1>Service Usage Matrix</h1><br/>   
+            <h1>Service Usage Matrix</h1>
+            <div style="margin-top: 35px; margin-bottom: -20px;">&nbsp;</div>
             <a href="javascript: void(0)" onclick="exportXsl()">Exporteer als Excel document</a><br>
             <x:parse xml="${actionBean.xml}" var="doc"/>
             <script type="text/javascript">

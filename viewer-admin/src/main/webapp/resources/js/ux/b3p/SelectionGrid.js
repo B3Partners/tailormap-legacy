@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  *
 
 Class for creating a list with filterable checkboxes
-Usage example:
+Usage example: 
 Ext.onReady(function(){
     var filterableCheckboxes = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
         requestUrl: someURL,
@@ -36,11 +36,11 @@ valueField (optional): Fieldname in JSON object in JSON array which holds the "v
 titleField (optional): Fieldname in JSON object in JSON array which holds the "label" field of the checkbox (default = title)
 sliders (optional): Array with sliders ({id:1, name:'Slider 1', initialTransparency: 75, selectedLayers:[]})
 
- *
+ * 
  */
 
 Ext.define('Ext.ux.b3p.SelectionGrid', {
-
+        
     requestUrl: '',
     requestParams: {},
     createSliderUrl: '',
@@ -58,7 +58,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             this.getList();
         }
     },
-
+    
     render: function() {
         var me = this;
         var layers = '';
@@ -127,8 +127,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             width: '100%',
             border: 1
         }];
-        Ext.create('Ext.panel.Panel', {
-            renderTo: me.renderTo,
+        var panel = Ext.create('Ext.panel.Panel', {
             items: fields,
             height: '100%',
             width: '100%',
@@ -180,6 +179,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                 }
             }]
         });
+        Ext.getCmp(me.renderTo).add(panel);
         if(me.sliders.length > 0) {
             me.appendSliders();
             me.initHeaders();
@@ -187,12 +187,12 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             me.initSelection();
         }
     },
-
+    
     getList: function() {
         var me = this;
-        Ext.Ajax.request({
-            url: me.requestUrl,
-            params: me.requestParams,
+        Ext.Ajax.request({ 
+            url: me.requestUrl, 
+            params: me.requestParams, 
             success: function ( result, request ) {
                 me.itemList = Ext.JSON.decode(result.responseText);
                 me.render();
@@ -202,7 +202,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             }
         });
     },
-
+    
     setSliderForm: function(sliderid) {
         var me = this;
         Ext.Array.each(me.sliders, function(slider) {
@@ -215,14 +215,14 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         Ext.getCmp('sliderSaveButton').setDisabled(false);
         Ext.getCmp('sliderRemoveButton').setDisabled(false);
     },
-
+    
     resetSliderForm : function(){
         Ext.getCmp('sliderName').setValue("");
         Ext.getCmp('sliderTransparency').setValue("");
         Ext.getCmp('sliderSaveButton').setDisabled(true);
         Ext.getCmp('sliderRemoveButton').setDisabled(true);
     },
-
+    
     appendNewSlider: function() {
         var me = this;
         var sliderid = (me.sliders.length + 1);
@@ -239,7 +239,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         document.getElementById('sliderheader-container').appendChild(me.createSliderHeader(sliderid, slidername));
         me.initHeader(sliderid);
     },
-
+    
     appendSliders: function() {
         var me = this;
         Ext.Array.each(me.sliders, function(slider) {
@@ -248,7 +248,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             });
         });
     },
-
+    
     removeSlider: function(sliderid) {
         var me = this;
         var newsliders = [];
@@ -264,16 +264,16 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         });
         me.sliders = newsliders;
     },
-
+    
     createDivContainer: function(id, name, oddclass) {
         // Using ordinairy HTML, Ext objects are too slow when having large numbers
-        return '<div id="container-' + id + '" class="main-slider-container' + oddclass + '">' +
-                    '<div class="label">' + name + '</div>' +
+        return '<div id="container-' + id + '" class="main-slider-container' + oddclass + '">' + 
+                    '<div class="label">' + name + '</div>' + 
                     '<div class="slider-container" id="slider-container-' + id + '"></div>' +
                     '<div style="clear: both;"></div>' +
                '</div>';
     },
-
+    
     createSliderContainer: function(sliderid, layerid) {
         var input = document.createElement('input');
             input.type = "radio";
@@ -286,7 +286,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             divobject.appendChild(input);
         return divobject;
     },
-
+    
     createSliderHeader: function(sliderid, slidername) {
         var span = document.createElement('span');
             span.className = 'sliderheader';
@@ -300,12 +300,12 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             divobject.appendChild(span);
         return divobject;
     },
-
+    
     adjustSliderHeader : function (sliderid, slidername){
         var span = document.getElementById('sliderheader-link-' + sliderid);
         span.innerHTML = slidername;
     },
-
+    
     initSelection: function() {
         var me = this;
         Ext.Array.each(me.sliders, function(slider) {
@@ -316,27 +316,27 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             });
         });
     },
-
+    
     initHeaders: function() {
         var me = this;
         Ext.Array.each(me.sliders, function(slider) {
             me.initHeader(slider.id);
         });
     },
-
+    
     initHeader: function(sliderid) {
         var me = this;
         Ext.get('sliderheader-link-' + sliderid).on('click', function() {
             me.setSliderForm(sliderid);
         });
     },
-
+    
     appendSliderToContainer: function(containerid, sliderid, layerid) {
         var me = this;
         var containerdiv = document.getElementById('slider-container-' + containerid);
         containerdiv.appendChild(me.createSliderContainer(sliderid, layerid));
     },
-
+    
     setLayersVisible: function(layers, visible) {
         var me = this;
         var visibletxt = 'block';
@@ -345,11 +345,11 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             me.setLayerVisible(item.htmlId, visibletxt)
         });
     },
-
+    
     setLayerVisible: function(checkboxid, visibletxt) {
         document.getElementById('container-' + checkboxid).style.display = visibletxt;
     },
-
+    
     getSliders: function() {
         var me = this;
         var sliders = [];
@@ -364,5 +364,5 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         });
         return sliders;
     }
-
+    
 });

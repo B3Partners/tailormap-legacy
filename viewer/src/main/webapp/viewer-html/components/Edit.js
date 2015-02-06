@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ Ext.define ("viewer.components.Edit",{
     currentFID:null,
     geometryEditable:null,
     deActivatedTools: [],
-
+    
     config:{
         title: "",
         iconUrl: "",
@@ -39,12 +39,12 @@ Ext.define ("viewer.components.Edit",{
         layers:null,
         label: ""
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.Edit.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        this.initConfig(conf);     
         var me = this;
-
-        Ext.util.Observable.capture(this.viewerController.mapComponent.getMap(), function(event) {
+        
+        Ext.util.Observable.capture(this.config.viewerController.mapComponent.getMap(), function(event) {
             if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
             || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
                 if(me.mode == "new" || me.mode == "edit") {
@@ -53,51 +53,51 @@ Ext.define ("viewer.components.Edit",{
             }
             return true;
         });
-
-        if (this.layers!=null){
-            this.layers = Ext.Array.filter(this.layers, function(layerId) {
+        
+        if (this.config.layers!=null){
+            this.config.layers = Ext.Array.filter(this.config.layers, function(layerId) {
                 // XXX must check editAuthorized in appLayer
                 // cannot get that from this layerId
-                return true;
+                return true;            
             });
         }
         this.renderButton({
             handler: function(){
                 me.showWindow();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
-
-        this.toolMapClick =  this.viewerController.mapComponent.createTool({
+        
+        this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
-
-        this.loadWindow();
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        
+        this.loadWindow(); 
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
     selectedContentChanged : function (){
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }else{
-            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
     },
     createVectorLayer : function (){
-         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes:["Circle","Polygon","MultiPolygon","Point", "LineString"],
             showmeasures:false,
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
                 fillopacity: 50,
@@ -105,18 +105,19 @@ Ext.define ("viewer.components.Edit",{
                 strokeopacity: 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     showWindow : function(){
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }
         this.layerSelector.initLayers();
-        this.popup.popupWin.setTitle(this.title);
+        this.popup.popupWin.setTitle(this.config.title);
         this.popup.show();
     },
     loadWindow : function (){
         var me =this;
+        this.createLayerSelector();
         this.maincontainer = Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
@@ -129,13 +130,7 @@ Ext.define ("viewer.components.Edit",{
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
-            items: [{
-                id: this.name + 'LayerSelectorPanel',
-                xtype: "container",
-                padding: "4px",
-                width: '100%',
-                height: 36
-            },
+            items: [this.layerSelector.combobox,
             {
                 id: this.name + 'ButtonPanel',
                 xtype: "container",
@@ -227,26 +222,24 @@ Ext.define ("viewer.components.Edit",{
             ]
         });
         this.inputContainer =  Ext.getCmp(this.name + 'InputPanel');
-
-        this.createLayerSelector();
     },
     createLayerSelector: function(){
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             restriction : "editable",
             id : this.name + "layerSelector",
-            layers: this.layers,
-            div: this.name + 'LayerSelectorPanel'
+            layers: this.config.layers,
+            width: '100%'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
-
+            
     layerChanged : function (appLayer,afterLoadAttributes,scope){
         if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
             this.mode=null;
-            this.viewerController.mapComponent.getMap().removeMarker("edit");
+            this.config.viewerController.mapComponent.getMap().removeMarker("edit");
             if(appLayer.details && appLayer.details["editfunction.title"]){
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
@@ -260,15 +253,15 @@ Ext.define ("viewer.components.Edit",{
     },
     loadAttributes: function(appLayer,afterLoadAttributes,scope) {
         this.appLayer = appLayer;
-
+        
         var me = this;
         if (scope==undefined){
             scope=me;
         }
         if(this.appLayer != null) {
-
-            this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
-
+            
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
+            
             // check if featuretype was loaded
             if(this.appLayer.attributes == undefined) {
                 this.featureService.loadAttributes(me.appLayer, function(attributes) {
@@ -282,7 +275,7 @@ Ext.define ("viewer.components.Edit",{
                 if (afterLoadAttributes){
                     afterLoadAttributes.call(scope);
                 }
-            }
+            }    
         }
     },
     initAttributeInputs : function (appLayer){
@@ -334,14 +327,14 @@ Ext.define ("viewer.components.Edit",{
                 possible = false;
                 break;
         }
-
+        
         var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
             if(this.geometryEditable){
                 Ext.getCmp(this.name +"editButton").setDisabled(false);
                 if(this.newGeomType == null){
                     tekst = "Geometrie mag alleen bewerkt worden";
-                }else{
+                }else{ 
                     Ext.getCmp(this.name +"newButton").setDisabled(false);
                     tekst = 'Bewerk een ' + tekst+ " op de kaart";
                 }
@@ -372,7 +365,7 @@ Ext.define ("viewer.components.Edit",{
                             disabled: !allowedEditable
                         };
                         if (attribute.editHeight){
-                            options.rows = attribute.editHeight;
+                            options.rows = attribute.editHeight;                           
                             input = Ext.create("Ext.form.field.TextArea",options)
                         }else{
                             input = Ext.create("Ext.form.field.Text",options);
@@ -380,7 +373,7 @@ Ext.define ("viewer.components.Edit",{
                     }else if (values.length > 1){
                         var allBoolean=true;
                         for (var v=0; v < values.length; v++){
-
+                            
                             var hasLabel = values[v].indexOf(":") !== -1;
                             var val = hasLabel ?  values[v].substring(0, values[v].indexOf(":")) :  values[v];
                             if (val.toLowerCase()!=="true" && val.toLowerCase()!=="false"){
@@ -388,7 +381,7 @@ Ext.define ("viewer.components.Edit",{
                                 break;
                             }
                         }
-
+                        
                         Ext.each(values,function(value,index,original){
                             var hasLabel = value.indexOf(":") !== -1;
                             var label = value;
@@ -396,7 +389,7 @@ Ext.define ("viewer.components.Edit",{
                                 label = value.substring(value.indexOf(":")+1);
                                 value = value.substring(0,value.indexOf(":"));
                             }
-
+                            
                             if (allBoolean){
                                 value= value.toLowerCase() ==="true";
                             }
@@ -404,14 +397,14 @@ Ext.define ("viewer.components.Edit",{
                                 id: value,
                                 label: label
                             };
-
+                            
                         });
                         var valueStore = Ext.create('Ext.data.Store', {
                             fields: ['id', 'label'],
                             data : values
                         });
 
-                        input = Ext.create('viewer.components.FlamingoCombobox', {
+                        input = Ext.create('Ext.form.ComboBox', {
                             fieldLabel: attribute.editAlias || attribute.name,
                             store: valueStore,
                             queryMode: 'local',
@@ -440,14 +433,14 @@ Ext.define ("viewer.components.Edit",{
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
-
+        
         var layer = this.layerSelector.getValue();
-        this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
+        this.config.viewerController.mapComponent.getMap().setMarker("edit",x,y);
         var featureInfo = Ext.create("viewer.FeatureInfo", {
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
         var me =this;
-        featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution() * 4,layer, function (features){
+        featureInfo.editFeatureInfo(x,y,this.config.viewerController.mapComponent.getMap().getResolution() * 4,layer, function (features){
             me.featuresReceived(features);
         },function(msg){
             me.failed(msg);});
@@ -485,7 +478,7 @@ Ext.define ("viewer.components.Edit",{
     createNew : function(){
         this.vectorLayer.removeAllFeatures();
         this.inputContainer.getForm().reset()
-        this.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if(this.newGeomType != null && this.geometryEditable){
             this.vectorLayer.drawFeature(this.newGeomType);
@@ -497,7 +490,7 @@ Ext.define ("viewer.components.Edit",{
         this.activateMapClick();
     },
     activateMapClick: function(){
-        this.deActivatedTools = this.viewerController.mapComponent.deactivateTools();
+        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function(){
@@ -509,7 +502,7 @@ Ext.define ("viewer.components.Edit",{
     },
     save : function(){
         var feature =this.inputContainer.getValues();
-
+        
         if(this.geometryEditable){
             if(this.vectorLayer.getActiveFeature()){
                 var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
@@ -526,10 +519,10 @@ Ext.define ("viewer.components.Edit",{
             me.failed(e);
             return;
         }
-
-        me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
+        
+        me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         })
         .edit(
             me.editingLayer,
@@ -537,11 +530,11 @@ Ext.define ("viewer.components.Edit",{
             function(fid) { me.saveSucces(fid); }, function(error){
             me.failed(error);});
     },
-
+    
     remove : function(){
         var feature = this.inputContainer.getValues();
         feature.__fid = this.currentFID;
-
+        
         var me = this;
         try{
             feature = this.changeFeatureBeforeSave(feature);
@@ -549,9 +542,9 @@ Ext.define ("viewer.components.Edit",{
             me.failed(e);
             return;
         }
-        me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
+        me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         })
         .remove(
             me.editingLayer,
@@ -587,7 +580,7 @@ Ext.define ("viewer.components.Edit",{
     },
     saveFailed : function (msg){
         Ext.Msg.alert('Mislukt',msg);
-
+        
     },
     cancel : function (){
         this.resetForm();
@@ -600,7 +593,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector.combobox.select(null);
         Ext.getCmp( this.name +"geomLabel").setText("");
         this.inputContainer.removeAll();
-        this.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
     },
     getExtComponents: function() {
@@ -615,7 +608,7 @@ Ext.define ("viewer.components.Edit",{
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.editable){
-
+                
                 var attIndex = index++;
                 if(i == appLayer.geometryAttributeIndex){
                     continue;
@@ -636,18 +629,18 @@ Ext.define ("viewer.components.Edit",{
                 });
             }
         }
-
+        
         Ext.define(this.name + 'Model', {
             extend: 'Ext.data.Model',
             fields: attributeList
         });
-
+     
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
             model: this.name + 'Model',
             data:features
         });
-
+        
         var me =this;
         var grid = Ext.create('Ext.grid.Panel',  {
             id: this.name + 'GridFeaturesWindow',
@@ -706,7 +699,7 @@ Ext.define ("viewer.components.Edit",{
             }
             ]
         });
-
+        
         var window = Ext.create("Ext.window.Window",{
             id: this.name + "FeaturesWindow",
             width: 500,
@@ -715,7 +708,7 @@ Ext.define ("viewer.components.Edit",{
             title: "Kies één feature",
             items: [container]
         });
-
+        
         window.show();
     },
     itemDoubleClick : function (gridview,row){
@@ -738,6 +731,9 @@ Ext.define ("viewer.components.Edit",{
         var map = this.makeConversionMap();
         var newFeature = {};
         for (var key in feature){
+            if(!feature.hasOwnProperty(key)) {
+                continue;
+            }
             var namedIndex = map[key];
             var value = feature[key];
             if(namedIndex != undefined){

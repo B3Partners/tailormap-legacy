@@ -24,13 +24,13 @@ import java.util.List;
  * @author Roy Braam
  */
 public abstract class CombineTileImageUrl extends CombineImageUrl{
-
+    
     private Bbox serviceBbox = null;
     private Double[] resolutions = null;
     private Integer tileWidth = 256;
     private Integer tileHeight = 256;
     protected String extension;
-
+    
     protected static double epsilon=0.0000000001;
 
     public CombineTileImageUrl(CombineTileImageUrl ctiu){
@@ -39,20 +39,20 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
     public CombineTileImageUrl() {
         super();
     }
-
-
+    
+    
     public Integer getClosestZoomlevel(ImageBbox requestBbox){
-        /* calc resolution */
-        Double res = null;
+        /* calc resolution */        
+        Double res = null;    
         if (requestBbox != null) {
             res = requestBbox.getUnitsPixelX();
         }
-
+        
         Integer zoomlevel = null;
-        if (resolutions!=null) {
+        if (resolutions!=null) {                        
             for (int i=0; i < resolutions.length; i++) {
                 Double testRes = resolutions[i];
-
+                
                 if ( ((res - testRes) < epsilon) && ((res-testRes) > -epsilon) ) {
                     zoomlevel = i;
                     break;
@@ -61,62 +61,62 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
                     break;
                 }
             }
-
+           
         }
         return zoomlevel;
     }
-
+    
     public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox){
         List<CombineImageUrl> tileImages = new ArrayList<CombineImageUrl>();
-
+        
         //get closest res
         Integer zoomlevel = getClosestZoomlevel(imbbox);
         Double closestResolution = resolutions[zoomlevel];
-
+        
         /*calc width in mapRes per tile*/
         Double tileWidthMapUnits = null;
-        Double tileHeightMapUnits = null;
+        Double tileHeightMapUnits = null;        
         if (this.getTileWidth() != null && closestResolution != null) {
             tileWidthMapUnits = this.getTileWidth() * closestResolution;
         }
         if (this.getTileWidth() != null && closestResolution != null) {
             tileHeightMapUnits = this.getTileWidth() * closestResolution;
         }
-
+        
         /* calc which tiles are needed */
         Integer minTileIndexX = null;
         Integer maxTileIndexX = null;
         Integer minTileIndexY = null;
         Integer maxTileIndexY = null;
-
+        
         Bbox bbox = imbbox.getBbox();
-        if (tileWidthMapUnits != null && tileWidthMapUnits > 0
-                && tileHeightMapUnits != null && tileHeightMapUnits > 0) {
-
+        if (tileWidthMapUnits != null && tileWidthMapUnits > 0 
+                && tileHeightMapUnits != null && tileHeightMapUnits > 0) {  
+            
             minTileIndexX = getTileIndexX(bbox.getMinx(), closestResolution,false);
             maxTileIndexX = getTileIndexX(bbox.getMaxx(), closestResolution,true);
             minTileIndexY = getTileIndexY(bbox.getMiny(),closestResolution,false);
-            maxTileIndexY = getTileIndexY(bbox.getMaxy(),closestResolution,true);
+            maxTileIndexY = getTileIndexY(bbox.getMaxy(),closestResolution,true);            
         }
-
-
-         /* 5) Opbouwen nieuwe tile url en per url ook x,y positie van tile bepalen
+        
+        
+         /* 5) Opbouwen nieuwe tile url en per url ook x,y positie van tile bepalen 
          zodat drawImage deze op de juiste plek kan zetten */
         int numX = 0;
         int numY =0;
         for (int ix = minTileIndexX; ix <= maxTileIndexX; ix++) {
             for (int iy = minTileIndexY; iy <= maxTileIndexY; iy++) {
                 double[] tempBbox = new double[4];
-
+                
                 tempBbox[0] = serviceBbox.getMinx() + (ix * tileWidthMapUnits);
                 tempBbox[1] = serviceBbox.getMiny() + (iy * tileHeightMapUnits);
-                tempBbox[2] = tempBbox[0] + tileWidthMapUnits;
+                tempBbox[2] = tempBbox[0] + tileWidthMapUnits;                
                 tempBbox[3] = tempBbox[1] + tileHeightMapUnits;
-
-                Bbox tileBbox = new Bbox(tempBbox);
-
-                CombineStaticImageUrl tile = createTile(imbbox, tileBbox, ix, iy,zoomlevel, numX, numY);
-
+                
+                Bbox tileBbox = new Bbox(tempBbox);                
+                
+                CombineStaticImageUrl tile = createTile(imbbox, tileBbox, ix, iy,zoomlevel, numX, numY);               
+                
                 tileImages.add(tile);
                 numY++;
             }
@@ -125,18 +125,18 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         }
         return tileImages;
     }
-
+    
     /**
      * create the tile
-     * @param imageBbox the original imageBbox reqeust
+     * @param imageBbox the original imageBbox reqeust  
      * @param tileBbox the bbox of this tile
-     * @param indexX
+     * @param indexX 
      * @param indexY
      * @param zoomlevel
-     * @return
+     * @return 
      */
     public CombineStaticImageUrl createTile(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY,int zoomlevel, int numX, int numY) {
-
+        
         CombineStaticImageUrl tile = new CombineStaticImageUrl();
         tile.setBbox(tileBbox);
         tile.setUrl(this.url);
@@ -144,23 +144,23 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         Bbox requestBbox = imageBbox.getBbox();
         Double msx = (requestBbox.getMaxx() - requestBbox.getMinx()) / imageBbox.getWidth();
         Double msy = (requestBbox.getMaxy() - requestBbox.getMiny()) / imageBbox.getHeight();
-
+        
         Double posX = Math.floor( (tileBbox.getMinx() - requestBbox.getMinx()) / msx );
         Double posY = Math.floor( (requestBbox.getMaxy() - tileBbox.getMaxy()) / msy );
         Double width = Math.floor( (tileBbox.getMaxx() - tileBbox.getMinx()) / msx );
         Double height = Math.floor( (tileBbox.getMaxy() - tileBbox.getMiny()) / msy );
-
+        
         tile.setX(posX.intValue() - numX);
         tile.setY(posY.intValue() + numY);
-
+        
         tile.setWidth(width.intValue());
         tile.setHeight(height.intValue());
-
+        
         tile.setUrl(createUrl(imageBbox, tileBbox, indexX, indexY,zoomlevel));
-
+                
         return tile;
     }
-
+    
     /** Get the index number X of the tile on coordinate 'xCoord'.
      * @param xCoord The x coord.
      * @param zoomLevel the zoomLevel of the server.
@@ -203,49 +203,49 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
     public Bbox getServiceBbox() {
         return serviceBbox;
     }
-
+    
     /**
      * @param bbox the bbox to set
      */
     public void setServiceBbox(Bbox bbox) {
         this.serviceBbox = bbox;
     }
-
+    
     /**
      * @return the resolutions
      */
     public Double[] getResolutions() {
         return resolutions;
     }
-
+    
     /**
      * @param resolutions the resolutions to set
      */
     public void setResolutions(Double[] resolutions) {
         this.resolutions = resolutions;
     }
-
+    
     /**
      * @return the tileWidth
      */
     public Integer getTileWidth() {
         return tileWidth;
     }
-
+    
     /**
      * @param tileWidth the tileWidth to set
      */
     public void setTileWidth(Integer tileWidth) {
         this.tileWidth = tileWidth;
     }
-
+    
     /**
      * @return the tileHeight
      */
     public Integer getTileHeight() {
         return tileHeight;
     }
-
+    
     /**
      * @param tileHeight the tileHeight to set
      */
@@ -260,10 +260,10 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
     public void setExtension(String extension) {
         this.extension = extension;
     }
-
-
+    
+    
     //</editor-fold>
 
     protected abstract String createUrl(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY, int zoomlevel);
-
+    
 }

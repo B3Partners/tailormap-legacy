@@ -66,19 +66,19 @@ public class LayarSourceActionBean implements ActionBean {
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarsource.jsp";
 
     private ActionBeanContext context;
-
+    
     private List<LayarService> layarServices;
-
+    
     private List<SimpleFeatureType> featureTypes;
-
+    
     private List<FeatureSource> featureSources;
-
+    
     @Validate
     private Long layarServiceId;
-
+    
     @Validate
     private JSONArray filter;
-
+    
     @Validate
     private int page;
     @Validate
@@ -89,10 +89,10 @@ public class LayarSourceActionBean implements ActionBean {
     private String sort;
     @Validate
     private String dir;
-
+    
     @Validate
     private Map<String, ClobElement> details = new HashMap<String, ClobElement>();
-
+    
     @Validate
     @ValidateNestedProperties({
         @Validate(field="featureType"),
@@ -102,53 +102,53 @@ public class LayarSourceActionBean implements ActionBean {
     //for list of attributes
     @Validate
     private Long featureTypeId;
-
+    
     @DefaultHandler
     public Resolution view() {
         layarServices = Stripersist.getEntityManager().createQuery("from LayarService").getResultList();
         return new ForwardResolution(JSP);
     }
-
-    public Resolution save(){
+    
+    public Resolution save(){                        
         layarSource.getDetails().clear();
         layarSource.getDetails().putAll(details);
-
+        
         Stripersist.getEntityManager().persist(layarSource);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Layarsource is opgeslagen"));
         return new ForwardResolution(EDITJSP);
     }
-
+    
     public Resolution edit() {
         if (layarSource != null) {
             details = layarSource.getDetails();
         }
         layarServices = Stripersist.getEntityManager().createQuery("from LayarService").getResultList();
-        featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType").getResultList();
+        featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType").getResultList();        
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
         Stripersist.getEntityManager().getTransaction().commit();
         return new ForwardResolution(EDITJSP);
     }
-
-    public Resolution cancel() {
+        
+    public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
     }
-
+    
     public Resolution delete() {
         Stripersist.getEntityManager().remove(layarSource);
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("Layar bron is verwijderd"));
         return new ForwardResolution(EDITJSP);
     }
-
-    public Resolution getGridData() throws JSONException {
+    
+    public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
-
+        
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(LayarSource.class);
-
-        /*
+        
+        /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
@@ -161,7 +161,7 @@ public class LayarSourceActionBean implements ActionBean {
                 String property = j.getString("property");
                 String value = j.getString("value");
                 if (value!=null && value.length() > 0){
-                    if(property.equals("featureType")) {
+                    if(property.equals("featureType")) {                        
                         c.add(Restrictions.ilike("f.typeName",value,MatchMode.ANYWHERE));
                     }
                     if(property.equals("layarService")) {
@@ -170,51 +170,51 @@ public class LayarSourceActionBean implements ActionBean {
                 }
             }
         }
-
+        
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
          */
-        if(getSort() != null && getDir() != null){
+        if(getSort() != null && getDir() != null){            
             Order order = null;
             if (getSort().equals("featureType")){
                 setSort("f.typeName");
             }else if (getSort().equals("layarService")){
                setSort("l.name");
-            }
+            }    
             if(getDir().equals("ASC")){
                 order = Order.asc(getSort());
             }else{
                 order = Order.desc(getSort());
             }
             order.ignoreCase();
-            c.addOrder(order);
+            c.addOrder(order); 
         }
         if(layarServiceId != null && layarServiceId != -1){
             Criterion attrCrit = Restrictions.eq("l.id", layarServiceId);
             c.add(attrCrit);
         }
         List sources = c.list();
-
+        
         int rowCount = sources.size();
-
+        
         c.setMaxResults(getLimit());
         c.setFirstResult(getStart());
-
+        
         for(Iterator it = sources.iterator(); it.hasNext();){
             LayarSource source = (LayarSource)it.next();
-
+            
             JSONObject j = new JSONObject();
             j.put("id", source.getId());
             j.put("featureType", source.getFeatureType().getTypeName());
             j.put("layarService",source.getLayarService().getName());
             jsonData.put(j);
         }
-
+        
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-
+    
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
@@ -234,7 +234,7 @@ public class LayarSourceActionBean implements ActionBean {
         final JSONObject json = new JSONObject();
         boolean success=false;
         SimpleFeatureType featureType = Stripersist.getEntityManager().find(SimpleFeatureType.class, featureTypeId);
-        if (featureType!=null){
+        if (featureType!=null){                        
             JSONArray array = new JSONArray();
             List<AttributeDescriptor> attributes=featureType.getAttributes();
             for (AttributeDescriptor attr : attributes){
@@ -255,9 +255,9 @@ public class LayarSourceActionBean implements ActionBean {
            }
         };
     }
-
+    
     @ValidationMethod(on = "save")
-    public void validateParams(ValidationErrors errors) {
+    public void validateParams(ValidationErrors errors) {        
         if (layarSource == null||layarSource.getLayarService() == null){
             errors.add("layarService", new LocalizableError("validation.required.valueNotPresent"));
         }if (layarSource == null||layarSource.getFeatureType() == null){
@@ -269,88 +269,88 @@ public class LayarSourceActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context= context;
     }
-
+    
     @Override
     public ActionBeanContext getContext() {
         return this.context;
     }
-
+    
     public List<LayarService> getLayarServices() {
         return layarServices;
     }
-
+    
     public void setLayarServices(List<LayarService> layarServices) {
         this.layarServices = layarServices;
     }
-
+    
     public Long getLayarServiceId() {
         return layarServiceId;
     }
-
+    
     public void setLayarServiceId(Long layarServiceId) {
         this.layarServiceId = layarServiceId;
     }
-
+    
     public JSONArray getFilter() {
         return filter;
     }
-
+    
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
-
+    
     public int getPage() {
         return page;
     }
-
+    
     public void setPage(int page) {
         this.page = page;
     }
-
+    
     public int getStart() {
         return start;
     }
-
+    
     public void setStart(int start) {
         this.start = start;
     }
-
+    
     public int getLimit() {
         return limit;
     }
-
+    
     public void setLimit(int limit) {
         this.limit = limit;
     }
-
+    
     public String getSort() {
         return sort;
     }
-
+    
     public void setSort(String sort) {
         this.sort = sort;
     }
-
+    
     public String getDir() {
         return dir;
     }
-
+    
     public void setDir(String dir) {
         this.dir = dir;
     }
-
+    
     public LayarSource getLayarSource() {
         return layarSource;
     }
-
+    
     public void setLayarSource(LayarSource layarSource) {
         this.layarSource = layarSource;
     }
-
+    
     public List<SimpleFeatureType> getFeatureTypes() {
         return featureTypes;
     }
-
+    
     public void setFeatureTypes(List<SimpleFeatureType> featureTypes) {
         this.featureTypes = featureTypes;
     }
@@ -380,4 +380,4 @@ public class LayarSourceActionBean implements ActionBean {
     }
     //</editor-fold>
 }
-
+    

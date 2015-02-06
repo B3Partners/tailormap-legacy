@@ -40,10 +40,10 @@ Ext.define ("viewer.components.PopupButton",{
                 me.popup.show();
                 me.setButtonState('click',false);
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
         var state = 'normal';
         if(selected){

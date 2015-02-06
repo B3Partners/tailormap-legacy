@@ -47,21 +47,21 @@ import org.json.JSONObject;
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class CatalogServiceActionBean implements ActionBean{
     private static final Log log = LogFactory.getLog(CatalogServiceActionBean.class);
-
+    
     private static final String JSP = "/WEB-INF/jsp/services/cswservice.jsp";
     private static final String SELECT_SERVICE = "/WEB-INF/jsp/services/selectCswServices.jsp";
-
+    
     private ActionBeanContext context;
-
+    
     @Validate
     private String searchTerm;
     @Validate
-    private String url;
+    private String url;    
     @Validate(required=true)
     private Category category;
-
+    
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
-
+    
     public ActionBeanContext getContext() {
         return context;
     }
@@ -85,42 +85,42 @@ public class CatalogServiceActionBean implements ActionBean{
     public void setUrl(String url) {
         this.url = url;
     }
-
-
+    
+    
     // </editor-fold>
 
     public Resolution addForm (){
         return new ForwardResolution(JSP);
     }
-
-    public Resolution search() throws JSONException {
+    
+    public Resolution search() throws JSONException {    
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
         String error = null;
-
+    
         try {
             JSONArray results = new JSONArray();
-
+        
             CswServable server = new GeoNetworkCswServer(null,
                     url,
-                    null,
+                    null, 
                     null
-            );
-
+            );        
+            
             CswClient client = new CswClient(server);
             InputBySearch input = new InputBySearch(searchTerm);
-            OutputBySearch output = client.search(input);
+            OutputBySearch output = client.search(input);            
 
             Map<URI, List<OnlineResource>> map = output.getResourcesMap();
             for (List<OnlineResource> resourceList : map.values()) {
                 for (OnlineResource resource : resourceList) {
 
-
+                    
                     String title = output.getTitle(resource.getMetadata());
                     String rurl = resource.getUrl() != null ? resource.getUrl().toString() : null;
                     String layer = resource.getName();
                     String protocol = resource.getProtocol() != null ? resource.getProtocol().getName() : null;
-
+                    
                     if(title != null && rurl != null && protocol != null) {
                         if(protocol.toLowerCase().indexOf("wms") != -1) {
                             JSONObject result = new JSONObject();
@@ -133,7 +133,7 @@ public class CatalogServiceActionBean implements ActionBean{
                 }
             }
 
-            json.put("results", results);
+            json.put("results", results);                
 
             json.put("success", Boolean.TRUE);
         } catch(Exception e) {
@@ -144,11 +144,11 @@ public class CatalogServiceActionBean implements ActionBean{
                 error += "; oorzaak: " + e.getCause().toString();
             }
         }
-
+                
         if(error != null) {
             json.put("error", error);
         }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));          
     }
 }

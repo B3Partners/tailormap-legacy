@@ -38,14 +38,14 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationsettings/")
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ApplicationSettingsActionBean.class);
-
+    
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
-
+    
     private static final String DEFAULT_SPRITE = "/resources/images/default_sprite.png";
-
+    
     @Validate
     private String name;
     @Validate
@@ -54,13 +54,13 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private String owner;
     @Validate
     private boolean authenticatedRequired;
-
+    
     @Validate
     private String mashupName;
-
+    
     @Validate
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
-
+    
     @ValidateNestedProperties({
                 @Validate(field="minx", maxlength=255),
                 @Validate(field="miny", maxlength=255),
@@ -68,7 +68,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 @Validate(field="maxy", maxlength=255)
     })
     private BoundingBox startExtent;
-
+    
     @ValidateNestedProperties({
                 @Validate(field="minx", maxlength=255),
                 @Validate(field="miny", maxlength=255),
@@ -142,9 +142,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setMashupName(String mashupName) {
         this.mashupName = mashupName;
     }
-
+    
     //</editor-fold>
-
+    
     @DefaultHandler
     @DontValidate
     public Resolution view(){
@@ -173,7 +173,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         return new ForwardResolution(JSP);
     }
-
+    
     @DontValidate
     public Resolution newApplication(){
         application = null;
@@ -186,45 +186,45 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         details.put("stylesheetPrint", new ClobElement(""));
         return new ForwardResolution(JSP);
     }
-
+    
     @DontBind
-    public Resolution cancel() {
+    public Resolution cancel() {        
         return new ForwardResolution(JSP);
     }
-
+    
     public Resolution save() {
         if(application == null){
             application = new Application();
-
+            
             /*
              * A new application always has a root and a background level.
              */
             Level root = new Level();
             root.setName("Applicatie");
-
+            
             Level background = new Level();
             background.setName("Achtergrond");
             background.setBackground(true);
             root.getChildren().add(background);
             background.setParent(root);
-
+            
             Stripersist.getEntityManager().persist(background);
             Stripersist.getEntityManager().persist(root);
             application.setRoot(root);
         }
-
+        
         bindAppProperties();
-
+        
         Stripersist.getEntityManager().persist(application);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Applicatie is opgeslagen"));
 
         setApplication(application);
-
+        
         return new ForwardResolution(JSP);
     }
-
+    
     /* XXX */
     private void bindAppProperties() {
 
@@ -246,7 +246,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 details.put(e.getKey(), e.getValue());
             }
         }
-
+        
         application.getDetails().clear();
         application.getDetails().putAll(details);
     }
@@ -257,7 +257,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             errors.add("name", new SimpleError("Naam is verplicht"));
             return;
         }
-
+        
         try {
             Long foundId = null;
             if(version == null){
@@ -265,7 +265,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                         .setMaxResults(1)
                         .setParameter("name", name)
                         .getSingleResult();
-            }else{
+            }else{                   
                 foundId = (Long)Stripersist.getEntityManager().createQuery("select id from Application where name = :name and version = :version")
                         .setMaxResults(1)
                         .setParameter("name", name)
@@ -275,7 +275,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
             if(application != null && application.getId() != null){
                 if( !foundId.equals(application.getId()) ){
-                    errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen."));
+                    errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen.")); 
                 }
             }else{
                 errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen."));
@@ -283,7 +283,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         } catch(NoResultException nre) {
             // name version combination is unique
         }
-
+        
         /*
          * Check if owner is an excisting user
          */
@@ -308,15 +308,15 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             }
         }
     }
-
+    
     public Resolution copy() throws Exception {
-
+        
         try {
             Object o = Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name")
                 .setMaxResults(1)
                 .setParameter("name", name)
                 .getSingleResult();
-
+            
             getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" bestaat al", name));
             return new RedirectResolution(this.getClass());
         } catch(NoResultException nre) {
@@ -338,8 +338,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
-            setApplication(copy);
-
+            setApplication(copy);   
+            
             return new RedirectResolution(this.getClass());
         } catch(Exception e) {
             log.error(String.format("Error copying application #%d named %s %swith new name %s",
@@ -357,7 +357,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             return new ForwardResolution(JSP);
         }
     }
-
+    
     public Resolution mashup(){
         ValidationErrors errors = context.getValidationErrors();
         try {
@@ -377,7 +377,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         return new RedirectResolution(ApplicationSettingsActionBean.class);
     }
-
+    
     public Resolution publish (){
         // Find current published application and make backup
         try {
@@ -385,7 +385,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 .setMaxResults(1)
                 .setParameter("name", name)
                 .getSingleResult();
-
+            
             Date nowDate = new Date(System.currentTimeMillis());
             SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
             sdf.applyPattern("HH-mm_dd-MM-yyyy");
@@ -394,18 +394,18 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             oldPublished.setVersion(uniqueVersion);
             Stripersist.getEntityManager().persist(oldPublished);
             Stripersist.getEntityManager().getTransaction().commit();
-
+            
         } catch(NoResultException nre) {
         }
         application.setVersion(null);
         Stripersist.getEntityManager().persist(application);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         setApplication(null);
-
+        
         return new RedirectResolution(ChooseApplicationActionBean.class);
     }
-
+    
       /**
      * Checks if a Application with given name already exists and if needed
      * returns name with sequence number in brackets added to make it unique.
@@ -433,7 +433,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 version = testVersion;
                 break;
             }
-        }
+        }  
         return version;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * @class
+ * @class 
  * @augments MapComponent
  * @description MapComponent subclass for Flamingo
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -22,13 +22,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         swfPath: null
     },
     /**
-     *
+     * 
      * @constructur
      */
     constructor :function (viewerController, domId, config){
-        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId,config);
-        if (this.swfPath==null){
-            this.swfPath="flamingo/flamingo.swf";
+        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId,config);   
+        if (this.config.swfPath==null){
+            this.config.swfPath="flamingo/flamingo.swf";            
         }
         var me = this;
         this.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,function (){
@@ -42,11 +42,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 me.viewerObject.callMethod("flamingo",'setSprite',spriteUrl);
             }
         },this);
-        var so = new SWFObject(this.swfPath+"?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
+        var so = new SWFObject(this.config.swfPath+"?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);
         this.viewerObject = document.getElementById("flamingo");
-
+        
         return this;
     },
     /**
@@ -62,7 +62,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_REQUEST]                     = "onRequest";
         this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                    = "onSetTool";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]            = "onIdentify";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS]   = "onIdentifyProgress";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS]   = "onIdentifyProgress";        
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA]       = "onIdentifyData";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE] = "onUpdateComplete";
         this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]      = "onReallyChangedExtent";
@@ -71,20 +71,20 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]               = "onRemoveLayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA]                 = "onMaptipData";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                      = "onMaptip";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]               = "onMaptipCancel";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_MAP_CLICKED]                 = "onMapClicked";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]               = "onMaptipCancel";        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAP_CLICKED]                 = "onMapClicked";        
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED]      = "onActiveFeatureChange";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                    = "onActivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                  = "onDeactivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_SERVICE_INFO]            = "onGetServiceInfo";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]    = ["onShowLayer","onHideLayer"];
     },
-
+    
     /**
      *Fixed for flamingo??
      */
     getId : function() {
-        return "flamingo";
+        return "flamingo";        
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -94,15 +94,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     createMap : function(id,options){
         options.id=id;
         options.mapComponent=this;
-        if (this.resolutions!=null && this.resolutions != ""){
-            options.options.resolutions = this.resolutions;
-        }if (this.movetime!=null && this.movetime!=""){
-            options.options.movetime=this.movetime;
-        }if (this.movesteps!=null && this.movesteps!=""){
-            options.options.movesteps=this.movesteps;
-        }
+        if (this.config.resolutions!=null && this.config.resolutions != ""){
+            options.options.resolutions = this.config.resolutions;
+        }if (this.config.movetime!=null && this.config.movetime!=""){
+            options.options.movetime=this.config.movetime;
+        }if (this.config.movesteps!=null && this.config.movesteps!=""){
+            options.options.movesteps=this.config.movesteps;
+        }        
         var map = new viewer.viewercontroller.flamingo.FlamingoMap(options);
-
+        
         return map;
     },
     /**
@@ -111,11 +111,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     createWMSLayer : function(name, url,ogcParams,options,viewerController){
         var object=new Object();
         object["name"]=name;
-        object["url"]=url;
+        object["url"]=url;    
         object.timeout= 30;
         object.retryonerror= 1;
         object.initService=false;
-
+        
         var ide=null;
         for (var key in ogcParams){
             object[key]=ogcParams[key];
@@ -154,7 +154,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         // Fixup wrong Flash alpha, it thinks 0 is transparent and 100 is opaque
         if(options.alpha != undefined) {
             options.alpha = 100-options.alpha;
-        }
+        }        
         return Ext.create("viewer.viewercontroller.flamingo.FlamingoTilingLayer",options);
     },
     createArcConfig: function(name,url,options,viewerController){
@@ -191,11 +191,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var config=this.createArcConfig(name,url,options,viewerController);
         return new viewer.viewercontroller.flamingo.FlamingoArcIMSLayer(config);
     },
-    createArcServerLayer : function(name,url,options,viewerController){
+    createArcServerLayer : function(name,url,options,viewerController){            
         var config=this.createArcConfig(name,url,options,viewerController);
-        options.mapservice=options.servlet.substring(21,options.servlet.toLowerCase().indexOf("/mapserver"));
+        options.mapservice=options.servlet.substring(21,options.servlet.toLowerCase().indexOf("/mapserver"));        
         //xxx for REST remove the next line.
-        delete config.options.servlet;
+        delete config.options.servlet;        
         config.options.esriArcServerVersion="9.3";
         config.options.dataframe="layers";
         return new viewer.viewercontroller.flamingo.FlamingoArcServerLayer(config);
@@ -213,26 +213,26 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      * See @link MapComponent.createVectorLayer
      */
-    createVectorLayer : function (config){
+    createVectorLayer : function (config){        
         config.frameworkLayer = this.viewerObject
         return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
     /**
      * @see viewer.viewercontroller.MapComponent#createTool
-     * As addition:
+     * As addition: 
      * @param conf.listenTo set if the tool must listen to another object then the map
      **/
-    createTool: function (conf){
+    createTool: function (conf){   
         if (Ext.isEmpty(conf.listenTo)){
             conf.listenTo=this.getMap().getId();
         }
         conf.viewerController = this.viewerController;
-
+        
         var tool = null;
-
-        if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){
+        
+        if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){           
             tool = Ext.create ("viewer.viewercontroller.flamingo.ToolMapClick",conf);
-        }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE ||
+        }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE || 
             conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
             conf.toggle=true;
             tool = Ext.create("viewer.components.tools.JSButton",conf);
@@ -247,13 +247,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         tool.frameworkObject = this.viewerObject;
         return tool;
     },
-
+    
     /**
      *Create a flamingo component.
      *@param Configuration object
      *@see viewer.viewercontroller.flamingo.FlamingoComponent#constructor
      */
-    createComponent: function (conf){
+    createComponent: function (conf){  
         //set the listen to as default to the map
         if (Ext.isEmpty(conf.listenTo)){
             conf.listenTo=this.getMap().getId();
@@ -262,7 +262,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         if (Ext.isEmpty(conf.id)){
             conf.id=conf.name;
         }
-
+        
         conf.viewerController = this.viewerController;
         var component;
         if(conf.type == viewer.viewercontroller.controller.Component.OVERVIEW){
@@ -278,7 +278,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     createToolGroup : function(configuration){
         var layout= this.viewerController.getLayout('top_menu');
-        var height= layout.height ? layout.height : -1;
+        var height= layout.height ? layout.height : -1;        
         var xml="";
         if (height>=0){
             var heightParam=height;
@@ -295,19 +295,19 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         for (var key in configuration){
             xml+=key+"=\""+configuration[key]+"\" ";
         }
-        xml+="></fmc:ToolGroup>";
+        xml+="></fmc:ToolGroup>";        
         if (height>=0){
              xml+="</fmc:Container>";
         }
-        this.viewerObject.callMethod(this.mainContainerId,'addComponent',xml);
+        this.viewerObject.callMethod(this.mainContainerId,'addComponent',xml);        
     },
     /**
      *See @link MapComponent.addTool
      */
-    addTool : function(tool){
+    addTool : function(tool){        
         if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
             Ext.Error.raise({
-                msg: "The given tool is not of type 'FlamingoTool'"
+                msg: "The given tool is not of type 'FlamingoTool'"               
             });
         }
         //calc the number of visible tools.
@@ -316,15 +316,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         //Set the left if no left or right is set
         if (tool.getLeft()==null && tool.getRight()==null){
             tool.setLeft(visibleTools * this.toolMargin);
-        }
+        }        
         this.getToolGroup(tool);
         viewer.viewercontroller.FlamingoMapComponent.superclass.addTool.call(this,tool);
-        //var isToolGroup=this.viewerObject.callMethod(this.flamingoId,'isLoaded',this.toolGroupId,true);
-
+        //var isToolGroup=this.viewerObject.callMethod(this.flamingoId,'isLoaded',this.toolGroupId,true);        
+        
         var toolXml="<fmc:ToolGroup id='"+this.toolGroupId+"'>";
         toolXml+=tool.toXML();
-        toolXml+="</fmc:ToolGroup>";
-        this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);
+        toolXml+="</fmc:ToolGroup>";        
+        this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
         var toolsVisible=0;
         //if tool is not visible and not a JSbutton check if it's the first.
         var isJsButton=false;
@@ -350,7 +350,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 this.activateTool(tool.getId());
             }
         }
-
+        
     },
     /**
      *Get the amount of visible tools.
@@ -380,7 +380,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 width: "100%",
                 height: "100",
                 left: "5",
-                top: "5"
+                top: "5"                
             });
             this.toolGroupCreated=true;
         }
@@ -394,15 +394,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     createBottomContent : function(){
         var blayout=this.viewerController.getLayout('content_bottom')
         var height = blayout && blayout.height && blayout.height >=0 ? blayout.height : -1;
-        if (height>0){
+        if (height>0){            
             if (blayout.heightmeasure){
                 height+= blayout.heightmeasure == "px" ? "" : blayout.heightmeasure;
-            }
+            }            
             var xml="<fmc:Container id='bottomContainer' bottom='bottom' width='100%' height='"+height+"'";
             if (blayout.bgcolor){
                 xml+="backgroundcolor='"+blayout.bgcolor+"'";
             }
-            xml+=">";
+            xml+=">";            
             xml+="</fmc:Container>";
             this.addComponentXml(xml);
             return "bottomContainer";
@@ -412,7 +412,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      */
     addComponentXml: function (xml){
-        this.viewerObject.callMethod(this.mainContainerId,'addComponent',xml);
+        this.viewerObject.callMethod(this.mainContainerId,'addComponent',xml); 
     },
     /**
      * See @link MapComponent.activateTool
@@ -450,16 +450,16 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     addComponent: function(component){
         if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
             Ext.Error.raise({
-                msg: "The given Component is not of type 'FlamingoComponent'"
+                msg: "The given Component is not of type 'FlamingoComponent'"               
             });
         }
         viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
-
+        
         var container=this.mainContainerId;
         var xml=component.toXML();
         //these components can be added to the bottom if its configured in the layout.
         if (component.config.regionName=="content_bottom"){
-            if (this.viewerController.getLayoutHeight("content_bottom")>=0 && this.bottomContainerId==null){
+            if (this.viewerController.getLayoutHeight("content_bottom")>=0 && this.bottomContainerId==null){                
                 this.bottomContainerId=this.createBottomContent();
             }
             if (this.bottomContainerId){
@@ -468,13 +468,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         if (container){
             //add the component.
-            this.viewerObject.callMethod(container,'addComponent',xml);
+            this.viewerObject.callMethod(container,'addComponent',xml);         
         }
         if (component.type==viewer.viewercontroller.controller.Component.MAPTIP){
             //if it's a maptip check for the maptipdelay. If not set, set it.
-            var maptipdelay= this.viewerObject.callMethod(this.getMap().id,'getMaptipdelay');
+            var maptipdelay= this.viewerObject.callMethod(this.getMap().id,'getMaptipdelay');             
             if (maptipdelay==undefined){
-                this.viewerObject.callMethod(this.getMap().id,'setMaptipdelay',component.getMaptipdelay());
+                this.viewerObject.callMethod(this.getMap().id,'setMaptipdelay',component.getMaptipdelay()); 
             }
         }
     },
@@ -486,7 +486,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         if (!(map instanceof viewer.viewercontroller.flamingo.FlamingoMap)){
             Ext.Error.raise({msg: "FlamingoMapComponent.addMap(): The given map is not of the type 'FlamingoMap'"});
         }
-        this.viewerObject.callMethod(this.mainContainerId,'addComponent',map.toXML());
+        this.viewerObject.callMethod(this.mainContainerId,'addComponent',map.toXML()); 
         this.maps.push(map);
     },
     /**
@@ -515,13 +515,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     getObject : function(name){
         if( name instanceof Array){
             name = name[0];
-        }
-        name=""+name;
+        } 
+        name=""+name;                
         if(this.getMap(name)!= null){
-            return this.getMap(name);
+            return this.getMap(name);        
         }else if (this.getMap() && this.getMap().getLayer(name)!=null){
             return this.getMap().getLayer(name);
-        }else if(this.getMap() && name.indexOf(this.getMap().getId()+"_")==0 && this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){
+        }else if(this.getMap() && name.indexOf(this.getMap().getId()+"_")==0 && this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){        
             return this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,"")));
         }else if(this.getTool(name) != null){
             return this.getTool(name);
@@ -549,7 +549,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             }else{
                 if(component[1]["toggle"]){
                     if(component[1]["selected"] && component[1]["down"]){
-                        event = viewer.viewercontroller.controller.Event.ON_EVENT_DOWN;
+                        event = viewer.viewercontroller.controller.Event.ON_EVENT_DOWN;                        
                     }else if (!component[1]["selected"] && component[1]["down"]){
                         event = viewer.viewercontroller.controller.Event.ON_EVENT_UP;
                     }
@@ -568,7 +568,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             component.layer = layer;
             component.visible = visible;
         }else{
-            // Translate the specific name to the generic name.
+            // Translate the specific name to the generic name. 
             event = this.getGenericEventName(event);
             if(event==null)
                 return;
@@ -584,11 +584,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 if (tokens.length == 2){
                     this.getMap(tokens[0]).getLayer(tokens[1]).setURL(obj.url);
                 }
-
+            
                 if (tokens.length == 3){
                     this.getMap(tokens[0]).getLayer(tokens[1]+"_"+tokens[2]).setURL(obj.url);
                 }
-            }
+            }        
         }else if(event==viewer.viewercontroller.controller.Event.ON_SET_TOOL){
             //onchange tool is called for a tool group but event is registerd on the MapComponent
             id=this.getId();
@@ -597,7 +597,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             console.log("On Activate");
         }else if(event==viewer.viewercontroller.controller.Event.ON_DEACTIVATE){
             console.log("On Deactivate");
-        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){                 
         //component = {extent: component[1]};
             var me = this;
             var extent=component[1];
@@ -610,16 +610,16 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                     y: centery
                 },
                 x: pixel.x,
-                y: pixel.y
+                y: pixel.y                
             };
             component=comp;
-
+            
         }else if ( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS){
             component= {
                 nr: component[1],
                 total: component[2]
             };
-        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){          
             var extent=component[2];
             var centerx=(extent.minx+extent.maxx)/2;
             var centery=(extent.miny+extent.maxy)/2;
@@ -631,7 +631,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                     y: centery
                 },
                 x: pixel.x,
-                y: pixel.y
+                y: pixel.y                
             };
             //comp.data = component[1];
             comp.extent= extent;
@@ -649,7 +649,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                     features: component[1][layerName]
                 };
                 i++;
-            }
+            }       
             comp.data=data;
             component = comp;
         }else if (event == viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
@@ -670,23 +670,23 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             if (layerId.indexOf(id+"_")==0){
                 layerId = layerId.substring(id.length+1);
             }
-            var layer=object.getLayer(layerId);
+            var layer=object.getLayer(layerId);            
             component= new Object()
             component.layer=layer;
         }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP){
-            var comp = new Object();
+            var comp = new Object();    
             comp.x=component[1];
             comp.y=component[2];
             comp.coord=component[3];
             component=comp;
-        }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA){
+        }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA){            
             var comp=new Object();
             comp.coord=component[2];
             //comp.data=component[1];
             comp.x = component[2].x;
             comp.y = component[2].y;
             comp.coord.x=component[2].minx;
-            comp.coord.y=component[2].miny;
+            comp.coord.y=component[2].miny;            
             var data=[];
             var i=0;
             for (var layerName in component[1]){
@@ -697,7 +697,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                     },
                     features: component[1][layerName]
                 };
-            }
+            }            
             comp.data=data;
             component=comp;
         }else if(event == viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED ||event == viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED){
@@ -710,7 +710,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             if(!this.viewerController.layersInitialized){
                 return;
             }
-        }else if (event == viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT){
+        }else if (event == viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT){            
             var comp={}
             if (component[1]){
                 comp.extent= new viewer.viewercontroller.controller.Extent(component[1].minx,component[1].miny,component[1].maxx,component[1].maxy);
@@ -742,13 +742,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     addListener : function(event,handler,scope){
         viewer.viewercontroller.FlamingoMapComponent.superclass.addListener.call(this,event,handler,scope);
-    },
+    },    
     /**
      * @see viewer.viewercontroller.MapComponent#getWidth
      */
     getWidth: function(){
         return this.viewerObject.callMethod(this.flamingoId,"getWidth");
-    },
+    },    
     /**
      * @see viewer.viewercontroller.MapComponent#getHeight
      */
@@ -782,7 +782,7 @@ function dispatchEventJS(event, comp) {
         comp[1] = new Object();
     }
     try{
-        viewerController.mapComponent.handleEvents(event,comp);
+        viewerController.mapComponent.handleEvents(event,comp);    
     }catch(e){
         if (window.console && console.log)
             console.log(e);

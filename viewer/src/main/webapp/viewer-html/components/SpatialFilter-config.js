@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             config = {};
         }
         config.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,config);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,config);        
         this.createCheckBoxes(this.configObject.layers,{filterable: true});
         var me = this;
         this.form.add([{
@@ -34,7 +34,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 inputValue: true,
                 name: 'applyDirect',
                 checked: config.applyDirect!==undefined? config.applyDirect : true,
-                value: true,
+                //value: true,
                 labelWidth:me.labelWidth
             },
             {
@@ -43,7 +43,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 inputValue: true,
                 name: 'multiGeometries',
                 checked: config.multiGeometries!==undefined? config.multiGeometries : false,
-                value: false,
+                //value: false,
                 labelWidth:me.labelWidth
             }
             ]);

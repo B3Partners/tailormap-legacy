@@ -20,10 +20,8 @@ Ext.onReady(function() {
     // Definition of the TreeNode model. Get function is overridden, so custom
     // icons for the different types are possible
     Ext.define('GeoServiceTreeModel', {
-        extend: 'Ext.data.Model',
+        extend: 'Ext.data.TreeModel',
         fields: [
-            {name: 'id', type: 'string'},
-            {name: 'children', type: 'array'},
             {name: 'name', type: 'string'},
             {name: 'type',  type: 'string'},
             {name: 'status', type: 'string'},
@@ -32,28 +30,21 @@ Ext.onReady(function() {
             {name: 'isLeaf', type: 'boolean'},
             {name: 'isVirtual', type: 'boolean'},
             // Text is used by tree, mapped to name
-            {name: 'text', type: 'string', mapping: 'name'}
-        ],
-        get: function(fieldName) {
-            var nodeType = '';
-            if(fieldName == "icon") {
-                nodeType = this.get('type');
+            {name: 'text', type: 'string', mapping: 'name'},
+            {name: 'icon', type: 'string', convert: function(fieldName, record) {
+                var nodeType = record.get('type');
                 if(nodeType == "category") return imagesPath + "folder.png";
                 if(nodeType == "layer") return imagesPath + "map.png";
                 if(nodeType == "service") {
-                    var nodeStatus = this.get('status');
+                    var nodeStatus = record.get('status');
                     if(nodeStatus == "ok") return imagesPath + "serviceok.png";
                     if(nodeStatus == "error") return imagesPath + "serviceerror.png";
                 }
-            }
-            if(fieldName == "leaf") {
-                return this.get('isLeaf');
-            }
-            // Return default value, taken from ExtJS source
-            return this[this.persistenceProperty][fieldName];
-        }
+            }},
+            {name: 'leaf', type: 'boolean', mapping: 'isLeaf'}
+        ]
     });
-
+    
     // Definition of the store, which takes care of loading the necessary json
     var treeStore = Ext.create('Ext.data.TreeStore', {
         autoLoad: true,
@@ -61,13 +52,18 @@ Ext.onReady(function() {
             type: 'ajax',
             url: actionBeans["tree"]
         },
-        root: {text: rootName, id: "c0", type: "category", expanded: true},
+        root: {
+            text: rootName,
+            id: "c0",
+            type: "category",
+            expanded: true
+        },
         model: 'GeoServiceTreeModel',
         nodeParam: 'nodeId'
     });
 
     // Definition of contextmenu for categories
-    var categoryMenu = new Ext.menu.Menu({
+    var categoryMenu = Ext.create('Ext.menu.Menu', {
         data: {
             clickedItem: null
         },
@@ -76,7 +72,7 @@ Ext.onReady(function() {
             icon: imagesPath + "add.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    addSubcategory(item.ownerCt.data.clickedItem);
+                    addSubcategory(item.ownerCt.config.data.clickedItem);
                 }
             }
         },
@@ -85,7 +81,7 @@ Ext.onReady(function() {
             icon: imagesPath + "delete.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    removeCategory(item.ownerCt.data.clickedItem);
+                    removeCategory(item.ownerCt.config.data.clickedItem);
                 }
             }
         },
@@ -94,7 +90,7 @@ Ext.onReady(function() {
             text: 'Naam wijzigen',
             listeners: {
                 click: function(item, e, eOpts) {
-                    changeCategoryName(item.ownerCt.data.clickedItem);
+                    changeCategoryName(item.ownerCt.config.data.clickedItem);
                 }
             }
         },
@@ -104,7 +100,7 @@ Ext.onReady(function() {
             icon: imagesPath + "serviceok.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    var record = item.ownerCt.data.clickedItem;
+                    var record = item.ownerCt.config.data.clickedItem;
                     Ext.get('editFrame').dom.src = actionBeans["service"] + '?addForm=t&category=' + record.get('id').substr(1);
                 }
             }
@@ -114,15 +110,16 @@ Ext.onReady(function() {
             icon: imagesPath + "serviceok.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    var record = item.ownerCt.data.clickedItem;
+                    var record = item.ownerCt.config.data.clickedItem;
                     Ext.get('editFrame').dom.src = actionBeans["csw"] + '?addForm=t&category=' + record.get('id').substr(1);
                 }
             }
         }
-        ]
+        ],
+        renderTo: Ext.getBody()
     });
 
-    var editMenu = new Ext.menu.Menu({
+    var editMenu = Ext.create('Ext.menu.Menu', {
         data: {
             record: null
         },
@@ -131,12 +128,13 @@ Ext.onReady(function() {
             icon: imagesPath + "wrench.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    var record = item.ownerCt.data.record;
+                    var record = item.ownerCt.config.data.record;
                     tree.fireEvent("itemclick", null, record);
                 }
             }
         }
-        ]
+        ],
+        renderTo: Ext.getBody()
     });
 
     // Definition of the tree
@@ -149,14 +147,15 @@ Ext.onReady(function() {
         renderTo: 'tree-container',
         width: 330,
         height: 600,
-        scroll: false,
+        scroll: 'both',
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
+                console.log(categoryMenu, editMenu);
                 if(record.get('type') == "category") {
-                    categoryMenu.data.clickedItem = record;
+                    categoryMenu.config.data.clickedItem = record;
                     categoryMenu.showAt(event.getXY());
                 } else {
-                    editMenu.data.record = record;
+                    editMenu.config.data.record = record;
                     editMenu.showAt(event.getXY());
                 }
                 event.stopEvent();
@@ -164,7 +163,7 @@ Ext.onReady(function() {
             containercontextmenu: function(view, event, eOpts) {
                 // When rightclicking in the treecontainer (not on a node) then
                 // show the context menu for the root category
-                categoryMenu.data.clickedItem = tree.getRootNode();
+                categoryMenu.config.data.clickedItem = tree.getRootNode();
                 categoryMenu.showAt(event.getXY());
                 event.stopEvent();
             },
@@ -197,8 +196,6 @@ Ext.onReady(function() {
             }
         ]
     });
-
-    applyTreeScrollFix(tree.getView());
 });
 
 // Function for adding a node, should not be called directly, but trough the
@@ -374,15 +371,19 @@ function addServiceNode(service) {
 
 function updateServiceNode(service) {
     service.text = service.name; // For some reason text is not mapped to name when creating a new model
-
+    
     var tree = Ext.getCmp('servicestree');
-
+    
     var oldNode = tree.getRootNode().findChild('id', service.id, true);
-
-    if(oldNode != null) {
+    var parent = oldNode.parentNode;
+    if(oldNode !== null) {
         var newNode = Ext.create('GeoServiceTreeModel', service);
-        oldNode.parentNode.insertBefore(newNode, oldNode);
+        parent.insertBefore(newNode, oldNode);
         oldNode.remove();
+        parent.collapse(false, function() {
+            parent.expand();
+            newNode.expand();
+        });
     }
 }
 

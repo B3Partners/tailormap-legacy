@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             {
                 xtype: 'label',
                 text: 'Toon de links',
-                style: {
+                style: { 
                     fontWeight: 'bold'
                 }
             },{
@@ -44,7 +44,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         xtype: 'checkbox',
                         boxLabel: 'Volledige link',
                         name: 'showFullUrl',
-                        value: true,
+                        //value: true,
                         inputValue: true,
                         checked: this.configObject.showFullUrl !== undefined ? this.configObject.showFullUrl : true,
                         style: {
@@ -55,7 +55,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         boxLabel: 'Compacte link',
                         name: 'showShortUrl',
                         value: true,
-                        inputValue: true,
+                        //inputValue: true,
                         checked: this.configObject.showShortUrl !== undefined ? this.configObject.showShortUrl : true,
                         style: {
                             marginRight: "90px"
@@ -65,7 +65,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         xtype: 'checkbox',
                         boxLabel: 'Laat labels zien voor velden',
                         name: 'showLabels',
-                        value: true,
+                        //value: true,
                         inputValue: true,
                         checked: this.configObject.showLabels !== undefined ? this.configObject.showLabels : true,
                         style: {
@@ -89,7 +89,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         boxLabel: 'E-mail',
                         name: 'shareEmail',
                         /*columnWidth : 0.5,*/
-                        value: true,
+                        //value: true,
                         inputValue: true,
                         checked: this.configObject.shareEmail != undefined ? this.configObject.shareEmail : false,
                         style: {
@@ -100,7 +100,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         boxLabel: 'Twitter',
                         name: 'shareTwitter',
                         /*columnWidth : 0.5,*/
-                        value: true,
+                        //value: true,
                         inputValue: true,
                         checked: this.configObject.shareTwitter != undefined ? this.configObject.shareTwitter : false,
                         labelWidth: checkboxLabelWidth,
@@ -112,7 +112,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         boxLabel: 'LinkedIn',
                         name: 'shareLinkedIn',
                         /*columnWidth : 0.5,*/
-                        value: true,
+                        //value: true,
                         inputValue: true,
                         checked: this.configObject.shareLinkedIn != undefined ? this.configObject.shareLinkedIn : false,
                         style: {
@@ -123,7 +123,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         boxLabel: 'Google+',
                         name: 'shareGooglePlus',
                         /*columnWidth : 0.5,*/
-                        value: true,
+                        //value: true,
                         inputValue: true,
                         checked: this.configObject.shareGooglePlus != undefined ? this.configObject.shareGooglePlus : false,
                         style: {
@@ -134,7 +134,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         boxLabel: 'Facebook',
                         name: 'shareFacebook',
                         /*columnWidth : 0.5,*/
-                        value: true,
+                        //value: true,
                         inputValue: true,
                         checked: this.configObject.shareFacebook != undefined ? this.configObject.shareFacebook : false,
                         style: {

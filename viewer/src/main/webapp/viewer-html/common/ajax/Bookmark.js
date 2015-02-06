@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,21 +19,21 @@ Ext.define("viewer.Bookmark", {
     config: {
         actionbeanUrl: null
     },
-    constructor: function(config) {
-        this.initConfig(config);
+    constructor: function(config) {        
+        this.initConfig(config);      
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["bookmark"];
-        }
+        }        
     },
-
+    
     createBookmark: function(params, successFunction, failureFunction) {
-
+        
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {create: true, "bookmark.params": params},
+            params: {create: true, "bookmark.params": params}, 
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-
+                
                 if(response.success) {
                     successFunction(response.bookmark);
                 } else {
@@ -49,14 +49,14 @@ Ext.define("viewer.Bookmark", {
             }
         });
     },
-
+    
     getBookmarkParams: function(bookmark, successFunction, failureFunction) {
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {load: true, bookmark: bookmark},
+            params: {load: true, bookmark: bookmark}, 
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-
+                
                 if(response.success) {
                     successFunction(response.params);
                 } else {
@@ -71,5 +71,5 @@ Ext.define("viewer.Bookmark", {
                 }
             }
         });
-    }
+    }    
 });

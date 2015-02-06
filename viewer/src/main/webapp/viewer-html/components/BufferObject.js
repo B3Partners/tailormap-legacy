@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,50 +30,50 @@ Ext.define ("viewer.components.BufferObject",{
         title:null,
         iconUrl:null,
         label: ""
-    },
-    constructor: function (conf){
+    },    
+    constructor: function (conf){        
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-
-        this.tmc =this.viewerController.mapComponent.createTool({
+        
+        this.tmc =this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name,
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
         var me = this;
         this.renderButton({
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
+            text: me.config.title,
+            icon: me.config.iconUrl,
             tooltip: me.tooltip,
-            label: me.label
+            label: me.config.label
         });
         this.loadWindow();
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
     selectedContentChanged : function (){
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }else{
-            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
     },
     buttonClick : function (){
         this.layerSelector.initLayers();
-        if(this.vectorLayer == null){
+        if(this.vectorLayer == null){        
             this.createVectorLayer();
         }
         this.popup.show();
     },
     createVectorLayer : function(){
-        this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+        this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
               id: 'boVectorLayer',
               name:'boVectorLayer',
               geometrytypes:["Circle","Polygon"],
@@ -85,25 +85,25 @@ Ext.define ("viewer.components.BufferObject",{
                   strokeopacity: 100
               }
           });
-          this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+          this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     loadWindow : function(){
-
+        
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             div: this.getContentDiv(),
-            layers : this.layers,
+            layers : this.config.layers,
             restriction: "bufferable"
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
-
+        
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             fieldLabel: "Straal",
             renderTo: this.getContentDiv()
         });
-
+        
         this.button1 = Ext.create("Ext.button.Button",{
             name: "selectObject" ,
             text: "Selecteer object op de kaart",
@@ -116,7 +116,7 @@ Ext.define ("viewer.components.BufferObject",{
                 }
             }
         });
-
+        
         this.button2 = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             text: "Huidige buffer verwijderen",
@@ -144,7 +144,7 @@ Ext.define ("viewer.components.BufferObject",{
     },
     addWktToMapcomponent : function (wkt){
         this.tmc.activateTool();
-
+        
     },
     removeBuffer : function (){
         this.vectorLayer.removeAllFeatures();

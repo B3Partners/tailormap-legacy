@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,25 @@ Ext.define("viewer.components.CustomConfiguration",{
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         var me = this;
+        
+        var alignmentStore = Ext.create('Ext.data.ArrayStore', {
+            autoDestroy: true,
+            idIndex: 0,
+            fields: [{
+                name: 'name',
+                type: 'string'
+            }, {
+                name: 'value',
+                type: 'string'
+            }],
+            data: [
+                ['Links-boven', 'tl'],
+                ['Rechts-boven', 'tr'],
+                ['Links-onder', 'bl'],
+                ['Rechts-onder', 'br']
+            ]
+        });
+        
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
@@ -34,17 +53,28 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             items: [{
                 xtype: 'textfield',
-                fieldLabel: 'Toppositie',
+                fieldLabel: 'Top/bottom positie',
                 name: 'top',
                 value: (config != null && config.top != undefined) ? config.top : '5',
                 labelWidth:me.labelWidth
             },
             {
                 xtype: 'textfield',
-                fieldLabel: 'Linkerpositie',
+                fieldLabel: 'Linker/rechter positie',
                 name: 'left',
                 value: (config != null && config.left != undefined) ? config.left : '5',
                 labelWidth:me.labelWidth
+            },
+            { 
+                xtype: 'combobox',
+                fieldLabel: 'Uitlijning',
+                name: 'alignposition',
+                value: (config != null && config.alignposition != undefined) ? config.alignposition : 'tl',
+                labelWidth: me.labelWidth,
+                store: alignmentStore,
+                displayField: 'name',
+                valueField: 'value',
+                queryMode: 'local'
             }],
             renderTo: parentid
         });

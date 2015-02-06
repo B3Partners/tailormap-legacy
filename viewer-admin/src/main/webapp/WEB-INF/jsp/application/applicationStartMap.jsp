@@ -27,11 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="content">
-            <p>
-                <stripes:errors/>
-                <stripes:messages/>
-            </p>
-
+            <stripes:errors/>
+            <stripes:messages/>
             <h1>
                 Startkaartbeeld: <c:out value="${actionBean.application.name}"/> <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if>
                 <a href="#Startkaartbeeld_Help" title="Help" class="helplink"></a>

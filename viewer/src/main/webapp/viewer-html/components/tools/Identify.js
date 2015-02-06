@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,24 +16,25 @@
  */
 /**
  * FeatureInfo component
- * Creates a MapComponent Tool with the given configuration by calling createTool
+ * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.tools.Identify",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "identify"
+        name: "identify",
+        tooltip: "Identify"
     },
     /**
      * @Constructor
      * Creates a FeatureInfoTool
      * @param conf configuration object that passes the configuration to the Tool
      */
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.tools.Identify.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO;
+        conf.type = viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO;        
         this.initTool(conf);
         return this;
     }

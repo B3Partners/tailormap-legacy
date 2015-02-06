@@ -1,0 +1,72 @@
+/* 
+ * Copyright (C) 2012-2013 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * Custom configuration object for DirectSearch configuration
+ * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
+ */
+Ext.define('viewer.components.CustomConfiguration', {
+    extend: 'viewer.components.SearchConfiguration',
+    maxSearchConfigs: 1,
+    constructor: function(parentId, configObject) {
+        if (configObject === null){
+            configObject = {};
+        }
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        var alignmentStore = Ext.create('Ext.data.ArrayStore', {
+            autoDestroy: true,
+            idIndex: 0,
+            fields: [{
+                name: 'name',
+                type: 'string'
+            }, {
+                name: 'value',
+                type: 'string'
+            }],
+            data: [
+                ['Links-boven', 'tl'],
+                ['Rechts-boven', 'tr'],
+                ['Links-onder', 'bl'],
+                ['Rechts-onder', 'br']
+            ]
+        });
+        this.form.add([{
+                xtype: 'textfield',
+                fieldLabel: 'Top/bottom positie',
+                name: 'top',
+                value: (configObject != null && configObject.top != undefined) ? configObject.top : '10',
+                labelWidth:this.labelWidth
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: 'Linker/rechter positie',
+                name: 'left',
+                value: (configObject != null && configObject.left != undefined) ? configObject.left : '10',
+                labelWidth:this.labelWidth
+            },
+            { 
+                xtype: 'combobox',
+                fieldLabel: 'Uitlijning',
+                name: 'alignposition',
+                value: (configObject != null && configObject.alignposition != undefined) ? configObject.alignposition : 'tl',
+                labelWidth: this.labelWidth,
+                store: alignmentStore,
+                displayField: 'name',
+                valueField: 'value',
+                queryMode: 'local'
+            }]);
+    }
+});

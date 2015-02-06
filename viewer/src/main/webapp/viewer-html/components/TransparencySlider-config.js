@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(config != null) {
             if(config.sliders != null) sliders = config.sliders;
             if(config.title != null) title = config.title;
-
+            
             if(config.layers != null) {
                 transparencySlider_layersArrayIndexesToAppLayerIds(config);
             }
@@ -51,16 +51,17 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: 'container',
                 flex: 1,
-                html: '<div id="selectionGridContainer" style="width: 100%; height: 100%;"></div>'
+                layout: 'fit',
+                id: 'selectionGridContainer'
             },{
                     xtype: 'checkbox',
                     name: 'sliderForUserAdded',
                     id: 'sliderForUserAdded',
                     checked: config.sliderForUserAdded,
                     inputValue: true,
-                    boxLabel: 'Voeg slider toe voor door gebruiker toegevoegde kaarten',
+                    boxLabel: 'Voeg slider toe voor door gebruiker toegevoegde kaarten',                    
                     listeners:{
-                        change: {
+                        change: {                    
                             fn: function(el,newValue,oldValue,eOpts){
                                 if (newValue){
                                     Ext.getCmp('sliderForUserAddedText').setDisabled(false);
@@ -113,15 +114,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             renderTo: 'selectionGridContainer',
             sliders: sliders
         });
-
+        
     },
     getConfiguration: function(){
         var config = new Object();
         config.title = Ext.getCmp('componentTransparencyTitle').getValue();
         config.sliders = filterableCheckboxes.getSliders();
-
+   
         transparencySlider_appLayerIdsToLayersArrayIndexes(config);
-
+        
         config.sliderForUserAdded = Ext.getCmp('sliderForUserAdded').getValue();
         config.sliderForUserAddedText = Ext.getCmp('sliderForUserAddedText').getValue();
         config.sliderForUserAddedInitTransparency = Ext.getCmp('sliderForUserAddedInitTransparency').getValue(true);

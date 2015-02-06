@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,19 +30,19 @@ Ext.define ("viewer.components.BufferLayer",{
         iconUrl:null,
         label: ""
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.BufferLayer.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        this.initConfig(conf);     
         var me = this;
         this.renderButton({
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
+            text: me.config.title,
+            icon: me.config.iconUrl,
             tooltip: me.tooltip,
-            label: me.label
-        });
+            label: me.config.label
+        });      
         this.loadWindow();
         return this;
     },
@@ -51,8 +51,8 @@ Ext.define ("viewer.components.BufferLayer",{
     },
     loadWindow : function(){
         var layers = [];
-        for( var i = 0 ; i < this.layers.length;i++){
-            var layer = this.viewerController.getLayerByLayerId(this.layers[i]);
+        for( var i = 0 ; i < this.config.layers.length;i++){
+            var layer = this.config.viewerController.getLayerByLayerId(this.config.layers[i]);
             layers.push({
                 id: layer.serviceId+"_"+layer.options.name,
                 title: layer.options.name,
@@ -64,7 +64,7 @@ Ext.define ("viewer.components.BufferLayer",{
             data : layers
         });
 
-        this.combobox = Ext.create('viewer.components.FlamingoCombobox', {
+        this.combobox = Ext.create('Ext.form.ComboBox', {
             fieldLabel: 'Kies kaartlaag',
             emptyText: layers.length === 0 ? 'Geen lagen beschikbaar' : 'Maak uw keuze',
             disabled: layers.length === 0,
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.BufferLayer",{
             fieldLabel: "Straal",
             renderTo: this.getContentDiv()
         });
-
+        
         this.button1 = Ext.create("Ext.button.Button",{
             name: "buffer" ,
             text: "Buffer",
@@ -91,7 +91,7 @@ Ext.define ("viewer.components.BufferLayer",{
                 }
             }
         });
-
+        
         this.button2 = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             text: "Huidige buffer verwijderen",

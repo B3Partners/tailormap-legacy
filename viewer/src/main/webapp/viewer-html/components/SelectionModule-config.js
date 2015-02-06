@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         configObject.showLabelconfig =true;
         var me = this;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
-
+        
         this.form.add({
             xtype: "checkbox",
             checked: configObject.showWhenOnlyBackground !== undefined ? configObject.showWhenOnlyBackground : true,
@@ -43,7 +43,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth,
             fieldLabel: "Laat achtergrondlagen zien"
         });
-
+        
         var fieldNames = [
             { name: 'Groups', description: 'Kaarten selecteren', defaultLabel: 'Kaart' },
             { name: 'Layers', description: 'Kaartlagen selecteren', defaultLabel: 'Kaartlaag' },
@@ -96,7 +96,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fieldLabel: "Standaard CSW Url",
             width: 500
         });
-
+        
            this.form.add({
             xtype: "checkbox",
             checked: configObject.showCswUrl !== undefined ? configObject.showCswUrl : true,
@@ -105,7 +105,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth,
             fieldLabel: "Laat CSW url zien"
         });
-
+        
         this.form.add({
             xtype: "checkbox",
             checked: configObject.advancedFilter !== undefined ? configObject.advancedFilter : false,
@@ -120,7 +120,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
             }
         });
-
+        
         var waardeItems = new Array();
         var configWaardes = configObject.advancedValueConfigs;
         if(typeof configWaardes !== "undefined") {
@@ -203,7 +203,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                                 fn:function(){
                                     var valueSet = Ext.getCmp("advancedFilterValues");
                                     valueSet.add(this.createRow('', ''));
-                                    valueSet.doLayout();
+                                    valueSet.updateLayout();
                                 },
                                 scope:this
                             }
@@ -220,7 +220,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
             ]
         });
-
+        
         // Trigger change on checkboxes to show/enable / hide/disable fields
         Ext.Array.forEach(fieldNames, function(field) {
             var checkbox = Ext.getCmp('checkbox' + field.name);
@@ -256,7 +256,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     listeners:{
                         click: function(btn) {
                             Ext.getCmp('advancedFilterValues').remove(btn.up('.container'));
-                            Ext.getCmp("advancedFilterValues").doLayout();
+                            Ext.getCmp("advancedFilterValues").updateLayout();
                         }
                     }
                 }]
@@ -278,7 +278,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             siblCheckbox.removeCls('x-item-disabled');
             siblTextfield.removeCls('x-item-disabled');
         }
-
+        
         if(box.getName() === 'selectCsw') {
             Ext.getCmp('defaultCswUrl').setVisible(isChecked);
             Ext.getCmp('showCswUrl').setVisible(isChecked);
@@ -301,9 +301,9 @@ Ext.define("viewer.components.CustomConfiguration",{
         config.advancedValue = advancedValue !== null ? advancedValue.getValue() : "";
         config.alwaysMatch = alwaysMatch !== null ? alwaysMatch.getValue() : "";
         config.alwaysShow = alwaysShow !== null ? alwaysShow.getValue() : "";
-
+        
         var items = values.items.items;
-
+        
         var valueConfig = [];
         for (var i = 0 ; i< items.length ; i++){
             var item = items[i];
@@ -317,7 +317,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         }
         config.advancedValueConfigs = valueConfig;
-
+        
         return config;
     }
 });

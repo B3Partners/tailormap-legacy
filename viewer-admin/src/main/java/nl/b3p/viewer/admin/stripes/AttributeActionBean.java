@@ -41,7 +41,7 @@ public class AttributeActionBean implements ActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/attribute.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editattribute.jsp";
-
+    
     @Validate
     private int page;
     @Validate
@@ -54,14 +54,14 @@ public class AttributeActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-
+    
     @Validate
     private Long featureSourceId;
     @Validate
     private Long simpleFeatureTypeId;
-
+    
     private List featureSources;
-
+    
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="alias", maxlength=255, label="Alias")
@@ -72,7 +72,7 @@ public class AttributeActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -100,7 +100,7 @@ public class AttributeActionBean implements ActionBean {
     public void setSimpleFeatureTypeId(Long simpleFeatureTypeId) {
         this.simpleFeatureTypeId = simpleFeatureTypeId;
     }
-
+    
     public Long getFeatureSourceId() {
         return featureSourceId;
     }
@@ -108,93 +108,93 @@ public class AttributeActionBean implements ActionBean {
     public void setFeatureSourceId(Long featureSourceId) {
         this.featureSourceId = featureSourceId;
     }
-
+    
     public String getDir() {
         return dir;
     }
-
+    
     public void setDir(String dir) {
         this.dir = dir;
     }
-
+    
     public JSONArray getFilter() {
         return filter;
     }
-
+    
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
-
+    
     public int getLimit() {
         return limit;
     }
-
+    
     public void setLimit(int limit) {
         this.limit = limit;
     }
-
+    
     public int getPage() {
         return page;
     }
-
+    
     public void setPage(int page) {
         this.page = page;
     }
-
+    
     public String getSort() {
         return sort;
     }
-
+    
     public void setSort(String sort) {
         this.sort = sort;
     }
-
+    
     public int getStart() {
         return start;
     }
-
+    
     public void setStart(int start) {
         this.start = start;
     }
     //</editor-fold>
-
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
     }
-
+    
     public Resolution edit() {
         return new ForwardResolution(EDITJSP);
     }
-
+    
     public Resolution cancel() {
         return new ForwardResolution(EDITJSP);
     }
-
+    
     public Resolution save() {
         Stripersist.getEntityManager().persist(attribute);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Attribuut is opgeslagen"));
         return new ForwardResolution(EDITJSP);
     }
-
+    
     @Before(stages=LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
-
+    
     public Resolution getFeatureTypes() throws JSONException {
         final JSONArray simpleFeatureTypes = new JSONArray();
-
+        
         if(featureSourceId != null){
             FeatureSource fc = (FeatureSource)Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
-
+            
             List<SimpleFeatureType> sftList = fc.getFeatureTypes();
             for(Iterator it = sftList.iterator(); it.hasNext();){
                 SimpleFeatureType sft = (SimpleFeatureType)it.next();
-
+                
                 JSONObject j = new JSONObject();
                 j.put("id", sft.getId());
                 String name = sft.getTypeName();
@@ -205,7 +205,7 @@ public class AttributeActionBean implements ActionBean {
                 simpleFeatureTypes.put(j);
             }
         }
-
+        
         return new StreamingResolution("application/json") {
 
             @Override
@@ -214,10 +214,10 @@ public class AttributeActionBean implements ActionBean {
             }
         };
     }
-
-    public Resolution getGridData() throws JSONException {
+    
+    public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
-
+                
         List<SimpleFeatureType> featureTypes= new ArrayList();
         if(simpleFeatureTypeId != null && simpleFeatureTypeId != -1){
             SimpleFeatureType sft = (SimpleFeatureType)Stripersist.getEntityManager().find(SimpleFeatureType.class, simpleFeatureTypeId);
@@ -225,14 +225,14 @@ public class AttributeActionBean implements ActionBean {
                 featureTypes.add(sft);
             }
         }else if(featureSourceId != null && featureSourceId != -1){
-            FeatureSource fc = (FeatureSource)Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
+            FeatureSource fc = (FeatureSource)Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);            
             featureTypes = fc.getFeatureTypes();
         }
-
+        
         String filterAlias = "";
         String filterAttribuut = "";
         String filterType = "";
-        /*
+        /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
@@ -253,10 +253,10 @@ public class AttributeActionBean implements ActionBean {
                 }
             }
         }
-
+        
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(AttributeDescriptor.class);
-
+        
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
@@ -272,9 +272,9 @@ public class AttributeActionBean implements ActionBean {
                 order = Order.desc(sort);
             }
             order.ignoreCase();
-            c.addOrder(order);
+            c.addOrder(order); 
         }
-
+        
         if(filterAlias != null && filterAlias.length() > 0){
             Criterion aliasCrit = Restrictions.ilike("alias", filterAlias, MatchMode.ANYWHERE);
             c.add(aliasCrit);
@@ -287,9 +287,9 @@ public class AttributeActionBean implements ActionBean {
             Criterion typeCrit = Restrictions.ilike("type", filterType, MatchMode.ANYWHERE);
             c.add(typeCrit);
         }
-
+        
         if(featureTypes != null && featureTypes.size() > 0){
-            /* Criteria for the all attribute descriptor ids of the feature types
+            /* Criteria for the all attribute descriptor ids of the feature types 
              * in featureTypes
              */
             DetachedCriteria c2 = DetachedCriteria.forClass(SimpleFeatureType.class);
@@ -304,25 +304,25 @@ public class AttributeActionBean implements ActionBean {
             c.add(org.hibernate.criterion.Property.forName("id").in(c2));
         }
         int rowCount = c.list().size();
-
+        
         if(limit > 0){
             c.setMaxResults(limit);
         }
         c.setFirstResult(start);
-
+        
         List attributes = c.list();
 
         for(Iterator it = attributes.iterator(); it.hasNext();){
             AttributeDescriptor attr = (AttributeDescriptor)it.next();
-
+            
             JSONObject j = this.getGridRow(attr.getId().intValue(), attr.getAlias(), attr.getName(), attr.getType());
             jsonData.put(j);
         }
-
+        
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-
+    
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
@@ -330,8 +330,8 @@ public class AttributeActionBean implements ActionBean {
            }
         };
     }
-
-    private JSONObject getGridRow(int i, String alias, String attribute, String type) throws JSONException {
+    
+    private JSONObject getGridRow(int i, String alias, String attribute, String type) throws JSONException {       
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("alias", alias);

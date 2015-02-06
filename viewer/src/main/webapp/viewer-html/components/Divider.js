@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ Ext.define ("viewer.components.Divider",{
         textColor: "000000",
         fontWeight: "bold"
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.Divider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.createLabel();
@@ -41,23 +41,23 @@ Ext.define ("viewer.components.Divider",{
     createLabel : function() {
         // Add dash before hex-coded colors
         var colorregex = /^[0-9a-f]{3,6}$/i;
-        if(colorregex.test(this.backgroundColor)) this.backgroundColor = '#' + this.backgroundColor;
-        if(colorregex.test(this.borderColor)) this.borderColor = '#' + this.borderColor;
-        if(colorregex.test(this.textColor)) this.textColor = '#' + this.textColor;
+        if(colorregex.test(this.config.backgroundColor)) this.config.backgroundColor = '#' + this.config.backgroundColor;
+        if(colorregex.test(this.config.borderColor)) this.config.borderColor = '#' + this.config.borderColor;
+        if(colorregex.test(this.config.textColor)) this.config.textColor = '#' + this.config.textColor;
 
         this.container = Ext.create('Ext.container.Container', {
             width: '100%',
-            html: this.title,
-            margin: this.margin,
-            padding: this.padding,
+            html: this.config.title,
+            margin: this.config.margin,
+            padding: this.config.padding,
             renderTo: this.div,
             style: {
-                'background-color': this.backgroundColor,
-                'border-width': this.border,
-                'border-color': this.borderColor,
+                'background-color': this.config.backgroundColor,
+                'border-width': this.config.border,
+                'border-color': this.config.borderColor,
                 'border-style': 'solid',
-                'color': this.textColor,
-                'font-weight': this.fontWeight,
+                'color': this.config.textColor,
+                'font-weight': this.config.fontWeight,
                 'line-height': '15px'
             }
         });

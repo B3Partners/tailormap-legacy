@@ -34,6 +34,7 @@ Ext.define("viewer.components.Graph", {
     },
     constructor: function(conf) {
         viewer.components.Graph.superclass.constructor.call(this, conf);
+        this.loadCSS();
         this.initConfig(conf);
         if(this.config.layers !== null){
             graph_layersArrayIndexesToAppLayerIds(conf);
@@ -43,38 +44,47 @@ Ext.define("viewer.components.Graph", {
             handler: function() {
                  me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initialize, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initialize, this);
         return this;
+    },
+    // Additional Ext CSS is required when using the chart component
+    loadCSS: function() {
+        var head = document.getElementsByTagName( "head" )[0];
+        var fileref = document.createElement("link");
+            fileref.setAttribute("rel", "stylesheet");
+            fileref.setAttribute("type", "text/css");
+            fileref.setAttribute("href", contextPath + "/extjs/packages/sencha-charts/css/sencha-charts-all.css");
+        head.insertBefore( fileref, head.firstChild );
     },
     initialize: function() {
         this.initialized = true;
-
-        this.toolMapClick =  this.viewerController.mapComponent.createTool({
+        this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
-            id: this.name + "toolMapClick",
+            id: this.config.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
 
         this.layers = [];
-        for (var i = 0 ; i < this.graphs.length ;i ++){
-            var graph = this.graphs[i];
+        for (var i = 0 ; i < this.config.graphs.length ;i ++){
+            var graph = this.config.graphs[i];
             this.layers.push(graph.layer);
         }
         this.loadWindow();
     },
      loadWindow : function (){
         var me =this;
+        this.createLayerSelector();
         this.maincontainer = Ext.create('Ext.container.Container', {
-            id: this.name + 'Container',
+            id: this.config.name + 'Container',
             width: '100%',
             height: '100%',
             autoScroll: true,
@@ -87,12 +97,7 @@ Ext.define("viewer.components.Graph", {
             },
             renderTo: this.getContentDiv(),
             items: [
-                {
-                    id: this.name + 'LayerSelectorPanel',
-                    xtype: "container",
-                    padding: 4,
-                    height: 36
-                },
+                this.layerSelector.combobox,
                 {
                     xtype: "container",
                     items: [{
@@ -108,23 +113,22 @@ Ext.define("viewer.components.Graph", {
                     height: 25
                 },
                  {
-                    id: this.name + 'graphPanel',
-                    xtype: this.graphs.length > 1 ? "tabpanel" : "container",
+                    id: this.config.name + 'graphPanel',
+                    xtype: this.config.graphs.length > 1 ? "tabpanel" : "container",
                     padding: 4,
                     flex: 1,
                     layout: 'fit'
                 }
             ]
         });
-        this.createLayerSelector();
     },
     createLayerSelector: function(){
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             restriction : "attribute",
-            id : this.name + "layerSelector",
+            id : this.config.name + "layerSelector",
             layers: this.layers,
-            div: this.name + 'LayerSelectorPanel'
+            padding: 4
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         if(this.layers.length === 1){
@@ -149,7 +153,7 @@ Ext.define("viewer.components.Graph", {
             return;
         }
         var me = this;
-        var graphPanel = Ext.getCmp(this.name + 'graphPanel');
+        var graphPanel = Ext.getCmp(this.config.name + 'graphPanel');
         graphPanel.removeAll();
         // We create placeholders to be able to insert graphs in correct order in the tabpanel
         if(graphConfig.length > 1) {
@@ -173,11 +177,11 @@ Ext.define("viewer.components.Graph", {
                     attributesToInclude : attributes,
                     graph:true
                 };
-                this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
+                me.config.viewerController.mapComponent.getMap().setMarker("edit",x,y);
                 var featureInfo = Ext.create("viewer.FeatureInfo", {
-                    viewerController: me.viewerController
+                    viewerController: me.config.viewerController
                 });
-                featureInfo.editFeatureInfo(x,y,me.viewerController.mapComponent.getMap().getResolution() * 4,appLayer, function (features){
+                featureInfo.editFeatureInfo(x,y,me.config.viewerController.mapComponent.getMap().getResolution() * 4,appLayer, function (features){
                     me.featuresReceived(features, attributes, configId);
                 },function(msg){me.failed(msg);},extraParams);
             })(graphConfig[i], i);
@@ -226,7 +230,7 @@ Ext.define("viewer.components.Graph", {
                 this.createGraph(appLayer, features, configId);
             },
             failure: function(result) {
-               this.viewerController.logger.error(result);
+               this.config.viewerController.logger.error(result);
             }
         });
     },
@@ -234,7 +238,7 @@ Ext.define("viewer.components.Graph", {
         this.popup.show();
     },
     createGraph : function (appLayer,  data, configId){
-        var gco = this.graphs[configId];
+        var gco = this.config.graphs[configId];
         var me = this;
         var fields = this.getAttributeTitle(appLayer,gco.serieAttribute);
         if(!(fields instanceof Array)){
@@ -258,7 +262,8 @@ Ext.define("viewer.components.Graph", {
         for(var i = 0; i < serieAttributes.length; i++) {
             (function(serieAttribute) {
                 series.push({
-                    type: graphType,
+                    // No column type in ExtJS 5
+                    type: graphType === 'column' ? 'bar' : graphType,
                     axis: 'left',
                     xField: me.getAttributeTitle(appLayer, gco.categoryAttribute),
                     yField: me.getAttributeTitle(appLayer, serieAttribute),
@@ -273,11 +278,11 @@ Ext.define("viewer.components.Graph", {
                         minWidth: 140,
                         height: 28,
                         renderer: function(storeItem, item) {
-                            if(graphType === 'bar' || graphType === 'column') {
-                                this.setTitle(item.value[0] + ': ' + item.value[1]);
-                            } else {
+                            // if(graphType === 'bar' || graphType === 'column') {
+                            //     this.setTitle(item.value[0] + ': ' + item.value[1]);
+                            // } else {
                                 this.setTitle(storeItem.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + storeItem.get(me.getAttributeTitle(appLayer,serieAttribute)));
-                            }
+                            // }
                         }
                     },
                     highlight: {
@@ -319,17 +324,15 @@ Ext.define("viewer.components.Graph", {
         }); */
         var axes = [
             {
-                type: 'Numeric',
+                type: 'numeric',
                 position: 'left',
                 fields: this.getAttributeTitle(appLayer, gco.serieAttribute),
-                label: {
-                    renderer: Ext.util.Format.numberRenderer('0,0')
-                },
+                renderer: Ext.util.Format.numberRenderer('0,0'),
                 title: gco.ylabel,
                 grid: true,
                 minimum: 0
             },{
-                type: 'Category',
+                type: 'category',
                 position: 'bottom',
                 fields: [this.getAttributeTitle(appLayer,gco.categoryAttribute)],
                 title: gco.xlabel
@@ -346,9 +349,10 @@ Ext.define("viewer.components.Graph", {
             axes: axes,
             series: series,
             title: gco.title,
-            legend: true
+            legend: true,
+            flipXY: graphType === 'bar'
         });
-        var graphPanel = Ext.getCmp(this.name + 'graphPanel');
+        var graphPanel = Ext.getCmp(this.config.name + 'graphPanel');
         // remove placeholder
         graphPanel.remove('placeholderContainer' + configId, true);
         // add graph in placeholder place
@@ -359,7 +363,7 @@ Ext.define("viewer.components.Graph", {
         }
     },
     activateMapClick: function(){
-        this.deActivatedTools = this.viewerController.mapComponent.deactivateTools();
+        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function(){
@@ -371,9 +375,9 @@ Ext.define("viewer.components.Graph", {
     },
     getConfigByAppLayer : function (appLayerId) {
         var configs = [];
-        for (var i = 0 ; i < this.graphs.length ;i++){
-            if(this.graphs[i].layer === appLayerId){
-                configs.push(this.graphs[i]);
+        for (var i = 0 ; i < this.config.graphs.length ;i++){
+            if(this.config.graphs[i].layer === appLayerId){
+                configs.push(this.config.graphs[i]);
             }
         }
         if(!configs.length) return null;

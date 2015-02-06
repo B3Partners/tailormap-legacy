@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ Ext.onReady(function(){
         model: 'TableRow',
         remoteSort: true,
         remoteFilter: true,
+        sorters: 'name',
         proxy: {
             type: 'ajax',
             url: gridurl,
@@ -100,8 +101,7 @@ Ext.onReady(function(){
                     return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
-                },
-                sortable: false
+                }
             }
         ],
         bbar: Ext.create('Ext.PagingToolbar', {
@@ -110,20 +110,14 @@ Ext.onReady(function(){
             displayMsg: 'Document {0} - {1} of {2}',
             emptyMsg: "Geen documenten weer te geven"
         }),
-        plugins: [
+        plugins: [ 
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
                 enableTooltip: false
             })
         ],
-        renderTo: 'grid-container',
-        listeners: {
-            afterrender: function(grid) {
-                // Default sort on first column
-                grid.columns[0].setSortState('ASC');
-            }
-        }
+        renderTo: 'grid-container'
     }));
-
+    
 });
 
 function editObject(objId) {

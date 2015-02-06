@@ -39,10 +39,10 @@ public class Tiling {
     }
 
     private static final String DEST_DIR = "test-output";
-
+    
      /**
      * @settings a JSONObject in the following format:
-     * {
+     * {            
      *      requests: [
      *          {
      *              protocol: "",
@@ -79,7 +79,7 @@ public class Tiling {
             + "bbox: '0,300000,300000,600000',"
             + "width: 1024,"
             + "height: 1024,"
-            + "srid: 28992"
+            + "srid: 28992"          
             + "}";
     @Test
     /* Test WMSc
@@ -88,6 +88,6 @@ public class Tiling {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
         File f = new File(DEST_DIR + "/WMSc.png");
         FileOutputStream fos = new FileOutputStream(DEST_DIR + "/WMSc.png");
-        CombineImagesHandler.combineImage(fos, settings);
+        CombineImagesHandler.combineImage(fos, settings);        
     }
 }

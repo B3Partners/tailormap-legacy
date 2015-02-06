@@ -56,25 +56,25 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private List<String> selectedAttributes = new ArrayList<String>();
 
     private Map<String,String> attributeAliases = new HashMap();
-
+    
     private List<Map> styles = new ArrayList();
     private JSONObject stylesTitleJson = new JSONObject();
-
+    
     private boolean editable;
-
+    
     @Validate
     private JSONArray attributesJSON = new JSONArray();
-
+    
     @Validate(on="getUniqueValues")
     private String attribute;
-
+    
     private String displayName;
 
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
     }
-
+    
     @Before
     public void synchronizeFeatureTypeAndLoadInfo() throws JSONException {
 
@@ -87,10 +87,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         for(StyleLibrary sld: layer.getService().getStyleLibraries()) {
             Map style = new HashMap();
             JSONObject styleTitleJson = new JSONObject();
-
+            
             style.put("id", "sld:" + sld.getId());
             style.put("title", "SLD stijl: " + sld.getTitle() + (sld.isDefaultStyle() ? " (standaard)" : ""));
-
+            
             // Find stuff for layerName
             if(sld.getNamedLayerUserStylesJson() != null) {
                 JSONObject sldNamedLayerJson = new JSONObject(sld.getNamedLayerUserStylesJson());
@@ -98,7 +98,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     JSONObject namedLayer = sldNamedLayerJson.getJSONObject(layer.getName());
                     if(namedLayer.has("title")) {
                         styleTitleJson.put("namedLayerTitle", namedLayer.get("title"));
-                    }
+                    } 
                     JSONArray userStyles = namedLayer.getJSONArray("styles");
                     if(userStyles.length() > 0) {
                         JSONObject userStyle = userStyles.getJSONObject(0);
@@ -110,7 +110,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
             styles.add(style);
             stylesTitleJson.put((String)style.get("id"), styleTitleJson);
-
+            
         }
         if(layer.getDetails().containsKey(Layer.DETAIL_WMS_STYLES)) {
             JSONArray wmsStyles = new JSONArray(layer.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
@@ -119,7 +119,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 Map style = new HashMap();
                 style.put("id", "wms:" + wmsStyle.getString("name"));
                 style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + " (" + wmsStyle.getString("title") + ")");
-                JSONObject styleTitleJson = new JSONObject();
+                JSONObject styleTitleJson = new JSONObject();                
                 styleTitleJson.put("styleTitle", wmsStyle.getString("title"));
                 styles.add(style);
                 stylesTitleJson.put((String)style.get("id"), styleTitleJson);
@@ -138,26 +138,26 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             temp.addAll(styles);
             styles = temp;
         }
-
+        
         // Synchronize configured attributes with layer feature type
 
         if(layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
             applicationLayer.getAttributes().clear();
         } else {
             List<String> attributesToRetain = new ArrayList();
-
-            SimpleFeatureType sft = layer.getFeatureType();
+            
+            SimpleFeatureType sft = layer.getFeatureType(); 
             editable = sft.isWriteable();
             // Rebuild ApplicationLayer.attributes according to Layer FeatureType
             // New attributes are added at the end of the list; the original
             // order is only used when the Application.attributes list is empty
             // So a feature for reordering attributes per applicationLayer is
             // possible.
-            // New Attributes from a join or related featureType are added at the
-            //end of the list.
+            // New Attributes from a join or related featureType are added at the 
+            //end of the list.                                  
             attributesToRetain = rebuildAttributes(sft);
-
-
+            
+             
             // Remove ConfiguredAttributes which are no longer present
             List<ConfiguredAttribute> attributesToRemove = new ArrayList();
             for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
@@ -176,12 +176,12 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 applicationLayer.getAttributes().remove(ca);
                 Stripersist.getEntityManager().remove(ca);
             }
-
+            
             // JSON info about attributed required for editing
-            makeAttributeJSONArray(layer.getFeatureType());
-        }
+            makeAttributeJSONArray(layer.getFeatureType()); 
+        }        
     }
-
+    
     @DontValidate
     public Resolution edit() throws JSONException {
         if (applicationLayer != null) {
@@ -192,18 +192,18 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
-
+            
             // Fill visible checkboxes
             for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
                 if(ca.isVisible()) {
                     selectedAttributes.add(ca.getFullName());
                 }
-            }
+            }            
         }
 
         return new ForwardResolution(JSP);
     }
-
+    
     private List<String> rebuildAttributes(SimpleFeatureType sft) {
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
         List<String> attributesToRetain = new ArrayList<String>();
@@ -233,9 +233,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 ca.setVisible(defaultVisible);
                 ca.setAttributeName(name);
                 ca.setFeatureType(sft);
-                applicationLayer.getAttributes().add(ca);
+                applicationLayer.getAttributes().add(ca);                        
                 Stripersist.getEntityManager().persist(ca);
-
+                
                 if(!"save".equals(getContext().getEventName())) {
                     String message ="Nieuw attribuut \"{0}\" gevonden in ";
                     if(layer.getFeatureType().getId()!=sft.getId()){
@@ -247,7 +247,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     }
                     getContext().getMessages().add(new SimpleMessage(message, name));
                 }
-            }
+            }                    
         }
         if (sft.getRelations()!=null){
             for (FeatureTypeRelation rel : sft.getRelations()){
@@ -256,7 +256,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         }
         return attributesToRetain;
     }
-
+    
     private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas) {
         List<FeatureTypeRelation> relations = layerSft.getRelations();
         for (FeatureTypeRelation relation : relations) {
@@ -282,7 +282,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
         });
     }
-
+    
     public Resolution attributes() throws JSONException{
         attributesJSON = new JSONArray();
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
@@ -311,13 +311,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
             }
         });
-
+        
         // Sort the attributes by name (per featuretype)
         sortPerFeatureType(layerSft, cas);
-
+        
         for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
-
+            
             // Copy alias over from feature type
             SimpleFeatureType sft= ca.getFeatureType();
             if (sft==null){
@@ -326,11 +326,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             AttributeDescriptor ad = sft.getAttribute(ca.getAttributeName());
             j.put("alias", ad.getAlias());
             j.put("featureTypeAttribute", ad.toJSONObject());
-
+            
             attributesJSON.put(j);
         }
-    }
-
+    }    
+    
     public Resolution getUniqueValues() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
@@ -358,7 +358,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public Resolution save() throws JSONException {
         // Only remove details which are editable and re-added layer if not empty,
         // retain other details possibly used in other parts than this page
-        // See JSP for which keys are edited
+        // See JSP for which keys are edited         
         applicationLayer.getDetails().keySet().removeAll(Arrays.asList(
                 "titleAlias",
                 "legendImageUrl",
@@ -373,9 +373,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "summary.noHtmlEncode",
                 "summary.nl2br",
                 "editfeature.usernameAttribute"
-        ));
+        ));     
         for(Map.Entry<String,String> e: details.entrySet()) {
-            if(e.getValue() != null) { // Don't insert null value ClobElement
+            if(e.getValue() != null) { // Don't insert null value ClobElement 
                 applicationLayer.getDetails().put(e.getKey(), new ClobElement(e.getValue()));
             }
         }
@@ -441,7 +441,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
         displayName = applicationLayer.getDisplayName();
         SelectedContentCache.setApplicationCacheDirty(application, true);
-
+        
         Stripersist.getEntityManager().getTransaction().commit();
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
@@ -528,7 +528,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setAttributeAliases(Map<String, String> attributeAliases) {
         this.attributeAliases = attributeAliases;
     }
-
+    
     public List<Map> getStyles() {
         return styles;
     }
@@ -544,7 +544,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setStylesTitleJson(JSONObject stylesTitleJson) {
         this.stylesTitleJson = stylesTitleJson;
     }
-
+    
     public String getDisplayName() {
         return displayName;
     }
@@ -552,6 +552,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-    //</editor-fold>
-
+    //</editor-fold>    
+    
 }

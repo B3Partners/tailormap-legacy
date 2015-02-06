@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ Ext.define ("viewer.components.AttributeList",{
         iconUrl:null,
         tooltip:null,
         label: ""
-    },
+    },    
     appLayer: null,
     featureService: null,
     layerSelector:null,
     topContainer: null,
-    constructor: function (conf){
+    constructor: function (conf){        
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
@@ -45,29 +45,35 @@ Ext.define ("viewer.components.AttributeList",{
         this.pagers={};
         this.renderButton({
             handler: function(){
-                me.showWindow();
+                me.showWindow();                
                 me.layerSelector.initLayers();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
-        });
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
+        }); 
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
         return this;
     },
     getExtComponents: function() {
         //todo: gridpanels van subgrids toevoegen.
         var list= [
             this.name + 'Container',
-            this.name + 'LayerSelectorPanel',
+            this.name + 'LayerSelectorPanel',            
             this.name + 'ClosingPanel'
         ];
         for (var gridId in this.grids){
+            if(!this.grids.hasOwnProperty(gridId)) {
+                continue;
+            }
             list.push(this.name+gridId+'Grid');
             list.push(this.name+gridId+'GridPanel');
         }
         for (var pagerId in this.pagers){
+            if(!this.pagers.hasOwnProperty(pagerId)) {
+                continue;
+            }
             list.push(this.name+pagerId+'Pager');
             list.push(this.name+pagerId+'PagerPanel');
         }
@@ -75,6 +81,16 @@ Ext.define ("viewer.components.AttributeList",{
     },
     loadWindow : function(){
         var me = this;
+        
+        // create layerselector
+        var config = {
+            viewerController : this.config.viewerController,
+            restriction: "attribute",
+            layers: this.config.layers
+        };
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        
         this.topContainer=Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
@@ -92,7 +108,10 @@ Ext.define ("viewer.components.AttributeList",{
                 xtype: "container",
                 padding: "4px",
                 width: '100%',
-                height: 36
+                height: 36,
+                items: [
+                    this.layerSelector.combobox
+                ]
             },{
                 id: this.name + 'mainGridPanel',
                 xtype: "container",
@@ -121,7 +140,7 @@ Ext.define ("viewer.components.AttributeList",{
                              this.download();
                      }},
                     {
-                        xtype: "flamingocombobox",
+                        xtype: "combobox",
                         disabled:true,
                         id:"downloadType",
                         value: 'SHP',
@@ -130,7 +149,7 @@ Ext.define ("viewer.components.AttributeList",{
                         name:"test",
                         valueField: 'type',
                         store:  Ext.create('Ext.data.Store', {
-                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
+                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }] 
                             })
                     },
                     {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
@@ -139,7 +158,7 @@ Ext.define ("viewer.components.AttributeList",{
                 ]
             }]
         });
-        this.downloadForm = Ext.create('Ext.form.Panel', {
+        this.downloadForm = Ext.create('Ext.form.Panel', {            
             renderTo: me.getContentDiv(),
             url: actionBeans["download"],
             border: 0,
@@ -167,15 +186,6 @@ Ext.define ("viewer.components.AttributeList",{
                 }
             ]
         });
-        var config = {
-            viewerController : this.viewerController,
-            restriction: "attribute",
-            layers: this.layers,
-            div: this.name + 'LayerSelectorPanel'
-        };
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
-
     },
     showWindow : function (){
         if (this.topContainer==null){
@@ -185,11 +195,17 @@ Ext.define ("viewer.components.AttributeList",{
     },
     clear: function() {
         for(var gridId in this.grids) {
+            if(!this.grids.hasOwnProperty(gridId)) {
+                continue;
+            }
             this.grids[gridId].destroy();
         }
         delete this.grids;
         this.grids={};
         for(var pagerId in this.pagers) {
+            if(!this.pagers.hasOwnProperty(pagerId)) {
+                continue;
+            }
             this.pagers[pagerId].destroy();
         }
         delete this.appLayer;
@@ -197,17 +213,17 @@ Ext.define ("viewer.components.AttributeList",{
     },
     loadAttributes: function(appLayer) {
         this.clear();
-
+        
         this.appLayer = appLayer;
-
+        
         var me = this;
         var downloadButton = Ext.getCmp("downloadButton");
         var downloadType = Ext.getCmp("downloadType");
         if(this.appLayer != null) {
             downloadButton.setDisabled(false);
             downloadType.setDisabled(false);
-            this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
-
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
+            
             // check if featuretype was loaded
             if(this.appLayer.attributes == undefined) {
                 this.featureService.loadAttributes(me.appLayer, function(attributes) {
@@ -215,13 +231,13 @@ Ext.define ("viewer.components.AttributeList",{
                 });
             } else {
                 this.initGrid(me.appLayer);
-            }
+            }    
         }else{
             downloadButton.setDisabled(true);
             downloadType.setDisabled(true);
         }
     },
-    // Called when the layerSelector was changed.
+    // Called when the layerSelector was changed. 
     layerChanged : function (appLayer){
         this.loadAttributes(appLayer);
     },
@@ -251,12 +267,12 @@ Ext.define ("viewer.components.AttributeList",{
                     break;
                 }
             }
-        }
+        }                
         this.createGrid("main",document.getElementById(this.name + 'Container'), appLayer, null, filter,true,showExpand);
     },
     onExpandRow: function(rowNode,record,expandRow,recordIndex,eOpts){
+        var rawData = record.data || record.raw;
         var store=record.store;
-        var rawData = store.data.items[recordIndex].raw;
         if (rawData.related_featuretypes){
             var childGridIds=[];
             for (var i=0; i < rawData.related_featuretypes.length; i++){
@@ -275,15 +291,15 @@ Ext.define ("viewer.components.AttributeList",{
                 }
             },this)
         }
-
+        
     },
-    onCollapseBody: function (rowNode,record,expandRow,eOpts){
+    onCollapseBody: function (rowNode,record,expandRow,eOpts){        
     },
-
+            
     deleteGridWithId: function (gridId){
         if(this.grids[gridId]){
             this.grids[gridId].destroy();
-            delete this.grids[gridId];
+            delete this.grids[gridId];            
         }if (this.pagers[gridId]){
             this.pagers[gridId].destroy();
             delete this.pagers[gridId];
@@ -313,7 +329,7 @@ Ext.define ("viewer.components.AttributeList",{
                 id: name + 'GridPanel',
                 autoScroll: true,
                 width: '100%',
-                flex: 1,
+                flex: 1, 
                 renderTo: renderToEl.id
             });
             if(addPager){
@@ -328,16 +344,16 @@ Ext.define ("viewer.components.AttributeList",{
         }
 
         //var attributes = appLayer.attributes;
-        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer,featureTypeId);
+        var attributes = this.config.viewerController.getAttributesFromAppLayer(appLayer,featureTypeId);
         var attributeList = new Array();
         var columns = new Array();
         var index = 0;
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.visible){
-
+                
                 var attIndex = index++;
-
+                
                 var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
                 attributeList.push({
                     name: "c" + attIndex,
@@ -367,7 +383,7 @@ Ext.define ("viewer.components.AttributeList",{
         if (featureTypeId){
             featureType="&featureType="+featureTypeId;
         }
-
+        
         var store = Ext.create('Ext.data.Store', {
             storeId: name+"Store",
             pageSize: 10,
@@ -380,13 +396,13 @@ Ext.define ("viewer.components.AttributeList",{
                 url: appLayer.featureService.getStoreUrl() + "&arrays=1"+featureType+filter,
                 reader: {
                     type: 'json',
-                    root: 'features',
+                    rootProperty: 'features',
                     totalProperty: 'total'
                 },
                 simpleSortMode: true,
                 listeners: {
                     exception: function(store, response, op) {
-
+                        
                         msg = response.responseText;
                         if(response.status == 200) {
                             try {
@@ -397,7 +413,7 @@ Ext.define ("viewer.components.AttributeList",{
                             } catch(e) {
                             }
                         }
-
+                        
                         if(msg == null) {
                             if(response.timedout) {
                                 msg = "Request timed out";
@@ -409,9 +425,9 @@ Ext.define ("viewer.components.AttributeList",{
                         }
 
                         Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
-
+                            
                         Ext.MessageBox.alert("Foutmelding", msg);
-
+                        
                     }
                 }
             },
@@ -423,7 +439,7 @@ Ext.define ("viewer.components.AttributeList",{
                 ptype: 'rowexpander',
                 rowBodyTpl: [
                     ""
-                ]
+                ]           
             });
         }
         var g = Ext.create('Ext.grid.Panel',  {
@@ -431,7 +447,7 @@ Ext.define ("viewer.components.AttributeList",{
             store: store,
             columns: columns,
             plugins: plugins,
-            viewConfig:{
+            viewConfig:{        
                 trackOver: false,
                 listeners: {
                     expandbody : {
@@ -447,9 +463,9 @@ Ext.define ("viewer.components.AttributeList",{
                         }
                     }
                 }
-            },
-            renderTo: name + 'GridPanel'
+            }
         });
+        Ext.getCmp(name + 'GridPanel').add(g);
         this.grids[gridId]=g;
         if(addPager){
             var p = Ext.create('Ext.PagingToolbar', {
@@ -458,9 +474,9 @@ Ext.define ("viewer.components.AttributeList",{
                 displayInfo: true,
                 displayMsg: 'Feature {0} - {1} van {2}',
                 emptyMsg: "Geen features om weer te geven",
-                renderTo: name + 'PagerPanel',
                 height: 30
             });
+            Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
         }
     },
@@ -474,7 +490,7 @@ Ext.define ("viewer.components.AttributeList",{
         Ext.getCmp('application').setValue(appId);
         Ext.getCmp('filter').setValue(filter);
         Ext.getCmp('type').setValue(Ext.getCmp("downloadType").getValue());
-        this.downloadForm.submit({
+        this.downloadForm.submit({            
             target: '_blank'
         });
     }

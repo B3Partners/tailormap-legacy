@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ Ext.define ("viewer.components.Overview",{
     overview:null,
     constructor: function (conf){
         viewer.components.Overview.superclass.constructor.call(this, conf);
-
+        
         conf.id=conf.name;
         conf.type = viewer.viewercontroller.controller.Component.OVERVIEW;
-
-        this.overview = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(this.overview);
-
+        
+        this.overview = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(this.overview);
+        
         return this;
     },
     getExtComponents: function() {

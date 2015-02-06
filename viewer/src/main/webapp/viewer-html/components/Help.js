@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ Ext.define ("viewer.components.Help",{
         }
         viewer.components.Help.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_HELP, this.showHelp, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_HELP, this.showHelp, this);
         this.renderWindow(null);
         return this;
     },
@@ -62,6 +62,7 @@ Ext.define ("viewer.components.Help",{
                 padding: 0,
                 border: 0,
                 renderTo: this.getContentDiv(),
+                autoScroll: true,
                 layout: 'fit'
             };
             if(!this.showAsPopup) {
@@ -94,8 +95,8 @@ Ext.define ("viewer.components.Help",{
             });
         }
         //if popup: hide scrollbars when external url, if no url: autoScroll
-        if (this.popup && this.popup.popupWin){
-            if( componentConfig !== null && typeof componentConfig.helpUrl !== 'undefined') {
+        if (this.popup && this.popup.popupWin){    
+            if( componentConfig !== null && typeof componentConfig.helpUrl !== 'undefined') {            
                 this.popup.popupWin.setAutoScroll(false);
             }else{
                 this.popup.popupWin.setAutoScroll(false);

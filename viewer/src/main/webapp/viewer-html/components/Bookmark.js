@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ Ext.define ("viewer.components.Bookmark",{
     compUrl: "",
     baseUrl: "",
     shareUrls: null,
-    imagePath: null,
+    imagePath: null,    
     config:{
         title: null,
         titlebarIcon: null,
@@ -42,12 +42,12 @@ Ext.define ("viewer.components.Bookmark",{
         showFullUrl: true,
         showLabels: true
     },
-    constructor: function (conf){
-        if(!Ext.isDefined(conf.details.height)) conf.details.height = 200;
-        if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true;
+    constructor: function (conf){ 
+        if(!Ext.isDefined(conf.details.height)) conf.details.height = 200; 
+        if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true; 
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-
+       
         imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/";
         this.shareUrls ={
             email: "mailto:%20?subject=[title]&body=[text]%20[url]",
@@ -56,19 +56,19 @@ Ext.define ("viewer.components.Bookmark",{
             googleplus: "https://plus.google.com/share?url=[url]&text=[text]",
             facebook: "https://www.facebook.com/sharer.php?u=[url]&text=[text]"
         };
-
+        
         this.renderButton();
         this.loadWindow();
-
+        
         return this;
     },
     renderButton: function() {
         var me = this;
         this.superclass.renderButton.call(this,{
-            text: me.title,
-            icon: me.titlebarIcon,
-            tooltip: me.tooltip,
-            label: me.label,
+            text: me.config.title,
+            icon: me.config.titlebarIcon,
+            tooltip: me.config.tooltip,
+            label: me.config.label,
             handler: function() {
                 me.showWindow();
             }
@@ -76,9 +76,9 @@ Ext.define ("viewer.components.Bookmark",{
     },
     loadWindow : function(){
         var socialButtons=[];
-        if(this.shareEmail){
+        if(this.config.shareEmail){
             socialButtons.push({
-                xtype: 'button',
+                xtype: 'button',                
                 margin: '10px 0px 0px 10px',
                 //text: 'Email',
                 icon: imagePath + 'email-16.png',
@@ -89,11 +89,11 @@ Ext.define ("viewer.components.Bookmark",{
                             this.share(this.shareUrls["email"]);
                         }
                     }
-                }
+                }            
             });
-        }if (this.shareTwitter){
+        }if (this.config.shareTwitter){ 
             socialButtons.push({
-                xtype: 'button',
+                xtype: 'button',                
                 margin: '10px 0px 0px 10px',
                 //text: 'Twitter',
                 icon: imagePath + 'twitter-16.png',
@@ -104,11 +104,11 @@ Ext.define ("viewer.components.Bookmark",{
                             this.share(this.shareUrls["twitter"]);
                         }
                     }
-                }
+                }            
             });
-        }if (this.shareLinkedIn){
+        }if (this.config.shareLinkedIn){
             socialButtons.push({
-                xtype: 'button',
+                xtype: 'button',                
                 margin: '10px 0px 0px 10px',
                 //text: 'LinkedIn',
                 icon: imagePath+"in-16.png",
@@ -119,11 +119,11 @@ Ext.define ("viewer.components.Bookmark",{
                             this.share(this.shareUrls["linkedin"]);
                         }
                     }
-                }
+                }            
             });
-        }if (this.shareGooglePlus){
+        }if (this.config.shareGooglePlus){
             socialButtons.push({
-                xtype: 'button',
+                xtype: 'button',                
                 margin: '10px 0px 0px 10px',
                 //text: 'Google+',
                 icon: imagePath + 'gplus-16.png',
@@ -134,13 +134,13 @@ Ext.define ("viewer.components.Bookmark",{
                             this.share(this.shareUrls["googleplus"]);
                         }
                     }
-                }
-            });
-        }if (this.shareFacebook){
+                }            
+            });           
+        }if (this.config.shareFacebook){
             socialButtons.push({
-                xtype: 'button',
+                xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: 'Facebook',
+                //text: 'Facebook',        
                 icon: imagePath + 'fb-16.png',
                 listeners: {
                     click:{
@@ -149,29 +149,30 @@ Ext.define ("viewer.components.Bookmark",{
                             this.share(this.shareUrls["facebook"]);
                         }
                     }
-                }
+                }            
             });
         }
         var formItems=[];
-
-        if (this.showFullUrl){
-            formItems.push({
+        
+        if (this.config.showFullUrl){
+            formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel: this.showLabels ? 'Bookmark' : '',
+                fieldLabel: this.config.showLabels ? 'Bookmark' : '',
                 name: 'bookmark',
                 anchor: '100%',
+                height: 50,
                 id: 'bookmark',
                 readOnly:true,
                 value: this.url
             });
         }
-        if (this.showShortUrl){
-            formItems.push({
+        if (this.config.showShortUrl){
+            formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel:this.showLabels ? 'Compact link' : '',
+                fieldLabel:this.config.showLabels ? 'Compact link' : '',
                 name: 'compactlink',
-                rows:3,
                 anchor: '100%',
+                height: 50,
                 readOnly:true,
                 id: 'compactlink'
             });
@@ -183,8 +184,8 @@ Ext.define ("viewer.components.Bookmark",{
             },
             items: socialButtons
         });
-        if(Ext.ieVersion != 0){
-            formItems.push({
+        if(Ext.browser.is.IE){
+            formItems.push({ 
                 xtype: 'button',
                 componentCls: 'mobileLarge',
                 margin: '10px 0px 0px 0px',
@@ -197,7 +198,7 @@ Ext.define ("viewer.components.Bookmark",{
                 }
             });
         }
-        formItems.push({
+        formItems.push({ 
             xtype: 'button',
             componentCls: 'mobileLarge',
             margin: '10px 0px 0px 10px',
@@ -220,9 +221,9 @@ Ext.define ("viewer.components.Bookmark",{
         });
     },
     showWindow : function(){
-        var paramJSON = this.viewerController.getBookmarkUrl();
+        var paramJSON = this.config.viewerController.getBookmarkUrl();
         var parameters = "";
-
+        
         for ( var i = 0 ; i < paramJSON["params"].length ; i ++){
             var param = paramJSON["params"][i];
             if(param.name == 'url'){
@@ -240,7 +241,7 @@ Ext.define ("viewer.components.Bookmark",{
                      if(x != (layers.length - 1)){
                          parameters += ",";
                      }
-                }
+                } 
                 parameters +="&";
             }else if (param.name == 'levelOrder' && param.value.length > 0){
                 parameters += param.name +"=";
@@ -250,24 +251,24 @@ Ext.define ("viewer.components.Bookmark",{
                 parameters += param.name +"="+ param.value +"&";
             }
         }
-
+        
         var componentParams="";
         //get all the params from components that need to be added to the bookmark
-        var components = this.viewerController.getComponents();
+        var components = this.config.viewerController.getComponents();
         for (var i=0; i < components.length; i++){
             var state = components[i].getBookmarkState(false);
             if (!Ext.isEmpty(state)){
                 componentParams+=encodeURIComponent(components[i].getName());
                 componentParams+="=";
-                componentParams+=encodeURIComponent(Ext.encode(state));
+                componentParams+=encodeURIComponent(Ext.encode(state));                
                 componentParams+="&";
-            }
+            }            
         }
         this.url += parameters;
         if (componentParams.length!=0){
             this.url+=componentParams;
         }
-        if (this.showShortUrl){
+        if (this.config.showShortUrl){
             //get all the states of the components for the short url
             for (var i=0; i < components.length; i++){
                 var state = components[i].getBookmarkState(true);
@@ -284,38 +285,32 @@ Ext.define ("viewer.components.Bookmark",{
                 function(code){me.succesCompactUrl(code);},
                 function(code){me.failureCompactUrl(code);}
             );
-        }else if (this.showFullUrl){
+        }else if (this.config.showFullUrl){
             this.form.getChildByElement("bookmark").setValue(this.url);
             this.popup.show();
         }
     },
     succesCompactUrl : function(code){
         this.compUrl = this.baseUrl+"bookmark="+code;
-        if(this.showShortUrl){
+        if(this.config.showShortUrl){
             this.form.getChildByElement("compactlink").setValue(this.compUrl);
         }
-        if(this.showFullUrl){
+        if(this.config.showFullUrl){
             this.form.getChildByElement("bookmark").setValue(this.url);
         }
         this.popup.show();
     },
     failureCompactUrl : function(code){
         // TODO: error message?
-        this.viewerController.logger.error(code);
+        this.config.viewerController.logger.error(code);
     },
     hideWindow : function(){
         this.popup.hide();
     },
     addToFavorites : function(){
-        if(Ext.firefoxVersion != 0){
-            alert("This browser doesn't support this function.");
-        }else if(Ext.ieVersion != 0){
-            window.external.AddFavorite(this.compUrl, this.title);
-        }else if(Ext.chromeVersion != 0){
-            alert("This browser doesn't support this function.");
-        }else if(Ext.operaVersion != 0){
-            alert("This browser doesn't support this function.");
-        }else if(Ext.safariVersion != 0){
+        if(Ext.browser.is.IE) {
+            window.external.AddFavorite(this.compUrl, this.config.title);
+        } else {
             alert("This browser doesn't support this function.");
         }
     },
@@ -329,12 +324,11 @@ Ext.define ("viewer.components.Bookmark",{
             url=url.replace("[url]",encodeURIComponent(bookmarkUrl));
         }
         if (url.indexOf("[text]")!=-1){
-            url = url.replace("[text]",encodeURIComponent(this.shareText));
+            url = url.replace("[text]",encodeURIComponent(this.config.shareText));
         }
         if (url.indexOf("[title]")!=-1){
-            url = url.replace("[title]",encodeURIComponent(this.shareTitle));
+            url = url.replace("[title]",encodeURIComponent(this.config.shareTitle));
         }
-        console.log(url);
         window.open(url);
     },
     getExtComponents: function() {

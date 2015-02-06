@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,20 +19,20 @@ Ext.define("viewer.ArcQueryUtil", {
     config: {
         actionbeanUrl: null
     },
-    constructor: function(config) {
+    constructor: function(config) {        
         this.initConfig(config);
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["arcqueryutil"];
-        }
+        }        
     },
     cqlToArcXMLSpatialQuery: function(cql, successFunction, failureFunction) {
-
+        
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: { cql: cql },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-
+                
                 if(response.success) {
                     successFunction(response.SPATIALQUERY);
                 } else {
@@ -48,14 +48,14 @@ Ext.define("viewer.ArcQueryUtil", {
             }
         });
     },
-
+    
     cqlToArcXMLWhere: function(cql, successFunction, failureFunction) {
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: { cql: cql, whereOnly: true },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-
+                
                 if(response.success) {
                     successFunction(response.where);
                 } else {
@@ -71,14 +71,14 @@ Ext.define("viewer.ArcQueryUtil", {
             }
         });
     },
-
+    
     cqlToArcFIDS : function (cql, appLayer, successFunction, failureFunction){
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: { cql: cql, getObjectIds : true,appLayer: appLayer, application: appId },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-
+                
                 if(response.success) {
                     successFunction(response.objectIds,response.objectIdFieldName);
                 } else {

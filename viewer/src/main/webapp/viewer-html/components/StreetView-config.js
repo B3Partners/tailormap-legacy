@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,13 +33,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 anchor: '100%'
             },
             width: me.formWidth,
-            items: [{
+            items: [{ 
                 xtype: 'textfield',
                 fieldLabel: 'Tooltip',
                 name: 'tooltip',
                 value: config.tooltip,
                 labelWidth:me.labelWidth
-
+            
             },{
                 xtype: 'checkbox',
                 fieldLabel: "Zet een marker na klikken",
@@ -88,6 +88,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             }],
             renderTo: parentid
-        });
+        });      
     }
 });

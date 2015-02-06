@@ -25,6 +25,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.*;
@@ -36,25 +37,25 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationstartmap/{$event}")
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationStartMap.jsp";
-
+    
     @Validate
     private String selectedContent;
     private JSONArray jsonContent;
-
+    
     @Validate
     private String contentToBeSelected;
-
+    
     @Validate
     private String checkedLayersString;
     private JSONArray jsonCheckedLayers;
     //private List<Long> checkedLayers = new ArrayList();
-
+    
     private JSONArray allCheckedLayers = new JSONArray();
-
+    
     @Validate
     private String nodeId;
     @Validate
@@ -75,43 +76,43 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
         return new ForwardResolution(JSP);
     }
-
+    
     public Resolution save() throws JSONException {
         rootlevel = application.getRoot();
-
+        
         jsonContent = new JSONArray(selectedContent);
         jsonCheckedLayers = new JSONArray(checkedLayersString);
-
-
+        
+        
         walkAppTreeForSave(rootlevel);
-
+        
         SelectedContentCache.setApplicationCacheDirty(application, true);
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
-
+        
         getCheckedLayerList(allCheckedLayers, rootlevel);
-
+        
         return new ForwardResolution(JSP);
     }
-
+    
     public Resolution canContentBeSelected() {
         try {
             jsonContent = new JSONArray(selectedContent);
-
+            
             if(jsonContent.length() == 0) {
                 JSONObject obj = new JSONObject();
                 obj.put("result", true);
                 return new StreamingResolution("application/json", new StringReader(obj.toString()));
             }
-
-            JSONObject o = new JSONObject(contentToBeSelected);
+            
+            JSONObject o = new JSONObject(contentToBeSelected);        
 
             Boolean result = true;
             String message = null;
 
             String id = o.getString("id");
             if(o.get("type").equals("layer")) {
-
+                
                 message = "Kaartlagen kunnen niet los worden geselecteerd, alleen als onderdeel van een kaart of kaartlaaggroep";
                 result = false;
                 /*
@@ -122,7 +123,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 } else {
                     /* An appLayer can not be selected if:
                      * - selectedContent contains the appLayer
-                     * - the appLayer is a layer of any level or its children in selectedContent
+                     * - the appLayer is a layer of any level or its children in selectedContent 
                      * /
 
                     for(int i = 0; i < jsonContent.length(); i++) {
@@ -152,11 +153,11 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     result = false;
                     message = "Niveau met id " + id + " is onbekend!";
                 } else {
-
+                    
                     if(level.getLayers().isEmpty()) {
                         message = "Niveau is geen kaart";
                         result = false;
-
+                        
                     } else {
                         /* A level can not be selected if:
                         * any level in selectedContent is the level is a sublevel of the level
@@ -206,20 +207,20 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             return new ErrorMessageResolution("Exception " + e.getClass() + ": " + e.getMessage());
         }
     }
-
-    private void walkAppTreeForSave(Level l) throws JSONException{
+    
+    private void walkAppTreeForSave(Level l) throws JSONException{ 
         l.setSelectedIndex(getSelectedContentIndex(l));
-
+        
         for(ApplicationLayer al: l.getLayers()) {
             al.setSelectedIndex(getSelectedContentIndex(al));
             al.setChecked(getCheckedForLayerId(al.getId()));
         }
-
+        
         for(Level child: l.getChildren()) {
             walkAppTreeForSave(child);
         }
     }
-
+    
     private boolean getCheckedForLayerId(Long levelid) throws JSONException {
         for(int i = 0; i < jsonCheckedLayers.length(); i++){
             if(levelid.equals(new Long(jsonCheckedLayers.getInt(i)))) {
@@ -228,10 +229,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
         return false;
     }
-
+    
     private Integer getSelectedContentIndex(Level l) throws JSONException{
         Integer index = null;
-
+        
         for(int i = 0; i < jsonContent.length(); i++){
             JSONObject js = jsonContent.getJSONObject(i);
             String id = js.get("id").toString();
@@ -240,13 +241,13 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 index = i;
             }
         }
-
+        
         return index;
     }
-
+    
     private Integer getSelectedContentIndex(ApplicationLayer al) throws JSONException{
         Integer index = null;
-
+        
         for(int i = 0; i < jsonContent.length(); i++){
             JSONObject js = jsonContent.getJSONObject(i);
             String id = js.get("id").toString();
@@ -255,7 +256,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 index = i;
             }
         }
-
+        
         return index;
     }
 
@@ -310,7 +311,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         EntityManager em = Stripersist.getEntityManager();
 
         final JSONArray children = new JSONArray();
-
+        
         rootlevel = application.getRoot();
 
         if(levelId != null && levelId.substring(1).equals(rootlevel.getId().toString())){
@@ -352,7 +353,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         children.put(j);
                     }else if(map instanceof Level){
                         Level level = (Level) map;
-
+                        
                         JSONArray checked = new JSONArray();
                         getCheckedLayerList(checked, level);
 
@@ -407,24 +408,24 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             }
         };
     }
-
-    private static void walkAppTreeForStartMap(List selectedContent, Level l){
+    
+    private static void walkAppTreeForStartMap(List selectedContent, Level l){       
         if(l.getSelectedIndex() != null) {
             selectedContent.add(l);
         }
-
+        
         for(ApplicationLayer al: l.getLayers()) {
-
+            
             if(al.getSelectedIndex() != null) {
                 selectedContent.add(al);
             }
         }
-
+        
         for(Level child: l.getChildren()) {
             walkAppTreeForStartMap(selectedContent, child);
         }
     }
-
+    
     private static void getCheckedLayerList(JSONArray layers, Level l) throws JSONException{
         for(ApplicationLayer al: l.getLayers()) {
             if(al.isChecked()) {

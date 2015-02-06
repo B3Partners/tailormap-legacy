@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@ Ext.define("viewer.SLD", {
     config: {
         actionbeanUrl: null
     },
-    constructor: function(config) {
-        this.initConfig(config);
+    constructor: function(config) {        
+        this.initConfig(config);  
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["sld"];
         }
@@ -30,10 +30,10 @@ Ext.define("viewer.SLD", {
      * the named style and filter. The style and cqlFilter parameters can be
      * null. Specify the feature type name when specifying a CQL filter or leave
      * it null for the same name as the layer.
-     *
+     * 
      * Use sldId to apply filter to existing StyleLibrary saved in database (may
      * be external, retrieved server-side).
-     *
+     * 
      * Examples:
      * var f = function(sld) { alert(sld); };
      * create("mylayer", null, null, null, null, f, f);
@@ -54,13 +54,13 @@ Ext.define("viewer.SLD", {
         }if (sldId!==null){
             params.id=sldId;
         }
-
+        
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: params,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-
+                
                 if(response.success) {
                     successFunction(response.sld);
                 } else {
@@ -89,7 +89,7 @@ Ext.define("viewer.SLD", {
      */
     createURL: function(layer, style, cqlFilter, featureTypeName, sldId, commonAndFilter,colors,useRuleFilter) {
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
-        if (layer instanceof Array){
+        if (layer instanceof Array){    
             url = Ext.String.urlAppend(url, "layer=" + layer.join(","));
         }else{
             url = Ext.String.urlAppend(url, "layer=" + layer);
@@ -115,16 +115,16 @@ Ext.define("viewer.SLD", {
         }if(colors){
             if (colors instanceof Array){
                 colors= colors.join(",");
-            }
+            }            
             url = Ext.String.urlAppend(url, "color="+encodeURIComponent(colors));
-
+            
         }if (useRuleFilter){
             url = Ext.String.urlAppend(url, "useRuleFilter=true");
         }
         url = Ext.String.urlAppend(url, "format=xml");
         return url;
     },
-
+    
     transformFilter: function (filter,appLayerId,successFunction, failureFunction){
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
@@ -134,7 +134,7 @@ Ext.define("viewer.SLD", {
             },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-
+                
                 if(response.success) {
                     successFunction(response.filter);
                 } else {

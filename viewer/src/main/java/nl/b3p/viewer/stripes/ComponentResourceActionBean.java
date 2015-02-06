@@ -6,6 +6,9 @@ package nl.b3p.viewer.stripes;
 
 import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil;
+import eu.medsea.mimeutil.MimeUtil2;
+import eu.medsea.mimeutil.detector.MimeDetector;
+import eu.medsea.mimeutil.detector.OpendesktopMimeDetector;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

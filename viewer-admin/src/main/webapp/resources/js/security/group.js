@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,6 +41,8 @@ Ext.onReady(function(){
         model: 'TableRow',
         remoteSort: true,
         remoteFilter: true,
+        sorters: 'name',
+        autoLoad: true,
         proxy: {
             type: 'ajax',
             url: gridurl,
@@ -104,20 +106,14 @@ Ext.onReady(function(){
             displayMsg: 'Groep {0} - {1} of {2}',
             emptyMsg: "Geen groepen weer te geven"
         }),
-        plugins: [
+        plugins: [ 
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
                 enableTooltip: false
             })
         ],
-        renderTo: 'grid-container',
-        listeners: {
-            afterrender: function(grid) {
-                // Default sort on first column
-                grid.columns[0].setSortState('ASC');
-            }
-        }
+        renderTo: 'grid-container'
     }));
-
+    
 });
 
 function editObject(objId) {

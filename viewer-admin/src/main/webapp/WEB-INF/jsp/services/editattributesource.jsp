@@ -24,10 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
-        <p>
             <stripes:errors/>
             <stripes:messages/>
-        </p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
                     <c:when test="${empty actionBean.context.validationErrors && (actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save')}">

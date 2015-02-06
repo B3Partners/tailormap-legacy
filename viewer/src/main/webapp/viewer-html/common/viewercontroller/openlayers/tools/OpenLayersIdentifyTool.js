@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class
+ * @class 
  * @constructor
  * @description An identify tool
  */
@@ -40,30 +40,30 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     constructor : function (conf){
         this.useWMSGetFeatureInfo=true;
         //this.wmsGetFeatureInfoFormat="text/plain";
-
+        
         var frameworkOptions = {
             displayClass: "olControlIdentify",
             type: OpenLayers.Control.TYPE_TOOL,
             title: conf.tooltip
-        };
+        };        
         var frameworkTool= new OpenLayers.Control(frameworkOptions);
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
-        this.map=this.viewerController.mapComponent.getMap();
-
+        this.map=this.config.viewerController.mapComponent.getMap();
+        
         this.mapClick=new viewer.viewercontroller.openlayers.ToolMapClick({
             id: "mapclick_"+this.id,
-            viewerController: this.viewerController,
+            viewerController: this.config.viewerController,
             handler: {
                     fn: this.handleClick,
                     scope: this
             },
-            handlerOptions: {
+            handlerOptions: {                
                 'stopSingle': true
             }
         });
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
-
+        
         this.setUseWMSGetFeatureInfo(this.useWMSGetFeatureInfo);
         // activate/deactivate
         this.getFrameworkTool().events.register("activate",this,this.activate);
@@ -84,16 +84,16 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                         infoFormat: this.wmsGetFeatureInfoFormat,
                         layers : this.layersToAdd,
                         maxFeatures: this.getMaxFeatures()
-                    });
-
+                    });  
+                    
                 this.wmsGetFeatureInfoControl.handleResponse = handleResponse;
                 this.wmsGetFeatureInfoControl.buildWMSOptions = buildWMSOptions;
                 this.wmsGetFeatureInfoControl.request = requestWmsGFI;
-                this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);
+                this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);   
                 //deegree handler:
                 this.wmsGetFeatureInfoControl.format.read_FeatureCollection = this.readFeatureCollection;
                 this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
-
+                
                 //set proxy for getFeatureInfoRequests:
                 OpenLayers.ProxyHost = contextPath+"/action/proxy/wms?url=";
             }
@@ -111,7 +111,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     /**
      * Called when a layer is added
      */
-    onAddLayer: function(map,options){
+    onAddLayer: function(map,options){        
         var mapLayer=options.layer;
         if (mapLayer==null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
             return;
@@ -125,8 +125,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 !Ext.isEmpty(details["summary.title"]))){
             var doClientWms=true;
             if (mapLayer.appLayerId){
-                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-                var confServiceLayer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+                var confServiceLayer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
                 //do server side getFeature.
                 if (confServiceLayer.hasFeatureType){
                     doClientWms=false;
@@ -135,7 +135,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             if (doClientWms){
                 this.addWmsClientLayer(mapLayer);
             }
-
+            
         }
     },
     /**
@@ -143,12 +143,12 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
      */
     onRemoveLayer: function(map,options) {
         var mapLayer=options.layer;
-        if (mapLayer==null
+        if (mapLayer==null 
                 || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
             return;
         }
         this.removeWmsClientLayer(mapLayer);
-
+        
     },
     addWmsClientLayer: function(mapLayer){
         var layer = mapLayer.getFrameworkLayer();
@@ -176,7 +176,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     },
     activate: function(){
         //if mobile: disable the navigation control. To make sure the click can be handled
-        //Click won't be handled if there is a navigation controller enabled (for mobile)
+        //Click won't be handled if there is a navigation controller enabled (for mobile) 
         if (MobileManager.isMobile()){
             if (this.deactivatedControls==null){
                 this.deactivatedControls=[];
@@ -191,7 +191,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         }
         this.active=true;
         //set dragPan.activate();
-        //this.map.getFrameworkMap().events.register("click", this, this.handleClick);
+        //this.map.getFrameworkMap().events.register("click", this, this.handleClick);    
         this.mapClick.activateTool();
         if (this.wmsGetFeatureInfoControl!=null){
             this.wmsGetFeatureInfoControl.activate();
@@ -213,10 +213,10 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             this.wmsGetFeatureInfoControl.deactivate();
         }
     },
-    handleClick: function(tool,options){
+    handleClick: function(tool,options){                
         this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
-    },
-    //called when wms layers return data.
+    }, 
+    //called when wms layers return data.           
     raiseOnDataEvent: function(evt){
         var options = new Object();
         options.x = evt.xy.x;
@@ -290,7 +290,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                         if (!found){
                             allFound=false;
                             break;
-                        }
+                        }                        
                     }
                     if (allFound){
                         return layer;
@@ -300,7 +300,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         }
         return null;
     },
-
+    
     /**
      * Is called by the .format from the OpenLayers GetFeatureInfoControl to parse the xml
      * This parses the deegree

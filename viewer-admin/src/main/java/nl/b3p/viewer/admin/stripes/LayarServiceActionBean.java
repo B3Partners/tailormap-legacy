@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
@@ -43,9 +44,9 @@ import org.stripesstuff.stripersist.Stripersist;
 public class LayarServiceActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/layarservice.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarservice.jsp";
-
+    
     private ActionBeanContext context;
-
+    
     @Validate
     private int page;
     @Validate
@@ -58,10 +59,10 @@ public class LayarServiceActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-
+    
     @Validate
     private LayarService layarservice;
-
+    
     @Validate
     private String name;
 
@@ -69,31 +70,31 @@ public class LayarServiceActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public String getDir() {
         return dir;
     }
-
+    
     public void setDir(String dir) {
         this.dir = dir;
     }
-
+    
     public JSONArray getFilter() {
         return filter;
     }
-
+    
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
-
+    
     public LayarService getLayarservice() {
         return layarservice;
     }
-
+    
     public void setLayarservice(LayarService layarservice) {
         this.layarservice = layarservice;
     }
@@ -105,57 +106,57 @@ public class LayarServiceActionBean implements ActionBean {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public int getLimit() {
         return limit;
     }
-
+    
     public void setLimit(int limit) {
         this.limit = limit;
     }
-
+    
     public int getPage() {
         return page;
     }
-
+    
     public void setPage(int page) {
         this.page = page;
     }
-
+    
     public String getSort() {
         return sort;
     }
-
+    
     public void setSort(String sort) {
         this.sort = sort;
     }
-
+    
     public int getStart() {
         return start;
     }
-
+    
     public void setStart(int start) {
         this.start = start;
     }
     //</editor-fold>
-
+    
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
     public Resolution defaultResolution() {
         return new ForwardResolution(JSP);
     }
-
+    
     private static final String LAYAR_ACTIONBEAN_URL = "/action/layar";
-    private static final String VIEWER_URL_PARAM = "viewer.url";
-
+    private static final String VIEWER_URL_PARAM = "viewer.url";    
+    
     public String getUrl() throws UnsupportedEncodingException, MalformedURLException {
         String url = getContext().getServletContext().getInitParameter(VIEWER_URL_PARAM) + LAYAR_ACTIONBEAN_URL;
-
+        
         if(url.indexOf("://") == -1) {
             HttpServletRequest request = getContext().getRequest();
             boolean needPort = "http".equals(request.getScheme()) && request.getServerPort() != 80
-                            || "https".equals(request.getScheme()) && request.getServerPort() != 443;
+                            || "https".equals(request.getScheme()) && request.getServerPort() != 443;            
             if(needPort) {
                 url = new URL(request.getScheme(), request.getServerName(), request.getServerPort(), url).toString();
             } else {
@@ -164,7 +165,7 @@ public class LayarServiceActionBean implements ActionBean {
         }
         return url;
     }
-
+    
     @DontValidate
     public Resolution edit() {
         if(layarservice != null){
@@ -172,49 +173,49 @@ public class LayarServiceActionBean implements ActionBean {
         }
         return new ForwardResolution(EDITJSP);
     }
-
+    
     @DontBind
-    public Resolution cancel() {
+    public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
     }
-
+    
     @DontValidate
     public Resolution delete() {
         Stripersist.getEntityManager().remove(layarservice);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Layar service is verwijderd"));
-
+        
         return new ForwardResolution(EDITJSP);
     }
-
+    
     public Resolution save() {
         if(layarservice == null){
             layarservice = new LayarService();
         }
         layarservice.setName(name);
-
+        
         Stripersist.getEntityManager().persist(layarservice);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Layar service is opgeslagen"));
-
+        
         return new ForwardResolution(EDITJSP);
     }
-
+    
     @ValidationMethod(on="save")
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
             errors.add("name", new SimpleError("Naam is verplicht"));
             return;
         }
-
+        
         try{
             Long foundId = (Long)Stripersist.getEntityManager().createQuery("select id from LayarService where name = :name")
                     .setMaxResults(1)
                     .setParameter("name", name)
                     .getSingleResult();
-
+            
             if(layarservice != null && layarservice.getId() != null){
                 if(!foundId.equals(layarservice.getId())){
                     errors.add("name", new SimpleError("Naam moet uniek zijn"));
@@ -222,18 +223,18 @@ public class LayarServiceActionBean implements ActionBean {
             }else{
                 errors.add("name", new SimpleError("Naam moet uniek zijn"));
             }
-
+            
         } catch(NoResultException nre) {
-
+            
         }
     }
-
+    
     @DontValidate
-    public Resolution getGridData() throws JSONException {
+    public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
-
+        
         String filterName = "";
-        /*
+        /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
@@ -248,10 +249,10 @@ public class LayarServiceActionBean implements ActionBean {
                 }
             }
         }
-
+        
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(LayarService.class);
-
+        
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
@@ -266,28 +267,28 @@ public class LayarServiceActionBean implements ActionBean {
             order.ignoreCase();
             c.addOrder(order);
         }
-
+        
         if(filterName != null && filterName.length() > 0){
             Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
             c.add(nameCrit);
         }
-
+        
         int rowCount = c.list().size();
-
+        
         c.setMaxResults(limit);
         c.setFirstResult(start);
-
+        
         List layarservices = c.list();
         for(Iterator it = layarservices.iterator(); it.hasNext();){
             LayarService layar = (LayarService)it.next();
             JSONObject j = this.getGridRow(layar.getId().intValue(), layar.getName());
             jsonData.put(j);
         }
-
+        
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-
+    
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
@@ -295,8 +296,8 @@ public class LayarServiceActionBean implements ActionBean {
            }
         };
     }
-
-    private JSONObject getGridRow(int i, String name) throws JSONException {
+    
+    private JSONObject getGridRow(int i, String name) throws JSONException {       
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("name", name);

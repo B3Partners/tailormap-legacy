@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 Ext.define("viewer.components.SelectionWindowConfig",{
     extend: "viewer.components.ConfigObject",
     constructor: function (parentId,configObject){
-        viewer.components.SelectionWindowConfig.superclass.constructor.call(this, parentId,configObject);
-        //Create the form.
-        this.createForm(this.configObject);
+        viewer.components.SelectionWindowConfig.superclass.constructor.call(this, parentId,configObject);        
+        //Create the form.                 
+        this.createForm(this.configObject);    
         //this.createCheckBoxes(this.configObject.layers);*/
     },
     createForm: function(config){
@@ -43,20 +43,20 @@ Ext.define("viewer.components.SelectionWindowConfig",{
             /*defaults: {
                 anchor: '100%'
             },*/
-            items: [{
+            items: [{ 
                 xtype: 'container',
                 layout: {type: 'hbox'},
                 items: [{
                         xtype: 'container',
                         //layout: {type: 'vbox'},
-                        items: [{
+                        items: [{                     
                             xtype: 'textfield',
                             fieldLabel: 'Titel',
                             name: 'title',
                             value: config.title,
                             labelWidth:me.labelWidth,
                             width: 500
-                        },{
+                        },{                        
                             xtype: 'textfield',
                             fieldLabel: 'Titelbalk icoon',
                             name: 'iconUrl',
@@ -68,14 +68,14 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                                     me.onIconChange(textField,options);
                                 }
                             }
-                        }]
+                        }]                    
                     },{
                         xtype: "image",
                         id: "iconImage",
                         src: iconurl,
                         style: {"margin-left": "100px"}
                     }]
-            },{
+            },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Tooltip',
                 name: 'tooltip',
@@ -86,7 +86,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
             renderTo: this.parentId//(2)
         });
         if(showLabelconfig) {
-            this.form.add({
+            this.form.add({ 
                 xtype: 'textfield',
                 fieldLabel: 'Label',
                 name: 'label',

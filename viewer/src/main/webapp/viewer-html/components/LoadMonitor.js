@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,16 +27,16 @@ Ext.define ("viewer.components.LoadMonitor",{
         conf.left = conf.left === undefined ? 5 : conf.left;
         conf.top = conf.top === undefined ? 50 : conf.top;
         conf.timeout = conf.timeout == undefined? 60000 : conf.timeout;
-
+        
         viewer.components.LoadMonitor.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-
+        this.initConfig(conf);        
+        
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.LOADMONITOR;
-
-        this.loadMonitor = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(this.loadMonitor);
-
+        
+        this.loadMonitor = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(this.loadMonitor);
+        
         return this;
     },
     getExtComponents: function() {

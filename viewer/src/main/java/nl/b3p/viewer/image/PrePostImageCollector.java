@@ -19,8 +19,11 @@ package nl.b3p.viewer.image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.xml.xpath.XPathExpressionException;
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
@@ -35,18 +38,18 @@ import org.jdom.JDOMException;
 public abstract class PrePostImageCollector extends ImageCollector{
     private static final Log log = LogFactory.getLog(PrePostImageCollector.class);
     private String body;
-
+    
     public PrePostImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client){
         super(ciu,maxResponseTime,client);
         this.body=ciu.getBody();
     }
-
+    
     @Override
     protected BufferedImage loadImage(String url,String user, String pass) throws IOException, Exception{
         String theUrl=url;
         if (this.getBody()!=null){
-            PostMethod method = null;
-            try{
+            PostMethod method = null;            
+            try{                
                 method=new PostMethod(url);
                 method.setRequestEntity(new StringRequestEntity(this.getBody()));
                 int statusCode = client.executeMethod(method);
@@ -63,16 +66,16 @@ public abstract class PrePostImageCollector extends ImageCollector{
                     method.releaseConnection();
                 }
             }
-
+            
         }
         return super.loadImage(theUrl, user, pass);
     }
-
+    
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public String getBody() {
         return body;
     }
-
+    
     public void setBody(String body) {
         this.body = body;
     }
@@ -83,7 +86,7 @@ public abstract class PrePostImageCollector extends ImageCollector{
      * @return the url.
      * @throws XPathExpressionException
      * @throws JDOMException
-     * @throws IOException
+     * @throws IOException 
      */
     protected abstract String getUrlFromXML(String returnXML) throws XPathExpressionException, JDOMException, IOException;
 

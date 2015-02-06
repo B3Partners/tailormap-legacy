@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -54,13 +54,17 @@ Ext.define("viewer.viewercontroller.controller.Component",{
     setVisible: function (vis){
         Ext.Error.raise({msg: "setVisible() function must be implemented in implementation"});
     },
-
+    
     /**
      *Overwrite the destroy function. Clear all listeners and forward to the super.destroy
      */
     destroy: function(){
         this.clearListeners();
         viewer.viewercontroller.controller.Component.superclass.destroy.call(this);
+    },
+            
+    getFrameworkObject: function() {
+        return this.frameworkObject;
     }
 });
 

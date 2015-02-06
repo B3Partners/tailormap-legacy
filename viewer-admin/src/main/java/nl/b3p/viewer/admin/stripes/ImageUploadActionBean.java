@@ -43,27 +43,27 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/imageupload")
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ImageUploadActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ImageUploadActionBean.class);
-
+    
     private static final String IMAGE_ACTIONBEAN_URL = "/action/image/";
-
+    
     private static final String VIEWER_URL_PARAM = "viewer.url";
-
+    
     @Validate
     private FileBean upload;
-
+    
     @Validate
     private String action;
-
+    
     @Validate
     private Integer page;
     @Validate
     private Integer start;
     @Validate
     private Integer limit;
-
+    
     @Validate
     private String image;
 
@@ -71,39 +71,39 @@ public class ImageUploadActionBean extends ApplicationActionBean {
     public FileBean getUpload() {
         return upload;
     }
-
+    
     public void setUpload(FileBean upload) {
         this.upload = upload;
     }
-
+    
     public String getAction() {
         return action;
     }
-
+    
     public void setAction(String action) {
         this.action = action;
     }
-
+    
     public Integer getLimit() {
         return limit;
     }
-
+    
     public void setLimit(Integer limit) {
         this.limit = limit;
     }
-
+    
     public Integer getPage() {
         return page;
     }
-
+    
     public void setPage(Integer page) {
         this.page = page;
     }
-
+    
     public Integer getStart() {
         return start;
     }
-
+    
     public void setStart(Integer start) {
         this.start = start;
     }
@@ -116,23 +116,23 @@ public class ImageUploadActionBean extends ApplicationActionBean {
         this.image = image;
     }
     //</editor-fold>
-
+    
     private String url(Resource r) {
         return getContext().getServletContext().getInitParameter(VIEWER_URL_PARAM) + IMAGE_ACTIONBEAN_URL + r.getName();
     }
 
     @DefaultHandler
     public Resolution upload() throws JSONException {
-
+        
         JSONObject j = new JSONObject();
-
+        
         j.put("success", false);
         j.put("message", "Fout");
-
+        
         if(upload == null) {
             j.put("errors", "Upload is null");
         } else {
-
+            
             if(Stripersist.getEntityManager().find(Resource.class, upload.getFileName()) != null) {
                 j.put("errors", "Afbeelding met dezelfde naam bestaat al. Kies een andere naam of verwijder eerst de oude afbeelding.");
             } else {
@@ -157,7 +157,7 @@ public class ImageUploadActionBean extends ApplicationActionBean {
                 } catch(Exception e) {
                     j.put("errors", e.toString());
                 } finally {
-                    try {
+                    try { 
                         upload.delete();
                     } catch(IOException e) {
                         log.error("Error deleting upload", e);
@@ -165,14 +165,14 @@ public class ImageUploadActionBean extends ApplicationActionBean {
                 }
             }
         }
-
+        
         // text/html and HTML encode because of http://docs.sencha.com/ext-js/4-1/#!/api/Ext.data.Connection
         // requirements (WTF???)
         return new StreamingResolution("text/html", HtmlUtil.encode(j.toString(4)));
     }
-
+    
     public Resolution manage() throws JSONException {
-
+        
         if("imagesList".equals(action)) {
             return imagesList();
         } else if("delete".equals(action)) {
@@ -182,11 +182,11 @@ public class ImageUploadActionBean extends ApplicationActionBean {
             j.put("success", false);
             j.put("message", "Fout");
             j.put("errors", "Actie niet ondersteund: " + action);
-
+                    
             return new StreamingResolution("application/json", j.toString(4));
         }
     }
-
+            
     public Resolution imagesList() throws JSONException {
         JSONObject j = new JSONObject();
         try {
@@ -217,14 +217,14 @@ public class ImageUploadActionBean extends ApplicationActionBean {
 
         return new StreamingResolution("application/json", j.toString(4));
     }
-
+    
     public Resolution delete() throws JSONException {
         JSONObject j = new JSONObject();
         j.put("success", false);
         j.put("message", "Fout");
         try {
             Resource r = Stripersist.getEntityManager().find(Resource.class, image);
-
+            
             if(r == null) {
                 j.put("errors", "Kan afbeelding \"" + image + "\" niet vinden");
             } else {

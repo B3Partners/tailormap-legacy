@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2011-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ function appendPanel(header, content, container) {
         var headercontent = headerobj.innerText || headerobj.textContent;
         headerobj.style.display = 'none';
         contentobj.className += ' insidePanel';
-
+        
         var panelContainer = container || Ext.getBody();
         var panel = Ext.create('Ext.panel.Panel', {
             title: headercontent,
@@ -41,24 +41,10 @@ function appendPanel(header, content, container) {
             width: '100%',
             renderTo: panelContainer
         });
-        Ext.EventManager.onWindowResize(function () {
+        Ext.on('resize', function () {
             panel.doLayout();
         });
     }
-}
-
-/**
-*  Apply fixes to the trees for ExtJS scrolling issues
-*/
-function applyTreeScrollFix(view) {
-    view.getEl().setStyle({
-        overflow: 'auto',
-        overflowX: 'auto'
-    });
-    // From ext-all-debug, r77661 & r77663
-    // Seems to recalculate body and applies correct heights so scrollbars can be shown
-    view.panel.doComponentLayout();
-    view.panel.getLayout().layout();
 }
 
 var helpController = null,
@@ -68,7 +54,7 @@ Ext.onReady(function() {
     helpController = Ext.create('Ext.b3p.HelpController', {
         helppath: helppath
     });
-    var helpLinks = Ext.select('.helplink');
+    var helpLinks = Ext.select('.helplink', true);
     if(helpLinks.getCount() > 0) {
         helpLinks.on('click', function(evt, htmlel, eOpts) {
             helpController.showHelp(htmlel);
@@ -114,7 +100,7 @@ Ext.define('Ext.b3p.iFramePopupController', {
         var me = this;
         var iframe = me.getIframe();
         if(!frametitle) frametitle = '';
-        if(iframe) {
+        if(iframe) {              
             iframe.set({ src: url });
             me.popupWindow.setTitle(frametitle);
             me.popupWindow.show();
@@ -156,6 +142,7 @@ var defaultImageUploadConfig = {
     dragResize: false,
     dragWheel: false,
     disableServerSideEdit: true,
+    iframeCss: csspath + 'iframe_styles.css',
     lang: {
         'Display': 'Weergave',
         'By Default': 'Standaard',
@@ -199,3 +186,9 @@ var defaultHtmleditorTableConfig = {
     langBorder: 'Rand',
     langCellLabel: 'Label in cellen tonen'
 };
+
+Ext.override(Ext.form.field.HtmlEditor, 
+    // Fix upside down question mark appearing
+    // http://www.sencha.com/forum/showthread.php?79190-Mysterious-postdata-from-htmleditor
+    { defaultValue: "" }
+);

@@ -21,21 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-definition>
 
 <!DOCTYPE html>
-<html>
+<html class="x-border-box">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
-        <link href="${contextPath}/resources/css/viewer-admin.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/crisp/ext-theme-crisp-all.css">
         <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css">
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
-        <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
+        <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>
         <script type="text/javascript">
             var uxpath = '${contextPath}/resources/js/ux';
+            var csspath = '${contextPath}/resources/css/';
             var helppath = '${contextPath}/resources/html/help.html';
+            var viewer_admin_debug_mode = ${param.debug == true ? 'true' : 'false'};
         </script>      
         <script type="text/javascript" src="${contextPath}/resources/js/defaultconfigs.js"></script>
-        <script type="text/javascript" src="${contextPath}/resources/js/overrides.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/menu.js"></script>
 
         <stripes:layout-component name="head"/>
@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
         </script>
     </head>
-    <body>
+    <body class="x-body">
         <stripes:layout-component name="header" />
         <stripes:layout-component name="body"/>
     </body>

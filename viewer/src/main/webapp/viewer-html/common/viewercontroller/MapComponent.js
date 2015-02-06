@@ -2,7 +2,7 @@
 
 /**
  * MapComponent
- * @class
+ * @class 
  * @constructor
  * @param viewerObject Het viewerObject
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -15,7 +15,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     tools : null,
     events: null,
     components: null,
-    panel : null,
+    panel : null,    
     viewerController: null,
     config:{
         resolutions : null,
@@ -26,10 +26,11 @@ Ext.define("viewer.viewercontroller.MapComponent",{
      * @param viewerController the viewerController
      * @param domId id of the dom where this map component must be added
      * @param config a config object
-     * @param config.resolutions a array of resolutions for the map
-     */
+     * @param config.resolutions a array of resolutions for the map     
+     */    
     constructor :function (viewerController,domId,config){
         //init values
+        viewer.viewercontroller.MapComponent.superclass.constructor.call(this, config);
         this.eventList={};
         this.maps=[];
         this.tools=[];
@@ -39,15 +40,14 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         this.initConfig(config);
         this.initEvents();
         this.viewerController=viewerController;
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         return this;
     },
-
+       
     /**
     *Creates a Map object for this framework
     *@param id the id of the map
     *@param options extra options for the map
-    *@param options.startExtent the starting extent (viewer.viewercontroller.controller.Extent) of the map
+    *@param options.startExtent the starting extent (viewer.viewercontroller.controller.Extent) of the map 
     *@param options.maxExtent the max extent (viewer.viewercontroller.controller.Extent) of the map
     *Must be implemented by subclass
     */
@@ -84,7 +84,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     createTilingLayer : function (id,name,url, options){
         Ext.Error.raise({msg: "MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class"});
-    },
+    },    
     /**
     * @description Creates a Arc IMS layer.
     * @param id the id of the layer
@@ -95,7 +95,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     createArcIMSLayer: function(){
         Ext.Error.raise({msg: "MapComponent.createArcIMSLayer needs te be implemented in the sub-class"});
-    },
+    },      
     /**
     * @description Creates a Arc Server layer.
     * @param name the showable name of the layer
@@ -106,7 +106,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     createArcServerLayer : function(name,url,options,viewerController){
         Ext.Error.raise({msg: "MapComponent.createArcServerLayer needs te be implemented in the sub-class"});
-    },
+    },   
     /**
     *Creates a layer of an image
     *Must be implemented by subclass
@@ -119,7 +119,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     createImageLayer : function (name,url, bounds, size,options){
         Ext.Error.raise({msg: "MapComponent.createImageLayer() Not implemented! Must be implemented in sub-class"});
-    },
+    }, 
     /**
     *Creates a drawable vectorlayer
     *Must be implemented by subclass
@@ -168,7 +168,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     *and call super to do some frameworks specific things.
     *@param tool The tool that needs to be added of type Tool
     */
-    addTool : function(tool){
+    addTool : function(tool){        
         if (!(tool instanceof viewer.viewercontroller.controller.Tool)){
             Ext.Error.raise({
                 msg: "Given tool not of type 'Tool'",
@@ -238,7 +238,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     removeToolById : function (id){
         Ext.Error.raise({msg: "MapComponent.removeToolById() Not implemented! Must be implemented in sub-class"});
     },
-
+    
     addComponent: function(component){
         if (!(component instanceof viewer.viewercontroller.controller.Component)){
             Ext.Error.raise({
@@ -254,7 +254,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  *Add a map to the MapComponent
  *Must be implemented by subclass
  * @param mapObject The map which must be added to the MapComponent.
- **/
+ **/    
     addMap : function (mapObject){
         Ext.Error.raise({msg: "MapComponent.addMap() Not implemented! Must be implemented in sub-class"});
     },
@@ -305,8 +305,10 @@ Ext.define("viewer.viewercontroller.MapComponent",{
             this.initEvents();
         }
         for( var key in this.eventList){
-            if(this.eventList[key] == specific){
-                return key;
+            if(this.eventList.hasOwnProperty(key)) {
+                if(this.eventList[key] == specific){
+                    return key;
+                }
             }
         }
         return null;
@@ -342,8 +344,8 @@ Ext.define("viewer.viewercontroller.MapComponent",{
             this.tools[i].deactivate();
         }
         return activeTools;
-    },
-
+    },     
+    
     /**
      * Get the width of this component
      * @return width in pixels.
@@ -354,7 +356,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     /**
      * Get the height of this component
      * @return height in pixels.
-     */
+     */    
     getHeight: function (){
         Ext.Error.raise({msg: "MapComponent.getHeight() Not implemented! Must be implemented in sub-class"});
     },

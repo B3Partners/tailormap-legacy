@@ -41,7 +41,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class SearchActionBean implements ActionBean {
     private ActionBeanContext context;
-
+    
     @Validate
     private String searchText;
     @Validate
@@ -59,15 +59,15 @@ public class SearchActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public String getSearchName() {
         return searchName;
     }
-
+    
     public void setSearchName(String searchName) {
         this.searchName = searchName;
     }
@@ -87,15 +87,15 @@ public class SearchActionBean implements ActionBean {
     public void setAppId(Long appId) {
         this.appId = appId;
     }
-
+    
     public String getSearchText() {
         return searchText;
     }
-
+    
     public void setSearchText(String searchText) {
         this.searchText = searchText;
     }
-
+    
     public String getSearchRequestId() {
         return searchRequestId;
     }
@@ -113,10 +113,10 @@ public class SearchActionBean implements ActionBean {
     }
 
     //</editor-fold>
-
+    
     @DefaultHandler
     public Resolution source() throws Exception {
-        JSONObject result = new JSONObject();
+        JSONObject result = new JSONObject();        
         JSONObject request = new JSONObject();
         request.put("appId",appId);
         request.put("componentName",componentName);
@@ -140,12 +140,12 @@ public class SearchActionBean implements ActionBean {
             result.put("results",resultsArray);
             result.put("error",error);
         }
-        return new StreamingResolution("application/json", new StringReader(result.toString()));
+        return new StreamingResolution("application/json", new StringReader(result.toString())); 
     }
-
+    
     public Resolution autosuggest() throws JSONException {
-
-         JSONObject result = new JSONObject();
+        
+         JSONObject result = new JSONObject();        
         JSONObject request = new JSONObject();
         request.put("appId",appId);
         request.put("componentName",componentName);
@@ -168,9 +168,9 @@ public class SearchActionBean implements ActionBean {
             result.put("results",results);
             result.put("error",error);
         }
-        return new StreamingResolution("application/json", new StringReader(result.toString()));
+        return new StreamingResolution("application/json", new StringReader(result.toString())); 
     }
-
+    
     private JSONObject getSearchConfig() throws JSONException{
         JSONObject obj = new JSONObject();
          if (appId != null) {

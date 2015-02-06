@@ -24,10 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <p>
         <stripes:errors/>
-       <stripes:messages/>
-        </p>
+        <stripes:messages/>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform">
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
@@ -37,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:button onclick="cancelFunction()" name="cancel" class="extlikebutton" value="Annuleren"/>
             <br /><br />
             <div id="tabs">
-                <div id="rights-tab" class="x-hide-display">
+                <div id="rights-tab" class="tabdiv">
                     <h1>
                         Rechten:
                         <a href="#Rechten_Op_Kaartlaag_Help" title="Help" class="helplink"></a>
@@ -49,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         ${group.name}<br/>
                     </c:forEach>
                 </div>
-                <div id="attributes-tab" class="x-hide-display"><div>
+                <div id="attributes-tab" class="tabdiv"><div>
                     <a href="#Attributen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
                         <c:when test="${!empty actionBean.applicationLayer.attributes}">                                                               
@@ -77,7 +75,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:choose>
                     </div>
                 </div>
-                <div id="settings-tab" class="x-hide-display">
+                <div id="settings-tab" class="tabdiv">
                     <a href="#Instellingen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <table class="formtable">
                         <tr>
@@ -201,7 +199,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
                 </div>
-                <div id="edit-tab" class="x-hide-display">
+                <div id="edit-tab" class="tabdiv">
                     <stripes:hidden name="details['editfeature.usernameAttribute']" id="details_editfeature_usernameAttribute"/>
                     <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
@@ -213,11 +211,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </c:otherwise>
                     </c:choose>
                 </div>
-                <div id="filter-tab" class="x-hide-display">
+                <div id="filter-tab" class="tabdiv">
                     <a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     Er zijn geen attributen voor deze kaartlaag geconfigureerd.
                 </div>
-                <div id="context-tab" class="x-hide-display">
+                <div id="context-tab" class="tabdiv">
                     <a href="#Context_Info_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <stripes:textarea cols="150" rows="5" name="details['context']" id="context_textarea" style="display: none;" />
                     <div id="contextHtmlEditorContainer" style="width: 475px; height: 400px;"></div>

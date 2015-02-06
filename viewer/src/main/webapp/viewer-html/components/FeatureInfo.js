@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,20 +20,20 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.FeatureInfo",{
-    extend: "viewer.components.Maptip",
+    extend: "viewer.components.Maptip",   
     progressElement: null,
     /**
      * Overwrite constructor to set some other settings then maptip.
      */
-    constructor: function (conf){
+    constructor: function (conf){    
         conf.isPopup=true;
         //don't call maptip constructor but that of super maptip.
-        viewer.components.Maptip.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        viewer.components.Maptip.superclass.constructor.call(this, conf);        
+        this.initConfig(conf);   
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloonFeatureInfo",this.width,this.height);
         //set the offset of the map
-        var mapTopOffset=this.viewerController.getLayoutHeight('top_menu');
+        var mapTopOffset=this.config.viewerController.getLayoutHeight('top_menu');
         if (mapTopOffset<0){
             mapTopOffset=0;
         }
@@ -42,16 +42,16 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.balloon.closeOnMouseOut=false;
         this.balloon.showCloseButton=true;
         var me = this;
-        this.balloon.close = function(){
+        this.balloon.close = function(){            
             me.balloon.setContent("");
             me.balloon.hide();
             me.setMaptipEnabled(true);
         }
-        //if topmenu height is in % then recalc on every resize.
-        var topMenuLayout=this.viewerController.getLayout('top_menu');
+        //if topmenu height is in % then recalc on every resize.        
+        var topMenuLayout=this.config.viewerController.getLayout('top_menu');
         if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
-            Ext.EventManager.onWindowResize(function(){
-                me.onResize();
+            Ext.on('resize', function(){
+                me.onResize();            
             }, this);
         }
         this.onResize();
@@ -65,8 +65,8 @@ Ext.define ("viewer.components.FeatureInfo",{
         function(map,options){
             me.onChangeExtent(map,options);
         },this);
-        return this;
-    },
+        return this;        
+    },    
     /**
      * Event handler for when a layer is added to the map
      * @see event ON_LAYER_ADDED
@@ -78,38 +78,38 @@ Ext.define ("viewer.components.FeatureInfo",{
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.isSummaryLayer(mapLayer)){
-            //Store the current map extent for every maptip request.
-            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
+        if(this.isSummaryLayer(mapLayer)){   
+            //Store the current map extent for every maptip request.            
+            this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
                 this.setRequestExtent(map.getExtent());
-            },this);
-
+            },this); 
+            
             if (mapLayer.appLayerId){
-                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
 
                 //do server side getFeature.
                 if (layer.hasFeatureType){
                     this.addLayerInServerRequest(appLayer);
                 }else{
                     //listen to the onMaptipData
-                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);
-                }
+                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
+                }            
                 this.numRequestLayers++;
             }else{
                 mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);
             }
         }
     },
-
+    
     onLayerRemoved: function(map,options) {
         var mapLayer = options.layer;
         if (mapLayer==null)
-            return;
-        if(this.isSummaryLayer(mapLayer)){
+            return;        
+        if(this.isSummaryLayer(mapLayer)){ 
             if (mapLayer.appLayerId){
-                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
                 if (layer.hasFeatureType && this.serverRequestLayers){
                     Ext.Array.remove(this.serverRequestLayers, appLayer);
                 }
@@ -118,25 +118,25 @@ Ext.define ("viewer.components.FeatureInfo",{
         }
 
     },
-
+        
     /**
      * Enable doing server requests.
      * @param appLayer the applayer
      */
-    addLayerInServerRequest: function (appLayer){
+    addLayerInServerRequest: function (appLayer){ 
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
-            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
-            //this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
-            this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController}), this.viewerController);
-
+            this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
+            //this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.config.viewerController});
+            this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.config.viewerController}), this.config.viewerController);
+            
             this.serverRequestEnabled = true;
         }
         if (this.serverRequestLayers ==null){
             this.serverRequestLayers=new Array();
         }
         Ext.Array.include(this.serverRequestLayers, appLayer);
-    },
+    },    
     /**
      * When a feature info starts.
      */
@@ -146,16 +146,21 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.setMaptipEnabled(false);
     },
     /**
-     *
+     * 
      */
     onDataReturned: function(options){
         var found=false;
         var data = options.data;
-        for (var layerIndex in data){
+        for (var layerIndex in data) {
+            if(!data.hasOwnProperty(layerIndex)){
+                continue;
+            }
             var layer=data[layerIndex];
-            for (var index in layer.features){
-                found=true;
-                break;
+            for (var index in layer.features) {
+                if(layer.features.hasOwnProperty(index)) {
+                    found = true;
+                    break;
+                }
             }
             if(found){
                 break;
@@ -164,12 +169,12 @@ Ext.define ("viewer.components.FeatureInfo",{
         if (!found){
             this.setMaptipEnabled(true);
         }
-        this.callParent(arguments);
+        this.callParent(arguments);        
     },
     /**
      *Called when extent is changed, recalculate the position
      */
-    onChangeExtent : function(map,options){
+    onChangeExtent : function(map,options){        
         if (this.worldPosition && options.extent){
             if (options.extent.isIn(this.worldPosition.x,this.worldPosition.y)){
                 this.balloon.setPositionWorldCoords(this.worldPosition.x,this.worldPosition.y,false,this.getBrowserZoomRatio());
@@ -179,16 +184,16 @@ Ext.define ("viewer.components.FeatureInfo",{
         }
     },
     /**
-     *
+     * 
      */
-     setMaptipEnabled: function (enable){
-        var maptips= this.viewerController.getComponentsByClassName("viewer.components.Maptip");
+     setMaptipEnabled: function (enable){        
+        var maptips= this.config.viewerController.getComponentsByClassName("viewer.components.Maptip");
         for (var i =0; i < maptips.length;i++){
             if (typeof maptips[i].setEnabled == 'function'){
                 maptips[i].setEnabled(enable);
             }
-        }
+        } 
      }
-
+            
 });
 

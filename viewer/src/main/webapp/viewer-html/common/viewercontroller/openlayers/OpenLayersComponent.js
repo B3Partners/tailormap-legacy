@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersComponent",{
     constructor : function (conf,frameworkObject){
         viewer.viewercontroller.openlayers.OpenLayersComponent.superclass.constructor.call(this,conf);
         this.frameworkObject=frameworkObject;
-        if(conf.regionName == "content_bottom" && this.viewerController.mapComponent.contentBottom){
+        if(conf.regionName == "content_bottom" && this.config.viewerController.mapComponent.contentBottom){
             // Make a new div and append it to the contentBottom div. So controls can't override other controls (for example the mouseposition renders itself to the content of this.div
             var newDiv = document.createElement('div');
             newDiv.id = conf.id + "content_bottom";

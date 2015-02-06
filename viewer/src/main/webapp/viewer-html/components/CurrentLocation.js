@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,15 +28,16 @@ Ext.define ("viewer.components.CurrentLocation",{
     lastPoint: null,
     MARKER_PREFIX: "CurrentLocation_",
     config: {
-        interval: null
+        interval: null,
+        tooltip: 'Huidge locatie'
     },
     constructor: function(config){
         this.callParent(arguments);
         //set some defaults.
-
-        if (this.interval==null || isNaN(this.interval)){
-            this.interval=0;
-        }
+       
+        if (this.config.interval==null || isNaN(this.config.interval)){
+            this.config.interval=0;
+        }        
         if (Proj4js.defs["EPSG:4326"]==undefined){
             Proj4js.defs["EPSG:4236"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
         }
@@ -54,25 +55,25 @@ Ext.define ("viewer.components.CurrentLocation",{
     createButton: function(){
         //if there is a interval defined. Make the button a toggle
         var type=viewer.viewercontroller.controller.Tool.TOGGLE;
-        if (this.interval==0){
+        if (this.config.interval==0){
             type=viewer.viewercontroller.controller.Tool.BUTTON;
         }
-        this.button= this.viewerController.mapComponent.createTool({
+        this.button= this.config.viewerController.mapComponent.createTool({
             type: type,
             id: this.getName(),
             displayClass: "currentLocation",
             tooltip: this.config.tooltip || null,
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
-        this.viewerController.mapComponent.addTool(this.button);
-
+        this.config.viewerController.mapComponent.addTool(this.button);
+        
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
-        if (this.interval>0){
+        if (this.config.interval>0){
             this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);
         }
     },
     buttonDown: function(){
-        if (this.interval==0){
+        if (this.config.interval==0){
             this.getLocation();
         }else{
             this.startWatch();
@@ -102,7 +103,7 @@ Ext.define ("viewer.components.CurrentLocation",{
         },function(pos){
             me.errorHandler(pos);
         },{
-            timeout: this.interval
+            timeout: this.config.interval
         })
     },
     /**
@@ -110,7 +111,7 @@ Ext.define ("viewer.components.CurrentLocation",{
      */
     stopWatch: function(){
         navigator.geolocation.clearWatch(this.watchId);
-        this.viewerController.mapComponent.getMap().removeMarker(this.MARKER_PREFIX+this.getName());
+        this.config.viewerController.mapComponent.getMap().removeMarker(this.MARKER_PREFIX+this.getName());
     },
     /**
      * Handles the location
@@ -119,8 +120,8 @@ Ext.define ("viewer.components.CurrentLocation",{
         var lat = Number(position.coords.latitude);
         var lon = Number(position.coords.longitude);
         this.lastPoint = this.transformLatLon(lon,lat);
-        this.viewerController.mapComponent.getMap().moveTo(this.lastPoint.x,this.lastPoint.y);
-        this.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
+        this.config.viewerController.mapComponent.getMap().moveTo(this.lastPoint.x,this.lastPoint.y);
+        this.config.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
     },
     /**
      * Handle errors.
@@ -137,9 +138,9 @@ Ext.define ("viewer.components.CurrentLocation",{
         }
         this.button.deactivate();
         if (this.lastPoint!=null){
-            this.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
+            this.config.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
         }
-        this.viewerController.logger.error("Error while recieving location: "+message);
+        this.config.viewerController.logger.error("Error while recieving location: "+message);
     },
     transformLatLon: function(x,y){
         var point = new Proj4js.Point(x,y);

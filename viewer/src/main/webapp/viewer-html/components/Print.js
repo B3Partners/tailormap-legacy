@@ -179,6 +179,9 @@ Ext.define ("viewer.components.Print",{
      */
     legendLoading: function (){
         for (var key in this.legends){
+            if(!this.legends.hasOwnProperty(key)) {
+                continue;
+            }
             //if there is a var for the legend, it's not yet succesfully loaded nor it failed
             if (this.legends[key]==null){
                 return true;
@@ -210,8 +213,6 @@ Ext.define ("viewer.components.Print",{
     createForm: function(){
         var me = this;
 
-        var qualitySliderId = Ext.id();
-        var rotateSliderId = Ext.id();
         this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,
@@ -301,13 +302,26 @@ Ext.define ("viewer.components.Print",{
                         },{
                             xtype: 'container',
                             layout: {
-                                type: 'column'
+                                type: 'hbox'
                             },
                             width: '100%',
                             items: [{
-                                xtype: 'container',
-                                html: '<div id="' + qualitySliderId + '"></div>',
-                                columnWidth: 1
+                                xtype: 'slider',
+                                itemId: 'qualitySlider',
+                                name: "quality",
+                                value: 11,
+                                increment: 1,
+                                minValue: me.minQuality,
+                                maxValue: parseInt(me.max_imagesize, 10),
+                                listeners: {
+                                    changecomplete: {
+                                        scope: this,
+                                        fn: function (slider,newValue){
+                                            this.qualityChanged(newValue);
+                                        }
+                                    }
+                                },
+                                flex: 1
                             },{
                                 xtype: 'button',
                                 text: '<',
@@ -379,7 +393,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'label',
                                 text: "Pagina formaat"
                             },{
-                                xtype: "flamingocombobox",
+                                xtype: "combobox",
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
@@ -387,8 +401,27 @@ Ext.define ("viewer.components.Print",{
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
-                                xtype: 'container',
-                                html: '<div id="' + rotateSliderId + '"></div>'
+                                xtype: 'slider',
+                                itemId: 'rotateSlider',
+                                name: 'angle',
+                                value: 0,
+                                increment: 1,
+                                minValue: 0,
+                                maxValue: 360,
+                                width: 100,
+                                labelAlign: "top",
+                                fieldLabel: 'Kaart draaien *',
+                                tipText: function(tumb){
+                                    return tumb.value+"º";
+                                },
+                                listeners: {
+                                    changecomplete: {
+                                        scope: this,
+                                        fn: function (slider,newValue){
+                                            this.angleChanged(newValue);
+                                        }
+                                    }
+                                }
                             }]
                         }]
                     }]
@@ -505,48 +538,10 @@ Ext.define ("viewer.components.Print",{
                 }]
             }]
         });
-
-        this.qualitySlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
-            renderTo: qualitySliderId,
-            name: "quality",
-            value: 11,
-            increment: 1,
-            minValue: me.minQuality,
-            maxValue: me.max_imagesize,
-            width: Ext.get(qualitySliderId).getWidth(),
-            listeners: {
-                changecomplete: {
-                    scope: this,
-                    fn: function (slider,newValue){
-                        this.qualityChanged(newValue);
-                    }
-                }
-            }
-        });
-
-        this.rotateSlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
-            renderTo: rotateSliderId,
-            name: 'angle',
-            value: 0,
-            increment: 1,
-            minValue: 0,
-            maxValue: 360,
-            width: 100,
-            labelAlign: "top",
-            fieldLabel: 'Kaart draaien *',
-            tipText: function(tumb){
-                return tumb.value+"º";
-            },
-            listeners: {
-                changecomplete: {
-                    scope: this,
-                    fn: function (slider,newValue){
-                        this.angleChanged(newValue);
-                    }
-                }
-            }
-        });
-
+        
+        this.qualitySlider = Ext.ComponentQuery.query('#qualitySlider', this.panel)[0];
+        this.rotateSlider = Ext.ComponentQuery.query('#rotateSlider', this.panel)[0];
+        
         this.printForm = Ext.create('Ext.form.Panel', {
             renderTo: me.getContentDiv(),
             url: actionBeans["print"],
@@ -595,8 +590,8 @@ Ext.define ("viewer.components.Print",{
             };
 
             Ext.getCmp('legendContainer').removeAll();
-            Ext.getCmp('legendContainer').add(checkboxes);
-            Ext.getCmp('legendContainer').doLayout();
+            Ext.getCmp('legendContainer').add(checkboxes);        
+            Ext.getCmp('legendContainer').updateLayout();
         }
     },
     /**
@@ -684,14 +679,15 @@ Ext.define ("viewer.components.Print",{
         newCoords[2] = this.calcRotationX(angle,width2,height2);
         newCoords[3] = this.calcRotationX(angle,-width2,height2);
         //transform the rectangle (or square) back
-        for (var c in newCoords){
+        var c;
+        for (c = 0; c < newCoords.length; c++){
             var coord=newCoords[c];
             coord.x= coord.x + width2;
             coord.y= coord.y + height2;
         }
         //get the bbox of both the extents. (original and rotated)
         var totalBBox= new viewer.viewercontroller.controller.Extent(0,0,width,height);
-        for (var c in newCoords){
+        for (c = 0; c < newCoords.length; c++){
             var coord = newCoords[c];
             if (coord.x > totalBBox.maxx){
                 totalBBox.maxx=coord.x;
@@ -839,8 +835,8 @@ Ext.define ("viewer.components.Print",{
                     printLayers.push(printLayer);
                 }else{
                     var requests=layer.getLastMapRequest();
-                    for (var r in requests){
-                        var request= requests[r];
+                    for (var r = 0; r < requests.length; r++) {
+                        var request = requests[r];
                         if (request){
                             request.protocol=layer.getType();
                             var alpha=layer.getAlpha();
@@ -851,7 +847,6 @@ Ext.define ("viewer.components.Print",{
                             if (request.extent){
                                 request.extent=request.extent.toString();
                             }
-
                         }
                     }
                 }

@@ -23,10 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Kies applicatie</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <p>
             <stripes:errors/>
             <stripes:messages/>
-        </p>
             <script type="text/javascript">
                     var frameParent = getParent();
                 <c:if test="${actionBean.context.eventName == 'deleteApplication'}">

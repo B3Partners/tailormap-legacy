@@ -39,7 +39,7 @@ import nl.b3p.viewer.config.app.Application;
 public class CSSActionBean implements ActionBean {
 
     private ActionBeanContext context;
-
+    
     private static final String CSS_FILE = "style.jsp";
 
     @Validate

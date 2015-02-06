@@ -67,7 +67,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();
     private List<SimpleFeatureType> foreignFeatureTypes = new ArrayList<SimpleFeatureType>();
     private List<FeatureSource> featureSources = new ArrayList<FeatureSource>();
-
+    
     private Long featureSourceId;
     private Long featureTypeId;
     @Validate
@@ -88,7 +88,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     private String dir;
     @Validate
     private JSONArray filter;
-
+    
     @Validate
     @ValidateNestedProperties({
         @Validate(field="featureType", required=true, on="save"),
@@ -96,16 +96,16 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         @Validate(field="type", required=true, on="save")
     })
     private FeatureTypeRelation relation;
-
+    
     @DefaultHandler
     public Resolution view() {
         //relations = Stripersist.getEntityManager().createQuery("from FeatureTypeRelation").getResultList();
         return new ForwardResolution(JSP);
     }
-
-    public Resolution save(){
+    
+    public Resolution save(){                                        
         Iterator<Integer> it=leftSide.keySet().iterator();
-
+        
         relation.getRelationKeys().clear();
         while (it.hasNext()){
             Integer i=it.next();
@@ -122,45 +122,45 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         }
         Stripersist.getEntityManager().persist(relation);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Join/Relatie is opgeslagen"));
         return new ForwardResolution(EDITJSP);
     }
-
+    
     public Resolution edit() {
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
         if (relation!=null && relation.getFeatureType()!=null){
-            featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType s where s.featureSource = :f").setParameter("f", relation.getFeatureType().getFeatureSource()).getResultList();
+            featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType s where s.featureSource = :f").setParameter("f", relation.getFeatureType().getFeatureSource()).getResultList();                         
         }
         if (relation!=null && relation.getForeignFeatureType()!=null){
-            foreignFeatureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType s where s.featureSource = :f").setParameter("f", relation.getForeignFeatureType().getFeatureSource()).getResultList();
+            foreignFeatureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType s where s.featureSource = :f").setParameter("f", relation.getForeignFeatureType().getFeatureSource()).getResultList(); 
         }
         Stripersist.getEntityManager().getTransaction().commit();
         return new ForwardResolution(EDITJSP);
     }
-
+    
     @DontBind
-    public Resolution cancel() {
+    public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
     }
-
+    
     public Resolution delete() {
         Stripersist.getEntityManager().remove(relation);
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("Featuretype relatie is verwijderd"));
         return new ForwardResolution(EDITJSP);
     }
-
+    
     @DontValidate
-    public Resolution getGridData() throws JSONException {
+    public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
-
+        
         String filterFeaturetype = "";
         String filterForeignFeaturetype = "";
-
+        
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(FeatureTypeRelation.class);
-
+        
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
@@ -189,9 +189,9 @@ public class FeatureTypeRelationActionBean implements ActionBean{
                     c.addOrder(Order.desc(sort3).ignoreCase());
                 }
             }
-
+            
         }
-        /*
+        /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
@@ -200,13 +200,13 @@ public class FeatureTypeRelationActionBean implements ActionBean{
             for(int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
-                String value = j.getString("value");
+                String value = j.getString("value");                
                 if (property.equals("featuretype") ||property.equals("foreignFeaturetype")){
                     if(property.equals("featuretype")) {
                         property= "f";
                         //filterFeaturetype = value;
                     }else if(property.equals("foreignFeaturetype")){
-                        property= "ff";
+                        property= "ff";                 
                     }
                     String filt1 = property+"s.name";
                     String filt2 = property+".typeName";
@@ -217,23 +217,23 @@ public class FeatureTypeRelationActionBean implements ActionBean{
                 }
             }
         }
-
+        
         int rowCount = c.list().size();
-
+        
         c.setMaxResults(limit);
         c.setFirstResult(start);
-
+        
         List relations = c.list();
         for(Iterator it = relations.iterator(); it.hasNext();){
             FeatureTypeRelation relation = (FeatureTypeRelation)it.next();
             JSONObject j = this.getGridRow(relation.getId().intValue(), relation.getFeatureType(), relation.getForeignFeatureType());
             jsonData.put(j);
         }
-
+        
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-
+    
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
@@ -253,7 +253,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         final JSONObject json = new JSONObject();
         boolean success=false;
         SimpleFeatureType featureType = Stripersist.getEntityManager().find(SimpleFeatureType.class, featureTypeId);
-        if (featureType!=null){
+        if (featureType!=null){                        
             JSONArray array = new JSONArray();
             List<AttributeDescriptor> attributes=featureType.getAttributes();
             for (AttributeDescriptor attr : attributes){
@@ -291,12 +291,12 @@ public class FeatureTypeRelationActionBean implements ActionBean{
      */
     public Resolution getFeatureTypesForSource () throws JSONException{
         final JSONObject json = new JSONObject();
-        boolean success=false;
+        boolean success=false;  
         if (featureSourceId==null){
             json.put("error", "No featureSourceId found");
         }else{
             FeatureSource featureSource = Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
-            if (featureSource!=null){
+            if (featureSource!=null){                        
                 JSONArray array = new JSONArray();
                 List<SimpleFeatureType> featureTypes=featureSource.getFeatureTypes();
                 for (SimpleFeatureType ft : featureTypes){
@@ -306,10 +306,10 @@ public class FeatureTypeRelationActionBean implements ActionBean{
                     if (!StringUtils.isBlank(ft.getDescription())){
                         name+=" ("+ft.getDescription()+")";
                     }
-                    ob.put("name",name);
+                    ob.put("name",name);                
                     array.put(ob);
                 }
-                json.put("featuretypes", array);
+                json.put("featuretypes", array);            
                 success=true;
             }else{
                 json.put("error", "No featureType found");
@@ -323,7 +323,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
            }
         };
     }
-
+    
     private JSONObject getGridRow(int i, SimpleFeatureType featuretype, SimpleFeatureType foreignFeaturetype) throws JSONException {
         JSONObject j = new JSONObject();
         j.put("id", i);
@@ -331,7 +331,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         if (featuretype.getDescription()!=null){
             typeName +=" ("+featuretype.getDescription()+")";
         }
-        j.put("featuretype", typeName);
+        j.put("featuretype", typeName);        
         String foreignTypeName = foreignFeaturetype.getFeatureSource().getName()+": "+foreignFeaturetype.getTypeName();
         if (foreignFeaturetype.getDescription()!=null){
             foreignTypeName+= " ("+foreignFeaturetype.getDescription()+")";
@@ -339,7 +339,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         j.put("foreignFeaturetype",foreignTypeName);
         return j;
     }
-
+    
     @ValidationMethod(on="save")
     public void validate(ValidationErrors errors){
         if (relation!=null){
@@ -349,12 +349,12 @@ public class FeatureTypeRelationActionBean implements ActionBean{
             }
         }
     }
-
+    
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }

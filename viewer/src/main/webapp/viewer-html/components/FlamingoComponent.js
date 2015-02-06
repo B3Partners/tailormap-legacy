@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ Ext.define ("viewer.components.FlamingoComponent",{
         name: "FlamingoComponent",
         xml : ""
     },
-    constructor: function (conf){
+    constructor: function (conf){        
         viewer.components.FlamingoComponent.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         if (!viewerController.mapComponent instanceof viewer.viewercontroller.FlamingoMapComponent){

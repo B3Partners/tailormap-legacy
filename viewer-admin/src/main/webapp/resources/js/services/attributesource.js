@@ -26,6 +26,7 @@ Ext.onReady(function(){
         model: 'TableRow',
         remoteSort: true,
         remoteFilter: true,
+        sorters: 'name',
         proxy: {
             type: 'ajax',
             url: gridurl,
@@ -54,7 +55,7 @@ Ext.onReady(function(){
                 dataIndex: 'status',
                 flex: 1,
                 renderer: function(value) {
-                    if(value == "ok") {
+                    if(value === "ok") {
                         return '<span class="status_ok">GOED</span>';
                     }
                     return '<span class="status_error">FOUT</span>';
@@ -97,8 +98,7 @@ Ext.onReady(function(){
                            Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
-                },
-                sortable: false
+                }
             }
         ],
         bbar: Ext.create('Ext.PagingToolbar', {
@@ -112,13 +112,7 @@ Ext.onReady(function(){
                 enableTooltip: false
             })
         ],
-        renderTo: 'grid-container',
-        listeners: {
-            afterrender: function(grid) {
-                // Default sort on second column
-                grid.columns[1].setSortState('ASC');
-            }
-        }
+        renderTo: 'grid-container'
     }));
 
 });

@@ -30,11 +30,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <stripes:layout-component name="body">
             <div id="content">
-                <p>
-                    <stripes:errors/>
-                    <stripes:messages/>
-                </p>
-                <h1>Zoekbronnen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1><br />
+                <stripes:errors/>
+                <stripes:messages/>
+                <h1>Zoekbronnen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1>
 
                 <div id="grid-container" class="attributesources">
 

@@ -5,8 +5,10 @@
 package nl.b3p.viewer.image;
 
 import java.awt.Color;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -19,7 +21,7 @@ import org.json.JSONObject;
  */
 public class CombineImageSettings {
     private static final Log log = LogFactory.getLog(CombineImageSettings.class);
-
+    
     public static final String WMS_PROTOCOL = "WMS";
     public static final String ARCIMS_PROTOCOL = "ARCIMS";
     public static final String ARCSERVER_PROTOCOL = "ARCSERVER";
@@ -27,7 +29,7 @@ public class CombineImageSettings {
     public static final String IMAGE_PROTOCOL="IMAGE";
     public static final String WMSC_PROTOCOL="WMSC";
     public static final String TMS_PROTOCOL="TMS";
-
+    
     private List<CombineImageUrl> urls = null;
     private List<CombineImageWkt> wktGeoms = null;
     private Bbox bbox = null;
@@ -37,11 +39,11 @@ public class CombineImageSettings {
     private Integer angle = null;
     private Color defaultWktGeomColor= Color.RED;
     private String mimeType="image/png";
-
+    
     // bbox + ";"+ resolutions + ";" + tileSize + ";" + serviceUrl;
-
-    private String tilingServiceUrl = null;
-
+    
+    private String tilingServiceUrl = null;    
+    
     /**
      * Calculate the urls in the combineImageSettings.
      */
@@ -51,7 +53,7 @@ public class CombineImageSettings {
     /**
      * Return a list of CombineImagesUrl's with correct bbox,height and width
      * @param oldList
-     * @return
+     * @return 
      */
     private List<CombineImageUrl> getCalculatedUrls(List<CombineImageUrl> oldList){
         List<CombineImageUrl> returnValue=new ArrayList();
@@ -60,13 +62,13 @@ public class CombineImageSettings {
             return oldList;
         }else if(oldList==null){
             return returnValue;
-        }
+        }        
         ImageBbox imBBox = getRequestBbox();
-
+                
         for (int i=0; i < oldList.size(); i++){
             CombineImageUrl ciu = (CombineImageUrl) oldList.get(i);
             returnValue.addAll(ciu.calculateNewUrl(imBBox));
-        }
+        }        
         return returnValue;
     }
     /**
@@ -97,10 +99,10 @@ public class CombineImageSettings {
         }
         return newBbox;
     }
-
+    
     /**
      * Add the CombineImageUrl
-     * @param ciu
+     * @param ciu 
      */
     public void addUrl(CombineImageUrl ciu) {
         if (this.urls==null){
@@ -118,9 +120,9 @@ public class CombineImageSettings {
             CombineImageWkt ciw= new CombineImageWkt(wktGeoms[i]);
             this.wktGeoms.add(ciw);
         }
-    }
-
-
+    }  
+   
+    
     /**
      * Gets the bbox from a url
      */
@@ -148,7 +150,7 @@ public class CombineImageSettings {
         }
         return hw;
     }
-
+    
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public Color getDefaultWktGeomColor() {
@@ -175,7 +177,7 @@ public class CombineImageSettings {
     public void setWktGeoms(List<CombineImageWkt> wktGeoms) {
         this.wktGeoms = wktGeoms;
     }
-
+    
     public Bbox getBbox() {
         return bbox;
     }
@@ -185,39 +187,39 @@ public class CombineImageSettings {
     public void setBbox(String bbox) throws Exception {
         this.bbox = new Bbox(bbox);
     }
-
+    
     public Integer getSrid() {
         return srid;
     }
-
+    
     public void setSrid(Integer srid) {
         this.srid = srid;
     }
-
+    
     public Integer getWidth() {
         return width;
     }
-
+    
     public void setWidth(Integer width) {
         this.width = width;
     }
-
+    
     public Integer getHeight() {
         return height;
     }
-
+    
     public void setHeight(Integer height) {
         this.height = height;
     }
-
+    
     public String getTilingServiceUrl() {
         return tilingServiceUrl;
     }
-
+    
     public void setTilingServiceUrl(String tilingServiceUrl) {
         this.tilingServiceUrl = tilingServiceUrl;
     }
-
+    
     public Integer getAngle() {
         return angle;
     }
@@ -225,13 +227,13 @@ public class CombineImageSettings {
     public void setAngle(Integer angle) {
         this.angle = angle;
     }
-
-    //</editor-fold>
+   
+    //</editor-fold>   
     /**
      * Create a new BBOX that covers the original and the rotated bbox
      * @param bbox
      * @param rotation
-     * @return
+     * @return 
      */
     private Bbox getBboxWithRotation(Bbox bb, Integer rotation) {
         //copy the bbox
@@ -254,7 +256,7 @@ public class CombineImageSettings {
         coords[2]=calcRotation(rotation, newBbox.getMaxx(),newBbox.getMaxy());
         //upper left;
         coords[3]=calcRotation(rotation, newBbox.getMinx(),newBbox.getMaxy());
-
+        
         //enlarge the orginal bbox with the  rotated bbox.
         for (int i=0; i < coords.length; i++){
             double x=coords[i][0];
@@ -272,7 +274,7 @@ public class CombineImageSettings {
         //transform the new bbox back
         newBbox.transform(centerX,centerY);
         return newBbox;
-
+        
     }
     /**
      * Calculate the rotation for a point
@@ -290,7 +292,7 @@ public class CombineImageSettings {
     }
     /**
      * Get the request Bbox,height and width
-     * @return
+     * @return 
      */
     public ImageBbox getRequestBbox() {
         Bbox correctedBbox= getCalculatedBbox();
@@ -309,7 +311,7 @@ public class CombineImageSettings {
     }
     /**
      * @settings a JSONObject in the following format:
-     * {
+     * {            
      *      requests: [
      *          {
      *              protocol: "",
@@ -334,10 +336,10 @@ public class CombineImageSettings {
      *      quality: ""
      *  }
      */
-    public static CombineImageSettings fromJson(JSONObject settings) throws JSONException, Exception{
+    public static CombineImageSettings fromJson(JSONObject settings) throws JSONException, Exception{        
         JSONObject jResponse = new JSONObject();
-
-        CombineImageSettings cis = new CombineImageSettings();
+       
+        CombineImageSettings cis = new CombineImageSettings();            
         //get the requests
         if (settings.has("requests")){
             JSONArray requests = settings.getJSONArray("requests");
@@ -355,10 +357,10 @@ public class CombineImageSettings {
                     ciu= new CombineArcIMSUrl();
                 }else if (WMS_PROTOCOL.equals(protocol)){
                     ciu = new CombineWmsUrl();
-                }else if (IMAGE_PROTOCOL.equals(protocol)) {
+                }else if (IMAGE_PROTOCOL.equals(protocol)) {                            
                     CombineStaticImageUrl csiu = new CombineStaticImageUrl();
                     if (request.has("extent")){
-                        csiu.setBbox(new Bbox(request.getString("extent")));
+                        csiu.setBbox(new Bbox(request.getString("extent")));                                
                     }
                     ciu=csiu;
                 }else if (WMSC_PROTOCOL.equals(protocol)){
@@ -368,14 +370,14 @@ public class CombineImageSettings {
                     }if (request.has("tileWidth")){
                         cwu.setTileWidth(request.getInt("tileWidth"));
                     }if (request.has("tileHeight")){
-                        cwu.setTileHeight(request.getInt("tileHeight"));
+                        cwu.setTileHeight(request.getInt("tileHeight"));                        
                     }if (request.has("resolutions")){
                         String resolutions = request.getString("resolutions");
                         String[] tokens = resolutions.split(",");
                         Double[] res = new Double[tokens.length];
                         for (int i=0; i < tokens.length; i++){
                             res[i] = new Double(tokens[i]);
-                        }
+                        }                            
                         cwu.setResolutions(res);
                     }
                     ciu = cwu;
@@ -416,7 +418,7 @@ public class CombineImageSettings {
                     ciu.setAlpha(alpha.floatValue()/100);
                 }
                 if (request.has("body")){
-                    ciu.setBody(request.getString("body"));
+                    ciu.setBody(request.getString("body"));  
                 }
                 cis.addUrl(ciu);
             }
@@ -440,7 +442,7 @@ public class CombineImageSettings {
             cis.setWktGeoms(wkts);
         }
         if (settings.has("bbox")){
-            cis.setBbox(settings.getString("bbox"));
+            cis.setBbox(settings.getString("bbox"));                
         }if (settings.has("width")){
             cis.setWidth(settings.getInt("width"));
         }if (settings.has("height")){

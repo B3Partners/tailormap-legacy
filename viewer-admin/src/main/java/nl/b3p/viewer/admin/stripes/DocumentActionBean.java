@@ -40,9 +40,9 @@ import org.stripesstuff.stripersist.Stripersist;
 public class DocumentActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/document.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editdocument.jsp";
-
+    
     private ActionBeanContext context;
-
+    
     @Validate
     private int page;
     @Validate
@@ -68,7 +68,7 @@ public class DocumentActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -129,7 +129,7 @@ public class DocumentActionBean implements ActionBean {
         this.start = start;
     }
     //</editor-fold>
-
+    
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
@@ -143,7 +143,7 @@ public class DocumentActionBean implements ActionBean {
     }
 
     @DontBind
-    public Resolution cancel() {
+    public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
     }
 
@@ -152,12 +152,12 @@ public class DocumentActionBean implements ActionBean {
         if(documentInUse()){
             String message="Het document kan niet worden verwijderd omdat deze nog in gebruik is.<br> "
                     + "Dit document is nog geconfigureerd in:<ul> ";
-
+            
             List<Level> levels = Stripersist.getEntityManager().createQuery(
                 "from Level l where :doc member of l.documents")
                 .setParameter("doc", document)
                 .getResultList();
-
+        
             for (Level level: levels){
                 for(Application app: level.findApplications()) {
                     message+="<li>Level: \""+ level.getPath() +"\" in de Applicatie \""+app.getNameWithVersion()+"\".</li>";
@@ -166,12 +166,12 @@ public class DocumentActionBean implements ActionBean {
             message+="</ul>";
             getContext().getValidationErrors().add("document", new SimpleError(message));
             return new ForwardResolution(EDITJSP);
-        }
+        }        
         Stripersist.getEntityManager().remove(document);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Document is verwijderd"));
-
+        
         return new ForwardResolution(EDITJSP);
     }
     /**
@@ -183,24 +183,24 @@ public class DocumentActionBean implements ActionBean {
                 .setParameter("doc", document)
                 .getResultList().isEmpty();
     }
-
-    public Resolution save() {
+    
+    public Resolution save() {   
         Stripersist.getEntityManager().persist(document);
         Stripersist.getEntityManager().getTransaction().commit();
-
+        
         getContext().getMessages().add(new SimpleMessage("Document is opgeslagen"));
-
+        
         return new ForwardResolution(EDITJSP);
     }
 
     @DontValidate
-    public Resolution getGridData() throws JSONException {
+    public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
-
+        
         String filterName = "";
         String filterUrl = "";
         String filterCategory = "";
-        /*
+        /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
@@ -221,10 +221,10 @@ public class DocumentActionBean implements ActionBean {
                 }
             }
         }
-
+        
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(Document.class);
-
+        
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
@@ -239,7 +239,7 @@ public class DocumentActionBean implements ActionBean {
             order.ignoreCase();
             c.addOrder(order);
         }
-
+        
         if(filterName != null && filterName.length() > 0){
             Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
             c.add(nameCrit);
@@ -252,23 +252,23 @@ public class DocumentActionBean implements ActionBean {
             Criterion rubriekCrit = Restrictions.ilike("category", filterCategory, MatchMode.ANYWHERE);
             c.add(rubriekCrit);
         }
-
+        
         int rowCount = c.list().size();
-
+        
         c.setMaxResults(limit);
         c.setFirstResult(start);
-
+        
         List documenten = c.list();
         for(Iterator it = documenten.iterator(); it.hasNext();){
             Document doc = (Document)it.next();
             JSONObject j = this.getGridRow(doc.getId().intValue(), doc.getName(), doc.getUrl(), doc.getCategory());
             jsonData.put(j);
         }
-
+        
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-
+    
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
@@ -276,13 +276,13 @@ public class DocumentActionBean implements ActionBean {
            }
         };
     }
-
-    private JSONObject getGridRow(int i, String name, String url, String category) throws JSONException {
+    
+    private JSONObject getGridRow(int i, String name, String url, String category) throws JSONException {       
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("name", name);
         j.put("url", url);
         j.put("category", category);
         return j;
-    }
+    }    
 }
