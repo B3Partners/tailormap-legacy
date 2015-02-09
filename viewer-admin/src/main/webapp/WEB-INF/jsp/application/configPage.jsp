@@ -76,7 +76,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var contextPath = "${contextPath}";
             var configObject = null;
             var details = null;
-            var appConfig = ${actionBean.appConfigJSON};
+            var appConfig = {};
+			<c:if test="${!empty actionBean.appConfigJSON};">
+				appConfig = ${actionBean.appConfigJSON};
+			</c:if>
             <c:if test="${!empty actionBean.component.config}">
                 configObject= Ext.JSON.decode(<js:quote>${actionBean.component.config}</js:quote>);
                 details = Ext.JSON.decode(<js:quote>${actionBean.details}</js:quote>);

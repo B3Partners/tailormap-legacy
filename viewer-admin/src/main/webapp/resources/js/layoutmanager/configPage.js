@@ -116,7 +116,7 @@ function createHelpTab() {
     }); 
 }
 function createLayoutTab(){
-    if(details == undefined || details == null){
+    if(typeof details === "undefined" || details === null){
         details = {
             changeablePosition: "true",
             changeableSize: "true"
