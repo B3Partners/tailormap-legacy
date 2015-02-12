@@ -1651,7 +1651,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @param ScreenPopup popup
      */
     registerPopupShow: function(popup) {
-        if(this.singlePopup && this.previousPopup) {
+        if(this.singlePopup && this.previousPopup && this.previousPopup !== popup) {
             this.previousPopup.hide();
         }
         this.previousPopup = popup;

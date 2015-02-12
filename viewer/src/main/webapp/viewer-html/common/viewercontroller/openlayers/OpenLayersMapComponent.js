@@ -449,7 +449,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomBox(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON){//6,
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomOut(frameworkOptions));
-        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM){//6,
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM){//7,
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Zoom(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions))
@@ -620,6 +620,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             this.getPanel().addControls([tool.getFrameworkTool()]);
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         }else if(tool.getType() == viewer.viewercontroller.controller.Tool.ZOOM_BAR){
+            this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
+        }else if(tool.getType() == viewer.viewercontroller.controller.Tool.ZOOM){
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         }else if (tool.getType()==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT){
             //add after the a layer is added.

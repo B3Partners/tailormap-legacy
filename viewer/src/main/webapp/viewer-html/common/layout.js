@@ -164,9 +164,11 @@ Ext.define('viewer.LayoutManager', {
                         /*regionClass=*/'left_menu',
                         /*alignment=*/regionitems[i].regionConfig.layout.floatingPosition
                     );
-                    // Add some CSS to move tools to the right place
-                    var css = '.olControlPanel { left: 68px; } .olControlPanWestItemInactive { left: 68px !important; }';
-                    Ext.util.CSS.createStyleSheet(css, "floatingmenu");
+                    if(regionitems[i].regionConfig.layout.floatingPosition && regionitems[i].regionConfig.layout.floatingPosition.substr(1) !== 'r') {
+                        // Add some CSS to move tools to the right place // TODO: Fix this, probably not the right place
+                        var css = '.olControlPanel { left: 68px; } .olControlPanWestItemInactive { left: 68px !important; }';
+                        Ext.util.CSS.createStyleSheet(css, "floatingmenu");
+                    }
                 }
             }
             // Left menu is floating, only add centerItem to layout

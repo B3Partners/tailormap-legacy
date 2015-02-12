@@ -319,7 +319,8 @@ Ext.define("viewer.components.Component",{
                 'viewercomponentsPrint': 15,
                 'viewercomponentstoolsDownloadMap': 16,
                 'viewercomponentsSpatialFilter': 17,
-                'viewercomponentsGraph': 18
+                'viewercomponentsGraph': 18,
+                'viewercomponentsTOC': 19
             },
             menuIconPosition: {
                 x: 561

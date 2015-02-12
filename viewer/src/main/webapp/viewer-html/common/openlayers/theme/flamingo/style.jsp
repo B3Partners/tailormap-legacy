@@ -132,3 +132,37 @@ background: url("${sprite}") 514px 394px;
 .olControlPanPanel .olControlPanWestItemInactive{
     background:  url("${sprite}") 514px 618px !important;
 }
+
+a.olControlZoomIn {
+    background: url("${sprite}") 507px 74px !important;
+}
+
+a.olControlZoomIn:hover {
+    background-position: 538px 74px !important;
+}
+
+a.olControlZoomOut {
+    background: url("${sprite}") 507px 44px !important;
+}
+
+a.olControlZoomOut:hover {
+    background-position: 538px 44px !important;
+}
+
+div.olControlZoom {
+    background-color: transparent;
+}
+div.olControlZoom a {
+    /* Hide text */
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+div.olControlZoom a:hover {
+    background: transparent;
+}
+@media only screen and (max-width: 600px) {
+    div.olControlZoom a:hover {
+        background: transparent;
+    }
+}

@@ -187,6 +187,7 @@ Ext.define ("viewer.components.LayerSwitch",{
                 });
             });
         }
+        this.alignContainer();
     },
     
     layerVisibilityChanged: function(map, event) {
