@@ -77,12 +77,12 @@ public class SelectedContentCache {
     }
 
     private JSONObject processCache( HttpServletRequest request, JSONObject cached) throws JSONException{
-         Set<String> roles = Authorizations.getRoles(request);
-
+        Set<String> roles = Authorizations.getRoles(request);
+       
         JSONObject levels = cached.getJSONObject("levels");
         JSONObject appLayers = cached.getJSONObject("appLayers");
         JSONArray selectedContent = cached.getJSONArray("selectedContent");
-        JSONObject services = cached.getJSONObject("services");
+        JSONObject services = cached.has("services") ? cached.getJSONObject("services") : new JSONObject();
 
         for (Iterator<String> it = appLayers.sortedKeys(); it.hasNext();) {
             String key = it.next();
