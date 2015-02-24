@@ -50,8 +50,9 @@ Ext.define ("viewer.components.tools.Zoom",{
         if(align.substr(1) === 'r') {
             pos[0] = pos[0] * -1;
         }
-        container.alignTo(Ext.getBody(), [align, align].join('-'), pos);
-        container.anchorTo(Ext.getBody(), [align, align].join('-'), pos);
+        var map = Ext.get(this.config.viewerController.layoutManager.mapId);
+        container.alignTo(map, [align, align].join('-'), pos);
+        container.anchorTo(map, [align, align].join('-'), pos);
     }
 });
 
