@@ -29,6 +29,7 @@ Ext.define ("viewer.components.tools.Zoom",{
         conf.type = viewer.viewercontroller.controller.Tool.ZOOM;
         this.initTool(conf);
         this.alignContainer(Ext.get(this.tool.frameworkObject.div));
+        this.tool.blocksDefaultTool = false;
         return this;
     },
     

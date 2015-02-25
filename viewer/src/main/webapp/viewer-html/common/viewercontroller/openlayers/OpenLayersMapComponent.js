@@ -63,12 +63,22 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     },
     
     checkTools : function(){
-        if(this.getTools().length==0){
+        var enable = true;
+        if(this.getTools().length !== 0){
+            var tools = this.getTools();
+            for (var i = 0 ; i < tools.length;i++){
+                var tool = tools[i];
+                if(tool.blocksDefaultTool){
+                    enable = false;
+                }
+            }
+        }
+
+        if(enable){
             var defaultTool = new viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool({
                 viewerController: this.viewerController,
                 id: 'defaultTool'
             });
-            //defaultTool.setFrameworkObject(null);
             this.addTool(defaultTool);
             defaultTool.setVisible(false);
             defaultTool.activate();

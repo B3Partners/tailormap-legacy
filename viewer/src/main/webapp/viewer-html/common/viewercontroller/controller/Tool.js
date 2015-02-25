@@ -53,6 +53,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     tool: null,
     mapComponent: null,
     events: null,
+    blocksDefaultTool:null,
     config :{
         id: null,
         frameworkObject: null,
@@ -70,6 +71,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         this.initConfig(config);
         viewer.viewercontroller.controller.Tool.superclass.constructor.call(this, config);
         this.events = [];
+        this.blocksDefaultTool = true;
         return this;
     },
     /**
