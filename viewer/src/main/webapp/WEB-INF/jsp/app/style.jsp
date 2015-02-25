@@ -113,9 +113,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-nlg .x-window-header-default-top-mr,
                 .x-nlg .x-window-header-default-top-bl,
                 .x-nlg .x-window-header-default-top-bc,
-                .x-nlg .x-window-header-default-top-br{
+                .x-nlg .x-window-header-default-top-br {
                     background-image: none;
                     background-color: ${steunkleur1};
+                }
+
+                /* IE9 floating left menu */
+                .x-nlg .x-window.floating-left_menu .x-window-default-tl, /* this and below: Popup header and borders */
+                .x-nlg .x-window.floating-left_menu .x-window-default-tc,
+                .x-nlg .x-window.floating-left_menu .x-window-default-tr,
+                .x-nlg .x-window.floating-left_menu .x-window-default-ml,
+                .x-nlg .x-window.floating-left_menu .x-window-default-mc,
+                .x-nlg .x-window.floating-left_menu .x-window-default-mr,
+                .x-nlg .x-window.floating-left_menu .x-window-default-bl,
+                .x-nlg .x-window.floating-left_menu .x-window-default-bc,
+                .x-nlg .x-window.floating-left_menu .x-window-default-br,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-tl,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-tc,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-tr,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-ml,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-mc,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-mr,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-bl,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-bc,
+                .x-nlg .x-window.floating-left_menu .x-window-header-default-top-br {
+                    border-color: transparent;
+                    background-color: transparent;
                 }
 
                 /* Panel border */
