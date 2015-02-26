@@ -157,6 +157,10 @@ Ext.define('viewer.LayoutManager', {
                     }
                     if(regionitems[i].regionConfig.layout.height) {
                         floatLayout.height = regionitems[i].regionConfig.layout.height;
+						if(Ext.browser.is.IE && Ext.browser.version.isLessThanOrEqual(9)) {
+                            // IE9- needs some extra height to behave the same as modern browsers
+                            floatLayout.height = (parseInt(regionitems[i].regionConfig.layout.height, 10) + 3);
+                        }
                     }
                     // Create the floating panel
                     me.createFloatingPanel(
