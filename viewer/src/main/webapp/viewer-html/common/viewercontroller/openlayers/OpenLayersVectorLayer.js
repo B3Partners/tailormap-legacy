@@ -295,7 +295,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * @return The OpenLayerstype feature
      */
     toOpenLayersFeature : function(feature){
-        var geom = OpenLayers.Geometry.fromWKT(feature.wktgeom);
+        var geom = OpenLayers.Geometry.fromWKT(feature.config.wktgeom);
         var style = this.frameworkLayer.styleMap.styles["default"];    
         style.label = feature.label;
         var olFeature = new OpenLayers.Feature.Vector(geom,{id: feature.id},{style:style});
