@@ -150,9 +150,17 @@ Ext.define('viewer.LayoutManager', {
                     var floatLayout = { width: 58, height: componentsList.length * 46 }; // default
                     if(regionitems[i].regionConfig.layout.width) {
                         floatLayout.width = regionitems[i].regionConfig.layout.width;
+                        if(Ext.browser.is.IE && Ext.browser.version.isLessThanOrEqual(9)) {
+                            // IE9- needs some extra width to behave the same as modern browsers
+                            floatLayout.width = (parseInt(regionitems[i].regionConfig.layout.width, 10) + 5);
+                        }
                     }
                     if(regionitems[i].regionConfig.layout.height) {
                         floatLayout.height = regionitems[i].regionConfig.layout.height;
+						if(Ext.browser.is.IE && Ext.browser.version.isLessThanOrEqual(9)) {
+                            // IE9- needs some extra height to behave the same as modern browsers
+                            floatLayout.height = (parseInt(regionitems[i].regionConfig.layout.height, 10) + 3);
+                        }
                     }
                     // Create the floating panel
                     me.createFloatingPanel(
