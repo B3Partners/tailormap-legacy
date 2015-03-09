@@ -351,7 +351,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     handleEvent : function(args){
         var event = args.type;
         var options={};
-        var genericEvent = this.viewerController.mapComponent.getGenericEventName(event);
+        var genericEvent = this.config.viewerController.mapComponent.getGenericEventName(event);
         if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
             if (options.layer ==undefined){
@@ -375,7 +375,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                   genericEvent==viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT){
             options.extent=this.getExtent();
         }else{
-            this.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
+            this.config.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
         }
         this.fireEvent(genericEvent,this,options);
     },
