@@ -47,7 +47,9 @@ Ext.define ("viewer.components.RequestManager",{
             
             if(request){
                 this.previousRequests[id].requests.push(request);
-                this.config.viewerController.mapComponent.setCursor(true, "wait");
+                if(options.useCursorForWaiting){
+                    this.config.viewerController.mapComponent.setCursor(true, "wait");
+                }
                 this.previousRequests[id].total++;
             }
         }

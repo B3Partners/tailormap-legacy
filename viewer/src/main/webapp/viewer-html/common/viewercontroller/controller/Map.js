@@ -287,7 +287,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *@param markerName the name of the marker
      *@param x the x coord
      *@param y the y coord
-     *@param type the type marker
+     *@param type the type marker(optional)
      *Must be implemented by subclass
      */
     setMarker : function(markerName,x,y,type){

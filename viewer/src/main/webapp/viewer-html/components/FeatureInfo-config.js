@@ -22,7 +22,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
     constructor: function (parentId,configObject){
-        if (configObject==undefined || configObject==null){
+        if (configObject===undefined || configObject===null){
             configObject={};
         }
         configObject.layerFilter=this.layerFilter;
@@ -35,37 +35,49 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype: 'textfield',
             fieldLabel: 'Link naar meer',
             name: 'moreLink',
-            /*columnWidth : 0.5,*/
-            value: this.configObject.moreLink != undefined ? this.configObject.moreLink : 'Meer',
+            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : 'Meer',
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
             fieldLabel: 'Hoogte ballon',
             name: 'height',
-            /*columnWidth : 0.5,*/
-            value: this.configObject.height != undefined ? this.configObject.height : 300,
+            value: this.configObject.height !== undefined ? this.configObject.height : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
             fieldLabel: 'Breedte ballon',
             name: 'width',
-            /*columnWidth : 0.5,*/
-            value: this.configObject.width != undefined ? this.configObject.width : 300,
+            value: this.configObject.width !== undefined ? this.configObject.width : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
             fieldLabel: 'Vaste hoogte omschrijving',
             name: 'heightDescription',
-            value: this.configObject.heightDescription != undefined ? this.configObject.heightDescription : "",
+            value: this.configObject.heightDescription !== undefined ? this.configObject.heightDescription : "",
             labelWidth: this.labelWidth
-        },{
-            xtype: 'label',
-            text: 'Bepaal hieronder wat er wordt getoond in het detail scherm (na klikken op \'link naar meer\')',
+        },
+         {
+            xtype: 'numberfield',
+            fieldLabel: 'Klik nauwkeurigheid',
+            name: 'clickRadius',
+            value: this.configObject.clickRadius !== undefined ? this.configObject.clickRadius : 4,
+            labelWidth:this.labelWidth,
             style: {
-                fontWeight: 'bold'
+                marginRight: "70px"
             }
         },{
-            xtype : 'container',
+            xtype: 'checkbox',
+            fieldLabel: 'Toon laadanimatie op plek van klikken (uit gebruikt de cursor)',
+            name: 'spinnerWhileIdentify',
+            inputValue: true,
+            checked: this.configObject.spinnerWhileIdentify !== undefined ? this.configObject.spinnerWhileIdentify : false,
+            labelWidth:this.labelWidth
+        },
+        {
+            xtype : 'fieldset',
+            collapsible: true,
+            collapsed: true,
+            title: 'Bepaal hieronder wat er wordt getoond in het detail scherm (na klikken op \'link naar meer\')',
             layout : {
                 type: 'table',
                 columns: 2,
@@ -76,43 +88,39 @@ Ext.define("viewer.components.CustomConfiguration",{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon samenvatting titel',
                     name: 'detailShowTitle',
-                    /*columnWidth : 0.5,*/
-                    // value: true,
+                    id: 'detailShowTitle',
                     inputValue: true,
-                    checked: this.configObject.detailShowTitle != undefined ? this.configObject.detailShowTitle : true,
+                    checked: this.configObject.detailShowTitle !== undefined ? this.configObject.detailShowTitle : true,
                     labelWidth:this.labelWidth,
                     style: {
-                        marginRight: "90px"
+                        marginRight: "70px"
                     }
                 },{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon samenvatting plaatje',
                     name: 'detailShowImage',
-                    /*columnWidth : 0.5,*/
-                    // value: true,
+                    id: 'detailShowImage',
                     inputValue: true,
-                    checked: this.configObject.detailShowImage != undefined ? this.configObject.detailShowImage : true,
+                    checked: this.configObject.detailShowImage !== undefined ? this.configObject.detailShowImage : true,
                     labelWidth:this.labelWidth
                 },{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon samenvatting omschrijving',
                     name: 'detailShowDesc',
-                    /*columnWidth : 0.5,*/
-                    // value: true,
+                    id: 'detailShowDesc',
                     inputValue: true,
-                    checked: this.configObject.detailShowDesc != undefined ? this.configObject.detailShowDesc : true,
+                    checked: this.configObject.detailShowDesc !== undefined ? this.configObject.detailShowDesc : true,
                     labelWidth:this.labelWidth,
                     style: {
-                        marginRight: "90px"
+                        marginRight: "70px"
                     }
                 },{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon lijst met attributen',
                     name: 'detailShowAttr',
-                    /*columnWidth : 0.5,*/
-                    // value: true,
+                    id: 'detailShowAttr',
                     inputValue: true,
-                    checked: this.configObject.detailShowAttr != undefined ? this.configObject.detailShowAttr : true,
+                    checked: this.configObject.detailShowAttr !== undefined ? this.configObject.detailShowAttr : true,
                     labelWidth:this.labelWidth
                 }
             ]
@@ -138,6 +146,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         }
         return filteredLayers;
+    },
+    getConfiguration : function(){
+        var config = this.callParent(arguments);
+        config.detailShowTitle = Ext.getCmp("detailShowTitle").getValue();
+        config.detailShowImage = Ext.getCmp("detailShowImage").getValue();
+        config.detailShowDesc = Ext.getCmp("detailShowDesc").getValue();
+        config.detailShowAttr = Ext.getCmp("detailShowAttr").getValue();
+        return config;
     }
 });
 
