@@ -104,8 +104,8 @@ Ext.define ("viewer.components.TOC",{
             }
         });
 
-        store.addListener("beforeexpand",this.beforeExpand, this);
-        store.addListener("expand",this.onExpand,this);
+        store.addListener("nodebeforeexpand",this.beforeExpand, this);
+        store.addListener("nodeexpand",this.onExpand,this);
 
         var title = "";
         if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) title = this.config.title;
