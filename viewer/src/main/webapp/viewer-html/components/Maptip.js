@@ -34,7 +34,9 @@ Ext.define ("viewer.components.Maptip",{
         detailShowTitle: true,
         detailShowDesc: true,
         detailShowImage: true,
-        heightDescription: null
+        heightDescription: null,
+        clickRadius:null,
+        spinnerWhileIdentify:null
     },
     serverRequestEnabled: false,
     serverRequestLayers: null,
@@ -65,6 +67,9 @@ Ext.define ("viewer.components.Maptip",{
             }, this);
         }
         this.onResize();
+
+        this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
+        this.config.spinnerWhileIdentify = this.config.spinnerWhileIdentify ? this.config.spinnerWhileIdentify : false;
 
         //listen to the on addlayer
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
@@ -162,7 +167,7 @@ Ext.define ("viewer.components.Maptip",{
         if (!this.requestManager || !this.enabled){
             return;
         }
-        var radius=4*map.getResolution();
+        var radius=this.config.clickRadius*map.getResolution();
         var me=this;
         var currentScale = this.config.viewerController.mapComponent.getMap().getScale();
         var inScaleLayers = new Array();
@@ -173,9 +178,21 @@ Ext.define ("viewer.components.Maptip",{
                 }
             }
         }
+        if(this.config.spinnerWhileIdentify){
+            var coords = options.coord;
+            var x = coords.x;
+            var y = coords.y;
+            this.viewerController.mapComponent.getMap().setMarker("edit", x, y, "spinner");
+            options.useCursorForWaiting = false;
+        }else{
+            options.useCursorForWaiting = true;
+        }
         var requestId = Ext.id();
 
         this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
+            if(me.config.spinnerWhileIdentify){
+                me.viewerController.mapComponent.getMap().removeMarker("edit");
+            }
             options.data = data;
             var curExtent = me.config.viewerController.mapComponent.getMap().getExtent();
             if (curExtent.equals(me.requestExtent)){
@@ -464,7 +481,9 @@ Ext.define ("viewer.components.Maptip",{
     },
     onFailure: function(e){
         this.config.viewerController.logger.error(e);
-        //Ext.MessageBox.alert("Error",e);
+        if(this.config.spinnerWhileIdentify){
+            this.viewerController.mapComponent.getMap().removeMarker("edit");
+        }
     },
     /**
      * Event handler for the ON_MAPTIP_CANCEL event
