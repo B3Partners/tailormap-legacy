@@ -59,13 +59,10 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: this.configObject.heightDescription != undefined ? this.configObject.heightDescription : "",
             labelWidth: this.labelWidth
         },{
-            xtype: 'label',
-            text: 'Bepaal hieronder wat er wordt getoond in het detail scherm (na klikken op \'link naar meer\')',
-            style: {
-                fontWeight: 'bold'
-            }
-        },{
-            xtype : 'container',
+            xtype : 'fieldset',
+            collapsible: true,
+            collapsed: true,
+            title: 'Bepaal hieronder wat er wordt getoond in het detail scherm (na klikken op \'link naar meer\')',
             layout : {
                 type: 'table',
                 columns: 2,
@@ -76,18 +73,20 @@ Ext.define("viewer.components.CustomConfiguration",{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon samenvatting titel',
                     name: 'detailShowTitle',
+                    id: 'detailShowTitle',
                     /*columnWidth : 0.5,*/
                     // value: true,
                     inputValue: true,
                     checked: this.configObject.detailShowTitle != undefined ? this.configObject.detailShowTitle : true,
                     labelWidth:this.labelWidth,
                     style: {
-                        marginRight: "90px"
+                        marginRight: "70px"
                     }
                 },{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon samenvatting plaatje',
                     name: 'detailShowImage',
+                    id: 'detailShowImage',
                     /*columnWidth : 0.5,*/
                     // value: true,
                     inputValue: true,
@@ -97,18 +96,20 @@ Ext.define("viewer.components.CustomConfiguration",{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon samenvatting omschrijving',
                     name: 'detailShowDesc',
+                    id: 'detailShowDesc',
                     /*columnWidth : 0.5,*/
                     // value: true,
                     inputValue: true,
                     checked: this.configObject.detailShowDesc != undefined ? this.configObject.detailShowDesc : true,
                     labelWidth:this.labelWidth,
                     style: {
-                        marginRight: "90px"
+                        marginRight: "70px"
                     }
                 },{
                     xtype: 'checkbox',
                     fieldLabel: 'Toon lijst met attributen',
                     name: 'detailShowAttr',
+                    id: 'detailShowAttr',
                     /*columnWidth : 0.5,*/
                     // value: true,
                     inputValue: true,
@@ -138,6 +139,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         }
         return filteredLayers;
+    },
+    getConfiguration : function(){
+        var config = this.callParent(arguments);
+        config.detailShowTitle = Ext.getCmp("detailShowTitle").getValue();
+        config.detailShowImage = Ext.getCmp("detailShowImage").getValue();
+        config.detailShowDesc = Ext.getCmp("detailShowDesc").getValue();
+        config.detailShowAttr = Ext.getCmp("detailShowAttr").getValue();
+        return config;
     }
 });
 
