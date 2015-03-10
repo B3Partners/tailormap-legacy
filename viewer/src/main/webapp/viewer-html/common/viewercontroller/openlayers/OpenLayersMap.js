@@ -24,6 +24,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     extend: "viewer.viewercontroller.controller.Map",
     layersLoading : null,
     utils:null,
+    markerIcons:null,
     /**
      * @constructor
      * @see viewer.viewercontroller.controller.Map#constructor
@@ -75,7 +76,11 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         this.layersLoading = 0;
         this.markerLayer=null;
-        this.defaultIcon=null;
+        this.defaultIcon=[];
+        this.markerIcons = {
+            "default": contextPath + '/viewer-html/common/openlayers/img/marker.png',
+            "spinner": contextPath + '/resources/images/spinner.gif'
+        };
         this.markers=new Object();
         this.getFeatureInfoControl = null;
         this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved, this);
@@ -258,16 +263,22 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     *TODO: marker icon path...
     */
     setMarker : function(markerName,x,y,type){
-        if (this.markerLayer==null){
+        if (this.markerLayer===null){
             this.markerLayer = new OpenLayers.Layer.Markers("Markers");
             this.frameworkMap.addLayer(this.markerLayer);
+        }
+        if(!type){
+            type = "default";
+        }
+        if(!Ext.isDefined(this.defaultIcon[type])){
             var size = new OpenLayers.Size(17,17);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-            this.defaultIcon= new OpenLayers.Icon(contextPath+'/viewer-html/common/openlayers/img/marker.png',size,offset);
+            var icon = this.markerIcons[type];
+            this.defaultIcon [type] =  new OpenLayers.Icon(icon, size, offset);
         }
-        /*According the 'type' load a icon: no types yet only default*/
-        var icon= this.defaultIcon.clone();
-        if (this.markers[markerName]==undefined){
+        var defaultIcon = this.defaultIcon[type];
+        var icon= defaultIcon.clone();
+        if (this.markers[markerName]=== undefined){
             this.markers[markerName]= new OpenLayers.Marker(new OpenLayers.LonLat(x,y),icon);
             this.markerLayer.addMarker(this.markers[markerName]);
         }else{
