@@ -13,14 +13,16 @@ environment:
     JAVA_HOME: C:\Program Files\Java\jdk1.8.0
 
 install:
-- set MVN_VERSION=3.2.5
-- set PATH=%PATH%;C:\bin\apache-maven-%MVN_VERSION%\bin
-- IF NOT exist "C:\bin\apache-maven-%MVN_VERSION%\bin\*.*" (echo Maven %MVN_VERSION% not installed, so install it & cinst maven -Version %MVN_VERSION%) ELSE (echo Maven %MVN_VERSION% already installed)
-- mvn install -U -Dmaven.test.skip=true -B -V -fae -q -T2
+  - set MVN_VERSION=3.2.5
+  - set PATH=%PATH%;C:\bin\apache-maven-%MVN_VERSION%\bin
+  - IF NOT exist "C:\bin\apache-maven-%MVN_VERSION%\bin\*.*" (echo Maven %MVN_VERSION% not installed, so install it & cinst maven -Version %MVN_VERSION%) ELSE (echo Maven %MVN_VERSION% already installed)- 
+  - mvn install -U -Dmaven.test.skip=true -B -V -fae -q -T2
 
 cache:
-- C:\bin\apache-maven-%MVN_VERSION%
-- C:\Users\appveyor\.m2\repository
+  - C:\bin\apache-maven-%MVN_VERSION%
+  - C:\Users\appveyor\.m2\repository
+
+build: off
 
 test_script:
-- mvn -e test verify -B
+  - mvn -e test verify -B
