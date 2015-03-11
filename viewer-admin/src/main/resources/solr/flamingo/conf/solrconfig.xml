@@ -105,19 +105,6 @@
         <int name="xsltCacheLifetimeSeconds">5</int>
     </queryResponseWriter>
 
-    <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/suggest">
-        <lst name="defaults">
-            <str name="spellcheck">true</str>
-            <str name="spellcheck.dictionary">suggest</str>
-            <str name="spellcheck.onlyMorePopular">true</str>
-            <str name="spellcheck.count">10</str>
-            <str name="spellcheck.collate">true</str>
-        </lst>
-        <arr name="components">
-            <str>suggest</str>
-        </arr>
-    </requestHandler>
-
 <!-- SearchHandler
 
        http://wiki.apache.org/solr/SearchHandler
