@@ -29,7 +29,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             config.showAllLayersOff=config.showToggleAllLayers;
         }
         var me=this;
-        console.log(config);
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
@@ -164,6 +163,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                     inputValue: false, 
                     checked: !me.configObject.initToggleAllLayers
                 }]
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Tabblad activeren na verandering boomstructuur (door bijv. Selectie module). Alleen geldig wanneer TOC in tabblad staat',
+                inputValue: true,
+                name: 'showAfterSelectedContentChange',
+                checked: config.showAfterSelectedContentChange !== undefined ? config.showAfterSelectedContentChange : false,
+                // value: true,
+                labelWidth:me.labelWidth
             }],
             renderTo: parentid
         });      

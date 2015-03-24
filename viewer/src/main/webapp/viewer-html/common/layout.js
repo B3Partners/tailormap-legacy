@@ -697,6 +697,13 @@ Ext.define('viewer.LayoutManager', {
             Ext.getCmp(me.tabComponents[componentId].tabId).tabBar.items.getAt(me.tabComponents[componentId].tabNo).setText(title);
         }
     },
+    
+    showTabComponent: function(componentId) {
+        if(!this.isTabComponent(componentId)) {
+            return;
+        }
+        Ext.getCmp(this.tabComponents[componentId].tabId).setActiveTab(this.tabComponents[componentId].tabNo);
+    },
 
     isTabComponent: function(componentId) {
         var me = this;

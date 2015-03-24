@@ -688,6 +688,10 @@ Ext.define ("viewer.components.TOC",{
         this.panel.destroy();
         this.loadTree();
         this.loadInitLayers();
+        // Activate component (only applies when in tabs and not a popup and when configured so
+        if(this.config.hasOwnProperty('showAfterSelectedContentChange') && this.config.showAfterSelectedContentChange && !this.config.isPopup && this.config.viewerController.layoutManager.isTabComponent(this.name)) {
+            this.config.viewerController.layoutManager.showTabComponent(this.name)
+        }
     },
     extentChanged : function (map,obj){
         var scale = map.getScale(obj.extent);
