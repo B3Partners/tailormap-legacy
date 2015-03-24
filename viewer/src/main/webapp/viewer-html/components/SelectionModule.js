@@ -490,11 +490,11 @@ Ext.define ("viewer.components.SelectionModule",{
             // Form above the trees with radiobuttons and textfields
             xtype: 'form',
             layout: {
-                type:'hbox',
-                pack:'end'
+                type:'hbox'
             },
             items: [
-                    {xtype:"label", text:"Tip: toevoegen kaarten kan ook door dubbelklikken."},
+                    {xtype:"label", text:"Tip: toevoegen kaarten kan ook door dubbelklikken.", margin: '3 0 0 0'},
+                    {xtype:'tbfill'},
                     {xtype: 'button', text: 'Annuleren', handler: function() {
                         me.cancelSelection();
                     }},
