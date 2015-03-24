@@ -606,6 +606,26 @@
         }
     },
     {
+        className: "viewer.components.Marker",
+        name: "Marker",
+        shortName: "Mrk",
+        singleton: true,
+        group: "Tools",
+        sources: ["Marker.js"],
+        restrictions: ["content"],
+        extPropertyGridConfigs: {
+            propertyNames: {
+                markerX: "X",
+                markerY: "Y"
+            },
+            source: {
+                markerX: "",
+                markerY: ""
+            }
+        },
+        helpText: "U kunt hierboven een X/Y coordinaat opgeven voor het plaatsen van een marker bij het starten van de kaart. U kunt deze ook in de URL meegeven als parameters markerX en markerY, bijv. http://[KAARTURL]/[KAART]/v1?markerX=[X]&amp;markerY=[Y]"
+    },
+    {
         className: "viewer.components.AttributeList",
         name: "Attributen Lijst",
         group: "Component",

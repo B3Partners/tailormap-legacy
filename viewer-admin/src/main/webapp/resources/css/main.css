@@ -687,3 +687,8 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     top: 0;
     left: 0;
 }
+/* Extra help text which can be defined in the components.json */
+.extra-help-text {
+    margin-top: 10px;
+    width: 740px;
+}

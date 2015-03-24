@@ -68,7 +68,12 @@ Ext.onReady(function(){
                 width: 740
             });
         }
-    
+        if(metadata.hasOwnProperty('helpText') && metadata.helpText) {
+            var helpDiv = document.createElement('div');
+            helpDiv.className = 'extra-help-text';
+            helpDiv.innerHTML = metadata.helpText;
+            document.getElementById('config').appendChild(helpDiv);
+        }
     }
 });
 function createHelpTab() {
