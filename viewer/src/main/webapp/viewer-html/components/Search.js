@@ -99,6 +99,9 @@ Ext.define ("viewer.components.Search",{
             label: me.config.label,
             handler: function() {
                 me.popup.show();
+                if(me.searchField) {
+                    me.searchField.focus();
+                }
             }
         });
     },
