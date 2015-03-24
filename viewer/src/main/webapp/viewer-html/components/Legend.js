@@ -116,10 +116,6 @@ Ext.define("viewer.components.Legend", {
 
         this.legendContainer = document.createElement('div');
         this.legendContainer.className = 'legend';
-        // Hide legend container in popup mode
-        if(this.config.isPopup) {
-            this.legendContainer.style.display = 'none';
-        }
         document.body.appendChild(this.legendContainer);
 
         var config = {
@@ -172,8 +168,6 @@ Ext.define("viewer.components.Legend", {
             label: me.config.label,
             handler: function() {
                 me.popup.show();
-                // make sure legendcontainer is visible
-                me.legendContainer.style.display = 'block';
             }
         });
     },
