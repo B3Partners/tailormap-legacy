@@ -466,6 +466,9 @@ Ext.define ("viewer.components.Maptip",{
                     if(nl2br) {
                         value = Ext.util.Format.nl2br(value);
                     }
+                    if(this.config.hasOwnProperty('detailHideNullValues') && this.config.detailHideNullValues && value.toLowerCase() === 'null') {
+                        value = "";
+                    }
                     html+="<td class='feature_detail_attr_value'>"+value+"</td>";
                     html+="</tr>"
                 }
@@ -515,6 +518,9 @@ Ext.define ("viewer.components.Maptip",{
             }
             if(nl2br) {
                 value = Ext.util.Format.nl2br(value);
+            }
+            if(this.config.hasOwnProperty('detailHideNullValues') && this.config.detailHideNullValues && value.toLowerCase() === 'null') {
+                value = "";
             }
             newText=newText.replace(regex,value);
         }

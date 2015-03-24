@@ -122,6 +122,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                     inputValue: true,
                     checked: this.configObject.detailShowAttr !== undefined ? this.configObject.detailShowAttr : true,
                     labelWidth:this.labelWidth
+                },{
+                    xtype: 'checkbox',
+                    fieldLabel: '"null" waarden verbergen',
+                    name: 'detailHideNullValues',
+                    id: 'detailHideNullValues',
+                    inputValue: true,
+                    checked: this.configObject.detailHideNullValues !== undefined ? this.configObject.detailHideNullValues : false,
+                    labelWidth:this.labelWidth
                 }
             ]
         } 
@@ -153,6 +161,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         config.detailShowImage = Ext.getCmp("detailShowImage").getValue();
         config.detailShowDesc = Ext.getCmp("detailShowDesc").getValue();
         config.detailShowAttr = Ext.getCmp("detailShowAttr").getValue();
+        config.detailHideNullValues = Ext.getCmp("detailHideNullValues").getValue();
         return config;
     }
 });
