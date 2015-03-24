@@ -492,15 +492,34 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                         measureValueDiv.style.left=px.x+10+'px';
                         measureValueDiv.style.display="block";
                         var measureValueText=document.getElementById('olControlMeasureValueText');
-                        var bestMeasure=this.getBestLength(evt.parent);
-                        if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
-                            bestMeasure = this.getBestArea(evt.parent);
-                            if(bestMeasure[0] < 0){
-                                bestMeasure[0] *= -1;
+                        var decimals = conf.decimals || 3;
+                        var decimalSeparator = conf.decimalSeparator || ",";
+                        var measure;
+                        var units;
+                        if(conf.magicnumber && conf.units) {
+                            // Add custom unit, based on km2
+                            var olUnit = conf.units.replace(/\W/g, '');
+                            if(!OpenLayers.INCHES_PER_UNIT.hasOwnProperty(olUnit)) {
+                                OpenLayers.INCHES_PER_UNIT[olUnit] = OpenLayers.INCHES_PER_UNIT.km / (conf.magicnumber / 10);
                             }
-                            bestMeasure[1] += "<sup>2</" + "sup>";
+                            measure = (conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA ? this.getArea(evt.parent, olUnit) : this.getLength(evt.parent, olUnit));
+                            if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA && measure < 0) {
+                                measure *= -1;
+                            }
+                            units = conf.units;
+                        } else {
+                            var bestMeasure=this.getBestLength(evt.parent);
+                            if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
+                                bestMeasure = this.getBestArea(evt.parent);
+                                if(bestMeasure[0] < 0){
+                                    bestMeasure[0] *= -1;
+                                }
+                                bestMeasure[1] += "<sup>2</" + "sup>";
+                            }
+                            measure = bestMeasure[0];
+                            units = bestMeasure[1];
                         }
-                        measureValueText.innerHTML= bestMeasure[0].toFixed(3)+" "+bestMeasure[1];
+                        measureValueText.innerHTML= ("" + measure.toFixed(decimals)).replace('.', decimalSeparator) + " " + units;
                     }
                 }
             };
@@ -510,22 +529,47 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
             if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
                 measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
-                
             }
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
-                var measureValueDiv=document.getElementById("olControlMeasureValue");
-                if (measureValueDiv){                
-                    measureValueDiv.style.display="none";
-                }
-                this.cancel();
+                var measureValueDiv = document.getElementById("olControlMeasureValue");
+                var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
                 if(conf.nonSticky){
+                    if (measureValueDiv){                
+                        measureValueDiv.style.display="none";
+                    }
+                    if(clonedValueDiv && clonedValueDiv.parentNode) {
+                        clonedValueDiv.parentNode.removeChild(clonedValueDiv);
+                    }
+                    this.cancel();
                     me.activateTool(null,true);
+                    return;
+                }
+                if(!measureValueDiv) {
+                    return;
+                }
+                // Clone the measureValueDiv to keep just measured area/length visible
+                if(clonedValueDiv && clonedValueDiv.parentNode) {
+                    clonedValueDiv.parentNode.removeChild(clonedValueDiv);
+                }
+                clonedValueDiv = measureValueDiv.cloneNode(true);
+                clonedValueDiv.id = 'olControlMeasureValueClone';
+                clonedValueDiv.querySelector('#olControlMeasureValueText').id = 'olControlMeasureValueTextClone';
+                this.map.div.appendChild(clonedValueDiv);
+            });
+            measureTool.getFrameworkTool().events.register('measurepartial',measureTool.getFrameworkTool(),function(){
+                var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
+                if(clonedValueDiv && clonedValueDiv.parentNode) {
+                    clonedValueDiv.parentNode.removeChild(clonedValueDiv);
                 }
             });
             measureTool.getFrameworkTool().events.register('deactivate',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
+                var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
                 if (measureValueDiv){
                     measureValueDiv.style.display="none";
+                }
+                if(clonedValueDiv && clonedValueDiv.parentNode) {
+                    clonedValueDiv.parentNode.removeChild(clonedValueDiv);
                 }
             });
             return measureTool;

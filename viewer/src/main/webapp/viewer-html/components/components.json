@@ -222,19 +222,22 @@
         extPropertyGridConfigs: {
             propertyNames: {
                 tooltip: "Tooltip",
-                units: "Eenheden",
-                magicnumber: "Delen door",
+                units: "Eenheid",
+                magicnumber: "Delen door (berekend vanaf km)",
                 decimals: "Decimalen",
-                nonSticky: "Ga na gebruik naar de eerste tool"
+                nonSticky: "Ga na gebruik naar de eerste tool",
+                decimalSeparator: "Scheidingsteken decimalen"
             },
             source: {
                 tooltip: "Measure line",
                 units: "",
                 decimals: 2,
                 magicnumber: "",
-                nonSticky: false
+                nonSticky: false,
+                decimalSeparator: ","
             }
-        }
+        },
+        helpText: "Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen."
     },
     {
         className: "viewer.components.tools.Measure.Area",
@@ -250,19 +253,22 @@
         extPropertyGridConfigs: {
             propertyNames: {
                 tooltip: "Tooltip",
-                units: "Eenheden",
-                magicnumber: "Delen door",
+                units: "Eenheid",
+                magicnumber: "Delen door (berekend vanaf km<sup>2</sup>)",
                 decimals: "Decimalen",
-                nonSticky: "Ga na gebruik naar de eerste tool"
+                nonSticky: "Ga na gebruik naar de eerste tool",
+                decimalSeparator: "Scheidingsteken decimalen"
             },
             source: {
                 tooltip: "Measure area",
                 units: "",
                 decimals: 2,
                 magicnumber: "",
-                nonSticky: false
+                nonSticky: false,
+                decimalSeparator: ","
             }
-        }
+        },
+        helpText: "Indien u handmatig een eenheid opgeeft kunt u een superscript 2 krijgen (bijv. m<sup>2</sup>) door m&lt;sup&gt;2&lt;/sup&gt; op te geven bij eenheid. Bij \"Delen door\" wordt uitgegegaan van km<sup>2</sup>, dus om bijv. ha te krijgen moet er worden gedeeld door 100. Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen."
     },
     {
         className: "viewer.components.tools.FullExtent",
