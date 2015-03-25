@@ -21,6 +21,7 @@ import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.Authorizations.ReadWrite;
+import nl.b3p.viewer.util.DB;
 import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
@@ -409,11 +410,16 @@ public abstract class GeoService {
 
                 if(!layerEntities.isEmpty()) {
                     // Prevent n+1 queries
-                    Stripersist.getEntityManager().createQuery("from Layer l "
-                            + "left join fetch l.details "
-                            + "where l in (:layers)")
-                            .setParameter("layers", layerEntities)
-                            .getResultList();
+                    int i = 0;
+                    do {
+                        List<Layer> subList = layerEntities.subList(i, Math.min(layerEntities.size(), i+DB.MAX_LIST_EXPRESSIONS));
+                        Stripersist.getEntityManager().createQuery("from Layer l "
+                                + "left join fetch l.details "
+                                + "where l in (:layers)")
+                                .setParameter("layers", subList)
+                                .getResultList();
+                        i += subList.size();
+                    } while(i < layerEntities.size());
                 }
             }
 

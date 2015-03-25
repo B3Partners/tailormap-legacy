@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.util.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -249,23 +250,9 @@ public class SelectedContentCache {
             o.put("rootLevel", root.getId().toString());
 
             Application.TreeCache treeCache = app.loadTreeCache();
+            treeCache.initializeLevels("left join fetch l.documents");
+            treeCache.initializeApplicationLayers("left join fetch al.details");
             Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app);
-
-            // Prevent n+1 queries for each level
-            Stripersist.getEntityManager().createQuery("from Level l "
-                    + "left join fetch l.documents "
-                    + "where l in (:levels) ")
-                    .setParameter("levels", treeCache.getLevels())
-                    .getResultList();
-
-            if (!treeCache.getApplicationLayers().isEmpty()) {
-                // Prevent n+1 queries for each ApplicationLayer
-                Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
-                        + "left join fetch al.details "
-                        + "where al in (:alayers) ")
-                        .setParameter("alayers", treeCache.getApplicationLayers())
-                        .getResultList();
-            }
 
             JSONObject levels = new JSONObject();
             o.put("levels", levels);

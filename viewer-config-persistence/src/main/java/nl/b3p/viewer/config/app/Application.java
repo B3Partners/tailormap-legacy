@@ -24,6 +24,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.util.DB;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
@@ -251,6 +252,36 @@ public class Application {
         public List<Level> getLevels() {
             return levels;
         }
+
+        public void initializeLevels(String leftJoins) {
+            // Prevent n+1 queries for each level
+            int i = 0;
+            do {
+                List<Level> subList = levels.subList(i, Math.min(levels.size(), i+DB.MAX_LIST_EXPRESSIONS));
+                Stripersist.getEntityManager().createQuery("from Level l "
+                        + leftJoins + " "
+                        + "where l in (:levels) ")
+                        .setParameter("levels", subList)
+                        .getResultList();
+                i += subList.size();
+            } while(i < levels.size());
+        }
+
+        public void initializeApplicationLayers(String leftJoins) {
+            if (!getApplicationLayers().isEmpty()) {
+                // Prevent n+1 queries for each ApplicationLayer
+                int i = 0;
+                do {
+                    List<ApplicationLayer> subList = applicationLayers.subList(i, Math.min(applicationLayers.size(), i+DB.MAX_LIST_EXPRESSIONS));
+                    Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
+                            + leftJoins + " "
+                            + "where al in (:alayers) ")
+                            .setParameter("alayers", subList)
+                            .getResultList();
+                    i += subList.size();
+                } while(i < applicationLayers.size());
+            }
+        }
     }
     
     @Transient
@@ -266,13 +297,8 @@ public class Application {
                 .setParameter("rootId", root.getId())
                 .getResultList();
             
-            // Prevent n+1 queries for each level            
-            Stripersist.getEntityManager().createQuery("from Level l "
-                    + "left join fetch l.layers "
-                    + "where l in (:levels) ")
-                    .setParameter("levels", treeCache.levels)
-                    .getResultList();    
-            
+            treeCache.initializeLevels("left join fetch l.layers");
+
             treeCache.childrenByParent = new HashMap();
             treeCache.applicationLayers = new ArrayList();
             
