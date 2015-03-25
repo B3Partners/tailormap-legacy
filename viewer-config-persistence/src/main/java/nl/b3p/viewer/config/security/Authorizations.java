@@ -220,8 +220,14 @@ public class Authorizations {
         Set<String> roles = (Set<String>)request.getAttribute(ROLES_ATTRIBUTE);
         
         if(roles == null) {
-            roles = new HashSet<String>(Stripersist.getEntityManager().createQuery("select g.name from User u join u.groups g where u.username = :username")
-                .setParameter("username", request.getRemoteUser()).getResultList());
+            roles = new HashSet<String>();
+            List<String> groups = Stripersist.getEntityManager().createQuery("select name FROM Group").getResultList();
+            for (String group : groups) {
+                if(request.isUserInRole(group)){
+                    roles.add(group);
+                }
+            }
+            
             request.setAttribute(ROLES_ATTRIBUTE, roles);
         }
         return roles;
