@@ -32,6 +32,7 @@ import org.apache.commons.io.IOUtils;
  * The resource is in the same directory (or a child) as the component class.
  * @author Roy Braam
  * @author Meine Toonen
+ * @author Eddy Scheper, ARIS B.V.
  */
 
 @UrlBinding("/action/componentresource")
@@ -43,6 +44,8 @@ public class ComponentResourceActionBean implements ActionBean{
     private String className;
     @Validate
     private String resource;
+    @Validate
+    private String mimeType;
 
     public Resolution resource() throws IOException{
         if (className==null || getResource() == null){
@@ -62,7 +65,13 @@ public class ComponentResourceActionBean implements ActionBean{
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN,"Not allowed to access file");
         }
 
-        String contentType=getContentType(file);
+        String contentType;
+        if (getMimeType()==null){
+            contentType=getContentType(file);
+        } else {
+            contentType=getMimeType();
+        }
+        
         return new StreamingResolution(contentType) {
             @Override
             protected void stream(HttpServletResponse response) throws IOException {
@@ -101,6 +110,14 @@ public class ComponentResourceActionBean implements ActionBean{
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public String getResource() {
