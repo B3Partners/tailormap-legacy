@@ -52,24 +52,24 @@ public class SelectedContentCache {
     public static final String AUTHORIZATIONS_KEY = "authorizations";
     public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
     public static final String DETAIL_CACHED_SELECTED_CONTENT_DIRTY = "cachedSelectedContentDirty";
+    public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT = "cachedExpandedSelectedContent";
+    public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY = "cachedExpandedSelectedContentDirty";
 
     public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
 
         // Don't use cache when any of these parameters is true, cache only
         // the JSON variant used when starting up the viewer
-        if(validXmlTags || includeAppLayerAttributes || includeRelations) {
-            return processCache(request,createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations));
-        }
+        boolean useExpanded = validXmlTags || includeAppLayerAttributes || includeRelations;
 
         JSONObject cached = null;
-        if(mustCreateNewCache(app)){
+        if(mustCreateNewCache(app, useExpanded)){
             cached = createSelectedContent(app, validXmlTags,includeAppLayerAttributes, includeRelations);
             ClobElement el = new ClobElement(cached.toString());
-            app.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT, el);
-            setApplicationCacheDirty(app, false);
+            app.getDetails().put(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT, el);
+            setApplicationCacheDirty(app, false,useExpanded);
             Stripersist.getEntityManager().getTransaction().commit();
         }else{
-            ClobElement el = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
+            ClobElement el = app.getDetails().get(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT);
             cached = new JSONObject(el.getValue());
         }
 
@@ -390,18 +390,18 @@ public class SelectedContentCache {
         }
     }
 
-    private boolean mustCreateNewCache(Application app){
-        ClobElement cache = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
+    private boolean mustCreateNewCache(Application app, boolean expanded){
+        ClobElement cache = expanded ? app.getDetails().get(DETAIL_CACHED_EXPANDED_SELECTED_CONTENT) : app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
         if(cache == null){
             return true;
         }else{
-            ClobElement dirtyClob = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT_DIRTY);
+            ClobElement dirtyClob = expanded ? app.getDetails().get(DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY) : app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT_DIRTY);
             boolean dirty = Boolean.valueOf(dirtyClob.getValue());
             return dirty;
         }
     }
 
-    public static void setApplicationCacheDirty(Application app, Boolean dirty){
+    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded){
         Set<Application> apps = new HashSet<Application>();
         if(dirty){
             apps = app.getRoot().findApplications();
@@ -410,7 +410,12 @@ public class SelectedContentCache {
         }
         // Also invalidate possible mashups
         for (Application application : apps) {
-            application.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
+            if(dirty){
+                application.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
+                application.getDetails().put(DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
+            }else{
+                application.getDetails().put(expanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY : DETAIL_CACHED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
+            }
         }
     }
 }

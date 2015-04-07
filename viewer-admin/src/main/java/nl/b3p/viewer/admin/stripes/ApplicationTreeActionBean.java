@@ -268,7 +268,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
         em.persist(l);
         em.persist(parent);
-        SelectedContentCache.setApplicationCacheDirty(application, true);
+        SelectedContentCache.setApplicationCacheDirty(application, true,false);
         application.authorizationsModified();
         em.getTransaction().commit();
 

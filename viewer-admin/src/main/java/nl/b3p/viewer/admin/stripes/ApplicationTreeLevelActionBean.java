@@ -101,7 +101,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         }
         
         application.authorizationsModified();        
-        SelectedContentCache.setApplicationCacheDirty(application, true);
+        SelectedContentCache.setApplicationCacheDirty(application, true, false);
         Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);
@@ -146,7 +146,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         } else {
             try {
                 Stripersist.getEntityManager().persist(level);
-                SelectedContentCache.setApplicationCacheDirty(application, true);
+                SelectedContentCache.setApplicationCacheDirty(application, true, false);
                 Stripersist.getEntityManager().getTransaction().commit();
                 json.put("name", level.getName());
                 json.put("success", Boolean.TRUE);
@@ -189,7 +189,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 parent.getChildren().remove(level);
                 Stripersist.getEntityManager().remove(level);
                 application.authorizationsModified();
-                SelectedContentCache.setApplicationCacheDirty(application, true);
+                SelectedContentCache.setApplicationCacheDirty(application, true, false);
                 Stripersist.getEntityManager().getTransaction().commit();
 
                 json.put("success", Boolean.TRUE);
@@ -261,7 +261,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         
         Stripersist.getEntityManager().persist(level);
         application.authorizationsModified();
-        SelectedContentCache.setApplicationCacheDirty(application, true);
+        SelectedContentCache.setApplicationCacheDirty(application, true, false);
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));

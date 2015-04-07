@@ -440,7 +440,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         application.authorizationsModified();
 
         displayName = applicationLayer.getDisplayName();
-        SelectedContentCache.setApplicationCacheDirty(application, true);
+        SelectedContentCache.setApplicationCacheDirty(application, true, false);
         
         Stripersist.getEntityManager().getTransaction().commit();
 

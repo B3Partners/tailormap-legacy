@@ -509,7 +509,7 @@ public class GeoServiceActionBean implements ActionBean {
         // affect the selectedContent
         List<Application> apps = findApplications();
         for (Application application : apps) {
-            SelectedContentCache.setApplicationCacheDirty(application, true);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false);
         }
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
         service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement(""+useProxy));
@@ -621,7 +621,7 @@ public class GeoServiceActionBean implements ActionBean {
 
         List<Application> apps = findApplications();
         for (Application application : apps) {
-            SelectedContentCache.setApplicationCacheDirty(application, true);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false);
         }
 
         Stripersist.getEntityManager().getTransaction().commit();
