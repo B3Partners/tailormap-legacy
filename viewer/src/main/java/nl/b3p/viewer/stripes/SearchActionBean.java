@@ -53,7 +53,7 @@ public class SearchActionBean implements ActionBean {
     @Validate
     private String searchRequestId;
     @Validate(converter = OneToManyTypeConverter.class)
-    private List<Long> visibleLayers = new ArrayList();
+    private List<String> visibleLayers = new ArrayList();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -104,11 +104,11 @@ public class SearchActionBean implements ActionBean {
         this.searchRequestId = searchRequestId;
     }
 
-    public List<Long> getVisibleLayers() {
+    public List<String> getVisibleLayers() {
         return visibleLayers;
     }
 
-    public void setVisibleLayers(List<Long> visibleLayers) {
+    public void setVisibleLayers(List<String> visibleLayers) {
         this.visibleLayers = visibleLayers;
     }
 
@@ -214,7 +214,13 @@ public class SearchActionBean implements ActionBean {
             } else if(type.equalsIgnoreCase("solr")){
                 client = new SolrSearchClient();
                 ((SolrSearchClient)client).setConfig(config);
-                ((SolrSearchClient)client).setVisibleLayers(visibleLayers);
+                List<Long> visLayers = new ArrayList();
+                for (String visibleLayer : visibleLayers) {
+                    try{
+                        visLayers.add(new Long(visibleLayer));
+                    }catch(NumberFormatException e){}
+                }
+                ((SolrSearchClient)client).setVisibleLayers(visLayers);
             }else{
                 client = null;
             }

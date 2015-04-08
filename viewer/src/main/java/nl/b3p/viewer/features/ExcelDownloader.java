@@ -125,7 +125,7 @@ public class ExcelDownloader extends FeatureDownloader{
                     value = attribute.toString();
                 }
                 cell = row.createCell(colNum);
-                String styleName = "cell_normal";;
+                String styleName = "cell_normal";
                 cell.setCellValue(value);
                 cell.setCellStyle(styles.get(styleName));
                 colNum++;
