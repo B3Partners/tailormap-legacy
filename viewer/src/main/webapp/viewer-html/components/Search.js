@@ -250,7 +250,7 @@ Ext.define ("viewer.components.Search",{
                         specialkey: function(field, e){
                             if (e.getKey() === e.ENTER) {
                                 var item = null;
-                                if(field.picker.pickerField && field.picker.pickerField.listKeyNav && field.picker.pickerField.listKeyNav.boundList.highlightedItem) {
+                                if(field.picker && field.picker.pickerField && field.picker.pickerField.listKeyNav && field.picker.pickerField.listKeyNav.boundList.highlightedItem) {
                                     item = field.picker.pickerField.listKeyNav.boundList.highlightedItem;
                                 }
                                 if(!item){

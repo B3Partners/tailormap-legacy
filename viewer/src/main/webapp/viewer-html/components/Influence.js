@@ -62,7 +62,7 @@ Ext.define ("viewer.components.Influence",{
             },
             viewerController: this.config.viewerController
         });
-        Ext.util.Observable.capture(this.config.viewerController.mapComponent.getMap(), function(event) {
+        Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function(event) {
             if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO) {
                 if(me.mapClickActivated) {
                     return false;
