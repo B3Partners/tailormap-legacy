@@ -74,6 +74,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth:this.labelWidth
         },
         {
+            xtype: 'checkbox',
+            fieldLabel: '"null" waarden verbergen',
+            name: 'detailHideNullValues',
+            id: 'detailHideNullValues',
+            inputValue: true,
+            checked: this.configObject.detailHideNullValues !== undefined ? this.configObject.detailHideNullValues : false,
+            labelWidth:this.labelWidth
+        },
+        {
             xtype : 'fieldset',
             collapsible: true,
             collapsed: true,
@@ -121,14 +130,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                     id: 'detailShowAttr',
                     inputValue: true,
                     checked: this.configObject.detailShowAttr !== undefined ? this.configObject.detailShowAttr : true,
-                    labelWidth:this.labelWidth
-                },{
-                    xtype: 'checkbox',
-                    fieldLabel: '"null" waarden verbergen',
-                    name: 'detailHideNullValues',
-                    id: 'detailHideNullValues',
-                    inputValue: true,
-                    checked: this.configObject.detailHideNullValues !== undefined ? this.configObject.detailHideNullValues : false,
                     labelWidth:this.labelWidth
                 }
             ]
