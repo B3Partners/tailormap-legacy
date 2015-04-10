@@ -76,7 +76,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         this.layersLoading = 0;
         this.markerLayer=null;
-        this.defaultIcon=[];
+        this.defaultIcon = {};
         this.markerIcons = {
             "default": contextPath + '/viewer-html/common/openlayers/img/marker.png',
             "spinner": contextPath + '/resources/images/spinner.gif'
