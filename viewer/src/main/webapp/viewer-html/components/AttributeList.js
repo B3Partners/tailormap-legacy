@@ -23,6 +23,7 @@ Ext.define ("viewer.components.AttributeList",{
     extend: "viewer.components.Component",
     grids: null,
     pagers: null,
+    attributeIndex: 0,
     downloadForm:null,
     config: {
         layers:null,
@@ -278,22 +279,36 @@ Ext.define ("viewer.components.AttributeList",{
             for (var i=0; i < rawData.related_featuretypes.length; i++){
                 var ft = rawData.related_featuretypes[i];
                 var newEl =document.createElement("div");
-                var gridId=""+record.index+"_"+ft.id;
+                var gridId = "" + (this.attributeIndex++) + "_" + ft.id;
                 childGridIds.push(gridId);
                 newEl.id=this.name +gridId+ 'Container';
                 newEl.style.margin="5px";
                 expandRow.children[0].children[0].appendChild(newEl);
                 this.createGrid(gridId,newEl, this.appLayer, ft.id,ft.filter,false);
             }
-            store.addListener("load",function(){
-                for (var i=0; i < childGridIds.length; i ++){
-                    this.deleteGridWithId(childGridIds[i]);
-                }
-            },this)
+            store.addListener("sort", function() {
+                // Added setTimeout because panels need to be destroyed after sort
+                // event is completed, otherwise Ext tries to access panel dom while
+                // it has been destroyed already
+                setTimeout((function() {
+                    for (var i=0; i < childGridIds.length; i ++){
+                        this.deleteGridWithId(childGridIds[i]);
+                    }
+                }).bind(this), 0);
+            }, this);
         }
         
     },
     onCollapseBody: function (rowNode,record,expandRow,eOpts){        
+    },
+    
+    hideAllExpandedRows: function() {
+        for(var gridId in this.grids) {
+            if(!this.grids.hasOwnProperty(gridId) || gridId === "main") {
+                continue;
+            }
+            this.grids[gridId].setStyle('display', 'none');
+        }
     },
             
     deleteGridWithId: function (gridId){
@@ -310,6 +325,9 @@ Ext.define ("viewer.components.AttributeList",{
         }
         if (Ext.get(name + 'PagerPanel')){
             Ext.get(name + 'PagerPanel').destroy();
+        }
+        if (Ext.get(name + 'Container')){
+            Ext.get(name + 'Container').destroy();
         }
     },
     /**
@@ -360,7 +378,6 @@ Ext.define ("viewer.components.AttributeList",{
                     type : 'string'
                 });
                 columns.push({
-                    id: "c"+name+ +attIndex,
                     header:colName,
                     dataIndex: "c" + attIndex,
                     flex: 1,
@@ -403,7 +420,7 @@ Ext.define ("viewer.components.AttributeList",{
                 listeners: {
                     exception: function(store, response, op) {
                         
-                        msg = response.responseText;
+                        var msg = response.responseText;
                         if(response.status == 200) {
                             try {
                                 var j = Ext.JSON.decode(response.responseText);
@@ -428,6 +445,20 @@ Ext.define ("viewer.components.AttributeList",{
                             
                         Ext.MessageBox.alert("Foutmelding", msg);
                         
+                    }
+                }
+            },
+            listeners: {
+                beforesort: {
+                    scope: this,
+                    fn: function(store, sort) {
+                        if(!sort) {
+                            return;
+                        }
+                        // If we are sorting and we are the mainStore, hide all other stores
+                        if(store.getStoreId() === this.name + "mainStore") {
+                            this.hideAllExpandedRows();
+                        }
                     }
                 }
             },
@@ -496,3 +527,27 @@ Ext.define ("viewer.components.AttributeList",{
     }
 });
 
+/**
+ * Nested Grids give problems when on hovering
+ * Context is parent when hovering child. See http://blog.kondratev.pro/2014/08/getting-rid-of-annoying-uncaught.html
+ */
+Ext.define('viewer.overrides.view.Table', {
+    override: 'Ext.view.Table',
+    checkThatContextIsParentGridView: function(e){
+        var target = Ext.get(e.target);
+        var parentGridView = target.up('.x-grid-view');
+        if (this.el !== parentGridView) {
+            /* event of different grid caused by grids nesting */
+            return false;
+        } else {
+            return true;
+        }
+    },
+    processItemEvent: function(record, row, rowIndex, e) {
+        if (e.target && !this.checkThatContextIsParentGridView(e)) {
+            return false;
+        } else {
+            return this.callParent([record, row, rowIndex, e]);
+        }
+    }
+});
