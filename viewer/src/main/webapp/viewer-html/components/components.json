@@ -226,7 +226,8 @@
                 magicnumber: "Delen door (berekend vanaf km)",
                 decimals: "Decimalen",
                 nonSticky: "Ga na gebruik naar de eerste tool",
-                decimalSeparator: "Scheidingsteken decimalen"
+                decimalSeparator: "Scheidingsteken decimalen",
+                addUnit: "Eigen eenheid toevoegen ipv vervangen"
             },
             source: {
                 tooltip: "Measure line",
@@ -234,10 +235,11 @@
                 decimals: 2,
                 magicnumber: "",
                 nonSticky: false,
-                decimalSeparator: ","
+                decimalSeparator: ",",
+                addUnit: false
             }
         },
-        helpText: "Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen."
+        helpText: "Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen. U kunt uw eigen gedefinieerde eenheid ook achter de standaard m/km tonen door 'Eigen eenheid toevoegen' op true te zetten."
     },
     {
         className: "viewer.components.tools.Measure.Area",
@@ -257,7 +259,8 @@
                 magicnumber: "Delen door (berekend vanaf km<sup>2</sup>)",
                 decimals: "Decimalen",
                 nonSticky: "Ga na gebruik naar de eerste tool",
-                decimalSeparator: "Scheidingsteken decimalen"
+                decimalSeparator: "Scheidingsteken decimalen",
+                addUnit: "Eigen eenheid toevoegen ipv vervangen"
             },
             source: {
                 tooltip: "Measure area",
@@ -265,10 +268,11 @@
                 decimals: 2,
                 magicnumber: "",
                 nonSticky: false,
-                decimalSeparator: ","
+                decimalSeparator: ",",
+                addUnit: false
             }
         },
-        helpText: "Indien u handmatig een eenheid opgeeft kunt u een superscript 2 krijgen (bijv. m<sup>2</sup>) door m&lt;sup&gt;2&lt;/sup&gt; op te geven bij eenheid. Bij \"Delen door\" wordt uitgegegaan van km<sup>2</sup>, dus om bijv. ha te krijgen moet er worden gedeeld door 100. Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen."
+        helpText: "Indien u handmatig een eenheid opgeeft kunt u een superscript 2 krijgen (bijv. m<sup>2</sup>) door m&lt;sup&gt;2&lt;/sup&gt; op te geven bij eenheid. Bij \"Delen door\" wordt uitgegegaan van km<sup>2</sup>, dus om bijv. ha te krijgen moet er worden gedeeld door 100. Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen. U kunt uw eigen gedefinieerde eenheid ook achter de standaard m<sup>2</sup>/km<sup>2</sup> tonen door 'Eigen eenheid toevoegen' op true te zetten."
     },
     {
         className: "viewer.components.tools.FullExtent",

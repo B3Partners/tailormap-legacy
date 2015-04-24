@@ -444,6 +444,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var id = conf.id;       
         conf.viewerController=this.viewerController;
         var frameworkOptions={};
+        if(conf.frameworkOptions) {
+            frameworkOptions = conf.frameworkOptions;
+        }
         //pass the tool tip to the framework object.
         if (conf.tooltip){
             frameworkOptions.title=conf.tooltip;
@@ -469,109 +472,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {  
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
         }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
-            
-            frameworkOptions["persist"]=true;
-            frameworkOptions["callbacks"]={
-                modify: function (evt){
-                    //make a tooltip with the measured length
-                    if (evt.parent){
-                        var measureValueDiv=document.getElementById("olControlMeasureValue");
-                        if (measureValueDiv==undefined){
-                            measureValueDiv=document.createElement('div');
-                            measureValueDiv.id="olControlMeasureValue";
-                            measureValueDiv.style.position='absolute';
-                            this.map.div.appendChild(measureValueDiv);
-                            measureValueDiv.style.zIndex="10000";
-                            measureValueDiv.className="olControlMaptip";
-                            var measureValueText=document.createElement('div');
-                            measureValueText.id='olControlMeasureValueText';
-                            measureValueDiv.appendChild(measureValueText);
-                        }
-                        var px= this.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
-                        measureValueDiv.style.top=px.y+"px";
-                        measureValueDiv.style.left=px.x+10+'px';
-                        measureValueDiv.style.display="block";
-                        var measureValueText=document.getElementById('olControlMeasureValueText');
-                        var decimals = conf.decimals || 3;
-                        var decimalSeparator = conf.decimalSeparator || ",";
-                        var measure;
-                        var units;
-                        if(conf.magicnumber && conf.units) {
-                            // Add custom unit, based on km2
-                            var olUnit = conf.units.replace(/\W/g, '');
-                            if(!OpenLayers.INCHES_PER_UNIT.hasOwnProperty(olUnit)) {
-                                OpenLayers.INCHES_PER_UNIT[olUnit] = OpenLayers.INCHES_PER_UNIT.km / (conf.magicnumber / 10);
-                            }
-                            measure = (conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA ? this.getArea(evt.parent, olUnit) : this.getLength(evt.parent, olUnit));
-                            if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA && measure < 0) {
-                                measure *= -1;
-                            }
-                            units = conf.units;
-                        } else {
-                            var bestMeasure=this.getBestLength(evt.parent);
-                            if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
-                                bestMeasure = this.getBestArea(evt.parent);
-                                if(bestMeasure[0] < 0){
-                                    bestMeasure[0] *= -1;
-                                }
-                                bestMeasure[1] += "<sup>2</" + "sup>";
-                            }
-                            measure = bestMeasure[0];
-                            units = bestMeasure[1];
-                        }
-                        measureValueText.innerHTML= ("" + measure.toFixed(decimals)).replace('.', decimalSeparator) + " " + units;
-                    }
-                }
-            };
-
-            var me = this;
             var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
             var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
             if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
                 measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
             }
-            measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
-                var measureValueDiv = document.getElementById("olControlMeasureValue");
-                var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
-                if(conf.nonSticky){
-                    if (measureValueDiv){                
-                        measureValueDiv.style.display="none";
-                    }
-                    if(clonedValueDiv && clonedValueDiv.parentNode) {
-                        clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-                    }
-                    this.cancel();
-                    me.activateTool(null,true);
-                    return;
-                }
-                if(!measureValueDiv) {
-                    return;
-                }
-                // Clone the measureValueDiv to keep just measured area/length visible
-                if(clonedValueDiv && clonedValueDiv.parentNode) {
-                    clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-                }
-                clonedValueDiv = measureValueDiv.cloneNode(true);
-                clonedValueDiv.id = 'olControlMeasureValueClone';
-                clonedValueDiv.querySelector('#olControlMeasureValueText').id = 'olControlMeasureValueTextClone';
-                this.map.div.appendChild(clonedValueDiv);
-            });
-            measureTool.getFrameworkTool().events.register('measurepartial',measureTool.getFrameworkTool(),function(){
-                var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
-                if(clonedValueDiv && clonedValueDiv.parentNode) {
-                    clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-                }
-            });
-            measureTool.getFrameworkTool().events.register('deactivate',measureTool.getFrameworkTool(),function(){
-                var measureValueDiv=document.getElementById("olControlMeasureValue");
-                var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
-                if (measureValueDiv){
-                    measureValueDiv.style.display="none";
-                }
-                if(clonedValueDiv && clonedValueDiv.parentNode) {
-                    clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-                }
-            });
             return measureTool;
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,            
             return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions)); 
