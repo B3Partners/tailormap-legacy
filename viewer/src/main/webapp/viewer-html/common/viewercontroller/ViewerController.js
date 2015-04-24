@@ -1647,6 +1647,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     
     /**
+     * Gets the ID of the map container
+     * @returns string
+     */
+    getMapId: function() {
+        return this.layoutManager.getMapId();
+    },
+    
+    /**
      * Registers all open windows to close previous windows if needed
      * @param ScreenPopup popup
      */

@@ -108,8 +108,8 @@ Ext.define ("viewer.components.LayerSwitch",{
         if(align.substr(1) === 'r') {
             pos[0] = pos[0] * -1;
         }
-        this.container.alignTo(Ext.getBody(), [align, align].join('-'), pos);
-        this.container.anchorTo(Ext.getBody(), [align, align].join('-'), pos);
+        this.container.alignTo(this.config.viewerController.getMapId(), [align, align].join('-'), pos);
+        this.container.anchorTo(this.config.viewerController.getMapId(), [align, align].join('-'), pos);
     },
     
     levelItemId: function(level) {
