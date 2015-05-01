@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.Drawing",{
-    extend: "viewer.components.Component",   
+    extend: "viewer.components.Component",
     iconPath: null,
     // Forms
     formdraw : null,
@@ -28,7 +28,7 @@ Ext.define ("viewer.components.Drawing",{
     formsave : null,
     formopen : null,
     vectorLayer:null,
-    // Items in forms. Convience accessor 
+    // Items in forms. Convience accessor
     colorPicker:null,
     label:null,
     title:null,
@@ -44,7 +44,7 @@ Ext.define ("viewer.components.Drawing",{
         color: "",
         label: ""
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.Drawing.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         if(this.config.color === ""){
@@ -61,7 +61,7 @@ Ext.define ("viewer.components.Drawing",{
             tooltip: me.config.tooltip,
             label: me.config.label
         });
-        
+
         // Needed to untoggle the buttons when drawing is finished
         this.drawingButtonIds = {
             'point': Ext.id(),
@@ -69,8 +69,8 @@ Ext.define ("viewer.components.Drawing",{
             'polygon': Ext.id(),
             'circle': Ext.id()
         };
-        
-       
+
+
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.Drawing",{
     showWindow : function (){
         if(this.vectorLayer == null){
             this.createVectorLayer();
-        }  
+        }
         this.config.viewerController.mapComponent.deactivateTools()
         this.popup.show();
     },
@@ -113,8 +113,8 @@ Ext.define ("viewer.components.Drawing",{
      */
     loadWindow : function(){
         var me=this;
-        
-        this.colorPicker = Ext.create("Ext.ux.ColorField",{ 
+
+        this.colorPicker = Ext.create("Ext.ux.ColorField",{
             width: 40,
             showText: false,
             style: {
@@ -132,7 +132,7 @@ Ext.define ("viewer.components.Drawing",{
                 }
             }
         });
-        
+
         this.labelField = Ext.create("Ext.form.field.Text",{
             name: 'labelObject',
             fieldLabel: 'Label geselecteerd object',
@@ -222,15 +222,15 @@ Ext.define ("viewer.components.Drawing",{
                     scope: me,
                     fn: me.deleteAll
                 }
-            } 
+            }
         });
-                    
+
         this.formdraw = new Ext.form.FormPanel({
             border: 0,
             style: {
                 marginBottom: '10px'
             },
-            items: [{ 
+            items: [{
                 xtype: 'fieldset',
                 defaultType: 'textfield',
                 padding: 0,
@@ -259,16 +259,16 @@ Ext.define ("viewer.components.Drawing",{
                     items: drawingItems
                 }
                 ]
-            }]            
+            }]
         });
-        
+
         this.formselect = new Ext.form.FormPanel({
             border: 0,
             style: {
                 marginBottom: '25px'
             },
             items: [
-            { 
+            {
                 xtype: 'fieldset',
                 defaultType: 'textfield',
                 border: 0,
@@ -290,13 +290,13 @@ Ext.define ("viewer.components.Drawing",{
                             scope: me,
                             fn: me.deleteObject
                         }
-                    } 
+                    }
                 }
                 ]
             }
             ]
         });
-        
+
         // Convience accessor
         this.titleField = Ext.create("Ext.form.field.Text",{
             fieldLabel: 'Titel',
@@ -320,7 +320,7 @@ Ext.define ("viewer.components.Drawing",{
                 marginBottom: '25px'
             },
             items: [
-                { 
+                {
                     xtype: 'label',
                     text: 'Op de kaart getekende objecten opslaan'
                 },
@@ -331,7 +331,7 @@ Ext.define ("viewer.components.Drawing",{
                     name: 'saveObject',
                     id: 'saveObject'
                 },
-                { 
+                {
                     xtype: 'button',
                     text: 'Opslaan als bestand',
                     listeners: {
@@ -376,7 +376,7 @@ Ext.define ("viewer.components.Drawing",{
             }
             ]
         });
-        
+
         var items = [ this.formdraw, this.formselect ];
         if(!MobileManager.isMobile()) {
             items.push(this.formsave); items.push(this.formopen);
@@ -429,27 +429,27 @@ Ext.define ("viewer.components.Drawing",{
 
         this.formselect.setVisible(false);
     },
-    
+
     /**
      * Event handlers
      **/
     activeFeatureChanged : function (vectorLayer,feature){
         this.toggleSelectForm(true);
-        if(this.features[feature.id] == undefined){
+        if(this.features[feature.config.id] == undefined){
             feature.color = this.config.color;
-            this.features[feature.id] = feature;
+            this.features[feature.config.id] = feature;
         }else{
-            var color = this.features[feature.id].color;
+            var color = this.features[feature.config.id].color;
          //   color = color.substring(2);
             this.colorPicker.setColor(color);
             this.config.color = color;
         }
-        this.activeFeature = this.features[feature.id];
+        this.activeFeature = this.features[feature.config.id];
         this.labelField.setValue(this.activeFeature.label);
     },
     //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
-        this.activeFeature.wktgeom = feature.wktgeom;
+        this.activeFeature.config.wktgeom = feature.config.wktgeom;
         Ext.Object.each(this.drawingButtonIds, function(key, id) {
             var button = Ext.getCmp(id);
             if(button) button.toggle(false);
@@ -463,7 +463,7 @@ Ext.define ("viewer.components.Drawing",{
         if(this.activeFeature != null){
             this.activeFeature.color = this.config.color;
             var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
-            this.activeFeature.wktgeom = feature.wktgeom;
+            this.activeFeature.config.wktgeom = feature.config.wktgeom;
             delete this.features[this.activeFeature.id];
             this.vectorLayer.removeFeature(this.activeFeature);
             this.vectorLayer.addFeature(this.activeFeature);
@@ -525,9 +525,9 @@ Ext.define ("viewer.components.Drawing",{
         }
         this.labelField.setValue("");
     },
-    saveFile: function(){       
+    saveFile: function(){
         var form = this.formsave.getForm();
-        
+
         var features = new Array();
         for (var featurekey in this.features){
             if(this.features.hasOwnProperty(featurekey)) {
@@ -538,7 +538,7 @@ Ext.define ("viewer.components.Drawing",{
         form.setValues({
             "saveObject":Ext.JSON.encode(features)
         });
-        this.formsave.submit({            
+        this.formsave.submit({
             target: '_blank'
         } );
         return features;
@@ -568,7 +568,7 @@ Ext.define ("viewer.components.Drawing",{
             });
         }
     },
-    
+
     loadFeatures: function(features){
         //make the vectorLayer if not created yet.
         if (features.length > 0){
@@ -576,7 +576,7 @@ Ext.define ("viewer.components.Drawing",{
               this.createVectorLayer();
             }
         }
-        
+
         for ( var i = 0 ; i < features.length;i++){
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
@@ -586,9 +586,9 @@ Ext.define ("viewer.components.Drawing",{
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
         }
-        
+
     },
-    
+
     getBookmarkState: function(shortUrl){
         var features = new Array();
         for (var featurekey in this.features){
@@ -603,7 +603,7 @@ Ext.define ("viewer.components.Drawing",{
         }
         return obj;
     },
-            
+
     loadVariables: function (state){
         state= Ext.decode(state);
         if (state.features){
@@ -613,7 +613,7 @@ Ext.define ("viewer.components.Drawing",{
             this.config.viewerController.mapComponent.getMap().zoomToExtent(state.extent);
         }
     },
-    
+
     getExtComponents: function() {
         var compIds = [
             this.mainContainer.getId(),
@@ -632,4 +632,3 @@ Ext.define ("viewer.components.Drawing",{
         return compIds;
     }
 });
- 
