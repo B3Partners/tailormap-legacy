@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ Ext.define ("viewer.components.Edit",{
     currentFID:null,
     geometryEditable:null,
     deActivatedTools: [],
-    
+
     config:{
         title: "",
         iconUrl: "",
@@ -39,11 +39,10 @@ Ext.define ("viewer.components.Edit",{
         layers:null,
         label: ""
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.Edit.superclass.constructor.call(this, conf);
-        this.initConfig(conf);     
-        var me = this;
-        
+        this.initConfig(conf);
+
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function(event) {
             if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
             || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
@@ -53,12 +52,12 @@ Ext.define ("viewer.components.Edit",{
             }
             return true;
         });
-        
+
         if (this.config.layers!=null){
             this.config.layers = Ext.Array.filter(this.config.layers, function(layerId) {
                 // XXX must check editAuthorized in appLayer
                 // cannot get that from this layerId
-                return true;            
+                return true;
             });
         }
         this.renderButton({
@@ -70,7 +69,7 @@ Ext.define ("viewer.components.Edit",{
             tooltip: me.config.tooltip,
             label: me.config.label
         });
-        
+
         this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
@@ -80,8 +79,8 @@ Ext.define ("viewer.components.Edit",{
             },
             viewerController: this.config.viewerController
         });
-        
-        this.loadWindow(); 
+
+        this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
@@ -232,9 +231,9 @@ Ext.define ("viewer.components.Edit",{
             width: '100%'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
     },
-            
+
     layerChanged : function (appLayer,afterLoadAttributes,scope){
         if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
@@ -253,15 +252,15 @@ Ext.define ("viewer.components.Edit",{
     },
     loadAttributes: function(appLayer,afterLoadAttributes,scope) {
         this.appLayer = appLayer;
-        
+
         var me = this;
         if (scope==undefined){
             scope=me;
         }
         if(this.appLayer != null) {
-            
+
             this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
-            
+
             // check if featuretype was loaded
             if(this.appLayer.attributes == undefined) {
                 this.featureService.loadAttributes(me.appLayer, function(attributes) {
@@ -275,7 +274,7 @@ Ext.define ("viewer.components.Edit",{
                 if (afterLoadAttributes){
                     afterLoadAttributes.call(scope);
                 }
-            }    
+            }
         }
     },
     initAttributeInputs : function (appLayer){
@@ -327,14 +326,14 @@ Ext.define ("viewer.components.Edit",{
                 possible = false;
                 break;
         }
-        
+
         var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
             if(this.geometryEditable){
                 Ext.getCmp(this.name +"editButton").setDisabled(false);
                 if(this.newGeomType == null){
                     tekst = "Geometrie mag alleen bewerkt worden";
-                }else{ 
+                }else{
                     Ext.getCmp(this.name +"newButton").setDisabled(false);
                     tekst = 'Bewerk een ' + tekst+ " op de kaart";
                 }
@@ -365,7 +364,7 @@ Ext.define ("viewer.components.Edit",{
                             disabled: !allowedEditable
                         };
                         if (attribute.editHeight){
-                            options.rows = attribute.editHeight;                           
+                            options.rows = attribute.editHeight;
                             input = Ext.create("Ext.form.field.TextArea",options)
                         }else{
                             input = Ext.create("Ext.form.field.Text",options);
@@ -373,7 +372,7 @@ Ext.define ("viewer.components.Edit",{
                     }else if (values.length > 1){
                         var allBoolean=true;
                         for (var v=0; v < values.length; v++){
-                            
+
                             var hasLabel = values[v].indexOf(":") !== -1;
                             var val = hasLabel ?  values[v].substring(0, values[v].indexOf(":")) :  values[v];
                             if (val.toLowerCase()!=="true" && val.toLowerCase()!=="false"){
@@ -381,7 +380,7 @@ Ext.define ("viewer.components.Edit",{
                                 break;
                             }
                         }
-                        
+
                         Ext.each(values,function(value,index,original){
                             var hasLabel = value.indexOf(":") !== -1;
                             var label = value;
@@ -389,7 +388,7 @@ Ext.define ("viewer.components.Edit",{
                                 label = value.substring(value.indexOf(":")+1);
                                 value = value.substring(0,value.indexOf(":"));
                             }
-                            
+
                             if (allBoolean){
                                 value= value.toLowerCase() ==="true";
                             }
@@ -397,7 +396,7 @@ Ext.define ("viewer.components.Edit",{
                                 id: value,
                                 label: label
                             };
-                            
+
                         });
                         var valueStore = Ext.create('Ext.data.Store', {
                             fields: ['id', 'label'],
@@ -433,7 +432,7 @@ Ext.define ("viewer.components.Edit",{
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
-        
+
         var layer = this.layerSelector.getValue();
         this.config.viewerController.mapComponent.getMap().setMarker("edit",x,y);
         var featureInfo = Ext.create("viewer.FeatureInfo", {
@@ -502,10 +501,10 @@ Ext.define ("viewer.components.Edit",{
     },
     save : function(){
         var feature =this.inputContainer.getValues();
-        
+
         if(this.geometryEditable){
             if(this.vectorLayer.getActiveFeature()){
-                var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
+                var wkt =  this.vectorLayer.getActiveFeature().config.wktgeom;
                 feature[this.appLayer.geometryAttribute] = wkt;
             }
         }
@@ -519,7 +518,7 @@ Ext.define ("viewer.components.Edit",{
             me.failed(e);
             return;
         }
-        
+
         me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
             viewerController: this.config.viewerController
@@ -530,11 +529,11 @@ Ext.define ("viewer.components.Edit",{
             function(fid) { me.saveSucces(fid); }, function(error){
             me.failed(error);});
     },
-    
+
     remove : function(){
         var feature = this.inputContainer.getValues();
         feature.__fid = this.currentFID;
-        
+
         var me = this;
         try{
             feature = this.changeFeatureBeforeSave(feature);
@@ -580,7 +579,7 @@ Ext.define ("viewer.components.Edit",{
     },
     saveFailed : function (msg){
         Ext.Msg.alert('Mislukt',msg);
-        
+
     },
     cancel : function (){
         this.resetForm();
@@ -608,7 +607,7 @@ Ext.define ("viewer.components.Edit",{
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.editable){
-                
+
                 var attIndex = index++;
                 if(i == appLayer.geometryAttributeIndex){
                     continue;
@@ -629,18 +628,18 @@ Ext.define ("viewer.components.Edit",{
                 });
             }
         }
-        
+
         Ext.define(this.name + 'Model', {
             extend: 'Ext.data.Model',
             fields: attributeList
         });
-     
+
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
             model: this.name + 'Model',
             data:features
         });
-        
+
         var me =this;
         var grid = Ext.create('Ext.grid.Panel',  {
             id: this.name + 'GridFeaturesWindow',
@@ -699,7 +698,7 @@ Ext.define ("viewer.components.Edit",{
             }
             ]
         });
-        
+
         var window = Ext.create("Ext.window.Window",{
             id: this.name + "FeaturesWindow",
             width: 500,
@@ -708,7 +707,7 @@ Ext.define ("viewer.components.Edit",{
             title: "Kies één feature",
             items: [container]
         });
-        
+
         window.show();
     },
     itemDoubleClick : function (gridview,row){
