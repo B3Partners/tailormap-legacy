@@ -428,8 +428,8 @@ public class CombineImageSettings {
             List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
             for (int g=0; g < geometries.length(); g++){
                 JSONObject geom = geometries.getJSONObject(g);
-                if (geom.has("wktgeom")){
-                    CombineImageWkt ciw = new CombineImageWkt(geom.getString("wktgeom"));
+                if (geom.has("_wktgeom")){
+                    CombineImageWkt ciw = new CombineImageWkt(geom.getString("_wktgeom"));
                     if (geom.has("color") && !geom.isNull("color")){
                         ciw.setColor(geom.getString("color"));
                     }
