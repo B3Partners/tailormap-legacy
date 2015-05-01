@@ -42,6 +42,7 @@ Ext.define ("viewer.components.Edit",{
     constructor: function (conf){
         viewer.components.Edit.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        var me = this;
 
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function(event) {
             if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
