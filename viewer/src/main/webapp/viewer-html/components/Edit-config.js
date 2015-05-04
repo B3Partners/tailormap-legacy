@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,15 +18,23 @@
  * Custom configuration object for HTML configuration
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("viewer.components.CustomConfiguration",{
+Ext.define("viewer.components.CustomConfiguration", {
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        if (configObject === null){
+    constructor: function (parentId, configObject) {
+        if (configObject === null) {
             configObject = {};
         }
-        configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        this.createCheckBoxes(this.configObject.layers,{editable: true});
+        configObject.showLabelconfig = true;
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        this.createCheckBoxes(this.configObject.layers, {editable: true});
+
+        this.form.add([{
+                xtype: 'checkbox',
+                fieldLabel: 'Verwijderen toestaan',
+                name: 'allowDelete',
+                value: this.configObject.allowDelete !== undefined ? this.configObject.allowDelete : false,
+                labelWidth: this.labelWidth
+            }]);
     }
 });
 

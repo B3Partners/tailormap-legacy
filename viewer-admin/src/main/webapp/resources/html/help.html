@@ -43,7 +43,7 @@ program. If not, see <http://www.gnu.org/licenses/>
             });
         </script>
     </head>
-    
+
     <body>
         <a name="Boomstructuur_Met_Services_En_Kaartlagen_Help"></a>
         <div class="helpBlock">
@@ -66,7 +66,7 @@ program. If not, see <http://www.gnu.org/licenses/>
             </p>
             <p>
                 Voor een service worden meteen de kaartlagen aangemaakt aan de hand van
-                de layers. Bij een CS-W is een zoekwoord nodig en wordt na het klikken op 
+                de layers. Bij een CS-W is een zoekwoord nodig en wordt na het klikken op
                 de zoekknop in een platte lijst de titel van alle documenten
                 uit de CSW getoond. Pas na klikken op een titel worden de onderliggende
                 service opgehaald en kunnen deze worden toegevoegd. Deze services kunnen
@@ -84,7 +84,7 @@ program. If not, see <http://www.gnu.org/licenses/>
             <p>
                 In de boomstructuur wordt achter een service een extra icoontje weergegeven
                 waar mee de status wordt aangegeven. Deze status wordt regelmatig op de
-                achtergrond gecontroleerd. De inregeling hiervan wordt in  de installatie- 
+                achtergrond gecontroleerd. De inregeling hiervan wordt in  de installatie-
                 en configuratiehandleiding beschreven.
             </p>
             <table width="100%" cellspacing="0" cellpadding="4">
@@ -450,9 +450,9 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                De beheerder dient hier aan te geven of de betreffende kaartlaag SLD in 
-                                voldoende mate ondersteunt. Indien hier onterecht wordt aangegeven dat 
-                                de kaartlaag SLD filtering ondersteunt, dan zal de kaartlaag onzichtbaar 
+                                De beheerder dient hier aan te geven of de betreffende kaartlaag SLD in
+                                voldoende mate ondersteunt. Indien hier onterecht wordt aangegeven dat
+                                de kaartlaag SLD filtering ondersteunt, dan zal de kaartlaag onzichtbaar
                                 kunnen worden.
                             </p>
                         </td>
@@ -1811,8 +1811,8 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                Als er op de autorisatieknop wordt geklikt dan opent een nieuw scherm 
-                                waar een overzicht van de rechten per applicatie voor deze gebruiker 
+                                Als er op de autorisatieknop wordt geklikt dan opent een nieuw scherm
+                                waar een overzicht van de rechten per applicatie voor deze gebruiker
                                 verkregen kan worden.
                             </p>
                         </td>
@@ -1823,18 +1823,18 @@ program. If not, see <http://www.gnu.org/licenses/>
                 Toevoegen inlogmogelijkheid aan applicatie
             - (zoeken via CTRL-f)</h1>
             <p>
-                Nadat op de verschillende plaatsen in de applicatie of het register rechten zijn toegekend, 
-                moet de beheerder de gebruiker in staat stellen om in te loggen. Om deze inlogmogelijkheid 
-                zo flexibel mogelijk te maken, wordt dit gerealiseerd door een stukje code op te nemen in 
-                een HTML-component. 
+                Nadat op de verschillende plaatsen in de applicatie of het register rechten zijn toegekend,
+                moet de beheerder de gebruiker in staat stellen om in te loggen. Om deze inlogmogelijkheid
+                zo flexibel mogelijk te maken, wordt dit gerealiseerd door een stukje code op te nemen in
+                een HTML-component.
             </p>
             <p>
-                Deze HTML-component wordt bij de opbouw van de applicatie als component toegevoegd 
-                (zie later). 
+                Deze HTML-component wordt bij de opbouw van de applicatie als component toegevoegd
+                (zie later).
            </p>
             <p>
- 								Om binnen de HTML-component direct code toe te voegen dient de knop “bron aanpassen” 
-								gebruikt te worden. Hierna kan op de gewenste plaats het volgende stukje code worden 
+ 								Om binnen de HTML-component direct code toe te voegen dient de knop “bron aanpassen”
+								gebruikt te worden. Hierna kan op de gewenste plaats het volgende stukje code worden
 								ingevoegd:
 								<form>
 								<textarea cols="60" rows="3"><span id="loginInfo">Niet ingelogd</span><a href="#" id="loginLink" onclick="login()">Inloggen</a></textarea>
@@ -1853,21 +1853,21 @@ program. If not, see <http://www.gnu.org/licenses/>
                 Autorisatieoverzicht
             - (zoeken via CTRL-f)</h1>
             <p>
-               Rechten kunnen op een aantal plaatsen worden ingesteld. Om de beheerder overzicht te bieden 
-               van de effecten van die instellingen is een apart scherm gecreeerd waar per gebruiker en 
-               applicatie opgevraagd kan worden welke rechten van toepassing is. Zoals overal zijn 
-               kaartlagen en componenten waarvoor helemaal geen rechten zijn ingesteld, toegankelijk voor 
+               Rechten kunnen op een aantal plaatsen worden ingesteld. Om de beheerder overzicht te bieden
+               van de effecten van die instellingen is een apart scherm gecreeerd waar per gebruiker en
+               applicatie opgevraagd kan worden welke rechten van toepassing is. Zoals overal zijn
+               kaartlagen en componenten waarvoor helemaal geen rechten zijn ingesteld, toegankelijk voor
                iedereen; deze worden in het overzicht niet genoemd.
 						</p>
 						<p>
-							Het overzicht kent de volgende algemene onderdelen: Groepslidmaatschap en Gegevensregister 
-							kaartlagen. En daarnaast een aantal onderdelen die per applicatie bepaald worden. Hiertoe 
-							moet in de dropdown de applicatie gekozen worden en op de knop “Applicatie autorisaties” 
-							geklikt worden: Niveaus, Kaartlagen en Componenten. Kies opnieuw een applicatie en klik op 
+							Het overzicht kent de volgende algemene onderdelen: Groepslidmaatschap en Gegevensregister
+							kaartlagen. En daarnaast een aantal onderdelen die per applicatie bepaald worden. Hiertoe
+							moet in de dropdown de applicatie gekozen worden en op de knop “Applicatie autorisaties”
+							geklikt worden: Niveaus, Kaartlagen en Componenten. Kies opnieuw een applicatie en klik op
 							de knop om de autorisaties voor een andere applicatie te zien.
 						</p>
 						<p>
-							Hier volgt een nadere uitleg per soort autorisatie. Het uiteindelijke effect voor gebruiker 
+							Hier volgt een nadere uitleg per soort autorisatie. Het uiteindelijke effect voor gebruiker
 							staat telkens in groen weergegeven.
             </p>
             <table width="100%" cellspacing="0" cellpadding="4">
@@ -1915,8 +1915,8 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-															Lijst met kaartlagen uit register waarvoor een groep van toepassing is 
-															waarvan gebruiker lid. 
+															Lijst met kaartlagen uit register waarvoor een groep van toepassing is
+															waarvan gebruiker lid.
                             </p>
                         </td>
                     </tr>
@@ -1933,7 +1933,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-															Lijst met niveaus in de kaartboom van de applicatie waarvoor een groep van 
+															Lijst met niveaus in de kaartboom van de applicatie waarvoor een groep van
 															toepassing is waarvan gebruiker lid.
                             </p>
                         </td>
@@ -1951,7 +1951,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-																Lijst met kaartlagen in de applicatie waarvoor een groep van toepassing 
+																Lijst met kaartlagen in de applicatie waarvoor een groep van toepassing
 																is waarvan gebruiker lid.
                             </p>
                         </td>
@@ -1969,7 +1969,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-																Lijst met componenten in de applicatie waarvoor een groep van toepassing 
+																Lijst met componenten in de applicatie waarvoor een groep van toepassing
 																is waarvan gebruiker lid.
                             </p>
                         </td>
@@ -1977,7 +1977,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                 </tbody>
             </table>
             <p>
-            	LET OP: Door het uitgangspunt dat geen enkel recht leidt tot volledige toegang voor iedereen, 
+            	LET OP: Door het uitgangspunt dat geen enkel recht leidt tot volledige toegang voor iedereen,
             	is het overzicht niet altijd meteen intuïtief begrijpelijk.
             </p>
         </div>
@@ -2081,7 +2081,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                Een gepubliceerde versie heeft geen versie-toevoeging en kan niet worden 
+                                Een gepubliceerde versie heeft geen versie-toevoeging en kan niet worden
                                 bewerkt.
                             </p>
                         </td>
@@ -2157,7 +2157,7 @@ program. If not, see <http://www.gnu.org/licenses/>
             <p>
                 Middels de gegevens uit het gegevensregister kan de beheerder een applicatie
                 samenstellen. Elke applicatie heeft een aantal basisinstellingen zoals
-                naam, opmerkingen, stylesheet voor metadata, stylesheet voor printen en eigenaar. 
+                naam, opmerkingen, stylesheet voor metadata, stylesheet voor printen en eigenaar.
                 De beheerder kan ook twee steunkleuren
                 instellen waarmee de beheerder op een eenvoudige manier de uitstraling
                 van de applicatie kan wijzigen.
@@ -2391,10 +2391,10 @@ program. If not, see <http://www.gnu.org/licenses/>
                                 wordt gevraagd. De naam wordt aan oorspronkelijke naam toegevoegd.
                             </p>
                             <p>
-                                Er word een kopie van de originele applicatie gemaakt. De boomstructuur 
-                                wordt  niet mee gekopieerd (deze blijft gelijk aan die van het origineel, 
-                                de boomstructuur kan ook niet bewerkt worden van uit de mashup). Nadat de 
-                                kopie in de database is opgeslagen is deze klaar om bewerkt te worden door 
+                                Er word een kopie van de originele applicatie gemaakt. De boomstructuur
+                                wordt  niet mee gekopieerd (deze blijft gelijk aan die van het origineel,
+                                de boomstructuur kan ook niet bewerkt worden van uit de mashup). Nadat de
+                                kopie in de database is opgeslagen is deze klaar om bewerkt te worden door
                                 de beheerder.
                             </p>
                         </td>
@@ -4031,8 +4031,8 @@ program. If not, see <http://www.gnu.org/licenses/>
             </p>
             <p>
                 Indien de beheerder een Mash-up heeft gemaakt, dan kan hij de boomstructuur
-                van kaarten en het startkaartbeeld niet aanpassen, want die horen bij de 
-                originele applicatie. 
+                van kaarten en het startkaartbeeld niet aanpassen, want die horen bij de
+                originele applicatie.
             </p>
 
             <table width="100%" cellspacing="0" cellpadding="4" style="page-break-inside: avoid">
@@ -4295,7 +4295,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                In het map bottom vlak kunnen door de beheerder o.a. de schaalbalk en de 
+                                In het map bottom vlak kunnen door de beheerder o.a. de schaalbalk en de
                                 coordinaten geplaatst worden
                             </p>
                         </td>
@@ -5653,10 +5653,10 @@ program. If not, see <http://www.gnu.org/licenses/>
                 </tbody>
             </table>
             <p>
-							In het hoodfstuk “toevoegen inlogmogelijkheid aan applicatie” wordt beschreven hoe via 
-							de HTML-component een inlog-link kan worden toegevoegd aan de applicatie. Deze is nodig 
-							als er rechten aan onderdelen van de applicatie zijn toegevoegd, waardoor inloggen door 
-							de gebruiker noodzakelijk is.            
+							In het hoodfstuk “toevoegen inlogmogelijkheid aan applicatie” wordt beschreven hoe via
+							de HTML-component een inlog-link kan worden toegevoegd aan de applicatie. Deze is nodig
+							als er rechten aan onderdelen van de applicatie zijn toegevoegd, waardoor inloggen door
+							de gebruiker noodzakelijk is.
             </p>
         </div>
         <a name="viewer_components_Buffer_Help"></a>
@@ -5739,9 +5739,9 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                Buffering is een intensieve taak die bij veel objecten de server kan 
-                                beinvloeden. Hier kan een maximum aantal objecten opgegeven worden. 
-                                Bij meer objecten is niet precies gedefinieerd welke objecten meegenomen 
+                                Buffering is een intensieve taak die bij veel objecten de server kan
+                                beinvloeden. Hier kan een maximum aantal objecten opgegeven worden.
+                                Bij meer objecten is niet precies gedefinieerd welke objecten meegenomen
                                 worden.
                             </p>
                         </td>
@@ -6074,12 +6074,36 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
-                                Hoover tekst
+                                Tooltip
                             </p>
                         </td>
                         <td>
                             <p>
                                 Tekst die getoond wordt indien met muis boven de knop wordt stilgestaan.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Label
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Tekst die getoond onder de knop.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Verwijderen toestaan
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De beheerder kan hiermee de knop "Verwijderen" in het editor scherm inschakelen.
                             </p>
                         </td>
                     </tr>
@@ -6894,7 +6918,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                De server kan plaatjes produceren met een maximum aantal pixels; 
+                                De server kan plaatjes produceren met een maximum aantal pixels;
                                 dit getal moet hier gevuld worden.
 
                             </p>
@@ -7063,7 +7087,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                De beheerder kan hier eigen plaatjes toevoegen waarmee de overzichtskaart 
+                                De beheerder kan hier eigen plaatjes toevoegen waarmee de overzichtskaart
                                 geopend en gesloten kan worden
                             </p>
                         </td>
@@ -7455,14 +7479,14 @@ program. If not, see <http://www.gnu.org/licenses/>
                     </tr>
                 </tbody>
             </table>
-        </div>        
+        </div>
         <a name="viewer_components_LoadMonitor_Help"></a>
         <div class="helpBlock">
             <h1>
                 Laadvoortgang (MOTOR)
             - (zoeken via CTRL-f)</h1>
             <p>
-            	Deze component plaatst een laadbalk of voortgangsindicator op de kaart, 
+            	Deze component plaatst een laadbalk of voortgangsindicator op de kaart,
             	welke actief is als kaartenlagen worden geladen.
             </p>
              <table width="100%" cellspacing="0" cellpadding="4">
@@ -7503,7 +7527,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                De tekst die de gebruiker te zien krijgt als een kaart aan het laden is. 
+                                De tekst die de gebruiker te zien krijgt als een kaart aan het laden is.
                                 Met [percentage] in de tekst word getoond hoe ver het laden is.
                             </p>
                         </td>
