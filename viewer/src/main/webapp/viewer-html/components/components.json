@@ -659,6 +659,18 @@
         singleton: true,
         showHelp: true
     },
+        {
+        className: "viewer.components.Split",
+        name: "Edit",
+        shortName: "Sp",
+        group: "Component",
+        sources: ["Split.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Split-config.js"],
+        restrictions: ["left_menu"],
+        type: "popup",
+        singleton: true,
+        showHelp: true
+    },
     {
         className: "viewer.components.Drawing",
         name: "Tekenen",
@@ -903,7 +915,7 @@
         singleton: true,
         sources: ["../../extjs/packages/sencha-charts/sencha-charts.js", "Graph.js", "GraphLayerIds.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js", "GraphLayerIds.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
