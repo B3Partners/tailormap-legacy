@@ -19,8 +19,8 @@ install:
   - mvn install -U -Dmaven.test.skip=true -B -V -fae -q -T2 
   
 cache:
-  - C:\bin\apache-maven-%MVN_VERSION%
-  - C:\Users\appveyor\.m2\repository
+  - C:\bin\apache-maven-3.2.5 -> appveyor.yml
+  - C:\Users\appveyor\.m2\repository -> pom.xml
 
 build: off
 
