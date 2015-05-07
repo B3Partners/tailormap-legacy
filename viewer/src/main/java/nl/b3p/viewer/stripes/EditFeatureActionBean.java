@@ -60,29 +60,29 @@ import org.opengis.filter.identity.FeatureId;
 @StrictBinding
 public class EditFeatureActionBean  implements ActionBean {
     private static final Log log = LogFactory.getLog(EditFeatureActionBean.class);
-    
+
     private static final String FID = FeatureInfoActionBean.FID;
-    
+
     private ActionBeanContext context;
-    
+
     @Validate
     private Application application;
-    
+
     @Validate
     private String feature;
 
     @Validate
     private ApplicationLayer appLayer;
-    
+
     private Layer layer;
     private SimpleFeatureStore store;
     private JSONObject jsonFeature;
-    
+
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -94,15 +94,15 @@ public class EditFeatureActionBean  implements ActionBean {
     public void setApplication(Application application) {
         this.application = application;
     }
-    
+
     public String getFeature() {
         return feature;
     }
-    
+
     public void setFeature(String feature) {
         this.feature = feature;
     }
-    
+
     public ApplicationLayer getAppLayer() {
         return appLayer;
     }
@@ -117,7 +117,7 @@ public class EditFeatureActionBean  implements ActionBean {
 
         json.put("success", Boolean.FALSE);
         String error = null;
-    
+
         FeatureSource fs = null;
         try {
             do {
@@ -129,7 +129,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
-                
+
                 layer = appLayer.getService().getLayer(appLayer.getLayerName());
 
                 if(layer == null) {
@@ -143,7 +143,7 @@ public class EditFeatureActionBean  implements ActionBean {
                 }
 
                 fs = layer.getFeatureType().openGeoToolsFeatureSource();
-                
+
                 if(!(fs instanceof SimpleFeatureStore)) {
                     error = "Feature source does not support editing";
                     break;
@@ -152,7 +152,7 @@ public class EditFeatureActionBean  implements ActionBean {
                 addAuditTrailLog();
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
-                     error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                     error = "U heeft geen rechten om deze feature toe te voegen, te verwijderen en/of te wijzigen";
                      break;
                 }
                 String fid = jsonFeature.optString(FID, null);
@@ -163,12 +163,12 @@ public class EditFeatureActionBean  implements ActionBean {
                     editFeature(fid);
                     json.put(FID, fid);
                 }
-                
+
                 json.put("success", Boolean.TRUE);
             } while(false);
         } catch(Exception e) {
             log.error(String.format("Exception editing feature", e));
-            
+
             error = e.toString();
             if(e.getCause() != null) {
                 error += "; cause: " + e.getCause().toString();
@@ -178,21 +178,21 @@ public class EditFeatureActionBean  implements ActionBean {
                 fs.getDataStore().dispose();
             }
         }
-                
+
         if(error != null) {
             json.put("error", error);
             log.error("Returned error message editing feature: " + error);
-        }      
-        
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));            
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
-    
+
     public Resolution delete() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
         String error = null;
-    
+
         FeatureSource fs = null;
         try {
             do {
@@ -204,7 +204,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
-                
+
                 layer = appLayer.getService().getLayer(appLayer.getLayerName());
 
                 if(layer == null) {
@@ -218,13 +218,13 @@ public class EditFeatureActionBean  implements ActionBean {
                 }
 
                 fs = layer.getFeatureType().openGeoToolsFeatureSource();
-                
+
                 if(!(fs instanceof SimpleFeatureStore)) {
                     error = "Feature source does not support editing";
                     break;
                 }
                 store = (SimpleFeatureStore)fs;
-                
+
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
                      error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
@@ -238,12 +238,12 @@ public class EditFeatureActionBean  implements ActionBean {
                 } else {
                     deleteFeature(fid);
                 }
-                
+
                 json.put("success", Boolean.TRUE);
             } while(false);
         } catch(Exception e) {
             log.error(String.format("Exception editing feature", e));
-            
+
             error = e.toString();
             if(e.getCause() != null) {
                 error += "; cause: " + e.getCause().toString();
@@ -253,22 +253,22 @@ public class EditFeatureActionBean  implements ActionBean {
                 fs.getDataStore().dispose();
             }
         }
-                
+
         if(error != null) {
             json.put("error", error);
             log.error("Returned error message editing feature: " + error);
-        }      
-        
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));            
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
-    
+
     private String addNewFeature() throws Exception {
-        
+
         SimpleFeature f = DataUtilities.template(store.getSchema());
 
         Transaction transaction = new DefaultTransaction("create");
         store.setTransaction(transaction);
-        
+
         for(AttributeDescriptor ad: store.getSchema().getAttributeDescriptors()) {
             if(ad.getType() instanceof GeometryType) {
                 String wkt = jsonFeature.optString(ad.getLocalName(), null);
@@ -281,7 +281,7 @@ public class EditFeatureActionBean  implements ActionBean {
                 String v = jsonFeature.optString(ad.getLocalName());
                 f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));
             }
-        }      
+        }
 
         log.debug(String.format("Creating new feature in feature source source #%d: %s",
                 layer.getFeatureType().getId(),
@@ -297,16 +297,16 @@ public class EditFeatureActionBean  implements ActionBean {
             throw e;
         } finally {
             transaction.close();
-        }               
+        }
     }
-    
+
     private void deleteFeature(String fid) throws IOException, Exception{
         Transaction transaction = new DefaultTransaction("edit");
         store.setTransaction(transaction);
 
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         Filter filter = ff.id(new FeatureIdImpl(fid));
-        
+
         try {
             store.removeFeatures(filter);
             transaction.commit();
@@ -317,7 +317,7 @@ public class EditFeatureActionBean  implements ActionBean {
             transaction.close();
         }
     }
-    
+
     private void editFeature(String fid) throws Exception {
         Transaction transaction = new DefaultTransaction("edit");
         store.setTransaction(transaction);
@@ -330,22 +330,22 @@ public class EditFeatureActionBean  implements ActionBean {
         for(Iterator<String> it = jsonFeature.keys(); it.hasNext();) {
             String attribute = it.next();
             if(!FID.equals(attribute)) {
-                
+
                 AttributeDescriptor ad = store.getSchema().getDescriptor(attribute);
-                
+
                 if(ad != null) {
                     attributes.add(attribute);
-                    
+
                     if(ad.getType() instanceof GeometryType) {
                         String wkt = jsonFeature.getString(ad.getLocalName());
                         Geometry g = null;
                         if(wkt != null) {
                             g = new WKTReader().read(wkt);
-                        } 
+                        }
                         values.add(g);
                     } else {
                         String v = jsonFeature.getString(attribute);
-                        values.add(StringUtils.defaultIfBlank(v, null));                        
+                        values.add(StringUtils.defaultIfBlank(v, null));
                     }
                 } else {
                     log.warn(String.format("Attribute \"%s\" not in feature type; ignoring", attribute));
@@ -365,10 +365,10 @@ public class EditFeatureActionBean  implements ActionBean {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            throw e; 
+            throw e;
        } finally {
             transaction.close();
-        }                
+        }
     }
 
     private boolean isFeatureWriteAuthorized(ApplicationLayer appLayer, JSONObject jsonFeature, HttpServletRequest request) {
@@ -384,7 +384,7 @@ public class EditFeatureActionBean  implements ActionBean {
         }
         return true;
     }
-    
+
     /**
      * Method to query the datastore with a dummy query, containing the username. This is used for an audittrail.
      * A query is composed using the fire attribute from the type, and constructing a Query with it: <firstattribute> = 'username is <username'.
@@ -394,7 +394,7 @@ public class EditFeatureActionBean  implements ActionBean {
             List<AttributeDescriptor> attributeDescriptors = store.getSchema().getAttributeDescriptors();
             String typeName = null;
             for (AttributeDescriptor ad : attributeDescriptors) {
-                // Get an attribute of type string. This because the username is almost always a string, and passing it to a Integer/Double will result in a invalid 
+                // Get an attribute of type string. This because the username is almost always a string, and passing it to a Integer/Double will result in a invalid
                 // query which will not log the passed values (possibly because the use of geotools).
                 if (ad.getType().getBinding() == String.class) {
                     typeName = ad.getLocalName();
@@ -412,7 +412,7 @@ public class EditFeatureActionBean  implements ActionBean {
             store.modifyFeatures(typeName, valueToInsert, CQL.toFilter(typeName + " = '" + dummyValues[0] + "' and " + typeName + " = '" + dummyValues[1] + "'"));
 
         } catch (Exception ex) {
-            // Swallow all exceptions, because this inheretly fails. It's only use is to log the application username, so it can be matched (via the database process id
+            // Swallow all exceptions, because this inherently fails. It's only use is to log the application username, so it can be matched (via the database process id
             // to the following insert/update/delete statement.
         }
     }
