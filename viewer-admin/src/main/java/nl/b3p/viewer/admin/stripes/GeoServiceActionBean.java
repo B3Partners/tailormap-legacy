@@ -447,6 +447,7 @@ public class GeoServiceActionBean implements ActionBean {
 
             }else if(protocol.equals(WMSService.PROTOCOL)){
                 overrideUrl = ((WMSService)service).getOverrideUrl();
+                exception_type = ((WMSService)service).getException_type();
             }
 
             if(service.getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
