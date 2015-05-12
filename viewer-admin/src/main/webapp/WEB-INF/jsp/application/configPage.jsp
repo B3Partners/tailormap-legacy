@@ -77,7 +77,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var configObject = null;
             var details = null;
             var appConfig = {};
-			<c:if test="${!empty actionBean.appConfigJSON};">
+			<c:if test="${!empty actionBean.appConfigJSON}">
 				appConfig = ${actionBean.appConfigJSON};
 			</c:if>
             <c:if test="${!empty actionBean.component.config}">
