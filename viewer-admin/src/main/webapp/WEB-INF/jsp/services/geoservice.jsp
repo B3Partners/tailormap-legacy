@@ -123,7 +123,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <tr id="useUrlTr">     
             <td>Exceptiontype:</td>
             <td>
-                <stripes:select name="exception_type"  id="exception_type">
+                <stripes:select value="Inimage" name="exception_type" id="exception_type">
                     <stripes:option value="-1">Kies..</stripes:option>
                     <stripes:options-enumeration enum="nl.b3p.viewer.config.services.WMSExceptionType"  />
                 </stripes:select>
