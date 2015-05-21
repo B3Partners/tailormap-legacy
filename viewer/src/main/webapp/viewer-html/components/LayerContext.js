@@ -67,7 +67,8 @@ Ext.define ("viewer.components.LayerContext",{
                     borderStyle: 'solid',
                     borderWidth: '0 0 1px 0'
                 },
-                layout: 'fit'
+                layout: 'fit',
+                autoScroll: true
             });
             this.linksContainer = Ext.create('Ext.container.Container', {
                 height: 20,
@@ -128,7 +129,8 @@ Ext.define ("viewer.components.LayerContext",{
         }
         
         if(typeof layerObj.url !== 'undefined' && (typeof layerObj.info === 'undefined' || layerObj.info === '<br>' ) ){
-             window.open(layerObj.url,'name','height='+this.config.details.height + ',width=' + this.config.details.width + ',location=no,status=no,toolbar=no,menubar=no');
+            var browserPopupWindow = window.open(layerObj.url, 'name', 'height='+this.config.details.height + ',width=' + this.config.details.width + ',location=no,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=yes');
+            browserPopupWindow.focus();
         }else{
             if(!this.popup.popupWin.isVisible()) {
                 this.popup.show();
