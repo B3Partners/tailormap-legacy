@@ -41,7 +41,8 @@ Ext.onReady(function() {
                 if(nodeType == "category" || nodeType == "level") return foldericon;
                 if(nodeType == "layer") return layericon;
             }},
-            {name: 'leaf', type: 'boolean', mapping: 'isLeaf'}
+            {name: 'leaf', type: 'boolean', mapping: 'isLeaf'},
+            {name: 'index', type: 'int'}
         ]
     });
 

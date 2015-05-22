@@ -86,6 +86,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 text: "Root node",
                 expanded: true
             },
+            selModel: {
+                mode: "MULTI"
+            },
+            viewConfig: this.getViewConfig('collection'),
             useArrows: true,
             frame: true,
             renderTo: me.treeContainer,
@@ -156,6 +160,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 text: "Root node",
                 expanded: true
             },
+            selModel: {
+                mode: "MULTI"
+            },
+            viewConfig: this.getViewConfig('selection'),
             useArrows: true,
             frame: true,
             renderTo: me.selectedLayersContainer,
@@ -164,12 +172,13 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             autoScroll: true,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
-                    me.removeLayers();
+                    me.removeNodes([ record ]);
                 },
                 itemclick: function(view, record, item, index, event, eOpts) {
-                    if(me.onlyMoveRootLevels) {
-                        if(record.parentNode.parentNode === null) me.disableMoveButtons(false);
-                        else me.disableMoveButtons(true);
+                    if(me.onlyMoveRootLevels && me.onlyRootLevels(me.selectedlayers.getSelectionModel().getSelection())) {
+                        me.disableMoveButtons(false);
+                    } else {
+                        me.disableMoveButtons(true);
                     }
                 }
             }
@@ -193,7 +202,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             cls: 'plain-button',
             listeners: {
                 click: function() {
-                    me.addSelectedLayers();
+                    me.addNodes(me.tree.getSelectionModel().getSelection());
                 }
             }
         });
@@ -206,7 +215,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             cls: 'plain-button',
             listeners: {
                 click: function() {
-                    me.removeLayers();
+                    me.removeNodes(me.selectedlayers.getSelectionModel().getSelection());
                 }
             }
         });
@@ -219,7 +228,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             cls: 'plain-button',
             listeners: {
                 click: function() {
-                    me.moveNode('up');
+                    me.moveNodes('up');
                 }
             }
         });
@@ -232,10 +241,83 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             cls: 'plain-button',
             listeners: {
                 click: function() {
-                    me.moveNode('down');
+                    me.moveNodes('down');
                 }
             }
         });
+    },
+    
+    getViewConfig: function(treeType) {
+        var me = this;
+        return {
+            plugins: {
+                ptype: 'treeviewdragdrop',
+                appendOnly: true,
+                allowContainerDrops: true,
+                allowParentInserts: true,
+                sortOnDrop: true,
+                dropZone: {
+                    // We always allow dragging over node
+                    onNodeOver: function() {
+                        return Ext.dd.DropZone.prototype.dropAllowed;
+                    },
+                    // On nodeDrop is executed when node is dropped on other node in tree
+                    onNodeDrop: function(targetNode, dragZone, e, data) {
+                        // We are in the selection tree && target and dragged node are both in same tree
+                        if(treeType === 'selection' && targetNode.offsetParent === data.item.offsetParent) {
+                            // If moveOnlyRootLevels is configured, check if we only selected root levels,
+                            // else return false
+                            if(me.onlyMoveRootLevels && !me.onlyRootLevels(data.records)) {
+                                return false;
+                            }
+                            // Check where the element is dropped
+                            var bounds = targetNode.getBoundingClientRect();
+                            var dropY = e.getY();
+                            // If dropped at the top 50% of the element, append above
+                            // else append below
+                            var halfWay = bounds.top + (bounds.height / 2);
+                            me.moveNodesToPosition(data, dropY >= halfWay);
+                            return true;
+                        }
+                        me.handleDrag(treeType, data);
+                        return true;
+                    }
+                }
+            },
+            listeners: {
+                // beforedrop is executed when node is dropped on container (so not on another node but on 'empty' space'
+                beforedrop: function(node, data, overModel, dropPosition, dropHandlers, eOpts) {
+                    // We cancel the drop (do not append the actual layers because we still need some validation)
+                    dropHandlers.cancelDrop();
+                    // Add/remove layers
+                    me.handleDrag(treeType, data);
+                }
+            }  
+        };
+    },
+    
+    /**
+     * Add/Remove layers after drag
+     */
+    handleDrag: function(treeType, data) {
+        if(treeType === 'collection') {
+            // Manually remove all layers which we dragged to other tree
+            this.removeNodes(data.records);
+        }
+        if(treeType === 'selection') {
+            // Manually move all layers which we dragged to other tree
+            this.addNodes(data.records);
+        }
+    },
+    
+    onlyRootLevels: function(records) {
+        var onlyRootLevels = true;
+        for(var i = 0; i < records.length; i++) {
+            if(records[i].parentNode.parentNode !== null) {
+                onlyRootLevels = false;
+            }
+        }
+        return onlyRootLevels;
     },
 
     disableMoveButtons: function(disable) {
@@ -279,24 +361,92 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         }
     },
 
-    moveNode: function(direction) {
+    moveNodes: function(direction) {
         var me = this;
         var rootNode = me.selectedlayers.getRootNode();
-        Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
-            var node = rootNode.findChild('id', record.get('id'), true);
-            var sib = null;
-            if(direction === 'down') {
-                sib = node.nextSibling;
-                if(sib !== null) {
-                    rootNode.insertBefore(sib, node);
-                }
-            } else {
-                sib = node.previousSibling;
-                if(sib !== null) {
-                    rootNode.insertBefore(node, sib);
-                }
+        var selection = me.selectedlayers.getSelectionModel().getSelection();
+        var allNodes = rootNode.childNodes;
+        var doSort = true;
+        // First check if we are going to sort (we do not sort when the first item is selected and direction = up
+        // or we do not sort when last item is selected and direction = down
+        for(var i = 0; i < selection.length; i++) {
+            var index = this.findIndex(allNodes, selection[i]);
+            if((index === 0 && direction === 'up') || (index === (allNodes.length - 1) && direction === 'down')) {
+                doSort = false;
             }
-        });
+        }
+        // If no sorting, return
+        if(!doSort) {
+            return;
+        }
+        // Sort selection by index
+        selection.sort((function sortOnIndex(a, b) {
+            var indexA = this.findIndex(allNodes, a);
+            var indexB = this.findIndex(allNodes, b);
+            return indexA - indexB;
+        }).bind(this));
+        // We manually sort because this is much faster than moving the nodes directly in the tree
+        if(direction === 'down') {
+            // Moving down we iterate back
+            for(var i = (selection.length - 1); i >= 0; i--) {
+                var index = this.findIndex(allNodes, selection[i]);
+                this.moveNodeInArray(allNodes, index+1, index);
+            }
+        } else {
+            // Moving up we iterate forward
+            for(var i = 0; i < selection.length; i++) {
+                var index = this.findIndex(allNodes, selection[i]);
+                this.moveNodeInArray(allNodes, index-1, index);
+            }
+        }
+        this.sortNodes(allNodes);
+    },
+    
+    moveNodesToPosition: function(data, below) {
+        var rootNode = this.selectedlayers.getRootNode();
+        var allNodes = rootNode.childNodes;
+        // Get the targetIndex
+        var targetIndex = this.findIndex(allNodes, data.event.position.record);
+        if(below) {
+            targetIndex++;
+        }
+        // Sort records by index
+        data.records.sort((function sortOnIndex(a, b) {
+            var indexA = this.findIndex(allNodes, a);
+            var indexB = this.findIndex(allNodes, b);
+            if(below) {
+                return indexA - indexB;
+            }
+            return indexA - indexB;
+        }).bind(this));
+        for(var i = 0; i < data.records.length; i++) {
+            var current = this.findIndex(allNodes, data.records[i]);
+            this.moveNodeInArray(allNodes, (current < targetIndex ? targetIndex - 1 : targetIndex), current);
+            targetIndex++;
+        }
+        this.sortNodes(allNodes);
+    },
+    
+    sortNodes: function(allNodes) {
+        // Set indexes
+        for(var i = 0; i < allNodes.length; i++) {
+            allNodes[i].set('index', i);
+        }
+        // Sort indexes
+        this.selectedlayers.getStore().sort('index', 'ASC');
+    },
+    
+    findIndex: function(allNodes, node) {
+        for(var i = 0; i < allNodes.length; i++) {
+            if(allNodes[i].get('id') === node.get('id')) {
+                return i;
+            }
+        }
+        return -1;
+    },
+    
+    moveNodeInArray: function(list, to, from) {
+        list.splice(to, 0, list.splice(from, 1)[0]);
     },
 
     setAllNodesVisible: function(visible) {
@@ -332,9 +482,9 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         me.filteredNodes = [];
     },
 
-    addSelectedLayers: function() {
+    addNodes: function(records) {
         var me = this;
-        Ext.Array.each(me.tree.getSelectionModel().getSelection(), function(record) {
+        Ext.Array.each(records, function(record) {
             me.addNode(record);
         });
     },
@@ -425,10 +575,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         return false;
     },
 
-    removeLayers: function() {
+    removeNodes: function(records) {
         var me = this;
-        var rootNode = me.selectedlayers.getRootNode();
-        Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
+        var rootNode = this.selectedlayers.getRootNode();
+        Ext.Array.each(records, function(record) {
             rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
             if(me.useCheckboxes && record.get('type') === 'level') {
                 me.checkedLayers = Ext.Array.difference(me.checkedLayers, record.get('checkedlayers'));

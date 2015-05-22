@@ -50,7 +50,8 @@ Ext.onReady(function() {
                     if(nodeStatus == "error") return serviceerroricon;
                 }
             }},
-            {name: 'leaf', type: 'boolean', mapping: 'isLeaf'}
+            {name: 'leaf', type: 'boolean', mapping: 'isLeaf'},
+            {name: 'index', type: 'int'}
         ]
     });
     
