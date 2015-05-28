@@ -715,87 +715,11 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             'z-index':this.zIndex
         });
 
-        var maxCornerSize=this.balloonHeight-(this.balloonArrowHeight*2)+2-this.balloonCornerSize;
-
-        var topLeftEl=document.createElement("div");
-        topLeftEl.innerHTML="<img style='position: absolute;' src='"+this.roundImgPath+"'/>";
-        var topLeft = new Ext.Element(topLeftEl);
-        topLeft.addCls("balloonCornerTopLeft");
-        topLeft.applyStyles({
-            'width': this.balloonCornerSize+'px',
-            'height':this.balloonCornerSize+'px',
-            'left':  '0px',
-            'top':  this.balloonArrowHeight-1+'px',
-            'width':  this.balloonWidth-this.balloonCornerSize+'px',
-            'height': maxCornerSize+'px'
-        });
-        topLeft.on("mouseover",function(){
-            this.onMouseOver('topLeft');
-        },this);
-        topLeft.on("mouseout",function(){
-            this.onMouseOut('topLeft');
-        },this);
-        this.balloon.appendChild(topLeft);
-
-        var topRightEl = document.createElement("div");
-        topRightEl.innerHTML="<img style='position: absolute; left: -1004px;' src='"+this.roundImgPath+"'/>";
-        var topRight= new Ext.Element(topRightEl);
-        topRight.addCls("balloonCornerTopRight");
-        topRight.applyStyles({
-            'width':this.balloonCornerSize+'px',
-            'height':maxCornerSize+'px',
-            'top': this.balloonArrowHeight-1+'px',
-            'right':'0px'
-        });
-        topRight.on("mouseover",function(){
-            this.onMouseOver('topRight');
-        },this);
-        topRight.on("mouseout",function(){
-            this.onMouseOut('topRight');
-        },this);
-        this.balloon.appendChild(topRight);
-
-        var bottomLeftEl = document.createElement("div");
-        bottomLeftEl.innerHTML="<img style='position: absolute; top: -748px;' src='"+this.roundImgPath+"'/>";
-        var bottomLeft=new Ext.Element(bottomLeftEl);
-        bottomLeft.addCls("balloonCornerBottomLeft");
-        bottomLeft.applyStyles({
-            'height':this.balloonCornerSize+'px',
-            'left':  '0px',
-            'bottom': this.balloonArrowHeight-1+'px',
-            'width': this.balloonWidth-this.balloonCornerSize+'px'
-        });
-        bottomLeft.on("mouseover",function(){
-            this.onMouseOver('bottomLeft');
-        },this);
-        bottomLeft.on("mouseout",function(){
-            this.onMouseOut('bottomLeft');
-        },this);
-        this.balloon.appendChild(bottomLeft);
-
-        var bottomRightEl = document.createElement("div");
-        bottomRightEl.innerHTML="<img style='position: absolute; top: -748px; left: -1004px;' src='"+this.roundImgPath+"'/>";
-        var bottomRight = new Ext.Element(bottomRightEl);
-        bottomRight.addCls("balloonCornerBottomRight");
-        bottomRight.applyStyles({
-            'width':this.balloonCornerSize+'px',
-            'height':this.balloonCornerSize+'px',
-            'right':'0px',
-            'bottom':this.balloonArrowHeight-1+'px'
-        });
-        bottomRight.on("mouseover",function(){
-            this.onMouseOver('bottomRight');
-        },this);
-        bottomRight.on("mouseout",function(){
-            this.onMouseOut('bottomRight');
-        },this);
-        this.balloon.appendChild(bottomRight);
-
         //arrows
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+this.balloonArrowHeight+"px;' src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(2*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(3*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+this.balloonArrowHeight+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+(2*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+(3*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
 
         //content
         var balloonContentEl = document.createElement("div");
@@ -803,8 +727,9 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloonContent= new Ext.Element(balloonContentEl);
         this.balloonContent.addCls('balloonContent');
         this.balloonContent.applyStyles({
-            top: this.balloonArrowHeight+5+"px",
-            bottom: this.balloonArrowHeight+4+"px"
+            top: this.balloonArrowHeight-1+"px",
+            bottom: this.balloonArrowHeight-1+"px",
+            'z-index': this.zIndex+1
         });
         this.balloonContent.on("mouseover",function(){
             this.onMouseOver('balloonContent');
@@ -813,30 +738,6 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             this.onMouseOut('balloonContent');
         },this);
         this.balloon.appendChild(this.balloonContent);
-        //closing button
-        if(this.showCloseButton){
-            var thisObj = this;
-            var closeButton = new Ext.Element(document.createElement("div"));
-            closeButton.addCls("balloonCloseButton");
-            closeButton.applyStyles({
-                right: '7px',
-                top: this.balloonArrowHeight+3+"px"
-            });
-            closeButton.addListener("click",function(){
-                thisObj.close();
-            });
-            this.balloon.appendChild(closeButton);
-        }
-        /*var thisObj=this;
-        this.balloon.append($j("<div class='balloonCloseButton'></div>")
-            .css('right','7px')
-            .css('top',''+(this.balloonArrowHeight+3)+'px')
-            .click(function(){
-                thisObj.remove();
-                return false;
-            })
-
-        );*/
 
         this.x=x;
         this.y=y;
@@ -846,8 +747,42 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
 
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
-
     }
+
+    /**
+     * Adds the close and minimize buttons to the balloon
+     */
+    this._appendButtons = function() {
+        if(!this.showCloseButton || this.balloonContent.query('.balloonButton').length === 2){
+            return;
+        }
+        var thisObj = this;
+        var closeButton = new Ext.Element(document.createElement("div"));
+        closeButton.addCls("x-tool-img x-tool-close balloonButton");
+        closeButton.applyStyles({
+            'z-index': this.zIndex+3
+        });
+        closeButton.addListener("click",function(){
+            thisObj.close();
+        });
+        this.balloonContent.appendChild(closeButton);
+
+        var minMaximizeButton = new Ext.Element(document.createElement("div"));
+        minMaximizeButton.addCls("x-tool-img x-tool-minimize balloonButton");
+        minMaximizeButton.applyStyles({
+            'z-index': this.zIndex+3
+        });
+        minMaximizeButton.addListener("click",function(){
+            thisObj.minMaximize();
+            if(minMaximizeButton.hasCls('x-tool-minimize')) {
+                minMaximizeButton.removeCls('x-tool-minimize').addCls('x-tool-maximize');
+            } else {
+                minMaximizeButton.addCls('x-tool-minimize').removeCls('x-tool-maximize');
+            }
+        });
+        this.balloonContent.appendChild(minMaximizeButton);
+    };
+
     /**
      *Private function. Use setPosition(x,y,true) to reset the position
      *Reset the position to the point. And displays the right Arrow to the point
@@ -856,10 +791,6 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      *@param y the y coord
      */
     this._resetPositionOfBalloon = function(x,y){
-        //calculate position
-        var centerCoord= this.viewerController.getMap().getCenter();
-        //var centerPixel= this.viewerController.getMap().coordinateToPixel(centerCoord.x,centerCoord.y);
-        //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);
         var centerX = this.mapDiv.getWidth()/2;
         var centerY = this.mapDiv.getHeight()/2;
         //determine the left and top.
@@ -874,20 +805,20 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             this.topOfPoint=false;
         }
         //display the right arrow
-        this.balloon.select(".balloonArrow").applyStyles({'display':'none'});
+        this.balloon.select(".balloonArrow").applyStyles({'display':'none'}).removeCls('arrowVisible');
         //$j("#infoBalloon > .balloonArrow").css('display', 'block');
         if (!this.leftOfPoint && !this.topOfPoint){
             //popup is bottom right of the point
-            this.balloon.select(".balloonArrowTopLeft").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowTopLeft").applyStyles({"display":"block"}).addCls('arrowVisible');
         }else if (this.leftOfPoint && !this.topOfPoint){
             //popup is bottom left of the point
-            this.balloon.select(".balloonArrowTopRight").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowTopRight").applyStyles({"display":"block"}).addCls('arrowVisible');
         }else if (this.leftOfPoint && this.topOfPoint){
             //popup is top left of the point
-            this.balloon.select(".balloonArrowBottomRight").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowBottomRight").applyStyles({"display":"block"}).addCls('arrowVisible');
         }else{
             //pop up is top right of the point
-            this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"}).addCls('arrowVisible');
         }
     }
     /**
@@ -939,6 +870,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         }else if(resetPositionOfBalloon){
             this._resetPositionOfBalloon(x,y);
         }
+        this._appendButtons();
+        this.maximize();
         if (x!=undefined && y != undefined){
 
             this.x=x;
@@ -1030,9 +963,23 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             this.balloon.setVisible(false);
     }
     this.show = function(){
-        if (this.balloon!=undefined)
+        if (this.balloon!=undefined) {
             this.balloon.setVisible(true);
+        }
     }
+    this.maximize = function() {
+        this.balloon.removeCls('minimized');
+    }
+    this.minMaximize = function() {
+        var minimize = true;
+        if(this.balloon.hasCls('minimized')) {
+            this.balloon.removeCls('minimized');
+            minimize = false;
+        } else {
+            this.balloon.addCls('minimized');
+            
+        }
+    };
     this.close = function(){
         this.setContent("");
         this.hide();

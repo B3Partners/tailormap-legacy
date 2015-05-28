@@ -10,22 +10,7 @@
 /*************Balloon css:**************/
 .infoBalloon{
     position: absolute;
-}
-.balloonCornerTopRight{    
-    position: absolute;
-    overflow: hidden;
-}
-.balloonCornerTopLeft{    
-    position: absolute;
-    overflow: hidden;
-}
-.balloonCornerBottomRight{    
-    position: absolute;
-    overflow: hidden;
-}
-.balloonCornerBottomLeft{    
-    position: absolute;
-    overflow: hidden;
+
 }
 /*Balloon Arrows*/
 .balloonArrow {    
@@ -59,12 +44,47 @@
     right: 7px;
     left: 7px;
     overflow: auto;
+    border: 1px solid #A9A9A9;
+    background-color: #FFFFFF;
+    padding: 10px;
+    overflow: auto;
 }
-.balloonCloseButton{
+.infoBalloon.minimized .balloonContent {
+    width: 45px;
+    height: 27px;
+    padding: 5px;
+    overflow: hidden;
+}
+.infoBalloon.minimized .arrowVisible.balloonArrowTopRight ~ .balloonContent {
+    left: auto;
+}
+.infoBalloon.minimized .arrowVisible.balloonArrowBottomRight ~ .balloonContent {
+    left: auto;
+    top: auto !important;
+}
+.infoBalloon.minimized .arrowVisible.balloonArrowBottomLeft ~ .balloonContent {
+    top: auto !important;
+}
+.infoBalloon.minimized .balloonContent * {
+    display: none;
+}
+.infoBalloon.minimized .balloonContent .balloonButton {
+    display: block;
+}
+.infoBalloon .balloonContent .balloonButton.x-tool-close {
+    right: 12px;
+}
+.infoBalloon.minimized .balloonContent .balloonButton.x-tool-close {
+    right: 3px;
+}
+.infoBalloon .balloonContent .balloonButton.x-tool-minimize {
+    right: 32px;
+}
+.infoBalloon .balloonContent .balloonButton.x-tool-maximize {
+    right: 24px;
+}
+.balloonButton{
     position: absolute;
-    background: url("../images/maptip/close.gif") no-repeat scroll 0 0 transparent;
-    height: 17px;
-    width: 17px;
     cursor: pointer;
 }
 /*** Features (feature info and maptip) css ***/
@@ -73,7 +93,8 @@
     width: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
-    border-bottom: 1px solid #D7D7D7; 
+    border-bottom: 1px solid #D7D7D7;
+    overflow: auto;
 }
 .feature_summary_feature div{    
     float: left;
@@ -99,7 +120,6 @@
 }
 .feature_summary_description{
     width: 100%;
-    overflow: hidden;
 }
 .feature_summary_link{
     width: 60%;
