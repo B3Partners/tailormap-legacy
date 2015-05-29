@@ -959,6 +959,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         }
     }
     this.hide = function(){
+        this.mouseIsOverElement = {};
         if (this.balloon!=undefined)
             this.balloon.setVisible(false);
     }
