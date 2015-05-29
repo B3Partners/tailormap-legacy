@@ -365,7 +365,7 @@ Ext.define ("viewer.components.SelectionModule",{
             });
             var advancedSearch = Ext.getCmp('advancedSearchQuery').getValue();
             if(this.config.advancedFilter && ( !Ext.getCmp("cswAdvancedSearchField").collapsed || this.config.alwaysMatch)){
-                csw.setActionbeanUrl(actionBeans["advancedcsw"]);
+                csw.config["actionbeanUrl"] = actionBeans["advancedcsw"];
                 csw.config["advancedString"] = advancedSearch;
                 csw.config["advancedProperty"] = this.config.advancedValue;
                 csw.config["application"] = appId;
