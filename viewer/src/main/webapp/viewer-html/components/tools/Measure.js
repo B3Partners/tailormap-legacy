@@ -135,48 +135,46 @@ Ext.define ("viewer.components.tools.Measure",{
     initEvents: function() {
         var config = this.config;
         var frameworkTool = this.tool.getFrameworkTool();
-        frameworkTool.events.register('measure', frameworkTool, function() {
-            var measureValueDiv = document.getElementById("olControlMeasureValue");
+        
+        function removeClone() {
             var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
-            if(config.nonSticky){
-                if (measureValueDiv){                
-                    measureValueDiv.style.display="none";
-                }
-                if(clonedValueDiv && clonedValueDiv.parentNode) {
-                    clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-                }
-                this.cancel();
-                config.viewerController.mapComponent.activateTool(null, true);
-                return;
+            if(clonedValueDiv && clonedValueDiv.parentNode) {
+                clonedValueDiv.parentNode.removeChild(clonedValueDiv);
             }
+        }
+        
+        function removeMeasure() {
+            var measureValueDiv = document.getElementById("olControlMeasureValue");
+            if (measureValueDiv) {
+                measureValueDiv.style.display="none";
+            }
+        }
+        
+        function createMeasureClone() {
+            var measureValueDiv = document.getElementById("olControlMeasureValue");
             if(!measureValueDiv) {
                 return;
             }
-            // Clone the measureValueDiv to keep just measured area/length visible
-            if(clonedValueDiv && clonedValueDiv.parentNode) {
-                clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-            }
-            clonedValueDiv = measureValueDiv.cloneNode(true);
+            removeClone();
+            var clonedValueDiv = measureValueDiv.cloneNode(true);
             clonedValueDiv.id = 'olControlMeasureValueClone';
             clonedValueDiv.className += ' olControlMeasureValueClone';
             clonedValueDiv.querySelector('#olControlMeasureValueText').id = 'olControlMeasureValueTextClone';
-            this.map.div.appendChild(clonedValueDiv);
+            return clonedValueDiv;
+        }
+        
+        frameworkTool.events.register('measure', frameworkTool, function() {
+            this.map.div.appendChild(createMeasureClone());
+            if(config.nonSticky){
+                config.viewerController.mapComponent.activateTool(null, true);
+            }
         });
         frameworkTool.events.register('measurepartial', frameworkTool, function(){
-            var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
-            if(clonedValueDiv && clonedValueDiv.parentNode) {
-                clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-            }
+            removeClone();
         });
         frameworkTool.events.register('deactivate', frameworkTool, function(){
-            var measureValueDiv=document.getElementById("olControlMeasureValue");
-            var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
-            if (measureValueDiv){
-                measureValueDiv.style.display="none";
-            }
-            if(clonedValueDiv && clonedValueDiv.parentNode) {
-                clonedValueDiv.parentNode.removeChild(clonedValueDiv);
-            }
+            removeMeasure();
+            removeClone();
         });
     }
 });
