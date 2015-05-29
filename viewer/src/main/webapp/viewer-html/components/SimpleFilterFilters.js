@@ -34,28 +34,28 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         this.maxRetrieved = false;
         this.initConfig(conf);
 
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
     },
 
     isReady : function(){
-        this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
+        this.config.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
         this.ready = true;
         this.applyFilter();
     },
 
     applyFilter : function(){
-        this.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
+        this.config.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
     },
     getCQL : function(){
-        this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
+        this.config.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
     },
     setFilter : function(cql){
-        var layer = this.viewerController.getAppLayerById(this.appLayerId);
+        var layer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
 
         if (!layer) {
             return;
         }
-        this.viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
+        this.config.viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
             id: this.config.name,
             cql: cql,
             operator: "AND"
@@ -67,9 +67,9 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         }
         var me = this;
         var params = {
-            attribute: this.attributeName,
-            applicationLayer: this.appLayerId,
-            attributes: [this.attributeName],
+            attribute: this.config.attributeName,
+            applicationLayer: this.config.appLayerId,
+            attributes: [this.config.attributeName],
             operator: operator
         };
         if(operator !== "#UNIQUE#"){
@@ -85,21 +85,21 @@ Ext.define("viewer.components.sf.SimpleFilter",{
                 if(res.success) {
                     me.updateValues(operator, res);
                 } else {
-                    this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". Oorzaak: " + res.msg);
+                    this.config.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.config.attributeName + ". Oorzaak: " + res.msg);
                 }
             },
             failure: function ( result, request) {
-                this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
+                this.config.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.config.attributeName + ". " + result.responseText);
             }
         });
     },
     reset : function(){
-        var layer = this.viewerController.getAppLayerById(this.appLayerId);
+        var layer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
 
         if (!layer) {
             return;
         }
-        this.viewerController.removeFilter(this.config.name, layer);
+        this.config.viewerController.removeFilter(this.config.name, layer);
     },
     getWidth : function(){
         var div = Ext.get(this.config.simpleFilter.div);
@@ -107,14 +107,14 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         return width;
     },
     mustEscapeAttribute : function(){
-        var appLayer = this.viewerController.getAppLayerById(this.appLayerId);
-        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer, null, false);
+        var appLayer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
+        var attributes = this.config.viewerController.getAttributesFromAppLayer(appLayer, null, false);
         if(!attributes){
             return false;
         }
         for (var i = 0 ; i < attributes.length ; i++){
             var attribute = attributes[i];
-            if(attribute.name === this.attributeName){
+            if(attribute.name === this.config.attributeName){
                 return attribute.type === "string";
             }
         }
@@ -451,7 +451,7 @@ Ext.define("viewer.components.sf.Combo", {
         } else if(operator === "#MAX#") {
             this.config.config.max = value;
         }else if (operator === "#UNIQUE#"){
-            var values = response.uniqueValues[this.attributeName];
+            var values = response.uniqueValues[this.config.attributeName];
             this.uniqueValues = values;
         }
         var data = this.getData();
