@@ -44,6 +44,16 @@ Ext.define("viewer.components.CustomConfiguration",{
             fieldLabel: "Laat achtergrondlagen zien"
         });
         
+        this.form.add({
+            xtype: "combobox",
+            value: configObject.autoOnLayers !== undefined ? configObject.autoOnLayers : 'always',
+            store: [ ['never','Nooit'], ['always','Altijd'], ['onlybackground','Alleen achtergrondlagen'] ],
+            name: 'autoOnLayers',
+            labelWidth: this.labelWidth,
+            fieldLabel: 'Lagen automatisch aanzetten',
+            width: 400
+        });
+        
         var fieldNames = [
             { name: 'Groups', description: 'Kaarten selecteren', defaultLabel: 'Kaart' },
             { name: 'Layers', description: 'Kaartlagen selecteren', defaultLabel: 'Kaartlaag' },

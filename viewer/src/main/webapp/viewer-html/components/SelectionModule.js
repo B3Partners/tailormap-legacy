@@ -69,6 +69,8 @@ Ext.define ("viewer.components.SelectionModule",{
     layerMergeServices: {},
     rootLevel: null,
     rendered: false,
+    // keep track if we checked the first added layer
+    firstChecked: false,
     treePanels: {
         applicationTree: {
             treePanel: null,
@@ -184,6 +186,7 @@ Ext.define ("viewer.components.SelectionModule",{
             me.initViewerControllerData();
             me.loadSelectedLayers();
         }
+        this.firstChecked = false;
     },
     // only executed once, when opening the selection module for the first time
     initComponent: function() {
@@ -1367,6 +1370,14 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         me.addToSelection(record);
     },
+    
+    isFirstChecked: function() {
+        return this.firstChecked;
+    },
+    
+    autoCheck: function() {
+        return !this.config.hasOwnProperty('autoOnLayers') || this.config.autoOnLayers === 'always';
+    },
 
     addToSelection: function(record) {
         var me = this;
@@ -1389,7 +1400,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.addService(customService);
                         me.addedLayers.push({
                             background: false,
-                            checked: true,
+                            checked: !me.isFirstChecked() && me.autoCheck(),
                             id: recordOrigData.id,
                             layerName: recordOrigData.layerName,
                             alias: recordOrigData.alias,
@@ -1400,6 +1411,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             id: recordOrigData.id,
                             type: 'appLayer'
                         });
+                        me.firstChecked = true;
                     }
                     else if(nodeType == "maplevel") {
                         // Added from application
@@ -1408,6 +1420,9 @@ Ext.define ("viewer.components.SelectionModule",{
                             id: recordOrigData.id,
                             type: 'level'
                         });
+                        if(!me.isFirstChecked()) {
+                            me.checkAllChildren(recordOrigData.id);
+                        }
                     }
                     else if(nodeType == "layer") {
                         // Added from registry
@@ -1418,7 +1433,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             me.addService(service);
                             me.addedLayers.push({
                                 background: false,
-                                checked: true,
+                                checked: !me.isFirstChecked() && me.autoCheck(),
                                 id: recordid,
                                 layerName: record.data.layerName,
                                 alias: record.data.layerName,
@@ -1432,12 +1447,40 @@ Ext.define ("viewer.components.SelectionModule",{
                             objData = me.createNode(recordid, record.get('name'), service.id, true);
                             objData.type = 'appLayer';
                             objData.origData.userService = service.id;
+                            me.firstChecked = true;
                         }
                     }
-                    if(objData != null) rootNode.appendChild(objData);
+                    if(objData !== null) {
+                        rootNode.appendChild(objData);
+                    }
                 }
             }
         }
+    },
+    
+    checkAllChildren: function(levelId) {
+        var level = this.levels[levelId];
+        if(!level || this.config.autoOnLayers === 'never' || (this.config.autoOnLayers === 'onlybackground' && !level.background)) {
+            return;
+        }
+        this.firstChecked = true;
+        if(level.layers) {
+            for(var i = 0; i < level.layers.length; i++) {
+                this.checkLayer(level.layers[i]);
+            }
+        }
+        if(level.children) {
+            for(var j = 0; j < level.children.length; j++) {
+                this.checkAllChildren(level.children[j]);
+            }
+        }
+    },
+    
+    checkLayer: function(layerId) {
+        if(!this.appLayers[layerId]) {
+            return;
+        }
+        this.appLayers[layerId].checked = true;
     },
 
     findService: function(record) {
