@@ -91,12 +91,12 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         this.filters.push(filter);
     },
     removeFilter : function (filter){
-        this.removeFilterById(filter.id);
+        this.removeFilterById(filter.config.id);
     },
     removeFilterById : function (id){
         for(var i = 0 ; i < this.filters.length;i++){
             var f = this.filters[i];
-            if(f.id == id){
+            if(f.config.id == id){
                 this.filters.splice(i,1);
                 break;
             }
