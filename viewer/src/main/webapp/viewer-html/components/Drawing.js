@@ -464,8 +464,8 @@ Ext.define ("viewer.components.Drawing",{
             this.activeFeature.color = this.config.color;
             var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
             this.activeFeature.config.wktgeom = feature.config.wktgeom;
-            delete this.features[this.activeFeature.id];
             this.vectorLayer.removeFeature(this.activeFeature);
+            delete this.features[this.activeFeature.getId()];
             this.vectorLayer.addFeature(this.activeFeature);
         }
     },
@@ -580,11 +580,11 @@ Ext.define ("viewer.components.Drawing",{
         for ( var i = 0 ; i < features.length;i++){
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
-            this.vectorLayer.style.fillcolor = featureObject.color;
-            this.vectorLayer.style.strokecolor = featureObject.color;
-            //this.config.color = featureObject.color;
+            this.vectorLayer.style.fillcolor = featureObject._color;
+            this.vectorLayer.style.strokecolor = featureObject._color;
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
+            this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
         }
 
     },
