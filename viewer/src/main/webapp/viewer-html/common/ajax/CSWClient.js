@@ -51,7 +51,7 @@ Ext.define("viewer.CSWClient", {
                 var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
-                    successFunction(response);
+                    successFunction(response.results);
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);
