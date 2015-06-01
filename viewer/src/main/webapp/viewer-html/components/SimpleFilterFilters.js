@@ -16,6 +16,8 @@
  */
 Ext.define("viewer.components.sf.SimpleFilter",{
     ready: null,
+    layersLoaded:null,
+    attributesLoaded:null,
     minRetrieved: null,
     maxRetrieved: null,
     config:{
@@ -24,6 +26,8 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         appLayerId: null,
         attributeName: null,
         config: null,
+        id:null,
+        label:null,
         autoStart: null,
         viewerController:null
     },
@@ -33,14 +37,23 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         this.minRetrieved = false;
         this.maxRetrieved = false;
         this.initConfig(conf);
-
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
+        this.loadAttributes();
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.layersInitialized, this);
     },
-
+    layersInitialized: function(){
+        this.layersLoaded = true;
+        this.config.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.layersInitialized, this);
+        this.isReady();
+    },
+    attributesInitialized : function(){
+        this.attributesLoaded = true;
+        this.isReady();
+    },
     isReady : function(){
-        this.config.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
-        this.ready = true;
-        this.applyFilter();
+        if(this.attributesLoaded && this.layersLoaded){
+            this.ready = true;
+            this.applyFilter();
+        }
     },
 
     applyFilter : function(){
@@ -119,6 +132,25 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             }
         }
         return false;
+    },
+    loadAttributes: function() {
+        var appLayer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
+
+        var me = this;
+        if(appLayer !== null) {
+            var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
+
+            // check if featuretype was loaded
+            if(appLayer.attributes === undefined) {
+                featureService.loadAttributes(appLayer, function(attributes) {
+                    me.attributesLoaded = true;
+                    me.isReady();
+                },this);
+            } else {
+                this.attributesLoaded = true;
+                this.isReady();
+            }
+        }
     }
 });
 
@@ -325,7 +357,12 @@ Ext.define("viewer.components.sf.Combo", {
     store:null,
     uniqueValues:null,
     config: {
-        simpleFilter: null
+        simpleFilter: null,
+        comboType:null,
+        max:null,
+        min:null,
+        ownValues:null,
+        start:null
     },
 
     constructor: function(conf) {

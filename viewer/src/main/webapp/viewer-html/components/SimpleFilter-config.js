@@ -293,9 +293,9 @@ Ext.define("viewer.components.CustomConfiguration",{
         var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
         var soort = this.filterTypes.findRecord("type", type).get("label");
         var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
-        var description = type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + filter.attributeName;
         if(appLayer){
             filter.appLayerId = appLayer.id;
+            var description = type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + filter.attributeName;
         }
         this.filterConfigs.push(filter);
         this.filterStore.add({soort: soort, description: description, id:filter.config.id});
