@@ -15,20 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Custom configuration object for HTML configuration.
+ * Merge component.
  * @author markprins@b3partners.nl
  */
-Ext.define("viewer.components.CustomConfiguration", {
-    extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId, configObject) {
-        if (configObject === null) {
-            configObject = {};
-        }
-        configObject.showLabelconfig = true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
-
-        this.createCheckBoxes(this.configObject.layers, {
-            editable: true
-        });
+Ext.define("viewer.components.Merge", {
+    extend: "viewer.components.Component",
+    config: {
+        name: "Samenvoegen",
+        tooltip: "Features samenvoegen"
+    },
+    constructor: function (conf) {
+        viewer.components.Keyboard.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        return this;
     }
 });

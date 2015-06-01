@@ -16,33 +16,40 @@
  */
 /**
  * Split component.
- * @author <a href="mailto:markprins@b3partners.nl">Mark Prins</a>
+ * @author markprins@b3partners.nl
  */
 Ext.define("viewer.components.Split", {
-    extend: "viewer.components.Component",
+    extend: "viewer.components.Edit",
     vectorLayer: null,
+    drawLayer: null,
     inputContainer: null,
     showGeomType: null,
     newGeomType: null,
     mode: null,
     layerSelector: null,
     toolMapClick: null,
-    editingLayer: null,
+    //editingLayer: null,
     currentFID: null,
     geometryEditable: null,
     deActivatedTools: [],
+    /** feature used for splitting. */
+    splitFeature: null,
+    /** feature to split. */
+    toSplitFeature: null,
     config: {
+        actionbeanUrl: "/viewer/action/feature/split",
+        strategy: 'replace',
         title: "",
         iconUrl: "",
-        tooltip: "",
         layers: null,
         label: ""
     },
     constructor: function (conf) {
-        viewer.components.Edit.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        var me = this;
+        viewer.components.Split.superclass.constructor.call(this, conf);
+        //in superclass
+        // this.initConfig(conf);
 
+        var me = this;
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
             if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
                     || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
@@ -52,36 +59,40 @@ Ext.define("viewer.components.Split", {
             }
             return true;
         });
+// in superclass
+//        if (this.config.layers !== null) {
+//            this.config.layers = Ext.Array.filter(this.config.layers, function (layerId) {
+//                // XXX must check editAuthorized in appLayer
+//                // cannot get that from this layerId
+//                return true;
+//            });
+//        }
 
-        if (this.config.layers !== null) {
-            this.config.layers = Ext.Array.filter(this.config.layers, function (layerId) {
-                // XXX must check editAuthorized in appLayer
-                // cannot get that from this layerId
-                return true;
-            });
-        }
-        this.renderButton({
-            handler: function () {
-                me.showWindow();
-            },
-            text: me.config.title,
-            icon: me.config.iconUrl,
-            tooltip: me.config.tooltip,
-            label: me.config.label
-        });
+// in superclass
+//        this.renderButton({
+//            handler: function () {
+//                me.showWindow();
+//            },
+//            text: me.config.title,
+//            icon: me.config.iconUrl,
+//            tooltip: me.config.tooltip,
+//            label: me.config.label
+//        });
 
-        this.toolMapClick = this.config.viewerController.mapComponent.createTool({
-            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
-            id: this.name + "toolMapClick",
-            handler: {
-                fn: this.mapClicked,
-                scope: this
-            },
-            viewerController: this.config.viewerController
-        });
+// in superclass
+//        this.toolMapClick = this.config.viewerController.mapComponent.createTool({
+//            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
+//            id: this.name + "toolMapClick",
+//            handler: {
+//                fn: this.mapClicked,
+//                scope: this
+//            },
+//            viewerController: this.config.viewerController
+//        });
+//
+//        this.loadWindow();
+//        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
 
-        this.loadWindow();
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         return this;
     },
     selectedContentChanged: function () {
@@ -90,12 +101,22 @@ Ext.define("viewer.components.Split", {
         } else {
             this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
+        if (this.drawLayer === null) {
+            this.createDrawVectorLayer();
+        } else {
+            this.config.viewerController.mapComponent.getMap().addLayer(this.drawLayer);
+        }
+        Ext.getCmp(this.name + "selectButton").setDisabled(false);
     },
+    /**
+     * create edit layer
+     */
     createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes: ["Circle", "Polygon", "MultiPolygon", "LineString"],
             showmeasures: false,
+            editable: false,
             viewerController: this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
@@ -104,11 +125,52 @@ Ext.define("viewer.components.Split", {
                 strokeopacity: 50
             }
         });
+        this.vectorLayer.addListener(
+                viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,
+                this.toSplitFeatureAdded,
+                this);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+    },
+    /**
+     * create drawing layer
+     */
+    createDrawVectorLayer: function () {
+        // drawing layer
+        this.drawLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: this.name + 'drawVectorLayer',
+            geometrytypes: ["LineString"],
+            showmeasures: false,
+            viewerController: this.config.viewerController,
+            style: {
+                fillcolor: "FF0000",
+                fillopacity: 50,
+                strokecolor: "FF00FF",
+                strokeopacity: 50
+            }
+        });
+        this.drawLayer.addListener(
+                viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,
+                this.splitFeatureAdded,
+                this);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.drawLayer);
+    },
+    toSplitFeatureAdded: function (vecLayer, feature) {
+        Ext.getCmp(this.name + "drawButton").setDisabled(false);
+        Ext.getCmp(this.name + "selectButton").setDisabled(true);
+        Ext.getCmp(this.name + "geomLabel").setText("Teken een lijn om mee te splitsen");
+    },
+    splitFeatureAdded: function (vecLayer, feature) {
+        this.splitFeature = feature;
+        Ext.getCmp(this.name + "drawButton").setDisabled(true);
+        Ext.getCmp(this.name + "selectButton").setDisabled(true);
+        Ext.getCmp(this.name + "geomLabel").setText("");
     },
     showWindow: function () {
         if (this.vectorLayer == null) {
             this.createVectorLayer();
+        }
+        if (this.drawLayer == null) {
+            this.createDrawVectorLayer();
         }
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
@@ -139,15 +201,29 @@ Ext.define("viewer.components.Split", {
                     items: [
                         {
                             xtype: 'button',
-                            id: this.name + "newButton",
+                            id: this.name + "selectButton",
                             disabled: true,
-                            tooltip: "Splits",
-                            text: "Splits",
+                            tooltip: "Te Splitsen geometrie selecteren",
+                            text: "Selecteer",
                             componentCls: 'mobileLarge',
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: me.splitStart
+                                    fn: me.select
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'button',
+                            id: this.name + "drawButton",
+                            disabled: true,
+                            tooltip: "Splitslijn tekenen",
+                            text: "Splitslijn",
+                            componentCls: 'mobileLarge',
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: me.splitLijn
                                 }
                             }
                         },
@@ -193,8 +269,8 @@ Ext.define("viewer.components.Split", {
                         },
                         {
                             id: this.name + "saveButton",
-                            tooltip: "Opslaan",
-                            text: "Opslaan",
+                            tooltip: "Splisen uitvoeren",
+                            text: "Splitsen",
                             listeners: {
                                 click: {
                                     scope: me,
@@ -218,49 +294,6 @@ Ext.define("viewer.components.Split", {
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
-    },
-    layerChanged: function (appLayer, afterLoadAttributes, scope) {
-        if (appLayer != null) {
-            this.vectorLayer.removeAllFeatures();
-            this.mode = null;
-            this.config.viewerController.mapComponent.getMap().removeMarker("edit");
-            if (appLayer.details && appLayer.details["editfunction.title"]) {
-                this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
-            }
-            this.inputContainer.setLoading("Laad attributen...");
-            this.inputContainer.removeAll();
-            this.loadAttributes(appLayer, afterLoadAttributes, scope);
-            this.inputContainer.setLoading(false);
-        } else {
-            this.cancel();
-        }
-    },
-    loadAttributes: function (appLayer, afterLoadAttributes, scope) {
-        this.appLayer = appLayer;
-
-        var me = this;
-        if (scope == undefined) {
-            scope = me;
-        }
-        if (this.appLayer != null) {
-
-            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
-
-            // check if featuretype was loaded
-            if (this.appLayer.attributes == undefined) {
-                this.featureService.loadAttributes(me.appLayer, function (attributes) {
-                    me.initAttributeInputs(me.appLayer);
-                    if (afterLoadAttributes) {
-                        afterLoadAttributes.call(scope);
-                    }
-                });
-            } else {
-                this.initAttributeInputs(me.appLayer);
-                if (afterLoadAttributes) {
-                    afterLoadAttributes.call(scope);
-                }
-            }
-        }
     },
     initAttributeInputs: function (appLayer) {
         var attributes = appLayer.attributes;
@@ -312,14 +345,13 @@ Ext.define("viewer.components.Split", {
                 if (this.newGeomType == null) {
                     tekst = "Geometrie mag alleen bewerkt worden";
                 } else {
-                    Ext.getCmp(this.name + "newButton").setDisabled(false);
-                    tekst = 'Splits een ' + tekst + " op de kaart";
+                    Ext.getCmp(this.name + "selectButton").setDisabled(false);
+                    tekst = 'Selecteer een ' + tekst + " in de kaart.";
                 }
             } else {
                 tekst = 'Geometrie mag niet bewerkt worden.';
             }
             gl.setText(tekst);
-
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
                 if (attribute.editable) {
@@ -374,13 +406,11 @@ Ext.define("viewer.components.Split", {
                                 id: value,
                                 label: label
                             };
-
                         });
                         var valueStore = Ext.create('Ext.data.Store', {
                             fields: ['id', 'label'],
                             data: values
                         });
-
                         input = Ext.create('Ext.form.ComboBox', {
                             fieldLabel: attribute.editAlias || attribute.name,
                             store: valueStore,
@@ -397,11 +427,8 @@ Ext.define("viewer.components.Split", {
             }
         } else {
             gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
-            Ext.getCmp(this.name + "newButton").setDisabled(true);
+            Ext.getCmp(this.name + "selectButton").setDisabled(true);
         }
-    },
-    setInputPanel: function (feature) {
-        this.inputContainer.getForm().setValues(feature);
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
@@ -409,7 +436,6 @@ Ext.define("viewer.components.Split", {
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
-
         var layer = this.layerSelector.getValue();
         this.config.viewerController.mapComponent.getMap().setMarker("edit", x, y);
         var featureInfo = Ext.create("viewer.FeatureInfo", {
@@ -421,6 +447,48 @@ Ext.define("viewer.components.Split", {
         }, function (msg) {
             me.failed(msg);
         });
+    },
+    splitLijn: function () {
+        this.drawLayer.removeAllFeatures();
+        this.mode = "splitDraw";
+        if (this.newGeomType != null && this.geometryEditable) {
+            this.drawLayer.drawFeature("LineString");
+        }
+    },
+    save: function () {
+        this.splitFeature = this.drawLayer.getActiveFeature();
+
+        var options = {
+            splitFeatureFID: this.currentFID,
+            toSplitWithFeature: this.splitFeature.config.wktgeom,
+            strategy: this.config.strategy,
+            appLayer: this.layerSelector.getSelectedAppLayer().id,
+            application: this.config.viewerController.app.id
+        };
+        this.split(options, this.saveSucces, this.saveFailed);
+
+    },
+    split: function (options, successFunction, failureFunction) {
+        var me = this;
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl,
+            params: options,
+            scope: me,
+            success: function (result) {
+                var response = Ext.JSON.decode(result.responseText);
+                if (response.success) {
+                    successFunction(response, this);
+                } else {
+                    if (failureFunction != undefined) {
+                        failureFunction(response.error, this);
+                    }
+                }
+            },
+            failure: function (result) {
+                if (failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText, this);
+                }
+            }});
     },
     featuresReceived: function (features) {
         if (features.length == 1) {
@@ -444,69 +512,13 @@ Ext.define("viewer.components.Split", {
                     id: "T_0"
                 });
                 this.vectorLayer.addFeature(feat);
+                this.toSplitFeature = feat;
             }
         }
-        Ext.get(this.getContentDiv()).unmask()
-    },
-    failed: function (msg) {
-        Ext.Msg.alert('Mislukt', msg);
-        Ext.get(this.getContentDiv()).unmask()
-    },
-    splitStart: function () {
-        this.vectorLayer.removeAllFeatures();
-        this.inputContainer.getForm().reset()
-        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
-        this.mode = "split";
-        if (this.newGeomType != null && this.geometryEditable) {
-            this.vectorLayer.drawFeature(this.newGeomType);
-        }
-    },
-    activateMapClick: function () {
-        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
-        this.toolMapClick.activateTool();
-    },
-    deactivateMapClick: function () {
-        for (var i = 0; i < this.deActivatedTools.length; i++) {
-            this.deActivatedTools[i].activate();
-        }
-        this.deActivatedTools = [];
-        this.toolMapClick.deactivateTool();
-    },
-    save: function () {
-        var feature = this.inputContainer.getValues();
-
-        if (this.geometryEditable) {
-            if (this.vectorLayer.getActiveFeature()) {
-                var wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
-                feature[this.appLayer.geometryAttribute] = wkt;
-            }
-        }
-        if (this.mode == "edit") {
-            feature.__fid = this.currentFID;
-        }
-        var me = this;
-        try {
-            feature = this.changeFeatureBeforeSave(feature);
-        } catch (e) {
-            me.failed(e);
-            return;
-        }
-
-        me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
-        Ext.create("viewer.EditFeature", {
-            viewerController: this.config.viewerController
-        })
-                .edit(
-                        me.editingLayer,
-                        feature,
-                        function (fid) {
-                            me.saveSucces(fid);
-                        }, function (error) {
-                    me.failed(error);
-                });
+        Ext.get(this.getContentDiv()).unmask();
     },
     /**
-     * Can be overwritten to add some extra feature attributes before saving the
+     * Can be overridden to add some extra feature attributes before saving the
      * feature.
      * @return the changed feature
      */
@@ -514,32 +526,34 @@ Ext.define("viewer.components.Split", {
         return feature;
     },
     /**
-     * Can be overwritten to disable editing in the component/js
+     * Can be overridden to disable editing in the component/js
      */
     allowedEditable: function (attribute) {
         return true;
     },
-    saveSucces: function (fid) {
-        this.editingLayer.reload();
-        this.currentFID = fid;
-        Ext.Msg.alert('Gelukt', "Het feature is aangepast.");
-        this.cancel();
+    saveSucces: function (response, me) {
+        me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
+        Ext.Msg.alert('Gelukt', "De features zijn opgeslagen.");
+        me.cancel();
     },
-    saveFailed: function (msg) {
+    saveFailed: function (msg, me) {
         Ext.Msg.alert('Mislukt', msg);
+        me.cancel();
     },
     cancel: function () {
         this.resetForm();
         this.popup.hide();
     },
     resetForm: function () {
-        Ext.getCmp(this.name + "newButton").setDisabled(true);
+        Ext.getCmp(this.name + "drawButton").setDisabled(true);
+        Ext.getCmp(this.name + "selectButton").setDisabled(true);
         this.mode = null;
         this.layerSelector.combobox.select(null);
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
+        this.drawLayer.removeAllFeatures();
     },
     getExtComponents: function () {
         return [this.maincontainer.getId()];
@@ -579,13 +593,11 @@ Ext.define("viewer.components.Split", {
             extend: 'Ext.data.Model',
             fields: attributeList
         });
-
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
             model: this.name + 'Model',
             data: features
         });
-
         var me = this;
         var grid = Ext.create('Ext.grid.Panel', {
             id: this.name + 'GridFeaturesWindow',
@@ -644,7 +656,6 @@ Ext.define("viewer.components.Split", {
                 }
             ]
         });
-
         var window = Ext.create("Ext.window.Window", {
             id: this.name + "FeaturesWindow",
             width: 500,
@@ -653,7 +664,6 @@ Ext.define("viewer.components.Split", {
             title: "Kies één feature",
             items: [container]
         });
-
         window.show();
     },
     itemDoubleClick: function (gridview, row) {
@@ -667,9 +677,14 @@ Ext.define("viewer.components.Split", {
         this.featuresReceived([feature]);
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
     },
+    select: function () {
+        this.vectorLayer.removeAllFeatures();
+        this.mode = "select";
+        this.activateMapClick();
+    },
     cancelSelectFeature: function () {
         this.resetForm();
-        Ext.get(this.getContentDiv()).unmask()
+        Ext.get(this.getContentDiv()).unmask();
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
     },
     indexFeatureToNamedFeature: function (feature) {

@@ -659,14 +659,28 @@
         singleton: true,
         showHelp: true
     },
-        {
+    {
         className: "viewer.components.Split",
-        name: "Edit",
+        name: "Splitsen",
         shortName: "Sp",
         group: "Component",
         sources: ["Split.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Split-config.js"],
         restrictions: ["left_menu"],
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+        type: "popup",
+        singleton: true,
+        showHelp: true
+    },
+    {
+        className: "viewer.components.Merge",
+        name: "Samenvoegen",
+        shortName: "Sa",
+        group: "Component",
+        sources: ["Merge.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Merge-config.js"],
+        restrictions: ["left_menu"],
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
         type: "popup",
         singleton: true,
         showHelp: true
