@@ -71,25 +71,27 @@ Ext.define("viewer.components.Merge", {
 
         this.loadWindow();
 
-        this.config.viewerController.addListener(
-                viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,
-                this.selectedContentChanged,
-                this);
+// never happens
+//        this.config.viewerController.addListener(
+//                viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,
+//                this.selectedContentChanged,
+//                this);
 
         return this;
     },
-    selectedContentChanged: function () {
-        console.debug("selectedContentChanged");
-
-        if (this.vectorLayer === null) {
-            this.createVectorLayer();
-        } else {
-            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        }
-        Ext.getCmp(this.name + "selectAButton").setDisabled(false);
-    },
+//    selectedContentChanged: function () {
+//        console.debug("selectedContentChanged");
+//
+//        if (this.vectorLayer === null) {
+//            this.createVectorLayer();
+//        } else {
+//            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+//        }
+//        Ext.getCmp(this.name + "selectAButton").setDisabled(false);
+//    },
     /**
-     * create edit layer
+     * create selction layer.
+     * @todo labeling A and B seems to fail
      */
     createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
@@ -356,20 +358,20 @@ Ext.define("viewer.components.Merge", {
         }
     },
     featuresReceived: function (features) {
-        if (features.length == 1) {
+        //if (features.length == 1) {
+        if (features.length > 0) {
             var feat = this.indexFeatureToNamedFeature(features[0]);
             this.handleFeature(feat);
         } else if (features.length == 0) {
             this.handleFeature(null);
-        } else {
-            //TODO Handel meerdere features af.
+        } //else {
+            //TODO Handle multiple features: error or just take 1st feature returned?
             //this.createFeaturesGrid(features);
-            this.failed("Er is meer dan 1 feature geselecteerd", this);
-        }
+            //this.failed("Er is meer dan 1 feature geselecteerd", this);
+        //}
     },
     handleFeature: function (feature) {
         if (feature != null) {
-            //this.inputContainer.getForm().setValues(feature);
             if (this.mode == "selectA") {
                 this.fidA = feature.__fid;
             }
@@ -382,7 +384,7 @@ Ext.define("viewer.components.Merge", {
                 var feat = Ext.create("viewer.viewercontroller.controller.Feature", {
                     wktgeom: wkt,
                     id: feature.__fid,
-                    // TODO dit lijkt niet te werken
+                    // TODO dit lijkt niet te werken..
                     label: (this.mode == "selectA") ? "A" : "B"
                 });
                 this.vectorLayer.addFeature(feat);
