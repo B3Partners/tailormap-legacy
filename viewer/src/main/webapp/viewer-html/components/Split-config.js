@@ -30,5 +30,26 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.createCheckBoxes(this.configObject.layers, {
             editable: true
         });
+        this.addFormItems(configObject);
+    },
+    addFormItems: function () {
+        var me = this;
+        this.form.add([
+            {
+                xtype: "label",
+                text: "Splits strategie"
+            }, {
+                xtype: "combo",
+                fields: ['value', 'text'],
+                value: me.configObject.strategy ? me.configObject.strategy : "replace",
+                name: "strategy",
+                emptyText: 'Maak uw keuze',
+                store: [
+                    ["replace", "replace"],
+                    ["add", "add"]
+                ],
+                width: 150
+            }
+        ]);
     }
 });

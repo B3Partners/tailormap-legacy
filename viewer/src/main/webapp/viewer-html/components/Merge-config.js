@@ -30,5 +30,30 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.createCheckBoxes(this.configObject.layers, {
             editable: true
         });
+        this.addFormItems(configObject);
+    },
+    addFormItems: function () {
+        var me = this;
+        this.form.add([
+            {
+                xtype: "combo",
+                fields: ['value', 'text'],
+                value: me.configObject.strategy ? me.configObject.strategy : "replace",
+                name: "strategy",
+                fieldLabel: "Samenvoegen strategie",
+                emptyText: 'Maak uw keuze',
+                store: [
+                    ["replace", "replace"],
+                    ["new", "new"]
+                ],
+                labelWidth: me.labelWidth
+            }, {
+                xtype: "textfield",
+                fieldLabel: "Maximum afstand voor samenvoegen",
+                name: "mergeGapDist",
+                value: me.configObject.mergeGapDist ? me.configObject.mergeGapDist : 0,
+                labelWidth: me.labelWidth
+            }
+        ]);
     }
 });
