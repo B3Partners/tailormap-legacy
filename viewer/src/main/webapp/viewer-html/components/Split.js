@@ -19,7 +19,7 @@
  * @author markprins@b3partners.nl
  */
 Ext.define("viewer.components.Split", {
-    extend: "viewer.components.Edit",
+    extend: "viewer.components.Component",
     vectorLayer: null,
     drawLayer: null,
     inputContainer: null,
@@ -28,7 +28,6 @@ Ext.define("viewer.components.Split", {
     mode: null,
     layerSelector: null,
     toolMapClick: null,
-    //editingLayer: null,
     currentFID: null,
     geometryEditable: null,
     deActivatedTools: [],
@@ -38,7 +37,7 @@ Ext.define("viewer.components.Split", {
     toSplitFeature: null,
     config: {
         actionbeanUrl: "/viewer/action/feature/split",
-        strategy: 'replace',
+        strategy: null,
         title: "",
         iconUrl: "",
         layers: null,
@@ -46,52 +45,41 @@ Ext.define("viewer.components.Split", {
     },
     constructor: function (conf) {
         viewer.components.Split.superclass.constructor.call(this, conf);
-        //in superclass
-        // this.initConfig(conf);
+        this.initConfig(conf);
 
         var me = this;
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
             if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
                     || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
-                if (me.mode === "split") {
+                if (me.mode === "split" || me.mode === "select") {
                     return false;
                 }
             }
             return true;
         });
-// in superclass
-//        if (this.config.layers !== null) {
-//            this.config.layers = Ext.Array.filter(this.config.layers, function (layerId) {
-//                // XXX must check editAuthorized in appLayer
-//                // cannot get that from this layerId
-//                return true;
-//            });
-//        }
 
-// in superclass
-//        this.renderButton({
-//            handler: function () {
-//                me.showWindow();
-//            },
-//            text: me.config.title,
-//            icon: me.config.iconUrl,
-//            tooltip: me.config.tooltip,
-//            label: me.config.label
-//        });
+        this.renderButton({
+            handler: function () {
+                me.showWindow();
+            },
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
+        });
 
-// in superclass
-//        this.toolMapClick = this.config.viewerController.mapComponent.createTool({
-//            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
-//            id: this.name + "toolMapClick",
-//            handler: {
-//                fn: this.mapClicked,
-//                scope: this
-//            },
-//            viewerController: this.config.viewerController
-//        });
-//
-//        this.loadWindow();
-//        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
+        this.toolMapClick = this.config.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
+            id: this.name + "toolMapClick",
+            handler: {
+                fn: this.mapClicked,
+                scope: this
+            },
+            viewerController: this.config.viewerController
+        });
+
+        this.loadWindow();
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
 
         return this;
     },
@@ -135,7 +123,6 @@ Ext.define("viewer.components.Split", {
      * create drawing layer
      */
     createDrawVectorLayer: function () {
-        // drawing layer
         this.drawLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'drawVectorLayer',
             geometrytypes: ["LineString"],
@@ -295,6 +282,49 @@ Ext.define("viewer.components.Split", {
         this.layerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
     },
+    layerChanged: function (appLayer, afterLoadAttributes, scope) {
+        if (appLayer != null) {
+            this.vectorLayer.removeAllFeatures();
+            this.mode = null;
+            this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+            if (appLayer.details && appLayer.details["editfunction.title"]) {
+                this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
+            }
+            this.inputContainer.setLoading("Laad attributen...");
+            this.inputContainer.removeAll();
+            this.loadAttributes(appLayer, afterLoadAttributes, scope);
+            this.inputContainer.setLoading(false);
+        } else {
+            this.cancel();
+        }
+    },
+    loadAttributes: function (appLayer, afterLoadAttributes, scope) {
+        this.appLayer = appLayer;
+
+        var me = this;
+        if (scope == undefined) {
+            scope = me;
+        }
+        if (this.appLayer != null) {
+
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
+
+            // check if featuretype was loaded
+            if (this.appLayer.attributes == undefined) {
+                this.featureService.loadAttributes(me.appLayer, function (attributes) {
+                    me.initAttributeInputs(me.appLayer);
+                    if (afterLoadAttributes) {
+                        afterLoadAttributes.call(scope);
+                    }
+                });
+            } else {
+                this.initAttributeInputs(me.appLayer);
+                if (afterLoadAttributes) {
+                    afterLoadAttributes.call(scope);
+                }
+            }
+        }
+    },
     initAttributeInputs: function (appLayer) {
         var attributes = appLayer.attributes;
         var type = "geometry";
@@ -450,10 +480,21 @@ Ext.define("viewer.components.Split", {
     },
     splitLijn: function () {
         this.drawLayer.removeAllFeatures();
-        this.mode = "splitDraw";
+        this.mode = "split";
         if (this.newGeomType != null && this.geometryEditable) {
             this.drawLayer.drawFeature("LineString");
         }
+    },
+    activateMapClick: function () {
+        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        this.toolMapClick.activateTool();
+    },
+    deactivateMapClick: function () {
+        for (var i = 0; i < this.deActivatedTools.length; i++) {
+            this.deActivatedTools[i].activate();
+        }
+        this.deActivatedTools = [];
+        this.toolMapClick.deactivateTool();
     },
     save: function () {
         this.splitFeature = this.drawLayer.getActiveFeature();
@@ -533,7 +574,7 @@ Ext.define("viewer.components.Split", {
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
-        Ext.Msg.alert('Gelukt', "De features zijn opgeslagen.");
+        Ext.Msg.alert('Gelukt', "De feature is gesplitst.");
         me.cancel();
     },
     saveFailed: function (msg, me) {

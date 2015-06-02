@@ -28,10 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
@@ -46,8 +43,6 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.config.services.SimpleFeatureType;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
@@ -62,15 +57,17 @@ import org.geotools.util.Converter;
 import org.geotools.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
 
 /**
+ * Split a feature using a line. Depending on the chosen strategy the split
+ * feature may be updated with the largest resulting geometry of the split and
+ * one or more new features are created or the split feature is deleted and all
+ * new features are created.
  *
  * @author Mark Prins <mark@b3partners.nl>
  */
@@ -91,9 +88,6 @@ public class SplitFeatureActionBean implements ActionBean {
     private ApplicationLayer appLayer;
 
     @Validate
-    private SimpleFeatureType featureType;
-
-    @Validate
     private String toSplitWithFeature;
 
     /**
@@ -102,7 +96,7 @@ public class SplitFeatureActionBean implements ActionBean {
      * existing feature and creates new features.
      */
     @Validate
-    private String strategy = "add";
+    private String strategy;
 
     @Validate
     private String splitFeatureFID;
@@ -113,21 +107,6 @@ public class SplitFeatureActionBean implements ActionBean {
 
     private boolean unauthorized;
 
-//    public enum Strategy {
-//
-//        ADD("add"),
-//        REPLACE("replace");
-//        private final String strategy;
-//
-//        private Strategy(String strategy) {
-//            this.strategy = strategy;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return strategy;
-//        }
-//    }
     @After(stages = LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         this.layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
@@ -155,29 +134,29 @@ public class SplitFeatureActionBean implements ActionBean {
             FeatureSource fs = null;
             try {
                 if (this.splitFeatureFID == null) {
-                    error = "Split feature ID is null";
-                    throw new IllegalArgumentException(error);
+                    throw new IllegalArgumentException("Split feature ID is null");
+                }
+                if (this.toSplitWithFeature == null) {
+                    throw new IllegalArgumentException("Split line is null");
                 }
 
                 fs = this.layer.getFeatureType().openGeoToolsFeatureSource();
                 if (!(fs instanceof SimpleFeatureStore)) {
-                    error = "Feature source does not support editing";
-                    throw new IllegalArgumentException(error);
+                    throw new IllegalArgumentException("Feature source does not support editing");
                 }
-
                 this.store = (SimpleFeatureStore) fs;
+
                 List<FeatureId> ids = this.splitFeature();
 
-                if (ids.isEmpty()) {
-                    error = "Split failed, check that geometries overlap";
-                    throw new IllegalArgumentException(error);
+                if (ids.size() < 2) {
+                    throw new IllegalArgumentException("Split failed, check that geometries overlap");
                 }
 
-                json.put("oldFID", splitFeatureFID);
-                json.put("newFIDS", ids);
+                json.put("fids", ids);
                 json.put("success", Boolean.TRUE);
             } catch (IllegalArgumentException e) {
-                log.warn(error);
+                log.warn("Split error", e);
+                error = e.getLocalizedMessage();
             } catch (Exception e) {
                 log.error(String.format("Exception splitting feature %s", this.splitFeatureFID), e);
                 error = e.toString();
@@ -197,8 +176,16 @@ public class SplitFeatureActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
+    /**
+     * Get feature from store and split it.
+     *
+     * @return a list of feature ids that have been updated
+     * @throws Exception when there is an error communication with the datastore
+     * of when the arguments are invalid. In case of an exception the
+     * transaction will be rolled back
+     */
     private List<FeatureId> splitFeature() throws Exception {
-        List<FeatureId> ids = null;
+        List<FeatureId> ids = new ArrayList();
         Transaction transaction = new DefaultTransaction("split");
         try {
             store.setTransaction(transaction);
@@ -211,8 +198,6 @@ public class SplitFeatureActionBean implements ActionBean {
                 f = (SimpleFeature) fc.features().next();
             }
             String geomAttribute = store.getSchema().getGeometryDescriptor().getLocalName();
-            GeometryType type = store.getSchema().getGeometryDescriptor().getType();
-
             Geometry toSplit = (Geometry) f.getProperty(geomAttribute).getValue();
 
             // get split line
@@ -234,7 +219,7 @@ public class SplitFeatureActionBean implements ActionBean {
             List<SimpleFeature> newFeats = new ArrayList();
             GeometryTypeConverterFactory cf = new GeometryTypeConverterFactory();
             Converter c = cf.createConverter(Geometry.class, store.getSchema().getGeometryDescriptor().getType().getBinding(), null);
-
+            GeometryType type = store.getSchema().getGeometryDescriptor().getType();
             boolean firstFeature = true;
             for (Geometry newGeom : geoms) {
                 if (firstFeature) {
@@ -263,6 +248,7 @@ public class SplitFeatureActionBean implements ActionBean {
         } finally {
             transaction.close();
         }
+        ids.add(0, new FeatureIdImpl(this.splitFeatureFID));
         return ids;
     }
 
@@ -309,7 +295,7 @@ public class SplitFeatureActionBean implements ActionBean {
     /**
      * @param poly
      * @param line
-     * @return a sorted list of geometries as a result of splitting toSplit with
+     * @return a sorted list of geometries as a result of splitting poly with
      * line
      */
     private List<Polygon> splitPolygon(Geometry poly, Geometry line) {
@@ -363,22 +349,6 @@ public class SplitFeatureActionBean implements ActionBean {
 
     public void setAppLayer(ApplicationLayer appLayer) {
         this.appLayer = appLayer;
-    }
-
-    public SimpleFeatureType getFeatureType() {
-        return featureType;
-    }
-
-    public void setFeatureType(SimpleFeatureType featureType) {
-        this.featureType = featureType;
-    }
-
-    public Layer getLayer() {
-        return layer;
-    }
-
-    public void setLayer(Layer layer) {
-        this.layer = layer;
     }
 
     public String getToSplitWithFeature() {
