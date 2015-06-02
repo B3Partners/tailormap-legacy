@@ -213,7 +213,7 @@ public class SplitFeatureActionBean implements ActionBean {
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported dimension ("
-                            + toSplit.getDimension() + ") for splitting, must be 1 or 2.");
+                            + toSplit.getDimension() + ") for splitting, must be 1 or 2");
             }
 
             List<SimpleFeature> newFeats = new ArrayList();
@@ -228,10 +228,12 @@ public class SplitFeatureActionBean implements ActionBean {
                         store.modifyFeatures(geomAttribute, c.convert(newGeom, type.getBinding()), filter);
                         firstFeature = false;
                         continue;
-                    } else {
-                        //"add" strategy: delete the source feature, new ones will be created
+                    } else if (this.strategy.equalsIgnoreCase("add")) {
+                        // delete the source feature, new ones will be created
                         store.removeFeatures(filter);
                         firstFeature = false;
+                    } else {
+                        throw new IllegalArgumentException("Unknown strategy '" + this.strategy + "', cannot split");
                     }
                 }
                 // create + add new features
@@ -248,7 +250,9 @@ public class SplitFeatureActionBean implements ActionBean {
         } finally {
             transaction.close();
         }
-        ids.add(0, new FeatureIdImpl(this.splitFeatureFID));
+        if (this.strategy.equalsIgnoreCase("replace")) {
+            ids.add(0, new FeatureIdImpl(this.splitFeatureFID));
+        }
         return ids;
     }
 
