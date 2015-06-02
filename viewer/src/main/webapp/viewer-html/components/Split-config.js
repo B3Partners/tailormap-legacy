@@ -36,19 +36,17 @@ Ext.define("viewer.components.CustomConfiguration", {
         var me = this;
         this.form.add([
             {
-                xtype: "label",
-                text: "Splits strategie"
-            }, {
                 xtype: "combo",
                 fields: ['value', 'text'],
                 value: me.configObject.strategy ? me.configObject.strategy : "replace",
                 name: "strategy",
+                fieldLabel: "Splits strategie",
                 emptyText: 'Maak uw keuze',
                 store: [
                     ["replace", "replace"],
                     ["add", "add"]
                 ],
-                width: 150
+                labelWidth: me.labelWidth
             }
         ]);
     }
