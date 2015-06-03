@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
@@ -380,8 +381,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     
     public Resolution publish (){
         // Find current published application and make backup
+        EntityManager em = Stripersist.getEntityManager();
         try {
-            Application oldPublished = (Application)Stripersist.getEntityManager().createQuery("from Application where name = :name AND version IS null")
+            Application oldPublished = (Application)em.createQuery("from Application where name = :name AND version IS null")
                 .setMaxResults(1)
                 .setParameter("name", name)
                 .getSingleResult();
@@ -392,15 +394,24 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             String now = sdf.format(nowDate);
             String uniqueVersion = findUniqueVersion(name, "B_"+now );
             oldPublished.setVersion(uniqueVersion);
-            Stripersist.getEntityManager().persist(oldPublished);
-            Stripersist.getEntityManager().getTransaction().commit();
-            
-        } catch(NoResultException nre) {
+            em.persist(oldPublished);
+            boolean mashupMustPointToPublishedVersion = true;
+            if(mashupMustPointToPublishedVersion){
+                List<Application> mashups = em.createQuery(
+                    "from Application where root = :level and id <> :oldId")
+                    .setParameter("level", oldPublished.getRoot()).setParameter("oldId", oldPublished.getId()).getResultList();
+                for (Application mashup : mashups) {
+                    mashup.setRoot(application.getRoot());//nog iets doen met veranderde layerids uit cofniguratie
+                    SelectedContentCache.setApplicationCacheDirty(mashup,true, false);
+                    em.persist(mashup);
+                }
+            }
+        } catch (NoResultException nre) {
         }
         application.setVersion(null);
-        Stripersist.getEntityManager().persist(application);
-        Stripersist.getEntityManager().getTransaction().commit();
-        
+        em.persist(application);
+        em.getTransaction().commit();
+
         setApplication(null);
         
         return new RedirectResolution(ChooseApplicationActionBean.class);
