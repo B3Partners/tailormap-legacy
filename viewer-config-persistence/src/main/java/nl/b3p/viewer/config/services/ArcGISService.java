@@ -249,6 +249,10 @@ public class ArcGISService extends GeoService implements Updatable {
     }
 
     private static void setLayerTree(Layer topLayer, Map<String,Layer> layersById, Map<String,List<String>> childrenByLayerId) {
+        topLayer.getChildren().clear();
+
+        Stripersist.getEntityManager().flush();
+
         /* fill children list and parent references */
         for(Layer l: layersById.values()) {
             List<String> childrenIds = childrenByLayerId.get(l.getName());
@@ -264,7 +268,6 @@ public class ArcGISService extends GeoService implements Updatable {
         }
 
         /* children of top layer is special because those have parentLayerId -1 */
-        topLayer.getChildren().clear();
         for(Layer l: layersById.values()) {
             if(l.getParent() == null && !TOPLAYER_ID.equals(l.getName())) {
                 topLayer.getChildren().add(l);
