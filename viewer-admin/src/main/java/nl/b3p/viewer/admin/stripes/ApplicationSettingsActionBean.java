@@ -55,6 +55,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private String owner;
     @Validate
     private boolean authenticatedRequired;
+
+    @Validate
+    private boolean mashupMustPointToPublishedVersion = false;
     
     @Validate
     private String mashupName;
@@ -143,7 +146,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setMashupName(String mashupName) {
         this.mashupName = mashupName;
     }
-    
+
+    public boolean isMashupMustPointToPublishedVersion() {
+        return mashupMustPointToPublishedVersion;
+    }
+
+    public void setMashupMustPointToPublishedVersion(boolean mashupMustPointToPublishedVersion) {
+        this.mashupMustPointToPublishedVersion = mashupMustPointToPublishedVersion;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -395,7 +405,6 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             String uniqueVersion = findUniqueVersion(name, "B_"+now );
             oldPublished.setVersion(uniqueVersion);
             em.persist(oldPublished);
-            boolean mashupMustPointToPublishedVersion = true;
             if(mashupMustPointToPublishedVersion){
                 List<Application> mashups = em.createQuery(
                     "from Application where root = :level and id <> :oldId")
