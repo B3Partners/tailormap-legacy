@@ -403,6 +403,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 for (Application mashup : mashups) {
                     mashup.setRoot(application.getRoot());//nog iets doen met veranderde layerids uit cofniguratie
                     SelectedContentCache.setApplicationCacheDirty(mashup,true, false);
+                    mashup.transferMashup(oldPublished);
                     em.persist(mashup);
                 }
             }
