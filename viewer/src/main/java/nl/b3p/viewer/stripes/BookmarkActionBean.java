@@ -21,6 +21,7 @@ import java.util.Date;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Bookmark;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +39,9 @@ public class BookmarkActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(BookmarkActionBean.class);
     
     private ActionBeanContext context;
+
+    @Validate
+    private Application application;
     
     @Validate
     @ValidateNestedProperties(
@@ -61,6 +65,14 @@ public class BookmarkActionBean implements ActionBean {
     public void setBookmark(Bookmark bookmark) {
         this.bookmark = bookmark;
     }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
     //</editor-fold>
     
     public Resolution create() throws JSONException {
@@ -82,6 +94,7 @@ public class BookmarkActionBean implements ActionBean {
                 }            
                 bookmark.setCreatedBy(createdBy);
                 bookmark.setCreatedAt(new Date());
+                bookmark.setApplication(application);
 
                 Stripersist.getEntityManager().persist(bookmark);
                 Stripersist.getEntityManager().getTransaction().commit();

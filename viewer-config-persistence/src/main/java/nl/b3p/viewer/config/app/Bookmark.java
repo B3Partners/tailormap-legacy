@@ -42,6 +42,8 @@ public class Bookmark {
     
     private String createdBy;
 
+    private Application application;
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -72,5 +74,13 @@ public class Bookmark {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
     }
 }
