@@ -1179,13 +1179,16 @@ Ext.define ("viewer.components.SelectionModule",{
     },
 
     insertTreeNode: function(node, root, autoExpand) {
+        var returnNode = null;
         if(Ext.isArray(node)) {
+            returnNode = [];
             for(var i = 0; i < node.length; i++) {
-                this.appendNode(node[i], root, autoExpand);
+                returnNode.push(this.appendNode(node[i], root, autoExpand));
             }
         } else {
-            this.appendNode(node, root, autoExpand);
+            returnNode = this.appendNode(node, root, autoExpand);
         }
+        return returnNode;
     },
             
     appendNode: function(node, root, autoExpand) {
