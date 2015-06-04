@@ -584,8 +584,8 @@ public class Application {
                 ApplicationLayer oAl = (ApplicationLayer)original;
                 ApplicationLayer cAl = (ApplicationLayer)copy;
                 idMap.put(original.getClass() + "_" + oAl.getId(), cAl.getId());
+                }
             }
-        }
         originalToCopy = null;
 
         log.debug("Updating component configs");
@@ -624,6 +624,20 @@ public class Application {
                         }
                         changed = true;
                     }
+                }
+                if(comp.getClassName().equalsIgnoreCase("viewer.components.Bookmark") && cfg.optBoolean("followsApplication", false)){
+                    // bookmark krijgt een appId kolom
+                    // bij maken werkversie
+                            // check of bookmarkcomponent de configuratie: followsApplication
+                            // zo ja
+                                    //haal alle bookmarks voor vorige applicatie op
+                                    // vervang layer ids
+                                    // vervang level ids
+                                    // vervang ids in selectedcontent
+                                    // set id van nieuwe applicatie in bookmark
+                                    // persist bookmark
+                            // zo nee, doe niks
+                    changed = true;
                 }
 
                 if(changed) {
