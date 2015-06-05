@@ -16,6 +16,10 @@
  */
 /**
  * Split component.
+ *
+ * @todo bevat duplicate code uit Edit.js mogelijk een nieuwe superklasse
+ * definieren die gezamelijke functies bevat.
+ *
  * @author markprins@b3partners.nl
  */
 Ext.define("viewer.components.Split", {

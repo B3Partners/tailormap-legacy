@@ -80,8 +80,6 @@ Ext.define("viewer.components.Merge", {
         return this;
     },
 //    selectedContentChanged: function () {
-//        console.debug("selectedContentChanged");
-//
 //        if (this.vectorLayer === null) {
 //            this.createVectorLayer();
 //        } else {
@@ -90,7 +88,7 @@ Ext.define("viewer.components.Merge", {
 //        Ext.getCmp(this.name + "selectAButton").setDisabled(false);
 //    },
     /**
-     * create selction layer.
+     * create selection layer.
      * @todo labeling A and B seems to fail
      */
     createVectorLayer: function () {
