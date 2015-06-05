@@ -104,7 +104,6 @@ Ext.define("viewer.components.Snapping", {
             columns: 1,
             listeners: {
                 change: function (checkboxgroup, data) {
-                    // console.debug("changed selection on", data);
                     me.selectionChanged(checkboxgroup, data.snaplayer);
                 }
             },
@@ -161,21 +160,17 @@ Ext.define("viewer.components.Snapping", {
 
             if (item.checked) {
                 if (idx < 0) {
-                    console.debug("add data for layer", item.inputValue, appLayer.layerName);
+                    // add data for layer
                     me.config.viewerController.setLayerVisible(appLayer, true);
                     me.loadedLayerIds.push(item.inputValue);
                     me.snapCtl.addLayerDataFor(appLayer);
-                    //} else {
-                    //    console.debug("nothing todo data already loaded for layer", item.inputValue, appLayer.layerName);
                 }
             } else {
                 if (idx > -1) {
-                    console.debug("remove data for layer", item.inputValue, appLayer.layerName);
+                    // remove data for layer
                     me.config.viewerController.setLayerVisible(appLayer, false);
                     me.loadedLayerIds.splice(idx, appLayer);
                     me.snapCtl.removeLayer(appLayer);
-                    //} else {
-                    //    console.debug("nothing todo/remove for layer", item.inputValue, appLayer.layerName);
                 }
             }
         });

@@ -80,6 +80,7 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
     /**
      * @param {type} map
      * @param {type} options
+     * @todo look up the control that belongs to this appLayer and destroy
      */
     layerRemoved: function (map, options) {
         if (options.layer.getType() !== "VECTOR") {
@@ -87,8 +88,6 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
         }
         // assume we now have a drawing or editing layer
         //this.getlayerName(options.layer.appLayerId);
-        // TODO
-        // look up the control that belongs to this appLayer and destroy
     },
     /**
      * attach the snapping control to the Openlayers layers of the added editing or drawing layer.
@@ -101,9 +100,10 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
         }
         // filter for edit and drawing control layers
         if ((Ext.String.startsWith(options.layer.name, "drawing", true)) ||
-                (Ext.String.startsWith(options.layer.name, "edit", true))) {
+                (Ext.String.startsWith(options.layer.name, "edit", true)) ||
+                (Ext.String.startsWith(options.layer.name, "split", true))) {
             // assume we now have a drawing or editing layer
-            this.frameworkLayer = options.layer.getFrameworkLayer()
+            this.frameworkLayer = options.layer.getFrameworkLayer();
             this.frameworkControl.setLayer(this.frameworkLayer);
             this.activate();
         }
@@ -214,14 +214,11 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
             } else {
                 wkt = element[Object.keys(element)[0]];
             }
-            // console.debug("wkt:", wkt);
             olGeom = OpenLayers.Geometry.fromWKT(wkt);
             olGeom.calculateBounds();
-            // console.debug("OL feature:", olGeom, olGeom.getVertices().length);
             feats.push(new OpenLayers.Feature.Vector(olGeom));
         });
         olLyr.addFeatures(feats);
-        console.info(feats.length + " features added to layer " + olLyr.name);
         this.me.activate();
     },
     /**
@@ -232,7 +229,6 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
      */
     changedExtent: function (map, extent) {
         for (var i = 0; i < this.snapLayers.length; i++) {
-            // console.log("update layer: ", this.snapLayers[i].name);
             this.addLayerDataFor(this.getAppLayer(this.snapLayers[i].name));
         }
     },
