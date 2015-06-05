@@ -66,29 +66,29 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
         this.frameworkControl = new OpenLayers.Control.Snapping();
 
         this.config.viewerController.mapComponent.getMap().addListener(
-                viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,
-                this.layerRemoved, this);
-        this.config.viewerController.mapComponent.getMap().addListener(
                 viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,
                 this.layerAdded, this);
         this.config.viewerController.mapComponent.getMap().addListener(
                 viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
                 this.changedExtent, this);
+        // this.config.viewerController.mapComponent.getMap().addListener(
+        //         viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,
+        //         this.layerRemoved, this);
 
         return this;
     },
-    /**
-     * @param {type} map
-     * @param {type} options
-     * @todo look up the control that belongs to this appLayer and destroy
-     */
-    layerRemoved: function (map, options) {
-        if (options.layer.getType() !== "VECTOR") {
-            return;
-        }
-        // assume we now have a drawing or editing layer
-        //this.getlayerName(options.layer.appLayerId);
-    },
+    //    /**
+    //     * @param {type} map
+    //     * @param {type} options
+    //     * @todo look up the control that belongs to this appLayer and destroy it
+    //     */
+    //    layerRemoved: function (map, options) {
+    //        if (options.layer.getType() !== "VECTOR") {
+    //            return;
+    //        }
+    //        // assume we now have a drawing or editing layer
+    //        //this.getlayerName(options.layer.appLayerId);
+    //    },
     /**
      * attach the snapping control to the Openlayers layers of the added editing or drawing layer.
      * @param {type} map
