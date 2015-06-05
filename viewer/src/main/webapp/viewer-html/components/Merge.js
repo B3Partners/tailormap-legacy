@@ -126,8 +126,10 @@ Ext.define("viewer.components.Merge", {
         if (this.mode == "selectA") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(false);
             Ext.getCmp(this.name + "selectAButton").setDisabled(true);
+            Ext.getCmp(this.name + "geomLabel").setText("Selecteer B geometrie");
         } else if (this.mode == "selectB") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(true);
+            Ext.getCmp(this.name + "geomLabel").setText("A en B geometrie geselecteerd");
         }
     },
     selectB: function () {
@@ -341,17 +343,27 @@ Ext.define("viewer.components.Merge", {
     },
     layerChanged: function (appLayer, previousAppLayer, scope) {
         this.appLayer = appLayer;
+        Ext.getCmp(this.name + "selectAButton").setDisabled(true);
+        Ext.getCmp(this.name + "selectBButton").setDisabled(true);
+        this.mode = null;
+        this.geometryEditable = false;
+
         if (appLayer != null) {
-            this.vectorLayer.removeAllFeatures();
-            this.mode = null;
-            this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+            if (appLayer.geometryAttributeIndex != undefined) {
+                this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+                this.vectorLayer.removeAllFeatures();
+                this.mode = null;
+                this.config.viewerController.mapComponent.getMap().removeMarker("edit");
 
-            Ext.getCmp(this.name + "selectAButton").setDisabled(false);
-            Ext.getCmp(this.name + "selectBButton").setDisabled(true);
 
-            this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+                Ext.getCmp(this.name + "selectAButton").setDisabled(false);
+                Ext.getCmp(this.name + "selectBButton").setDisabled(true);
+
+                Ext.getCmp(this.name + "geomLabel").setText("Selecteer A en B geometrie");
+            } else {
+                Ext.getCmp(this.name + "geomLabel").setText('Geometrie mag niet bewerkt worden.');
+            }
         } else {
-            this.geometryEditable = false;
             this.cancel();
         }
     },
@@ -363,9 +375,9 @@ Ext.define("viewer.components.Merge", {
         } else if (features.length == 0) {
             this.handleFeature(null);
         } //else {
-            //TODO Handle multiple features: error or just take 1st feature returned?
-            //this.createFeaturesGrid(features);
-            //this.failed("Er is meer dan 1 feature geselecteerd", this);
+        //TODO Handle multiple features: error or just take 1st feature returned?
+        //this.createFeaturesGrid(features);
+        //this.failed("Er is meer dan 1 feature geselecteerd", this);
         //}
     },
     handleFeature: function (feature) {
