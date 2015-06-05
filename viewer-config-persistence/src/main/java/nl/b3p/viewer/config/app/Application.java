@@ -493,6 +493,68 @@ public class Application {
         
         return copy;
     }
+
+    /**
+     * When a workversion of an application is published, sometimes (determined by the user) the mashups should "follow" the
+     * published version: the mashup should always point to the published version. When this occurs, the mashup should update
+     * the layerIds in the components (because otherwise the layerIds point to the previous published version).
+     * In this method an Map is created in the same way as deepCopy creates. This Map is used for converting the layerIds in the
+     * component configuration.
+     * @param old The Application to which the layerIds should be matched.
+     */
+    public void transferMashup (Application old){
+        originalToCopy = new HashMap();
+        loadTreeCache();
+        visitLevelForMashuptransfer(old.getRoot(), originalToCopy);
+        processCopyMap();
+        // Loop alle levels af van de oude applicatie
+            // Per level alle children
+            // Per level,
+                //zoek voor elke appLayer (uit oude applicatie) de bijbehorende NIEUWE applayer
+                    // sla in originalToCopy de ids op van de appLayer
+                //zoek voor elke level (uit oude applicatie) de bijbehorende NIEUWE level
+                    // sla in originalToCopy de ids op van de level
+        // Roep postPersist aan.
+    }
+
+    private void visitLevelForMashuptransfer(Level oldLevel, Map originalToCopy){
+        Level newLevel = findLevel(oldLevel);
+        if(newLevel != null){
+            originalToCopy.put(oldLevel, newLevel);
+        }
+
+        for (ApplicationLayer oldLayer : oldLevel.getLayers()) {
+            ApplicationLayer newLayer = findLayer(oldLayer);
+            if(newLayer != null){
+                originalToCopy.put(oldLayer, newLayer);
+            }
+        }
+
+
+        for (Level oldChild : oldLevel.getChildren()) {
+            visitLevelForMashuptransfer(oldChild, originalToCopy);
+        }
+    }
+
+    private ApplicationLayer findLayer(ApplicationLayer oldLayer){
+        List<ApplicationLayer> appLayers = treeCache.applicationLayers;
+        for (ApplicationLayer appLayer : appLayers) {
+            if(appLayer.getService().equals(oldLayer.getService()) && appLayer.getLayerName().equals(oldLayer.getLayerName())){
+                return appLayer;
+            }
+        }
+        return null;
+    }
+
+    private Level findLevel(Level oldLevel){
+        List<Level> levels = treeCache.levels;
+        for (Level level : levels) {
+            if(level.getName().equals(oldLevel.getName())){
+                return level;
+            }
+        }
+        return null;
+    }
     
     @PostPersist
     public void postPersist() {
@@ -500,6 +562,10 @@ public class Application {
             log.debug("postPersist(): mashup");
             return;
         }
+        processCopyMap();
+    }
+
+    private void processCopyMap(){
         if(originalToCopy == null) {
             log.debug("postPersist(): not a copy");
             return;
@@ -521,7 +587,7 @@ public class Application {
             }
         }
         originalToCopy = null;
-        
+
         log.debug("Updating component configs");
         for(ConfiguredComponent comp: components) {
             if(comp.getConfig() == null) {
@@ -559,13 +625,13 @@ public class Application {
                         changed = true;
                     }
                 }
-                
+
                 if(changed) {
                     log.debug("Old config: " + comp.getConfig());
                     comp.setConfig(cfg.toString());
                     log.debug("New config: " + comp.getConfig());
                 }
-                
+
             } catch(Exception ex) {
                 log.error(String.format("Cannot update persistent object id's "
                         + "in component config on application copy, "

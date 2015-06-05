@@ -305,7 +305,7 @@ Ext.define ("viewer.components.SelectionModule",{
             me.handleSourceChange(availableOptions[0].id, availableOptions[0].checked);
         } else {
             // iterate over radio buttons on top to activate the checked item
-            var selectionModuleFormField = Ext.getCmp('selectionModuleFormFieldContainer');
+            var selectionModuleFormField = Ext.getCmp(this.name + 'selectionModuleFormFieldContainer');
             if(selectionModuleFormField) {
                 selectionModuleFormField.items.each(function(item){
                     if(item.checked) me.handleSourceChange(item.id, item.checked);
@@ -353,7 +353,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
     loadCustomService: function() {
         var me = this;
-        Ext.getCmp("selectionModuleTreeContentContainer").setLoading("Zoeken...");
+        me.popup.popupWin.setLoading("Zoeken...");
 
         var protocol = '', url = '', q = '';
         if(me.customServiceType == 'csw') {
@@ -392,11 +392,11 @@ Ext.define ("viewer.components.SelectionModule",{
                             }
                         }
                         me.insertTreeNode(levelsToShow, rootNode);
-                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
+                        me.popup.popupWin.setLoading(false);
                     },
                     function(msg) {
                         Ext.MessageBox.alert("Foutmelding", msg);
-                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
+                        me.popup.popupWin.setLoading(false);
                     }
                 );
             }else{
@@ -404,11 +404,11 @@ Ext.define ("viewer.components.SelectionModule",{
                 csw.loadInfo(
                     function(results) {
                         me.populateCSWTree(results);
-                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
+                        me.popup.popupWin.setLoading(false);
                     },
                     function(msg) {
                         Ext.MessageBox.alert("Foutmelding", msg);
-                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
+                        me.popup.popupWin.setLoading(false);
                     }
                 );
             }
@@ -423,11 +423,11 @@ Ext.define ("viewer.components.SelectionModule",{
             si.loadInfo(
                 function(info) {
                     me.populateCustomServiceTree(info);
-                    Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
+                    me.popup.popupWin.setLoading(false);
                 },
                 function(msg) {
                     Ext.MessageBox.alert("Foutmelding", msg);
-                    Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
+                    me.popup.popupWin.setLoading(false);
                 }
             );
         }
@@ -486,7 +486,7 @@ Ext.define ("viewer.components.SelectionModule",{
             flex: 1,
             // width: '100%',
             // html: '<div id="treeSelectionContainer" style="width: 100%; height: 100%;"></div>',
-            id: 'selectionModuleTreeContentContainer',
+            id: this.name + 'selectionModuleTreeContentContainer',
             layout: 'fit'
         },
         {
@@ -508,7 +508,7 @@ Ext.define ("viewer.components.SelectionModule",{
             // height: 35,
             padding: 5,
             border: 0,
-            id: 'selectionModuleSaveFormContainer'
+            id: this.name + 'selectionModuleSaveFormContainer'
         }];
         // when there is one tree configured show radio buttons and form buttons above
         if(me.hasLeftTrees())
@@ -536,7 +536,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         height: 0,
                         padding: 5,
                         border: 0,
-                        id: 'selectionModuleCustomFormContainer',
+                        id: this.name + 'selectionModuleCustomFormContainer',
                         layout: 'auto',
                         items: [
                             {
@@ -603,7 +603,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     xtype: 'form',
                     items: [{
                         xtype: 'fieldcontainer',
-                        id: 'selectionModuleFormFieldContainer',
+                        id: this.name + 'selectionModuleFormFieldContainer',
                         layout: 'hbox',
                         border: 0,
                         defaults: {
@@ -618,14 +618,14 @@ Ext.define ("viewer.components.SelectionModule",{
                     height: radioControls.length === 0 ? 0 : MobileManager.isMobile() ? 40 : 30,
                     padding: '0 5px 5px 5px',
                     border: 0,
-                    id: 'selectionModuleFormContainer',
+                    id: this.name + 'selectionModuleFormContainer',
                     layout: 'fit'
             });
         }
 
         // Create main container
         Ext.create('Ext.container.Container', {
-            id: 'selectionModuleMainContainer',
+            id: this.name + 'selectionModuleMainContainer',
             width: '100%',
             height: '100%',
             layout: {
@@ -691,10 +691,10 @@ Ext.define ("viewer.components.SelectionModule",{
             },
             width: '100%',
             height: '100%',
-            id: 'selectionModuleTreesContainer',
+            id: this.name + 'selectionModuleTreesContainer',
             items: items
         });
-        Ext.getCmp('selectionModuleTreeContentContainer').add(treeContainer);
+        Ext.getCmp(this.name + 'selectionModuleTreeContentContainer').add(treeContainer);
     },
 
     createMoveButtons: function(config) {
@@ -1179,13 +1179,16 @@ Ext.define ("viewer.components.SelectionModule",{
     },
 
     insertTreeNode: function(node, root, autoExpand) {
+        var returnNode = null;
         if(Ext.isArray(node)) {
+            returnNode = [];
             for(var i = 0; i < node.length; i++) {
-                this.appendNode(node[i], root, autoExpand);
+                returnNode.push(this.appendNode(node[i], root, autoExpand));
             }
         } else {
-            this.appendNode(node, root, autoExpand);
+            returnNode = this.appendNode(node, root, autoExpand);
         }
+        return returnNode;
     },
             
     appendNode: function(node, root, autoExpand) {
@@ -1273,8 +1276,8 @@ Ext.define ("viewer.components.SelectionModule",{
     },
 
     setTopHeight: function(height) {
-        Ext.getCmp('selectionModuleCustomFormContainer').setHeight(height);
-        Ext.getCmp('selectionModuleTreesContainer').updateLayout();
+        Ext.getCmp(this.name + 'selectionModuleCustomFormContainer').setHeight(height);
+        Ext.getCmp(this.name + 'selectionModuleTreesContainer').updateLayout();
     },
 
     populateCustomServiceTree: function(userService, node, autoExpand) {
@@ -1824,13 +1827,13 @@ Ext.define ("viewer.components.SelectionModule",{
     getExtComponents: function() {
         var me = this;
         var extComponents = [];
-        extComponents.push('selectionModuleMainContainer');
-        extComponents.push('selectionModuleFormContainer');
-        extComponents.push('selectionModuleCustomFormContainer');
-        extComponents.push('selectionModuleTreeContentContainer');
-        extComponents.push('selectionModuleSaveFormContainer');
-        extComponents.push('selectionModuleTreesContainer');
-        extComponents.push('selectionModuleFormFieldContainer');
+        extComponents.push(this.name + 'selectionModuleMainContainer');
+        extComponents.push(this.name + 'selectionModuleFormContainer');
+        extComponents.push(this.name + 'selectionModuleCustomFormContainer');
+        extComponents.push(this.name + 'selectionModuleTreeContentContainer');
+        extComponents.push(this.name +'selectionModuleSaveFormContainer');
+        extComponents.push(this.name +'selectionModuleTreesContainer');
+        extComponents.push(this.name +'selectionModuleFormFieldContainer');
         return Ext.Array.merge(extComponents, me.getActiveTreePanelIds());
     }
 });

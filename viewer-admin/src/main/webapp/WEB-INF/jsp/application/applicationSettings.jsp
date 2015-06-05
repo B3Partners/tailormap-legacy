@@ -131,7 +131,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <input type="button" class="extlikebutton" value="Maak mashup" onclick="return confirmMashup();"/>
                         </div>
                         <div style="float: left;">
-                            <stripes:submit name="publish" value="Publiceren"/>
+                            <input type="button" class="extlikebutton" value="Publiceren" onclick="return confirmPublish();"/>
                             <stripes:submit name="save" value="Opslaan"/>
                             <stripes:submit name="cancel" value="Annuleren"/>
                             <input type="hidden" name="copy" value="1" disabled="true"/>
@@ -190,7 +190,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 });  
             }
             
-            
+            function confirmPublish() {
+                Ext.MessageBox.show({
+                    title: 'Neem mashups over van huidige gepubliceerde',
+                    msg: 'Als de huidige gepubliceerde versie mashups bevat, moeten de mashups dan wijzen naar de nieuwe gepubliceerde versie?',
+                    buttons: Ext.MessageBox.YESNOCANCEL,
+                    fn: function(btn, text){
+                        if(btn === 'yes' || btn === 'no'){
+                            var mashupMustPointToPublishedVersion = btn === 'yes';
+                            var frm = document.forms[0];
+                            frm.action = "?publish=t&mashupMustPointToPublishedVersion=" + mashupMustPointToPublishedVersion;
+                            frm.submit();
+                        }
+                    }
+                });
+            }
 
             Ext.onReady(function() {
                 Ext.tip.QuickTipManager.init();
