@@ -45,8 +45,8 @@ Ext.define("viewer.components.Edit", {
         var me = this;
 
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
-            if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
-                    || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
+            if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO ||
+                    event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
                 if (me.mode == "new" || me.mode == "edit" || me.mode == "delete") {
                     return false;
                 }
@@ -175,7 +175,7 @@ Ext.define("viewer.components.Edit", {
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: me.delete
+                                    fn: me.deleteFeature
                                 }
                             }
                         },
@@ -301,7 +301,7 @@ Ext.define("viewer.components.Edit", {
         if (appLayer.geometryAttributeIndex != undefined || appLayer.geometryAttributeIndex != null) {
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
             if (geomAttribute.editValues != undefined && geomAttribute.editValues != null && geomAttribute.editValues.length >= 1) {
-                type = geomAttribute.editValues[0]
+                type = geomAttribute.editValues[0];
             } else {
                 type = geomAttribute.type;
             }
@@ -312,28 +312,29 @@ Ext.define("viewer.components.Edit", {
         this.showGeomType = type;
         var possible = true;
         var tekst = "";
+        var tekstGeom = "";
         switch (type) {
             case "multipolygon":
                 this.showGeomType = "MultiPolygon";
                 this.newGeomType = "Polygon";
-                tekst = "vlak";
+                tekstGeom = "vlak";
                 break;
             case "polygon":
                 this.showGeomType = "Polygon";
                 this.newGeomType = "Polygon";
-                tekst = "vlak";
+                tekstGeom = "vlak";
                 break;
             case "multipoint":
             case "point":
                 this.showGeomType = "Point";
                 this.newGeomType = "Point";
-                tekst = "punt";
+                tekstGeom = "punt";
                 break;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
                 this.newGeomType = "LineString";
-                tekst = "lijn";
+                tekstGeom = "lijn";
                 break;
             case "geometry":
                 possible = true;
@@ -356,9 +357,9 @@ Ext.define("viewer.components.Edit", {
                     tekst = "Geometrie mag alleen bewerkt worden";
                 } else {
                     Ext.getCmp(this.name + "newButton").setDisabled(false);
-                    tekst = 'Bewerk een ' + tekst + " op de kaart";
+                    tekst = 'Bewerk een ' + tekstGeom + " op de kaart";
                     if (this.config.allowDelete) {
-                        tekst = 'Verwijder een ' + tekst + " uit de kaart";
+                        tekst = 'Bewerk of Verwijder een ' + tekstGeom + " uit de kaart";
                     }
                 }
             } else {
@@ -389,7 +390,7 @@ Ext.define("viewer.components.Edit", {
                         };
                         if (attribute.editHeight) {
                             options.rows = attribute.editHeight;
-                            input = Ext.create("Ext.form.field.TextArea", options)
+                            input = Ext.create("Ext.form.field.TextArea", options);
                         } else {
                             input = Ext.create("Ext.form.field.Text", options);
                         }
@@ -455,7 +456,7 @@ Ext.define("viewer.components.Edit", {
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
-        Ext.get(this.getContentDiv()).mask("Haalt features op...")
+        Ext.get(this.getContentDiv()).mask("Haalt features op...");
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -496,15 +497,15 @@ Ext.define("viewer.components.Edit", {
                 this.vectorLayer.addFeature(feat);
             }
         }
-        Ext.get(this.getContentDiv()).unmask()
+        Ext.get(this.getContentDiv()).unmask();
     },
     failed: function (msg) {
         Ext.Msg.alert('Mislukt', msg);
-        Ext.get(this.getContentDiv()).unmask()
+        Ext.get(this.getContentDiv()).unmask();
     },
     createNew: function () {
         this.vectorLayer.removeAllFeatures();
-        this.inputContainer.getForm().reset()
+        this.inputContainer.getForm().reset();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if (this.newGeomType != null && this.geometryEditable) {
@@ -516,7 +517,7 @@ Ext.define("viewer.components.Edit", {
         this.mode = "edit";
         this.activateMapClick();
     },
-    delete: function () {
+    deleteFeature: function () {
         if (this.config.allowDelete) {
             this.vectorLayer.removeAllFeatures();
             this.mode = "delete";
@@ -775,7 +776,7 @@ Ext.define("viewer.components.Edit", {
     },
     cancelSelectFeature: function () {
         this.resetForm();
-        Ext.get(this.getContentDiv()).unmask()
+        Ext.get(this.getContentDiv()).unmask();
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
     },
     indexFeatureToNamedFeature: function (feature) {
