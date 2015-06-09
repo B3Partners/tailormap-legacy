@@ -42,6 +42,7 @@ public class Bookmark {
     
     private String createdBy;
 
+    @ManyToOne
     private Application application;
 
     public Date getCreatedAt() {

@@ -265,7 +265,6 @@ Ext.define ("viewer.components.Bookmark",{
             }            
         }
         this.url += parameters;
-        this.url += "&application=" + this.appId + "&";
         if (componentParams.length!=0){
             this.url+=componentParams;
         }
