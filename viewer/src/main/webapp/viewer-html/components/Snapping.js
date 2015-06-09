@@ -20,15 +20,25 @@
  */
 Ext.define("viewer.components.Snapping", {
     extend: "viewer.components.Component",
-    // de "snap" controller
+    /** the "snap" controller. */
     snapCtl: null,
-    inputContainer: null,
-    // any configured snappable layers
+    /** any configured snappable layers. */
     layerList: null,
-    // set checkboxes
+    /**
+     * a set of checkboxes.
+     * @private
+     */
     layerSelector: null,
-    // id's of layers loaded for snapping
+    /**
+     * id's of layers loaded for snapping.
+     */
     loadedLayerIds: [],
+    /**
+     * A list of layer ids that were switched on by us,
+     * to prevent switching them off in the TOC if they were already visible.
+     * @private
+     */
+    switchedLayerIds: [],
     config: {
         title: "",
         iconUrl: "",
@@ -125,10 +135,9 @@ Ext.define("viewer.components.Snapping", {
             renderTo: this.getContentDiv(),
             items: [this.layerSelector]
         });
-        this.inputContainer = Ext.getCmp(this.name + 'InputPanel');
     },
     /**
-     * handle checkbox events.
+     * handle checkbox events of this control.
      * @param {type} checkboxgroup
      * @param {type} changedId
      */
@@ -140,7 +149,8 @@ Ext.define("viewer.components.Snapping", {
 
         if (!checkboxgroup.getValue().snaplayer) {
             // nothing checked...
-            for (var i = 0; i < this.loadedLayerIds.length; i++) {
+            //for (var i = 0; i < this.loadedLayerIds.length; i++) {
+            for (var i = 0; i < this.switchedLayerIds.length; i++) {
                 me.config.viewerController.setLayerVisible(
                         me.config.viewerController.getAppLayerById(me.loadedLayerIds[i])
                         , false);
@@ -148,6 +158,7 @@ Ext.define("viewer.components.Snapping", {
             me.snapCtl.removeAll();
             me.snapCtl.deactivate();
             me.loadedLayerIds = [];
+            me.switchedLayerIds = [];
         }
 
         checkboxgroup.items.each(function (item) {
@@ -160,15 +171,21 @@ Ext.define("viewer.components.Snapping", {
 
             if (item.checked) {
                 if (idx < 0) {
-                    // add data for layer
-                    me.config.viewerController.setLayerVisible(appLayer, true);
+                    if (!me.config.viewerController.getLayer(appLayer).getVisible()) {
+                        // remember if the (wms) layer was visible already
+                        me.switchedLayerIds.push(item.inputValue);
+                        me.config.viewerController.setLayerVisible(appLayer, true);
+                    }
                     me.loadedLayerIds.push(item.inputValue);
                     me.snapCtl.addAppLayer(appLayer);
                 }
             } else {
                 if (idx > -1) {
-                    // remove data for layer
-                    me.config.viewerController.setLayerVisible(appLayer, false);
+                    if (Ext.Array.contains(me.switchedLayerIds, idx)) {
+                        // don't turn the (wms) layer off unless we turned it on
+                        me.config.viewerController.setLayerVisible(appLayer, false);
+                        me.switchedLayerIds.splice(idx, appLayer);
+                    }
                     me.loadedLayerIds.splice(idx, appLayer);
                     me.snapCtl.removeLayer(appLayer);
                 }
