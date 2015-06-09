@@ -30,7 +30,11 @@ Ext.define("viewer.Bookmark", {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {create: true, "bookmark.params": params}, 
+            params: {
+                create: true,
+                application: appId,
+                "bookmark.params": params
+            },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
