@@ -970,11 +970,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * Compare the min/max scale of the layer with the scale
      * @param appLayer the applayer
      * @param scale (optional) compare with this scale. If ommited, use the current scale of the map
+     * @param doCorrection calculate a correction on scale (default: true)
      * @return 0 if within scale
      *        -1 if applayer.maxScale < scale
      *         1 if appLayer.minScale > scale
      */
-    compareToScale: function (appLayer,scale){
+    compareToScale: function (appLayer,scale,doCorrection){
+    
+        if (doCorrection === undefined){
+            doCorrection = true;
+        }
+        
         //get the serviceLayer
         var serviceLayer=this.getServiceLayer(appLayer);
 
@@ -1003,9 +1009,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
 
         var service=this.app.services[appLayer.serviceId];
-        //fix some things with scale and resolution differences in servers:
-        var scaleCorrection = this.calculateScaleCorrection(service,minScale,maxScale);
-        scale = scale * scaleCorrection;
+        
+        if (doCorrection){
+            //fix some things with scale and resolution differences in servers:
+            var scaleCorrection = this.calculateScaleCorrection(service,minScale,maxScale);
+            scale = scale * scaleCorrection;
+        }
 
         if (minScale && scale < minScale){
             return 1;
@@ -1079,6 +1088,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             this.mapComponent.getMap().zoomToResolution(res);
         }
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,res);
+
     },
     /**
      * Fixes the different implementation of scalehint and scaledenominator in services

@@ -383,6 +383,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                 return;
             }
         }else if (genericEvent==viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT ||
+                  genericEvent==viewer.viewercontroller.controller.Event.ON_ZOOM_END ||
                   genericEvent==viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT){
             options.extent=this.getExtent();
         }else{

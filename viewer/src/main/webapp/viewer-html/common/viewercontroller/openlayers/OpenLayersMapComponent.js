@@ -109,7 +109,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "changelayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                               = "activate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                             = "deactivate";
-        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ZOOM_END]                               = "zoomend";
     },
     /**
      * @description Gets the panel of this controller and OpenLayers.Map. If the panel is still null, the panel is created and added to the map.
@@ -394,13 +394,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                             this.map.pan(this.getSlideFactor("w"), 0);
                             break;
                         case "zoomin": 
-                            this.map.zoomIn(); 
+                            this.map.zoomIn();
+                            this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,position);
                             break;
                         case "zoomout": 
                             this.map.zoomOut(); 
+                            this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,position);
                             break;
                         case "zoomworld": 
                             me.viewerController.mapComponent.getMap().zoomToExtent(me.viewerController.mapComponent.mapOptions.options.startExtent); 
+                            this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,position);
                             break;
                     }
                 }
