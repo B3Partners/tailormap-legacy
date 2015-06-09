@@ -20,8 +20,8 @@
  *
  * @class
  */
-Ext.define("viewer.components.OpenLayersSnappingController", {
-    extend: "viewer.components.Component",
+Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
+    extend: "viewer.viewercontroller.controller.SnappingController",
     /**
      * editable/drawable OpenLayers Vector layer.
      * @private
@@ -61,7 +61,8 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
      * @returns {viewer.viewercontroller.openlayers.OpenLayersSnappingLayer|OpenLayersSnappingControllerAnonym$0.constructor}
      */
     constructor: function (config) {
-        viewer.components.OpenLayersSnappingController.superclass.constructor.call(this, config);
+        viewer.viewercontroller.openlayers.OpenLayersSnappingController.superclass.constructor.call(this, config);
+
         this.frameworkMap = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         this.frameworkControl = new OpenLayers.Control.Snapping();
 
@@ -112,14 +113,14 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
      * add the snapping target.
      * @param {type} snappingLayer
      */
-    addLayerDataFor: function (appLayer) {
+    addAppLayer: function (appLayer) {
         var me = this;
         // lookup feature source
         var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
         // find geom attribute
         featureService.loadAttributes(appLayer, function (result) {
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex].name;
-            var extent = me.viewerController.mapComponent.getMap().getExtent();
+            var extent = me.config.viewerController.mapComponent.getMap().getExtent();
             // fetch/load geometries
             featureService.loadFeatures(
                     appLayer,
@@ -229,7 +230,7 @@ Ext.define("viewer.components.OpenLayersSnappingController", {
      */
     changedExtent: function (map, extent) {
         for (var i = 0; i < this.snapLayers.length; i++) {
-            this.addLayerDataFor(this.getAppLayer(this.snapLayers[i].name));
+            this.addAppLayer(this.getAppLayer(this.snapLayers[i].name));
         }
     },
     /**

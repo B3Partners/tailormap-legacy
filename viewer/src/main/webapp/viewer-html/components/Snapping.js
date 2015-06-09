@@ -163,7 +163,7 @@ Ext.define("viewer.components.Snapping", {
                     // add data for layer
                     me.config.viewerController.setLayerVisible(appLayer, true);
                     me.loadedLayerIds.push(item.inputValue);
-                    me.snapCtl.addLayerDataFor(appLayer);
+                    me.snapCtl.addAppLayer(appLayer);
                 }
             } else {
                 if (idx > -1) {
@@ -176,18 +176,16 @@ Ext.define("viewer.components.Snapping", {
         });
     },
     createController: function () {
-        this.snapCtl = Ext.create('viewer.components.OpenLayersSnappingController', {
-            name: this.name + 'OpenLayersSnappingController',
-            viewerController: this.config.viewerController,
-            style: {
-                strokeColor: '#' + this.config.snapColour,
-                strokeOpacity: this.config.snapColourOpacity / 100,
-                strokeWidth: 1,
-                pointRadius: 1,
-                fillOpacity: this.config.snapColourOpacity / 100,
-                fillColor: '#' + this.config.snapColour
-            }
-        });
+        this.config.type = viewer.viewercontroller.controller.Component.SNAPPING;
+        this.config.style = {
+            strokeColor: '#' + this.config.snapColour,
+            strokeOpacity: this.config.snapColourOpacity / 100,
+            strokeWidth: 1,
+            pointRadius: 1,
+            fillOpacity: this.config.snapColourOpacity / 100,
+            fillColor: '#' + this.config.snapColour
+        };
+        this.snapCtl = this.config.viewerController.mapComponent.createComponent(this.config);
     },
     showWindow: function () {
         if (this.snapCtl === null) {

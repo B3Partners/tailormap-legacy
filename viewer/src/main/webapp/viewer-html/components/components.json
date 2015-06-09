@@ -677,7 +677,7 @@
         shortName: "Sn",
         group: "Component",
         notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
-        sources: ["OpenLayersSnappingController.js", "Snapping.js"],
+        sources: ["Snapping.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Snapping-config.js"],
         restrictions: ["left_menu"],
         type: "popup",
