@@ -635,7 +635,9 @@ Ext.define ("viewer.components.TOC",{
         var layer = object.layer;
         var vis = object.visible;
         var nodeId = "layer-" + layer.appLayerId;
-        var node = this.panel.getRootNode().findChild("nodeId",nodeId,true);
+        var node = this.panel.getRootNode().findChildBy(function(node){
+            return (node.data.layerObj.nodeId === nodeId);
+        }, this, true);
         if (node){
             if (this.config.layersChecked || (node.hasChildNodes() && this.config.groupCheck)){
                  node.set('checked', vis);
