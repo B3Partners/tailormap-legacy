@@ -4,7 +4,7 @@
 
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.5.2-SNAPSHOT</version> 
+    <version>4.5.3-SNAPSHOT</version> 
     <packaging>pom</packaging>
 
     <name>flamingo-mc</name>
@@ -122,7 +122,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>rr2079.1</version>
+                <version>v20150505</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>guava</artifactId>
