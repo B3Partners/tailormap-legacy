@@ -53,12 +53,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
-        
+        <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>
         <script type="text/javascript">
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="edit"/>';
             var activelink = 'menu_attributen';
-            
+
             Ext.onReady(function() {
                 var featureSourceId = Ext.get('featureSourceId');
                 var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
@@ -80,25 +80,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 function removeChilds(el) {
                     if (el.hasChildNodes()) {
                         while (el.childNodes.length >= 1) {
-                            el.removeChild(el.firstChild);       
-                        } 
+                            el.removeChild(el.firstChild);
+                        }
                     }
                 }
                 function featureSourceChange(featureSourceId) {
                     var selectedValue = parseInt(featureSourceId.getValue());
-                    
+
                     var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
                     // We are now emptying dom and adding options manully, don't know if this is optimal
                     removeChilds(simpleFeatureTypeId);
                     simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', true));
-                    
+
                     if(selectedValue != -1) {
-                        Ext.Ajax.request({ 
-                            url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
+                        Ext.Ajax.request({
+                            url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>',
                             scope:this,
-                            params: { 
+                            params: {
                                 featureSourceId: selectedValue
-                            }, 
+                            },
                             success: function ( result, request ) {
                                 result = Ext.JSON.decode(result.responseText);
                                 Ext.Array.each(result, function(item) {
@@ -134,12 +134,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 // Init with change, because a certain select value can be preselected
                 featureSourceChange(featureSourceId);
             });
-            
+
             function reloadGrid(){
-                Ext.getCmp('editGrid').getStore().load(); 
+                Ext.getCmp('editGrid').getStore().load();
             }
         </script>
-        <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>
     </stripes:layout-component>
 
 </stripes:layout-render>
