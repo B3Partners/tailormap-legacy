@@ -36,6 +36,7 @@ Ext.define ("viewer.components.AttributeList",{
     featureService: null,
     layerSelector:null,
     topContainer: null,
+    schema: null,
     constructor: function (conf){        
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
@@ -53,7 +54,8 @@ Ext.define ("viewer.components.AttributeList",{
             icon: me.config.iconUrl,
             tooltip: me.config.tooltip,
             label: me.config.label
-        }); 
+        });
+        this.schema = new Ext.data.schema.Schema();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
         return this;
     },
@@ -387,11 +389,14 @@ Ext.define ("viewer.components.AttributeList",{
                 });
             }
         }
-        var modelName= name + 'Model';
-        Ext.define(modelName, {
-            extend: 'Ext.data.Model',
-            fields: attributeList
-        });
+        var modelName = name + appLayer.id + 'Model';
+        if (!this.schema.hasEntity(modelName)) {
+            Ext.define(modelName, {
+                extend: 'Ext.data.Model',
+                fields: attributeList,
+                schema: this.schema
+            });
+        }
         var filter = "";
         if(relateFilter){
             filter = "&filter="+encodeURIComponent(relateFilter);
