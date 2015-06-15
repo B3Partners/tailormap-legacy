@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
@@ -306,8 +307,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     }
 
     public Resolution makeWorkVersion() {
+        EntityManager em = Stripersist.getEntityManager();
         try {
-            Object o = Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name AND version = :version").setMaxResults(1).setParameter("name", name).setParameter("version", version).getSingleResult();
+            Object o = em.createQuery("select 1 from Application where name = :name AND version = :version").setMaxResults(1).setParameter("name", name).setParameter("version", version).getSingleResult();
 
             getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" en versie \"{1}\" bestaat al", name, version));
             return new RedirectResolution(this.getClass());
@@ -319,13 +321,15 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             Application copy = applicationWorkversion.deepCopy();
             copy.setVersion(version);
             // don't save changes to original app
-            Stripersist.getEntityManager().detach(applicationWorkversion);
+            em.detach(applicationWorkversion);
 
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().flush();
+            em.persist(copy);
+            em.persist(copy);
+            em.flush();
+            Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", applicationWorkversion.getId()).getSingleResult();
+            copy.processBookmarks(prev, context);
             SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false);
-            Stripersist.getEntityManager().getTransaction().commit();
+            em.getTransaction().commit();
             getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
             setApplication(copy);
 

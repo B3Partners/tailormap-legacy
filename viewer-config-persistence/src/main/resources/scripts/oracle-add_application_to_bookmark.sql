@@ -1,4 +1,5 @@
 alter table bookmark add column application int8;
+alter table bookmark add column id number(19,0);
 
 
     alter table bookmark 
@@ -16,4 +17,4 @@ alter table bookmark add column based_on_application int8;
 ALTER TABLE bookmark
   DROP CONSTRAINT bookmark_pkey;
 ALTER TABLE bookmark
-  ADD CONSTRAINT bookmark_pkey PRIMARY KEY (code, application);
+  ADD CONSTRAINT bookmark_pkey PRIMARY KEY (id);

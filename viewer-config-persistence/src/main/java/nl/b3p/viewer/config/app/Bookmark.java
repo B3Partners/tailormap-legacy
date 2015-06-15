@@ -16,11 +16,9 @@
  */
 package nl.b3p.viewer.config.app;
 
-import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import nl.b3p.viewer.config.app.Bookmark.BookmarkPK;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -28,10 +26,16 @@ import org.hibernate.annotations.GenericGenerator;
  * @author Matthijs Laan
  */
 @Entity
-@IdClass(BookmarkPK.class)
+
+@Table(
+        uniqueConstraints
+        = @UniqueConstraint(columnNames = {"code", "application"})
+)
 public class Bookmark {
-    
+
     @Id
+    private Long id;
+    
     @GeneratedValue(generator="uuid")
     @GenericGenerator(name="uuid", strategy="uuid")
     private String code;
@@ -46,8 +50,7 @@ public class Bookmark {
     
     private String createdBy;
 
-    @Id
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 
     @ManyToOne
@@ -101,6 +104,14 @@ public class Bookmark {
     public void setBasedOnApplication(Application basedOnApplication) {
         this.basedOnApplication = basedOnApplication;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     // </editor-fold>
 
     @Override
@@ -121,57 +132,5 @@ public class Bookmark {
             createdBy += ", user: " + context.getRequest().getRemoteUser();
         }
         return createdBy;
-    }
-
-    public static class BookmarkPK implements Serializable{
-          private String code;
-          private Application application;
-
-        public BookmarkPK() {
-        }
-
-        public BookmarkPK(String code, Application application) {
-            this.code = code;
-            this.application = application;
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-
-        public Application getApplication() {
-            return application;
-        }
-
-        public void setApplication(Application application) {
-            this.application = application;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = this.application.getId().intValue() + code.hashCode();
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null ) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-
-            final BookmarkPK other = (BookmarkPK) obj;
-            if(other.getApplication() == null){
-                return this.application == null && this.code.equals(other.getCode());
-            }
-            return other.getCode().equals(code) && this.getApplication().getId().equals(other.getApplication().getId());
-        }
-        
     }
 }

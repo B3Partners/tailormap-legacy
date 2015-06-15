@@ -125,6 +125,14 @@
         </attributes>
     </entity>
 
+    <entity class="nl.b3p.viewer.config.app.Bookmark">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
     <entity class="nl.b3p.viewer.config.app.Level">
         <attributes>
             <id name="id">
