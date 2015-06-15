@@ -16,8 +16,11 @@
  */
 package nl.b3p.viewer.config.app;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import net.sourceforge.stripes.action.ActionBeanContext;
+import nl.b3p.viewer.config.app.Bookmark.BookmarkPK;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -25,6 +28,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @author Matthijs Laan
  */
 @Entity
+@IdClass(BookmarkPK.class)
 public class Bookmark {
     
     @Id
@@ -42,9 +46,14 @@ public class Bookmark {
     
     private String createdBy;
 
+    @Id
     @ManyToOne
     private Application application;
 
+    @ManyToOne
+    private Application basedOnApplication;
+
+    //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -83,5 +92,86 @@ public class Bookmark {
 
     public void setApplication(Application application) {
         this.application = application;
+    }
+
+    public Application getBasedOnApplication() {
+        return basedOnApplication;
+    }
+
+    public void setBasedOnApplication(Application basedOnApplication) {
+        this.basedOnApplication = basedOnApplication;
+    }
+    // </editor-fold>
+
+    @Override
+    public Bookmark clone(){
+        Bookmark clone = new Bookmark();
+        clone.setCode(code);
+        clone.setCreatedAt(new Date());
+        clone.setParams(params);
+        return clone;
+    }
+
+    public static String createCreatedBy(ActionBeanContext context){
+        String createdBy = "IP: " + context.getRequest().getRemoteAddr();
+        if (context.getRequest().getHeader("x-forwarded-for") != null) {
+            createdBy = "IP: " + context.getRequest().getHeader("x-forwarded-for") + "(proxy " + createdBy + ")";
+        }
+        if (context.getRequest().getRemoteUser() != null) {
+            createdBy += ", user: " + context.getRequest().getRemoteUser();
+        }
+        return createdBy;
+    }
+
+    public static class BookmarkPK implements Serializable{
+          private String code;
+          private Application application;
+
+        public BookmarkPK() {
+        }
+
+        public BookmarkPK(String code, Application application) {
+            this.code = code;
+            this.application = application;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public Application getApplication() {
+            return application;
+        }
+
+        public void setApplication(Application application) {
+            this.application = application;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = this.application.getId().intValue() + code.hashCode();
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null ) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+
+            final BookmarkPK other = (BookmarkPK) obj;
+            if(other.getApplication() == null){
+                return this.application == null && this.code.equals(other.getCode());
+            }
+            return other.getCode().equals(code) && this.getApplication().getId().equals(other.getApplication().getId());
+        }
+        
     }
 }

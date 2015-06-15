@@ -18,7 +18,10 @@ package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.Application;
@@ -44,9 +47,10 @@ public class BookmarkActionBean implements ActionBean {
     private Application application;
     
     @Validate
-    @ValidateNestedProperties(
-           @Validate(field="params")
-    )
+    @ValidateNestedProperties({
+           @Validate(field="params", required = true, on = "create"),
+           @Validate(field="code", required = true, on = "load")
+    })
     private Bookmark bookmark;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -85,13 +89,7 @@ public class BookmarkActionBean implements ActionBean {
             error = "Invalid parameters";
         } else {
             try {
-                String createdBy = "IP: " + context.getRequest().getRemoteAddr();
-                if(context.getRequest().getHeader("x-forwarded-for") != null) {
-                    createdBy = "IP: " + context.getRequest().getHeader("x-forwarded-for") + "(proxy " + createdBy + ")";
-                }
-                if(context.getRequest().getRemoteUser() != null) {
-                    createdBy += ", user: " + context.getRequest().getRemoteUser();
-                }            
+                String createdBy =bookmark.createCreatedBy(context);
                 bookmark.setCreatedBy(createdBy);
                 bookmark.setCreatedAt(new Date());
                 bookmark.setApplication(application);
@@ -117,6 +115,20 @@ public class BookmarkActionBean implements ActionBean {
         }
         
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
+    }
+
+    @After(on = "load",  stages = LifecycleStage.BindingAndValidation)
+    private void loadEntities(){
+        EntityManager em = Stripersist.getEntityManager();
+        List<Bookmark> bms = em.createQuery("FROM Bookmark WHERE application = :app and code = :code", Bookmark.class).setParameter("app", application).setParameter("code", bookmark.getCode()).getResultList();
+
+        if(bms.isEmpty()){
+            // For older bookmarks.
+            bms = em.createQuery("FROM Bookmark WHERE code = :code", Bookmark.class).setParameter("code", bookmark.getCode()).getResultList();
+        }
+        if (!bms.isEmpty()) {
+            bookmark = bms.get(0);
+        }
     }
     
     public Resolution load() throws JSONException {
