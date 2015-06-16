@@ -689,17 +689,14 @@ public class Application {
 
         for (ConfiguredComponent comp : bookmarkComponents) {
             String config = comp.getConfig();
-            if (true ){//config != null && !config.isEmpty()) {
+            if (config != null && !config.isEmpty()) {
                 try {
-                   // JSONObject conf = new JSONObject(config);
-                    //if(conf.optBoolean("followsApplication", false)){
-                    if(true){
+                    JSONObject conf = new JSONObject(config);
+                    if(conf.optBoolean("copyBookmarkForWorkversion", false)){
                         List<Bookmark> bookmarks = em.createQuery("FROM Bookmark where application = :app", Bookmark.class).setParameter("app", previousApplication).getResultList();
-
                         for (Bookmark bookmark : bookmarks) {
                             Bookmark clone = bookmark.clone();
                             clone.setCreatedBy(clone.createCreatedBy(context));
-                            clone.setBasedOnApplication(previousApplication);
                             clone.setApplication(this);
                             processBookmark(clone,idMap);
                             em.persist(clone);

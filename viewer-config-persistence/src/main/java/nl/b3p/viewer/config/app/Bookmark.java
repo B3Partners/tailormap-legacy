@@ -53,9 +53,6 @@ public class Bookmark {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Application application;
 
-    @ManyToOne
-    private Application basedOnApplication;
-
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public Date getCreatedAt() {
         return createdAt;
@@ -95,14 +92,6 @@ public class Bookmark {
 
     public void setApplication(Application application) {
         this.application = application;
-    }
-
-    public Application getBasedOnApplication() {
-        return basedOnApplication;
-    }
-
-    public void setBasedOnApplication(Application basedOnApplication) {
-        this.basedOnApplication = basedOnApplication;
     }
 
     public Long getId() {
