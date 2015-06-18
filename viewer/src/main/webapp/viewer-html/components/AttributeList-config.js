@@ -26,6 +26,17 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+
+        this.form.add({
+            xtype: 'combobox',
+            store: [[ "CSV", "csv" ], [ "XLS", "Excel" ], [ "SHP", "Shape" ]],
+            itemId: 'defaultDownload',
+            name: 'defaultDownload',
+            labelWidth: this.labelWidth,
+            fieldLabel: 'Standaard download methode',
+            value: this.configObject.defaultDownload || "SHP"
+        });
+        
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
     }
 });

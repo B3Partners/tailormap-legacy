@@ -30,7 +30,8 @@ Ext.define ("viewer.components.AttributeList",{
         title:null,
         iconUrl:null,
         tooltip:null,
-        label: ""
+        label: "",
+        defaultDownload: "SHP"
     },    
     appLayer: null,
     featureService: null,
@@ -125,32 +126,34 @@ Ext.define ("viewer.components.AttributeList",{
                 id: this.name + 'mainPagerPanel',
                 xtype: "container",
                 width: '100%',
-                height: 30
+                height: 43
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
                 width: '100%',
-                height: MobileManager.isMobile() ? 45 : 25,
+                height: MobileManager.isMobile() ? 45 : 32,
                 style: {
-                    marginTop: '10px'
+                    marginTop: '10px',
+                    marginRight: '10px'
                 },
                 layout: {
                     type:'hbox',
                     pack:'end'
                 },
                 items: [
-                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
+                     {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
                              this.download();
                      }},
                     {
                         xtype: "combobox",
                         disabled:true,
                         id:"downloadType",
-                        value: 'SHP',
+                        value: this.config.defaultDownload,
                         queryMode: 'local',
                         displayField: 'label',
                         name:"test",
                         valueField: 'type',
+                        style: { marginRight: '5px' },
                         store:  Ext.create('Ext.data.Store', {
                                 fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }] 
                             })
@@ -357,7 +360,7 @@ Ext.define ("viewer.components.AttributeList",{
                     id: name +'PagerPanel',
                     xtype: "container",
                     width: '100%',
-                    height: 30,
+                    height: 38,
                     renderTo: renderToEl.id
                 });
             }
@@ -510,7 +513,7 @@ Ext.define ("viewer.components.AttributeList",{
                 displayInfo: true,
                 displayMsg: 'Feature {0} - {1} van {2}',
                 emptyMsg: "Geen features om weer te geven",
-                height: 30
+                height: 38
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
