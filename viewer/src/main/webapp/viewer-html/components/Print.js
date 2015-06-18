@@ -249,6 +249,7 @@ Ext.define ("viewer.components.Print",{
                     xtype: 'container',
                     flex: 0.6,
                     height: 200,
+                    layout: 'fit',
                     html: '<div id="previewImg" style="width: 100%; height: 100%;"></div>'
                 }]
             },{
