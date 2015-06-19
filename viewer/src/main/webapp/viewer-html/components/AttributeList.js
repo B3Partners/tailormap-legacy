@@ -31,7 +31,8 @@ Ext.define ("viewer.components.AttributeList",{
         iconUrl:null,
         tooltip:null,
         label: "",
-        defaultDownload: "SHP"
+        defaultDownload: "SHP",
+        autoDownload: false
     },    
     appLayer: null,
     featureService: null,
@@ -246,6 +247,9 @@ Ext.define ("viewer.components.AttributeList",{
     // Called when the layerSelector was changed. 
     layerChanged : function (appLayer){
         this.loadAttributes(appLayer);
+        if(this.layerSelector.getVisibleLayerCount() === 1 && this.config.autoDownload) {
+            this.download();
+        }
     },
     filterChanged : function (filter,appLayer){
         if (this.layerSelector!=null){

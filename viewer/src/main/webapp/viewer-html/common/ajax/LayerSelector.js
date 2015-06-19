@@ -45,7 +45,7 @@ Ext.define ("viewer.components.LayerSelector",{
 
         var comboboxConfig = {
             fieldLabel: 'Kies kaartlaag',
-            emptyText:'Maak uw keuze',
+            emptyText:'Er zijn geen geldige kaartlagen beschikbaar',
             store: layers,
             queryMode: 'local',
             displayField: 'title',
@@ -181,6 +181,13 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     setValue : function (appLayer, preventEvent){
         this.combobox.setValue(appLayer, preventEvent);
+    },
+    /**
+     * Get the number of visible layers in the LayerSelector
+     * @returns int
+     */
+    getVisibleLayerCount: function() {
+        return this.combobox.getStore().getCount();
     },
     /**
      * @deprecated use getValue()

@@ -37,6 +37,20 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: this.configObject.defaultDownload || "SHP"
         });
         
+        this.form.add({
+            xtype: 'checkbox',
+            fieldLabel: 'Automatisch downloaden',
+            inputValue: true,
+            name: 'autoDownload',
+            checked: this.configObject.autoDownload || false,
+            labelWidth: this.labelWidth
+        });
+        
+        this.form.add({
+            xtype: 'container',
+            html: 'Indien automatisch downloaden wordt ingeschakeld wordt er automatisch een download gestart bij het openen van de Attributenlijst indien slechts 1 laag beschikbaar is en de Standaard download methode is ingesteld.'
+        });
+        
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
     }
 });
