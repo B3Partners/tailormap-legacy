@@ -174,22 +174,22 @@ Ext.define ("viewer.components.AttributeList",{
             items: [{
                     xtype: "hidden",
                     name: "filter",
-                    id: 'filter'
+                    itemId: 'filter'
                 },
                 {
                     xtype: "hidden",
                     name: "appLayer",
-                    id: 'appLayer'
+                    itemId: 'appLayer'
                 },
                 {
                     xtype: "hidden",
                     name: "application",
-                    id: "application"
+                    itemId: "application"
                 },
                 {
                     xtype: "hidden",
                     name: "type",
-                    id: "type"
+                    itemId: "type"
                 }
             ]
         });
@@ -530,10 +530,10 @@ Ext.define ("viewer.components.AttributeList",{
         if(appLayer.filter){
             filter=appLayer.filter.getCQL();
         }
-        Ext.getCmp('appLayer').setValue(appLayer.id);
-        Ext.getCmp('application').setValue(appId);
-        Ext.getCmp('filter').setValue(filter);
-        Ext.getCmp('type').setValue(Ext.getCmp("downloadType").getValue());
+        this.downloadForm.getComponent('appLayer').setValue(appLayer.id);
+        this.downloadForm.getComponent('application').setValue(appId);
+        this.downloadForm.getComponent('filter').setValue(filter);
+        this.downloadForm.getComponent('type').setValue(Ext.getCmp("downloadType").getValue());
         this.downloadForm.submit({            
             target: '_blank'
         });
