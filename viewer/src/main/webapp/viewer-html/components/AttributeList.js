@@ -492,6 +492,7 @@ Ext.define ("viewer.components.AttributeList",{
             plugins: plugins,
             viewConfig:{        
                 trackOver: false,
+                enableMouseOverOverrideFix: true, // custom configuration option used in override below
                 listeners: {
                     expandbody : {
                         scope: me,
@@ -545,7 +546,7 @@ Ext.define ("viewer.components.AttributeList",{
  */
 Ext.define('viewer.overrides.view.Table', {
     override: 'Ext.view.Table',
-    checkThatContextIsParentGridView: function(e){
+    checkThatContextIsParentGridView: function(e) {
         var target = Ext.get(e.target);
         var parentGridView = target.up('.x-grid-view');
         if (this.el !== parentGridView) {
@@ -556,7 +557,11 @@ Ext.define('viewer.overrides.view.Table', {
         }
     },
     processItemEvent: function(record, row, rowIndex, e) {
-        if (e.target && !this.checkThatContextIsParentGridView(e)) {
+        // Extra check if we really want to apply this fix (only in case of AttributeList nested grids)
+        // The 'enableMouseOverOverrideFix' is a custom configuration option added only to AttributeList
+        // grids above. Fixes issue https://github.com/flamingo-geocms/flamingo/issues/350
+        var fixEnabled = this.config && this.config.enableMouseOverOverrideFix;
+        if (fixEnabled && e.target && !this.checkThatContextIsParentGridView(e)) {
             return false;
         } else {
             return this.callParent([record, row, rowIndex, e]);
