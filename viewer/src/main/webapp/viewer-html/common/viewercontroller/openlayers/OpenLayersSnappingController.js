@@ -117,29 +117,42 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         var me = this;
         // lookup feature source
         var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
-        // find geom attribute
-        featureService.loadAttributes(appLayer, function (result) {
-            var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex].name;
-            var extent = me.config.viewerController.mapComponent.getMap().getExtent();
-            // fetch/load geometries
-            featureService.loadFeatures(
-                    appLayer,
-                    me.parseFeatures,
-                    undefined, {
-                        store: 1,
-                        limit: 1000,
-                        arrays: 1,
-                        // just get geometry
-                        attributesToInclude: [geomAttribute],
-                        edit: false,
-                        graph: true,
-                        // only for map extent
-                        filter: "INTERSECTS(" + geomAttribute + ", " + extent.toWKT() + ")"
-                    }, {
-                /* we need access to appLayer.id and this in processing the response */
-                me: me,
-                appLayer: appLayer
+        if (appLayer.attributes === undefined) {
+            // find geom attribute, then load data
+            featureService.loadAttributes(appLayer, function (result) {
+                me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].name, featureService, appLayer);
             });
+        } else {
+            me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].name, featureService, appLayer);
+        }
+
+    },
+    /**
+     * fetch/load geometries.
+     * @returns {void}
+     */
+    loadAttributes: function (geomAttribute, featureService, appLayer) {
+        var me = this;
+        var extent = me.config.viewerController.mapComponent.getMap().getExtent();
+        featureService.loadFeatures(
+                appLayer,
+                me.parseFeatures,
+                function (msg) {
+                    Ext.MessageBox.alert("Foutmelding", msg);
+                }, {
+            store: 1,
+            limit: 1000,
+            arrays: 1,
+            // just get geometry
+            attributesToInclude: [geomAttribute],
+            edit: false,
+            graph: true,
+            // only for map extent
+            filter: "INTERSECTS(" + geomAttribute + ", " + extent.toWKT() + ")"
+        }, {
+            /* we need access to appLayer.id and this in processing the response */
+            me: me,
+            appLayer: appLayer
         });
     },
     /**
