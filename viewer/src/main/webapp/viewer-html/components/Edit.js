@@ -105,6 +105,7 @@ Ext.define("viewer.components.Edit", {
                 strokeopacity: 50
             }
         });
+        this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     showWindow: function () {

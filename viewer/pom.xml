@@ -321,6 +321,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Tool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Component.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/ToolMapClick.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/controller/SnappingController.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/viewer-min.js</outputFile>
                         </compilation>
@@ -375,6 +376,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/ToolMapClick.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersComponent.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMapComponent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersSnappingController.js</param>
                                 <!-- OpenLayers Components -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/LoadingPanel.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersBorderNavigation.js</param>

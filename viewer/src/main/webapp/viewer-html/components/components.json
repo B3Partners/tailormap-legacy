@@ -672,6 +672,19 @@
         showHelp: true
     },
     {
+        className: "viewer.components.Snapping",
+        name: "Snapping",
+        shortName: "Sn",
+        group: "Component",
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+        sources: ["Snapping.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Snapping-config.js"],
+        restrictions: ["left_menu"],
+        type: "popup",
+        singleton: true,
+        showHelp: true
+    },
+    {
         className: "viewer.components.DataSelection",
         name: "Data Selectie",
         shortName: "DS",
@@ -903,7 +916,7 @@
         singleton: true,
         sources: ["../../extjs/packages/sencha-charts/sencha-charts.js", "Graph.js", "GraphLayerIds.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js", "GraphLayerIds.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },

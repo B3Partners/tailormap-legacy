@@ -97,6 +97,9 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private List<String> attributesToInclude = new ArrayList();
 
+    /**
+     * To force returning geometry set this to true in the request.
+     */
     @Validate
     private boolean graph = false;
 

@@ -83,14 +83,14 @@ Ext.define("viewer.components.Component",{
             return this.config.div;
         }
     },
-    
+
     getContentContainer: function() {
         if(this.config.isPopup) {
             return this.popup.getContentContainer();
         }
         return Ext.getCmp(this.config.containerId);
     },
-    
+
     /**
      * Renders a button in the div (holder)
      * if a titlebarIcon is set, its used to generate in the button. Otherwise the title or name.
@@ -120,7 +120,7 @@ Ext.define("viewer.components.Component",{
             buttonText = (options.text || (me.config.name || ""));
             buttonWidth = 'autoWidth';
         }
-        
+
         // Only show label if there is an icon or a sprite (and a label is set)
         if((options.icon || me.haveSprite) && options.label) showLabel = true;
 
@@ -160,7 +160,7 @@ Ext.define("viewer.components.Component",{
                 }
             }
         });
-        
+
         if(showLabel) {
             var textDimensions = Ext.util.TextMetrics.measure(me.config.div, options.label, buttonWidth);
             Ext.create('Ext.container.Container', {
@@ -190,12 +190,12 @@ Ext.define("viewer.components.Component",{
             });
         }
     },
-    
+
     setButtonState: function(state, forceState) {
         var me = this,
             button = me.button,
             baseClass = this.getBaseClass();
-        
+
         if (!me.options || !me.button){
             return;
         }
@@ -230,17 +230,17 @@ Ext.define("viewer.components.Component",{
         } else if((!me.forceState || forceState) && button.pressed) {
             button.toggle();
         }
-        
+
         // If state is forced previously (me.forceState = true) than disable me.forceState again,
         // else set me.forceState = true so hovers etc. won't change the state
         if(forceState && me.forceState) me.forceState = false;
         else if(forceState && !me.forceState) me.forceState = forceState;
     },
-    
+
     getBaseClass: function() {
         return this.$className.replace(/\./g, '');
     },
-    
+
     getPopupIcon: function() {
         var baseClassName = this.getBaseClass();
         if(this.config.iconUrl) {
@@ -253,37 +253,37 @@ Ext.define("viewer.components.Component",{
     },
 
     /**
-     * Dynamically create a stylesheet for icons on component buttons using a 
+     * Dynamically create a stylesheet for icons on component buttons using a
      * sprite, if the stylesheet not already exists.
-     * 
+     *
      * The classes created for standard component icons and the position in the
      * sprite are hardcoded here.
-     * 
+     *
      * Updates this.haveSprite.
      */
     createIconStylesheet: function() {
         var me = this;
-            
+
         var SPRITE_STYLE = "appSpriteStyle";
-        
+
         if(document.getElementById(SPRITE_STYLE) != null) {
             // style was already created by a previous component and is available
             me.haveSprite = true;
             return;
         }
-        
+
         var appSprite = me.config.viewerController.getApplicationSprite();
-        
+
         if(Ext.isEmpty(appSprite)) {
             me.haveSprite = false;
             return;
         }
         me.haveSprite = true;
-        
+
         // Prepend context path for relative URLs
-        if(appSprite.indexOf("://") == -1) {            
+        if(appSprite.indexOf("://") == -1) {
             // By accident a fixed context path was put in the default value for
-            // the sprite url in many apps which does not work for other 
+            // the sprite url in many apps which does not work for other
             // context paths
             if(appSprite.indexOf("/viewer/") == 0) {
                 appSprite = appSprite.substring(7);
@@ -293,7 +293,7 @@ Ext.define("viewer.components.Component",{
             }
             appSprite = contextPath + appSprite;
         }
-        
+
         var spriteConfig = {
             gridSize: 55,
             imageSize: 44,
@@ -320,7 +320,10 @@ Ext.define("viewer.components.Component",{
                 'viewercomponentstoolsDownloadMap': 16,
                 'viewercomponentsSpatialFilter': 17,
                 'viewercomponentsGraph': 18,
-                'viewercomponentsTOC': 19
+                'viewercomponentsTOC': 19,
+                'viewercomponentsSnapping': 20,
+                'viewercomponentsSplit': 21,
+                'viewercomponentsMerge': 22
             },
             menuIconPosition: {
                 x: 561
@@ -359,7 +362,7 @@ Ext.define("viewer.components.Component",{
      */
     bind : function(event,handler,scope,options){
         this.addListener(event,handler,options);
-    },    
+    },
 
     isTool: function() {
         // How can we check if the component is a tool?
@@ -403,11 +406,11 @@ Ext.define("viewer.components.Component",{
     },
     /**
      * Implement to load the variables (created with 'getBookmarkState' or entered in the url) from the bookmark or via the url in the component
-     * @param {Object} state an object that is created with 'getBookmarkState' or a value from the url. This is an unprocessed object. The implementation should know what to 
+     * @param {Object} state an object that is created with 'getBookmarkState' or a value from the url. This is an unprocessed object. The implementation should know what to
      * expect (ie. should it be decoded).
      */
     loadVariables: function(state){
         return;
     }
-    
+
 });

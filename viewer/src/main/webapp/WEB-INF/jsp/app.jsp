@@ -137,6 +137,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${scriptDir}/Tool.js"></script>
                 <script type="text/javascript" src="${scriptDir}/Component.js"></script>
                 <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
+                <script type="text/javascript" src="${scriptDir}/SnappingController.js"></script>
 
                 <c:choose>
                     <c:when test="${actionBean.viewerType == 'openlayers'}">
@@ -153,10 +154,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/OpenLayersMap.js"></script>
                         <script type="text/javascript" src="${scriptDir}/Utils.js"></script>
                         <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
-
                         <script type="text/javascript" src="${scriptDir}/OpenLayersComponent.js"></script>
-
                         <script type="text/javascript" src="${scriptDir}/OpenLayersMapComponent.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersSnappingController.js"></script>
 
                         <!-- The components -->
                         <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
@@ -267,7 +267,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                     OpenLayers.Util.lastSeqID += 1;
                     // Added this replace, to make sure there are no dots in the ID
-                    return prefix.replace(/\./g, '_') + OpenLayers.Util.lastSeqID;        
+                    return prefix.replace(/\./g, '_') + OpenLayers.Util.lastSeqID;
                 };
             </c:if>
 
