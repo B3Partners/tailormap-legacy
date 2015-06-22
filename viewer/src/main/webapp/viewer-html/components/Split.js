@@ -52,15 +52,20 @@ Ext.define("viewer.components.Split", {
         this.initConfig(conf);
 
         var me = this;
-        Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
-            if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
-                    || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
-                if (me.mode === "split" || me.mode === "select") {
-                    return false;
-                }
-            }
-            return true;
-        });
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
+                function (event) {
+                    if (me.mode === "split" || me.mode === "select") {
+                        return false;
+                    }
+                    return true;
+                });
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,
+                function (event) {
+                    if (me.mode === "split" || me.mode === "select") {
+                        return false;
+                    }
+                    return true;
+                });
 
         this.renderButton({
             handler: function () {
@@ -165,6 +170,7 @@ Ext.define("viewer.components.Split", {
         }
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
+        this.config.viewerController.mapComponent.deactivateTools();
         this.popup.show();
     },
     loadWindow: function () {

@@ -39,15 +39,20 @@ Ext.define("viewer.components.Merge", {
         this.initConfig(conf);
 
         var me = this;
-        Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
-            if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
-                    || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
-                if (me.mode === "selectA" || me.mode === "selectB") {
-                    return false;
-                }
-            }
-            return true;
-        });
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
+                function (event) {
+                    if (me.mode === "selectA" || me.mode === "selectB") {
+                        return false;
+                    }
+                    return true;
+                });
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,
+                function (event) {
+                    if (me.mode === "selectA" || me.mode === "selectB") {
+                        return false;
+                    }
+                    return true;
+                });
 
         this.renderButton({
             handler: function () {
@@ -70,23 +75,8 @@ Ext.define("viewer.components.Merge", {
         });
 
         this.loadWindow();
-
-// never happens
-//        this.config.viewerController.addListener(
-//                viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,
-//                this.selectedContentChanged,
-//                this);
-
         return this;
     },
-//    selectedContentChanged: function () {
-//        if (this.vectorLayer === null) {
-//            this.createVectorLayer();
-//        } else {
-//            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-//        }
-//        Ext.getCmp(this.name + "selectAButton").setDisabled(false);
-//    },
     /**
      * create selection layer.
      * @todo labeling A and B seems to fail
@@ -104,7 +94,7 @@ Ext.define("viewer.components.Merge", {
                 fillopacity: 50,
                 strokecolor: "FF0000",
                 strokeopacity: 50,
-                label: "label"
+                label: "${label}"
             }
         });
         this.vectorLayer.addListener(
@@ -120,6 +110,7 @@ Ext.define("viewer.components.Merge", {
         }
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
+        this.config.viewerController.mapComponent.deactivateTools();
         this.popup.show();
     },
     toMergeFeatureAdded: function (vecLayer, feature) {
@@ -395,7 +386,8 @@ Ext.define("viewer.components.Merge", {
                     wktgeom: wkt,
                     id: feature.__fid,
                     // TODO dit lijkt niet te werken..
-                    label: (this.mode == "selectA") ? "A" : "B"
+                    label: (this.mode === "selectA") ? "A" : "B",
+                    color: (this.mode === "selectA") ? "#FF0000" : "#00FF00"
                 });
                 this.vectorLayer.addFeature(feat);
             }
