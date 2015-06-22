@@ -67,35 +67,14 @@ Ext.define("viewer.components.Legend", {
         this.initConfig(conf);
         var me = this;
         
-        var css = "\
-/* Styling for legends, see for example:\
- * http://jsfiddle.net/ZVUBv/1/ \
- */\
-\
-.legend {\
-    padding: {0};\
-    width: 100%;\
-    height: 100%;\
-}\
-\
-.legend .layer {\
-    clear: left;\
-}\
-\
-.legend .layer .name {\
-    font-weight: bold;\
-}\
-\
-.legend .layer .image {\
-    clear: left;\
-    float: left;\
-    padding-right: 3px;\
-}\
-\
-.legend .layer .label {\
-    line-height: 31px; /* center single-line label vertically to align to image */\
-    white-space: nowrap;\
-}";
+        // Styling for legends, see for example:  http://jsfiddle.net/ZVUBv/1/
+        var css = ".legend {padding: {0}; width: 100%; height: 100%;}" +
+                ".legend .layer { clear: left; }" +
+                ".legend .layer .name { font-weight: bold;}" +
+                ".legend .layer .image { clear: left; float: left; padding-right: 3px;}" +
+                // center single-line label vertically to align to image
+                ".legend .layer .label { line-height: 31px; white-space: nowrap;}";
+
         css = Ext.String.format(css, this.config.margin);
         Ext.util.CSS.createStyleSheet(css, "legend");
         
