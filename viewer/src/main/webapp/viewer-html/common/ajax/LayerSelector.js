@@ -45,7 +45,7 @@ Ext.define ("viewer.components.LayerSelector",{
 
         var comboboxConfig = {
             fieldLabel: 'Kies kaartlaag',
-            emptyText:'Maak uw keuze',
+            emptyText:'Er zijn geen geldige kaartlagen beschikbaar',
             store: layers,
             queryMode: 'local',
             displayField: 'title',
@@ -118,18 +118,25 @@ Ext.define ("viewer.components.LayerSelector",{
         }
         var store = this.combobox.getStore();
         store.removeAll();
+        this.setValue(null);
         var addedLayers = 0;
+        var selectedLayer = null;
+        var addingLayer = null;
         if(this.layerList != null){
             for (var i = 0 ; i < this.layerList.length ;i++){
                 var l = this.layerList[i];
                 for ( var j = 0 ; j < visibleLayers.length ;j++){
                     //var appLayer = this.config.viewerController.getAppLayerById(visibleLayers[j]);                    
                     if (visibleLayers[j] == l.id || visibleLayers[j] == (""+l.id)){                
-                        store.add({
+                        addingLayer = {
                             layerId: l.id,
                             title: l.alias || l.layerName,
                             layer: l
-                        });
+                        };
+                        if(selectedLayer === null) {
+                            selectedLayer = addingLayer;
+                        }
+                        store.add(addingLayer);
                         addedLayers++;
                         break;
                     }
@@ -143,7 +150,9 @@ Ext.define ("viewer.components.LayerSelector",{
             // this.combobox.inputEl.dom.placeholder='Maak uw keuze';
             this.combobox.setDisabled(false);
         }
-        
+        if(selectedLayer !== null) {
+            this.setValue(selectedLayer, true);
+        }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS,store,this);
     },
     changed :function (combobox,appLayer,previousSelected){
@@ -172,6 +181,13 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     setValue : function (appLayer, preventEvent){
         this.combobox.setValue(appLayer, preventEvent);
+    },
+    /**
+     * Get the number of visible layers in the LayerSelector
+     * @returns int
+     */
+    getVisibleLayerCount: function() {
+        return this.combobox.getStore().getCount();
     },
     /**
      * @deprecated use getValue()

@@ -67,35 +67,14 @@ Ext.define("viewer.components.Legend", {
         this.initConfig(conf);
         var me = this;
         
-        var css = "\
-/* Styling for legends, see for example:\
- * http://jsfiddle.net/ZVUBv/1/ \
- */\
-\
-.legend {\
-    padding: {0};\
-    width: 100%;\
-    height: 100%;\
-}\
-\
-.legend .layer {\
-    clear: left;\
-}\
-\
-.legend .layer .name {\
-    font-weight: bold;\
-}\
-\
-.legend .layer .image {\
-    clear: left;\
-    float: left;\
-    padding-right: 3px;\
-}\
-\
-.legend .layer .label {\
-    line-height: 31px; /* center single-line label vertically to align to image */\
-    white-space: nowrap;\
-}";
+        // Styling for legends, see for example:  http://jsfiddle.net/ZVUBv/1/
+        var css = ".legend {padding: {0}; width: 100%; height: 100%;}" +
+                ".legend .layer { clear: left; }" +
+                ".legend .layer .name { font-weight: bold;}" +
+                ".legend .layer .image { clear: left; float: left; padding-right: 3px;}" +
+                // center single-line label vertically to align to image
+                ".legend .layer .label { line-height: 31px; white-space: nowrap;}";
+
         css = Ext.String.format(css, this.config.margin);
         Ext.util.CSS.createStyleSheet(css, "legend");
         
@@ -152,7 +131,8 @@ Ext.define("viewer.components.Legend", {
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChange,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
-        
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_ZOOM_END,this.onZoomEnd,this);
+          
         return this;
     },
     
@@ -219,6 +199,14 @@ Ext.define("viewer.components.Legend", {
         
     },
     
+    onZoomEnd: function (map) {
+        // TODO: if reset and initLegend is consuming too much, replace this with
+        // refreshing the legend image src per layer
+        this.resetLegend();
+        this.initLegend();
+        return;
+    },
+    
     resetLegend: function() {
         while(this.legendContainer.firstChild) {
             Ext.removeNode(this.legendContainer.firstChild);
@@ -278,16 +266,29 @@ Ext.define("viewer.components.Legend", {
         // starvation of HTTP requests for map requests which should have 
         // priority
         
+        var map = this.config.viewerController.mapComponent.getMap();
+        var curScale = OpenLayers.Util.getScaleFromResolution(map.getResolution(), map.units);
+        var legendScale = curScale;
+        var serviceLayer = this.config.viewerController.getServiceLayer(appLayer);
+
+        if (this.config.viewerController.compareToScale(appLayer, curScale, false) == -1) {
+            legendScale = serviceLayer.maxScale;
+        } else if (this.config.viewerController.compareToScale(appLayer, curScale, false) == 1) {
+            legendScale = serviceLayer.minScale;
+        }
+        
+        // TODO when layer is out of scale we could also decide not to show the legend for this layer
+
         this.config.viewerController.getLayerLegendInfo(
             appLayer,
             function(appLayer, legendInfo) {
-                me.onLayerLegendInfo(appLayer, legendInfo);
+                me.onLayerLegendInfo(appLayer, legendInfo, legendScale);
             },
             Ext.emptyFn
         );
     },
     
-    onLayerLegendInfo: function(appLayer, legendInfo) {
+    onLayerLegendInfo: function(appLayer, legendInfo, legendScale) {
         
         var legend = this.legends[appLayer.id];
         //console.log("legend info received for appLayer " + appLayer.alias + ", order " + legend.order, legendInfo);
@@ -306,7 +307,7 @@ Ext.define("viewer.components.Legend", {
             return;
         }
 
-        var legendElement = this.createLegendElement(appLayer, legendInfo);
+        var legendElement = this.createLegendElement(appLayer, legendInfo, legendScale);
         
         legend.element = legendElement;
         this.orderedElements[legend.order] = {
@@ -323,7 +324,7 @@ Ext.define("viewer.components.Legend", {
         this.legendContainer.insertBefore(legendElement, legendAfter);
     },
     
-    createLegendElement: function(al, legendInfo) {
+    createLegendElement: function(al, legendInfo, legendScale) {
         var divLayer = document.createElement("div");
         divLayer.className = "layer";
         var divName = document.createElement("div");
@@ -337,7 +338,12 @@ Ext.define("viewer.components.Legend", {
             var divLabel = document.createElement("div");
 
             img = document.createElement("img");
-            img.src = part.url;
+            
+            if (part.url.search("SCALE") == -1){
+                img.src = part.url  +  "&SCALE=" + legendScale;
+            } else {
+                img.src = part.url.replace(/SCALE=[0-9.,]*/i, "SCALE=" + legendScale);
+            }
             img.onload = function() {
                 //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
                 divLabel.style.lineHeight = (this.height + 4) + "px";

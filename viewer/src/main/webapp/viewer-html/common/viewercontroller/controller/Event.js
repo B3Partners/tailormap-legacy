@@ -57,7 +57,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * Example: <appLayer>,
          *           {
          *                   data[
-         *                           {	
+         *                           {
          *                                   features: [],
          *                                   request:{
          *                                           appLayer: appLayerId
@@ -67,8 +67,8 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          *                  ],
          *                   x: screenX,
          *                   y: screenY,
-         *                   options:{	
-         *                           extent:{minX:minX, minY:minY,maxX:maxX,maxY:maxY}, // optional	
+         *                   options:{
+         *                           extent:{minX:minX, minY:minY,maxX:maxX,maxY:maxY}, // optional
          *                           nr: nr, // nr of layer that is done
          *                           total: total // total identifies
          *                   }
@@ -234,6 +234,11 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * Occurs when a control/tool is deactivated
          */
         ON_DEACTIVATE                           : "ON_DEACTIVATE",
-        ON_GET_SERVICE_INFO                     : "ON_GET_SERVICE_INFO"
+        ON_GET_SERVICE_INFO                     : "ON_GET_SERVICE_INFO",
+        /**
+         * @field
+         * Occurs when zoom is completed
+         */
+        ON_ZOOM_END                             : "ON_ZOOM_END"
     }
 });

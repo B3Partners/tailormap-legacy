@@ -12,7 +12,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     // References to the dom object of the content top and -bottom.
     contentTop:null,
     contentBottom:null,
-    config:{        
+    config:{
         theme: "flamingo"
     },
     constructor :function (viewerController, domId,config){
@@ -23,8 +23,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         container.style.height = '100%';
         container.style.width = '100%';
         document.getElementById(domId).appendChild(container);
-        
-        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController, this.domId,config);        
+
+        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController, this.domId,config);
         this.pointButton = null;
         this.lineButton = null;
         this.polygonButton = null;
@@ -61,7 +61,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         },this);
         return this;
     },
-    
+
     checkTools : function(){
         var enable = true;
         if(this.getTools().length !== 0){
@@ -109,7 +109,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "changelayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                               = "activate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                             = "deactivate";
-        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ZOOM_END]                               = "zoomend";
     },
     /**
      * @description Gets the panel of this controller and OpenLayers.Map. If the panel is still null, the panel is created and added to the map.
@@ -133,35 +133,35 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.maps[0].getFrameworkMap().addControl(this.panel);
     },
     /**
-     *Creates a Openlayers.Map object for this framework. See the openlayers.map docs     
+     *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
      *@see viewer.viewercontroller.MapComponent#createMap
      *@returns a OpenLayersMap
      */
     createMap : function(id, options){
         options = Ext.merge(this.mapOptions,options);
-        options["theme"]= actionBeans["css"]+"?theme="+this.getTheme() + "&location="+  OpenLayers._getScriptLocation() + "&app="+this.viewerController.app.id;//+'theme/'+this.getTheme()+'/style.jsp';        
-        options.mapComponent=this;   
+        options["theme"]= actionBeans["css"]+"?theme="+this.getTheme() + "&location="+  OpenLayers._getScriptLocation() + "&app="+this.viewerController.app.id;//+'theme/'+this.getTheme()+'/style.jsp';
+        options.mapComponent=this;
         options.viewerController = this.viewerController;
         options.domId=this.domId;
         var olMap = Ext.create("viewer.viewercontroller.openlayers.OpenLayersMap",options);
         return olMap;
     },
-    
+
     createMenus : function(top, bottom){
         // Make a panel div in order to:
         // 1. catch mouseclicks/touch events to the panel (when a misclick is done) so it doesn't propagate to the map (and trigger some other controls)
         // 2. make it possible to place the toolbar out of the map
         // 3. make it possible to place scalebar/mouseposition/etc. out of the map
-        
+
         // Div container for content
         var container = document.getElementById(this.domId);
         container.style.position = "absolute";
-        
+
         // Top menu
         var mapEl = Ext.get(this.getMap().frameworkMap.viewPortDiv.id);
         var currentHeight = mapEl.getHeight();
         mapEl.dom.style.position = "absolute";
-        
+
         var topHeight;
         if(top.indexOf("%") == -1){
             currentHeight -= top;
@@ -173,7 +173,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             topHeight = heightInPixels;
         }
         container.style.top = topHeight + 'px';
-        
+
         // Bottom menu
         var bottomHeight;
         if(bottom.indexOf("%") == -1){
@@ -185,27 +185,27 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             bottomHeight = heightInPixels;
             currentHeight -= heightInPixels;
         }
-        
+
         container.style.height = currentHeight + 'px';
-        
+
         // Make divs
         this.contentTop = document.createElement('div');
         this.contentTop.id = 'content_top';
-        
+
         var topStyle = this.contentTop.style;
         var topLayout= this.viewerController.getLayout('top_menu');
         if(topLayout.height ) {
             topStyle.background = topLayout.bgcolor;
             topStyle.height = topLayout.height + topLayout.heightmeasure;
         }
-        
+
         // Give it a higher z-index than the map to render it on top of the map
         mapEl.dom.style.zIndex = 100;
         topStyle.zIndex = mapEl.dom.style.zIndex + 1;
-        
+
         this.contentTop.setAttribute("class","olControlPanel");
         container.parentNode.insertBefore(this.contentTop, container);
-        
+
         // Make content_bottom
         if(bottomHeight && parseInt(bottomHeight) > 0 ){
             this.contentBottom = document.createElement('div');
@@ -220,7 +220,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }
         this.getMap().updateSize();
     },
-    
+
     /**
      * Resize function is called when the screen is resized
      */
@@ -228,16 +228,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         // Container
         var container = Ext.get(document.getElementById(this.domId).parentNode);
         var totalHeight = container.getHeight();
-        
+
         // Top menu
         var topMenuHeight= Number(this.viewerController.getLayout('top_menu').height);
-        
+
         // Footer
         if(this.contentBottom !== null) {
             var footer = Ext.get(this.contentBottom);
             footer.setTop((totalHeight - footer.getHeight()) + 'px');
         }
-        
+
         // Map
         var mapEl = Ext.get(this.domId);
         var height = totalHeight - topMenuHeight;
@@ -246,10 +246,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }
         mapEl.setHeight(height + 'px');
     },
-    
+
     /**
      *See @link MapComponent.createWMSLayer
-     */    
+     */
     createWMSLayer : function(name, wmsurl,ogcParams,config){
         config.options = new Object();
         config.options["id"]=null;
@@ -284,7 +284,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.viewerController=this.viewerController;
         if(options.alpha != undefined) {
             options.opacity = options.alpha / 100;
-        }        
+        }
         var tmsLayer= new viewer.viewercontroller.openlayers.OpenLayersTilingLayer(options);
         return tmsLayer;
     },
@@ -293,16 +293,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     createArcIMSLayer : function (name,url, options, viewerController){
         options.name=name;
-        
+
         // Set URL to proxy
         options.url = Ext.urlAppend(actionBeans.proxy, Ext.Object.toQueryString({ url: url, mode: 'arcims'}));
-        
+
         if(options.alpha != undefined) {
             options.opacity = options.alpha / 100;
-        }        
+        }
         options.serviceName = options.mapservice;
         options.viewerController=this.viewerController;
-        
+
         var arcIMS= Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",options);
         return arcIMS;
     },
@@ -315,7 +315,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.viewerController=viewerController;
         if(options.alpha != undefined) {
             options.opacity = options.alpha / 100;
-        }             
+        }
         var arcServer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",options);
         return arcServer;
     },
@@ -345,12 +345,12 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 options["isBaseLayer"]= false;
             }
         }
-        
+
         return Ext.create("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",options);
     },
     /**
      * createComponent(config)
-     * Creates a new, OpenLayers specific component. Used for components that implement openlayerspecific stuff 
+     * Creates a new, OpenLayers specific component. Used for components that implement openlayerspecific stuff
      *
      */
     createComponent : function (config){
@@ -363,10 +363,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",config,this.getMap());
         }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
-                        
+
             var topMenuHeight = Number(this.viewerController.getLayout('top_menu').height);
             var minTop = 40;
-            
+
             // divide by 2 is necessary for some reason?
             var y = topMenuHeight > minTop ? 4 : (minTop - topMenuHeight) / 2 + 2;
             var x=0;
@@ -381,36 +381,39 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 function onButtonClick (evt) {
                     var btn = evt.buttonElement;
                     switch (btn.action) {
-                        case "panup": 
+                        case "panup":
                             this.map.pan(0, -this.getSlideFactor("h"));
                             break;
-                        case "pandown": 
+                        case "pandown":
                             this.map.pan(0, this.getSlideFactor("h"));
                             break;
-                        case "panleft": 
+                        case "panleft":
                             this.map.pan(-this.getSlideFactor("w"), 0);
                             break;
-                        case "panright": 
+                        case "panright":
                             this.map.pan(this.getSlideFactor("w"), 0);
                             break;
                         case "zoomin": 
-                            this.map.zoomIn(); 
+                            this.map.zoomIn();
+                            this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,position);
                             break;
                         case "zoomout": 
                             this.map.zoomOut(); 
+                            this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,position);
                             break;
                         case "zoomworld": 
                             me.viewerController.mapComponent.getMap().zoomToExtent(me.viewerController.mapComponent.mapOptions.options.startExtent); 
+                            this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,position);
                             break;
                     }
                 }
                 panZoom.onButtonClick = onButtonClick;
             }
-            
+
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,panZoom);
         }else if (type == viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
-            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);                
-        }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
+            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);
+        }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
                 options.div = this.contentBottom;
@@ -430,18 +433,20 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
                 new OpenLayers.Control.ScaleLine(frameworkOptions));
-        }else{
+        } else if(type == viewer.viewercontroller.controller.Component.SNAPPING) {
+            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersSnappingController", config);
+        } else {
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
         return comp;
     },
     /**
      * @see viewer.viewercontroller.MapComponent#createTool
-     * 
+     *
      **/
     createTool : function (conf){
         var type = conf.type;
-        var id = conf.id;       
+        var id = conf.id;
         conf.viewerController=this.viewerController;
         var frameworkOptions={};
         if(conf.frameworkOptions) {
@@ -468,8 +473,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions))
         }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
             frameworkOptions.enableKinetic=true;
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));            
-        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {  
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));
+        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
         }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
             var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
@@ -478,21 +483,21 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
             }
             return measureTool;
-        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,            
-            return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions)); 
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
+            return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
             return new viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool(conf);
         }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT
                || type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT) {//19, 20
-               
-            // We need the tooltips from both the previous and next components, 
-            // search in viewerController for the configs... 
-            // 
+
+            // We need the tooltips from both the previous and next components,
+            // search in viewerController for the configs...
+            //
             // 'Wrong way' of navigating the API, and we can't use ViewerController.getComponentsByClassName
             // because that isn't initialized yet
-            
+
             frameworkOptions = { };
-            
+
             for(var name in this.viewerController.app.components) {
                 var c = this.viewerController.app.components[name];
                 if(c.className == "viewer.components.tools.NextExtent") {
@@ -502,7 +507,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 }
             }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory(frameworkOptions));
-        }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,            
+        }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomToMaxExtent(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
             return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
@@ -516,7 +521,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 frameworkOptions.displayClass = conf.displayClass;
             } else {
                 frameworkOptions.displayClass = "olButton_" + conf.id;
-            }  
+            }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
             frameworkOptions.type=OpenLayers.Control.TYPE_BUTTON;
@@ -524,7 +529,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 frameworkOptions.displayClass = conf.displayClass;
             }else{
                 frameworkOptions.displayClass ="olButton_"+conf.id;
-            }            
+            }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
@@ -597,8 +602,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             };
             this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
-        }else if (tool.getType()==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19, 
-            //add after the a layer is added. 
+        }else if (tool.getType()==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19,
+            //add after the a layer is added.
             var me = this;
             var handler = function(){
                 var navControl=tool.getFrameworkTool();
@@ -611,7 +616,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 me.getPanel().addControls([navControl.next]);
                 me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             };
-            this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);        
+            this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
         }else {
             var ft = tool.getFrameworkTool();
             this.getPanel().addControls([tool.getFrameworkTool()]);
@@ -622,7 +627,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             //check if this is the first tool, activate it.
             if (tool.getVisible()){
                 var toolsVisible=0;
-                for (var i=0; i < this.tools.length; i++){                    
+                for (var i=0; i < this.tools.length; i++){
                     if (this.tools[i].getVisible()){
                         toolsVisible++;
                     }
@@ -632,7 +637,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 }
             }
         }
-        
+
     },
     removeToolById : function (id){
         var tool = this.getTool(id);
@@ -644,7 +649,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     removeTool : function (tool){
         if (!(tool instanceof OpenLayersTool)){
             Ext.Error.raise({msg: "The given tool is not of type 'OpenLayersTool'"});
-        }    
+        }
         if (tool.type==Tool.NAVIGATION_HISTORY){
             OpenLayers.Util.removeItem(this.getPanel().controls, tool.getFrameworkTool().next);
             OpenLayers.Util.removeItem(this.getPanel().controls, tool.getFrameworkTool().previous);
@@ -682,7 +687,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if (this.maps.length>=1)
             Ext.Error.raise({msg: "Multiple maps not supported yet"});
         this.maps.push(map);
-        
+
         this.createMenus(this.mapOptions.options.top,this.mapOptions.options.bottom);
         map.getFrameworkMap().events.register("mousemove",this,this.removeMaptip);
     },
@@ -726,7 +731,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     /**
      * @see viewer.viewercontroller.MapComponent#getHeight
      */
-    getHeight: function (){        
+    getHeight: function (){
         var m=this.getMap();
         if(m){
             return m.getHeight();
@@ -743,7 +748,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             Ext.get(this.domId).dom.style.cursor = "default";
         }
     }
-    
+
     /****************************************************************Event handling***********************************************************/
 
 });

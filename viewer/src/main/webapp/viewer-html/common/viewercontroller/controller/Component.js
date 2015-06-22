@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,8 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         NAVIGATIONPANEL            : 5,
         MAPTIP                     : 6,
         LOADMONITOR                : 7,
-        OVERVIEW                   : 8
+        OVERVIEW                   : 8,
+        SNAPPING                   : 9
     },
     /**
      *Set the component visible/invisible or enabled/disabled
@@ -54,7 +55,7 @@ Ext.define("viewer.viewercontroller.controller.Component",{
     setVisible: function (vis){
         Ext.Error.raise({msg: "setVisible() function must be implemented in implementation"});
     },
-    
+
     /**
      *Overwrite the destroy function. Clear all listeners and forward to the super.destroy
      */
@@ -62,7 +63,7 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         this.clearListeners();
         viewer.viewercontroller.controller.Component.superclass.destroy.call(this);
     },
-            
+
     getFrameworkObject: function() {
         return this.frameworkObject;
     }

@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.app;
 
 import java.util.Date;
 import javax.persistence.*;
+import net.sourceforge.stripes.action.ActionBeanContext;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -25,9 +26,16 @@ import org.hibernate.annotations.GenericGenerator;
  * @author Matthijs Laan
  */
 @Entity
+
+@Table(
+        uniqueConstraints
+        = @UniqueConstraint(columnNames = {"code", "application"})
+)
 public class Bookmark {
-    
+
     @Id
+    private Long id;
+    
     @GeneratedValue(generator="uuid")
     @GenericGenerator(name="uuid", strategy="uuid")
     private String code;
@@ -42,6 +50,10 @@ public class Bookmark {
     
     private String createdBy;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Application application;
+
+    //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -72,5 +84,42 @@ public class Bookmark {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    // </editor-fold>
+
+    @Override
+    public Bookmark clone(){
+        Bookmark clone = new Bookmark();
+        clone.setCode(code);
+        clone.setCreatedAt(new Date());
+        clone.setParams(params);
+        return clone;
+    }
+
+    public static String createCreatedBy(ActionBeanContext context){
+        String createdBy = "IP: " + context.getRequest().getRemoteAddr();
+        if (context.getRequest().getHeader("x-forwarded-for") != null) {
+            createdBy = "IP: " + context.getRequest().getHeader("x-forwarded-for") + "(proxy " + createdBy + ")";
+        }
+        if (context.getRequest().getRemoteUser() != null) {
+            createdBy += ", user: " + context.getRequest().getRemoteUser();
+        }
+        return createdBy;
     }
 }

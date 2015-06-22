@@ -29,6 +29,17 @@ Ext.define("viewer.components.CustomConfiguration", {
         var checkboxLabelWidth= 55;
         this.form.add([
             {
+                xtype: 'checkbox',
+                fieldLabel: 'Bookmark kopieëren bij werkversie',
+                name: 'copyBookmarkForWorkversion',
+                labelWidth:this.labelWidth,
+                inputValue: false,
+                checked: this.configObject.copyBookmarkForWorkversion !== undefined ? this.configObject.copyBookmarkForWorkversion : false,
+                style: {
+                    marginRight: "90px"
+               }
+            },
+            {
                 xtype: 'label',
                 text: 'Toon de links',
                 style: { 

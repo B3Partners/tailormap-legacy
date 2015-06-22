@@ -430,8 +430,9 @@ Ext.define ("viewer.components.SpatialFilter",{
                 strokeopacity: 50
             }
         });
+        this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        
+                
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.featureAdded,this);
     },
     

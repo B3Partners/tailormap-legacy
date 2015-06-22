@@ -103,6 +103,7 @@ Ext.define ("viewer.components.Drawing",{
                 'strokeopacity': 50
             }
         });
+        this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
 
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);

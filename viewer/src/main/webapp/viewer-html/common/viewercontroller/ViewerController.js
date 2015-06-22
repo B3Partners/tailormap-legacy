@@ -38,6 +38,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** Layers initialized?*/
     layersInitialized: false,
     /**
+     * layers that have been registered by controls that wish to benefit from snapping.
+     */
+    registeredSnappingLayers: [],
+    /**
      * Creates a ViewerController and initializes the map container.
      *
      * @param {String} viewerType Currently only the value "flamingo" and "openlayers" are supported.
@@ -970,11 +974,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * Compare the min/max scale of the layer with the scale
      * @param appLayer the applayer
      * @param scale (optional) compare with this scale. If ommited, use the current scale of the map
+     * @param doCorrection calculate a correction on scale (default: true)
      * @return 0 if within scale
      *        -1 if applayer.maxScale < scale
      *         1 if appLayer.minScale > scale
      */
-    compareToScale: function (appLayer,scale){
+    compareToScale: function (appLayer,scale,doCorrection){
+    
+        if (doCorrection === undefined){
+            doCorrection = true;
+        }
+        
         //get the serviceLayer
         var serviceLayer=this.getServiceLayer(appLayer);
 
@@ -1003,9 +1013,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
 
         var service=this.app.services[appLayer.serviceId];
-        //fix some things with scale and resolution differences in servers:
-        var scaleCorrection = this.calculateScaleCorrection(service,minScale,maxScale);
-        scale = scale * scaleCorrection;
+        
+        if (doCorrection){
+            //fix some things with scale and resolution differences in servers:
+            var scaleCorrection = this.calculateScaleCorrection(service,minScale,maxScale);
+            scale = scale * scaleCorrection;
+        }
 
         if (minScale && scale < minScale){
             return 1;
@@ -1079,6 +1092,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             this.mapComponent.getMap().zoomToResolution(res);
         }
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ZOOM_END,res);
+
     },
     /**
      * Fixes the different implementation of scalehint and scaledenominator in services
@@ -1664,7 +1679,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         this.previousPopup = popup;
     },
-
+    /**
+     * Register a layer as a snapping client.
+     * To be called by controls that which to benefit from snapping before they 
+     * add the layer to the map.
+     *
+     * @param {type} vectorLayer the layer to add
+     * @returns {void}
+     */
+    registerSnappingLayer: function (vectorLayer) {
+        if (!Ext.Array.contains(this.registeredSnappingLayers, vectorLayer)) {
+            this.registeredSnappingLayers.push(vectorLayer);
+        }
+    },
     getTopMenuHeightInPixels: function (){
         var topMenuLayout=this.getLayout('top_menu');
         var top = Number(topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0);
