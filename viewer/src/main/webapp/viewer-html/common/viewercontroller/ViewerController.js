@@ -38,6 +38,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** Layers initialized?*/
     layersInitialized: false,
     /**
+     * layers that have been registered by controls that wish to benefit from snapping.
+     */
+    registeredSnappingLayers: [],
+    /**
      * Creates a ViewerController and initializes the map container.
      *
      * @param {String} viewerType Currently only the value "flamingo" and "openlayers" are supported.
@@ -1675,7 +1679,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         this.previousPopup = popup;
     },
-
+    /**
+     * Register a layer as a snapping client.
+     * To be called by controls that which to benefit from snapping before they 
+     * add the layer to the map.
+     *
+     * @param {type} vectorLayer the layer to add
+     * @returns {void}
+     */
+    registerSnappingLayer: function (vectorLayer) {
+        if (!Ext.Array.contains(this.registeredSnappingLayers, vectorLayer)) {
+            this.registeredSnappingLayers.push(vectorLayer);
+        }
+    },
     getTopMenuHeightInPixels: function (){
         var topMenuLayout=this.getLayout('top_menu');
         var top = Number(topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0);

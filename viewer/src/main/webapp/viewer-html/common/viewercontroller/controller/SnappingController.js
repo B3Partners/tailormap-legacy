@@ -29,7 +29,15 @@ Ext.define("viewer.viewercontroller.controller.SnappingController", {
     },
     frameworkLayer: null,
     frameworkControl: null,
+    /**
+     * framework native layers to snap to.
+     * @private
+     */
     snapLayers: [],
+    /**
+     * name prefix of the built-in snapLayers
+     */
+    snapLayers_prefix: "snapping_",
     constructor: function (config) {
         viewer.viewercontroller.controller.SnappingController.superclass.constructor.call(this, config);
         config.id = config.name;

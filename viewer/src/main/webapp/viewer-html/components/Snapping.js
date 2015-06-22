@@ -143,16 +143,15 @@ Ext.define("viewer.components.Snapping", {
      */
     selectionChanged: function (checkboxgroup, changedId) {
         var me = this;
-        if (this.snapCtl === null) {
-            this.createController();
+        if (me.snapCtl === null) {
+            me.createController();
         }
 
         if (!checkboxgroup.getValue().snaplayer) {
             // nothing checked...
-            //for (var i = 0; i < this.loadedLayerIds.length; i++) {
             for (var i = 0; i < this.switchedLayerIds.length; i++) {
                 me.config.viewerController.setLayerVisible(
-                        me.config.viewerController.getAppLayerById(me.loadedLayerIds[i])
+                        me.config.viewerController.getAppLayerById(me.switchedLayerIds[i])
                         , false);
             }
             me.snapCtl.removeAll();
@@ -181,12 +180,12 @@ Ext.define("viewer.components.Snapping", {
                 }
             } else {
                 if (idx > -1) {
-                    if (Ext.Array.contains(me.switchedLayerIds, idx)) {
+                    if (Ext.Array.contains(me.switchedLayerIds, item.inputValue)) {
                         // don't turn the (wms) layer off unless we turned it on
                         me.config.viewerController.setLayerVisible(appLayer, false);
-                        me.switchedLayerIds.splice(idx, appLayer);
+                        Ext.Array.remove(me.switchedLayerIds, item.inputValue);
                     }
-                    me.loadedLayerIds.splice(idx, appLayer);
+                    Ext.Array.remove(me.loadedLayerIds, item.inputValue);
                     me.snapCtl.removeLayer(appLayer);
                 }
             }

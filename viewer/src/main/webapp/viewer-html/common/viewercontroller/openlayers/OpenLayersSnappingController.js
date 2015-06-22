@@ -45,11 +45,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
      * OpenLayers Vector layers to snap to.
      * @private
      */
-    snapLayers: [],
+    //snapLayers: [],
     /**
      * name prefix of the built-in snapLayers
      */
-    snapLayers_prefix: "snapping_",
+    //snapLayers_prefix: "snapping_",
     /**
      * OpenLayers Map.
      * @private
@@ -81,29 +81,23 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     //    /**
     //     * @param {type} map
     //     * @param {type} options
-    //     * @todo look up the control that belongs to this appLayer and destroy it
+    //     * @TODO look up the control that belongs to this appLayer and destroy it
     //     */
     //    layerRemoved: function (map, options) {
-    //        if (options.layer.getType() !== "VECTOR") {
-    //            return;
+    //        if (layer.options &&
+    //                Ext.Array.contains(this.config.viewerController.registeredSnappingLayers, options.layer)) {
+    //            this.frameworkLayer = options.layer.getFrameworkLayer();
     //        }
-    //        // assume we now have a drawing or editing layer
-    //        //this.getlayerName(options.layer.appLayerId);
     //    },
     /**
-     * attach the snapping control to the Openlayers layers of the added editing or drawing layer.
+     * Attach the snapping control to the Openlayers layers of the added
+     * editing or drawing layer or other layer.
      * @param {type} map
      * @param {type} options
      */
     layerAdded: function (map, options) {
-        if (options.layer.getType() !== "VECTOR") {
-            return;
-        }
-        // filter for edit and drawing control layers
-        if ((Ext.String.startsWith(options.layer.name, "drawing", true)) ||
-                (Ext.String.startsWith(options.layer.name, "edit", true)) ||
-                (Ext.String.startsWith(options.layer.name, "split", true))) {
-            // assume we now have a drawing or editing layer
+        if (options.layer &&
+                Ext.Array.contains(this.config.viewerController.registeredSnappingLayers, options.layer)) {
             this.frameworkLayer = options.layer.getFrameworkLayer();
             this.frameworkControl.setLayer(this.frameworkLayer);
             this.activate();
@@ -111,7 +105,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     },
     /**
      * add the snapping target.
-     * @param {type} snappingLayer
+     * @param {type} appLayer
      */
     addAppLayer: function (appLayer) {
         var me = this;
@@ -129,6 +123,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     },
     /**
      * fetch/load geometries.
+     * @param {type} geomAttribute
+     * @param {type} featureService
+     * @param {type} appLayer
      * @returns {void}
      */
     loadAttributes: function (geomAttribute, featureService, appLayer) {
@@ -157,17 +154,18 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     },
     /**
      * remove the snapping target.
-     * @param {type} snappingLayer
+     * @param {type} appLayer
      */
     removeLayer: function (appLayer) {
         this.deactivate();
-        //look up snappingLayer primitive by name/id...
-        var rLyr = this.frameworkMap.getLayersByName(this.getlayerName(appLayer));
+        // look up snappingLayer primitive by name/id...
         // there should only be one layer in the rLyr
-        rLyr = rLyr[0];
-        Ext.Array.remove(this.snapLayers, rLyr);
-        this.frameworkMap.removeLayer(rLyr);
-        this.frameworkControl.removeTargetLayer(rLyr);
+        var rLyr = this.frameworkMap.getLayersByName(this.getlayerName(appLayer))[0];
+        if (rLyr) {
+            Ext.Array.remove(this.snapLayers, rLyr);
+            this.frameworkMap.removeLayer(rLyr);
+            this.frameworkControl.removeTargetLayer(rLyr);
+        }
         this.activate();
     },
     /**
@@ -238,7 +236,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     /**
      * update data after map extent change.
      * @param {type} map
-     * @param {type} options
      * @param {type} extent
      */
     changedExtent: function (map, extent) {
