@@ -148,6 +148,7 @@ Ext.define("viewer.components.Split", {
                 viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,
                 this.splitFeatureAdded,
                 this);
+        this.config.viewerController.registerSnappingLayer(this.drawLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.drawLayer);
     },
     toSplitFeatureAdded: function (vecLayer, feature) {
