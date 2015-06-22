@@ -111,7 +111,7 @@ public class MergeFeaturesActionBean implements ActionBean {
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
+                || !Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
             unauthorized = true;
         }
     }
@@ -197,12 +197,18 @@ public class MergeFeaturesActionBean implements ActionBean {
             FeatureCollection fc = store.getFeatures(filterA);
             if (fc.features().hasNext()) {
                 fA = (SimpleFeature) fc.features().next();
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Feature A having ID: (%s) not found in datastore.", this.fidA));
             }
 
             SimpleFeature fB = null;
             fc = store.getFeatures(filterB);
             if (fc.features().hasNext()) {
                 fB = (SimpleFeature) fc.features().next();
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Feature B having ID: (%s) not found in datastore.", this.fidB));
             }
 
             String geomAttrName = store.getSchema().getGeometryDescriptor().getLocalName();

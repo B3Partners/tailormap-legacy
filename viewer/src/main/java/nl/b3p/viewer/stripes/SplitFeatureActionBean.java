@@ -115,7 +115,7 @@ public class SplitFeatureActionBean implements ActionBean {
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
+                || !Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
             unauthorized = true;
         }
     }
@@ -196,6 +196,9 @@ public class SplitFeatureActionBean implements ActionBean {
             SimpleFeature f = null;
             if (fc.features().hasNext()) {
                 f = (SimpleFeature) fc.features().next();
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Feature to split having ID: (%s) not found in datastore.", this.splitFeatureFID));
             }
             String geomAttribute = store.getSchema().getGeometryDescriptor().getLocalName();
             Geometry toSplit = (Geometry) f.getProperty(geomAttribute).getValue();
@@ -224,7 +227,7 @@ public class SplitFeatureActionBean implements ActionBean {
             for (Geometry newGeom : geoms) {
                 if (firstFeature) {
                     if (this.strategy.equalsIgnoreCase("replace")) {
-                        // use first/largest geom update existing feature geom
+                        // use first/largest geom to update existing feature geom
                         store.modifyFeatures(geomAttribute, c.convert(newGeom, type.getBinding()), filter);
                         firstFeature = false;
                         continue;
