@@ -256,7 +256,7 @@ public class ApplicationLayer {
                 j.put("alias", ad.getAlias());
                 j.put("type", ad.getType());
 
-                if(ft != null && ca.getAttributeName().equals(ft.getGeometryAttribute())) {
+                if(ft != null && ca.getAttributeName().equals(ft.getGeometryAttribute()) && ca.getFeatureType() == ft ) {
                     geometryAttributeIndex = jattributes.length();
                 }
             }

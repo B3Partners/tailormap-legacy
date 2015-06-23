@@ -1,4 +1,4 @@
-<!-- Copyright (C) 2012-2013 B3Partners B.V. This program is free software:
+<!-- Copyright (C) 2012-2015 B3Partners B.V. This program is free software:
 you can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version
 3 of the License, or (at your option) any later version. This program is
@@ -6316,13 +6316,163 @@ program. If not, see <http://www.gnu.org/licenses/>
                 </tbody>
             </table>
         </div>
-        <a name="viewer_components_Snapping_Help"></a>
+        <a name="viewer_components_Split_Help"></a>
         <div class="helpBlock">
             <h1>
-                Snapping functionaliteit
-                - (zoeken via CTRL-f)</h1>
+                Splits functionaliteit
+            - (zoeken via CTRL-f)</h1>
             <p>
-                De knop voor het openen van het snapping functionaliteit venster kan door
+                De knop voor het openen van het splits functionaliteit venster kan door
+                de beheerder in het left menu geplaatst worden.
+            </p>
+            <p>
+                In de beheeromgeving kan de beheerder voor de knop van dit component de
+                plaats bepalen door de volgorde van de knoppen in de balk te wijzigingen.
+            </p>
+            <table width="100%" cellspacing="0" cellpadding="4">
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>
+                                <strong>
+                                    Instelling
+                                </strong>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <strong>
+                                    werking
+                                </strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Titel
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Tekst voor de titel van de popup.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Titelbalk icoon
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Pad naar icoon dat in de titelbalk van de popup wordt getoond.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Tooltip
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Tekst die getoond wordt indien met muis boven de knop wordt stilgestaan.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Label
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Tekst die getoond onder de knop.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Splits strategie
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De strategie die gevolgd wordt voor het splitsen.
+                            </p>
+                            <dl>
+                                <dt>replace</dt>
+                                <dd>De grootste geometrie wordt toegewezen aan de gekozen feature de andere geometrien worden opgeslagen als nieuwe features</dd>
+                                <dt>add</dt>
+                                <dd>Er worden een compleet nieuwe features gemaakt met de attributen van de gekozen feature. De gekozen feature wordt verwijderd</dd>
+                            </dl>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Filter
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De beheerder kan het filter gebruiken om makkelijk een kaartlaag te vinden.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                kaartlagen
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De beheerder kan selecteren welke kaartlagen de gebruiker kan editen.
+                                Er worden alleen editable kaartlagen getoond.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; opslaan
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Na het klikken op de opslaan knop wordt het component opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; Annuleren
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Het venster van het component wordt gesloten en het component wordt niet
+                                opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a name="viewer_components_Merge_Help"></a>
+        <div class="helpBlock">
+            <h1>
+                Samenvoegen functionaliteit
+            - (zoeken via CTRL-f)</h1>
+            <p>
+                De knop voor het openen van het samenvoegen functionaliteit venster kan door
                 de beheerder in het left menu geplaatst worden.
             </p>
             <p>
@@ -6398,24 +6548,34 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
-                                Kleur van de "snappable" features
+                                Samenvoegen strategie
                             </p>
                         </td>
                         <td>
                             <p>
-                                De kleur die wordt gebruikt om de snapping lagen te tekenen.
+                                De strategie die gevolgd wordt voor het samenvoegen.
                             </p>
+                            <dl>
+                                <dt>replace</dt>
+                                <dd>De eerst gekozen feature (A) wordt voorzien van een
+                                    nieuwe geometrie, de andere feature (B) word verwijderd</dd>
+                                <dt>new</dt>
+                                <dd>Er wordt een compleet nieuwe feature gemaakt met de
+                                    attributen van A, zowel A als B worden verwijderd</dd>
+                            </dl>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <p>
-                                Matheid van de snapping features
+                                Maximum afstand voor samenvoegen
                             </p>
                         </td>
                         <td>
                             <p>
-                                De mate van doorzichtig zijn van de snapping lagen. Lager is meer doorzichtig.
+                                De afstand (in eenheden van de kaart projectie) die
+                                maximaal overbrugd mag worden om objecten samen te voegen.
+                                Hierbij kan de vorm van de samenstelling veranderen.
                             </p>
                         </td>
                     </tr>
@@ -6439,8 +6599,8 @@ program. If not, see <http://www.gnu.org/licenses/>
                         </td>
                         <td>
                             <p>
-                                De beheerder kan selecteren welke kaartlagen de gebruiker kan gebruiken om naartoe te snappen.
-                                Er worden alleen "bufferable" kaartlagen getoond.
+                                De beheerder kan selecteren welke kaartlagen de gebruiker kan editen.
+                                Er worden alleen editable kaartlagen getoond.
                             </p>
                         </td>
                     </tr>
