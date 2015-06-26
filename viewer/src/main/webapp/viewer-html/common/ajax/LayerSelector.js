@@ -170,8 +170,8 @@ Ext.define ("viewer.components.LayerSelector",{
             return null;
         }
     },
-    setValue : function (appLayer, preventEvent){
-        this.combobox.setValue(appLayer, preventEvent);
+    setValue : function (appLayer){
+        this.combobox.setValue(appLayer);
     },
     /**
      * Get the number of visible layers in the LayerSelector
@@ -179,6 +179,13 @@ Ext.define ("viewer.components.LayerSelector",{
      */
     getVisibleLayerCount: function() {
         return this.combobox.getStore().getCount();
+    },
+    selectFirstLayer: function() {
+        var visibleLayers = this.getVisibleLayerCount();
+        if(visibleLayers === 0) {
+            return;
+        }
+        this.setValue(this.combobox.getStore().getAt(0));
     },
     /**
      * @deprecated use getValue()

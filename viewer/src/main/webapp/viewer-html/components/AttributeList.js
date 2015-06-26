@@ -94,7 +94,8 @@ Ext.define ("viewer.components.AttributeList",{
             layers: this.config.layers
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.selectFirstLayer, this);
         
         this.topContainer=Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
@@ -193,6 +194,9 @@ Ext.define ("viewer.components.AttributeList",{
                 }
             ]
         });
+    },
+    selectFirstLayer: function() {
+        this.layerSelector.selectFirstLayer();
     },
     showWindow : function (){
         if (this.topContainer==null){
