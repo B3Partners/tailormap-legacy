@@ -211,6 +211,10 @@ public class EditFeatureActionBean  implements ActionBean {
                     error = "Layer not found";
                     break;
                 }
+                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
+                    error = "U heeft geen rechten om de geometrie van deze kaartlaag te bewerken";
+                    break;
+                }
 
                 if(layer.getFeatureType() == null) {
                     error ="No feature type";

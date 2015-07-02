@@ -294,7 +294,30 @@ public class Authorizations {
             throw new Exception(unauthMsg(request,true) + " layer #" + l.getId());
         }
     }
-    
+
+    /**
+     * See if a user can edit geometry attribute of a layer in addition to
+     * regular writing. Calling this will also call
+     * {@link #isLayerWriteAuthorized(nl.b3p.viewer.config.services.Layer, javax.servlet.http.HttpServletRequest)}
+     *
+     * @param l
+     * @param request
+     * @return {@code true} if the user is allowed to edit the geometry
+     * attribute of the layer (the user is not in any of the groups that prevent
+     * editing geometry).
+     */
+    public static boolean isLayerGeomWriteAuthorized(Layer l, HttpServletRequest request) {
+        if (isLayerWriteAuthorized(l, request)) {
+            Set<String> preventEditGeomGroup = l.getPreventGeomEditors();
+            for (String group : preventEditGeomGroup) {
+                if (request.isUserInRole(group)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private static final String REQUEST_APP_CACHE = Authorizations.class.getName() + ".REQUEST_APP_CACHE";
     
     public static ApplicationCache getApplicationCacheFromRequest(Application app, HttpServletRequest request) {
