@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
@@ -36,7 +37,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @Entity
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
-public class Layer implements Cloneable {
+public class Layer implements Cloneable, Serializable {
     private static final Log log = LogFactory.getLog(Layer.class);
 
     public static final String EXTRA_KEY_METADATA_URL = "metadata.url";
@@ -133,6 +134,10 @@ public class Layer implements Cloneable {
     @ElementCollection
     @Column(name="role_name")
     private Set<String> writers = new HashSet<String>();
+
+    @ElementCollection
+    @Column(name = "role_name")
+    private Set<String> preventGeomEditors = new HashSet<String>();
 
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="child", unique=true))
@@ -554,6 +559,14 @@ public class Layer implements Cloneable {
 
     public void setWriters(Set<String> writers) {
         this.writers = writers;
+    }
+
+    public Set<String> getPreventGeomEditors() {
+        return preventGeomEditors;
+    }
+
+    public void setPreventGeomEditors(Set<String> preventGeomEditors) {
+        this.preventGeomEditors = preventGeomEditors;
     }
 
     public List<Layer> getChildren() {

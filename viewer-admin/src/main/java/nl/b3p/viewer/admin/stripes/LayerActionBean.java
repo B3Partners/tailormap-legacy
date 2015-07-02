@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ public class LayerActionBean implements ActionBean {
     @Validate
     private List<String> groupsWrite = new ArrayList<String>();
     @Validate
+    private List<String> groupsPreventGeomEdit = new ArrayList<String>();
+    @Validate
     private Map<String, String> details = new HashMap<String, String>();
     @Validate
     private SimpleFeatureType simpleFeatureType;
@@ -110,6 +112,14 @@ public class LayerActionBean implements ActionBean {
 
     public void setGroupsWrite(List<String> groupsWrite) {
         this.groupsWrite = groupsWrite;
+    }
+
+    public List<String> getGroupsPreventGeomEdit() {
+        return groupsPreventGeomEdit;
+    }
+
+    public void setGroupsPreventGeomEdit(List<String> groupsPreventGeomEdit) {
+        this.groupsPreventGeomEdit = groupsPreventGeomEdit;
     }
 
     public SortedSet<String> getApplicationsUsedIn() {
@@ -170,6 +180,7 @@ public class LayerActionBean implements ActionBean {
 
             groupsRead.addAll(layer.getReaders());
             groupsWrite.addAll(layer.getWriters());
+            groupsPreventGeomEdit.addAll(layer.getPreventGeomEditors());
 
             if (layer.getFeatureType() != null) {
                 simpleFeatureType = layer.getFeatureType();
@@ -238,6 +249,11 @@ public class LayerActionBean implements ActionBean {
         layer.getWriters().clear();
         for (String groupName : groupsWrite) {
             layer.getWriters().add(groupName);
+        }
+
+        layer.getPreventGeomEditors().clear();
+        for (String groupName : groupsPreventGeomEdit) {
+            layer.getPreventGeomEditors().add(groupName);
         }
 
         layer.setFeatureType(simpleFeatureType);
