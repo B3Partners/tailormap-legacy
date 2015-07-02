@@ -183,7 +183,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
-    layerChanged : function (appLayer,afterLoadAttributes,scope){
+    layerChanged: function (appLayer, previousAppLayer, scope) {
         var buttons = Ext.getCmp(this.config.name +"filterButtons");
         if(appLayer !== null){
             buttons.setDisabled(false);

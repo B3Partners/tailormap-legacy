@@ -253,7 +253,7 @@ Ext.define("viewer.components.Edit", {
         this.layerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
     },
-    layerChanged: function (appLayer, afterLoadAttributes, scope) {
+    layerChanged: function (appLayer, previousAppLayer, scope, afterLoadAttributes) {
         if (appLayer != null) {
             this.vectorLayer.removeAllFeatures();
             this.mode = null;
@@ -261,15 +261,15 @@ Ext.define("viewer.components.Edit", {
             if (appLayer.details && appLayer.details["editfunction.title"]) {
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
-            this.inputContainer.setLoading("Laad attributen...");
+            this.inputContainer.setLoading("Laadt attributen...");
             this.inputContainer.removeAll();
-            this.loadAttributes(appLayer, afterLoadAttributes, scope);
+            this.loadAttributes(appLayer, previousAppLayer, scope, afterLoadAttributes);
             this.inputContainer.setLoading(false);
         } else {
             this.cancel();
         }
     },
-    loadAttributes: function (appLayer, afterLoadAttributes, scope) {
+    loadAttributes: function (appLayer, previousAppLayer, scope, afterLoadAttributes) {
         this.appLayer = appLayer;
 
         var me = this;
