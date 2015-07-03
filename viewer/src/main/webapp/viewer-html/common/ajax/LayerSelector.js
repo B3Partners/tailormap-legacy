@@ -45,7 +45,7 @@ Ext.define ("viewer.components.LayerSelector",{
 
         var comboboxConfig = {
             fieldLabel: 'Kies kaartlaag',
-            emptyText:'Er zijn geen geldige kaartlagen beschikbaar',
+            emptyText:'Maak uw keuze',
             store: layers,
             queryMode: 'local',
             displayField: 'title',
