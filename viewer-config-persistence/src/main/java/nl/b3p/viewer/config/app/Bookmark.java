@@ -36,8 +36,6 @@ public class Bookmark {
     @Id
     private Long id;
     
-    @GeneratedValue(generator="uuid")
-    @GenericGenerator(name="uuid", strategy="uuid")
     private String code;
     
     @Lob
