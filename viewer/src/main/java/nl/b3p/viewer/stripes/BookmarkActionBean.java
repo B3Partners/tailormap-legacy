@@ -19,6 +19,7 @@ package nl.b3p.viewer.stripes;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
@@ -90,10 +91,13 @@ public class BookmarkActionBean implements ActionBean {
         } else {
             try {
                 String createdBy =bookmark.createCreatedBy(context);
+                UUID uuid =UUID.randomUUID();
+                String code = uuid.toString();
+                code = code.replaceAll("-", "");
                 bookmark.setCreatedBy(createdBy);
                 bookmark.setCreatedAt(new Date());
                 bookmark.setApplication(application);
-
+                bookmark.setCode(code);
                 Stripersist.getEntityManager().persist(bookmark);
                 Stripersist.getEntityManager().getTransaction().commit();
 
