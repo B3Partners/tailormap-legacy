@@ -350,6 +350,10 @@ Ext.define ("viewer.components.Maptip",{
                         extraDiv.addCls("feature_summary_link");
                         for (var i = 0; i < this.extraLinkCallbacks.length; i++) {
                             var entry = this.extraLinkCallbacks[i];
+                            if (entry.appLayers && !Ext.Array.contains(entry.appLayers, appLayer)) {
+                                // looking at an unspecified appLayer, skip adding the link
+                                continue;
+                            }
                             var a = document.createElement("a");
                             a.href = 'javascript: void(0)';
                             a.feature = feature;
@@ -669,12 +673,14 @@ Ext.define ("viewer.components.Maptip",{
      * @param {type} component The object of the component ("this" at the calling method)
      * @param {type} callback The callbackfunction which must be called from the click
      * @param {type} The label for the hyperlink
+     * @param {Array} The appLayers this should apply to, when null the callback will apply to any appLayer
      */
-    registerExtraLink: function (component, callback, label) {
+    registerExtraLink: function (component, callback, label, appLayers) {
         var entry = {
             component: component,
             callback: callback,
-            label: label
+            label: label,
+            appLayers: appLayers
         };
         this.extraLinkCallbacks.push(entry);
     },
