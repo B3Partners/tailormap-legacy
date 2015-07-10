@@ -191,11 +191,13 @@ public class PrintActionBean implements ActionBean {
             }
             info.setExtra(peis);
         }
-        
+
         //determine the correct template
         String pageFormat = jRequest.has("pageformat") ? jRequest.getString("pageformat") : A4;
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PORTRAIT;
-        final String templateName= getTemplateName(pageFormat,orientation);
+        // make it possible to override the template using a filename eg mytemplate.xsl which should be in one of the well known locations
+        String xsltemplate = jRequest.has("xsltemplate") ? jRequest.getString("xsltemplate") : null;
+        final String templateName = ((xsltemplate != null) ? xsltemplate : getTemplateName(pageFormat, orientation));
         
         final String templateUrl;
         final boolean useMailer = mailprint;
