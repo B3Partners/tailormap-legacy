@@ -45,7 +45,8 @@ Ext.define ("viewer.components.Maptip",{
     lastPosition: null,
     worldPosition: null,
     requestExtent:null,
-    requestManager:null,
+    requestManager: null,
+    extraLinkCallbacks: [],
     /**
      * @constructor
      */
@@ -342,7 +343,34 @@ Ext.define ("viewer.components.Maptip",{
                             linkDiv.addCls("feature_summary_link");
                             linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],attributes,noHtmlEncode,nl2br)+"'>link</a>");
                             leftColumnDiv.appendChild(linkDiv);
+                    }
+
+                    if (this.extraLinkCallbacks && this.extraLinkCallbacks.length > 0) {
+                        var extraDiv = new Ext.Element(document.createElement("div"));
+                        extraDiv.addCls("feature_summary_link");
+                        for (var i = 0; i < this.extraLinkCallbacks.length; i++) {
+                            var entry = this.extraLinkCallbacks[i];
+                            if (entry.appLayers && !Ext.Array.contains(entry.appLayers, appLayer)) {
+                                // looking at an unspecified appLayer, skip adding the link
+                                continue;
+                            }
+                            var a = document.createElement("a");
+                            a.href = 'javascript: void(0)';
+                            a.feature = feature;
+                            a.entry = entry;
+                            a.appLayer = appLayer;
+                            var detailLink = new Ext.Element(a);
+                            detailLink.addListener("click",
+                                    function (evt, el, o) {
+                                        el.entry.callback.call(el.entry.component, el.feature, el.appLayer);
+                                    },
+                                    this);
+                            detailLink.insertHtml("beforeEnd", entry.label);
+                            extraDiv.appendChild(detailLink);
                         }
+                        leftColumnDiv.appendChild(extraDiv);
+                    }
+
                         //detail
                         var detailDiv = new Ext.Element(document.createElement("div"));
                         detailDiv.addCls("feature_summary_detail");
@@ -639,8 +667,35 @@ Ext.define ("viewer.components.Maptip",{
     },
     getExtComponents: function() {
         return [];
+    },
+    /**
+     * Register the calling component for doing something extra called by a link.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called from the click
+     * @param {type} The label for the hyperlink
+     * @param {Array} The appLayers this should apply to, when null the callback will apply to any appLayer
+     */
+    registerExtraLink: function (component, callback, label, appLayers) {
+        var entry = {
+            component: component,
+            callback: callback,
+            label: label,
+            appLayers: appLayers
+        };
+        this.extraLinkCallbacks.push(entry);
+    },
+    /**
+     * Unregister the given component for extra link on the balloon.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    unregisterExtraLink: function (component) {
+        for (var i = this.extraLinkCallbacks.length - 1; i >= 0; i--) {
+            if (this.extraLinkCallbacks[i].component.name === component.name) {
+                this.extraLinkCallbacks.splice(i, 1);
+            }
+        }
     }
-
 });
 
 /** Creates a balloon.
