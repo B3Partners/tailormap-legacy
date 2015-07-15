@@ -38,8 +38,8 @@ public class CSVDownloader extends FeatureDownloader{
     private char separator = ';';
     private PrintWriter pw;
     private File f;
-    public CSVDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases) {
-        super(attributes, fs, featureTypeAttributes,attributeAliases);
+    public CSVDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases, String params) {
+        super(attributes, fs, featureTypeAttributes,attributeAliases, params);
     }
 
     @Override

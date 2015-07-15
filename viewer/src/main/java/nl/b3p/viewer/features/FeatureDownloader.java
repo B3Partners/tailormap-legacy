@@ -19,6 +19,7 @@ package nl.b3p.viewer.features;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
@@ -35,16 +36,28 @@ public abstract class FeatureDownloader {
     protected SimpleFeatureSource fs;
     protected Map<String, AttributeDescriptor> featureTypeAttributes;
     protected Map<String, String> attributeAliases;
-            
-    public FeatureDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases){
+    protected String params;
+    protected Map<String,String> parameterMap = new HashMap();
+
+    public FeatureDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases, String params){
         this.attributes = attributes;
         this.fs = fs;
         this.featureTypeAttributes = featureTypeAttributes;
         this.attributeAliases = attributeAliases;
+
+        if(params != null && params.length() > 0) {
+            String[] split = params.split(",");
+            for(String s: split) {
+                String[] kv = s.split("=", 2);
+                if(kv.length == 2) {
+                    parameterMap.put(kv[0], kv[1]);
+                }
+            }
+        }
     }
-   
+
     public abstract void init() throws IOException;
     public abstract void processFeature(SimpleFeature oldFeature);
     public abstract File write() throws IOException;
-    
+
 }

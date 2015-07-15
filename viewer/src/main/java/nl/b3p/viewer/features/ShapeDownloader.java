@@ -58,8 +58,8 @@ public class ShapeDownloader extends FeatureDownloader {
     private File dir;
     private FeatureStore newFeatureStore;
 
-    public ShapeDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases) {
-        super(attributes, fs, featureTypeAttributes,attributeAliases);
+    public ShapeDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases, String params) {
+        super(attributes, fs, featureTypeAttributes,attributeAliases, params);
     }
 
     @Override
