@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -150,12 +151,29 @@ public class ExcelDownloader extends FeatureDownloader{
 
         int i = 0;
         String autoSize = parameterMap.get("autoSize");
-        if(autoSize != null) {
-            Set autoSizeAttributes = new HashSet(Arrays.asList(autoSize.split("\\|")));
+        String rowWidths = parameterMap.get("rowWidths");
+        if(autoSize != null || rowWidths != null) {
+            Set autoSizeAttributes = autoSize == null ? Collections.emptySet() : new HashSet(Arrays.asList(autoSize.split("\\|")));
+            Map<String,Integer> attributeWidths = new HashMap();
+            if(rowWidths != null) {
+                for(String w: rowWidths.split("\\|")) {
+                    String[] p = w.split("@", 2);
+                    if(p.length == 2) {
+                        try {
+                            attributeWidths.put(p[0], Integer.parseInt(p[1]));
+                        } catch(NumberFormatException e) {
+                        }
+                    }
+                }
+            }
+
             for (ConfiguredAttribute configuredAttribute : attributes) {
                 if(configuredAttribute.isVisible()) {
                     if(autoSizeAttributes.contains(configuredAttribute.getAttributeName())) {
                         sheet.autoSizeColumn(i);
+                    }
+                    if(attributeWidths.containsKey(configuredAttribute.getAttributeName())) {
+                        sheet.setColumnWidth(i, attributeWidths.get(configuredAttribute.getAttributeName()));
                     }
                     i++;
                 }
@@ -189,6 +207,7 @@ public class ExcelDownloader extends FeatureDownloader{
 
         style = createBorderedStyle(wb);
         style.setAlignment(CellStyle.ALIGN_LEFT);
+        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         style.setWrapText(true);
         styles.put("cell_normal", style);
 
