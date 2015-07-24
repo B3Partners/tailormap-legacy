@@ -256,11 +256,12 @@ Ext.define ("viewer.components.AttributeList",{
     },
     // Called when the layerSelector was changed.
     layerChanged : function (appLayer){
-        if(appLayer) {
-            this.loadAttributes(appLayer);
-            if(this.layerSelector.getVisibleLayerCount() === 1 && this.config.autoDownload) {
-                this.download();
-            }
+        if(!appLayer || !this.popup.isVisible()) {
+            return true;
+        }
+        this.loadAttributes(appLayer);
+        if(this.layerSelector.getVisibleLayerCount() === 1 && this.config.autoDownload) {
+            this.download();
         }
     },
     filterChanged : function (filter,appLayer){
