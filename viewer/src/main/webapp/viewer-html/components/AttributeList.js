@@ -430,6 +430,7 @@ Ext.define ("viewer.components.AttributeList",{
         }
 
         var maxResults = -1;
+        var movingBack = 0;
         var pageSize = 10;
         var store = Ext.create('Ext.data.Store', {
             storeId: name+"Store",
@@ -493,6 +494,13 @@ Ext.define ("viewer.components.AttributeList",{
                 },
                 load: function(store, records) {
                     /**
+                     * We will disable the 'last page' button of the pagertoolbar when we have a virtual total
+                     */
+                    if(store.getProxy().getReader().rawData.hasOwnProperty('virtualtotal') && store.getProxy().getReader().rawData.virtualtotal && me.pagers[gridId]) {
+                        // Kind of hack to disable 'last page' button, property will be used on 'afterlayout' event on pager, see below
+                        me.pagers[gridId].hideLastButton = true;
+                    }
+                    /**
                      * When the store hits the end of a resultset (total is unknown at the beginning)
                      * the total is stored and set to correct number after each load
                      */
@@ -508,8 +516,9 @@ Ext.define ("viewer.components.AttributeList",{
                      */
                     if(store.totalCount !== 0 && records.length === 0) {
                         maxResults = store.totalCount;
-                        if(store.currentPage !== 0) {
-                            store.previousPage();
+                        if(store.currentPage !== 0 && movingBack < 4) {
+                            movingBack++;
+                            store.loadPage(parseInt(store.totalCount / pageSize, 10));
                         }
                     }
                     /**
@@ -564,7 +573,14 @@ Ext.define ("viewer.components.AttributeList",{
                 displayInfo: true,
                 displayMsg: 'Feature {0} - {1} van {2}',
                 emptyMsg: "Geen features om weer te geven",
-                height: 38
+                height: 38,
+                listeners: {
+                    afterlayout: function() {
+                        if(this.hideLastButton) {
+                            this.child('#last').disable();
+                        }
+                    }
+                }
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;

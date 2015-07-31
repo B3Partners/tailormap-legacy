@@ -431,6 +431,7 @@ public class AttributesActionBean implements ActionBean {
                 });
 
                 if(total == -1) {
+                    json.put("virtualtotal", true);
                     total = FeatureToJson.MAX_FEATURES;
                 }
 
