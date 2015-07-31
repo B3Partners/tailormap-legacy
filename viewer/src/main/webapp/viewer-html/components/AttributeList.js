@@ -429,9 +429,11 @@ Ext.define ("viewer.components.AttributeList",{
             featureType="&featureType="+featureTypeId;
         }
 
+        var maxResults = -1;
+        var pageSize = 10;
         var store = Ext.create('Ext.data.Store', {
             storeId: name+"Store",
-            pageSize: 10,
+            pageSize: pageSize,
             model: modelName,
             remoteSort: true,
             remoteFilter: true,
@@ -487,6 +489,34 @@ Ext.define ("viewer.components.AttributeList",{
                         if(store.getStoreId() === this.name + "mainStore") {
                             this.hideAllExpandedRows();
                         }
+                    }
+                },
+                load: function(store, records) {
+                    /**
+                     * When the store hits the end of a resultset (total is unknown at the beginning)
+                     * the total is stored and set to correct number after each load
+                     */
+                    if(maxResults !== -1) {
+                        store.totalCount = maxResults;
+                        if(me.pagers[gridId]) {
+                            me.pagers[gridId].onLoad();  // triggers correct total
+                        }
+                    }
+                    /**
+                     * total is not 0 but there are not records (resultset has exactly x pages of pageSize)
+                     * store total and move to previous page
+                     */
+                    if(store.totalCount !== 0 && records.length === 0) {
+                        maxResults = store.totalCount;
+                        if(store.currentPage !== 0) {
+                            store.previousPage();
+                        }
+                    }
+                    /**
+                     * the number of results are less than the pageSize so we are at the end of the set
+                     */
+                    if(store.totalCount !== 0 && records.length < pageSize) {
+                        maxResults = store.totalCount;
                     }
                 }
             },
