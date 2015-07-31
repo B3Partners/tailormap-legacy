@@ -202,6 +202,9 @@ Ext.define ("viewer.components.AttributeList",{
         });
     },
     selectFirstLayer: function() {
+        // First clear selection so we are sure to get an 'changed' event
+        this.layerSelector.clearSelection();
+        // Select first layer
         this.layerSelector.selectFirstLayer();
     },
     showWindow : function (){

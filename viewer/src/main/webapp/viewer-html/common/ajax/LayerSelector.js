@@ -187,6 +187,9 @@ Ext.define ("viewer.components.LayerSelector",{
         }
         this.setValue(this.combobox.getStore().getAt(0));
     },
+    clearSelection: function() {
+        this.combobox.clearValue();
+    },
     /**
      * @deprecated use getValue()
      */
