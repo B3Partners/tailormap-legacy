@@ -441,6 +441,7 @@ Ext.define("viewer.components.Edit", {
                         });
                     }
                     this.inputContainer.add(input);
+                    Ext.getCmp(this.name + "editButton").setDisabled(false);
                 }
             }
         } else {
@@ -575,8 +576,9 @@ Ext.define("viewer.components.Edit", {
         });
     },
     remove: function () {
-        if (!this.config.allowDelete) {
+        if (!this.config.allowDelete || !this.geometryEditable) {
             Ext.Msg.alert('Mislukt', "Verwijderen is niet toegestaan.");
+            return;
         }
 
         var feature = this.inputContainer.getValues();
@@ -803,6 +805,13 @@ Ext.define("viewer.components.Edit", {
         var map = {};
         var index = 0;
         for (var i = 0; i < attributes.length; i++) {
+            if (attributes[i].name === appLayer.geometryAttribute) {
+                // if the editing of the geometry attribute is disabled at
+                // the layer level skip a level in the conversion map
+                if (!this.geometryEditable) {
+                    index++;
+                }
+            }
             if (attributes[i].editable) {
                 map["c" + index] = attributes[i].name;
                 index++;

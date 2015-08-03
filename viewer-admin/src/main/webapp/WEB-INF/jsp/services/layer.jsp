@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2011-2013 B3Partners B.V.
+Copyright (C) 2011-2015 B3Partners B.V.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -94,14 +94,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </tr>
                     <tr>
                         <td valign="top">
-                            <h1>Groepen:</h1>
-                            L &nbsp; B <br>
-
-                            <c:forEach var="group" items="${actionBean.allGroups}">
-                                <stripes:checkbox name="groupsRead" value="${group.name}"/>
-                                <stripes:checkbox name="groupsWrite" value="${group.name}"/> ${group.name}<br />
-                            </c:forEach>
-
+                            <h1>Groepen:</h1>                           
+                            <table summary="Groepen">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" title="Lezen">L</th>
+                                        <th scope="col" title="Bewerken">B</th>
+                                        <th scope="col" title="Geometrie NIET Bewerken">G!B</th>
+                                        <th scope="col" style="text-align:left">groep</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="group" items="${actionBean.allGroups}">     
+                                        <tr>
+                                            <td><stripes:checkbox name="groupsRead" value="${group.name}"/></td>
+                                            <td><stripes:checkbox name="groupsWrite" value="${group.name}"/></td>
+                                            <td><stripes:checkbox name="groupsPreventGeomEdit" value="${group.name}"/></td>
+                                            <th scope="row" style="text-align:left">${group.name}</th>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
                         </td>
                     </tr>
                     <c:if test="${not empty actionBean.applicationsUsedIn}">

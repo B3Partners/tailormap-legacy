@@ -111,7 +111,7 @@ public class MergeFeaturesActionBean implements ActionBean {
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (application == null || appLayer == null
-                || !Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
             unauthorized = true;
         }
     }
