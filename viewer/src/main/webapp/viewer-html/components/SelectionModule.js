@@ -1508,14 +1508,6 @@ Ext.define ("viewer.components.SelectionModule",{
         });
     },
     
-    isFirstChecked: function() {
-        return this.firstChecked;
-    },
-    
-    autoCheck: function() {
-        return !this.config.hasOwnProperty('autoOnLayers') || this.config.autoOnLayers === 'always';
-    },
-    
     nodesAddAllowed: function(records) {
         // If we find 1 allowed record we allow adding (invalid ones will be filtered later)
         for(var i = 0; i < records.length; i++) {
@@ -1528,7 +1520,7 @@ Ext.define ("viewer.components.SelectionModule",{
     
     nodeAddAllowed: function(record) {
         var nodeType = this.getNodeType(record);
-        if(nodeType === "appLayer" || nodeType === "layer" || (nodeType === "maplevel" && (!this.onRootLevel(record, this.activeTree)))) {
+        if(nodeType === "appLayer" || nodeType === "layer" || (nodeType === "maplevel" && (!this.nodeSelected(record, nodeType)))) {
             return true;
         }
         return false;
@@ -1558,7 +1550,7 @@ Ext.define ("viewer.components.SelectionModule",{
             me.addService(customService);
             me.addedLayers.push({
                 background: false,
-                checked: !me.isFirstChecked() && me.autoCheck(),
+                checked: this.autoCheck(),
                 id: recordOrigData.id,
                 layerName: recordOrigData.layerName,
                 alias: recordOrigData.alias,
@@ -1569,7 +1561,6 @@ Ext.define ("viewer.components.SelectionModule",{
                 id: recordOrigData.id,
                 type: 'appLayer'
             });
-            me.firstChecked = true;
         }
         else if(nodeType == "maplevel") {
             // Added from application
@@ -1578,8 +1569,9 @@ Ext.define ("viewer.components.SelectionModule",{
                 id: recordOrigData.id,
                 type: 'level'
             });
-            if(!me.isFirstChecked()) {
-                me.checkAllChildren(recordOrigData.id);
+            var level = this.levels[recordOrigData.id];
+            if(level && !level.background && this.autoCheck()) {
+                this.checkAllChildren(level, true);
             }
         }
         else if(nodeType == "layer") {
@@ -1591,7 +1583,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.addService(service);
                 me.addedLayers.push({
                     background: false,
-                    checked: !me.isFirstChecked() && me.autoCheck(),
+                    checked: this.autoCheck(),
                     id: recordid,
                     layerName: record.data.layerName,
                     alias: record.data.layerName,
@@ -1605,7 +1597,6 @@ Ext.define ("viewer.components.SelectionModule",{
                 objData = me.createNode(recordid, record.get('name'), service.id, true);
                 objData.type = 'appLayer';
                 objData.origData.userService = service.id;
-                me.firstChecked = true;
             }
         }
         if(objData !== null) {
@@ -1613,29 +1604,31 @@ Ext.define ("viewer.components.SelectionModule",{
         }
     },
     
-    checkAllChildren: function(levelId) {
-        var level = this.levels[levelId];
-        if(!level || this.config.autoOnLayers === 'never' || (this.config.autoOnLayers === 'onlybackground' && !level.background)) {
-            return;
+    autoCheck: function(type) {
+        if(!type) {
+            type = 'always';
         }
-        this.firstChecked = true;
+        return !this.config.hasOwnProperty('autoOnLayers') || this.config.autoOnLayers === type;
+    },
+    
+    checkAllChildren: function(level, checked) {
         if(level.layers) {
             for(var i = 0; i < level.layers.length; i++) {
-                this.checkLayer(level.layers[i]);
+                this.checkLayer(level.layers[i], checked);
             }
         }
         if(level.children) {
             for(var j = 0; j < level.children.length; j++) {
-                this.checkAllChildren(level.children[j]);
+                this.checkAllChildren(level.children[j], checked);
             }
         }
     },
     
-    checkLayer: function(layerId) {
+    checkLayer: function(layerId, checked) {
         if(!this.appLayers[layerId]) {
             return;
         }
-        this.appLayers[layerId].checked = true;
+        this.appLayers[layerId].checked = checked;
     },
 
     findService: function(record) {
@@ -1778,6 +1771,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
     saveSelection: function() {
         var me = this;
+        var checkedFirstBackgroundLayer = null;
         Ext.Array.each(me.addedServices, function(addedService) {
             if(addedService.status == 'new') {
                 addedService.status = 'added';
@@ -1796,6 +1790,9 @@ Ext.define ("viewer.components.SelectionModule",{
         Ext.Array.each(me.addedLevels, function(addedLevel) {
             if(addedLevel.status == 'new') {
                 addedLevel.status = 'added';
+                if(me.levels[addedLevel.id] && me.levels[addedLevel.id].background && checkedFirstBackgroundLayer === null && me.autoCheck('onlybackground')) {
+                    checkedFirstBackgroundLayer = addedLevel.id;
+                }
             }
         });
         Ext.Array.each(me.addedLayers, function(addedLayer) {
@@ -1804,6 +1801,22 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.config.viewerController.addAppLayer(addedLayer);
             }
         });
+        if(checkedFirstBackgroundLayer !== null) {
+            var item;
+            var checked;
+            var level;
+            for(var i = 0; i < me.selectedContent.length; i++) {
+                item = me.selectedContent[i];
+                if(item.type === "level"){
+                    level = this.levels[item.id];
+                    if(level && level.background){
+                        checked = parseInt(level.id, 10) === parseInt(checkedFirstBackgroundLayer, 10);
+                        level.checked = checked;
+                        this.checkAllChildren(level, checked);
+                    }
+                }
+            }
+        }
         me.config.viewerController.setSelectedContent(me.selectedContent);
         me.popup.hide();
     },
@@ -1818,10 +1831,14 @@ Ext.define ("viewer.components.SelectionModule",{
         return null;
     },
 
-    onRootLevel: function(record, tree) {
-        var foundNode = tree.getRootNode().findChild('id', record.get('id'), false);
-        if(foundNode !== null) return true;
-        return false;
+    nodeSelected: function(record, nodeType) {
+        var recordData = this.getOrigData(record);
+        var foundNodeIndex = this.treePanels.selectionTree.treeStore.findBy(function(treeRecord){
+            var treeNodeType = this.getNodeType(treeRecord);
+            var treeNodeData = this.getOrigData(treeRecord);
+            return (treeNodeType === nodeType && parseInt(treeNodeData.id, 10) === parseInt(recordData.id, 10));
+        }, this);
+        return foundNodeIndex !== -1;
     },
 
     getExtComponents: function() {
