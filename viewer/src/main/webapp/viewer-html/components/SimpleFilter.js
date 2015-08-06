@@ -28,32 +28,35 @@ Ext.define("viewer.components.SimpleFilter", {
         viewer.components.SimpleFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.simpleFilters = [];
-        var parentDiv = Ext.get(this.div);
 
+        var containerContentId = Ext.id();
         this.container = Ext.create('Ext.container.Container', {
-            id: this.config.name,
             width: '100%',
             height: '100%',
             renderTo: this.div,
-            autoScroll: true
+            html: '<div style="width: 100%; height: 100%; overflow: auto;" id="' + containerContentId + '"></div>'
         });
 
         var me = this;
         Ext.Array.each(this.config.filters, function(filter, index) {
-            var filter = Ext.create(filter.class, {
+            var newFilter = Ext.create(filter.class, {
                 appLayerId: me.config.layers[filter.appLayerId], // convert from index to actual appLayerId
                 attributeName: filter.attributeName,
-                config: filter.config,
-                container: me.container,
+                filterConfig: filter.config,
+                container: containerContentId,
                 simpleFilter: me,
-                name: me.name + "_" + index,
+                name: me.config.name + "_" + index,
                 viewerController: me.viewerController
             });
-            if(filter instanceof viewer.components.sf.SimpleFilter){
-                me.simpleFilters.push(filter);
+            if(newFilter instanceof viewer.components.sf.SimpleFilter){
+                me.simpleFilters.push(newFilter);
             }
         });
         return this;
+    },
+    
+    getDiv: function() {
+        return this.container;
     },
 
     getExtComponents: function() {

@@ -200,6 +200,9 @@ Ext.define("viewer.components.Legend", {
     },
     
     onZoomEnd: function (map) {
+        if(!this.config.viewerController.layersInitialized) {
+            return;
+        }
         // TODO: if reset and initLegend is consuming too much, replace this with
         // refreshing the legend image src per layer
         this.resetLegend();

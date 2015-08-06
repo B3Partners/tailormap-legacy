@@ -25,7 +25,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         name: null,
         appLayerId: null,
         attributeName: null,
-        config: null,
+        filterConfig: null,
         id:null,
         label:null,
         autoStart: null,
@@ -115,9 +115,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         this.config.viewerController.removeFilter(this.config.name, layer);
     },
     getWidth : function(){
-        var div = Ext.get(this.config.simpleFilter.div);
-        var width = div.getWidth() - 15;
-        return width;
+        return this.config.simpleFilter.getDiv().getWidth() - 15;
     },
     mustEscapeAttribute : function(){
         var appLayer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
@@ -171,7 +169,7 @@ Ext.define("viewer.components.sf.Reset", {
             "</div>";
 
         var vc = this.config.simpleFilter.viewerController;
-        new Ext.Template(t).append(this.config.simpleFilter.name, {
+        new Ext.Template(t).append(this.config.container, {
             steunkleur1: vc.app.details.steunkleur1,
             steunkleur2: vc.app.details.steunkleur2,
             label: config.label,
@@ -181,7 +179,7 @@ Ext.define("viewer.components.sf.Reset", {
         Ext.create("Ext.button.Button", {
             id: "reset" + this.config.name,
             name: "reset" + this.config.name,
-            text: this.config.config.label,
+            text: this.config.filterConfig.label,
             renderTo: this.config.name + "_reset",
             listeners: {
                 click:{
@@ -210,14 +208,14 @@ Ext.define("viewer.components.sf.Checkbox", {
         viewer.components.sf.Checkbox.superclass.constructor.call(this, config);
         this.initConfig(config);
 
-        var config = this.config.config;
-        this.options = config.options;
+        var filterConfig = this.config.filterConfig;
+        this.options = filterConfig.options;
         var t =
             "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
             "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
             "  <table width=\"100%\">" +
             "    <tbody>" +
-            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
+            (!Ext.isEmpty(filterConfig.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
             "        <tr>" +
             "            <td colspan=\"3\"><div id=\"{name}_checkbox\"></div></td>" +
             "        </tr>" +
@@ -226,10 +224,10 @@ Ext.define("viewer.components.sf.Checkbox", {
             "</div>";
 
         var vc = this.config.simpleFilter.viewerController;
-        new Ext.Template(t).append(this.config.simpleFilter.name, {
+        new Ext.Template(t).append(this.config.container, {
             steunkleur1: vc.app.details.steunkleur1,
             steunkleur2: vc.app.details.steunkleur2,
-            label: config.label,
+            label: filterConfig.label,
             name: this.config.name
         });
 
@@ -245,7 +243,7 @@ Ext.define("viewer.components.sf.Checkbox", {
         }
 
         Ext.create("Ext.container.Container", {
-            height: this.options.length * 22,
+            height: this.options.length * 25,
             id: "checkboxcontainer" + this.config.name,
             name: "checkboxcontainer" + this.config.name,
             layout: {
@@ -261,7 +259,7 @@ Ext.define("viewer.components.sf.Checkbox", {
         var item = {
             boxLabel  : option.label,
             name      : option.value,
-            checked: this.config.config.start ? this.config.config.start === option.value : false,
+            checked: this.config.filterConfig.start ? this.config.filterConfig.start === option.value : false,
             inputValue: true,
             xtype: "checkbox",
             id        : this.config.name + option.id,
@@ -322,7 +320,7 @@ Ext.define("viewer.components.sf.Radio", {
         var item = {
             boxLabel  : option.label,
             name      :  this.config.name,
-            checked: this.config.config.start ? this.config.config.start === option.value : false,
+            checked: this.config.filterConfig.start ? this.config.filterConfig.start === option.value : false,
             inputValue: option.value,
             xtype: "radio",
             id        : this.config.name + option.id,
@@ -370,8 +368,7 @@ Ext.define("viewer.components.sf.Combo", {
         this.uniqueValues = [];
         this.initConfig(conf);
 
-        var config = this.config.config;
-        var name = this.config.name;
+        var config = this.config.filterConfig;
         if(config.comboType === "range"){
             if(config.min === "") {
                 this.getValues("#MIN#");
@@ -419,7 +416,7 @@ Ext.define("viewer.components.sf.Combo", {
             "</div>";
 
         var vc = this.config.simpleFilter.viewerController;
-        new Ext.Template(t).append(this.config.simpleFilter.name, {
+        new Ext.Template(t).append(this.config.container, {
             steunkleur1: vc.app.details.steunkleur1,
             steunkleur2: vc.app.details.steunkleur2,
             label: config.label,
@@ -454,14 +451,14 @@ Ext.define("viewer.components.sf.Combo", {
                 }
             }
         });
-        if( this.config.config.start !== -1 ){
-            this.combo.setValue (this.config.config.start);
+        if( this.config.filterConfig.start !== -1 ){
+            this.combo.setValue (this.config.filterConfig.start);
         }
     },
 
     getData : function(){
         var data = [];
-        var config = this.config.config;
+        var config = this.config.filterConfig;
         if (config.comboType === "range") {
             for (var i = config.min; i <= config.max; i++) {
                 var entry = {
@@ -484,9 +481,9 @@ Ext.define("viewer.components.sf.Combo", {
     updateValues: function(operator, response) {
         var value = response.value;
         if(operator === "#MIN#") {
-            this.config.config.min = value;
+            this.config.filterConfig.min = value;
         } else if(operator === "#MAX#") {
-            this.config.config.max = value;
+            this.config.filterConfig.max = value;
         }else if (operator === "#UNIQUE#"){
             var values = response.uniqueValues[this.config.attributeName];
             this.uniqueValues = values;
@@ -538,7 +535,7 @@ Ext.define("viewer.components.sf.Slider", {
 
         var filterChangeDelay = 500;
 
-        var c = this.config.config;
+        var c = this.config.filterConfig;
         var n = this.config.name;
 
         var autoMin = false, autoMax = false;
@@ -617,7 +614,7 @@ Ext.define("viewer.components.sf.Slider", {
             "</div>";
 
         var vc = this.config.simpleFilter.viewerController;
-        new Ext.Template(t).append(this.config.simpleFilter.name, {
+        new Ext.Template(t).append(this.config.container, {
             steunkleur1: vc.app.details.steunkleur1,
             steunkleur2: vc.app.details.steunkleur2,
             label: c.label,
@@ -675,18 +672,18 @@ Ext.define("viewer.components.sf.Slider", {
             this.slider.setMaxValue(value);
         }
 
-        if(this.config.config.sliderType === "range") {
+        if(this.config.filterConfig.sliderType === "range") {
             if(minOrMax === "#MIN#" && this.autoMinStart) {
-                this.config.config.start[0] = value;
+                this.config.filterConfig.start[0] = value;
                 this.slider.setValue(0, value, false);
             }
             if(minOrMax === "#MAX#" && this.autoMaxStart) {
-                this.config.config.start[1] = value;
+                this.config.filterConfig.start[1] = value;
                 this.slider.setValue(0, this.slider.getValue(0), false);
                 this.slider.setValue(1, value, false);
             }
         } else {
-            this.config.config.start = value;
+            this.config.filterConfig.start = value;
             if(this.autoStart === "min" && minOrMax === "#MIN#") {
                 this.slider.setValue(0, value, false);
             }
@@ -708,7 +705,7 @@ Ext.define("viewer.components.sf.Slider", {
     },
     getCQL : function(){
         var cql = "";
-        var sliderType = this.config.config.sliderType ;
+        var sliderType = this.config.filterConfig.sliderType ;
         var mustEscape = this.mustEscapeAttribute();
         if(sliderType === "range"){
             var min = (mustEscape ? "'" : "") + this.slider.getValue(0) + (mustEscape ? "'" : "");
@@ -729,11 +726,11 @@ Ext.define("viewer.components.sf.Slider", {
     },
     reset : function(){
 
-        if(this.config.config.sliderType === "range") {
-            this.slider.setValue(0, this.config.config.start[0]);
-            this.slider.setValue(1, this.config.config.start[1]);
+        if(this.config.filterConfig.sliderType === "range") {
+            this.slider.setValue(0, this.config.filterConfig.start[0]);
+            this.slider.setValue(1, this.config.filterConfig.start[1]);
         }else{
-            this.slider.setValue(this.config.config.start);
+            this.slider.setValue(this.config.filterConfig.start);
         }
         this.callParent();
     }
