@@ -116,11 +116,18 @@ Ext.define('viewer.LayoutManager', {
         var me = this;
         Ext.Object.each(regionList, function(region, value) {
             var layoutRegion = me.getLayoutRegion(region, value);
-            if(layoutRegion !== null) {
+            if(layoutRegion !== null && !me.isEmptyObject(layoutRegion)) {
                 viewportItems.push(layoutRegion);
             }
         });
         return viewportItems;
+    },
+    
+    isEmptyObject: function(obj) {
+        for(var prop in obj) if(obj.hasOwnProperty(prop)) {
+            return false;
+        };
+        return true;
     },
 
     getLayoutRegion: function(regionid, regionitems) {
