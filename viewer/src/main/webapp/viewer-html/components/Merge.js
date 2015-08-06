@@ -147,6 +147,15 @@ Ext.define("viewer.components.Merge", {
         this.resetForm();
         this.popup.hide();
     },
+    /**
+     * Can be overridden to add some extra data before sending the split
+     * request to the server. The extradata is handled by a custom split backend.
+     * @return {String} a string with extra data
+     */
+    getExtraData: function () {
+        //eg. return "workflow_status=nieuw";
+        return null;
+    },
     save: function () {
         var options = {
             fidA: this.fidA,
@@ -156,6 +165,10 @@ Ext.define("viewer.components.Merge", {
             appLayer: this.layerSelector.getSelectedAppLayer().id,
             application: this.config.viewerController.app.id
         };
+        var extraData = this.getExtraData();
+        if (extraData !== null) {
+            options.extraData = extraData;
+        }
         this.merge(options, this.saveSucces, this.failed);
     },
     merge: function (options, successFunction, failureFunction) {
