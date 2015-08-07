@@ -73,13 +73,13 @@
             </dependency>
 
             <dependency>
-                <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
+                <groupId>org.flamingo-mc</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
                 <version>${project.version}</version>
                 <type>jar</type>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc.solr-commons</groupId>
+                <groupId>org.flamingo-mc</groupId>
                 <artifactId>solr-commons</artifactId>
                 <version>${project.version}</version>
                 <type>jar</type>
@@ -272,12 +272,12 @@
                 <version>1.8.0</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc.viewer-commons</groupId>
+                <groupId>org.flamingo-mc</groupId>
                 <artifactId>viewer-commons</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc.web-commons</groupId>
+                <groupId>org.flamingo-mc</groupId>
                 <artifactId>web-commons</artifactId>
                 <version>${project.version} </version>
             </dependency>
@@ -442,6 +442,12 @@
         <developer>
             <name>Roy Braam</name>
             <email>roybraam@b3partners.nl</email>
+            <organization>B3Partners B.V.</organization>
+            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+        </developer>
+        <developer>
+            <name>Mark Prins</name>
+            <email>markprins@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
             <organizationUrl>http://www.b3partners.nl</organizationUrl>
         </developer>
