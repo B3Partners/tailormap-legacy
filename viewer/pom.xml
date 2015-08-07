@@ -234,6 +234,8 @@
                             </includes>
                         </resource>
                     </webResources>
+                    <attachClasses>true</attachClasses>
+                    <classesClassifier>classes</classesClassifier>
                 </configuration>
             </plugin>
             <plugin>

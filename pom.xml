@@ -18,6 +18,7 @@
     </scm>
 
     <properties>
+        <flamingo.version>4.5.6-SNAPSHOT</flamingo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>9.2</geotools.version>
         <powermock.version>1.5.5</powermock.version>
@@ -75,13 +76,13 @@
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
-                <version>${project.version}</version>
+                <version>${flamingo.version}</version>
                 <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
                 <artifactId>solr-commons</artifactId>
-                <version>${project.version}</version>
+                <version>${flamingo.version}</version>
                 <type>jar</type>
             </dependency>
             <dependency>
@@ -274,12 +275,12 @@
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
                 <artifactId>viewer-commons</artifactId>
-                <version>${project.version} </version>
+                <version>${flamingo.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
                 <artifactId>web-commons</artifactId>
-                <version>${project.version} </version>
+                <version>${flamingo.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -366,7 +367,7 @@
                 <artifactId>httpclient-cache</artifactId>
                 <version>4.3.6</version>
             </dependency>
-                    <dependency>
+            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>fluent-hc</artifactId>
                 <version>4.3.6</version>
