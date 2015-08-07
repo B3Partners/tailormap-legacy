@@ -511,6 +511,10 @@ Ext.define("viewer.components.Split", {
             appLayer: this.layerSelector.getSelectedAppLayer().id,
             application: this.config.viewerController.app.id
         };
+        var extraData = this.getExtraData();
+        if (extraData !== null) {
+            options.extraData = extraData;
+        }
         this.split(options, this.saveSucces, this.saveFailed);
 
     },
@@ -564,12 +568,13 @@ Ext.define("viewer.components.Split", {
         Ext.get(this.getContentDiv()).unmask();
     },
     /**
-     * Can be overridden to add some extra feature attributes before saving the
-     * feature.
-     * @return the changed feature
+     * Can be overridden to add some extra data before sending the split 
+     * request to the server. The extradata is handled by a custom split backend.
+     * @return {String} a string with extra data
      */
-    changeFeatureBeforeSave: function (feature) {
-        return feature;
+    getExtraData: function () {
+        //eg. return "workflow_status=nieuw";
+        return null;
     },
     /**
      * Can be overridden to disable editing in the component/js

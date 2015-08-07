@@ -58,6 +58,7 @@ import org.geotools.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
@@ -97,6 +98,9 @@ public class SplitFeatureActionBean implements ActionBean {
      */
     @Validate
     private String strategy;
+
+    @Validate
+    private String extraData;
 
     @Validate
     private String splitFeatureFID;
@@ -177,6 +181,31 @@ public class SplitFeatureActionBean implements ActionBean {
     }
 
     /**
+     * Handle extra data, to be extended by subclasses. eg. to modify the
+     * features after the split before committing.
+     *
+     * @param features a list of features that can be modified
+     * @return the list of features to be committed to the database
+     * @see #handleExtraData(org.opengis.feature.simple.SimpleFeature)
+     */
+    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) {
+        return features;
+    }
+
+    /**
+     * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
+     *
+     * @param feature the feature that can be modified
+     * @return the feature to be committed to the database @see
+     * #handleExtraData(java.util.List)
+     */
+    private SimpleFeature handleExtraData(SimpleFeature feature) {
+        final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+        features.add(feature);
+        return this.handleExtraData(features).get(0);
+    }
+
+    /**
      * Get feature from store and split it.
      *
      * @return a list of feature ids that have been updated
@@ -228,7 +257,11 @@ public class SplitFeatureActionBean implements ActionBean {
                 if (firstFeature) {
                     if (this.strategy.equalsIgnoreCase("replace")) {
                         // use first/largest geom to update existing feature geom
-                        store.modifyFeatures(geomAttribute, c.convert(newGeom, type.getBinding()), filter);
+                        f.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
+                        f = this.handleExtraData(f);
+                        Object[] attributevalues = f.getAttributes().toArray(new Object[f.getAttributeCount()]);
+                        AttributeDescriptor[] attributes = f.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[f.getAttributeCount()]);
+                        store.modifyFeatures(attributes, attributevalues, filter);
                         firstFeature = false;
                         continue;
                     } else if (this.strategy.equalsIgnoreCase("add")) {
@@ -245,6 +278,9 @@ public class SplitFeatureActionBean implements ActionBean {
                 newFeat.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
                 newFeats.add(newFeat);
             }
+
+            newFeats = this.handleExtraData(newFeats);
+
             ids = store.addFeatures(DataUtilities.collection(newFeats));
             transaction.commit();
         } catch (Exception e) {
@@ -266,6 +302,7 @@ public class SplitFeatureActionBean implements ActionBean {
      */
     private void geometrySorter(List<? extends Geometry> geoms) {
         Collections.sort(geoms, new Comparator<Geometry>() {
+            @Override
             public int compare(Geometry a, Geometry b) {
                 if (a.getLength() > b.getLength()) {
                     return 1;
@@ -380,6 +417,14 @@ public class SplitFeatureActionBean implements ActionBean {
 
     public void setStrategy(String strategy) {
         this.strategy = strategy;
+    }
+
+    public String getExtraData() {
+        return extraData;
+    }
+
+    public void setExtraData(String extraData) {
+        this.extraData = extraData;
     }
     //</editor-fold>
 }

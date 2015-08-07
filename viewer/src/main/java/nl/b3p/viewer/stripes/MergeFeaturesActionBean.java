@@ -53,6 +53,7 @@ import org.geotools.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
@@ -88,6 +89,9 @@ public class MergeFeaturesActionBean implements ActionBean {
      */
     @Validate
     private String strategy;
+
+    @Validate
+    private String extraData;
 
     @Validate
     private int mergeGapDist;
@@ -176,6 +180,31 @@ public class MergeFeaturesActionBean implements ActionBean {
     }
 
     /**
+     * Handle extra data, to be extended by subclasses. eg. to modify the
+     * features after the split before committing.
+     *
+     * @param features a list of features that can be modified
+     * @return the list of features to be committed to the database
+     * @see #handleExtraData(org.opengis.feature.simple.SimpleFeature)
+     */
+    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) {
+        return features;
+    }
+
+    /**
+     * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
+     *
+     * @param feature the feature that can be modified
+     * @return the feature to be committed to the database @see
+     * #handleExtraData(java.util.List)
+     */
+    private SimpleFeature handleExtraData(SimpleFeature feature) {
+        final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+        features.add(feature);
+        return this.handleExtraData(features).get(0);
+    }
+
+    /**
      * Get features from store and merge them.
      *
      * @return a list of feature ids that have been updated
@@ -250,12 +279,16 @@ public class MergeFeaturesActionBean implements ActionBean {
             GeometryType type = store.getSchema().getGeometryDescriptor().getType();
             if (this.strategy.equalsIgnoreCase("replace")) {
                 // update existing feature (A) geom, delete merge partner (B)
-                store.modifyFeatures(geomAttrName, c.convert(newGeom, type.getBinding()), filterA);
+                fA.setAttribute(geomAttrName, c.convert(newGeom, type.getBinding()));
+                fA = this.handleExtraData(fA);
+                Object[] attributevalues = fA.getAttributes().toArray(new Object[fA.getAttributeCount()]);
+                AttributeDescriptor[] attributes = fA.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[fA.getAttributeCount()]);
+                store.modifyFeatures(attributes, attributevalues, filterA);
                 store.removeFeatures(filterB);
                 ids.add(new FeatureIdImpl(this.fidA));
             } else if (this.strategy.equalsIgnoreCase("new")) {
-                //delete the source feature (A) and merge partner(B)
-                // and create a new feature with the attributes of A but new geom.
+                // delete the source feature (A) and merge partner(B)
+                //   and create a new feature with the attributes of A but a new geom.
                 store.removeFeatures(filterA);
                 store.removeFeatures(filterB);
                 SimpleFeature newFeat = DataUtilities.createFeature(fA.getType(),
@@ -264,6 +297,7 @@ public class MergeFeaturesActionBean implements ActionBean {
 
                 List<SimpleFeature> newFeats = new ArrayList();
                 newFeats.add(newFeat);
+                newFeats = this.handleExtraData(newFeats);
                 ids = store.addFeatures(DataUtilities.collection(newFeats));
             } else {
                 throw new IllegalArgumentException("Unknown strategy '" + this.strategy + "', cannot merge.");
@@ -337,5 +371,12 @@ public class MergeFeaturesActionBean implements ActionBean {
         this.mergeGapDist = mergeGapDist;
     }
 
+    public String getExtraData() {
+        return extraData;
+    }
+
+    public void setExtraData(String extraData) {
+        this.extraData = extraData;
+    }
     //</editor-fold>
 }
