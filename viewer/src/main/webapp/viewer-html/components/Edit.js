@@ -45,8 +45,8 @@ Ext.define("viewer.components.Edit", {
         var me = this;
 
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
-            if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO ||
-                    event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
+            if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
+                    || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
                 if (me.mode == "new" || me.mode == "edit" || me.mode == "delete") {
                     return false;
                 }
@@ -360,7 +360,7 @@ Ext.define("viewer.components.Edit", {
                     Ext.getCmp(this.name + "newButton").setDisabled(false);
                     tekst = 'Bewerk een ' + tekstGeom + " op de kaart";
                     if (this.config.allowDelete) {
-                        tekst = 'Bewerk of Verwijder een ' + tekstGeom + " uit de kaart";
+                        tekst = 'Verwijder een ' + tekstGeom + " uit de kaart";
                     }
                 }
             } else {

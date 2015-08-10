@@ -122,7 +122,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20150505</version>
+                <version>rr2079.1</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>guava</artifactId>

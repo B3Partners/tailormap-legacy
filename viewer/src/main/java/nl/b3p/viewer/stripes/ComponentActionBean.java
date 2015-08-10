@@ -16,35 +16,17 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.JSError;
-import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.*;
+import java.util.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.ActionBean;
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.Before;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.ErrorResolution;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
-import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
@@ -60,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 @UrlBinding("/app/component/{className}/{$event}/{file}")
 @StrictBinding
 public class ComponentActionBean implements ActionBean {
-
     private static final Log log = LogFactory.getLog(ComponentActionBean.class);
 
     @Validate
@@ -80,19 +61,16 @@ public class ComponentActionBean implements ActionBean {
 
     private Application application;
     private ViewerComponent component;
-
+    
     private ActionBeanContext context;
 
-    private static final Map<String, Object[]> minifiedSourceCache = new HashMap<String, Object[]>();
+    private static final Map<String,Object[]> minifiedSourceCache = new HashMap<String,Object[]>();
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
-
-    @Override
     public void setContext(ActionBeanContext abc) {
         this.context = abc;
     }
 
-    @Override
     public ActionBeanContext getContext() {
         return context;
     }
@@ -138,14 +116,14 @@ public class ComponentActionBean implements ActionBean {
     }
     //</editor-fold>
 
-    @Before(stages = LifecycleStage.EventHandling)
+    @Before(stages=LifecycleStage.EventHandling)
     public void load() {
         application = ApplicationActionBean.findApplication(app, version);
-        if (application != null && className != null) {
-            for (ConfiguredComponent cc : application.getComponents()) {
-                if (cc.getClassName().equals(className)) {
-
-                    if (Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+        if(application != null && className != null) {
+            for(ConfiguredComponent cc: application.getComponents()) {
+                if(cc.getClassName().equals(className)) {
+                    
+                    if(Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
                         component = cc.getViewerComponent();
                         break;
                     }
@@ -158,11 +136,11 @@ public class ComponentActionBean implements ActionBean {
     public Resolution source() throws IOException {
         File[] files = null;
 
-        if (className != null && component == null) {
+        if(className != null && component == null) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "User not authorized for this components' source");
         }
-
-        if (component == null) {
+        
+        if(component == null) {
             // All source files for all components for this application
 
             // Sort list for consistency (error line numbers, cache, etc.)
@@ -173,31 +151,31 @@ public class ComponentActionBean implements ActionBean {
 
             List<File> fileList = new ArrayList<File>();
 
-            for (ConfiguredComponent cc : comps) {
-                if (!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+            for(ConfiguredComponent cc: comps) {
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
                     continue;
                 }
-                if (!classNamesDone.contains(cc.getClassName())) {
+                if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
 
-                    if (cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
+                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
                         fileList.addAll(Arrays.asList(cc.getViewerComponent().getSources()));
                     }
                 }
             }
-            files = fileList.toArray(new File[]{});
+            files = fileList.toArray(new File[] {});
         } else {
             // Source files specific to a component
 
-            if (file != null) {
+            if(file != null) {
                 // Search for the specified file in the component sources
-                for (File f : component.getSources()) {
-                    if (f.getName().equals(file)) {
-                        files = new File[]{f};
+                for(File f: component.getSources()) {
+                    if(f.getName().equals(file)) {
+                        files = new File[] {f};
                         break;
                     }
                 }
-                if (files == null) {
+                if(files == null) {
                     return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND, file);
                 }
             } else {
@@ -208,14 +186,14 @@ public class ComponentActionBean implements ActionBean {
         }
 
         long lastModified = -1;
-        for (File f : files) {
+        for(File f: files) {
             lastModified = Math.max(lastModified, f.lastModified());
         }
-        if (lastModified != -1) {
+        if(lastModified != -1) {
             long ifModifiedSince = context.getRequest().getDateHeader("If-Modified-Since");
 
-            if (ifModifiedSince != -1) {
-                if (ifModifiedSince >= lastModified) {
+            if(ifModifiedSince != -1) {
+                if(ifModifiedSince >= lastModified) {
                     return new ErrorResolution(HttpServletResponse.SC_NOT_MODIFIED);
                 }
             }
@@ -227,13 +205,13 @@ public class ComponentActionBean implements ActionBean {
             public void stream(HttpServletResponse response) throws Exception {
 
                 OutputStream out = response.getOutputStream();
-                for (File f : theFiles) {
-                    if (theFiles.length != 1) {
+                for(File f: theFiles) {
+                    if(theFiles.length != 1) {
                         out.write(("\n\n// Source file: " + f.getName() + "\n\n").getBytes("UTF-8"));
                     }
-                    if (isMinified()) {
+                    if(isMinified()) {
                         String minified = getMinifiedSource(f);
-                        if (minified != null) {
+                        if(minified != null) {
                             out.write(minified.getBytes("UTF-8"));
                         } else {
                             IOUtils.copy(new FileInputStream(f), out);
@@ -244,7 +222,7 @@ public class ComponentActionBean implements ActionBean {
                 }
             }
         };
-        if (lastModified != -1) {
+        if(lastModified != -1) {
             res.setLastModified(lastModified);
         }
         return res;
@@ -262,17 +240,17 @@ public class ComponentActionBean implements ActionBean {
         String key = f.getCanonicalPath();
         Object[] cache = minifiedSourceCache.get(key);
 
-        if (cache != null) {
+        if(cache != null) {
             // check last modified time
-            Long lastModified = (Long) cache[0];
-            if (!lastModified.equals(f.lastModified())) {
+            Long lastModified = (Long)cache[0];
+            if(!lastModified.equals(f.lastModified())) {
                 minifiedSourceCache.remove(key);
                 cache = null;
             }
         }
 
-        if (cache != null) {
-            return (String) cache[1];
+        if(cache != null) {
+            return (String)cache[1];
         }
 
         String minified = null;
@@ -281,30 +259,30 @@ public class ComponentActionBean implements ActionBean {
             CompilerOptions options = new CompilerOptions();
             CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
             options.setOutputCharset("UTF-8");
-            compiler.compile(SourceFile.fromCode("dummy.js", ""), SourceFile.fromFile(f), options);
+            compiler.compile(JSSourceFile.fromCode("dummy.js",""), JSSourceFile.fromFile(f), options);
 
-            if (compiler.hasErrors()) {
+            if(compiler.hasErrors()) {
                 log.warn(compiler.getErrorCount() + " error(s) minifying source file " + f.getCanonicalPath() + "; using original source");
                 minified = IOUtils.toString(new FileInputStream(f));
-
-                for (int i = 0; i < compiler.getErrorCount(); i++) {
+                
+                for(int i = 0; i < compiler.getErrorCount(); i++) {
                     JSError error = compiler.getErrors()[i];
                     log.warn(String.format("#%d line %d,%d: %s: %s",
-                            i + 1,
+                            i+1,
                             error.lineNumber,
                             error.getCharno(),
-                            error.getDefaultLevel(),
+                            error.level.toString(),
                             error.description));
                 }
-
+                
             } else {
                 minified = compiler.toSource();
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             log.warn(String.format("Error minifying file \"%s\" using closure compiler, sending original source\n", f.getCanonicalPath()), e);
         }
 
-        Object[] entry = new Object[]{f.lastModified(), minified};
+        Object[] entry = new Object[] { f.lastModified(), minified};
         minifiedSourceCache.put(key, entry);
 
         return minified;
