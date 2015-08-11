@@ -173,7 +173,7 @@ Ext.define("viewer.components.Split", {
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
         this.config.viewerController.mapComponent.deactivateTools();
-        this.config.viewerController.mapComponent.deactivateControls(this.config.cancelOtherControls);
+        this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
     },
     loadWindow: function () {
