@@ -1325,7 +1325,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Get all the registered components.
-     * @return {Array} A array of the registered components.
+     * @return {Array} An array of the registered components.
      */
     getComponents: function (){
         var results=[];

@@ -37,7 +37,8 @@ Ext.define("viewer.components.Edit", {
         tooltip: "",
         layers: null,
         label: "",
-        allowDelete: false
+        allowDelete: false,
+        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"]
     },
     constructor: function (conf) {
         viewer.components.Edit.superclass.constructor.call(this, conf);
@@ -114,6 +115,7 @@ Ext.define("viewer.components.Edit", {
         }
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
+        this.config.viewerController.mapComponent.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
     },
     loadWindow: function () {
@@ -648,7 +650,10 @@ Ext.define("viewer.components.Edit", {
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
-        this.vectorLayer.removeAllFeatures();
+        if (this.vectorLayer) {
+            // vector layer may be null when cancel() is called
+            this.vectorLayer.removeAllFeatures();
+        }
     },
     getExtComponents: function () {
         return [this.maincontainer.getId()];
