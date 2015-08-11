@@ -32,7 +32,8 @@ Ext.define("viewer.components.Merge", {
         strategy: null,
         actionbeanUrl: "/viewer/action/feature/merge",
         layers: null,
-        mergeGapDist: null
+        mergeGapDist: null,
+        cancelOtherControls: ["viewer.components.Edit", "viewer.components.Split"]
     },
     constructor: function (conf) {
         viewer.components.Merge.superclass.constructor.call(this, conf);
@@ -111,6 +112,7 @@ Ext.define("viewer.components.Merge", {
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
         this.config.viewerController.mapComponent.deactivateTools();
+        this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
     },
     toMergeFeatureAdded: function (vecLayer, feature) {
@@ -229,7 +231,10 @@ Ext.define("viewer.components.Merge", {
         this.layerSelector.combobox.select(null);
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
-        this.vectorLayer.removeAllFeatures();
+        if (this.vectorLayer) {
+            // vector layer may be null when cancel() is called
+            this.vectorLayer.removeAllFeatures();
+        }
     },
     loadWindow: function () {
         var me = this;

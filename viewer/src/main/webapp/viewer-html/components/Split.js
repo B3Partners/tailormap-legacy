@@ -45,7 +45,8 @@ Ext.define("viewer.components.Split", {
         title: "",
         iconUrl: "",
         layers: null,
-        label: ""
+        label: "",
+        cancelOtherControls: ["viewer.components.Edit", "viewer.components.Merge"]
     },
     constructor: function (conf) {
         viewer.components.Split.superclass.constructor.call(this, conf);
@@ -172,6 +173,7 @@ Ext.define("viewer.components.Split", {
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
         this.config.viewerController.mapComponent.deactivateTools();
+        this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
     },
     loadWindow: function () {
@@ -603,8 +605,13 @@ Ext.define("viewer.components.Split", {
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
-        this.vectorLayer.removeAllFeatures();
-        this.drawLayer.removeAllFeatures();
+        // vector layers may be null when cancel() is called
+        if (this.vectorLayer) {
+            this.vectorLayer.removeAllFeatures();
+        }
+        if (this.vectorLayer) {
+            this.drawLayer.removeAllFeatures();
+        }
     },
     getExtComponents: function () {
         return [this.maincontainer.getId()];

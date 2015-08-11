@@ -1325,7 +1325,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Get all the registered components.
-     * @return {Array} A array of the registered components.
+     * @return {Array} An array of the registered components.
      */
     getComponents: function (){
         var results=[];
@@ -1364,6 +1364,33 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return component.instance;
         } else {
             return null;
+        }
+    },
+    /**
+     * Deactivate contols by calling cancel(), will also deactivate subclasses
+     * of the specified classes.
+     *
+     * eg. when called with [viewer.components.Merge] and
+     * viewer.components.IbisMerge", { extend: "viewer.components.Merge"...
+     * both Merge and IbisMerge will be cancelled.
+     *
+     * This will raise an error if a class listed in the argument does not have a cancel() function.
+     *
+     * @param {Array} cancellable An array of classnames that have a cancel function to be called
+     */
+    deactivateControls: function (cancellable) {
+        var cmps = this.getComponents();
+        for (var i = 0; i < cmps.length; i++) {
+            for (var n = 0; n < cancellable.length; n++) {
+                if (cmps[i].self.getName() === cancellable[n] ||
+                        cmps[i].superclass.self.getName() === cancellable[n]) {
+                    if (typeof cmps[i].cancel === "function") {
+                        cmps[i].cancel();
+                    } else {
+                        Ext.Error.raise({msg: "cancel() Not implemented for component: " + cmps[i].self.getName()});
+                    }
+                }
+            }
         }
     },
     /**

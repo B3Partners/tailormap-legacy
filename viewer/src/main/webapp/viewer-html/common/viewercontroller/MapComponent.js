@@ -345,7 +345,6 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         }
         return activeTools;
     },     
-    
     /**
      * Get the width of this component
      * @return width in pixels.
