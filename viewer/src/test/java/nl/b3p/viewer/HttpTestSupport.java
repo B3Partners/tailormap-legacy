@@ -13,6 +13,7 @@ import org.junit.Before;
 /**
  *
  * @author Roy Braam
+ * @author mprins
  */
 public class HttpTestSupport{
     
@@ -20,7 +21,7 @@ public class HttpTestSupport{
     
     public HttpTestSupport(){
         try{
-            httpServer = HttpServer.create(new InetSocketAddress(8888),0);
+            httpServer = HttpServer.create(new InetSocketAddress(0), 0);
         }catch(IOException ioe){
             ioe.printStackTrace();
         }

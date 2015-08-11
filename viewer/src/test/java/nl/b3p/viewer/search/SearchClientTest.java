@@ -11,16 +11,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import nl.b3p.viewer.HttpTestSupport;
 import org.json.JSONArray;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author Roy Braam
+ * @author mprins
  */
 public class SearchClientTest extends HttpTestSupport{
     private OpenLSSearchClient ols;
@@ -37,23 +35,12 @@ public class SearchClientTest extends HttpTestSupport{
         };
         httpServer.createContext("/geocoder/Geocoder",handler);
     }
-    
-    @BeforeClass
-    public static void setUpClass() {
-        
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
+   
     @Before
     public void setUp() {
-        ols = new OpenLSSearchClient("http://localhost:8888/geocoder/Geocoder?zoekterm=");        
-    }
-    
-    @After
-    public void tearDown() {
+        ols = new OpenLSSearchClient("http://localhost:"
+                + httpServer.getAddress().getPort()
+                + "/geocoder/Geocoder?zoekterm=");
     }
     
     @Test
