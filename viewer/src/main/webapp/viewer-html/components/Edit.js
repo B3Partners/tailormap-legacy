@@ -437,6 +437,7 @@ Ext.define("viewer.components.Edit", {
                             queryMode: 'local',
                             displayField: 'label',
                             name: attribute.name,
+                            id: attribute.name,
                             renderTo: this.name + 'InputPanel',
                             valueField: 'id',
                             disabled: !allowedEditable
