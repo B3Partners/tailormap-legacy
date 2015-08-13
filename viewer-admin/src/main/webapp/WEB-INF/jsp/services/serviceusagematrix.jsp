@@ -143,7 +143,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </script>
             <x:forEach select="$doc/root/featureSources/featureSource" var="featureSource">                    
                 <div id='featureSource<x:out select="$featureSource/id"/>' class="usageMatrixFeatureSource">
-                    <b>Attribruutbron: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/> id: <x:out select="$featureSource/id"/>) </b>
+                    <b>Attribuutbron: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/> id: <x:out select="$featureSource/id"/>) </b>
                     <x:choose>
                         <x:when select="$featureSource//applayer">
                             <script type="text/javascript">
