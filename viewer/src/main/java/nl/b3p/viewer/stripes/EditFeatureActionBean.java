@@ -75,14 +75,18 @@ public class EditFeatureActionBean  implements ActionBean {
     private ApplicationLayer appLayer;
 
     private Layer layer;
+
     private SimpleFeatureStore store;
+
     private JSONObject jsonFeature;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
+    @Override
     public ActionBeanContext getContext() {
         return context;
     }
 
+    @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -110,6 +114,23 @@ public class EditFeatureActionBean  implements ActionBean {
     public void setAppLayer(ApplicationLayer appLayer) {
         this.appLayer = appLayer;
     }
+
+    public SimpleFeatureStore getStore() {
+        return store;
+    }
+
+    public JSONObject getJsonFeature() {
+        return jsonFeature;
+    }
+
+    public Layer getLayer() {
+        return layer;
+    }
+
+    public String getFID() {
+        return FID;
+    }
+
     //</editor-fold>
     @DefaultHandler
     public Resolution edit() throws JSONException {
@@ -304,7 +325,7 @@ public class EditFeatureActionBean  implements ActionBean {
         }
     }
 
-    private void deleteFeature(String fid) throws IOException, Exception{
+    protected void deleteFeature(String fid) throws IOException, Exception {
         Transaction transaction = new DefaultTransaction("edit");
         store.setTransaction(transaction);
 
@@ -322,7 +343,7 @@ public class EditFeatureActionBean  implements ActionBean {
         }
     }
 
-    private void editFeature(String fid) throws Exception {
+    protected void editFeature(String fid) throws Exception {
         Transaction transaction = new DefaultTransaction("edit");
         store.setTransaction(transaction);
 
@@ -391,7 +412,9 @@ public class EditFeatureActionBean  implements ActionBean {
 
     /**
      * Method to query the datastore with a dummy query, containing the username. This is used for an audittrail.
-     * A query is composed using the fire attribute from the type, and constructing a Query with it: <firstattribute> = 'username is <username'.
+     * A query is composed using the
+     * first attribute from the type, and constructing a Query with it:
+     * {@code <firstattribute> = 'username is <username>'}.
      */
     private void addAuditTrailLog() {
         try{
