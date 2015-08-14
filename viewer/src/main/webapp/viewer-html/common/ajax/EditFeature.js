@@ -17,7 +17,7 @@
 
 Ext.define("viewer.EditFeature", {
     config: {
-        actionBeanUrl: null,
+        actionbeanUrl: null,
         viewerController: null
     },
     constructor: function(config) {        
