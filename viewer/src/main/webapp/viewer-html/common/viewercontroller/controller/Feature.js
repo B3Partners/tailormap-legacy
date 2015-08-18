@@ -30,10 +30,10 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
      */
     toJsonObject : function (){
         var json = {};
-        json.id = this.id;
+        json.id = this._id;
         json.wktgeom = this._wktgeom;
-        json.color = this.color;
-        json.label = this.label;
+        json.color = this._color;
+        json.label = this._label;
         return json;
     },
     /**
