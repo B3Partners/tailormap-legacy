@@ -95,7 +95,8 @@ Ext.define("viewer.components.Merge", {
                 fillopacity: 50,
                 strokecolor: "FF0000",
                 strokeopacity: 50,
-                label: "${label}"
+                label: "${label}",
+                fontSize: "x-large"
             }
         });
         this.vectorLayer.addListener(

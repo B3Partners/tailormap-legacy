@@ -34,7 +34,7 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         style: {
             //@field (0x000000 – 0xFFFFFF, default: 0xFF0000 ) Fill color. Not applicable to point or line string geometries.
             fillcolor: "0xFF0000",
-            //@field (0 – 100, default: 100) Fill opacity. A value of 0 means completely transparent. Not applicable to point or line string geometries. If a feature's geometry is not completely transparent, a click on its fill will make the feature the active feature. If the geometry is completely transparent the user's mouse will click right through it.
+            //@field (0 – 100, default: 50) Fill opacity. A value of 0 means completely transparent. Not applicable to point or line string geometries. If a feature's geometry is not completely transparent, a click on its fill will make the feature the active feature. If the geometry is completely transparent the user's mouse will click right through it.
             fillopacity: 50,
             //@field (0x000000 – 0xFFFFFF, default: 0xFF0000) Stroke color.
             strokecolor: "0xFF0000",

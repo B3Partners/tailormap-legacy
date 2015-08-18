@@ -196,8 +196,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             olFeatures.push(olFeature);
             olFeature.style = this.getCurrentStyleHash();
             // Check if framework independed feature has a label. If so, set it to the style
-            if(feature.label){
-                olFeature.style['label'] = feature.label;
+            if (feature.config.label) {
+                olFeature.style['label'] = feature.config.label;
+            }
+            // check if a colour was specified on the feature and set that for drawing
+            if (feature.config.color) {
+                olFeature.style['fillcolor'] = feature.config.color;
+                olFeature.style['strokecolor'] = feature.config.color;
             }
         }
         return this.getFrameworkLayer().addFeatures(olFeatures);
@@ -297,8 +302,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     toOpenLayersFeature : function(feature){
         var geom = OpenLayers.Geometry.fromWKT(feature.config.wktgeom);
         var style = this.frameworkLayer.styleMap.styles["default"];    
-        style.label = feature.label;
-        var olFeature = new OpenLayers.Feature.Vector(geom,{id: feature.id},{style:style});
+        style.label = feature.config.label;
+        var olFeature = new OpenLayers.Feature.Vector(geom, {id: feature.config.id}, {style: style});
         return olFeature;
     },
 
