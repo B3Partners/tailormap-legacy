@@ -38,7 +38,8 @@ Ext.define("viewer.components.Edit", {
         layers: null,
         label: "",
         allowDelete: false,
-        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"]
+        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
+        formLayout: 'anchor'
     },
     constructor: function (conf) {
         viewer.components.Edit.superclass.constructor.call(this, conf);
@@ -196,7 +197,8 @@ Ext.define("viewer.components.Edit", {
                     xtype: "form",
                     autoScroll: true,
                     width: '100%',
-                    flex: 1
+                    flex: 1,
+                    layout: this.config.formLayout
                 }, {
                     id: this.name + 'savePanel',
                     xtype: "container",
