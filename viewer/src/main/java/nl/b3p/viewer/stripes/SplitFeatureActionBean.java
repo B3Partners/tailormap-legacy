@@ -199,7 +199,7 @@ public class SplitFeatureActionBean implements ActionBean {
      * @return the feature to be committed to the database @see
      * #handleExtraData(java.util.List)
      */
-    private SimpleFeature handleExtraData(SimpleFeature feature) {
+    protected SimpleFeature handleExtraData(SimpleFeature feature) {
         final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
         features.add(feature);
         return this.handleExtraData(features).get(0);
@@ -248,40 +248,8 @@ public class SplitFeatureActionBean implements ActionBean {
                             + toSplit.getDimension() + ") for splitting, must be 1 or 2");
             }
 
-            List<SimpleFeature> newFeats = new ArrayList();
-            GeometryTypeConverterFactory cf = new GeometryTypeConverterFactory();
-            Converter c = cf.createConverter(Geometry.class, store.getSchema().getGeometryDescriptor().getType().getBinding(), null);
-            GeometryType type = store.getSchema().getGeometryDescriptor().getType();
-            boolean firstFeature = true;
-            for (Geometry newGeom : geoms) {
-                if (firstFeature) {
-                    if (this.strategy.equalsIgnoreCase("replace")) {
-                        // use first/largest geom to update existing feature geom
-                        f.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
-                        f = this.handleExtraData(f);
-                        Object[] attributevalues = f.getAttributes().toArray(new Object[f.getAttributeCount()]);
-                        AttributeDescriptor[] attributes = f.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[f.getAttributeCount()]);
-                        store.modifyFeatures(attributes, attributevalues, filter);
-                        firstFeature = false;
-                        continue;
-                    } else if (this.strategy.equalsIgnoreCase("add")) {
-                        // delete the source feature, new ones will be created
-                        store.removeFeatures(filter);
-                        firstFeature = false;
-                    } else {
-                        throw new IllegalArgumentException("Unknown strategy '" + this.strategy + "', cannot split");
-                    }
-                }
-                // create + add new features
-                SimpleFeature newFeat = DataUtilities.createFeature(f.getType(),
-                        DataUtilities.encodeFeature(f, false));
-                newFeat.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
-                newFeats.add(newFeat);
-            }
+            ids = handleStrategy(f, geoms, filter, this.store, this.strategy);
 
-            newFeats = this.handleExtraData(newFeats);
-
-            ids = store.addFeatures(DataUtilities.collection(newFeats));
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -293,6 +261,61 @@ public class SplitFeatureActionBean implements ActionBean {
             ids.add(0, new FeatureIdImpl(this.splitFeatureFID));
         }
         return ids;
+    }
+
+    /**
+     * Handles the feature creation/update/deletion strategy. You may want to
+     * override this in a subclass to handle workflow.
+     *
+     * @param feature the feature that is about to be split
+     * @param geoms new geometries that are the result of splitting
+     * @param filter filter to get at feature
+     * @param localStore the store we're working against
+     * @param localStrategy the strategy in use
+     * @return A list of FeatureIds is returned, one for each feature in the
+     * order created. However, these might not be assigned until after a commit
+     * has been performed.
+     *
+     * @throws Exception if an error occurs modifying the data source,
+     * converting the geometry or an illegal argument was given
+     */
+    protected List<FeatureId> handleStrategy(SimpleFeature feature, List<? extends Geometry> geoms,
+            Filter filter, SimpleFeatureStore localStore, String localStrategy) throws Exception {
+        
+        List<SimpleFeature> newFeats = new ArrayList();
+        GeometryTypeConverterFactory cf = new GeometryTypeConverterFactory();
+        Converter c = cf.createConverter(Geometry.class,
+                localStore.getSchema().getGeometryDescriptor().getType().getBinding(), null);
+        GeometryType type = localStore.getSchema().getGeometryDescriptor().getType();
+        String geomAttribute = localStore.getSchema().getGeometryDescriptor().getLocalName();
+        boolean firstFeature = true;
+        for (Geometry newGeom : geoms) {
+            if (firstFeature) {
+                if (localStrategy.equalsIgnoreCase("replace")) {
+                    // use first/largest geom to update existing feature geom
+                    feature.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
+                    feature = this.handleExtraData(feature);
+                    Object[] attributevalues = feature.getAttributes().toArray(new Object[feature.getAttributeCount()]);
+                    AttributeDescriptor[] attributes = feature.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[feature.getAttributeCount()]);
+                    localStore.modifyFeatures(attributes, attributevalues, filter);
+                    firstFeature = false;
+                    continue;
+                } else if (localStrategy.equalsIgnoreCase("add")) {
+                    // delete the source feature, new ones will be created
+                    localStore.removeFeatures(filter);
+                    firstFeature = false;
+                } else {
+                    throw new IllegalArgumentException("Unknown strategy '" + localStrategy + "', cannot split");
+                }
+            }
+            // create + add new features
+            SimpleFeature newFeat = DataUtilities.createFeature(feature.getType(),
+                    DataUtilities.encodeFeature(feature, false));
+            newFeat.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
+            newFeats.add(newFeat);
+        }
+        newFeats = this.handleExtraData(newFeats);
+        return localStore.addFeatures(DataUtilities.collection(newFeats));
     }
 
     /**
@@ -321,7 +344,7 @@ public class SplitFeatureActionBean implements ActionBean {
      * @return a sorted list of geometries as a result of splitting toSplit with
      * line
      */
-    private List<LineString> splitLine(Geometry toSplit, Geometry line) {
+    protected List<LineString> splitLine(Geometry toSplit, Geometry line) {
         List<LineString> output = new ArrayList();
         Geometry lines = toSplit.union(line);
 
@@ -342,7 +365,7 @@ public class SplitFeatureActionBean implements ActionBean {
      * @return a sorted list of geometries as a result of splitting poly with
      * line
      */
-    private List<Polygon> splitPolygon(Geometry poly, Geometry line) {
+    protected List<Polygon> splitPolygon(Geometry poly, Geometry line) {
         List<Polygon> output = new ArrayList();
 
         Geometry nodedLinework = poly.getBoundary().union(line);

@@ -98,6 +98,7 @@ public class MergeFeaturesActionBean implements ActionBean {
 
     @Validate
     private String fidA;
+
     @Validate
     private String fidB;
 
@@ -194,11 +195,13 @@ public class MergeFeaturesActionBean implements ActionBean {
     /**
      * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
      *
+     *
+     * @see #handleExtraData(java.util.List<SimpleFeature>)
+     *
      * @param feature the feature that can be modified
-     * @return the feature to be committed to the database @see
-     * #handleExtraData(java.util.List)
+     * @return the feature to be committed to the database      *
      */
-    private SimpleFeature handleExtraData(SimpleFeature feature) {
+    protected SimpleFeature handleExtraData(SimpleFeature feature) {
         final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
         features.add(feature);
         return this.handleExtraData(features).get(0);
@@ -272,42 +275,73 @@ public class MergeFeaturesActionBean implements ActionBean {
             // TopologyPreservingSimplifier simplify = new TopologyPreservingSimplifier(newGeom);
             // simplify.setDistanceTolerance(tolerance);
             // newGeom = simplify.getResultGeometry();
-            GeometryTypeConverterFactory cf = new GeometryTypeConverterFactory();
-            Converter c = cf.createConverter(Geometry.class,
-                    store.getSchema().getGeometryDescriptor().getType().getBinding(),
-                    null);
-            GeometryType type = store.getSchema().getGeometryDescriptor().getType();
-            if (this.strategy.equalsIgnoreCase("replace")) {
-                // update existing feature (A) geom, delete merge partner (B)
-                fA.setAttribute(geomAttrName, c.convert(newGeom, type.getBinding()));
-                fA = this.handleExtraData(fA);
-                Object[] attributevalues = fA.getAttributes().toArray(new Object[fA.getAttributeCount()]);
-                AttributeDescriptor[] attributes = fA.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[fA.getAttributeCount()]);
-                store.modifyFeatures(attributes, attributevalues, filterA);
-                store.removeFeatures(filterB);
-                ids.add(new FeatureIdImpl(this.fidA));
-            } else if (this.strategy.equalsIgnoreCase("new")) {
-                // delete the source feature (A) and merge partner(B)
-                //   and create a new feature with the attributes of A but a new geom.
-                store.removeFeatures(filterA);
-                store.removeFeatures(filterB);
-                SimpleFeature newFeat = DataUtilities.createFeature(fA.getType(),
-                        DataUtilities.encodeFeature(fA, false));
-                newFeat.setAttribute(geomAttrName, c.convert(newGeom, type.getBinding()));
 
-                List<SimpleFeature> newFeats = new ArrayList();
-                newFeats.add(newFeat);
-                newFeats = this.handleExtraData(newFeats);
-                ids = store.addFeatures(DataUtilities.collection(newFeats));
-            } else {
-                throw new IllegalArgumentException("Unknown strategy '" + this.strategy + "', cannot merge.");
-            }
+            ids = this.handleStrategy(fA, fB, newGeom, filterA, filterB, this.store, this.strategy);
+
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             throw e;
         } finally {
             transaction.close();
+        }
+        return ids;
+    }
+
+    /**
+     * Handles the feature creation/update/deletion strategy. You may want to
+     * override this in a subclass to handle workflow.
+     *
+     * @param featureA the feature that is about to be merged into
+     * @param featureB the feature that is about to be merged to A
+     * @param newGeom the new geometry that is the result of merging A and B
+     * geometries
+     * @param filterA filter to get at feature A
+     * @param filterB filter to get at feature B
+     * @param localStore the store we're working against
+     * @param localStrategy the strategy in use
+     * @return A list of FeatureIds is returned, one for each feature in the
+     * order created. However, these might not be assigned until after a commit
+     * has been performed.
+     *
+     * @throws Exception if an error occurs modifying the data source,
+     * converting the geometry or an illegal argument was given
+     */
+    protected List<FeatureId> handleStrategy(SimpleFeature featureA, SimpleFeature featureB,
+            Geometry newGeom, Filter filterA, Filter filterB, SimpleFeatureStore localStore,
+            String localStrategy) throws Exception {
+        List<FeatureId> ids = new ArrayList();
+        String geomAttrName = localStore.getSchema().getGeometryDescriptor().getLocalName();
+        GeometryType type = localStore.getSchema().getGeometryDescriptor().getType();
+        GeometryTypeConverterFactory cf = new GeometryTypeConverterFactory();
+        Converter c = cf.createConverter(Geometry.class,
+                localStore.getSchema().getGeometryDescriptor().getType().getBinding(),
+                null);
+
+        if (localStrategy.equalsIgnoreCase("replace")) {
+            // update existing feature (A) geom, delete merge partner (B)
+            featureA.setAttribute(geomAttrName, c.convert(newGeom, type.getBinding()));
+            featureA = this.handleExtraData(featureA);
+            Object[] attributevalues = featureA.getAttributes().toArray(new Object[featureA.getAttributeCount()]);
+            AttributeDescriptor[] attributes = featureA.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[featureA.getAttributeCount()]);
+            localStore.modifyFeatures(attributes, attributevalues, filterA);
+            localStore.removeFeatures(filterB);
+            ids.add(new FeatureIdImpl(this.fidA));
+        } else if (localStrategy.equalsIgnoreCase("new")) {
+            // delete the source feature (A) and merge partner(B)
+            //   and create a new feature with the attributes of A but a new geom.
+            localStore.removeFeatures(filterA);
+            localStore.removeFeatures(filterB);
+            SimpleFeature newFeat = DataUtilities.createFeature(featureA.getType(),
+                    DataUtilities.encodeFeature(featureA, false));
+            newFeat.setAttribute(geomAttrName, c.convert(newGeom, type.getBinding()));
+
+            List<SimpleFeature> newFeats = new ArrayList();
+            newFeats.add(newFeat);
+            newFeats = this.handleExtraData(newFeats);
+            ids = localStore.addFeatures(DataUtilities.collection(newFeats));
+        } else {
+            throw new IllegalArgumentException("Unknown strategy '" + localStrategy + "', cannot merge.");
         }
         return ids;
     }
