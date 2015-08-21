@@ -224,6 +224,14 @@ body > .legend {
 .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
+
+// makes (editable) field labels overflow into ellipsis
+.x-form-item-label-inner {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 /* End Override ExtJS style */
 
 /*
