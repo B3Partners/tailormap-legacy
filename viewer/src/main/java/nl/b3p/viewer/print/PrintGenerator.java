@@ -165,11 +165,11 @@ public class PrintGenerator  implements Runnable{
             JAXBContext jc = JAXBContext.newInstance(PrintInfo.class);
             JAXBSource src = new JAXBSource(jc, info);
             
-            JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
+                JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
                 StringWriter sw = new StringWriter();
                 jaxbContext.createMarshaller().marshal(info, sw);
-                log.debug("Print XML: " + sw.toString());
+                log.debug("Print XML:\n" + sw.toString());
             }
             /* Setup xslt */
             Source xsltSrc = new StreamSource(xslIs);
