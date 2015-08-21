@@ -74,7 +74,7 @@ Ext.onReady(function() {
         filterAllowed = true;        
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
-            if(editable) {
+            if(editable && attribute.featureType === applicationLayerFeatureType) {
                 var possibleValues =attribute.editValues;
                 
                 var possibleValuesFormItems = [
