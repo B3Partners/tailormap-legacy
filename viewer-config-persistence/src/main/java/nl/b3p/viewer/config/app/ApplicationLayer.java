@@ -217,6 +217,10 @@ public class ApplicationLayer {
         }
         o.put("alias", getDisplayName());
 
+        Layer l = getService() == null ? null : getService().getLayer(getLayerName());
+        if(l != null && l.getFeatureType() != null) {
+            o.put("featureType", l.getFeatureType().getId());
+        }
         /* TODO add attribute if writeable according to al.getWriters() */
 
         if(!getDetails().isEmpty()) {
