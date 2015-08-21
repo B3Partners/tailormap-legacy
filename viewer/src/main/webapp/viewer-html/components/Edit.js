@@ -374,7 +374,7 @@ Ext.define("viewer.components.Edit", {
 
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
-                if (attribute.editable) {
+                if (appLayer.featureType && attribute.featureType === appLayer.featureType && attribute.editable) {
                     var allowedEditable = this.allowedEditable(attribute);
                     var values = Ext.clone(attribute.editValues);
                     var input = null;
