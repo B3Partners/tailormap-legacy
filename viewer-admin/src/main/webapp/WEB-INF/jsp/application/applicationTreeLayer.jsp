@@ -227,6 +227,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var editable = ${actionBean.editable};
                 var imagesPath = "${contextPath}/resources/images/";
                 var applicationLayer = "${actionBean.applicationLayer.id}";
+                var applicationLayerFeatureType = ${actionBean.appLayerFeatureType != null ? actionBean.appLayerFeatureType : -1};
                 var actionBeans = { 
                     "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
                     "appTreeLayer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>

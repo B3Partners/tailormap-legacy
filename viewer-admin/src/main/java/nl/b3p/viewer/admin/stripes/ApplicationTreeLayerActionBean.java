@@ -61,6 +61,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private JSONObject stylesTitleJson = new JSONObject();
     
     private boolean editable;
+
+    private Long appLayerFeatureType;
     
     @Validate
     private JSONArray attributesJSON = new JSONArray();
@@ -148,6 +150,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             
             SimpleFeatureType sft = layer.getFeatureType(); 
             editable = sft.isWriteable();
+            appLayerFeatureType = sft.getId();
             // Rebuild ApplicationLayer.attributes according to Layer FeatureType
             // New attributes are added at the end of the list; the original
             // order is only used when the Application.attributes list is empty
@@ -551,6 +554,14 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public Long getAppLayerFeatureType() {
+        return appLayerFeatureType;
+    }
+
+    public void setAppLayerFeatureType(Long appLayerFeatureType) {
+        this.appLayerFeatureType = appLayerFeatureType;
     }
     //</editor-fold>    
     
