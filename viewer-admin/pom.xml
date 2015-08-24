@@ -110,14 +110,6 @@
                <groupId>org.apache.solr</groupId>
         </dependency>
     </dependencies>
-    <repositories>
-        <!--local custom repository for non-maven dependencies -->
-        <repository>
-            <id>org.flamingo-mc</id>
-            <name>Flamingo-MC Maven Repository</name>
-            <url>file://${project.basedir}/../repo</url>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -185,7 +177,6 @@
                          </goals>
                     </execution>
                 </executions>
-
                 <configuration>
                     <prefix>builddetails</prefix>
                     <dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>

@@ -1,22 +1,26 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
     <version>4.5.6-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
-
     <scm>
         <connection>scm:git:git@github.com:flamingo-mc/flamingo.git</connection>
         <developerConnection>scm:git:git@github.com:flamingo-mc/flamingo.git</developerConnection>
         <url>https://github.com/flamingo-mc/flamingo.git</url>
         <tag>HEAD</tag>
     </scm>
-
+    <distributionManagement>
+        <repository>
+            <id>repo.b3p.nl</id>
+            <name>B3P releases repository</name>
+            <url>http://repo.b3p.nl/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository />
+    </distributionManagement>
     <properties>
         <flamingo.version>4.5.6-SNAPSHOT</flamingo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -395,12 +399,22 @@
               </dependency>
         </dependencies>
     </dependencyManagement>
-
     <repositories>
         <repository>
-            <id>org.flamingo-mc</id>
-            <name>Flamingo-MC Maven Repository</name>
-            <url>file://${project.basedir}/../repo</url>
+            <id>releases</id>
+            <name>Releases hosted by B3Partners</name>
+            <url>http://repo.b3p.nl/nexus/content/repositories/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>3rdparty</id>
+            <name>3rd party components hosted by B3Partners</name>
+            <url>http://repo.b3p.nl/nexus/content/repositories/thirdparty/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>osgeo</id>
@@ -419,6 +433,7 @@
             </snapshots>
         </repository>
     </repositories>
+    <pluginRepositories />
     <modules>
         <module>solr-commons</module>
         <module>web-commons</module>
