@@ -16,10 +16,14 @@
     <distributionManagement>
         <repository>
             <id>repo.b3p.nl</id>
-            <name>B3P releases repository</name>
+            <name>B3Partners releases repository</name>
             <url>http://repo.b3p.nl/nexus/content/repositories/releases/</url>
         </repository>
-        <snapshotRepository />
+        <snapshotRepository>
+            <id>repo.b3p.nl</id>
+            <name>B3Partners snapshots repository</name>
+            <url>http://repo.b3p.nl/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
     <properties>
         <flamingo.version>4.5.6-SNAPSHOT</flamingo.version>
