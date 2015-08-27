@@ -262,9 +262,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.sandwormz</groupId>
-                <artifactId>maven.closure.plugin</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
+                <groupId>nl.geodienstencentrum.maven</groupId>
+                <artifactId>closure-compiler-maven-plugin</artifactId>
+                <version>1.0</version>
                 <executions>
                     <execution>
                         <goals>
