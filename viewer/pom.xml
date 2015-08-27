@@ -264,7 +264,7 @@
             <plugin>
                 <groupId>nl.geodienstencentrum.maven</groupId>
                 <artifactId>closure-compiler-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>1.0.1</version>
                 <executions>
                     <execution>
                         <goals>
