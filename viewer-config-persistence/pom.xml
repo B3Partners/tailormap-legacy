@@ -26,15 +26,15 @@
                         <configuration>
                             <hibernatetool destdir="${project.build.outputDirectory}/scripts">
                                 <classpath>
-                                    <path location="target"/>
+                                    <path location="target" />
                                 </classpath>
 
                                 <hbm2ddl export="false" drop="false" create="true" outputfilename="oracle-schema-export.sql" format="true">
-                                    <jpaconfiguration persistenceUnit="viewer-config-oracle"/>
+                                    <jpaconfiguration persistenceUnit="viewer-config-oracle" />
                                 </hbm2ddl>
 
                                 <hbm2ddl export="false" drop="false" create="true" outputfilename="postgresql-schema-export.sql" format="true">
-                                    <jpaconfiguration persistenceUnit="viewer-config-postgresql"/>
+                                    <jpaconfiguration persistenceUnit="viewer-config-postgresql" />
                                 </hbm2ddl>
                             </hibernatetool>
                         </configuration>

@@ -258,7 +258,7 @@
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
                             </compilerOptions>
-                            <externFiles/>
+                            <externFiles />
                             <sourceFiles>
                                 <!-- ViewerController -->
                                 <param>${viewerhtml.path}/common/viewercontroller/ViewerController.js</param>
@@ -309,7 +309,7 @@
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
                             </compilerOptions>
-                            <externFiles/>
+                            <externFiles />
                             <sourceFiles>
                                 <!-- Flamingo -->
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoLayer.js</param>
@@ -338,7 +338,7 @@
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
                             </compilerOptions>
-                            <externFiles/>
+                            <externFiles />
                             <sourceFiles>
                                 <!-- OpenLayers -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersLayer.js</param>
