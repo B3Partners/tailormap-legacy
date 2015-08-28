@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.flamingo-mc.solr-commons</groupId>
+    <groupId>org.flamingo-mc</groupId>
     <artifactId>solr-commons</artifactId>
     <packaging>jar</packaging>
-	
+
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.5.5-SNAPSHOT</version>
+        <version>4.5.6-SNAPSHOT</version>
     </parent>  
 
     <name>solr-commons</name>
@@ -49,7 +49,7 @@
             <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
+            <groupId>org.flamingo-mc</groupId>
             <artifactId>viewer-config-persistence</artifactId>
         </dependency>
         <dependency>
@@ -57,18 +57,4 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
-    
-    <repositories>
-        <!-- local custom repository for non-maven dependencies -->
-        <repository>
-            <id>org.flamingo-mc</id>
-            <name>Flamingo-MC Maven Repository</name>
-            <url>file://${project.basedir}/../repo</url>
-        </repository>
-        <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-    </repositories>
 </project>

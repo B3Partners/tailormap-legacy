@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.flamingo-mc.viewer</groupId>
+    <groupId>org.flamingo-mc</groupId>
     <artifactId>viewer</artifactId>
     <packaging>war</packaging>
 
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.5.5-SNAPSHOT</version>
+        <version>4.5.6-SNAPSHOT</version>
     </parent>
     <name>viewer</name>
 
@@ -72,11 +72,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
+            <groupId>org.flamingo-mc</groupId>
             <artifactId>viewer-config-persistence</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc.solr-commons</groupId>
+            <groupId>org.flamingo-mc</groupId>
             <artifactId>solr-commons</artifactId>
         </dependency>
         <dependency>
@@ -168,29 +168,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>org.flamingo-mc</id>
-            <name>Flamingo-MC Maven Repository</name>
-            <url>file://${project.basedir}/../repo</url>
-        </repository>
-        <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-        <repository>
-            <id>github</id>
-            <name>geozet releases repository</name>
-            <url>https://github.com/geozet/geozet-maven-repo/raw/master/releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <!-- plugin repo for complosure -->
     <pluginRepositories>
         <pluginRepository>
@@ -234,6 +211,8 @@
                             </includes>
                         </resource>
                     </webResources>
+                    <attachClasses>true</attachClasses>
+                    <classesClassifier>classes</classesClassifier>
                 </configuration>
             </plugin>
             <plugin>
@@ -279,7 +258,7 @@
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
                             </compilerOptions>
-                            <externFiles/>
+                            <externFiles />
                             <sourceFiles>
                                 <!-- ViewerController -->
                                 <param>${viewerhtml.path}/common/viewercontroller/ViewerController.js</param>
@@ -330,7 +309,7 @@
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
                             </compilerOptions>
-                            <externFiles/>
+                            <externFiles />
                             <sourceFiles>
                                 <!-- Flamingo -->
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoLayer.js</param>
@@ -359,7 +338,7 @@
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
                             </compilerOptions>
-                            <externFiles/>
+                            <externFiles />
                             <sourceFiles>
                                 <!-- OpenLayers -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersLayer.js</param>
