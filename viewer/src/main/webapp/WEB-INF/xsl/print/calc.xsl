@@ -307,6 +307,10 @@
                     <xsl:value-of select="overviewUrl"/>
                     <xsl:text>&amp;geom=</xsl:text>
                     <xsl:value-of select="$bbox-corrected"/>
+                    <xsl:text>&amp;width=</xsl:text>
+                    <xsl:value-of select="translate($width,'px', '')"/>
+                    <xsl:text>&amp;height=</xsl:text>
+                    <xsl:value-of select="translate($height,'px', '')"/>
                 </xsl:variable>
                 <fo:external-graphic src="url({$overviewSrc})" content-height="scale-to-fit" content-width="scale-to-fit" scaling="uniform" width="{$width}" height="{$height}"/>
             </fo:block>
