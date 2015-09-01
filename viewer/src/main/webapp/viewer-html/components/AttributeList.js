@@ -422,7 +422,7 @@ Ext.define ("viewer.components.AttributeList",{
         }
         var filter = "";
         if(relateFilter){
-            filter = "&filter="+encodeURIComponent(relateFilter);
+            filter = relateFilter;
         }
         var featureType="";
         if (featureTypeId){
@@ -441,7 +441,11 @@ Ext.define ("viewer.components.AttributeList",{
             proxy: {
                 type: 'ajax',
                 timeout: 120000,
-                url: appLayer.featureService.getStoreUrl() + "&arrays=1"+featureType+filter,
+                actionMethods:{read: "POST"},
+                url: appLayer.featureService.getStoreUrl() + "&arrays=1"+featureType,
+                extraParams:{
+                  filter: filter
+                },
                 reader: {
                     type: 'json',
                     rootProperty: 'features',
