@@ -107,7 +107,7 @@ public class AttributesActionBean implements ActionBean {
     private boolean userAllowedToEditGeom = true;
 
     @Validate
-    private List<String> attributesToInclude = new ArrayList();
+    private List<Long> attributesToInclude = new ArrayList();
 
     /**
      * To force returning geometry set this to true in the request.
@@ -230,11 +230,11 @@ public class AttributesActionBean implements ActionBean {
         this.edit = edit;
     }
 
-    public List<String> getAttributesToInclude() {
+    public List<Long> getAttributesToInclude() {
         return attributesToInclude;
     }
 
-    public void setAttributesToInclude(List<String> attributesToInclude) {
+    public void setAttributesToInclude(List<Long> attributesToInclude) {
         this.attributesToInclude = attributesToInclude;
     }
 

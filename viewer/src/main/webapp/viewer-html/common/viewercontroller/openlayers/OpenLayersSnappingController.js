@@ -114,10 +114,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         if (appLayer.attributes === undefined) {
             // find geom attribute, then load data
             featureService.loadAttributes(appLayer, function (result) {
-                me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].name, featureService, appLayer);
+                me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].id, featureService, appLayer);
             });
         } else {
-            me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].name, featureService, appLayer);
+            me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].id, featureService, appLayer);
         }
 
     },
