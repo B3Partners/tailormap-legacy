@@ -83,7 +83,8 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             attribute: this.config.attributeName,
             applicationLayer: this.config.appLayerId,
             attributes: [this.config.attributeName],
-            operator: operator
+            operator: operator,
+            maxFeatures:this.config.filterConfig.maxFeatures ? this.config.filterConfig.maxFeatures : 1000
         };
         if(operator !== "#UNIQUE#"){
             params.getMinMaxValue = 't';
@@ -360,6 +361,7 @@ Ext.define("viewer.components.sf.Combo", {
         max:null,
         min:null,
         ownValues:null,
+        maxFeatures:null,
         start:null
     },
 

@@ -290,18 +290,22 @@ Ext.define("viewer.components.sf.ComboConfig", {
                         var min = Ext.getCmp("min");
                         var max = Ext.getCmp("max");
                         var ownValues = Ext.getCmp("ownValues");
+                        var maxFeatures = Ext.getCmp("maxFeatures");
                         if(newValue === "unique" ){
                             min.hide();
                             max.hide();
                             ownValues.hide();
+                            maxFeatures.show();
                         }else if (newValue === "range"){
                             min.show();
                             max.show();
                             ownValues.hide();
+                            maxFeatures.hide();
                         }else if (newValue === "own"){
                             min.hide();
                             max.hide();
                             ownValues.show();
+                            maxFeatures.hide();
                         }
                     }
                 }
@@ -340,10 +344,25 @@ Ext.define("viewer.components.sf.ComboConfig", {
         }, {
             fieldLabel: "Eigen waardes",
             name: "ownValues",
-            hidden: (this.configObject.comboType && this.configObject.comboType !== "own") || !this.configObject.comboType,
+            hidden: (this.configObject.comboType && this.configObject.comboType !== "own") || this.configObject.comboType,
             id: "ownValues",
             qtip: "Vul hier een lijst met eigen waardes in. De waardes moeten komma gescheiden zijn, bijvoorbeeld: 1,2,3",
             value: this.configObject.ownValues ? this.configObject.ownValues : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        }, {
+            fieldLabel: "Max. features",
+            name: "maxFeatures",
+            hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
+            id: "maxFeatures",
+            qtip: "Vul hier het aantal features in dat maximaal opgehaald wordt. Afhankelijk van service/database die erachter zit.",
+            value: this.configObject.maxFeatures ? this.configObject.maxFeatures : "",
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
