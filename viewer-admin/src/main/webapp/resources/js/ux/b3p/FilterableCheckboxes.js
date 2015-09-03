@@ -153,7 +153,8 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         me.itemList = [];
         Ext.Ajax.request({ 
             url: me.requestUrl, 
-            params: me.requestParams, 
+            params: me.requestParams,
+            timeout:120000,
             success: function ( result, request ) {
                 me.itemList = Ext.JSON.decode(result.responseText);
                 if (me.layerFilter){

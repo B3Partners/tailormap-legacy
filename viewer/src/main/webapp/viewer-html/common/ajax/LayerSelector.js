@@ -75,7 +75,8 @@ Ext.define ("viewer.components.LayerSelector",{
         }
         
         Ext.Ajax.request({ 
-            url: requestPath, 
+            url: requestPath,
+            timeout: 120000,
             params: requestParams, 
             success: function ( result, request ) {
                 me.layerList = Ext.JSON.decode(result.responseText);
