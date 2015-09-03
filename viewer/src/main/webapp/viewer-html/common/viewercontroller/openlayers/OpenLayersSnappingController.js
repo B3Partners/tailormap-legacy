@@ -114,10 +114,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         if (appLayer.attributes === undefined) {
             // find geom attribute, then load data
             featureService.loadAttributes(appLayer, function (result) {
-                me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].id, featureService, appLayer);
+                me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex], featureService, appLayer);
             });
         } else {
-            me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex].id, featureService, appLayer);
+            me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex], featureService, appLayer);
         }
 
     },
@@ -141,11 +141,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
             limit: 1000,
             arrays: 1,
             // just get geometry
-            attributesToInclude: [geomAttribute],
+            attributesToInclude: [geomAttribute.id],
             edit: false,
             graph: true,
             // only for map extent
-            filter: "INTERSECTS(" + geomAttribute + ", " + extent.toWKT() + ")"
+            filter: "INTERSECTS(" + geomAttribute.name + ", " + extent.toWKT() + ")"
         }, {
             /* we need access to appLayer.id and this in processing the response */
             me: me,
@@ -221,7 +221,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         var olGeom, wkt;
         data.forEach(function (element, index, array) {
             // test for keys in element, some WFS just return all attributes anyway..
-            if (Object.keys(element).length > 1) {
+            if (Object.keys(element).length > 1 && !(Object.keys(element).length === 2 && Object.keys(element)[1] === 'related_featuretypes')) {
                 wkt = element[Object.keys(element)[geometryAttributeIndex]];
             } else {
                 wkt = element[Object.keys(element)[0]];
