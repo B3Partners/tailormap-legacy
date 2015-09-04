@@ -96,7 +96,7 @@ public class FeatureInfoActionBean implements ActionBean {
     private boolean arrays = false;
 
     @Validate
-    private List<String> attributesToInclude = new ArrayList();
+    private List<Long> attributesToInclude = new ArrayList();
 
     @Validate
     private boolean graph = false;
@@ -182,11 +182,11 @@ public class FeatureInfoActionBean implements ActionBean {
         this.requestId = requestId;
     }
 
-    public List<String> getAttributesToInclude() {
+    public List<Long> getAttributesToInclude() {
         return attributesToInclude;
     }
 
-    public void setAttributesToInclude(List<String> attributesToInclude) {
+    public void setAttributesToInclude(List<Long> attributesToInclude) {
         this.attributesToInclude = attributesToInclude;
     }
 

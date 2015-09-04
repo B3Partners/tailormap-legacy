@@ -84,14 +84,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 id: "attributeCombo1",
                 fieldLabel: "Foto id attribuut",
                 store: Ext.create("Ext.data.Store", {
-                    fields: ["name", "alias", "type"]
+                    fields: ["id", "alias", "type"]
                 }),
                 queryMode: "local",
                 displayField: "alias",
                 width: 500,
                 editable: false,
                 name: "imageIdAttribute",
-                valueField: "name",
+                valueField: "id",
                 labelWidth:this.labelWidth,
                 listeners: {
                     select: function (combo, records, eOpts) {
@@ -103,14 +103,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 id: "attributeCombo2",
                 fieldLabel: "Foto beschrijving attribuut",
                 store: Ext.create("Ext.data.Store", {
-                    fields: ["name", "alias", "type"]
+                    fields: ["id", "alias", "type"]
                 }),
                 queryMode: "local",
                 displayField: "alias",
                 editable: false,
                 width: 500,
                 name: "imageDescriptionAttribute",
-                valueField: "name",
+                valueField: "id",
                 labelWidth:this.labelWidth,
                 listeners: {
                     select: function (combo, records, eOpts) {
@@ -154,13 +154,13 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         Ext.Array.each(appLayer.attributes, function (att) {
             photoIdAttribute.add({
-                name: att.name,
+                id: att.id,
                 alias: att.alias || att.name,
                 type: att.type
             });
 
             photoDescriptionAttribute.add({
-                name: att.name,
+                id: att.id,
                 alias: att.alias || att.name,
                 type: att.type
             });

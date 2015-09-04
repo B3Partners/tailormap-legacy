@@ -131,7 +131,7 @@ Ext.define("viewer.AppLayerService", {
                         successFunction.call(this,response.features);
                     } else {
                         if(failureFunction != undefined) {
-                            failureFunction.call(this,response.error);
+                            failureFunction.call(this, response.error || response.message);
                         }
                     }
                 },

@@ -383,19 +383,19 @@ Ext.define("viewer.components.Graph", {
         if(!configs.length) return null;
         return configs;
     },
-    getAttribute : function (appLayer, attributeName){
+    getAttribute : function (appLayer, attributeId){
         for(var i = 0 ; i < appLayer.attributes.length;i++){
-            if(appLayer.attributes[i].name === attributeName){
+            if(appLayer.attributes[i].id === attributeId){
                 return appLayer.attributes[i];
             }
         }
         return null;
     },
-    getAttributeTitle: function(appLayer, attributeName) {
-        return this.getAttributeTitleName(appLayer, attributeName, true);
+    getAttributeTitle: function(appLayer, attributeId) {
+        return this.getAttributeTitleName(appLayer, attributeId, true);
     },
-    getAttributeTitleName: function(appLayer, attributeName, allowAlias) {
-        var attributes = this.wrapArray(attributeName),
+    getAttributeTitleName: function(appLayer, attributeId, allowAlias) {
+        var attributes = this.wrapArray(attributeId),
             attributeTitles = [],
             attribute = null;
         for(var i = 0; i < attributes.length; i++) {

@@ -58,7 +58,7 @@ public class FeatureToJson {
     private boolean arrays = false;
     private boolean edit = false;
     private boolean graph = false;
-    private List<String> attributesToInclude = new ArrayList<String>();
+    private List<Long> attributesToInclude = new ArrayList<Long>();
     private static final int TIMEOUT=5000;
 
     public FeatureToJson(boolean arrays,boolean edit){
@@ -66,7 +66,7 @@ public class FeatureToJson {
         this.edit=edit;
     }
 
-    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<String> attributesToInclude){
+    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<Long> attributesToInclude){
         this.arrays=arrays;
         this.edit=edit;
         this.graph = graph;
@@ -201,6 +201,10 @@ public class FeatureToJson {
                                 propertyNames.add(ad.getName());
                             }
                         }
+                        if (propertyNames.isEmpty()) {
+                            // if there are no properties to retrieve just get out
+                            continue;
+                        }
                         //get aliases
                         Map<String,String> attributeAliases = new HashMap<String,String>();
                         if(!edit) {
@@ -258,7 +262,7 @@ public class FeatureToJson {
             return propertyNamesReturnCache.get(sft.getId());
         }else{
             for(ConfiguredAttribute ca: appLayer.getAttributes(sft)) {
-                if((!edit && !graph && ca.isVisible()) || (edit && ca.isEditable()) || (graph && attributesToInclude.contains(ca.getAttributeName()))) {
+                if((!edit && !graph && ca.isVisible()) || (edit && ca.isEditable()) || (graph && attributesToInclude.contains(ca.getId()))) {
                     propertyNames.add(ca.getAttributeName());
                 } else {
                     haveInvisibleProperties = true;
