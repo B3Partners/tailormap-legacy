@@ -73,7 +73,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.bodyStyle= { background: '#fff'};
         } else {
             var con = document.createElement('div');
-            con.style.height=  "100%";
+            con.style.height = "100%";
+            con.style.position = "absolute";
             con.style["background"] = "#FFFFFF";
             con.style.width=  "100%";
             config.contentEl = con;
