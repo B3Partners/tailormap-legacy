@@ -201,6 +201,10 @@ public class FeatureToJson {
                                 propertyNames.add(ad.getName());
                             }
                         }
+                        if (propertyNames.isEmpty()) {
+                            // if there are no properties to retrieve just get out
+                            continue;
+                        }
                         //get aliases
                         Map<String,String> attributeAliases = new HashMap<String,String>();
                         if(!edit) {
