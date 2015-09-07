@@ -13,7 +13,7 @@
     </parent>
     <name>viewer</name>
 
-    <properties>
+   <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <minify.outputdir>${project.build.directory}/${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
