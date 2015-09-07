@@ -168,7 +168,7 @@ Ext.define("viewer.components.Graph", {
             }
         }
         for(var i = 0; i < graphConfig.length; i++) {
-            (function(config, configId){
+            (function(config, index){
                 for(var j = 0; j < config.serieAttribute.length; j++) {
                     attributes.push(config.serieAttribute[j]);
                 }
@@ -182,7 +182,7 @@ Ext.define("viewer.components.Graph", {
                     viewerController: me.config.viewerController
                 });
                 featureInfo.editFeatureInfo(x,y,me.config.viewerController.mapComponent.getMap().getResolution() * 4,appLayer, function (features){
-                    me.featuresReceived(features, attributes, configId);
+                    me.featuresReceived(features, attributes, config, index);
                 },function(msg){me.failed(msg);},extraParams);
             })(graphConfig[i], i);
         }
@@ -190,14 +190,14 @@ Ext.define("viewer.components.Graph", {
     failed: function(msg) {
         Ext.Msg.alert('Fout', 'Fout bij het ophalen van de grafiek gegevens');
     },
-    featuresReceived : function (features,attributes, configId){
+    featuresReceived : function (features,attributes, config, index){
         var json = {};
         for (var i = 0 ; i < features.length ;i++){
             var feature = features[i];
             json = feature;
             if(json.related_featuretypes){
                 for (var j = 0 ; j < json.related_featuretypes.length ;j++){
-                    var linked = this.getLinkedData(json.related_featuretypes[j], attributes, configId);
+                    var linked = this.getLinkedData(json.related_featuretypes[j], attributes, config, index);
                     json.linkedData = linked;
                     break;
                 }
@@ -205,7 +205,7 @@ Ext.define("viewer.components.Graph", {
             }
         }
     },
-    getLinkedData : function (related_feature,attributes, configId){
+    getLinkedData : function (related_feature,attributes, config, index){
         var appLayer = this.layerSelector.getValue();
         var options = {};
 
@@ -227,7 +227,7 @@ Ext.define("viewer.components.Graph", {
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 var features = response.features;
-                this.createGraph(appLayer, features, configId);
+                this.createGraph(appLayer, features, config, index);
             },
             failure: function(result) {
                this.config.viewerController.logger.error(result);
@@ -237,8 +237,8 @@ Ext.define("viewer.components.Graph", {
     buttonClick: function(){
         this.popup.show();
     },
-    createGraph : function (appLayer,  data, configId){
-        var gco = this.config.graphs[configId];
+    createGraph : function (appLayer,  data, config, index){
+        var gco = config;
         var me = this;
         var fields = this.getAttributeTitle(appLayer,gco.serieAttribute);
         if(!(fields instanceof Array)){
@@ -354,9 +354,9 @@ Ext.define("viewer.components.Graph", {
         });
         var graphPanel = Ext.getCmp(this.config.name + 'graphPanel');
         // remove placeholder
-        graphPanel.remove('placeholderContainer' + configId, true);
+        graphPanel.remove('placeholderContainer' + index, true);
         // add graph in placeholder place
-        graphPanel.insert(configId, chart);
+        graphPanel.insert(index, chart);
         // Always select first tab
         if(graphPanel.setActiveTab){
             graphPanel.setActiveTab(0);
