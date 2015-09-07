@@ -38,6 +38,7 @@ import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
@@ -145,6 +146,15 @@ public class CycloramaConfigurationActionBean implements ActionBean {
             context.getValidationErrors().add("Key", new SimpleError("Something is wrong with the key"));
             log.error("Something went wrong with reading the key",ex);
         }
+        return view();
+    }
+
+    public Resolution removeKey() {
+        EntityManager em = Stripersist.getEntityManager();
+        em.remove(account);
+        em.getTransaction().commit();
+        account = new CycloramaAccount();
+        this.context.getMessages().add(new SimpleMessage("Key verwijderd."));
         return view();
     }
 

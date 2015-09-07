@@ -45,6 +45,9 @@
                     </tr>
                     <tr>
                         <td><stripes:submit name="save" value="Opslaan"/></td>
+                        <c:if test="${not empty actionBean.account}">
+                            <td><stripes:submit name="removeKey" value="Verwijder"/></td>
+                        </c:if>
                     </tr>
                 </table>
             </stripes:form>
