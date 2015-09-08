@@ -81,14 +81,14 @@ Ext.onReady(function() {
                                 { fieldLabel: 'Mogelijke waarden', name: 'editvalues', id: 'editvalues' + attribute.id, xtype: 'textfield',flex:1,value:possibleValues},
                                 { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {click: function() {getDBValues(attribute.name, attribute.id,"edit");}}}
                             ];
-
+                var isGeometry = false;
                 if(attribute.featureTypeAttribute != undefined) {
                     var type = attribute.featureTypeAttribute.type;
 
                     var geomTypes = ["geometry","point","multipoint","linestring","multilinestring","polygon","multipolygon"];
 
                     if(Ext.Array.contains(geomTypes, type)) {
-
+                        isGeometry = true;
                         if(possibleValues) {
                             type = possibleValues[0];
                         }
@@ -127,23 +127,31 @@ Ext.onReady(function() {
                         },
                         { fieldLabel: 'Alias', name: 'editalias', value: attribute.editAlias, xtype: 'textfield' },
                         {
-                             xtype: 'container',
-                           // layout: 'hbox',
-
+                            hidden: isGeometry,
+                            xtype: 'container',
                             items: [
-{
-                             xtype: 'container',
-                            layout: 'hbox',
-
-                            items: [
-                                { xtype: 'displayfield', fieldLabel: 'Waardelijst' , labelWidth: '190px' },
                                 {
+                                xtype: 'container',
+                                layout: 'hbox',
+                                items: [
+                                 { xtype: 'displayfield', fieldLabel: 'Waardelijst' , labelWidth: '190px' },
+                                 {
                                     fieldLabel: 'Statisch',
                                     name: 'valueList',
                                     inputValue: 'static',
                                     labelAlign: 'right',
                                     value:attribute.valueList ?attribute.valueList === "static" : true,
-                                    xtype: 'radio'
+                                    xtype: 'radio',
+                                    listeners: {
+                                        change: function (field, newval) {
+                                            var comp = Ext.getCmp('staticListValues' + attribute.id);
+                                            comp.setVisible(false);
+                                            if (newval) {
+                                                comp.setVisible(true);
+                                            }
+                                            Ext.getCmp('edit' + attribute.id).doLayout();
+                                        }
+                                    }
 
                                 },
                                 {
@@ -151,18 +159,31 @@ Ext.onReady(function() {
                                     name: 'valueList',
                                     inputValue: 'dynamic',
                                     labelAlign: 'right',
-                                    value: attribute.valueList ?attribute.valueList === "dynamic" : false,
-                                    xtype: 'radio'
+                                    value: attribute.valueList ? attribute.valueList === "dynamic" : false,
+                                    xtype: 'radio',
+                                    listeners: {
+                                        change: function (field, newval) {
+                                            var comp = Ext.getCmp('dynamicListValues' + attribute.id);
+                                            comp.setVisible(false);
+                                            if (newval) {
+                                                comp.setVisible(true);
+                                            }
+                                            Ext.getCmp('edit' + attribute.id).doLayout();
+                                        }
+                                    }
 
-                                }]
+                                }
+                            ]
                         }, {
                                     xtype: 'container',
+                                    id:'staticListValues' + attribute.id,
                                     layout: 'hbox',
                                     items: possibleValuesFormItems
                                 },
                                  {
                                     xtype: 'container',
                                     layout: 'hbox',
+                                    id:'dynamicListValues' + attribute.id,
                                     hidden: true,
                                     items: [
                                         {
@@ -174,7 +195,6 @@ Ext.onReady(function() {
                                             id: 'foreignFeatureType' + attribute.id,
                                             fieldLabel: 'Attribuutbron',
                                             emptyText: 'Maak uw keuze',
-                                           // value: attribute.defaultValue,
                                             displayField: 'id',
                                             valueField: 'id'
 
