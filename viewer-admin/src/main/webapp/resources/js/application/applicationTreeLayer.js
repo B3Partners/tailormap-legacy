@@ -119,71 +119,71 @@ Ext.onReady(function() {
                     iconCls: "edit-icon-bw",
                     collapsed: collapsed,
                     items: [
-                        { fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
-                                change: function(field, newval) {
+                        {fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
+                                change: function (field, newval) {
                                     editPanelTitle(field.findParentByType('form'), name, newval)
                                 }
                             }
                         },
-                        { fieldLabel: 'Alias', name: 'editalias', value: attribute.editAlias, xtype: 'textfield' },
+                        {fieldLabel: 'Alias', name: 'editalias', value: attribute.editAlias, xtype: 'textfield'},
                         {
                             hidden: isGeometry,
                             xtype: 'container',
                             items: [
                                 {
-                                xtype: 'container',
-                                layout: 'hbox',
-                                items: [
-                                 { xtype: 'displayfield', fieldLabel: 'Waardelijst' , labelWidth: '190px' },
-                                 {
-                                    fieldLabel: 'Statisch',
-                                    name: 'valueList',
-                                    inputValue: 'static',
-                                    labelAlign: 'right',
-                                    value:attribute.valueList ?attribute.valueList === "static" : true,
-                                    xtype: 'radio',
-                                    listeners: {
-                                        change: function (field, newval) {
-                                            var comp = Ext.getCmp('staticListValues' + attribute.id);
-                                            comp.setVisible(false);
-                                            if (newval) {
-                                                comp.setVisible(true);
-                                            }
-                                            Ext.getCmp('edit' + attribute.id).doLayout();
-                                        }
-                                    }
-
-                                },
-                                {
-                                    fieldLabel: 'Dynamisch',
-                                    name: 'valueList',
-                                    inputValue: 'dynamic',
-                                    labelAlign: 'right',
-                                    value: attribute.valueList ? attribute.valueList === "dynamic" : false,
-                                    xtype: 'radio',
-                                    listeners: {
-                                        change: function (field, newval) {
-                                            var comp = Ext.getCmp('dynamicListValues' + attribute.id);
-                                            comp.setVisible(false);
-                                            if (newval) {
-                                                comp.setVisible(true);
-                                            }
-                                            Ext.getCmp('edit' + attribute.id).doLayout();
-                                        }
-                                    }
-
-                                }
-                            ]
-                        }, {
                                     xtype: 'container',
-                                    id:'staticListValues' + attribute.id,
+                                    layout: 'hbox',
+                                    items: [
+                                        {xtype: 'displayfield', fieldLabel: 'Waardelijst', labelWidth: '190px'},
+                                        {
+                                            fieldLabel: 'Statisch',
+                                            name: 'valueList',
+                                            inputValue: 'static',
+                                            labelAlign: 'right',
+                                            value: attribute.valueList ? attribute.valueList === "static" : true,
+                                            xtype: 'radio',
+                                            listeners: {
+                                                change: function (field, newval) {
+                                                    var comp = Ext.getCmp('staticListValues' + attribute.id);
+                                                    comp.setVisible(false);
+                                                    if (newval) {
+                                                        comp.setVisible(true);
+                                                    }
+                                                    Ext.getCmp('edit' + attribute.id).doLayout();
+                                                }
+                                            }
+
+                                        },
+                                        {
+                                            fieldLabel: 'Dynamisch',
+                                            name: 'valueList',
+                                            inputValue: 'dynamic',
+                                            labelAlign: 'right',
+                                            value: attribute.valueList ? attribute.valueList === "dynamic" : false,
+                                            xtype: 'radio',
+                                            listeners: {
+                                                change: function (field, newval) {
+                                                    var comp = Ext.getCmp('dynamicListValues' + attribute.id);
+                                                    comp.setVisible(false);
+                                                    if (newval) {
+                                                        comp.setVisible(true);
+                                                    }
+                                                    Ext.getCmp('edit' + attribute.id).doLayout();
+                                                }
+                                            }
+
+                                        }
+                                    ]
+                                }, {
+                                    xtype: 'container',
+                                    id: 'staticListValues' + attribute.id,
                                     layout: 'hbox',
                                     items: possibleValuesFormItems
                                 },
-                                 {
+                                {
                                     xtype: 'container',
                                     layout: 'hbox',
-                                    id:'dynamicListValues' + attribute.id,
+                                    id: 'dynamicListValues' + attribute.id,
                                     hidden: true,
                                     items: [
                                         {
@@ -203,8 +203,7 @@ Ext.onReady(function() {
                                 }
                             ]
                         },
-
-                        { fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield' }
+                        {fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'}
                     ]
                 })));
             }
