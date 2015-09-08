@@ -137,22 +137,21 @@ Ext.onReady(function() {
 
                             items: [
                                 { xtype: 'displayfield', fieldLabel: 'Waardelijst' , labelWidth: '190px' },
-                                {fieldLabel: 'Statisch',
+                                {
+                                    fieldLabel: 'Statisch',
                                     name: 'valueList',
-                                    inputValue: 1,
+                                    inputValue: 'static',
                                     labelAlign: 'right',
-                                    checked: attribute.valueList ?attribute.valueList === "static" : true ,
-                                    xtype: 'radio',
-                                   // labelWidth: 150,
-                                    value: "static"
+                                    value:attribute.valueList ?attribute.valueList === "static" : true,
+                                    xtype: 'radio'
 
                                 },
-                                {fieldLabel: 'Dynamisch',
+                                {
+                                    fieldLabel: 'Dynamisch',
                                     name: 'valueList',
-                                    inputValue: 1,
+                                    inputValue: 'dynamic',
                                     labelAlign: 'right',
-                                    checked: attribute.valueList ?attribute.valueList === "dynamic" : false ,
-                                    //labelWidth: 150,
+                                    value: attribute.valueList ?attribute.valueList === "dynamic" : false,
                                     xtype: 'radio'
 
                                 }]
@@ -561,6 +560,7 @@ function getJson() {
         }
         currentAttributes.push(newAttribute);
     });
+    console.log(currentAttributes);
     return Ext.JSON.encode(currentAttributes);
 }
 
