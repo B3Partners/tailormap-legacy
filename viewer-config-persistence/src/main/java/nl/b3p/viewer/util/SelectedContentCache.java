@@ -216,8 +216,10 @@ public class SelectedContentCache {
             if (readers.length() > 0) {
                 Set<String> allowedRoles = new HashSet();
                 for (int i = 0; i < readers.length(); i++) {
-                    String reader = readers.getString(i);
-                    allowedRoles.add(reader);
+                    if(!readers.isNull(i)){
+                        String reader = readers.getString(i);
+                        allowedRoles.add(reader);
+                    }
                 }
 
                 if (Collections.disjoint(roles, allowedRoles)) {
