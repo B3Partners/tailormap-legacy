@@ -17,11 +17,15 @@
 package nl.b3p.viewer.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level; 
 import nl.b3p.viewer.config.services.ArcGISFeatureSource;
 import nl.b3p.viewer.config.services.ArcGISService;
+import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WMSService;
 
@@ -37,14 +41,17 @@ public class LayerListHelper {
      * @param level
      * @return A list of Layer objects
      */
-    public static List<ApplicationLayer> getLayers(Level level,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,
+    public static List<ApplicationLayer> getLayers(Application application,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,
             Boolean hasConfiguredLayers, List<Long> possibleLayers) {
-        List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
-        //get all the layers of this level
-        for (ApplicationLayer appLayer : level.getLayers()) {
+             List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
+
+            Application.TreeCache tc = application.loadTreeCache();
+
+        for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
+
             Layer l = appLayer.getService().getLayer(appLayer.getLayerName());
             if(l == null){
-                continue;
+                    continue;
             }
             
             if(filterable) {
@@ -94,10 +101,6 @@ public class LayerListHelper {
             }            
 
             layers.add(appLayer);
-        }
-        //get all the layers of the level children.
-        for (Level childLevel : level.getChildren()) {
-            layers.addAll(getLayers(childLevel, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,possibleLayers));
         }
         return layers;
 

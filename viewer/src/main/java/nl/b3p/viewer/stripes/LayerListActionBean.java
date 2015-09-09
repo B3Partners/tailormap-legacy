@@ -24,7 +24,6 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -166,8 +165,7 @@ public class LayerListActionBean implements ActionBean {
             // TODO filter layers according to readers
             // set writeable according to writers
 
-            List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers);
-
+            List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers);
             for (ApplicationLayer layer : filteredLayers) {
                 try {
                     jsonArray.put(layer.toJSONObject());
