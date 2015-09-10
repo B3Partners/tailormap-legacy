@@ -23,9 +23,33 @@ Ext.require([
     'Ext.tab.*',
     'Ext.panel.*'
 ]);
-
 Ext.onReady(function() {
+    Ext.define('TableRow', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'id', type: 'int' },
+            {name: 'status', type: 'string'},
+            {name: 'name', type: 'string'},
+            {name: 'url', type: 'string'},
+            {name: 'protocol', type: 'string'}
+        ]
+    });
 
+    Ext.create('Ext.data.Store', {
+        model: 'TableRow',
+        sorters: 'name',
+        storeId: 'featureSourceStore',
+        proxy: {
+            type: 'ajax',
+            url: featureSourceURL,
+            reader: {
+                type: 'json',
+                root: 'gridrows',
+                totalProperty: 'totalCount'
+            },
+            simpleSortMode: true
+        }
+    });
     var collapsed = false;
     var editPanelItems = [
         Ext.create('Ext.container.Container', { html: '<a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink" onclick="helpController.showHelp(this); return false;"></a>' })
@@ -188,16 +212,14 @@ Ext.onReady(function() {
                                     items: [
                                         {
                                             xtype: 'combo',
-                                            data: [],
-                                            queryMode: 'local',
+                                            store: 'featureSourceStore',
                                             hideMode: 'visibility',
                                             name: 'foreignFeatureType' + attribute.id,
                                             id: 'foreignFeatureType' + attribute.id,
                                             fieldLabel: 'Attribuutbron',
                                             emptyText: 'Maak uw keuze',
-                                            displayField: 'id',
+                                            displayField: 'name',
                                             valueField: 'id'
-
                                         }
                                     ]
                                 }
