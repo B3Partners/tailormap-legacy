@@ -211,7 +211,7 @@ Ext.onReady(function() {
                                             name: 'valueList',
                                             inputValue: 'static',
                                             labelAlign: 'right',
-                                            value: attribute.valueList ? attribute.valueList === "static" : false,
+                                            value: attribute.valueList ? attribute.valueList === "static" : true,
                                             xtype: 'radio',
                                             listeners: {
                                                 change: function (field, newval) {
@@ -230,7 +230,7 @@ Ext.onReady(function() {
                                             name: 'valueList',
                                             inputValue: 'dynamic',
                                             labelAlign: 'right',
-                                            value: attribute.valueList ? attribute.valueList === "dynamic" : true,
+                                            value: attribute.valueList ? attribute.valueList === "dynamic" : false,
                                             xtype: 'radio',
                                             listeners: {
                                                 change: function (field, newval) {
@@ -255,7 +255,7 @@ Ext.onReady(function() {
                                     xtype: 'container',
                                     layout: 'vbox',
                                     id: 'dynamicListValues' + attribute.id,
-                                    hidden: false,
+                                    hidden: true,
                                     items: [
                                         {
                                             xtype: 'combo',
