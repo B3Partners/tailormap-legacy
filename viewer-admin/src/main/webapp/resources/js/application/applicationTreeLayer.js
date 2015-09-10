@@ -43,6 +43,16 @@ Ext.onReady(function() {
         ]
     });
 
+    Ext.define('AttributeModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'id', type: 'int' },
+            {name: 'attribute', type: 'string' },
+            {name: 'alias', type: 'string' },
+            {name: 'type', type: 'string'}
+        ]
+    });
+
     Ext.create('Ext.data.Store', {
         model: 'FeatureSourceModel',
         sorters: 'name',
@@ -65,10 +75,23 @@ Ext.onReady(function() {
         storeId: 'featureTypeStore',
         proxy: {
             type: 'ajax',
-
-                            queryMode: 'local',
             url: featureTypesURL,
             reader: {
+                type: 'json'
+            },
+            simpleSortMode: true
+        }
+    });
+
+    Ext.create('Ext.data.Store', {
+        model: 'AttributeModel',
+        sorters: 'name',
+        storeId: 'attributeStore',
+        proxy: {
+            type: 'ajax',
+            url: attributesURL,
+            reader: {
+                root: 'gridrows',
                 type: 'json'
             },
             simpleSortMode: true
@@ -249,7 +272,14 @@ Ext.onReady(function() {
                                                 change:{
                                                     scope:this,
                                                     fn:function(combo, featureSourceId){
+                                                        var attributeValue = Ext.getCmp("foreignValueAttribute" + attribute.id);
+                                                        attributeValue.reset()
+                                                        var attributeLabel = Ext.getCmp("foreignLabelAttribute" + attribute.id);
+                                                        attributeLabel.reset();
+
                                                         var featureTypeCombo = Ext.getCmp("foreignFeatureType" + attribute.id);
+                                                        featureTypeCombo.reset();
+                                                        featureTypeCombo.setDisabled(false);
                                                         var store = featureTypeCombo.getStore();
                                                         store.load({
                                                             params: {
@@ -264,6 +294,7 @@ Ext.onReady(function() {
                                             xtype: 'combo',
                                             store: 'featureTypeStore',
                                             queryMode: 'local',
+                                            disable:true,
                                             width: 400,
                                             hideMode: 'visibility',
                                             name: 'foreignFeatureType' + attribute.id,
@@ -275,11 +306,51 @@ Ext.onReady(function() {
                                             listeners: {
                                                 change: {
                                                     scope: this,
-                                                    fn: function () {
-                                                        // populate attributenames
+                                                    fn: function (combo, featureTypeId) {
+                                                        var attributeValue = Ext.getCmp("foreignValueAttribute" + attribute.id);
+                                                        attributeValue.reset()
+                                                        attributeValue.setDisabled(false);
+                                                        var attributeLabel = Ext.getCmp("foreignLabelAttribute" + attribute.id);
+                                                        attributeLabel.reset();
+                                                        attributeLabel.setDisabled(false);
+
+                                                        var store = attributeValue.getStore();
+                                                        store.load({
+                                                            params: {
+                                                                simpleFeatureTypeId: featureTypeId
+                                                            }
+                                                        });
                                                     }
                                                 }
                                             }
+                                        },
+                                        {
+                                            xtype: 'combo',
+                                            store: 'attributeStore',
+                                            queryMode: 'local',
+                                            disable:true,
+                                            width: 400,
+                                            hideMode: 'visibility',
+                                            name: 'foreignValueAttribute' + attribute.id,
+                                            id: 'foreignValueAttribute' + attribute.id,
+                                            fieldLabel: 'Waarde attribuut',
+                                            emptyText: 'Maak uw keuze',
+                                            displayField: 'attribute',
+                                            valueField: 'id'
+                                        },
+                                        {
+                                            xtype: 'combo',
+                                            store: 'attributeStore',
+                                            disable:true,
+                                            queryMode: 'local',
+                                            width: 400,
+                                            hideMode: 'visibility',
+                                            name: 'foreignLabelAttribute' + attribute.id,
+                                            id: 'foreignLabelAttribute' + attribute.id,
+                                            fieldLabel: 'Label attribuut',
+                                            emptyText: 'Maak uw keuze',
+                                            displayField: 'attribute',
+                                            valueField: 'id'
                                         }
                                     ]
                                 }
