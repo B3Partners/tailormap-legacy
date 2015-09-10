@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.app;
 
 import javax.persistence.*;
+import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
@@ -58,6 +59,16 @@ public class ConfiguredAttribute {
     private String editValues;
 
     private String defaultValue;
+
+    @ManyToOne
+    private FeatureSource valueListFeatureSource;
+
+    @ManyToOne
+    private SimpleFeatureType valueListFeatureType;
+
+    private String valueListLabelName;
+
+    private String valueListValueName;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
@@ -147,6 +158,39 @@ public class ConfiguredAttribute {
     public void setFeatureType(SimpleFeatureType featureType) {
         this.featureType = featureType;
     }
+
+    public FeatureSource getValueListFeatureSource() {
+        return valueListFeatureSource;
+    }
+
+    public void setValueListFeatureSource(FeatureSource valueListFeatureSource) {
+        this.valueListFeatureSource = valueListFeatureSource;
+    }
+
+    public SimpleFeatureType getValueListFeatureType() {
+        return valueListFeatureType;
+    }
+
+    public void setValueListFeatureType(SimpleFeatureType valueListFeatureType) {
+        this.valueListFeatureType = valueListFeatureType;
+    }
+
+    public String getValueListLabelName() {
+        return valueListLabelName;
+    }
+
+    public void setValueListLabelName(String valueListLabelName) {
+        this.valueListLabelName = valueListLabelName;
+    }
+
+    public String getValueListValueName() {
+        return valueListValueName;
+    }
+
+    public void setValueListValueName(String valueListValueName) {
+        this.valueListValueName = valueListValueName;
+    }
+
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
