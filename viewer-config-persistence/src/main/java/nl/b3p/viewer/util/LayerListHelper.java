@@ -42,10 +42,10 @@ public class LayerListHelper {
      * @return A list of Layer objects
      */
     public static List<ApplicationLayer> getLayers(Application application,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,
-            Boolean hasConfiguredLayers, List<Long> possibleLayers) {
-             List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
+        Boolean hasConfiguredLayers, List<Long> possibleLayers) {
+        List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
-            Application.TreeCache tc = application.loadTreeCache();
+        Application.TreeCache tc = application.loadTreeCache();
 
         for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
 
