@@ -24,7 +24,7 @@ Ext.require([
     'Ext.panel.*'
 ]);
 Ext.onReady(function() {
-    Ext.define('TableRow', {
+    Ext.define('FeatureSourceModel', {
         extend: 'Ext.data.Model',
         fields: [
             {name: 'id', type: 'int' },
@@ -35,8 +35,16 @@ Ext.onReady(function() {
         ]
     });
 
+    Ext.define('FeatureTypeModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'id', type: 'int' },
+            {name: 'name', type: 'string'}
+        ]
+    });
+
     Ext.create('Ext.data.Store', {
-        model: 'TableRow',
+        model: 'FeatureSourceModel',
         sorters: 'name',
         storeId: 'featureSourceStore',
         proxy: {
@@ -46,6 +54,22 @@ Ext.onReady(function() {
                 type: 'json',
                 root: 'gridrows',
                 totalProperty: 'totalCount'
+            },
+            simpleSortMode: true
+        }
+    });
+    
+    Ext.create('Ext.data.Store', {
+        model: 'FeatureTypeModel',
+        sorters: 'name',
+        storeId: 'featureTypeStore',
+        proxy: {
+            type: 'ajax',
+
+                            queryMode: 'local',
+            url: featureTypesURL,
+            reader: {
+                type: 'json'
             },
             simpleSortMode: true
         }
@@ -164,7 +188,7 @@ Ext.onReady(function() {
                                             name: 'valueList',
                                             inputValue: 'static',
                                             labelAlign: 'right',
-                                            value: attribute.valueList ? attribute.valueList === "static" : true,
+                                            value: attribute.valueList ? attribute.valueList === "static" : false,
                                             xtype: 'radio',
                                             listeners: {
                                                 change: function (field, newval) {
@@ -183,7 +207,7 @@ Ext.onReady(function() {
                                             name: 'valueList',
                                             inputValue: 'dynamic',
                                             labelAlign: 'right',
-                                            value: attribute.valueList ? attribute.valueList === "dynamic" : false,
+                                            value: attribute.valueList ? attribute.valueList === "dynamic" : true,
                                             xtype: 'radio',
                                             listeners: {
                                                 change: function (field, newval) {
@@ -206,20 +230,56 @@ Ext.onReady(function() {
                                 },
                                 {
                                     xtype: 'container',
-                                    layout: 'hbox',
+                                    layout: 'vbox',
                                     id: 'dynamicListValues' + attribute.id,
-                                    hidden: true,
+                                    hidden: false,
                                     items: [
                                         {
                                             xtype: 'combo',
+                                            width: 400,
                                             store: 'featureSourceStore',
                                             hideMode: 'visibility',
-                                            name: 'foreignFeatureType' + attribute.id,
-                                            id: 'foreignFeatureType' + attribute.id,
+                                            name: 'foreignFeatureSource' + attribute.id,
+                                            id: 'foreignFeatureSource' + attribute.id,
                                             fieldLabel: 'Attribuutbron',
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'name',
-                                            valueField: 'id'
+                                            valueField: 'id',
+                                            listeners:{
+                                                change:{
+                                                    scope:this,
+                                                    fn:function(combo, featureSourceId){
+                                                        var featureTypeCombo = Ext.getCmp("foreignFeatureType" + attribute.id);
+                                                        var store = featureTypeCombo.getStore();
+                                                        store.load({
+                                                            params: {
+                                                                featureSourceId: featureSourceId
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            xtype: 'combo',
+                                            store: 'featureTypeStore',
+                                            queryMode: 'local',
+                                            width: 400,
+                                            hideMode: 'visibility',
+                                            name: 'foreignFeatureType' + attribute.id,
+                                            id: 'foreignFeatureType' + attribute.id,
+                                            fieldLabel: 'Attribuutlijst',
+                                            emptyText: 'Maak uw keuze',
+                                            displayField: 'name',
+                                            valueField: 'id',
+                                            listeners: {
+                                                change: {
+                                                    scope: this,
+                                                    fn: function () {
+                                                        // populate attributenames
+                                                    }
+                                                }
+                                            }
                                         }
                                     ]
                                 }
