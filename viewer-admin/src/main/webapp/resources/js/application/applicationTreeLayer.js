@@ -344,7 +344,7 @@ Ext.onReady(function() {
                                             fieldLabel: 'Waarde attribuut',
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'attribute',
-                                            valueField: 'id'
+                                            valueField: 'attribute'
                                         },
                                         {
                                             xtype: 'combo',
@@ -359,7 +359,7 @@ Ext.onReady(function() {
                                             fieldLabel: 'Label attribuut',
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'attribute',
-                                            valueField: 'id'
+                                            valueField: 'attribute'
                                         }
                                     ]
                                 }
