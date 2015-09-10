@@ -262,8 +262,8 @@ Ext.onReady(function() {
                                             width: 400,
                                             store: 'featureSourceStore',
                                             hideMode: 'visibility',
-                                            name: 'foreignFeatureSource' + attribute.id,
-                                            id: 'foreignFeatureSource' + attribute.id,
+                                            name: 'valueListFeatureSource',
+                                            id: 'valueListFeatureSource' + attribute.id,
                                             fieldLabel: 'Attribuutbron',
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'name',
@@ -272,12 +272,12 @@ Ext.onReady(function() {
                                                 change:{
                                                     scope:this,
                                                     fn:function(combo, featureSourceId){
-                                                        var attributeValue = Ext.getCmp("foreignValueAttribute" + attribute.id);
+                                                        var attributeValue = Ext.getCmp("valueListValueAttribute" + attribute.id);
                                                         attributeValue.reset()
-                                                        var attributeLabel = Ext.getCmp("foreignLabelAttribute" + attribute.id);
+                                                        var attributeLabel = Ext.getCmp("valueListLabelAttribute" + attribute.id);
                                                         attributeLabel.reset();
 
-                                                        var featureTypeCombo = Ext.getCmp("foreignFeatureType" + attribute.id);
+                                                        var featureTypeCombo = Ext.getCmp("valueListFeatureType" + attribute.id);
                                                         featureTypeCombo.reset();
                                                         featureTypeCombo.setDisabled(false);
                                                         var store = featureTypeCombo.getStore();
@@ -297,8 +297,8 @@ Ext.onReady(function() {
                                             disable:true,
                                             width: 400,
                                             hideMode: 'visibility',
-                                            name: 'foreignFeatureType' + attribute.id,
-                                            id: 'foreignFeatureType' + attribute.id,
+                                            name: 'valueListFeatureType',
+                                            id: 'valueListFeatureType' + attribute.id,
                                             fieldLabel: 'Attribuutlijst',
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'name',
@@ -307,10 +307,10 @@ Ext.onReady(function() {
                                                 change: {
                                                     scope: this,
                                                     fn: function (combo, featureTypeId) {
-                                                        var attributeValue = Ext.getCmp("foreignValueAttribute" + attribute.id);
+                                                        var attributeValue = Ext.getCmp("valueListValueAttribute" + attribute.id);
                                                         attributeValue.reset()
                                                         attributeValue.setDisabled(false);
-                                                        var attributeLabel = Ext.getCmp("foreignLabelAttribute" + attribute.id);
+                                                        var attributeLabel = Ext.getCmp("valueListLabelAttribute" + attribute.id);
                                                         attributeLabel.reset();
                                                         attributeLabel.setDisabled(false);
 
@@ -331,8 +331,8 @@ Ext.onReady(function() {
                                             disable:true,
                                             width: 400,
                                             hideMode: 'visibility',
-                                            name: 'foreignValueAttribute' + attribute.id,
-                                            id: 'foreignValueAttribute' + attribute.id,
+                                            name: 'valueListValueAttribute',
+                                            id: 'valueListValueAttribute' + attribute.id,
                                             fieldLabel: 'Waarde attribuut',
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'attribute',
@@ -345,8 +345,8 @@ Ext.onReady(function() {
                                             queryMode: 'local',
                                             width: 400,
                                             hideMode: 'visibility',
-                                            name: 'foreignLabelAttribute' + attribute.id,
-                                            id: 'foreignLabelAttribute' + attribute.id,
+                                            name: 'valueListLabelAttribute',
+                                            id: 'valueListLabelAttribute' + attribute.id,
                                             fieldLabel: 'Label attribuut',
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'attribute',
