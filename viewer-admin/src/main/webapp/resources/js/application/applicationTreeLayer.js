@@ -53,50 +53,6 @@ Ext.onReady(function() {
         ]
     });
 
-    Ext.create('Ext.data.Store', {
-        model: 'FeatureSourceModel',
-        sorters: 'name',
-        storeId: 'featureSourceStore',
-        proxy: {
-            type: 'ajax',
-            url: featureSourceURL,
-            reader: {
-                type: 'json',
-                root: 'gridrows',
-                totalProperty: 'totalCount'
-            },
-            simpleSortMode: true
-        }
-    });
-    
-    Ext.create('Ext.data.Store', {
-        model: 'FeatureTypeModel',
-        sorters: 'name',
-        storeId: 'featureTypeStore',
-        proxy: {
-            type: 'ajax',
-            url: featureTypesURL,
-            reader: {
-                type: 'json'
-            },
-            simpleSortMode: true
-        }
-    });
-
-    Ext.create('Ext.data.Store', {
-        model: 'AttributeModel',
-        sorters: 'name',
-        storeId: 'attributeStore',
-        proxy: {
-            type: 'ajax',
-            url: attributesURL,
-            reader: {
-                root: 'gridrows',
-                type: 'json'
-            },
-            simpleSortMode: true
-        }
-    });
     var collapsed = false;
     var editPanelItems = [
         Ext.create('Ext.container.Container', { html: '<a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink" onclick="helpController.showHelp(this); return false;"></a>' })
@@ -145,6 +101,52 @@ Ext.onReady(function() {
         filterAllowed = true;
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
+
+            Ext.create('Ext.data.Store', {
+                model: 'FeatureSourceModel',
+                sorters: 'name',
+                storeId: 'featureSourceStore' +attribute.id,
+                proxy: {
+                    type: 'ajax',
+                    url: featureSourceURL,
+                    reader: {
+                        type: 'json',
+                        root: 'gridrows',
+                        totalProperty: 'totalCount'
+                    },
+                    simpleSortMode: true
+                }
+            });
+
+            Ext.create('Ext.data.Store', {
+                model: 'FeatureTypeModel',
+                sorters: 'name',
+                storeId: 'featureTypeStore' +attribute.id,
+                proxy: {
+                    type: 'ajax',
+                    url: featureTypesURL,
+                    reader: {
+                        type: 'json'
+                    },
+                    simpleSortMode: true
+                }
+            });
+
+            Ext.create('Ext.data.Store', {
+                model: 'AttributeModel',
+                sorters: 'name',
+                storeId: 'attributeStore' +attribute.id,
+                proxy: {
+                    type: 'ajax',
+                    limitParam:'',
+                    url: attributesURL,
+                    reader: {
+                        root: 'gridrows',
+                        type: 'json'
+                    },
+                    simpleSortMode: true
+                }
+            });
             if(editable && attribute.featureType === applicationLayerFeatureType) {
                 var possibleValues =attribute.editValues;
 
@@ -187,6 +189,7 @@ Ext.onReady(function() {
                 editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                     id: 'edit' + attribute.id,
                     title: name + (attribute.editable ? ' (&times;)' : ''),
+                    height: 300,
                     iconCls: "edit-icon-bw",
                     collapsed: collapsed,
                     items: [
@@ -249,22 +252,24 @@ Ext.onReady(function() {
                                     xtype: 'container',
                                     id: 'staticListValues' + attribute.id,
                                     layout: 'hbox',
+                                    hidden: attribute.valueList === "dynamic",
                                     items: possibleValuesFormItems
                                 },
                                 {
                                     xtype: 'container',
                                     layout: 'vbox',
                                     id: 'dynamicListValues' + attribute.id,
-                                    hidden: true,
+                                    hidden: attribute.valueList !== "dynamic",
                                     items: [
                                         {
                                             xtype: 'combo',
                                             width: 400,
-                                            store: 'featureSourceStore',
+                                            store: 'featureSourceStore' +attribute.id,
                                             hideMode: 'visibility',
                                             name: 'valueListFeatureSource',
                                             id: 'valueListFeatureSource' + attribute.id,
                                             fieldLabel: 'Attribuutbron',
+                                            value: attribute.valueListFeatureSource,
                                             emptyText: 'Maak uw keuze',
                                             displayField: 'name',
                                             valueField: 'id',
@@ -292,7 +297,7 @@ Ext.onReady(function() {
                                         },
                                         {
                                             xtype: 'combo',
-                                            store: 'featureTypeStore',
+                                            store: 'featureTypeStore' +attribute.id,
                                             queryMode: 'local',
                                             disable:true,
                                             width: 400,
@@ -326,7 +331,7 @@ Ext.onReady(function() {
                                         },
                                         {
                                             xtype: 'combo',
-                                            store: 'attributeStore',
+                                            store: 'attributeStore' +attribute.id,
                                             queryMode: 'local',
                                             disable:true,
                                             width: 400,
@@ -340,7 +345,7 @@ Ext.onReady(function() {
                                         },
                                         {
                                             xtype: 'combo',
-                                            store: 'attributeStore',
+                                            store: 'attributeStore' +attribute.id,
                                             disable:true,
                                             queryMode: 'local',
                                             width: 400,
