@@ -218,6 +218,7 @@ public class ConfiguredAttribute {
 
         if (valueListFeatureSource != null) {
             o.put("valueListFeatureSource", valueListFeatureSource.getId());
+            o.put("valueList", "dynamic");
             if (valueListFeatureType != null) {
                 o.put("valueListFeatureSource", valueListFeatureType.getId());
                 o.put("valueListLabelName", valueListLabelName);
