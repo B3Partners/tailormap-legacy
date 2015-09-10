@@ -215,6 +215,15 @@ public class ConfiguredAttribute {
             o.put("featureType",featureType.getId());
             o.put("longname",featureType.getTypeName() + "." + attributeName);
         }
+
+        if (valueListFeatureSource != null) {
+            o.put("valueListFeatureSource", valueListFeatureSource.getId());
+            if (valueListFeatureType != null) {
+                o.put("valueListFeatureSource", valueListFeatureType.getId());
+                o.put("valueListLabelName", valueListLabelName);
+                o.put("valueListValueName", valueListValueName);
+            }
+        }
         return o;
     }
 
