@@ -548,7 +548,7 @@ function getAttributeEditSettings(attribute, name) {
             }
         },
         {
-            fieldLabel: 'Alias', name: 'editalias', value: attribute.editAlias, xtype: 'textfield'
+            fieldLabel: 'Alias', name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
         },
         {
             hidden: isGeometry,
