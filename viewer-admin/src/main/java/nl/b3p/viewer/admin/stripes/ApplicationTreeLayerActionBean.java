@@ -145,8 +145,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         editable = sft.isWriteable();
         appLayerFeatureType = sft.getId();
     }
-    
-    @Before(on="!save")
+
+    @Before
     public void synchronizeFeatureType() throws JSONException {
 
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
@@ -479,6 +479,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         SelectedContentCache.setApplicationCacheDirty(application, true, false);
         
         em.getTransaction().commit();
+
+        attributesJSON = new JSONArray();
+        
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        makeAttributeJSONArray(layer.getFeatureType());
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
         return edit();
