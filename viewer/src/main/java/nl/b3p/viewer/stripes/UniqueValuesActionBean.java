@@ -158,7 +158,7 @@ public class UniqueValuesActionBean implements ActionBean {
                     this.featureType = layer.getFeatureType();
                 }
             }
-            Map<String, String> pairs = this.featureType.getKeysValues(attributes[0], attributes[1]);
+            Map<String, String> pairs = this.featureType.getKeysValues(attributes[0], attributes[1],maxFeatures);
             json.put("valuePairs", pairs);
             json.put("success", Boolean.TRUE);
         } catch (IllegalArgumentException e) {
