@@ -435,13 +435,10 @@ Ext.define("viewer.components.Edit", {
                             valueStore.setData(values);
                         } else {
                             // attributes.valueList === "dynamic"
-//                            attribute.valueListValueName = 'id';
-//                            attribute.valueListLabelName = 'a_plannaam';
-
                             var reqOpts = {
                                 featureType: attribute.valueListFeatureType,
                                 attributes: [attribute.valueListValueName, attribute.valueListLabelName],
-                                // maxFeatures: 1000,
+                                maxFeatures: 1000,
                                 getKeyValuePairs: 't'
                             };
                             var proxy = Ext.create('Ext.data.proxy.Ajax', {
