@@ -329,8 +329,7 @@ Ext.define("viewer.components.Graph", {
                 fields: this.getAttributeTitle(appLayer, gco.serieAttribute),
                 renderer: Ext.util.Format.numberRenderer('0,0'),
                 title: gco.ylabel,
-                grid: true,
-                minimum: 0
+                grid: true
             },{
                 type: 'category',
                 position: 'bottom',
