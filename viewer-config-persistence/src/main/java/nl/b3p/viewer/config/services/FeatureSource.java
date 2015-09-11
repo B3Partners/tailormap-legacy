@@ -17,16 +17,16 @@
 package nl.b3p.viewer.config.services;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.geotools.data.DataStore;
-import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Function;
@@ -151,6 +151,41 @@ public abstract class FeatureSource {
             throw ex;
         }finally{
             if(fs != null && fs.getDataStore() != null){
+                fs.getDataStore().dispose();
+            }
+        }
+    }
+
+    public Map<String, String> getKeyValuePairs(SimpleFeatureType sft, String key, String label, int maxFeatures) throws Exception {
+        Map<String, String> output = new TreeMap< String, String>();
+        SimpleFeatureSource fs = null;
+
+        try {
+            fs = (SimpleFeatureSource) sft.openGeoToolsFeatureSource();
+
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+            Filter notNull = ff.not(ff.isNull(ff.property(key)));
+            org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), notNull);
+            q.setMaxFeatures(maxFeatures);
+            q.setPropertyNames(new String[]{key, label});
+
+            SimpleFeatureIterator iterator = fs.getFeatures(q).features();
+            try {
+                while (iterator.hasNext()) {
+                    SimpleFeature f = iterator.next();
+                    output.put(
+                            f.getAttribute(key).toString(),
+                            f.getAttribute(label).toString()
+                    );
+                }
+            } finally {
+                iterator.close();
+            }
+            return output;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (fs != null && fs.getDataStore() != null) {
                 fs.getDataStore().dispose();
             }
         }

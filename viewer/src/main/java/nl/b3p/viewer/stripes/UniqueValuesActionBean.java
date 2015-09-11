@@ -17,7 +17,9 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
@@ -132,6 +134,39 @@ public class UniqueValuesActionBean implements ActionBean {
         } catch (Exception e) {
             log.error("getUniqueValues() failed", e);
             json.put("msg", "Unieke waardes ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
+        }
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+
+    /**
+     * Get a list of key/value pairs to use in picklists.
+     *
+     * @return json containing a list of id/label objects
+     * @throws JSONException if any
+     */
+    public Resolution getKeyValuePairs() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
+        try {
+            if (attributes.length != 2) {
+                throw new IllegalArgumentException("Aantal attributen moet 2 zijn voor deze functie, een sleutel en een label veld.");
+            }
+
+            if (this.featureType == null) {
+                Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+                if (layer != null && layer.getFeatureType() != null) {
+                    this.featureType = layer.getFeatureType();
+                }
+            }
+            Map<String, String> pairs = this.featureType.getKeysValues(attributes[0], attributes[1]);
+            json.put("valuePairs", pairs);
+            json.put("success", Boolean.TRUE);
+        } catch (IllegalArgumentException e) {
+            log.error("getKeyValuePairs() failed", e);
+            json.put("msg", e.toString());
+        } catch (Exception e) {
+            log.error("getKeyValuePairs() failed", e);
+            json.put("msg", "Waarde paren ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }

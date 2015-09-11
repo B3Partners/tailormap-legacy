@@ -98,6 +98,8 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("8", Collections.singletonList("add_layer_prevent_geom_editors.sql"));
         
         updates.put("9", Collections.singletonList("selectedcontentcaches_dirty.sql"));
+
+        updates.put("10", Collections.singletonList("add_valueListFeatureSource.sql"));
     }
     /**
      * Function is called in init() of servlet.

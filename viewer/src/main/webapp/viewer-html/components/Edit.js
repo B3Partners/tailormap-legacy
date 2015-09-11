@@ -381,7 +381,7 @@ Ext.define("viewer.components.Edit", {
                     if (i == appLayer.geometryAttributeIndex) {
                         continue;
                     }
-                    if (values == undefined || values.length == 1) {
+                    if (attribute.valueList === undefined && (values == undefined || values.length == 1)) {
                         var fieldText = "";
                         if (values != undefined) {
                             fieldText = values[0];
@@ -399,39 +399,86 @@ Ext.define("viewer.components.Edit", {
                         } else {
                             input = Ext.create("Ext.form.field.Text", options);
                         }
-                    } else if (values.length > 1) {
-                        var allBoolean = true;
-                        for (var v = 0; v < values.length; v++) {
-
-                            var hasLabel = values[v].indexOf(":") !== -1;
-                            var val = hasLabel ? values[v].substring(0, values[v].indexOf(":")) : values[v];
-                            if (val.toLowerCase() !== "true" && val.toLowerCase() !== "false") {
-                                allBoolean = false;
-                                break;
-                            }
-                        }
-
-                        Ext.each(values, function (value, index, original) {
-                            var hasLabel = value.indexOf(":") !== -1;
-                            var label = value;
-                            if (hasLabel) {
-                                label = value.substring(value.indexOf(":") + 1);
-                                value = value.substring(0, value.indexOf(":"));
-                            }
-
-                            if (allBoolean) {
-                                value = value.toLowerCase() === "true";
-                            }
-                            original[index] = {
-                                id: value,
-                                label: label
-                            };
-
-                        });
+                    } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         var valueStore = Ext.create('Ext.data.Store', {
-                            fields: ['id', 'label'],
-                            data: values
+                            fields: ['id', 'label']
                         });
+                        if (values && values.length > 1) {
+                            var allBoolean = true;
+                            for (var v = 0; v < values.length; v++) {
+                                var hasLabel = values[v].indexOf(":") !== -1;
+                                var val = hasLabel ? values[v].substring(0, values[v].indexOf(":")) : values[v];
+                                if (val.toLowerCase() !== "true" && val.toLowerCase() !== "false") {
+                                    allBoolean = false;
+                                    break;
+                                }
+                            }
+
+                            Ext.each(values, function (value, index, original) {
+                                var hasLabel = value.indexOf(":") !== -1;
+                                var label = value;
+                                if (hasLabel) {
+                                    label = value.substring(value.indexOf(":") + 1);
+                                    value = value.substring(0, value.indexOf(":"));
+                                }
+
+                                if (allBoolean) {
+                                    value = value.toLowerCase() === "true";
+                                }
+                                original[index] = {
+                                    id: value,
+                                    label: label
+                                };
+                            });
+                            valueStore.setData(values);
+                        } else {
+                            // attributes.valueList === "dynamic"
+//                            attribute.valueListValueName = 'id';
+//                            attribute.valueListLabelName = 'a_plannaam';
+
+                            var reqOpts = {
+                                featureType: attribute.valueListFeatureType,
+                                attributes: [attribute.valueListValueName, attribute.valueListLabelName],
+                                // maxFeatures: 1000,
+                                getKeyValuePairs: 't'
+                            };
+                            var proxy = Ext.create('Ext.data.proxy.Ajax', {
+                                url: actionBeans.unique,
+                                model: valueStore.model,
+                                extraParams: reqOpts,
+                                limitParam: '',
+                                reader: {
+                                    type: 'json',
+                                    rootProperty: 'valuePairs',
+                                    transform: {
+                                        fn: function (data) {
+                                            // transform and sort the data
+                                            var valuePairs = [];
+                                            Ext.Object.each(data.valuePairs, function (key, value, object) {
+                                                valuePairs.push({
+                                                    id: key,
+                                                    label: value
+                                                });
+                                            });
+                                            valuePairs = valuePairs.sort(function (a, b) {
+                                                if (a.label < b.label)
+                                                    return -1;
+                                                if (a.label > b.label)
+                                                    return 1;
+                                                return 0;
+                                            });
+                                            return {
+                                                success: data.success,
+                                                valuePairs: valuePairs
+                                            };
+                                        },
+                                        scope: this
+                                    }
+                                }
+                            });
+                            valueStore.setProxy(proxy);
+                            valueStore.load();
+                        }
 
                         input = Ext.create('Ext.form.ComboBox', {
                             fieldLabel: attribute.editAlias || attribute.name,

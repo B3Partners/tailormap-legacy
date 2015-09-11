@@ -151,7 +151,15 @@ public class SimpleFeatureType {
     
     public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws Exception {
         return featureSource.calculateUniqueValues(this, attributeName, maxFeatures);
-    }    
+    }
+
+    public Map<String, String> getKeysValues(String key, String label, int maxFeatures) throws Exception {
+        return featureSource.getKeyValuePairs(this, key, label, maxFeatures);
+    }
+
+    public Map<String, String> getKeysValues(String key, String label) throws Exception {
+        return featureSource.getKeyValuePairs(this, key, label, MAX_FEATURES_DEFAULT);
+    }
     
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource() throws Exception {
         return featureSource.openGeoToolsFeatureSource(this);

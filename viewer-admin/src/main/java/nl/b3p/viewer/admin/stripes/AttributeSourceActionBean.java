@@ -123,7 +123,10 @@ public class AttributeSourceActionBean implements ActionBean {
         if (!featureSource.getFeatureTypes().isEmpty()) {
             em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", featureSource.getFeatureTypes()).executeUpdate();
             em.createQuery("update ConfiguredAttribute set featureType=null where featureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
+            em.createQuery("update ConfiguredAttribute set valueListFeatureType=null where valueListFeatureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
         }
+
+        em.createQuery("update ConfiguredAttribute set valueListFeatureSource=null, valueListLabelName=null,valueListValueName=null where valueListFeatureSource in :fs").setParameter("fs",featureSource).executeUpdate();
 
         em.remove(featureSource);
 

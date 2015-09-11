@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.app;
 
 import javax.persistence.*;
+import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
@@ -58,6 +59,18 @@ public class ConfiguredAttribute {
     private String editValues;
 
     private String defaultValue;
+
+    @ManyToOne
+    private FeatureSource valueListFeatureSource;
+
+    @ManyToOne
+    private SimpleFeatureType valueListFeatureType;
+
+    private String valueListLabelName;
+
+    private String valueListValueName;
+
+    private String valueList;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
@@ -147,6 +160,46 @@ public class ConfiguredAttribute {
     public void setFeatureType(SimpleFeatureType featureType) {
         this.featureType = featureType;
     }
+
+    public FeatureSource getValueListFeatureSource() {
+        return valueListFeatureSource;
+    }
+
+    public void setValueListFeatureSource(FeatureSource valueListFeatureSource) {
+        this.valueListFeatureSource = valueListFeatureSource;
+    }
+
+    public SimpleFeatureType getValueListFeatureType() {
+        return valueListFeatureType;
+    }
+
+    public void setValueListFeatureType(SimpleFeatureType valueListFeatureType) {
+        this.valueListFeatureType = valueListFeatureType;
+    }
+
+    public String getValueListLabelName() {
+        return valueListLabelName;
+    }
+
+    public void setValueListLabelName(String valueListLabelName) {
+        this.valueListLabelName = valueListLabelName;
+    }
+
+    public String getValueListValueName() {
+        return valueListValueName;
+    }
+
+    public void setValueListValueName(String valueListValueName) {
+        this.valueListValueName = valueListValueName;
+    }
+
+    public String getValueList() {
+        return valueList;
+    }
+
+    public void setValueList(String valueList) {
+        this.valueList = valueList;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -170,6 +223,17 @@ public class ConfiguredAttribute {
         if (featureType!=null){
             o.put("featureType",featureType.getId());
             o.put("longname",featureType.getTypeName() + "." + attributeName);
+        }
+
+        o.put("valueList", valueList);
+
+        if (valueListFeatureSource != null) {
+            o.put("valueListFeatureSource", valueListFeatureSource.getId());
+            if (valueListFeatureType != null) {
+                o.put("valueListFeatureType", valueListFeatureType.getId());
+                o.put("valueListLabelName", valueListLabelName);
+                o.put("valueListValueName", valueListValueName);
+            }
         }
         return o;
     }

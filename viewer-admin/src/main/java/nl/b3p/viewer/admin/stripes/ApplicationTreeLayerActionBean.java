@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.StringReader;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -359,6 +360,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
 
     public Resolution save() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
         // Only remove details which are editable and re-added layer if not empty,
         // retain other details possibly used in other parts than this page
         // See JSP for which keys are edited         
@@ -434,18 +436,43 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     if (attribute.has("defaultValue")) {
                         appAttribute.setDefaultValue(attribute.get("defaultValue").toString());
                     }
+
+                    if (attribute.has("valueListFeatureSource") && !attribute.isNull("valueListFeatureSource")) {
+                        Long id = attribute.getLong("valueListFeatureSource");
+                        FeatureSource fs = em.find(FeatureSource.class, id);
+                        appAttribute.setValueListFeatureSource(fs);
+                    }
+
+                    if (attribute.has("valueListFeatureType") && !attribute.isNull("valueListFeatureType") ) {
+                        Long id = attribute.getLong("valueListFeatureType");
+                        SimpleFeatureType ft = em.find(SimpleFeatureType.class, id);
+                        appAttribute.setValueListFeatureType(ft);
+                    }
+
+                    if (attribute.has("valueListValueAttribute") && ! attribute.isNull("valueListValueAttribute")) {
+                        appAttribute.setValueListValueName(attribute.getString("valueListValueAttribute"));
+                    }
+
+                    if (attribute.has("valueListLabelAttribute") && ! attribute.isNull("valueListLabelAttribute")) {
+                        appAttribute.setValueListLabelName(attribute.getString("valueListLabelAttribute"));
+                    }
+
+                    if (attribute.has("valueList") && ! attribute.isNull("valueList")) {
+                        appAttribute.setValueList(attribute.getString("valueList"));
+                    }
+
                 }
                 i++;
             }
         }
 
-        Stripersist.getEntityManager().persist(applicationLayer);
+        em.persist(applicationLayer);
         application.authorizationsModified();
 
         displayName = applicationLayer.getDisplayName();
         SelectedContentCache.setApplicationCacheDirty(application, true, false);
         
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.getTransaction().commit();
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
         return edit();
