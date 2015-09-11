@@ -61,6 +61,7 @@ Ext.onReady(function() {
         Ext.create('Ext.container.Container', { html: '<a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="Help" class="helplink" onclick="helpController.showHelp(this); return false;"></a>' })
     ];
     Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
+
     var defaults = {
         width: '100%',
         animCollapse: false,
@@ -84,16 +85,6 @@ Ext.onReady(function() {
         }
     };
 
-    var geomTypesStore = Ext.create('Ext.data.Store', {
-        fields: ['type', 'label'],
-        data : [
-            {"type":"geometry", "label":"Onbekend (alleen bewerken)"},
-            {"type":"point", "label":"Punt"},
-            {"type":"linestring", "label":"Lijn"},
-            {"type":"polygon", "label":"Vlak"}
-        ]
-    });
-
     var editAllowed = false;
     var filterAllowed = false;
     if(Ext.isArray(attributes) && attributes.length > 0) {
@@ -101,280 +92,20 @@ Ext.onReady(function() {
         filterAllowed = true;
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
-
-            Ext.create('Ext.data.Store', {
-                model: 'FeatureSourceModel',
-                sorters: 'name',
-                storeId: 'featureSourceStore' +attribute.id,
-                autoLoad: attribute.valueList === "dynamic",
-                proxy: {
-                    type: 'ajax',
-                    url: featureSourceURL,
-                    reader: {
-                        type: 'json',
-                        root: 'gridrows',
-                        totalProperty: 'totalCount'
-                    },
-                    simpleSortMode: true
-                }
-            });
-
-            Ext.create('Ext.data.Store', {
-                model: 'FeatureTypeModel',
-                sorters: 'name',
-                storeId: 'featureTypeStore' +attribute.id,
-                proxy: {
-                    type: 'ajax',
-                    url: featureTypesURL,
-                    reader: {
-                        type: 'json'
-                    },
-                    simpleSortMode: true
-                }
-            });
-
-            Ext.create('Ext.data.Store', {
-                model: 'AttributeModel',
-                sorters: 'name',
-                storeId: 'attributeStore' +attribute.id,
-                proxy: {
-                    type: 'ajax',
-                    limitParam:'',
-                    url: attributesURL,
-                    reader: {
-                        root: 'gridrows',
-                        type: 'json'
-                    },
-                    simpleSortMode: true
-                }
-            });
             if(editable && attribute.featureType === applicationLayerFeatureType) {
-                var possibleValues =attribute.editValues;
-
-                var possibleValuesFormItems = [
-                                { fieldLabel: 'Mogelijke waarden', name: 'editvalues', id: 'editvalues' + attribute.id, xtype: 'textfield',flex:1,value:possibleValues},
-                                { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {click: function() {getDBValues(attribute.name, attribute.id,"edit");}}}
-                            ];
-                var isGeometry = false;
-                if(attribute.featureTypeAttribute != undefined) {
-                    var type = attribute.featureTypeAttribute.type;
-
-                    var geomTypes = ["geometry","point","multipoint","linestring","multilinestring","polygon","multipolygon"];
-
-                    if(Ext.Array.contains(geomTypes, type)) {
-                        isGeometry = true;
-                        if(possibleValues) {
-                            type = possibleValues[0];
-                        }
-
-                        // edit only for single geometries
-                        type = type.replace("multi","");
-
-                        possibleValuesFormItems = [{
-                            fieldLabel: 'Geometrietype',
-                            store: geomTypesStore,
-                            xtype: 'combobox',
-                            name: 'editvalues',
-                            id: 'editvalues' + attribute.id,
-                            queryMode: 'local',
-                            displayField: 'label',
-                            valueField: 'type',
-                            emptyText:'Maak uw keuze',
-                            value: type,
-                            size: 40
-                            }
-                        ];
-                    }
-                }
-
                 editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
-                    id: 'edit' + attribute.id,
+                    itemId: 'edit' + attribute.id,
                     title: name + (attribute.editable ? ' (&times;)' : ''),
                     height: 300,
                     iconCls: "edit-icon-bw",
                     collapsed: collapsed,
-                    items: [
-                        {fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
-                                change: function (field, newval) {
-                                    editPanelTitle(field.findParentByType('form'), name, newval)
-                                }
-                            }
-                        },
-                        {fieldLabel: 'Alias', name: 'editalias', value: attribute.editAlias, xtype: 'textfield'},
-                        {
-                            hidden: isGeometry,
-                            xtype: 'container',
-                            items: [
-                                {
-                                    xtype: 'container',
-                                    layout: 'hbox',
-                                    items: [
-                                        {xtype: 'displayfield', fieldLabel: 'Waardelijst', labelWidth: '190px'},
-                                        {
-                                            fieldLabel: 'Statisch',
-                                            name: 'valueList',
-                                            id: 'valueListStatic' + attribute.id,
-                                            inputValue: 'static',
-                                            labelAlign: 'right',
-                                            value: attribute.valueList ? attribute.valueList === "static" : true,
-                                            xtype: 'radio',
-                                            listeners: {
-                                                change: function (field, newval) {
-                                                    var comp = Ext.getCmp('staticListValues' + attribute.id);
-                                                    comp.setVisible(false);
-                                                    if (newval) {
-                                                        comp.setVisible(true);
-                                                    }
-                                                    Ext.getCmp('edit' + attribute.id).updateLayout();
-                                                }
-                                            }
-
-                                        },
-                                        {
-                                            fieldLabel: 'Dynamisch',
-                                            name: 'valueList',
-                                            inputValue: 'dynamic',
-                                            id: 'valueListDynamic' + attribute.id,
-                                            labelAlign: 'right',
-                                            value: attribute.valueList ? attribute.valueList === "dynamic" : false,
-                                            xtype: 'radio',
-                                            listeners: {
-                                                change: function (field, newval) {
-                                                    var comp = Ext.getCmp('dynamicListValues' + attribute.id);
-                                                    comp.setVisible(false);
-                                                    if (newval) {
-                                                        comp.setVisible(true);
-                                                    }
-                                                    Ext.getCmp('edit' + attribute.id).doLayout();
-                                                }
-                                            }
-
-                                        }
-                                    ]
-                                }, {
-                                    xtype: 'container',
-                                    id: 'staticListValues' + attribute.id,
-                                    layout: 'hbox',
-                                    hidden: attribute.valueList === "dynamic",
-                                    items: possibleValuesFormItems
-                                },
-                                {
-                                    xtype: 'container',
-                                    layout: 'vbox',
-                                    id: 'dynamicListValues' + attribute.id,
-                                    hidden: attribute.valueList !== "dynamic",
-                                    items: [
-                                        {
-                                            xtype: 'combo',
-                                            width: 400,
-                                            store: 'featureSourceStore' +attribute.id,
-                                            hideMode: 'visibility',
-                                            name: 'valueListFeatureSource',
-                                            id: 'valueListFeatureSource' + attribute.id,
-                                            fieldLabel: 'Attribuutbron',
-                                            value: attribute.valueListFeatureSource, // TODO: figure out how to set the value after the store is loaded. GEERT.
-                                            emptyText: 'Maak uw keuze',
-                                            displayField: 'name',
-                                            valueField: 'id',
-                                            listeners:{
-                                                change:{
-                                                    scope:this,
-                                                    fn:function(combo, featureSourceId){
-                                                        var attributeValue = Ext.getCmp("valueListValueAttribute" + attribute.id);
-                                                        attributeValue.reset()
-                                                        var attributeLabel = Ext.getCmp("valueListLabelAttribute" + attribute.id);
-                                                        attributeLabel.reset();
-
-                                                        var featureTypeCombo = Ext.getCmp("valueListFeatureType" + attribute.id);
-                                                        featureTypeCombo.reset();
-                                                        featureTypeCombo.setDisabled(false);
-                                                        var store = featureTypeCombo.getStore();
-                                                        store.load({
-                                                            params: {
-                                                                featureSourceId: featureSourceId
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        {
-                                            xtype: 'combo',
-                                            store: 'featureTypeStore' +attribute.id,
-                                            queryMode: 'local',
-                                            disable:true,
-                                            width: 400,
-                                            hideMode: 'visibility',
-                                            name: 'valueListFeatureType',
-                                            value: attribute.valueListFeatureType,
-                                            id: 'valueListFeatureType' + attribute.id,
-                                            fieldLabel: 'Attribuutlijst',
-                                            emptyText: 'Maak uw keuze',
-                                            displayField: 'name',
-                                            valueField: 'id',
-                                            listeners: {
-                                                change: {
-                                                    scope: this,
-                                                    fn: function (combo, featureTypeId) {
-                                                        var attributeValue = Ext.getCmp("valueListValueAttribute" + attribute.id);
-                                                        attributeValue.reset()
-                                                        attributeValue.setDisabled(false);
-                                                        var attributeLabel = Ext.getCmp("valueListLabelAttribute" + attribute.id);
-                                                        attributeLabel.reset();
-                                                        attributeLabel.setDisabled(false);
-
-                                                        var store = attributeValue.getStore();
-                                                        store.load({
-                                                            params: {
-                                                                simpleFeatureTypeId: featureTypeId
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        {
-                                            xtype: 'combo',
-                                            store: 'attributeStore' +attribute.id,
-                                            queryMode: 'local',
-                                            disable:true,
-                                            width: 400,
-                                            hideMode: 'visibility',
-                                            name: 'valueListValueAttribute',
-                                            value: attribute.valueListValueAttribute,
-                                            id: 'valueListValueAttribute' + attribute.id,
-                                            fieldLabel: 'Waarde attribuut',
-                                            emptyText: 'Maak uw keuze',
-                                            displayField: 'attribute',
-                                            valueField: 'attribute'
-                                        },
-                                        {
-                                            xtype: 'combo',
-                                            store: 'attributeStore' +attribute.id,
-                                            disable:true,
-                                            queryMode: 'local',
-                                            width: 400,
-                                            hideMode: 'visibility',
-                                            name: 'valueListLabelAttribute',
-                                            value: attribute.valueListLabelAttribute,
-                                            id: 'valueListLabelAttribute' + attribute.id,
-                                            fieldLabel: 'Label attribuut',
-                                            emptyText: 'Maak uw keuze',
-                                            displayField: 'attribute',
-                                            valueField: 'attribute'
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'}
-                    ]
+                    items: getAttributeEditSettings(attribute, name)
                 })));
             }
             var isEnabled = (attribute.filterable || attribute.selectable) || false;
             var defaultValueHidden = !(attribute.selectable || false);
             filterPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
-                id: 'filter' + attribute.id,
+                itemId: 'filter' + attribute.id,
                 height: 180,
                 title: name + (isEnabled ? ' (&times;)' : ''),
                 iconCls: "edit-icon-bw",
@@ -383,9 +114,9 @@ Ext.onReady(function() {
                     { fieldLabel: 'Filterbaar / Selecteerbaar', name: 'filterable_selectable', inputValue: 1, checked: isEnabled, xtype: 'checkbox',  labelWidth: 150, listeners: {
                         change: function(field, newval) {
                             var panel = field.findParentByType('form');
-                            var filterRadio = Ext.getCmp('filterable' + attribute.id);
+                            var filterRadio = getComponentByItemId('#filterable' + attribute.id);
                             filterRadio.setDisabled(!newval); filterRadio.setValue(false);
-                            var selectRadio = Ext.getCmp('selectable' + attribute.id);
+                            var selectRadio = getComponentByItemId('#selectable' + attribute.id);
                             selectRadio.setDisabled(!newval); selectRadio.setValue(false);
                             editPanelTitle(panel, name, newval);
                         }
@@ -396,33 +127,33 @@ Ext.onReady(function() {
                         items: [
                             { xtype: 'displayfield', fieldLabel: 'Attribuut gebruiken bij' },
                             {
-                                id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right',
+                                itemId: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right',
                                 listeners:{
                                     change: function(field,newval){
-                                        var comp = Ext.getCmp('default_filter' + attribute.id);
+                                        var comp = getComponentByItemId('#default_filter' + attribute.id);
                                         comp.setVisible(false);
                                         if(newval){
                                             comp.setVisible(true);
                                         }
-                                        Ext.getCmp('filter' + attribute.id).doLayout();
+                                        getComponentByItemId('#filter' + attribute.id).doLayout();
                                     }
                                 }
                             },
                             {
-                                id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right',
-                                listeners: {change: function(field, newval) {var comp = Ext.getCmp('default' + attribute.id);comp.setVisible(false); if(newval){ comp.setVisible(true);}Ext.getCmp('filter' + attribute.id).doLayout();}}
+                                itemId: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right',
+                                listeners: {change: function(field, newval) {var comp = getComponentByItemId('#default' + attribute.id);comp.setVisible(false); if(newval){ comp.setVisible(true);}getComponentByItemId('#filter' + attribute.id).doLayout();}}
                             }
                         ]
                     },
                     {
                         xtype: 'container',
                         name: 'default_filter' + attribute.id,
-                        id: 'default_filter' + attribute.id,
+                        itemId: 'default_filter' + attribute.id,
                         hidden: !(attribute.filterable || false),
                         hideMode: 'display',
                         items: [
                             {
-                                id: 'filter_list' + attribute.id,
+                                itemId: 'filter_list' + attribute.id,
                                 fieldLabel: 'Lijst*',
                                 name: 'minmaxlist' + attribute.id,
                                 inputValue: 'defaultList',
@@ -439,7 +170,7 @@ Ext.onReady(function() {
                     {
                         xtype: 'container',
                         name: 'default' + attribute.id,
-                        id: 'default' + attribute.id,
+                        itemId: 'default' + attribute.id,
                         hidden: defaultValueHidden,
                         hideMode: 'visibility',
                         items:[
@@ -448,7 +179,7 @@ Ext.onReady(function() {
                                 layout: 'hbox',
                                 items:[
                                     {
-                                        id: 'min' + attribute.id,
+                                        itemId: 'min' + attribute.id,
                                         fieldLabel: 'Minimale waarde',
                                         name: 'minmaxlist' + attribute.id,
                                         inputValue: 'defaultMin',
@@ -457,7 +188,7 @@ Ext.onReady(function() {
                                         labelAlign: 'right'
                                     },
                                     {
-                                        id: 'max' + attribute.id,
+                                        itemId: 'max' + attribute.id,
                                         fieldLabel: 'Maximale waarde',
                                         name: 'minmaxlist' + attribute.id,
                                         inputValue: 'defaultMax',
@@ -466,7 +197,7 @@ Ext.onReady(function() {
                                         labelAlign: 'right'
                                     },
                                     {
-                                        id: 'list' + attribute.id,
+                                        itemId: 'list' + attribute.id,
                                         fieldLabel: 'Lijst',
                                         name: 'minmaxlist' + attribute.id,
                                         inputValue: 'defaultList',
@@ -475,12 +206,12 @@ Ext.onReady(function() {
                                         labelAlign: 'right',
                                         listeners: {change:
                                                 function(field, newval) {
-                                                    var comp = Ext.getCmp('defaultList' + attribute.id);
+                                                    var comp = getComponentByItemId('#defaultList' + attribute.id);
                                                     comp.setVisible(false);
                                                     if(newval){
                                                         comp.setVisible(true);
                                                     }
-                                                    Ext.getCmp('filter' + attribute.id).doLayout();
+                                                    getComponentByItemId('#filter' + attribute.id).doLayout();
                                                 }
                                             }
                                     }
@@ -488,7 +219,7 @@ Ext.onReady(function() {
                             },
                             {
                                 xtype: 'container',
-                                id: 'defaultList' + attribute.id,
+                                itemId: 'defaultList' + attribute.id,
                                 layout: 'hbox',
                                 hidden: attribute.defaultValue == "#MAX#" || attribute.defaultValue == "#MIN#",
                                 hideMode: 'visibility',
@@ -499,7 +230,7 @@ Ext.onReady(function() {
                                         queryMode: 'local',
                                         hideMode: 'visibility',
                                         name: 'defaultVal' + attribute.id,
-                                        id: 'defaultVal' + attribute.id,
+                                        itemId: 'defaultVal' + attribute.id,
                                         fieldLabel: 'Defaultwaarde',
                                         emptyText:'Maak uw keuze',
                                         value: attribute.defaultValue,
@@ -512,7 +243,7 @@ Ext.onReady(function() {
                                 ]
                             },
                             {
-                                id: 'dataselectionLabel' + attribute.id, text: "Bij deze attributen moet een dataselectie component geconfigureerd worden!",
+                                itemId: 'dataselectionLabel' + attribute.id, text: "Bij deze attributen moet een dataselectie component geconfigureerd worden!",
                                 xtype: 'label',
                                 forId:  'selectable' + attribute.id,
                                 hideMode: 'visibility'
@@ -558,7 +289,7 @@ hier niet op gecontroleerd.'
                     queryMode: 'local',
                     hideMode: 'visibility',
                     fieldLabel: 'Attribuut',
-                    id: 'ext_editfeature_usernameAttribute',
+                    itemId: 'ext_editfeature_usernameAttribute',
                     labelWidth: 150,
                     value: usernameAttrValue
                 }]
@@ -629,7 +360,7 @@ hier niet op gecontroleerd.'
                 if(activetab.contentEl && activetab.contentEl === 'context-tab' && !htmlEditorRendered) {
                     // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
                     Ext.create('Ext.form.field.HtmlEditor', {
-                        id: 'extContextHtmlEditor',
+                        itemId: 'extContextHtmlEditor',
                         width: 475,
                         maxWidth: 475,
                         height: 400,
@@ -651,7 +382,7 @@ hier niet op gecontroleerd.'
     });
 
     Ext.create('Ext.form.field.HtmlEditor', {
-        id: 'extSettingsHtmlEditor',
+        itemId: 'extSettingsHtmlEditor',
         width: 475,
         maxWidth: 475,
         height: 150,
@@ -683,19 +414,279 @@ hier niet op gecontroleerd.'
 
     Ext.get('apptreelayerform').on('submit', function(e) {
         Ext.get('attributesJSON').dom.value = getJson();
-        if( Ext.getCmp('extSettingsHtmlEditor')){
-            Ext.get('details_summary_description').dom.value = Ext.getCmp('extSettingsHtmlEditor').getValue();
+        if( getComponentByItemId('#extSettingsHtmlEditor')){
+            Ext.get('details_summary_description').dom.value = getComponentByItemId('#extSettingsHtmlEditor').getValue();
         }
-        var htmlEditor = Ext.getCmp('extContextHtmlEditor');
+        var htmlEditor = getComponentByItemId('#extContextHtmlEditor');
         if(htmlEditor) {
             Ext.get('context_textarea').dom.value = htmlEditor.getValue();
         }
-        if (Ext.get('details_editfeature_usernameAttribute') && Ext.getCmp('ext_editfeature_usernameAttribute')){
-            Ext.get('details_editfeature_usernameAttribute').dom.value= Ext.getCmp('ext_editfeature_usernameAttribute').getValue();
+        if (Ext.get('details_editfeature_usernameAttribute') && getComponentByItemId('#ext_editfeature_usernameAttribute')){
+            Ext.get('details_editfeature_usernameAttribute').dom.value= getComponentByItemId('#ext_editfeature_usernameAttribute').getValue();
         }
     });
 
 });
+
+function getAttributeEditSettings(attribute, name) {
+    
+    var possibleValues = attribute.editValues;
+    var possibleValuesFormItems = [
+        { fieldLabel: 'Mogelijke waarden', name: 'editvalues', itemId: 'editvalues' + attribute.id, xtype: 'textfield',flex:1,value:possibleValues},
+        { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {click: function() {
+            getDBValues(attribute.name, attribute.id, "edit");
+        }}}
+    ];
+
+    var isGeometry = false;
+    if(typeof attribute.featureTypeAttribute !== 'undefined') {
+        var type = attribute.featureTypeAttribute.type;
+        var geomTypes = ["geometry","point","multipoint","linestring","multilinestring","polygon","multipolygon"];
+        var geomTypesStore = Ext.create('Ext.data.Store', {
+            fields: ['type', 'label'],
+            data : [
+                {"type":"geometry", "label":"Onbekend (alleen bewerken)"},
+                {"type":"point", "label":"Punt"},
+                {"type":"linestring", "label":"Lijn"},
+                {"type":"polygon", "label":"Vlak"}
+            ]
+        });
+        if(Ext.Array.contains(geomTypes, type)) {
+            isGeometry = true;
+            if(possibleValues) {
+                type = possibleValues[0];
+            }
+            // edit only for single geometries
+            type = type.replace("multi","");
+            possibleValuesFormItems = [{
+                fieldLabel: 'Geometrietype',
+                store: geomTypesStore,
+                xtype: 'combobox',
+                name: 'editvalues',
+                itemId: 'editvalues' + attribute.id,
+                queryMode: 'local',
+                displayField: 'label',
+                valueField: 'type',
+                emptyText:'Maak uw keuze',
+                value: type,
+                size: 40
+            }];
+        }
+    }
+
+    var featureSourceStore = Ext.create('Ext.data.Store', {
+        model: 'FeatureSourceModel',
+        sorters: 'name',
+        autoLoad: attribute.valueList === "dynamic",
+        proxy: {
+            type: 'ajax',
+            url: featureSourceURL,
+            reader: {
+                type: 'json',
+                root: 'gridrows',
+                totalProperty: 'totalCount'
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function(store, records) {
+                setValueAndEnable('#valueListFeatureSource' + attribute.id, records, attribute.valueListFeatureSource, 'id');
+            }
+        }
+    });
+
+    var featureTypeStore = Ext.create('Ext.data.Store', {
+        model: 'FeatureTypeModel',
+        sorters: 'name',
+        proxy: {
+            type: 'ajax',
+            url: featureTypesURL,
+            reader: {
+                type: 'json'
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function(store, records) {
+                setValueAndEnable('#valueListFeatureType' + attribute.id, records, attribute.valueListFeatureType, 'id');
+            }
+        }
+    });
+
+    var attributeStore = Ext.create('Ext.data.Store', {
+        model: 'AttributeModel',
+        sorters: 'name',
+        proxy: {
+            type: 'ajax',
+            limitParam:'',
+            url: attributesURL,
+            reader: {
+                root: 'gridrows',
+                type: 'json'
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function(store, records) {
+                setValueAndEnable('#valueListValueAttribute' + attribute.id, records, attribute.valueListValueName, 'attribute');
+                setValueAndEnable('#valueListLabelAttribute' + attribute.id, records, attribute.valueListLabelName, 'attribute');
+            }
+        }
+    });
+    
+    if(attribute.valueList && attribute.valueList === "dynamic") {
+        featureSourceStore.load();
+    }
+    
+    return [
+        {
+            fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
+                change: function (field, newval) {
+                    editPanelTitle(field.findParentByType('form'), name, newval);
+                }
+            }
+        },
+        {
+            fieldLabel: 'Alias', name: 'editalias', value: attribute.editAlias, xtype: 'textfield'
+        },
+        {
+            hidden: isGeometry,
+            xtype: 'container',
+            items: [
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    items: [
+                        {xtype: 'displayfield', fieldLabel: 'Waardelijst', labelWidth: '190px'},
+                        {
+                            fieldLabel: 'Statisch',
+                            name: 'valueList',
+                            itemId: 'valueListStatic' + attribute.id,
+                            inputValue: 'static',
+                            labelAlign: 'right',
+                            value: attribute.valueList ? attribute.valueList === "static" : true,
+                            xtype: 'radio',
+                            listeners: {
+                                change: function (field, newval) {
+                                    getComponentByItemId('#staticListValues' + attribute.id).setVisible(newval);
+                                    getComponentByItemId('#edit' + attribute.id).updateLayout();
+                                }
+                            }
+
+                        },
+                        {
+                            fieldLabel: 'Dynamisch',
+                            name: 'valueList',
+                            inputValue: 'dynamic',
+                            itemId: 'valueListDynamic' + attribute.id,
+                            labelAlign: 'right',
+                            value: attribute.valueList ? attribute.valueList === "dynamic" : false,
+                            xtype: 'radio',
+                            listeners: {
+                                change: function (field, newval) {
+                                    getComponentByItemId('#dynamicListValues' + attribute.id).setVisible(newval);
+                                    getComponentByItemId('#edit' + attribute.id).updateLayout();
+                                    if(newval) {
+                                        featureSourceStore.load();
+                                    }
+                                }
+                            }
+
+                        }
+                    ]
+                }, {
+                    xtype: 'container',
+                    itemId: 'staticListValues' + attribute.id,
+                    layout: 'hbox',
+                    hidden: attribute.valueList === "dynamic",
+                    items: possibleValuesFormItems
+                },
+                {
+                    xtype: 'container',
+                    layout: 'vbox',
+                    itemId: 'dynamicListValues' + attribute.id,
+                    hidden: attribute.valueList !== "dynamic",
+                    defaults: {
+                        xtype: 'combo',
+                        width: 400,
+                        queryMode: 'local',
+                        hideMode: 'visibility',
+                        disabled: true
+                    },
+                    items: [
+                        {
+                            store: featureSourceStore,
+                            name: 'valueListFeatureSource',
+                            itemId: 'valueListFeatureSource' + attribute.id,
+                            fieldLabel: 'Attribuutbron',
+                            emptyText: 'Maak uw keuze',
+                            displayField: 'name',
+                            valueField: 'id',
+                            listeners:{
+                                change: function(combo, featureSourceId){
+                                    featureTypeStore.load({
+                                        params: {
+                                            featureSourceId: featureSourceId
+                                        }
+                                    });
+                                }
+                            }
+                        },
+                        {
+                            store: featureTypeStore,
+                            name: 'valueListFeatureType',
+                            itemId: 'valueListFeatureType' + attribute.id,
+                            fieldLabel: 'Attribuutlijst',
+                            emptyText: 'Maak uw keuze',
+                            displayField: 'name',
+                            valueField: 'id',
+                            listeners: {
+                                change: function (combo, featureTypeId) {
+                                    attributeStore.load({
+                                        params: {
+                                            simpleFeatureTypeId: featureTypeId
+                                        }
+                                    });
+                                }
+                            }
+                        },
+                        {
+                            store: attributeStore,
+                            name: 'valueListValueAttribute',
+                            itemId: 'valueListValueAttribute' + attribute.id,
+                            fieldLabel: 'Waarde attribuut',
+                            emptyText: 'Maak uw keuze',
+                            displayField: 'attribute',
+                            valueField: 'attribute'
+                        },
+                        {
+                            store: attributeStore,
+                            name: 'valueListLabelAttribute',
+                            itemId: 'valueListLabelAttribute' + attribute.id,
+                            fieldLabel: 'Label attribuut',
+                            emptyText: 'Maak uw keuze',
+                            displayField: 'attribute',
+                            valueField: 'attribute'
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'
+        }
+    ];
+}
+
+function setValueAndEnable(id, records, value, recordvalue) {
+    var combo = getComponentByItemId(id);
+    if(typeof value !== undefined) for(var i = 0; i < records.length; i++) {
+        if(records[i].get(recordvalue) === value) {
+            combo.setValue(records[i]);
+        }
+    }
+    combo.setDisabled(false);
+}
 
 function editPanelTitle(panel, name, checked) {
     panel.setTitle(name + (checked ? ' (&times;)' : ''));
@@ -705,29 +696,31 @@ function getJson() {
     var currentAttributes = [];
     Ext.Array.each(attributes, function(attribute) {
         var newAttribute = attribute;
-        if (Ext.getCmp('edit' + attribute.id)!=undefined){
-            Ext.getCmp('edit' + attribute.id).getForm().getFields().each(function(field) {
+        var editPanel = getComponentByItemId('#edit' + attribute.id);
+        if (typeof editPanel !== 'undefined'){
+            editPanel.getForm().getFields().each(function(field) {
                 newAttribute[field.getName()] = field.getValue();
             });
+            
             if(newAttribute["editvalues"] != undefined && newAttribute["editvalues"] != ""){
                 newAttribute["editvalues"]= newAttribute["editvalues"].split(",");
             }
 
             var valueList = null;
-            var staticRadio = Ext.getCmp("valueListStatic" + attribute.id);
-            var dynamicRadio = Ext.getCmp("valueListDynamic" + attribute.id);
+            var staticRadio = getComponentByItemId("#valueListStatic" + attribute.id);
+            var dynamicRadio = getComponentByItemId("#valueListDynamic" + attribute.id);
             if(staticRadio.getValue() || dynamicRadio.getValue()){
                 valueList = staticRadio.getValue() ? "static" : "dynamic";
             }
             newAttribute.valueList = valueList;
         }
-        newAttribute.filterable = Ext.getCmp('filterable' + attribute.id).getValue();
-        newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();
+        newAttribute.filterable = getComponentByItemId('#filterable' + attribute.id).getValue();
+        newAttribute.selectable = getComponentByItemId('#selectable' + attribute.id).getValue();
         if(newAttribute.selectable){
-            var min = Ext.getCmp('min' + attribute.id);
+            var min = getComponentByItemId('#min' + attribute.id);
             var radioChecked = min.getGroupValue()
             if(radioChecked == "defaultList"){
-                var dropdownVal = Ext.getCmp('defaultVal' + attribute.id).getValue();
+                var dropdownVal = getComponentByItemId('#defaultVal' + attribute.id).getValue();
                 if(dropdownVal == null){
                     dropdownVal = "";
                 }
@@ -740,7 +733,7 @@ function getJson() {
                 }
             }
         }else if (newAttribute.filterable){
-            var checkbox=Ext.getCmp("filter_list"+attribute.id);
+            var checkbox=getComponentByItemId("#filter_list"+attribute.id);
             if (checkbox.getValue()){
                 attribute.defaultValue = "filterList";
             }else{
@@ -751,13 +744,12 @@ function getJson() {
         }
         currentAttributes.push(newAttribute);
     });
-    console.log(currentAttributes);
     return Ext.JSON.encode(currentAttributes);
 }
 
 function getDBValues(attribute,id, tab) {
     if(getDBValuesUrl != '') {
-        Ext.getCmp("defaultVal" + id).setLoading(true);
+        getComponentByItemId("#defaultVal" + id).setLoading(true);
         Ext.Ajax.request({
             url: getDBValuesUrl,
             params: {
@@ -791,8 +783,8 @@ function dbValuesToDataselection(values,id) {
         fields: [ { name: 'id' } ],
         data : records
     });
-    Ext.getCmp("defaultVal" + id).setStore(store);
-    Ext.getCmp("defaultVal" + id).setLoading(false);
+    getComponentByItemId("#defaultVal" + id).setStore(store);
+    getComponentByItemId("#defaultVal" + id).setLoading(false);
 }
 
 function dbValuesToEdit(values,id){
@@ -803,7 +795,7 @@ function dbValuesToEdit(values,id){
         }
         vals += values[i];
     }
-    var textField = Ext.getCmp( 'editvalues' + id );
+    var textField = getComponentByItemId('#editvalues' + id);
     textField.setValue(vals);
 }
 
@@ -819,4 +811,8 @@ function attributeGroupClick(el){
     checkboxes.forEach(function (e){
         e.checked=checked;
     });
+}
+
+function getComponentByItemId(itemid) {
+    return Ext.ComponentQuery.query(itemid)[0];
 }
