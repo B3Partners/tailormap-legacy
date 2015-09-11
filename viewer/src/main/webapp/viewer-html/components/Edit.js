@@ -399,7 +399,7 @@ Ext.define("viewer.components.Edit", {
                         } else {
                             input = Ext.create("Ext.form.field.Text", options);
                         }
-                    } else if (attribute.valueList === "dynamic" || values.length > 1) {
+                    } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         var valueStore = Ext.create('Ext.data.Store', {
                             fields: ['id', 'label']
                         });
@@ -433,48 +433,44 @@ Ext.define("viewer.components.Edit", {
                             valueStore.setData(values);
                         } else {
                             // attributes.valueList === "dynamic"
-
-//valueList: "dynamic"
-//valueListFeatureSource: 11
-//valueListFeatureType: 21
-//valueListLabelName: "2845"
-//valueListValueName: "2832"
-                            //id:a_plannaam
-
-                            attribute.valueListValueName = 'id';
-                            attribute.valueListLabelName = 'a_plannaam';
+//                            attribute.valueListValueName = 'id';
+//                            attribute.valueListLabelName = 'a_plannaam';
 
                             var reqOpts = {
                                 featureType: attribute.valueListFeatureType,
-                                attributes: [attribute.valueListValueName, attribute.valueListLabelName]
-                                        // , maxFeatures: 25
+                                attributes: [attribute.valueListValueName, attribute.valueListLabelName],
+                                // maxFeatures: 1000,
+                                getKeyValuePairs: 't'
                             };
                             var proxy = Ext.create('Ext.data.proxy.Ajax', {
                                 url: actionBeans.unique,
                                 model: valueStore.model,
                                 extraParams: reqOpts,
+                                limitParam: '',
                                 reader: {
                                     type: 'json',
-                                    rootProperty: 'uniqueValues',
+                                    rootProperty: 'valuePairs',
                                     transform: {
                                         fn: function (data) {
-                                            // data returned is like
-                                            // {"uniqueValues":{"id":[ ...ids],"a_plannaam":[...names] },"success":true}
-                                            // hovever the order of those two arrays is not the same, so the
-                                            // following gives a bogus result, but does fill the combo with labels
-
-                                            var ids = data.uniqueValues[reqOpts.attributes[0]];
-                                            var labels = data.uniqueValues[reqOpts.attributes[1]];
-                                            var newUniqueValues = [];
-
-                                            for (var i = 0; i < ids.length; i++) {
-                                                newUniqueValues[i] = {id: ids[i], label: labels[i]};
-                                            }
-                                            var newData = {
+                                            // transform and sort the data
+                                            var valuePairs = [];
+                                            Ext.Object.each(data.valuePairs, function (key, value, object) {
+                                                valuePairs.push({
+                                                    id: key,
+                                                    label: value
+                                                });
+                                            });
+                                            valuePairs = valuePairs.sort(function (a, b) {
+                                                if (a.label < b.label)
+                                                    return -1;
+                                                if (a.label > b.label)
+                                                    return 1;
+                                                return 0;
+                                            });
+                                            return {
                                                 success: data.success,
-                                                uniqueValues: newUniqueValues
+                                                valuePairs: valuePairs
                                             };
-                                            return newData;
                                         },
                                         scope: this
                                     }
