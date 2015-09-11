@@ -31,6 +31,7 @@ Ext.define("viewer.components.Edit", {
     currentFID: null,
     geometryEditable: null,
     deActivatedTools: [],
+    schema:null,
     config: {
         title: "",
         iconUrl: "",
@@ -82,6 +83,7 @@ Ext.define("viewer.components.Edit", {
             },
             viewerController: this.config.viewerController
         });
+        this.schema = new Ext.data.schema.Schema();
 
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
@@ -740,14 +742,18 @@ Ext.define("viewer.components.Edit", {
             }
         }
 
-        Ext.define(this.name + 'Model', {
-            extend: 'Ext.data.Model',
-            fields: attributeList
-        });
+        var modelName = this.name + appLayer.id + 'Model';
+        if (!this.schema.hasEntity(modelName)) {
+            Ext.define(modelName, {
+                extend: 'Ext.data.Model',
+                fields: attributeList,
+                schema: this.schema
+            });
+        }
 
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
-            model: this.name + 'Model',
+            model:modelName,
             data: features
         });
 
