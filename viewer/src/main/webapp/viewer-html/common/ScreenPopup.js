@@ -29,8 +29,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             y: 100,
             width : 400,
             height: 600,
-            changeablePosition:false,
-            changeableSize:false,
+            changeablePosition:true,
+            changeableSize:true,
             items:null,
             position : 'center',
             useExtLayout: false
