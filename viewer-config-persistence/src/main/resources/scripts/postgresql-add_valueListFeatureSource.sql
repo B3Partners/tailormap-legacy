@@ -15,6 +15,10 @@ ALTER TABLE configured_attribute
   ADD COLUMN value_list_feature_type int8;
 
 
+
+  ALTER TABLE configured_attribute
+  ADD COLUMN value_list varchar(255);
+  
           alter table configured_attribute 
         add constraint FK521A69DBEC20F033 
         foreign key (value_list_feature_type) 

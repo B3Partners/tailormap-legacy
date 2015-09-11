@@ -213,6 +213,7 @@ Ext.onReady(function() {
                                         {
                                             fieldLabel: 'Statisch',
                                             name: 'valueList',
+                                            id: 'valueListStatic' + attribute.id,
                                             inputValue: 'static',
                                             labelAlign: 'right',
                                             value: attribute.valueList ? attribute.valueList === "static" : true,
@@ -224,7 +225,7 @@ Ext.onReady(function() {
                                                     if (newval) {
                                                         comp.setVisible(true);
                                                     }
-                                                    Ext.getCmp('edit' + attribute.id).doLayout();
+                                                    Ext.getCmp('edit' + attribute.id).updateLayout();
                                                 }
                                             }
 
@@ -233,6 +234,7 @@ Ext.onReady(function() {
                                             fieldLabel: 'Dynamisch',
                                             name: 'valueList',
                                             inputValue: 'dynamic',
+                                            id: 'valueListDynamic' + attribute.id,
                                             labelAlign: 'right',
                                             value: attribute.valueList ? attribute.valueList === "dynamic" : false,
                                             xtype: 'radio',
@@ -710,6 +712,14 @@ function getJson() {
             if(newAttribute["editvalues"] != undefined && newAttribute["editvalues"] != ""){
                 newAttribute["editvalues"]= newAttribute["editvalues"].split(",");
             }
+
+            var valueList = null;
+            var staticRadio = Ext.getCmp("valueListStatic" + attribute.id);
+            var dynamicRadio = Ext.getCmp("valueListDynamic" + attribute.id);
+            if(staticRadio.getValue() || dynamicRadio.getValue()){
+                valueList = staticRadio.getValue() ? "static" : "dynamic";
+            }
+            newAttribute.valueList = valueList;
         }
         newAttribute.filterable = Ext.getCmp('filterable' + attribute.id).getValue();
         newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();

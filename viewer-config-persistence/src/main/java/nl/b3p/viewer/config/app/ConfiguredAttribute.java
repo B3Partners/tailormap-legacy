@@ -70,6 +70,8 @@ public class ConfiguredAttribute {
 
     private String valueListValueName;
 
+    private String valueList;
+
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
         return attributeName;
@@ -191,6 +193,13 @@ public class ConfiguredAttribute {
         this.valueListValueName = valueListValueName;
     }
 
+    public String getValueList() {
+        return valueList;
+    }
+
+    public void setValueList(String valueList) {
+        this.valueList = valueList;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -216,9 +225,10 @@ public class ConfiguredAttribute {
             o.put("longname",featureType.getTypeName() + "." + attributeName);
         }
 
+        o.put("valueList", valueList);
+
         if (valueListFeatureSource != null) {
             o.put("valueListFeatureSource", valueListFeatureSource.getId());
-            o.put("valueList", "dynamic");
             if (valueListFeatureType != null) {
                 o.put("valueListFeatureType", valueListFeatureType.getId());
                 o.put("valueListLabelName", valueListLabelName);

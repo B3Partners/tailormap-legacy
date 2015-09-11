@@ -452,8 +452,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     if (attribute.has("valueListValueAttribute") && ! attribute.isNull("valueListValueAttribute")) {
                         appAttribute.setValueListValueName(attribute.getString("valueListValueAttribute"));
                     }
+
                     if (attribute.has("valueListLabelAttribute") && ! attribute.isNull("valueListLabelAttribute")) {
                         appAttribute.setValueListLabelName(attribute.getString("valueListLabelAttribute"));
+                    }
+
+                    if (attribute.has("valueList") && ! attribute.isNull("valueList")) {
+                        appAttribute.setValueList(attribute.getString("valueList"));
                     }
 
                 }
