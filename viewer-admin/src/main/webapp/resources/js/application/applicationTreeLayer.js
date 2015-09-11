@@ -96,7 +96,7 @@ Ext.onReady(function() {
                 editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                     itemId: 'edit' + attribute.id,
                     title: name + (attribute.editable ? ' (&times;)' : ''),
-                    height: 300,
+                    height: getAttributeEditHeight(attribute.valueList),
                     iconCls: "edit-icon-bw",
                     collapsed: collapsed,
                     items: getAttributeEditSettings(attribute, name)
@@ -534,6 +534,7 @@ function getAttributeEditSettings(attribute, name) {
         }
     });
     
+    // Initial load of store if attribute valuelist is dynamic
     if(attribute.valueList && attribute.valueList === "dynamic") {
         featureSourceStore.load();
     }
@@ -568,9 +569,7 @@ function getAttributeEditSettings(attribute, name) {
                             xtype: 'radio',
                             listeners: {
                                 change: function (field, newval) {
-                                    getComponentByItemId('#staticListValues' + attribute.id).setVisible(newval);
-                                    getComponentByItemId('#dynamicListValues' + attribute.id).setVisible(!newval);
-                                    getComponentByItemId('#edit' + attribute.id).updateLayout();
+                                    toggleStaticDynamic(newval ? 'static' : 'dynamic', attribute);
                                 }
                             }
 
@@ -585,9 +584,7 @@ function getAttributeEditSettings(attribute, name) {
                             xtype: 'radio',
                             listeners: {
                                 change: function (field, newval) {
-                                    getComponentByItemId('#dynamicListValues' + attribute.id).setVisible(newval);
-                                    getComponentByItemId('#staticListValues' + attribute.id).setVisible(!newval);
-                                    getComponentByItemId('#edit' + attribute.id).updateLayout();
+                                    toggleStaticDynamic(newval ? 'dynamic' : 'static', attribute);
                                     if(newval) {
                                         featureSourceStore.load();
                                     }
@@ -678,6 +675,18 @@ function getAttributeEditSettings(attribute, name) {
             fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'
         }
     ];
+}
+
+function toggleStaticDynamic(type, attribute) {
+    getComponentByItemId('#dynamicListValues' + attribute.id).setVisible(type === 'dynamic');
+    getComponentByItemId('#staticListValues' + attribute.id).setVisible(type === 'static');
+    getComponentByItemId('#edit' + attribute.id).setHeight(getAttributeEditHeight(type)).updateLayout();
+}
+
+function getAttributeEditHeight(type) {
+    var STATIC_HEIGHT = 190;
+    var DYNAMIC_HEIGHT = 290;
+    return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
 }
 
 function setValueAndEnable(id, records, value, recordvalue) {
@@ -816,5 +825,6 @@ function attributeGroupClick(el){
 }
 
 function getComponentByItemId(itemid) {
-    return Ext.ComponentQuery.query(itemid)[0];
+    var item = Ext.ComponentQuery.query(itemid)[0];
+    return item;
 }
