@@ -381,7 +381,7 @@ Ext.define("viewer.components.Edit", {
                     if (i == appLayer.geometryAttributeIndex) {
                         continue;
                     }
-                    if (attribute.valueList === undefined && (values == undefined || values.length == 1)) {
+                    if (attribute.valueList !== "dynamic" && (values == undefined || values.length == 1)) {
                         var fieldText = "";
                         if (values != undefined) {
                             fieldText = values[0];
