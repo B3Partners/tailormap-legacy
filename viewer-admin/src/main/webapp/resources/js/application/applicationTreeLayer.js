@@ -710,6 +710,9 @@ function getJson() {
         var editPanel = getComponentByItemId('#edit' + attribute.id);
         if (typeof editPanel !== 'undefined'){
             editPanel.getForm().getFields().each(function(field) {
+                if(field.getXType && field.getXType() === 'displayfield') {
+                    return;
+                }
                 newAttribute[field.getName()] = field.getValue();
             });
             
