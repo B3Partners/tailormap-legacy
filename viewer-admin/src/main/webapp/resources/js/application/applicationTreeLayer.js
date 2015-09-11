@@ -569,6 +569,7 @@ function getAttributeEditSettings(attribute, name) {
                             listeners: {
                                 change: function (field, newval) {
                                     getComponentByItemId('#staticListValues' + attribute.id).setVisible(newval);
+                                    getComponentByItemId('#dynamicListValues' + attribute.id).setVisible(!newval);
                                     getComponentByItemId('#edit' + attribute.id).updateLayout();
                                 }
                             }
@@ -585,6 +586,7 @@ function getAttributeEditSettings(attribute, name) {
                             listeners: {
                                 change: function (field, newval) {
                                     getComponentByItemId('#dynamicListValues' + attribute.id).setVisible(newval);
+                                    getComponentByItemId('#staticListValues' + attribute.id).setVisible(!newval);
                                     getComponentByItemId('#edit' + attribute.id).updateLayout();
                                     if(newval) {
                                         featureSourceStore.load();
