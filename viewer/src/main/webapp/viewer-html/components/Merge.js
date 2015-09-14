@@ -401,12 +401,12 @@ Ext.define("viewer.components.Merge", {
 
             if (this.geometryEditable) {
                 var wkt = feature[this.appLayer.geometryAttribute];
+                var color = (this.mode === "selectA") ? "FF0000" : "00FF00";
+                this.vectorLayer.style.fillcolor = color;
                 var feat = Ext.create("viewer.viewercontroller.controller.Feature", {
                     wktgeom: wkt,
                     id: feature.__fid,
-                    // TODO dit lijkt niet te werken..
-                    label: (this.mode === "selectA") ? "A" : "B",
-                    color: (this.mode === "selectA") ? "#FF0000" : "#00FF00"
+                    label: (this.mode === "selectA") ? "A" : "B"
                 });
                 this.vectorLayer.addFeature(feat);
             }

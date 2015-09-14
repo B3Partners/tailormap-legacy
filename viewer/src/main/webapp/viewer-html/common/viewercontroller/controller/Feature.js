@@ -32,8 +32,8 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
         var json = {};
         json.id = this._id;
         json.wktgeom = this._wktgeom;
-        json.color = this._color;
-        json.label = this._label;
+        json.color = this.color;
+        json.label = this.label;
         return json;
     },
     /**
