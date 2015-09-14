@@ -482,7 +482,7 @@ Ext.define ("viewer.components.Maptip",{
             if (!Ext.isEmpty(feature)){
                 var html="<table>";
                 for( var key in feature) {
-                    if(!feature.hasOwnProperty(key)) {
+                    if(!feature.hasOwnProperty(key) || key === "related_featuretypes") {
                         continue;
                     }
                     html+="<tr>"
