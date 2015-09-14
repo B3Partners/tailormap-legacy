@@ -144,7 +144,9 @@ public class DrawingActionBean implements ActionBean {
                     Geometry geom = new WKTReader().read(wkt);
                     polys.add(geom);
                 } catch (ParseException e) {
-                    log.error("Failed to parse geometry from gemeentenaam >" + wkt + "<. Message: " + e.getMessage());
+                    log.error("Failed to parse geometry >" + wkt + "<. Message: " + e.getMessage());
+                }catch(Exception e ){
+                    log.info("Error parsing feature, skipped.",e);
                 }
             }
         }
