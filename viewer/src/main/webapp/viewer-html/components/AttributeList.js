@@ -24,6 +24,7 @@ Ext.define ("viewer.components.AttributeList",{
     grids: null,
     pagers: null,
     attributeIndex: 0,
+    expandedRows: [],
     downloadForm:null,
     config: {
         layers:null,
@@ -299,8 +300,13 @@ Ext.define ("viewer.components.AttributeList",{
     onExpandRow: function(rowNode,record,expandRow,recordIndex,eOpts){
         var rawData = record.data || record.raw;
         var store=record.store;
-        if (rawData.related_featuretypes){
+        var recordid = record.get('id');
+        if(!this.expandedRows) {
+            this.expandedRows = [];
+        }
+        if (rawData.related_featuretypes && Ext.Array.indexOf(this.expandedRows, recordid) === -1){
             var childGridIds=[];
+            this.expandedRows.push(recordid);
             for (var i=0; i < rawData.related_featuretypes.length; i++){
                 var ft = rawData.related_featuretypes[i];
                 var newEl =document.createElement("div");
@@ -531,6 +537,8 @@ Ext.define ("viewer.components.AttributeList",{
                     if(store.totalCount !== 0 && records.length < pageSize) {
                         maxResults = store.totalCount;
                     }
+
+                    Ext.getCmp(me.name + 'mainGridPanel').updateLayout();
                 }
             },
             autoLoad: true
