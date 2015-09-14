@@ -538,7 +538,7 @@ Ext.define ("viewer.components.AttributeList",{
                         maxResults = store.totalCount;
                     }
 
-                    Ext.getCmp(me.name + 'mainGridPanel').updateLayout();
+                    setTimeout(function(){ Ext.getCmp(me.name + 'mainGridPanel').updateLayout(); }, 0);
                 }
             },
             autoLoad: true
