@@ -34,7 +34,15 @@ Ext.define("viewer.components.CustomConfiguration", {
                 name: 'allowDelete',
                 value: this.configObject.allowDelete !== undefined ? this.configObject.allowDelete : false,
                 labelWidth: this.labelWidth
-            }]);
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: 'Kopiëren toestaan',
+                name: 'allowCopy',
+                value: this.configObject.allowCopy !== undefined ? this.configObject.allowCopy : false,
+                labelWidth: this.labelWidth
+            }
+        ]);
     }
 });
 

@@ -39,6 +39,7 @@ Ext.define("viewer.components.Edit", {
         layers: null,
         label: "",
         allowDelete: false,
+        allowCopy: false,
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor'
     },
@@ -50,7 +51,7 @@ Ext.define("viewer.components.Edit", {
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
             if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
                     || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
-                if (me.mode == "new" || me.mode == "edit" || me.mode == "delete") {
+                if (me.mode == "new" || me.mode == "edit" || me.mode == "delete" || me.mode == "copy") {
                     return false;
                 }
             }
@@ -159,6 +160,20 @@ Ext.define("viewer.components.Edit", {
                         },
                         {
                             xtype: 'button',
+                            id: this.name + "copyButton",
+                            tooltip: "Kopie bewerken",
+                            componentCls: 'mobileLarge',
+                            disabled: true,
+                            text: "Kopie",
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: me.copy
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'button',
                             id: this.name + "editButton",
                             tooltip: "Bewerk",
                             componentCls: 'mobileLarge',
@@ -184,14 +199,14 @@ Ext.define("viewer.components.Edit", {
                                     fn: me.deleteFeature
                                 }
                             }
-                        },
-                        {
-                            id: this.name + "geomLabel",
-                            margin: 5,
-                            text: '',
-                            xtype: "label"
                         }
                     ]
+                },
+                {
+                    id: this.name + "geomLabel",
+                    margin: 5,
+                    text: '',
+                    xtype: "label"
                 },
                 {
                     id: this.name + 'InputPanel',
@@ -244,6 +259,9 @@ Ext.define("viewer.components.Edit", {
 
         if (!this.config.allowDelete) {
             Ext.getCmp(this.name + "deleteButton").destroy();
+        }
+        if (!this.config.allowCopy) {
+            Ext.getCmp(this.name + "copyButton").destroy();
         }
 
         this.inputContainer = Ext.getCmp(this.name + 'InputPanel');
@@ -359,6 +377,9 @@ Ext.define("viewer.components.Edit", {
                 Ext.getCmp(this.name + "editButton").setDisabled(false);
                 if (this.config.allowDelete) {
                     Ext.getCmp(this.name + "deleteButton").setDisabled(false);
+                }
+                if (this.config.allowCopy) {
+                    Ext.getCmp(this.name + "copyButton").setDisabled(false);
                 }
                 if (this.newGeomType == null) {
                     tekst = "Geometrie mag alleen bewerkt worden";
@@ -502,6 +523,9 @@ Ext.define("viewer.components.Edit", {
             if (this.config.allowDelete) {
                 Ext.getCmp(this.name + "deleteButton").setDisabled(true);
             }
+            if (this.config.allowCopy) {
+                Ext.getCmp(this.name + "copyButton").setDisabled(true);
+            }
         }
     },
     setInputPanel: function (feature) {
@@ -540,7 +564,11 @@ Ext.define("viewer.components.Edit", {
     handleFeature: function (feature) {
         if (feature != null) {
             this.inputContainer.getForm().setValues(feature);
-            this.currentFID = feature.__fid;
+            if (this.mode === "copy") {
+                this.currentFID = null;
+            } else {
+                this.currentFID = feature.__fid;
+            }
             if (this.geometryEditable) {
                 var wkt = feature[this.appLayer.geometryAttribute];
                 var feat = Ext.create("viewer.viewercontroller.controller.Feature", {
@@ -568,6 +596,11 @@ Ext.define("viewer.components.Edit", {
     edit: function () {
         this.vectorLayer.removeAllFeatures();
         this.mode = "edit";
+        this.activateMapClick();
+    },
+    copy: function () {
+        this.vectorLayer.removeAllFeatures();
+        this.mode = "copy";
         this.activateMapClick();
     },
     deleteFeature: function () {
@@ -603,8 +636,11 @@ Ext.define("viewer.components.Edit", {
                 feature[this.appLayer.geometryAttribute] = wkt;
             }
         }
-        if (this.mode == "edit") {
+        if (this.mode === "edit") {
             feature.__fid = this.currentFID;
+        }
+        if (this.mode === "copy") {
+            delete feature.__fid;
         }
         var me = this;
         try {
@@ -692,6 +728,9 @@ Ext.define("viewer.components.Edit", {
         Ext.getCmp(this.name + "newButton").setDisabled(true);
         if (this.config.allowDelete) {
             Ext.getCmp(this.name + "deleteButton").setDisabled(true);
+        }
+        if (this.config.allowCopy) {
+            Ext.getCmp(this.name + "copyButton").setDisabled(true);
         }
         Ext.getCmp(this.name + "saveButton").setText("Opslaan");
         this.mode = null;
