@@ -50,4 +50,24 @@
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
         </properties>
     </persistence-unit>    
+    
+     <persistence-unit name="viewer-config-h2" transaction-type="RESOURCE_LOCAL">
+        <!-- de H2 in-memory of file database wordt gebruikt voor unit tests. -->
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <mapping-file>META-INF/orm-h2.xml</mapping-file>
+        <properties>
+            <property name="hibernate.archive.autodetection" value="class"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+            <!-- eventueel testen met Oracle Compatibility Mode ';MODE=Oracle' of
+            PostgreSQL Compatibility Mode ';MODE=PostgreSQL'
+            zie:http://www.h2database.com/html/features.html#compatibility -->
+            <!-- property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/ -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:./target/unittest-h2/db"/>
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+        </properties>
+    </persistence-unit>
 </persistence>
