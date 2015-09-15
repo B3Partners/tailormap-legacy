@@ -42,7 +42,44 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>test-schema-export</id>
+                        <phase>generate-test-resources</phase>
+                        <configuration>
+                            <hibernatetool destdir="${project.build.outputDirectory}/scripts">
+                                <classpath>
+                                    <path location="target" />
+                                </classpath>
+                                <!-- voor de unit tests met H2 -->
+                                <hbm2ddl export="true" drop="true" create="true" outputfilename="h2-schema-export.sql" format="true">
+                                    <jpaconfiguration persistenceUnit="viewer-config-h2" />
+                                </hbm2ddl>
+                            </hibernatetool>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <!-- h2 wordt allen voor unit tests gebruikt, maar als deze
+                        als test scope dep wordt opgevoerd treedt er een CNFE op tijdens de build. -->
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.4.189</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -110,6 +147,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
