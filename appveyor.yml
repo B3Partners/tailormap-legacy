@@ -13,13 +13,13 @@ environment:
     JAVA_HOME: C:\Program Files\Java\jdk1.8.0
 
 install:
-  - set MVN_VERSION=3.2.5
+  - set MVN_VERSION=3.3.1
   - set PATH=%PATH%;C:\bin\apache-maven-%MVN_VERSION%\bin
   - IF NOT exist "C:\bin\apache-maven-%MVN_VERSION%\bin\*.*" (echo Maven %MVN_VERSION% not installed, so install it & cinst maven -Version %MVN_VERSION%) ELSE (echo Maven %MVN_VERSION% already installed)
-  - mvn install -U -Dmaven.test.skip=true -B -V -fae -q -T2 
+  - mvn install -U -Dmaven.test.skip=true -B -V -fae -q
   
 cache:
-  - C:\bin\apache-maven-3.2.5 -> appveyor.yml
+  - C:\bin\apache-maven-3.3.1 -> appveyor.yml
   - C:\Users\appveyor\.m2\repository -> pom.xml
 
 build: off
