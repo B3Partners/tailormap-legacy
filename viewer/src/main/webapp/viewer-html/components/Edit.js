@@ -636,11 +636,11 @@ Ext.define("viewer.components.Edit", {
                 feature[this.appLayer.geometryAttribute] = wkt;
             }
         }
-        if (this.mode == "edit") {
+        if (this.mode === "edit") {
             feature.__fid = this.currentFID;
         }
-        if (this.mode == "copy") {
-            feature.__fid = null;
+        if (this.mode === "copy") {
+            delete feature.__fid;
         }
         var me = this;
         try {
