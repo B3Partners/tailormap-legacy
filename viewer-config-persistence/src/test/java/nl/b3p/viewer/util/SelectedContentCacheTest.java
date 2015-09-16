@@ -5,11 +5,18 @@
  */
 package nl.b3p.viewer.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
+import org.hibernate.Session;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,12 +47,31 @@ public class SelectedContentCacheTest extends TestUtil{
     // @Test
     // public void hello() {}
     @Test
-    public void pipoTaart(){        
+    public void persistApplication(){
         Application app = new Application();
         app.setName("testapp");
         entityManager.persist(app);
         entityManager.getTransaction().commit();
         assert(true);
-       
+    }
+
+    @Test
+    public void testSelectedContentGeneration() throws SQLException, FileNotFoundException, IOException, URISyntaxException{
+
+        Connection conn =  null;
+
+        try{
+            Session session = (Session)entityManager.getDelegate();
+            conn = (Connection)session.connection();
+            ScriptRunner sr = new ScriptRunner(conn, true, true);
+
+            File f = new File(this.getClass().getResource("testdata.sql").toURI());
+            sr.runScript(new FileReader(f));
+        }finally
+        {
+            if(conn != null){
+                conn.close();
+            }
+        }
     }
 }
