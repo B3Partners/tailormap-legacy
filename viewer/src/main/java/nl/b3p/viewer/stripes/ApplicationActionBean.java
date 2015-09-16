@@ -181,7 +181,7 @@ public class ApplicationActionBean implements ActionBean {
 
         EntityManager em = Stripersist.getEntityManager();
         SelectedContentCache cache = new SelectedContentCache();
-        JSONObject sc = cache.createSelectedContent(application, false,false, false);
+        JSONObject sc = cache.createSelectedContent(application, false,false, false,em);
         application.getDetails().put("selected_content_cache", new ClobElement(sc.toString()));
         em.getTransaction().commit();
         return view;
@@ -189,8 +189,6 @@ public class ApplicationActionBean implements ActionBean {
 
      public Resolution retrieveCache() throws JSONException, IOException{
         Resolution view = view();
-        EntityManager em = Stripersist.getEntityManager();
-        SelectedContentCache cache = new SelectedContentCache();
         ClobElement el = application.getDetails().get("selected_content_cache");
         appConfigJSON = el.getValue();
         return view;
@@ -230,7 +228,8 @@ public class ApplicationActionBean implements ActionBean {
 
         buildComponentSourceHTML();
 
-        appConfigJSON = application.toJSON(context.getRequest(),false, false);
+        EntityManager em = Stripersist.getEntityManager();
+        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
 
         //make hashmap for jsonobject.

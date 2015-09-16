@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -100,14 +101,15 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     public Resolution view() throws JSONException, TransformerConfigurationException, TransformerException, Exception {
         List<Application> applications = Stripersist.getEntityManager().createQuery("FROM Application order by name,version").getResultList();
         JSONArray jsonApps = new JSONArray();
+        EntityManager em = Stripersist.getEntityManager();
         for (Application app: applications){
-            JSONObject json = new JSONObject(app.toJSON(this.context.getRequest(),true,true));
+            JSONObject json = new JSONObject(app.toJSON(this.context.getRequest(),true,true,em));
             jsonApps.put(json);
         }
         //add the featureSources to the JSON.
         List <FeatureSource> featureSources;
         if (this.featureSource==null){
-            featureSources = Stripersist.getEntityManager().createQuery("FROM FeatureSource").getResultList();
+            featureSources = em.createQuery("FROM FeatureSource").getResultList();
         }else{
             featureSources = new ArrayList<FeatureSource>();
             featureSources.add(this.featureSource);

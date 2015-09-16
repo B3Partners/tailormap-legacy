@@ -165,7 +165,7 @@ public class LayerListActionBean implements ActionBean {
             // TODO filter layers according to readers
             // set writeable according to writers
 
-            List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers);
+            List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers,em);
             for (ApplicationLayer layer : filteredLayers) {
                 try {
                     jsonArray.put(layer.toJSONObject());

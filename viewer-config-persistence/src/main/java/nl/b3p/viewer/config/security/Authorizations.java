@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.security;
 
 import java.util.*;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.services.*;
@@ -545,7 +546,7 @@ public class Authorizations {
         synchronized(LOCK) {        
             ApplicationCache cache = applicationCache.get(app.getId());
             Date allServicesAuthLastChanged = null;
-
+            EntityManager em = Stripersist.getEntityManager();
             if(cache != null) {
                 // Check if the data was not cached before the authorizations 
                 // were modified
@@ -559,7 +560,7 @@ public class Authorizations {
                         // checking only services used is not worth it because the
                         // authorizations for services should only change infrequently)
                         
-                        allServicesAuthLastChanged = (Date)Stripersist.getEntityManager().createQuery("select max(authorizationsModified) from GeoService").getSingleResult();
+                        allServicesAuthLastChanged = (Date)em.createQuery("select max(authorizationsModified) from GeoService").getSingleResult();
                         
                         if(allServicesAuthLastChanged != null && !cache.modified.before(allServicesAuthLastChanged)) {
                             return cache;
@@ -580,7 +581,7 @@ public class Authorizations {
             cache.protectedLevels = new HashMap();
             cache.protectedAppLayers = new HashMap();
                         
-            Application.TreeCache treeCache = app.loadTreeCache();
+            Application.TreeCache treeCache = app.loadTreeCache(em);
             treeCache.initializeLevels("left join fetch l.readers");
             treeCache.initializeApplicationLayers("left join fetch al.readers left join fetch al.writers");
             

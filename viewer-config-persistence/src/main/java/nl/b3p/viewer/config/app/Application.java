@@ -299,17 +299,17 @@ public class Application {
     @Transient
     private TreeCache treeCache;
     
-    public TreeCache loadTreeCache() {
+    public TreeCache loadTreeCache(EntityManager em) {
         if(treeCache == null) {
             
             treeCache = new TreeCache();
             
             // Retrieve level tree structure in single query
-            treeCache.levels = Stripersist.getEntityManager().createNamedQuery("getLevelTree")
+            treeCache.levels = em.createNamedQuery("getLevelTree")
                 .setParameter("rootId", root.getId())
                 .getResultList();
             
-            treeCache.initializeLevels("left join fetch l.layers");
+            treeCache.initializeLevels("left join fetch l.layers",em);
 
             treeCache.childrenByParent = new HashMap();
             treeCache.applicationLayers = new ArrayList();
@@ -335,18 +335,18 @@ public class Application {
         authorizationsModified = new Date();
     }
     
-    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers) throws JSONException {
-        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false);
+    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
+        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false,em);
     }
     
     /**
      * Create a JSON representation for use in browser to start this application
      * @return
      */
-    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
+    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
         JSONObject o = null;
         SelectedContentCache cache = new SelectedContentCache();
-        o = cache.getSelectedContent(request, this, validXmlTags, includeAppLayerAttributes, includeRelations);
+        o = cache.getSelectedContent(request, this, validXmlTags, includeAppLayerAttributes, includeRelations,em);
        
         o.put("id", id);
         o.put("name", name);
@@ -515,9 +515,9 @@ public class Application {
      * component configuration.
      * @param old The Application to which the layerIds should be matched.
      */
-    public void transferMashup (Application old){
+    public void transferMashup (Application old, EntityManager em){
         originalToCopy = new HashMap();
-        loadTreeCache();
+        loadTreeCache(em);
         visitLevelForMashuptransfer(old.getRoot(), originalToCopy);
         processCopyMap();
         // Loop alle levels af van de oude applicatie

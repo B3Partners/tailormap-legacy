@@ -206,7 +206,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
 
         try {
-            appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true);
+            appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true,em);
         } catch(JSONException je) {
         }
         
