@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
@@ -34,7 +35,6 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.util.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -55,7 +55,7 @@ public class SelectedContentCache {
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT = "cachedExpandedSelectedContent";
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY = "cachedExpandedSelectedContentDirty";
 
-    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
+    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
 
         // Don't use cache when any of these parameters is true, cache only
         // the JSON variant used when starting up the viewer
@@ -63,7 +63,7 @@ public class SelectedContentCache {
 
         JSONObject cached = null;
         if (mustCreateNewCache(app, validXmlTags, useExpanded)) {
-            cached = createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations);
+            cached = createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations,em);
             if (!validXmlTags) {
                 ClobElement el = new ClobElement(cached.toString());
                 app.getDetails().put(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT, el);
@@ -246,13 +246,13 @@ public class SelectedContentCache {
         return true;
     }
 
-    public JSONObject createSelectedContent(Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
+    public JSONObject createSelectedContent(Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
         Level root = app.getRoot();
         JSONObject o = new JSONObject();
         if (root != null) {
             o.put("rootLevel", root.getId().toString());
 
-            Application.TreeCache treeCache = app.loadTreeCache();
+            Application.TreeCache treeCache = app.loadTreeCache(em);
             treeCache.initializeLevels("left join fetch l.documents");
             treeCache.initializeApplicationLayers("left join fetch al.details");
             Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app);

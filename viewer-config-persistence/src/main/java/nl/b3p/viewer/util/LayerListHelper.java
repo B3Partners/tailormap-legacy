@@ -17,15 +17,12 @@
 package nl.b3p.viewer.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level; 
 import nl.b3p.viewer.config.services.ArcGISFeatureSource;
 import nl.b3p.viewer.config.services.ArcGISService;
-import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WMSService;
 
@@ -42,10 +39,10 @@ public class LayerListHelper {
      * @return A list of Layer objects
      */
     public static List<ApplicationLayer> getLayers(Application application,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,
-        Boolean hasConfiguredLayers, List<Long> possibleLayers) {
+        Boolean hasConfiguredLayers, List<Long> possibleLayers, EntityManager em) {
         List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
-        Application.TreeCache tc = application.loadTreeCache();
+        Application.TreeCache tc = application.loadTreeCache(em);
 
         for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
 
