@@ -24,11 +24,13 @@
     </named-native-query>
     <named-native-query name="getLevelTree"  result-class="nl.b3p.viewer.config.app.Level">
         <query><![CDATA[
-            with recursive level_tree(id, background, info, name, selected_index, url, parent) as (
-                select id, background, info, name, selected_index, url, parent from level_ where id = :rootId
-                union 
-                select l.id, l.background, l.info, l.name, l.selected_index, l.url, l.parent from level_tree, level_ l where l.parent = level_tree.id
-                ) select id, background, info, name, selected_index, url, parent  from level_tree
+            select * from level_ where id in (
+                with recursive level_tree(id) as (
+                    select id from level_ where id = :rootId
+                    union
+                    select l.id from level_tree, level_ l where l.parent = level_tree.id
+                )
+                select * from level_tree) order by id
         ]]></query>
     </named-native-query>
 
