@@ -276,22 +276,22 @@ public class Authorizations {
         return "User " + request.getRemoteUser() == null ? "(none)" : request.getRemoteUser() + " not authorized to " + (write ? "edit ": "access ");
     }
     
-    public static boolean isLayerReadAuthorized(Layer l, HttpServletRequest request) {
-        return isReadAuthorized(request, getLayerAuthorizations(l));
+    public static boolean isLayerReadAuthorized(Layer l, HttpServletRequest request, EntityManager em) {
+        return isReadAuthorized(request, getLayerAuthorizations(l,em));
     }
     
-    public static void checkLayerReadAuthorized(Layer l, HttpServletRequest request) throws Exception {
-        if(!isLayerReadAuthorized(l, request)) {
+    public static void checkLayerReadAuthorized(Layer l, HttpServletRequest request, EntityManager em) throws Exception {
+        if(!isLayerReadAuthorized(l, request,em)) {
             throw new Exception(unauthMsg(request,false) + " layer #" + l.getId());
         }
     }
     
-    public static boolean isLayerWriteAuthorized(Layer l, HttpServletRequest request) {
-        return isWriteAuthorized(request, getLayerAuthorizations(l));
+    public static boolean isLayerWriteAuthorized(Layer l, HttpServletRequest request, EntityManager em) {
+        return isWriteAuthorized(request, getLayerAuthorizations(l,em));
     }
     
-    public static void checkLayerWriteAuthorized(Layer l, HttpServletRequest request) throws Exception {
-        if(!isLayerWriteAuthorized(l, request)) {
+    public static void checkLayerWriteAuthorized(Layer l, HttpServletRequest request, EntityManager em) throws Exception {
+        if(!isLayerWriteAuthorized(l, request,em)) {
             throw new Exception(unauthMsg(request,true) + " layer #" + l.getId());
         }
     }
@@ -307,8 +307,8 @@ public class Authorizations {
      * attribute of the layer (the user is not in any of the groups that prevent
      * editing geometry).
      */
-    public static boolean isLayerGeomWriteAuthorized(Layer l, HttpServletRequest request) {
-        if (isLayerWriteAuthorized(l, request)) {
+    public static boolean isLayerGeomWriteAuthorized(Layer l, HttpServletRequest request, EntityManager em) {
+        if (isLayerWriteAuthorized(l, request,em)) {
             Set<String> preventEditGeomGroup = l.getPreventGeomEditors();
             for (String group : preventEditGeomGroup) {
                 if (request.isUserInRole(group)) {
@@ -466,7 +466,7 @@ public class Authorizations {
      * not null, the "readers" and "writers" properties of the returned 
      * ReadWriteAuthorizations may be equal to EVERYONE.
      */
-    public static ReadWrite getLayerAuthorizations(Layer l) {
+    public static ReadWrite getLayerAuthorizations(Layer l, EntityManager em) {
         synchronized(LOCK) {
             GeoServiceCache cache = serviceCache.get(l.getService().getId());
           
@@ -482,7 +482,7 @@ public class Authorizations {
             cache.modified = l.getService().getAuthorizationsModified();
             cache.protectedLayers = new HashMap();
             
-            List<Layer> layers = l.getService().loadLayerTree();
+            List<Layer> layers = l.getService().loadLayerTree(em);
             if(!layers.isEmpty()) {
                 // Prevent n+1 queries
                 int i = 0;
@@ -584,13 +584,13 @@ public class Authorizations {
             treeCache.initializeLevels("left join fetch l.readers",em);
             treeCache.initializeApplicationLayers("left join fetch al.readers left join fetch al.writers",em);
             
-            walkLevel(app.getRoot(), EVERYBODY, cache, treeCache);
+            walkLevel(app.getRoot(), EVERYBODY, cache, treeCache, em);
 
             return cache;
         }
     }
 
-    private static void walkLevel(Level l, Set<String> currentReaders, ApplicationCache cache, Application.TreeCache treeCache) {
+    private static void walkLevel(Level l, Set<String> currentReaders, ApplicationCache cache, Application.TreeCache treeCache, EntityManager em) {
         currentReaders = inheritAuthorizations(currentReaders, l.getReaders());
         
         if(!currentReaders.equals(EVERYBODY)) {
@@ -599,26 +599,26 @@ public class Authorizations {
         
         for(ApplicationLayer al: l.getLayers()) {
             if(al != null) {
-                walkAppLayer(al, currentReaders, cache);
+                walkAppLayer(al, currentReaders, cache,em);
             }
         }        
                 
         for(Level child: treeCache.getChildren(l)) {
-            walkLevel(child, currentReaders, cache, treeCache);
+            walkLevel(child, currentReaders, cache, treeCache, em);
         }
     }
     
-    private static void walkAppLayer(ApplicationLayer al, Set<String> currentReaders, ApplicationCache cache) {
+    private static void walkAppLayer(ApplicationLayer al, Set<String> currentReaders, ApplicationCache cache, EntityManager em) {
 
         currentReaders = inheritAuthorizations(currentReaders, al.getReaders());
         
         // check the layer referenced by this appLayer    
-        Layer l = al.getService().getLayer(al.getLayerName());
+        Layer l = al.getService().getLayer(al.getLayerName(),em);
 
         Set<String> currentWriters = al.getWriters();
         
         if(l != null) {
-            ReadWrite layerAuth = getLayerAuthorizations(l);
+            ReadWrite layerAuth = getLayerAuthorizations(l,em);
             if(layerAuth != null) {
                 currentReaders = inheritAuthorizations(currentReaders, layerAuth.readers);
                 currentWriters = inheritAuthorizations(currentWriters, layerAuth.writers);

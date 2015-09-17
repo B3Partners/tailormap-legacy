@@ -136,7 +136,7 @@ public class WMSService extends GeoService implements Updatable {
      * @param status For reporting progress.
      */
     @Override
-    public WMSService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
+    public WMSService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
             
@@ -152,7 +152,7 @@ public class WMSService extends GeoService implements Updatable {
                 return null;
             }
             
-            wmsService.load(wms, params, status);
+            wmsService.load(wms, params, status, em);
             
             return wmsService;
         } finally {
@@ -165,7 +165,7 @@ public class WMSService extends GeoService implements Updatable {
     /**
      * Do the actual loading work.
      */
-    protected void load(WebMapServer wms, Map params, WaitPageStatus status) throws IOException, MalformedURLException, ServiceException {
+    protected void load(WebMapServer wms, Map params, WaitPageStatus status, EntityManager em) throws IOException, MalformedURLException, ServiceException {
         ServiceInfo si = wms.getInfo();
         setName(si.getTitle());
         
@@ -221,7 +221,7 @@ public class WMSService extends GeoService implements Updatable {
                 try {
                     List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
 
-                    loadLayerFeatureTypes(wfsUrl, layerDescriptions);
+                    loadLayerFeatureTypes(wfsUrl, layerDescriptions, em);
                 } catch(Exception e) {
                     log.error("Failed loading feature types from WFS " + wfsUrl, e);
                 }
@@ -261,7 +261,7 @@ public class WMSService extends GeoService implements Updatable {
      * from the service.
      */
     @Override
-    public UpdateResult update() {
+    public UpdateResult update(EntityManager em) {
         
         initLayerCollectionsForUpdate();
         final UpdateResult result = new UpdateResult(this);
@@ -271,7 +271,7 @@ public class WMSService extends GeoService implements Updatable {
             params.put(PARAM_OVERRIDE_URL, getOverrideUrl());
             params.put(PARAM_USERNAME, getUsername());
             params.put(PARAM_PASSWORD, getPassword());
-            WMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
+            WMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80),em);
             
             if(!getUrl().equals(update.getUrl())) {
                 this.setUrl(update.getUrl());
@@ -697,7 +697,7 @@ public class WMSService extends GeoService implements Updatable {
      * @param layerDescriptions description of which feature types of the WFS are
      *   used in layers of this service according to DescribeLayer
      */
-    public void loadLayerFeatureTypes(String wfsUrl, List<LayerDescription> layerDescriptions) {
+    public void loadLayerFeatureTypes(String wfsUrl, List<LayerDescription> layerDescriptions, EntityManager em) {
         Map p = new HashMap();
         p.put(WFSDataStoreFactory.URL.key, wfsUrl);
         p.put(WFSDataStoreFactory.USERNAME.key, getUsername());
@@ -709,7 +709,7 @@ public class WMSService extends GeoService implements Updatable {
             
             boolean used = false;
             for(LayerDescription ld: layerDescriptions) {
-                Layer l = getLayer(ld.getName());
+                Layer l = getLayer(ld.getName(), em);
                 if(l != null) {
                     // Prevent warning when multiple queries for all the same type name
                     // by removing duplicates, but keeping sort order to pick the first

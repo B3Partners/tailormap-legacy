@@ -309,7 +309,7 @@ public class SelectedContentCache {
                     if (validXmlTags) {
                         serviceId = "service_" + serviceId;
                     }
-                    services.put(serviceId, gs.toJSONObject(false, usedLayers, validXmlTags, true));
+                    services.put(serviceId, gs.toJSONObject(false, usedLayers, validXmlTags, true,em));
                 }
             }
         }

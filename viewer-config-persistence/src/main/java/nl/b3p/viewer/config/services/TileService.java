@@ -52,11 +52,11 @@ public class TileService extends GeoService {
     }
 
     @Override
-    public void checkOnline() throws Exception {
+    public void checkOnline(EntityManager em) throws Exception {
     }
     
     @Override
-    public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) {
+    public GeoService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) {
         status.setCurrentAction("Bezig met aanmaken tile service");
         try{
             TileService s = new TileService();
@@ -83,7 +83,7 @@ public class TileService extends GeoService {
             Boolean unique = false;
             String tsName=serviceName;
             for (int i=0; i < 100; i++){
-                if(Stripersist.getEntityManager().find(TileSet.class,tsName)==null){
+                if(em.find(TileSet.class,tsName)==null){
                     unique=true;
                     break;
                 }
@@ -117,7 +117,7 @@ public class TileService extends GeoService {
             topLayer.getChildren().add(tilingLayer);
             s.setTopLayer(topLayer);
             
-            Stripersist.getEntityManager().persist(ts);           
+            em.persist(ts);
             tilingLayer.setTileset(ts);
             
             return s;
@@ -139,8 +139,8 @@ public class TileService extends GeoService {
     }
     
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags, EntityManager em) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,em);
         if(tilingProtocol != null) {
             o.put("tilingProtocol", tilingProtocol);
         }
@@ -148,8 +148,8 @@ public class TileService extends GeoService {
     }    
     
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags, includeAuthorizations);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags, includeAuthorizations,em);
         if(tilingProtocol != null) {
             o.put("tilingProtocol", tilingProtocol);
         }

@@ -113,7 +113,7 @@ public class ArcGISService extends GeoService implements Updatable {
 
     //<editor-fold defaultstate="collapsed" desc="Loading service metadata from ArcGIS">
     @Override
-    public ArcGISService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
+    public ArcGISService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
 
@@ -399,7 +399,7 @@ public class ArcGISService extends GeoService implements Updatable {
 
     //<editor-fold desc="Updating">
     @Override
-    public UpdateResult update() {
+    public UpdateResult update(EntityManager em) {
 
         initLayerCollectionsForUpdate();
 
@@ -411,7 +411,7 @@ public class ArcGISService extends GeoService implements Updatable {
             params.put(PARAM_USERNAME, getUsername());
             params.put(PARAM_PASSWORD, getPassword());
 
-            ArcGISService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
+            ArcGISService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80),em);
 
             getDetails().put(DETAIL_CURRENT_VERSION, update.getDetails().get(DETAIL_CURRENT_VERSION));
 
@@ -603,13 +603,13 @@ public class ArcGISService extends GeoService implements Updatable {
     //<editor-fold desc="Add currentVersion to toJSONObject()">
 
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags) throws JSONException {
-        return toJSONObject(validXmlTags, layersToInclude, validXmlTags, false);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, EntityManager em) throws JSONException {
+        return toJSONObject(validXmlTags, layersToInclude, validXmlTags, false, em);
     }
 
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations, em);
 
         // Add currentVersion info to service info
 
@@ -638,8 +638,8 @@ public class ArcGISService extends GeoService implements Updatable {
     }
 
     @Override
-    public JSONObject toJSONObject(boolean flatten) throws JSONException {
-        return toJSONObject(flatten, null,false);
+    public JSONObject toJSONObject(boolean flatten, EntityManager em) throws JSONException {
+        return toJSONObject(flatten, null,false, em);
     }
     //</editor-fold>
 

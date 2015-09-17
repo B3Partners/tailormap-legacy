@@ -223,11 +223,11 @@ public abstract class GeoService {
         em.createQuery("from Layer l left join fetch l.children where l.service = :this").setParameter("this", this).getResultList();
     }
     
-    public GeoService loadFromUrl(String url, Map params) throws Exception {
-        return loadFromUrl(url, params, new WaitPageStatus());
+    public GeoService loadFromUrl(String url, Map params, EntityManager em) throws Exception {
+        return loadFromUrl(url, params, new WaitPageStatus(),em);
     }
 
-    public abstract GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus) throws Exception;
+    public abstract GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus, EntityManager em) throws Exception;
     
     protected static void setAllChildrenDetail(Layer layer) {
         
@@ -260,7 +260,7 @@ public abstract class GeoService {
         });
     }
     
-    public void checkOnline() throws Exception {
+    public void checkOnline(EntityManager em) throws Exception {
         Map params = new HashMap();
         params.put(PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);
         loadFromUrl(getUrl(), params, new WaitPageStatus() {
@@ -275,7 +275,7 @@ public abstract class GeoService {
                 // no debug logging
                 logs.add(message);
             }            
-        });
+        },em);
     }
     
     public String getProtocol() {
@@ -296,19 +296,19 @@ public abstract class GeoService {
      * The cache is not updated on changes, so will only represent the database
      * state when loadLayerTree() was last called.
      */
-    public List<Layer> loadLayerTree() {
+    public List<Layer> loadLayerTree(EntityManager em) {
         if(layers != null) {
             return layers;
         }
         
-        if(!Stripersist.getEntityManager().contains(this)) {
+        if(!em.contains(this)) {
             // Not a persistent entity (for example when loading user specified 
             // service)
             return Collections.EMPTY_LIST;
         }
         
         // Retrieve layer tree structure in single query
-        layers = Stripersist.getEntityManager().createNamedQuery("getLayerTree")
+        layers = em.createNamedQuery("getLayerTree")
             .setParameter("rootId", topLayer.getId())
             .getResultList();   
       
@@ -346,11 +346,11 @@ public abstract class GeoService {
         }
     }
     
-    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags) throws JSONException {
-        return toJSONObject(includeLayerTree, layersToInclude, validXmlTags, false);
+    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags, EntityManager em) throws JSONException {
+        return toJSONObject(includeLayerTree, layersToInclude, validXmlTags, false, em);
     }
     
-    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
+    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("name", name);
@@ -404,16 +404,16 @@ public abstract class GeoService {
         
         if(topLayer != null) {
             
-            if(Stripersist.getEntityManager().contains(this)) {
+            if(em.contains(this)) {
                    
-                List<Layer> layerEntities = loadLayerTree();          
+                List<Layer> layerEntities = loadLayerTree(em);
 
                 if(!layerEntities.isEmpty()) {
                     // Prevent n+1 queries
                     int i = 0;
                     do {
                         List<Layer> subList = layerEntities.subList(i, Math.min(layerEntities.size(), i+DB.MAX_LIST_EXPRESSIONS));
-                        Stripersist.getEntityManager().createQuery("from Layer l "
+                        em.createQuery("from Layer l "
                                 + "left join fetch l.details "
                                 + "where l in (:layers)")
                                 .setParameter("layers", subList)
@@ -425,7 +425,7 @@ public abstract class GeoService {
 
             JSONObject layers = new JSONObject();
             o.put("layers", layers);
-            walkLayerJSONFlatten(topLayer, layers, layersToInclude,validXmlTags, includeAuthorizations);
+            walkLayerJSONFlatten(topLayer, layers, layersToInclude,validXmlTags, includeAuthorizations, em);
             
             if(includeLayerTree) {
                 o.put("topLayer", walkLayerJSONTree(topLayer));
@@ -435,7 +435,7 @@ public abstract class GeoService {
         return o;
     }
     
-    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
+    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
 
         /* TODO check readers (and include readers in n+1 prevention query */
         
@@ -454,7 +454,7 @@ public abstract class GeoService {
                 }
                 JSONObject layer = l.toJSONObject();
                 if(includeAuthorizations){
-                    ReadWrite rw = Authorizations.getLayerAuthorizations(l);
+                    ReadWrite rw = Authorizations.getLayerAuthorizations(l, em);
                     layer.put(SelectedContentCache.AUTHORIZATIONS_KEY, rw != null ? rw.toJSON() : new JSONObject());
                 }
                 layers.put(name, layer);
@@ -480,8 +480,8 @@ public abstract class GeoService {
         return j;
     }
     
-    public JSONObject toJSONObject(boolean includeLayerTree) throws JSONException {
-        return toJSONObject(includeLayerTree, null,false,false);
+    public JSONObject toJSONObject(boolean includeLayerTree, EntityManager em) throws JSONException {
+        return toJSONObject(includeLayerTree, null,false,false,em);
     }
     
     /**
@@ -510,8 +510,8 @@ public abstract class GeoService {
      * @param layerName the layer name to search for
      * @return the Layer or null if not found
      */
-    public Layer getLayer(final String layerName) {
-        loadLayerTree();
+    public Layer getLayer(final String layerName, EntityManager em) {
+        loadLayerTree(em);
         
         if(layerName == null || topLayer == null) {
             return null;

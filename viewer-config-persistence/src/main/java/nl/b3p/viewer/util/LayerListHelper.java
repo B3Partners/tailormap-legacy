@@ -46,7 +46,7 @@ public class LayerListHelper {
 
         for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
 
-            Layer l = appLayer.getService().getLayer(appLayer.getLayerName());
+            Layer l = appLayer.getService().getLayer(appLayer.getLayerName(),em);
             if(l == null){
                     continue;
             }

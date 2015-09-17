@@ -66,7 +66,7 @@ public class ArcIMSService extends GeoService implements Updatable {
     }
     
     @Override
-    public void checkOnline() throws Exception {
+    public void checkOnline(EntityManager em) throws Exception {
         Map params = new HashMap();
         params.put(PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);
         if(getServiceName() != null) {
@@ -85,12 +85,12 @@ public class ArcIMSService extends GeoService implements Updatable {
                 // no debug logging
                 logs.add(message);
             }            
-        });
+        },em);
     }    
 
     //<editor-fold desc="Loading service metadata from ArcIMS">
     @Override
-    public ArcIMSService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
+    public ArcIMSService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
             
@@ -226,7 +226,7 @@ public class ArcIMSService extends GeoService implements Updatable {
 
     //<editor-fold desc="Updating">
     @Override
-    public UpdateResult update() {
+    public UpdateResult update(EntityManager em) {
         
         initLayerCollectionsForUpdate();
         
@@ -240,7 +240,7 @@ public class ArcIMSService extends GeoService implements Updatable {
                 params.put(PARAM_SERVICENAME, getServiceName());
             }            
             
-            ArcIMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
+            ArcIMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80),em);
             
             // Find auto-linked FeatureSource (manually linked feature sources
             // not updated automatically) (TODO: maybe provide option to do that)
@@ -372,13 +372,13 @@ public class ArcIMSService extends GeoService implements Updatable {
     //<editor-fold desc="Add serviceName to toJSONObject()">
     
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags) throws JSONException {
-        return toJSONObject(flatten, layersToInclude, validXmlTags,false);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, EntityManager em) throws JSONException {
+        return toJSONObject(flatten, layersToInclude, validXmlTags,false, em);
     }
     
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations, em);
         if(serviceName != null) {
             o.put("serviceName", serviceName);
         }
@@ -386,8 +386,8 @@ public class ArcIMSService extends GeoService implements Updatable {
     }
     
     @Override
-    public JSONObject toJSONObject(boolean flatten) throws JSONException {
-        return toJSONObject(flatten, null,false);
+    public JSONObject toJSONObject(boolean flatten, EntityManager em) throws JSONException {
+        return toJSONObject(flatten, null,false, em);
     }
     //</editor-fold>
 }
