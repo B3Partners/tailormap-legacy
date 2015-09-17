@@ -50,9 +50,9 @@
                                 <classpath>
                                     <path location="target" />
                                 </classpath>
-                                <!-- voor de unit tests met H2 -->
-                                <hbm2ddl export="true" drop="true" create="true" outputfilename="h2-schema-export.sql" format="true">
-                                    <jpaconfiguration persistenceUnit="viewer-config-h2" />
+                                <!-- voor de unit tests met HSQLDB -->
+                                <hbm2ddl export="true" drop="true" create="true" outputfilename="hsqldb-schema-export.sql" format="true">
+                                    <jpaconfiguration persistenceUnit="viewer-config-hsqldb" />
                                 </hbm2ddl>
                             </hibernatetool>
                         </configuration>
@@ -63,11 +63,12 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <!-- h2 wordt allen voor unit tests gebruikt, maar als deze
+                        <!-- hsqldb wordt allen voor unit tests gebruikt, maar als deze
                         als test scope dep wordt opgevoerd treedt er een CNFE op tijdens de build. -->
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <version>1.4.189</version>
+
+                        <groupId>org.hsqldb</groupId>
+                        <artifactId>hsqldb</artifactId>
+                        <version>2.3.3</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -149,9 +150,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.3</version>
         </dependency>
     </dependencies>
 </project>

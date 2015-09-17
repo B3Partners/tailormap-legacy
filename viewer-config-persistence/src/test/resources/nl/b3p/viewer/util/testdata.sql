@@ -1,4 +1,4 @@
-SET REFERENTIAL_INTEGRITY FALSE;
+SET DATABASE REFERENTIAL INTEGRITY FALSE;
 --
 -- TOC entry 2525 (class 0 OID 26973621)
 -- Dependencies: 173
@@ -764,4 +764,4 @@ INSERT INTO user_groups (username, group_) VALUES ('admin', 'Admin');
 -- PostgreSQL database dump complete
 --
 
-SET REFERENTIAL_INTEGRITY TRUE;
+SET DATABASE REFERENTIAL INTEGRITY TRUE;
