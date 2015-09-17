@@ -12,19 +12,16 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.Application.TreeCache;
-import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.hibernate.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -47,12 +44,6 @@ public class SelectedContentCacheTest extends TestUtil{
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}  
-
     @Test
     public void testSelectedContentGeneration() throws SQLException, FileNotFoundException, IOException, URISyntaxException, JSONException{
 
@@ -70,8 +61,11 @@ public class SelectedContentCacheTest extends TestUtil{
 
             app.loadTreeCache(entityManager);
             assert(true);
-            Assert.assertEquals(6, app.getTreeCache().getLevels().size());
-            Assert.assertEquals(5, app.getTreeCache().getApplicationLayers().size());
+            assertEquals(6, app.getTreeCache().getLevels().size());
+            assertEquals(5, app.getTreeCache().getApplicationLayers().size());
+            SelectedContentCache scc = new SelectedContentCache();
+            JSONObject o = scc.createSelectedContent(app, false, false, false, entityManager);
+            int a =0;
         }finally
         {
             if(conn != null){
