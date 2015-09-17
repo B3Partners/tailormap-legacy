@@ -30,7 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>9.2</geotools.version>
         <powermock.version>1.5.5</powermock.version>
-        <test.persistence.unit>viewer-config-h2</test.persistence.unit>
+        <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -220,7 +220,7 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-epsg-hsql</artifactId>
+                <artifactId>gt-epsg-wkt</artifactId>
                 <version>${geotools.version}</version>
                 <type>jar</type>
             </dependency>
@@ -404,9 +404,9 @@
               </dependency>
 
               <dependency>
-                  <groupId>com.h2database</groupId>
-                  <artifactId>h2</artifactId>
-                  <version>1.4.189</version>
+                  <groupId>org.hsqldb</groupId>
+                  <artifactId>hsqldb</artifactId>
+                  <version>2.3.3</version>
               </dependency>
         </dependencies>
     </dependencyManagement>
