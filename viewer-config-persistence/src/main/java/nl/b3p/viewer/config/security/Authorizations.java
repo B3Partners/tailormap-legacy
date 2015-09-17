@@ -582,8 +582,8 @@ public class Authorizations {
             cache.protectedAppLayers = new HashMap();
                         
             Application.TreeCache treeCache = app.loadTreeCache(em);
-            treeCache.initializeLevels("left join fetch l.readers");
-            treeCache.initializeApplicationLayers("left join fetch al.readers left join fetch al.writers");
+            treeCache.initializeLevels("left join fetch l.readers",em);
+            treeCache.initializeApplicationLayers("left join fetch al.readers left join fetch al.writers",em);
             
             walkLevel(app.getRoot(), EVERYBODY, cache, treeCache);
 

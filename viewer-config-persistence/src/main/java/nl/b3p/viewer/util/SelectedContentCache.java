@@ -253,8 +253,8 @@ public class SelectedContentCache {
             o.put("rootLevel", root.getId().toString());
 
             Application.TreeCache treeCache = app.loadTreeCache(em);
-            treeCache.initializeLevels("left join fetch l.documents");
-            treeCache.initializeApplicationLayers("left join fetch al.details");
+            treeCache.initializeLevels("left join fetch l.documents",em);
+            treeCache.initializeApplicationLayers("left join fetch al.details",em);
             Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app);
 
             JSONObject levels = new JSONObject();
