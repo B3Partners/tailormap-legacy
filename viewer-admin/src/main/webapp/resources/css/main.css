@@ -290,7 +290,8 @@ input[type="submit"]:hover,
   text-align: center;
 }
 #component-container .component-view .component-block .wrangler,
-#component-container .component-view .component-block .remove {
+#component-container .component-view .component-block .remove,
+#component-container .component-view .component-block .draghandle {
   display: none;
 }
 #component-container .component-view .component-block.component-added {
@@ -382,39 +383,56 @@ input[type="submit"]:hover,
   width: auto;
 }
 #layout-container .content-container .component-block {
-  margin-top: 10px;
-  padding: 3px;
-  border: 2px solid #1c6ca7;
-  background-color: White;
-  text-align: center;
+    margin-top: 10px;
+    padding: 3px;
+    border: 2px solid #1c6ca7;
+    background-color: White;
+    text-align: center;
+    position: relative;
+    height: 27px;
 }
-#layout-container .content-container .component-block.float-component .wrangler,
-#layout-container .content-container .component-block.float-component .remove {
-  width: 16px;
-  height: 16px;
-  float: right;
-  margin-left: 5px;
+#layout-container .content-container .component-block span {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
 }
-#layout-container .content-container .component-block.float-component .remove {
-  margin-left: 0px;
-  margin-right: 5px;
-  float: left;
+#layout-container .content-container .component-block .icon {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    display: none;
+    z-index: 11;
 }
-#layout-container .content-container .component-block.float-component:hover .remove {
-  margin-left: 0px;
-  float: left;
+#layout-container .content-container .component-block .wrangler {
+    left: 24px;
+    background-image: url("../images/wrench.png");
 }
-#layout-container .content-container .component-block:hover .wrangler,
-#layout-container .content-container .component-block:hover .remove {
-  background-image: url("../images/wrench.png");
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-  float: left;
-  margin-left: 5px;
+#layout-container .content-container .component-block .remove {
+    background-image: url("../images/delete.png");
 }
-#layout-container .content-container .component-block:hover .remove {
-  background-image: url("../images/delete.png");
+#layout-container .content-container .component-block .draghandle {
+    left: auto;
+    right: 4px;
+    background-image: url("../images/arrow-move.png");
+}
+#layout-container .content-container .component-block:hover .icon {
+    display: block;
+}
+#layout-container .content-container .hide-draghandle .component-block:hover .draghandle {
+    display: none;
+}
+#layout_top_menu.content-container .component-block:hover span {
+    left: 40px;
+}
+#layout_left_menu.content-container .component-block:hover span {
+    left: 40px;
+    right: 20px;
 }
 #layout-container .content-container.content-container-hover {
   border: 2px dashed #1c6ca7;
