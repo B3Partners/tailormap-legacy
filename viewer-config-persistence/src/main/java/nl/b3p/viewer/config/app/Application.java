@@ -239,6 +239,10 @@ public class Application {
         return n;
     }  
 
+    public TreeCache getTreeCache(){
+        return treeCache;
+    }
+
     public static class TreeCache {
         List<Level> levels;
         Map<Level,List<Level>> childrenByParent;
@@ -265,12 +269,12 @@ public class Application {
             return levels;
         }
 
-        public void initializeLevels(String leftJoins) {
+        public void initializeLevels(String leftJoins, EntityManager em) {
             // Prevent n+1 queries for each level
             int i = 0;
             do {
                 List<Level> subList = levels.subList(i, Math.min(levels.size(), i+DB.MAX_LIST_EXPRESSIONS));
-                Stripersist.getEntityManager().createQuery("from Level l "
+                em.createQuery("from Level l "
                         + leftJoins + " "
                         + "where l in (:levels) ")
                         .setParameter("levels", subList)
@@ -279,13 +283,13 @@ public class Application {
             } while(i < levels.size());
         }
 
-        public void initializeApplicationLayers(String leftJoins) {
+        public void initializeApplicationLayers(String leftJoins, EntityManager em) {
             if (!getApplicationLayers().isEmpty()) {
                 // Prevent n+1 queries for each ApplicationLayer
                 int i = 0;
                 do {
                     List<ApplicationLayer> subList = applicationLayers.subList(i, Math.min(applicationLayers.size(), i+DB.MAX_LIST_EXPRESSIONS));
-                    Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
+                    em.createQuery("from ApplicationLayer al "
                             + leftJoins + " "
                             + "where al in (:alayers) ")
                             .setParameter("alayers", subList)
@@ -298,7 +302,11 @@ public class Application {
     
     @Transient
     private TreeCache treeCache;
-    
+
+    public void setTreeCache (TreeCache treeCache){
+        this.treeCache = treeCache;
+    }
+
     public TreeCache loadTreeCache(EntityManager em) {
         if(treeCache == null) {
             
@@ -308,8 +316,6 @@ public class Application {
             treeCache.levels = em.createNamedQuery("getLevelTree")
                 .setParameter("rootId", root.getId())
                 .getResultList();
-            
-            treeCache.initializeLevels("left join fetch l.layers",em);
 
             treeCache.childrenByParent = new HashMap();
             treeCache.applicationLayers = new ArrayList();
