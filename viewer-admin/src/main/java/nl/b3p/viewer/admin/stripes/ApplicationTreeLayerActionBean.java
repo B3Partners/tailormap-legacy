@@ -141,9 +141,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             styles = temp;
         }
 
-        SimpleFeatureType sft = layer.getFeatureType();
-        editable = sft.isWriteable();
-        appLayerFeatureType = sft.getId();
+        if(layer.getFeatureType() != null && !layer.getFeatureType().getAttributes().isEmpty()) {
+            SimpleFeatureType sft = layer.getFeatureType();
+            editable = sft.isWriteable();
+            appLayerFeatureType = sft.getId();
+        }
     }
 
     @Before
