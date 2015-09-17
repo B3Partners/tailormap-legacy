@@ -255,7 +255,7 @@ public class SelectedContentCache {
             Application.TreeCache treeCache = app.loadTreeCache(em);
             treeCache.initializeLevels("left join fetch l.documents",em);
             treeCache.initializeApplicationLayers("left join fetch al.details",em);
-            Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app);
+            Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app, em);
 
             JSONObject levels = new JSONObject();
             o.put("levels", levels);
@@ -265,7 +265,7 @@ public class SelectedContentCache {
             o.put("selectedContent", selectedContent);
 
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
 
             Collections.sort(selectedObjects, new Comparator() {
                 @Override
@@ -316,8 +316,8 @@ public class SelectedContentCache {
         return o;
     }
 
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache) throws JSONException {
-        JSONObject o = l.toJSONObject(false, app, null);
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em) throws JSONException {
+        JSONObject o = l.toJSONObject(false, app, null, em);
 
         Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
         o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
@@ -369,7 +369,7 @@ public class SelectedContentCache {
                 Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
                 childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache);
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
             }
         }
     }

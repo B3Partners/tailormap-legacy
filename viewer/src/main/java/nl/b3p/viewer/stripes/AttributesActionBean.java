@@ -46,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -256,7 +257,7 @@ public class AttributesActionBean implements ActionBean {
     public void checkAuthorization() {
 
         if(application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
+                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
         userAllowedToEditGeom = Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest());

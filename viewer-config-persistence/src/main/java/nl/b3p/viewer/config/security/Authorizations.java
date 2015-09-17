@@ -321,7 +321,7 @@ public class Authorizations {
 
     private static final String REQUEST_APP_CACHE = Authorizations.class.getName() + ".REQUEST_APP_CACHE";
     
-    public static ApplicationCache getApplicationCacheFromRequest(Application app, HttpServletRequest request) {
+    public static ApplicationCache getApplicationCacheFromRequest(Application app, HttpServletRequest request, EntityManager em) {
         
         // Cache applicationCache instances per request so the 
         // allServicesAuthLastChanged date is not requested multiple times
@@ -337,74 +337,74 @@ public class Authorizations {
         }
         ApplicationCache appCache = requestCache.get(app.getId());
         if(appCache == null) {
-            appCache = getApplicationCache(app);
+            appCache = getApplicationCache(app,em);
             requestCache.put(app.getId(),appCache);
         }
         return appCache;
     }
     
-    public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request) {
-        return isLevelReadAuthorized(app, l, request, getApplicationCacheFromRequest(app, request));
+    public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request, EntityManager em) {
+        return isLevelReadAuthorized(app, l, request, getApplicationCacheFromRequest(app, request,em), em);
     }
 
-    public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request, ApplicationCache appCache) {
+    public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request, ApplicationCache appCache, EntityManager em) {
         if(app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
         if(appCache == null) {
-            appCache = getApplicationCache(app);        
+            appCache = getApplicationCache(app, em);
         }
         Read auths = appCache.protectedLevels.get(l.getId());       
         return isReadAuthorized(request, auths);
     }
 
-    public static void checkLevelReadAuthorized(Application app, Level l, HttpServletRequest request) throws Exception {
-        if(!isLevelReadAuthorized(app, l, request)) {
+    public static void checkLevelReadAuthorized(Application app, Level l, HttpServletRequest request, EntityManager em) throws Exception {
+        if(!isLevelReadAuthorized(app, l, request, em)) {
             throw new Exception(unauthMsg(request,false) + " level #" + l.getId());
         }
     }
 
-    public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) {
-        return isAppLayerReadAuthorized(app, al, request, getApplicationCacheFromRequest(app, request));
+    public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) {
+        return isAppLayerReadAuthorized(app, al, request, getApplicationCacheFromRequest(app, request,em), em);
     }
     
-    public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, ApplicationCache appCache) {
+    public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, ApplicationCache appCache, EntityManager em) {
         if(app == null || app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
         if(appCache == null) {
-            appCache = getApplicationCache(app);
+            appCache = getApplicationCache(app,em);
         }
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
         return isReadAuthorized(request, auths);
     }
     
-    public static void checkAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) throws Exception {
-        if(!isAppLayerReadAuthorized(app, al, request)) {
+    public static void checkAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) throws Exception {
+        if(!isAppLayerReadAuthorized(app, al, request, em)) {
             throw new Exception(unauthMsg(request,false) + " application layer #" + al.getId());
         }
     }    
     
-    public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) {
-        return isAppLayerWriteAuthorized(app, al, request, getApplicationCacheFromRequest(app, request));
+    public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) {
+        return isAppLayerWriteAuthorized(app, al, request, getApplicationCacheFromRequest(app, request, em), em);
     }
     
-    public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, ApplicationCache appCache) {
+    public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, ApplicationCache appCache, EntityManager em) {
         if(app == null || app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
         if(appCache == null) {
-            appCache = getApplicationCache(app);
+            appCache = getApplicationCache(app, em);
         }
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
         return isWriteAuthorized(request, auths);
     }
     
-    public static void checkAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) throws Exception {
-        if(!isAppLayerWriteAuthorized(app, al, request)) {
+    public static void checkAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) throws Exception {
+        if(!isAppLayerWriteAuthorized(app, al, request, em)) {
             throw new Exception(unauthMsg(request,true) + " application layer #" + al.getId());
         }
     }   
@@ -542,11 +542,10 @@ public class Authorizations {
         }
     }    
     
-    public static ApplicationCache getApplicationCache(Application app) {
+    public static ApplicationCache getApplicationCache(Application app, EntityManager em) {
         synchronized(LOCK) {        
             ApplicationCache cache = applicationCache.get(app.getId());
             Date allServicesAuthLastChanged = null;
-            EntityManager em = Stripersist.getEntityManager();
             if(cache != null) {
                 // Check if the data was not cached before the authorizations 
                 // were modified

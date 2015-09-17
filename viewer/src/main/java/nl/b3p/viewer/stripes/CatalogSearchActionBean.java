@@ -192,6 +192,8 @@ public class CatalogSearchActionBean implements ActionBean {
     }
 
     public Resolution advancedSearch() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
+        
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
         CswServable server = new GeoNetworkCswServer(null, url, null, null);
@@ -220,16 +222,16 @@ public class CatalogSearchActionBean implements ActionBean {
             
             Map<Level, String> descriptionsByLevel = new HashMap();
             List<Level> levels = getLevels(appLayers,descriptionsByApplayer,descriptionsByLevel);
-           
+            
             JSONArray found = new JSONArray();
             for (Level level : levels) {
-                JSONObject obj = level.toJSONObject(false, application, context.getRequest());
+                JSONObject obj = level.toJSONObject(false, application, context.getRequest(), em);
                 found.put(obj);
             }            
             List <Level> children = application.getRoot().getChildren();
             JSONArray childs = new JSONArray();
             for (Level child : children) {
-                childs.put(child.toJSONObject(false, application, context.getRequest()));
+                childs.put(child.toJSONObject(false, application, context.getRequest(), em));
             }
 
             Set<Level> levelDesc = descriptionsByLevel.keySet();

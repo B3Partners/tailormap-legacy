@@ -398,8 +398,8 @@ public class Application {
         return o.toString(4);
     }
     
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
-        JSONObject o = l.toJSONObject(false, this, request);
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
+        JSONObject o = l.toJSONObject(false, this, request, em);
         o.put("background", l.isBackground() || parentIsBackground);
         String levelId= l.getId().toString();
         if (validXmlTags){
@@ -412,13 +412,13 @@ public class Application {
         }
         
         for(ApplicationLayer al: l.getLayers()) {
-            if(!Authorizations.isAppLayerReadAuthorized(this, al, request)) {
+            if(!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
                 //System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
                 continue;
             }
             JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations);
             p.put("background", l.isBackground() || parentIsBackground);
-            p.put("editAuthorized", Authorizations.isAppLayerWriteAuthorized(this, al, request));
+            p.put("editAuthorized", Authorizations.isAppLayerWriteAuthorized(this, al, request, em));
             String alId = al.getId().toString();
             if (validXmlTags){
                 alId="appLayer_"+alId;
@@ -436,25 +436,25 @@ public class Application {
             JSONArray jsonChildren = new JSONArray();
             o.put("children", jsonChildren);
             for(Level child: children) {
-                if (Authorizations.isLevelReadAuthorized(this, child, request)){
+                if (Authorizations.isLevelReadAuthorized(this, child, request, em)){
                     String childId = child.getId().toString();
                     if (validXmlTags){
                         childId="level_"+childId;
                     }
                     jsonChildren.put(childId);
-                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request,validXmlTags, includeAppLayerAttributes, includeRelations);
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request,validXmlTags, includeAppLayerAttributes, includeRelations, em);
                 }
             }
         }
     }
     
-    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService, HttpServletRequest request) {
-        if(!Authorizations.isLevelReadAuthorized(this, l, request)) {
+    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService, HttpServletRequest request, EntityManager em) {
+        if(!Authorizations.isLevelReadAuthorized(this, l, request, em)) {
             return;
         }
         
         for(ApplicationLayer al: l.getLayers()) {
-            if(!Authorizations.isAppLayerReadAuthorized(this, al, request)) {
+            if(!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
                 continue;
             }            
             GeoService gs = al.getService();
@@ -469,7 +469,7 @@ public class Application {
         List<Level> children = treeCache.childrenByParent.get(l);
         if(children != null) {        
             for(Level child: children) {
-                visitLevelForUsedServicesLayers(child, usedLayersByService, request);
+                visitLevelForUsedServicesLayers(child, usedLayersByService, request, em);
             }        
         }
     }

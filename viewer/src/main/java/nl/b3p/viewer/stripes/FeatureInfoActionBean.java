@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
@@ -206,6 +207,7 @@ public class FeatureInfoActionBean implements ActionBean {
 
         FeatureSource fs = null;
 
+        EntityManager em = Stripersist.getEntityManager();
         for(int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
 
@@ -223,16 +225,16 @@ public class FeatureInfoActionBean implements ActionBean {
                 GeoService gs = null;
 
                 if(query.has("appLayer")) {
-                    al = Stripersist.getEntityManager().find(ApplicationLayer.class, query.getLong("appLayer"));
+                    al = em.find(ApplicationLayer.class, query.getLong("appLayer"));
                 } else {
-                    gs = Stripersist.getEntityManager().find(GeoService.class, query.getLong("service"));
+                    gs = em.find(GeoService.class, query.getLong("service"));
                 }
                 do {
                     if(al == null && gs == null) {
                         error = "App layer or service not found";
                         break;
                     }
-                    if(!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest())) {
+                    if(!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
                         error = "Not authorized";
                         break;
                     }
