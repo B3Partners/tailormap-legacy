@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.activation.MimetypesFileTypeMap;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
@@ -73,6 +74,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -214,7 +216,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
     @Before(stages=LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if(application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
+                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(),Stripersist.getEntityManager())) {
             unauthorized = true;
         }
     }

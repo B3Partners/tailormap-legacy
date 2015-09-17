@@ -515,7 +515,7 @@ public class UserActionBean implements ActionBean {
         applications = em.createQuery("from Application order by name, version").getResultList();
         if (application != null) {
 
-            applicationCache = Authorizations.getApplicationCache(application);
+            applicationCache = Authorizations.getApplicationCache(application,em);
 
             if (!roles.isEmpty()) {
                 authorizedLevels = new HashSet<Level>();

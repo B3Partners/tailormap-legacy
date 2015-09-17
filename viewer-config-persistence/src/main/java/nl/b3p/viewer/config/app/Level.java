@@ -165,11 +165,11 @@ public class Level implements Comparable{
     }
     //</editor-fold>
     
-    public JSONObject toJSONObject() throws JSONException {
-        return toJSONObject(true,null,null);
+    public JSONObject toJSONObject(EntityManager em) throws JSONException {
+        return toJSONObject(true,null,null,em);
     }
     
-    public JSONObject toJSONObject(boolean includeChildrenIds, Application app, HttpServletRequest request) throws JSONException {
+    public JSONObject toJSONObject(boolean includeChildrenIds, Application app, HttpServletRequest request, EntityManager em) throws JSONException {
         JSONObject o = new JSONObject();
  
         /* TODO check readers */
@@ -193,7 +193,7 @@ public class Level implements Comparable{
             JSONArray ls = new JSONArray();
             o.put("layers", ls);
             for(ApplicationLayer l: layers) {
-                if(request == null || Authorizations.isAppLayerReadAuthorized(app, l, request)) {
+                if(request == null || Authorizations.isAppLayerReadAuthorized(app, l, request, em)) {
                     ls.put(l.getId().toString());
                 }
             }            
@@ -204,7 +204,7 @@ public class Level implements Comparable{
                 JSONArray cs = new JSONArray();
                 o.put("children", cs);
                 for(Level l: children) {
-                    if(request == null || Authorizations.isLevelReadAuthorized(app, l, request)) {
+                    if(request == null || Authorizations.isLevelReadAuthorized(app, l, request, em)) {
                         cs.put(l.getId().toString());
                     }
                 }
