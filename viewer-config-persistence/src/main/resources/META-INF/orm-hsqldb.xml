@@ -205,8 +205,23 @@
         </attributes>
     </entity>
 
-
     <entity class="nl.b3p.viewer.config.CycloramaAccount">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+    
+    <entity class="nl.b3p.viewer.config.app.StartLayer">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+    
+    <entity class="nl.b3p.viewer.config.app.StartLevel">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
