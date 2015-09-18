@@ -815,7 +815,7 @@ public class GeoServiceActionBean implements ActionBean {
         Queue<Layer> layerStack = new LinkedList();
         Layer l = service.getTopLayer();
         while(l != null) {
-            layerStack.addAll(service.getLayerChildrenCache(l));
+            layerStack.addAll(service.getLayerChildrenCache(l, em));
 
             if(l.getName() != null) {
                 Element nlEl = sldDoc.createElementNS(NS_SLD, "NamedLayer");

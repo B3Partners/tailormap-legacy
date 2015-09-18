@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import javax.persistence.EntityManager;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -55,7 +56,7 @@ public class UpdateResult {
     
     private List<Layer> duplicateOrNoNameLayers = new ArrayList<Layer>();
 
-    public UpdateResult(GeoService toUpdate) {
+    public UpdateResult(GeoService toUpdate, EntityManager em) {
         this.geoService = toUpdate;
         
         Layer l = toUpdate.getTopLayer();
@@ -66,7 +67,7 @@ public class UpdateResult {
             final MutableInt layers = new MutableInt(0);
             l.accept(new Layer.Visitor() {
                 @Override
-                public boolean visit(Layer l) {
+                public boolean visit(Layer l, EntityManager em) {
                     
                     // Keep consistency with GeoService.getLayer(): use the first
                     // layer in tree traversal for a given name - do not 
@@ -85,7 +86,7 @@ public class UpdateResult {
                     layers.increment();
                     return true;
                 }
-            });
+            }, em);
             
             waitPageStatus.addLog("Before update: service has %d layers (%d duplicate or no name)", 
                     layers.intValue(),

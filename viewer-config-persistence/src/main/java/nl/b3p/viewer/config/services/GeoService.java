@@ -229,25 +229,25 @@ public abstract class GeoService {
 
     public abstract GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus, EntityManager em) throws Exception;
     
-    protected static void setAllChildrenDetail(Layer layer) {
+    protected static void setAllChildrenDetail(Layer layer, EntityManager em) {
         
         layer.accept(new Layer.Visitor() {
 
             @Override
-            public boolean visit(final Layer l) {
+            public boolean visit(final Layer l, EntityManager em) {
                 
                 if(!l.getChildren().isEmpty()) {
                     final MutableObject<List<String>> layerNames = new MutableObject<List<String>>(new ArrayList());
                     l.accept(new Layer.Visitor() {
 
                         @Override
-                        public boolean visit(Layer child) {
+                        public boolean visit(Layer child, EntityManager em) {
                             if(child != l && child.getChildren().isEmpty() && !child.isVirtual()) {
                                 layerNames.getValue().add(child.getName());
                             }
                             return true;
                         }
-                    });
+                    },em);
                     
                     if(!layerNames.getValue().isEmpty()) {
                         l.getDetails().put(Layer.DETAIL_ALL_CHILDREN, new ClobElement(StringUtils.join(layerNames.getValue(), ",")));
@@ -257,7 +257,7 @@ public abstract class GeoService {
                 
                 return true;
             }
-        });
+        },em);
     }
     
     public void checkOnline(EntityManager em) throws Exception {
@@ -326,11 +326,9 @@ public abstract class GeoService {
         return layers;
     }
     
-    public List<Layer> getLayerChildrenCache(Layer l) {
+    public List<Layer> getLayerChildrenCache(Layer l, EntityManager em) {
         if(childrenByParent != null) {
             
-            EntityManager em = Stripersist.getEntityManager();
-        
             if(!em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(l.getChildren())) {
                 List<Layer> childrenList = childrenByParent.get(l);
                 if(childrenList == null) {
@@ -428,7 +426,7 @@ public abstract class GeoService {
             walkLayerJSONFlatten(topLayer, layers, layersToInclude,validXmlTags, includeAuthorizations, em);
             
             if(includeLayerTree) {
-                o.put("topLayer", walkLayerJSONTree(topLayer));
+                o.put("topLayer", walkLayerJSONTree(topLayer, em));
             }
             
         }
@@ -461,20 +459,20 @@ public abstract class GeoService {
             }
         }
 
-        for(Layer child: l.getCachedChildren()) {                
+        for(Layer child: l.getCachedChildren(em)) {                
             walkLayerJSONFlatten(child, layers, layersToInclude,validXmlTags,includeAuthorizations, em);
         }
     }
     
-    private static JSONObject walkLayerJSONTree(Layer l) throws JSONException {
+    private static JSONObject walkLayerJSONTree(Layer l, EntityManager em) throws JSONException {
         JSONObject j = l.toJSONObject();
         
-        List<Layer> children = l.getCachedChildren();
+        List<Layer> children = l.getCachedChildren(em);
         if(!children.isEmpty()) {        
             JSONArray jc = new JSONArray();
             j.put("children", jc);
             for(Layer child: children) {                
-                jc.put(walkLayerJSONTree(child));
+                jc.put(walkLayerJSONTree(child, em));
             }
         }
         return j;
@@ -521,14 +519,14 @@ public abstract class GeoService {
         
         topLayer.accept(new Layer.Visitor() {
             @Override
-            public boolean visit(Layer l) {
+            public boolean visit(Layer l, EntityManager em) {
                 if(StringUtils.equals(l.getName(),layerName)) {
                     layer.setValue(l);
                     return false;
                 }
                 return true;
             }
-        });
+        },em);
         
         return layer.getValue();
     }

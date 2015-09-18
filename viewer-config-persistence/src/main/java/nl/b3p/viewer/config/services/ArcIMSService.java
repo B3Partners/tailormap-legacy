@@ -230,7 +230,7 @@ public class ArcIMSService extends GeoService implements Updatable {
         
         initLayerCollectionsForUpdate();
         
-        final UpdateResult result = new UpdateResult(this);
+        final UpdateResult result = new UpdateResult(this, em);
         
         try {
             Map params = new HashMap();

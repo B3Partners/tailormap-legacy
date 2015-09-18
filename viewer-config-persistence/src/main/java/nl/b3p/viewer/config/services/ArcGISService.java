@@ -144,8 +144,7 @@ public class ArcGISService extends GeoService implements Updatable {
             String name = temp.substring(i+1);
 
             s.setName(name);
-
-            s.load(client, status);
+            s.load(client, status, em);
 
             return s;
         } finally {
@@ -187,7 +186,7 @@ public class ArcGISService extends GeoService implements Updatable {
         getDetails().put(DETAIL_CURRENT_VERSION, new ClobElement(currentVersion));
     }
 
-    private void load(HTTPClient client, WaitPageStatus status) throws Exception {
+    private void load(HTTPClient client, WaitPageStatus status, EntityManager em) throws Exception {
         int layerCount = serviceInfo.getJSONArray("layers").length();
 
         status.setProgress((int)Math.round(100.0/(layerCount+1)));
@@ -240,7 +239,7 @@ public class ArcGISService extends GeoService implements Updatable {
         }
 
         setLayerTree(getTopLayer(), layersById, childrenByLayerId);
-        setAllChildrenDetail(getTopLayer());
+        setAllChildrenDetail(getTopLayer(), em);
 
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
         if(!fs.getFeatureTypes().isEmpty()) {
@@ -403,7 +402,7 @@ public class ArcGISService extends GeoService implements Updatable {
 
         initLayerCollectionsForUpdate();
 
-        final UpdateResult result = new UpdateResult(this);
+        final UpdateResult result = new UpdateResult(this, em);
 
         try {
 

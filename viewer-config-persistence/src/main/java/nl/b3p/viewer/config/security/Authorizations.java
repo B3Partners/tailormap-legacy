@@ -488,7 +488,7 @@ public class Authorizations {
                 int i = 0;
                 do {
                     List<Layer> subList = layers.subList(i, Math.min(layers.size(), i+DB.MAX_LIST_EXPRESSIONS));
-                    Stripersist.getEntityManager().createQuery("from Layer l "
+                    em.createQuery("from Layer l "
                             + "left join fetch l.readers "
                             + "left join fetch l.writers "
                             + "where l in (:layers)")
@@ -498,7 +498,7 @@ public class Authorizations {
                 } while(i < layers.size());
             }
             
-            walkLayer(l.getService().getTopLayer(), EVERYBODY, EVERYBODY, cache.protectedLayers);
+            walkLayer(l.getService().getTopLayer(), EVERYBODY, EVERYBODY, cache.protectedLayers, em);
                          
             return cache.protectedLayers.get(l.getId());
         }
@@ -528,7 +528,7 @@ public class Authorizations {
         }
     }      
         
-    private static void walkLayer(Layer l, Set<String> currentReaders, Set<String> currentWriters, Map serviceProtectedLayers) {
+    private static void walkLayer(Layer l, Set<String> currentReaders, Set<String> currentWriters, Map serviceProtectedLayers, EntityManager em) {
         
         currentReaders = inheritAuthorizations(currentReaders, l.getReaders());
         currentWriters = inheritAuthorizations(currentWriters, l.getWriters());
@@ -537,8 +537,8 @@ public class Authorizations {
             serviceProtectedLayers.put(l.getId(), new ReadWrite(currentReaders, currentWriters ));            
         }
         
-        for(Layer child: l.getCachedChildren()) {
-            walkLayer(child, currentReaders, currentWriters, serviceProtectedLayers);
+        for(Layer child: l.getCachedChildren(em)) {
+            walkLayer(child, currentReaders, currentWriters, serviceProtectedLayers, em);
         }
     }    
     

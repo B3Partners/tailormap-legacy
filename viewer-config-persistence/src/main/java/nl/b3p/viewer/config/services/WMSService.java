@@ -264,7 +264,7 @@ public class WMSService extends GeoService implements Updatable {
     public UpdateResult update(EntityManager em) {
         
         initLayerCollectionsForUpdate();
-        final UpdateResult result = new UpdateResult(this);
+        final UpdateResult result = new UpdateResult(this, em);
         
         try {
             Map params = new HashMap();
@@ -298,13 +298,13 @@ public class WMSService extends GeoService implements Updatable {
             
             // Find auto-linked FeatureSource (manually linked feature sources
             // not updated automatically)
-            Set<FeatureSource> linkedFS = getAutomaticallyLinkedFeatureSources(getTopLayer());
+            Set<FeatureSource> linkedFS = getAutomaticallyLinkedFeatureSources(getTopLayer(), em);
             Map<String,WFSFeatureSource> linkedFSByURL = createFeatureSourceMapByURL(linkedFS); 
             
             List<SimpleFeatureType> typesToRemove = new ArrayList();
             Set<SimpleFeatureType> updatedFeatureTypes = new HashSet();
-            updateWFS(update, linkedFSByURL, updatedFeatureTypes, typesToRemove, result);            
-            updateLayers(update, linkedFSByURL, updatedFeatureTypes, result);
+            updateWFS(update, linkedFSByURL, updatedFeatureTypes, typesToRemove, result, em);            
+            updateLayers(update, linkedFSByURL, updatedFeatureTypes, result, em);
             updateLayerTree(update, result);
             
             removeOrphanLayersAfterUpdate(result);
@@ -341,12 +341,12 @@ public class WMSService extends GeoService implements Updatable {
         }
     }
     
-    private static Set<FeatureSource> getAutomaticallyLinkedFeatureSources(Layer top) {
+    private static Set<FeatureSource> getAutomaticallyLinkedFeatureSources(Layer top, EntityManager em) {
         final GeoService service = top.getService();
         final Set<FeatureSource> featureSources = new HashSet();
         top.accept(new Layer.Visitor() {
             @Override
-            public boolean visit(Layer l) {
+            public boolean visit(Layer l, EntityManager em) {
                 if(l.getFeatureType() != null) {
                     FeatureSource fs = l.getFeatureType().getFeatureSource();
                     // Do not include manually linked feature sources
@@ -356,13 +356,13 @@ public class WMSService extends GeoService implements Updatable {
                 }
                 return true;
             }
-        });
+        }, em);
         return featureSources;
     }
 
-    private void updateWFS(final WMSService updateWMS, final Map<String,WFSFeatureSource> linkedFSesByURL, Set<SimpleFeatureType> updatedFeatureTypes, Collection<SimpleFeatureType> outTypesToRemove, final UpdateResult result) {
+    private void updateWFS(final WMSService updateWMS, final Map<String,WFSFeatureSource> linkedFSesByURL, Set<SimpleFeatureType> updatedFeatureTypes, Collection<SimpleFeatureType> outTypesToRemove, final UpdateResult result, EntityManager em) {
         
-        final Set<FeatureSource> updateFSes = getAutomaticallyLinkedFeatureSources(updateWMS.getTopLayer());
+        final Set<FeatureSource> updateFSes = getAutomaticallyLinkedFeatureSources(updateWMS.getTopLayer(), em);
         
         for(FeatureSource fs: updateFSes) {
             
@@ -418,13 +418,13 @@ public class WMSService extends GeoService implements Updatable {
      * <p>
      * Grouping layers (no name) are ignored.
      */
-    private void updateLayers(final WMSService update, final Map<String,WFSFeatureSource> linkedFSesByURL, final Set<SimpleFeatureType> updatedFeatureTypes, final UpdateResult result) {
+    private void updateLayers(final WMSService update, final Map<String,WFSFeatureSource> linkedFSesByURL, final Set<SimpleFeatureType> updatedFeatureTypes, final UpdateResult result, EntityManager em) {
         
         final WMSService updatingWMSService = this;
         
         update.getTopLayer().accept(new Layer.Visitor() {
             @Override
-            public boolean visit(Layer l) {
+            public boolean visit(Layer l, EntityManager em) {
                 if(l.getName() == null) {
                     // Grouping layer only
                     return true;
@@ -493,7 +493,7 @@ public class WMSService extends GeoService implements Updatable {
                 }
                 return true;
             }
-        });
+        }, em);
     }
     
     /**
