@@ -764,7 +764,7 @@ Ext.define('LayoutManager', {
                 function(btnClicked) {
                     if(btnClicked === 'yes') {
                         Ext.get(data.sourceEl).removeCls("component-added");
-                        me.removeComponent(layoutRegion, addItem.componentName);
+                        me.removeComponent(container, layoutRegion, addItem.componentName, itemId);
                         Ext.Ajax.request({ 
                             url: me.config.removeComponentUrl, 
                             params: { 
