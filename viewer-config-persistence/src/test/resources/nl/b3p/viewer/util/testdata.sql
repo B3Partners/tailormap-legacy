@@ -469,6 +469,35 @@ INSERT INTO group_ (name, description) VALUES ('ExtendedUser', 'Interne medewerk
 -- Data for Name: layer; Type: TABLE DATA; Schema: public; Owner: flamingo
 --
 
+
+INSERT INTO tile_set (name, height, width) VALUES ('Openbasiskaart', 256, 256);
+
+
+--
+-- TOC entry 2600 (class 0 OID 26974012)
+-- Dependencies: 248
+-- Data for Name: tile_set_resolutions; Type: TABLE DATA; Schema: public; Owner: flamingo
+--
+
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 3440.63999999999987, 0);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 1720.31999999999994, 1);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 860.159999999999968, 2);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 430.079999999999984, 3);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 215.039999999999992, 4);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 107.519999999999996, 5);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 53.759999999999998, 6);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 26.879999999999999, 7);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 13.4399999999999995, 8);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 6.71999999999999975, 9);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 3.35999999999999988, 10);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 1.67999999999999994, 11);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.839999999999999969, 12);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.419999999999999984, 13);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.209999999999999992, 14);
+INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.104999999999999996, 15);
+
+
+
 INSERT INTO layer (id, filterable, legend_image_url, max_scale, min_scale, name, queryable, title, title_alias, virtual, feature_type, parent, service, tileset) VALUES (1, false, NULL, NULL, NULL, NULL, false, NULL, NULL, true, NULL, NULL, 1, NULL);
 INSERT INTO layer (id, filterable, legend_image_url, max_scale, min_scale, name, queryable, title, title_alias, virtual, feature_type, parent, service, tileset) VALUES (2, false, NULL, NULL, NULL, 'Openbasiskaart', false, 'Openbasiskaart', NULL, false, NULL, 1, 1, 'Openbasiskaart');
 INSERT INTO layer (id, filterable, legend_image_url, max_scale, min_scale, name, queryable, title, title_alias, virtual, feature_type, parent, service, tileset) VALUES (3, false, NULL, NULL, NULL, 'Groen', false, 'Groen', NULL, false, NULL, NULL, 2, NULL);
@@ -704,32 +733,6 @@ INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version
 -- Dependencies: 247
 -- Data for Name: tile_set; Type: TABLE DATA; Schema: public; Owner: flamingo
 --
-
-INSERT INTO tile_set (name, height, width) VALUES ('Openbasiskaart', 256, 256);
-
-
---
--- TOC entry 2600 (class 0 OID 26974012)
--- Dependencies: 248
--- Data for Name: tile_set_resolutions; Type: TABLE DATA; Schema: public; Owner: flamingo
---
-
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 3440.63999999999987, 0);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 1720.31999999999994, 1);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 860.159999999999968, 2);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 430.079999999999984, 3);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 215.039999999999992, 4);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 107.519999999999996, 5);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 53.759999999999998, 6);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 26.879999999999999, 7);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 13.4399999999999995, 8);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 6.71999999999999975, 9);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 3.35999999999999988, 10);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 1.67999999999999994, 11);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.839999999999999969, 12);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.419999999999999984, 13);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.209999999999999992, 14);
-INSERT INTO tile_set_resolutions (tile_set, resolution, list_index) VALUES ('Openbasiskaart', 0.104999999999999996, 15);
 
 
 --

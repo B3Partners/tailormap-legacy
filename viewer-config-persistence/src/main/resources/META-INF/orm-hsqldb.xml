@@ -14,12 +14,13 @@
 
     <named-native-query name="getLayerTree" result-class="nl.b3p.viewer.config.services.Layer">
         <query><![CDATA[
-            with recursive layer_tree(id) as (
-                select id from layer where id = :rootId
-                union 
-                select l.id from layer_tree, layer l where l.parent = layer_tree.id
-            )
-            select * from layer_tree
+            select * from layer where id in (
+                with recursive layer_tree(id) as (
+                    select id from layer where id = :rootId
+                    union 
+                    select l.id from layer_tree, layer l where l.parent = layer_tree.id
+                )
+                select * from layer_tree)
         ]]></query>
     </named-native-query>
     <named-native-query name="getLevelTree"  result-class="nl.b3p.viewer.config.app.Level">
