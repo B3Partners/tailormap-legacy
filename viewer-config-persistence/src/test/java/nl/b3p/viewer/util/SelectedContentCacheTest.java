@@ -65,6 +65,7 @@ public class SelectedContentCacheTest extends TestUtil{
             assertEquals(5, app.getTreeCache().getApplicationLayers().size());
             SelectedContentCache scc = new SelectedContentCache();
             JSONObject o = scc.createSelectedContent(app, false, false, false, entityManager);
+            assertEquals(expectedString, o.toString());
             int a =0;
         }finally
         {
