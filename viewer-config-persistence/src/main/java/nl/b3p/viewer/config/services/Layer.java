@@ -423,7 +423,7 @@ public class Layer implements Cloneable, Serializable {
             o.put("details", d);
             for(Map.Entry<String,ClobElement> e: details.entrySet()) {
                 if(interestingDetails.contains(e.getKey())) {
-                    d.put(e.getKey(), e.getValue());
+                    d.put(e.getKey(), e.getValue().getValue());
                 }
             }
         }

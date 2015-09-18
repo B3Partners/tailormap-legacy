@@ -72,8 +72,7 @@ public class SelectedContentCacheTest extends TestUtil{
             JSONAssert.assertEquals(expected.getJSONArray("selectedContent"), actual.getJSONArray("selectedContent"), JSONCompareMode.LENIENT);
             assertEquals(expected.getString("rootLevel"), actual.getString("rootLevel"));
             JSONAssert.assertEquals(expected.getJSONObject("appLayers"), actual.getJSONObject("appLayers"), JSONCompareMode.LENIENT);
-//            JSONAssert.assertEquals(expected.getJSONObject("services"), actual.getJSONObject("services"), JSONCompareMode.LENIENT);
-            // TODO: ClobElement in toJSONObject niet als clobelement toevoegen, maar als string? Kan nu niet testen.
+            JSONAssert.assertEquals(expected.getJSONObject("services"), actual.getJSONObject("services"), JSONCompareMode.LENIENT);
             JSONAssert.assertEquals(expected.getJSONObject("levels"), actual.getJSONObject("levels"), JSONCompareMode.LENIENT);
         }finally
         {
