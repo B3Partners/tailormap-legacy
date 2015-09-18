@@ -177,7 +177,7 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
             json.put("success",false);
             if (this.applicationLayer!=null && this.application!=null){
                 json.put("id",this.applicationLayer.getId());
-                json.put("name",this.applicationLayer.getDisplayName());
+                json.put("name",this.applicationLayer.getDisplayName(Stripersist.getEntityManager()));
                 
                 Level parent=this.application.getRoot().getParentInSubtree(applicationLayer);
                 if (parent==null){

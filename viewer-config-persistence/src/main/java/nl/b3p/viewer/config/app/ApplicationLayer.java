@@ -189,11 +189,11 @@ public class ApplicationLayer {
         }
         return null;
     }
-    public String getDisplayName() {
+    public String getDisplayName(EntityManager em) {
         if(ClobElement.isNotBlank(getDetails().get("titleAlias"))) {
             return getDetails().get("titleAlias").getValue();
         } else {
-            Layer l = getService() == null ? null : getService().getLayer(getLayerName());
+            Layer l = getService() == null ? null : getService().getLayer(getLayerName(),em);
             if(l != null) {
                 return l.getDisplayName();
             } else {
@@ -202,11 +202,11 @@ public class ApplicationLayer {
         }
     }
 
-    public JSONObject toJSONObject() throws JSONException {
-        return toJSONObject(false, false);
+    public JSONObject toJSONObject(EntityManager em) throws JSONException {
+        return toJSONObject(false, false, em);
     }
     
-    public JSONObject toJSONObject(boolean includeAttributes, boolean includeRelations) throws JSONException {
+    public JSONObject toJSONObject(boolean includeAttributes, boolean includeRelations,EntityManager em) throws JSONException {
 
         JSONObject o = new JSONObject();
         o.put("id", getId());
@@ -215,9 +215,9 @@ public class ApplicationLayer {
         if(getService() != null) {
             o.put("serviceId", getService().getId());
         }
-        o.put("alias", getDisplayName());
+        o.put("alias", getDisplayName(em));
 
-        Layer l = getService() == null ? null : getService().getLayer(getLayerName());
+        Layer l = getService() == null ? null : getService().getLayer(getLayerName(), em);
         if(l != null && l.getFeatureType() != null) {
             o.put("featureType", l.getFeatureType().getId());
         }

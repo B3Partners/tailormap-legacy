@@ -289,7 +289,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 for (ApplicationLayer layer : l.getLayers()) {
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
-                    j.put("name", layer.getDisplayName());
+                    j.put("name", layer.getDisplayName(em));
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
@@ -345,7 +345,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                         JSONObject j = new JSONObject();
                         j.put("id", "s" + layer.getId());
-                        j.put("name", layer.getDisplayName());
+                        j.put("name", layer.getDisplayName(em));
                         j.put("type", "layer");
                         j.put("isLeaf", true);
                         j.put("parentid", "");
@@ -390,7 +390,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 for (ApplicationLayer layer : l.getLayers()) {
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
-                    j.put("name", layer.getDisplayName());
+                    j.put("name", layer.getDisplayName(em));
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", levelId);

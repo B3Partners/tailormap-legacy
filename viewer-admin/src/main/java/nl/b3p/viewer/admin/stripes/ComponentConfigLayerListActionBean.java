@@ -145,7 +145,7 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
 
             for (ApplicationLayer layer : layers) {
                 try {
-                    jsonArray.put(layer.toJSONObject());
+                    jsonArray.put(layer.toJSONObject(em));
                 } catch (JSONException je) {
                     log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
                 }

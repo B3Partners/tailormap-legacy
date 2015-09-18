@@ -168,7 +168,7 @@ public class LayerListActionBean implements ActionBean {
             List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers,em);
             for (ApplicationLayer layer : filteredLayers) {
                 try {
-                    jsonArray.put(layer.toJSONObject());
+                    jsonArray.put(layer.toJSONObject(em));
                 } catch (JSONException je) {
                     log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
                 }

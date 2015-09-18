@@ -287,7 +287,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
                 };
                 String name = output.getName();
                 String extension = name.substring(name.lastIndexOf("."));
-                String newName = "Download-"+ appLayer.getDisplayName() + "-"+type + extension;
+                String newName = "Download-"+ appLayer.getDisplayName(Stripersist.getEntityManager()) + "-"+type + extension;
                 res.setFilename(newName);
                 res.setAttachment(true);
                 return res;

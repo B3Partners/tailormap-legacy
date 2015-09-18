@@ -477,7 +477,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         em.persist(applicationLayer);
         application.authorizationsModified();
 
-        displayName = applicationLayer.getDisplayName();
+        displayName = applicationLayer.getDisplayName(em);
         SelectedContentCache.setApplicationCacheDirty(application, true, false);
         
         em.getTransaction().commit();

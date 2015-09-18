@@ -334,7 +334,7 @@ public class SelectedContentCache {
 
         for (ApplicationLayer al : l.getLayers()) {
 
-            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations);
+            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em);
             p.put("background", l.isBackground() || parentIsBackground);
 
             Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
