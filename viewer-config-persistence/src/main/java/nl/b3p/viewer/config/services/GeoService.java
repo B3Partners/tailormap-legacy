@@ -462,7 +462,7 @@ public abstract class GeoService {
         }
 
         for(Layer child: l.getCachedChildren()) {                
-            walkLayerJSONFlatten(child, layers, layersToInclude,validXmlTags,includeAuthorizations);
+            walkLayerJSONFlatten(child, layers, layersToInclude,validXmlTags,includeAuthorizations, em);
         }
     }
     

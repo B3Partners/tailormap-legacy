@@ -17,11 +17,13 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -74,8 +76,9 @@ public class FeatureActionBean implements ActionBean {
         if(service == null || layer == null) {
             error = "Invalid parameters";
         } else {
-            service.loadLayerTree();
-            Layer l = service.getLayer(layer);
+            EntityManager em = Stripersist.getEntityManager();
+            service.loadLayerTree(em);
+            Layer l = service.getLayer(layer, em);
             
             if(l == null) {
                 error = "Can't find layer " + layer;

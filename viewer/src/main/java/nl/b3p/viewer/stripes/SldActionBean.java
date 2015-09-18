@@ -503,7 +503,7 @@ public class SldActionBean implements ActionBean {
         try{
             json.put("success", Boolean.FALSE);
             if (filter!=null && applicationLayer!=null){
-                Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName());
+                Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
                 if (layer==null){
                     error = "Layer not found";
                 }else{

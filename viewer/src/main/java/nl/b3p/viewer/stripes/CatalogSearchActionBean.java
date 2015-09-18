@@ -308,7 +308,7 @@ public class CatalogSearchActionBean implements ActionBean {
                 if (protocol.toLowerCase().indexOf("wms") != -1) {
                     List<GeoService> foundServices = em.createQuery("FROM GeoService WHERE url = :url",GeoService.class).setParameter("url", rurl).getResultList();
                     for (GeoService geoService : foundServices) {
-                        List<Layer> layers = geoService.loadLayerTree();
+                        List<Layer> layers = geoService.loadLayerTree(em);
                         for (Layer layer : layers) {
                             if(!layer.isVirtual()){
                                 if (layer.getName().equalsIgnoreCase(layerName)) {

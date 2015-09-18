@@ -154,7 +154,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
 
-                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+                layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
                     error = "Layer not found";
@@ -231,13 +231,13 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
 
-                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+                layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
                     error = "Layer not found";
                     break;
                 }
-                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
+                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), em)) {
                     error = "U heeft geen rechten om de geometrie van deze kaartlaag te bewerken";
                     break;
                 }

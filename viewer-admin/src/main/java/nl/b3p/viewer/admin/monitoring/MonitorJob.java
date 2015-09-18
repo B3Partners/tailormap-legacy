@@ -72,7 +72,7 @@ public class MonitorJob implements Job, InterruptableJob {
                         return;
                     }
                     
-                    gs.checkOnline();
+                    gs.checkOnline(em);
                     online++;
                     gs.setMonitoringStatusOK(true);
                     log.debug("ONLINE: " + debugMsg);

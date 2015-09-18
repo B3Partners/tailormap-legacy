@@ -175,7 +175,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                 j.put("name", appl.getDisplayName());
                 children.put(j);
 
-                Layer serviceLayer = appl.getService().getLayer(appl.getLayerName());
+                Layer serviceLayer = appl.getService().getLayer(appl.getLayerName(), em);
                 j.put("status", serviceLayer != null && appl.getService().isMonitoringStatusOK() ? "ok" : "error");
             }
         }

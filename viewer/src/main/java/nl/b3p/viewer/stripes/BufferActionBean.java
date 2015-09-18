@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -196,7 +197,8 @@ public class BufferActionBean implements ActionBean {
             }
             cis.setDefaultWktGeomColor(c);
 
-            List<CombineImageWkt> wkts = getFeatures(cis.getBbox());
+            EntityManager em = Stripersist.getEntityManager();
+            List<CombineImageWkt> wkts = getFeatures(cis.getBbox(), em);
             cis.setWktGeoms(wkts);
 
             final BufferedImage bi = ImageTool.drawGeometries(null, cis);
@@ -250,10 +252,10 @@ public class BufferActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));  
     }
     
-    private List<CombineImageWkt> getFeatures(Bbox bbox) throws Exception {
+    private List<CombineImageWkt> getFeatures(Bbox bbox, EntityManager em ) throws Exception {
         List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
         GeoService gs = Stripersist.getEntityManager().find(GeoService.class, serviceId);
-        Layer l = gs.getLayer(layerName);
+        Layer l = gs.getLayer(layerName, em);
 
         if (l.getFeatureType() == null) {
             throw new Exception("Layer has no feature type");

@@ -247,9 +247,9 @@ public class FeatureInfoActionBean implements ActionBean {
                     //}
                     Layer l;
                     if(al != null) {
-                        l = al.getService().getLayer(al.getLayerName());
+                        l = al.getService().getLayer(al.getLayerName(), em);
                     } else {
-                        l = gs.getLayer(query.getString("layer"));
+                        l = gs.getLayer(query.getString("layer"), em);
                     }
                     if(l == null) {
                         error = "Layer not found";

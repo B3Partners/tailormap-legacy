@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
@@ -255,12 +256,12 @@ public class AttributesActionBean implements ActionBean {
 
     @Before(stages=LifecycleStage.EventHandling)
     public void checkAuthorization() {
-
+        EntityManager em = Stripersist.getEntityManager();
         if(application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
             unauthorized = true;
         }
-        userAllowedToEditGeom = Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest());
+        userAllowedToEditGeom = Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(),em);
      }
 
     public Resolution attributes() throws JSONException {

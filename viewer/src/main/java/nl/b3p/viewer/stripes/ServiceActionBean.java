@@ -19,6 +19,7 @@ package nl.b3p.viewer.stripes;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.Resolution;
@@ -33,6 +34,7 @@ import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -91,6 +93,7 @@ public class ServiceActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
         String error = null;
         GeoService service = null;
+        EntityManager em = Stripersist.getEntityManager();
         
         if(protocol == null || url == null) {
             error = "Invalid parameters";
@@ -101,12 +104,12 @@ public class ServiceActionBean implements ActionBean {
             try {
                 if(protocol.equals(WMSService.PROTOCOL)) {
                     //params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
-                    service = new WMSService().loadFromUrl(url, params);
+                    service = new WMSService().loadFromUrl(url, params, em);
                 } else if(protocol.equals(ArcGISService.PROTOCOL)) {
-                    service = new ArcGISService().loadFromUrl(url, params);
+                    service = new ArcGISService().loadFromUrl(url, params, em);
                 } else if(protocol.equals(ArcIMSService.PROTOCOL)) {
                     params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
-                    service = new ArcIMSService().loadFromUrl(url, params);
+                    service = new ArcIMSService().loadFromUrl(url, params, em);
                 } else {
                     error = "Invalid protocol";
                 }            
@@ -121,7 +124,7 @@ public class ServiceActionBean implements ActionBean {
         
         if(service != null) {
             json.put("success", Boolean.TRUE);
-            json.put("service", service.toJSONObject(true));
+            json.put("service", service.toJSONObject(true, em));
         } else {
             json.put("success", Boolean.FALSE);
             json.put("error", error);

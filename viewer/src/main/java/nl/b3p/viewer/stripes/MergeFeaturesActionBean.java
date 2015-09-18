@@ -58,6 +58,7 @@ import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  * Merge two features, A and B so that A will have the combined geometry of A
@@ -116,7 +117,7 @@ public class MergeFeaturesActionBean implements ActionBean {
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (application == null || appLayer == null
-                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
+                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
     }
