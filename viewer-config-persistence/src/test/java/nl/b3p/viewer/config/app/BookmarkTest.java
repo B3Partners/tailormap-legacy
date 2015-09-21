@@ -6,6 +6,7 @@
 package nl.b3p.viewer.config.app;
 
 import nl.b3p.viewer.util.TestUtil;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
@@ -21,19 +22,22 @@ public class BookmarkTest extends TestUtil{
         bm.setCode("" + 16);
         bm.setParams("parameters");
         persistEntityTest(bm, Bookmark.class);
+        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
     @Test
     public void testBookmarkDelete(){
-        Application app = entityManager.find(Application.class, 1L);
+        Application app = entityManager.find(Application.class, applicationId);
         Bookmark bm = new Bookmark();
         bm.setCode("" + 16);
         bm.setParams("parameters");
         bm.setApplication(app);
         persistAndDeleteEntityTest(bm, Bookmark.class);
         
-        Application appTest = entityManager.find(Application.class, 1L);
+        Application appTest = entityManager.find(Application.class, applicationId);
         assertNotNull(appTest);
+        
+        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
         
     }
     

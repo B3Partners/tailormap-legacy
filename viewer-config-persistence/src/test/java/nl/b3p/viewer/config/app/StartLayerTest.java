@@ -14,6 +14,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.util.TestUtil;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -29,9 +30,10 @@ public class StartLayerTest extends TestUtil{
         sl.setSelectedIndex(16);
         persistEntityTest(sl, StartLayer.class);
         
-        StartLayer test = entityManager.find(StartLayer.class,1L);
+        StartLayer test = entityManager.find(StartLayer.class,applicationId);
         Assert.assertNotNull(test);
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
+        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
     @Test
@@ -49,10 +51,11 @@ public class StartLayerTest extends TestUtil{
         
         
         ApplicationLayer appLayerExists = entityManager.find(ApplicationLayer.class, 2L);
-        Application appExists = entityManager.find(Application.class, 1L);
+        Application appExists = entityManager.find(Application.class, applicationId);
         
         Assert.assertNotNull(appLayerExists);
         Assert.assertNotNull(appExists);
+        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
         
     }
     

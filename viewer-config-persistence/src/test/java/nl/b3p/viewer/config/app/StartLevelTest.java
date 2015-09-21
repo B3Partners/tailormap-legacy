@@ -8,12 +8,9 @@ package nl.b3p.viewer.config.app;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.List;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.util.TestUtil;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -32,11 +29,12 @@ public class StartLevelTest extends TestUtil{
         StartLevel test = entityManager.find(StartLevel.class,1L);
         Assert.assertNotNull(test);
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
+        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
     @Test
     public void deleteLevel() throws URISyntaxException, SQLException, IOException{
-        Application app = entityManager.find(Application.class, 1L);
+        Application app = entityManager.find(Application.class, applicationId);
         
         Level level = entityManager.find(Level.class, 5L);
         
@@ -49,11 +47,11 @@ public class StartLevelTest extends TestUtil{
         
         
         Level levelExists = entityManager.find(Level.class, 5L);
-        Application appExists = entityManager.find(Application.class, 1L);
+        Application appExists = entityManager.find(Application.class, applicationId);
         
         Assert.assertNotNull(levelExists);
         Assert.assertNotNull(appExists);
-        
+        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
 }

@@ -19,6 +19,7 @@ import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -26,10 +27,13 @@ import org.junit.BeforeClass;
  * utility methoden voor unit tests.
  *
  * @author Mark Prins <mark@b3partners.nl>
+ * @author Meine Toonen <meinetoonen@b3partners.nl>
  */
 public abstract class TestUtil {
 
     protected static EntityManager entityManager;
+    
+    public Long applicationId = 1L;
 
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
@@ -80,6 +84,7 @@ public abstract class TestUtil {
      */
     @After
     public void close() throws Exception {
+        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
         if (entityManager.isOpen()) {
             entityManager.close();
         }
