@@ -5,16 +5,11 @@
  */
 package nl.b3p.viewer.util;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
-import org.hibernate.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;

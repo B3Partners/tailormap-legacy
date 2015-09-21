@@ -14,9 +14,11 @@ import java.sql.SQLException;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import junit.extensions.TestDecorator;
+import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.hibernate.Session;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -81,5 +83,22 @@ public abstract class TestUtil {
         if (entityManager.isOpen()) {
             entityManager.close();
         }
+    }
+    
+    public <T> void persistEntityTest(T entity, Class<T> clazz){
+        entityManager.persist(entity);
+        entityManager.getTransaction().commit();
+
+        T test = entityManager.find(clazz, 1L);
+        Assert.assertNotNull(test);
+    }
+    
+    public <T> void persistAndDeleteEntityTest(T entity, Class<T> clazz){
+        persistEntityTest(entity, clazz);
+        entityManager.getTransaction().begin();
+
+        entityManager.remove(entity);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
     }
 }

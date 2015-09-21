@@ -26,10 +26,8 @@ public class StartLayerTest extends TestUtil{
         StartLayer sl = new StartLayer();
         sl.setChecked(true);
         sl.setSelectedIndex(16);
-        entityManager.persist(sl);
-        entityManager.getTransaction().commit();
+        persistEntityTest(sl, StartLayer.class);
         
-      //  entityManager.getTransaction().begin();
         StartLayer test = entityManager.find(StartLayer.class,1L);
         Assert.assertNotNull(test);
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
@@ -46,12 +44,7 @@ public class StartLayerTest extends TestUtil{
         sl.setApplicationLayer(appLayer);
         sl.setApplication(app);
         sl.setSelectedIndex(16);
-        entityManager.persist(sl);
-        entityManager.getTransaction().commit();
-        entityManager.getTransaction().begin();
-        entityManager.remove(sl);
-        entityManager.getTransaction().commit();
-        entityManager.getTransaction().begin();
+        persistAndDeleteEntityTest(sl, StartLayer.class);
         
         
         ApplicationLayer appLayerExists = entityManager.find(ApplicationLayer.class, 2L);
