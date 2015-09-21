@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.b3p.viewer.util;
+package nl.b3p.viewer.config.app;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -12,6 +12,7 @@ import java.util.List;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

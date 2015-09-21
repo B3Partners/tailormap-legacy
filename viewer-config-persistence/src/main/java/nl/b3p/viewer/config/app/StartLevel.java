@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.config.app;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -32,14 +31,13 @@ public class StartLevel {
     @Id
     private Long id;
     
-    
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Level level;
     
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Application application;
     
-    private Integer selected_index;
+    private Integer selectedIndex;
     
     private boolean checked;
     
@@ -68,12 +66,12 @@ public class StartLevel {
         this.application = application;
     }
 
-    public Integer getSelected_index() {
-        return selected_index;
+    public Integer getSelectedIndex() {
+        return selectedIndex;
     }
 
-    public void setSelected_index(Integer selected_index) {
-        this.selected_index = selected_index;
+    public void setSelectedIndex(Integer selectedIndex) {
+        this.selectedIndex = selectedIndex;
     }
 
     public boolean isChecked() {
