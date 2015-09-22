@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <style type="text/css">
             /* Main background colors */
             .x-border-layout-ct {
-                background-color: #FFFFFF;
+                background-color: #FFFFFF !important;
             }
 
             <c:if test="${!empty actionBean.application.details.steunkleur1.value && !empty actionBean.application.details.steunkleur2.value}">

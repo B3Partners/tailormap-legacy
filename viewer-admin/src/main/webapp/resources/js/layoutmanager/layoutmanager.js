@@ -46,16 +46,10 @@ Ext.define('LayoutRegion', {
     fields: [
         {name: 'id', type: 'string'},
         {name: 'htmlId', type: 'string'},
-        {name: 'useShortName', type: 'boolean'},
-        {name: 'floatComponents', type: 'boolean'},
-        {name: 'addedComponents', type: 'auto'},
-        {name: 'width', type: 'string', defaultValue:''},
-        {name: 'widthmeasure', type: 'string', defaultValue:'px'},
-        {name: 'maxwidth', type: 'string', defaultValue:''},
-        {name: 'height', type: 'string', defaultValue:''},
-        {name: 'heightmeasure', type: 'string', defaultValue:'px'},
-        {name: 'maxheight', type: 'string', defaultValue:''},
-        {name: 'configureCollapsible', type: 'boolean', defaultValue: false}
+        {name: 'useShortName', type: 'boolean', defaultValue: false},
+        {name: 'floatComponents', type: 'boolean', defaultValue: false},
+        {name: 'configure', type: 'auto', defaultValue: []},
+        {name: 'addedComponents', type: 'auto', defaultValue: []}
     ],
     isComponentAdded: function(compid) {
         var isAdded = false;
@@ -70,18 +64,42 @@ Ext.define('LayoutRegion', {
 Ext.define('LayoutManager', {
     objectBeingConfigured: null,
     layoutRegions: [
-        {id:'header', htmlId:'layout_header', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
-        {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[], configureCollapsible: true, configureFloating: true},
-        {id:'leftmargin_bottom', htmlId:'layout_left_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
-        {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, configureHeight: false, configureWidth: true, addedComponents:[], configureFloating: true, configureFloatingPosition: true },
-        {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: true, configureWidth: false, addedComponents:[]},
-        {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[], titleOverride: 'Map' },
-        {id:'content_bottom', htmlId:'layout_content_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, addedComponents:[], titleOverride: 'Map bottom'},
-        {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, configureTitle: true, configurePosition: true, addedComponents:[]},
-        {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[], configureCollapsible: true, configureFloating: true},
-        {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
-        {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]}
+        {id:'header', htmlId:'layout_header', configure: ['height', 'tabs', 'backgroundcolor']},
+        {id:'leftmargin_top', htmlId:'layout_left_top', configure: ['width', 'tabs', 'collapse', 'floating', 'backgroundcolor']},
+        {id:'leftmargin_bottom', htmlId:'layout_left_bottom', configure: ['height', 'tabs', 'backgroundcolor']},
+        {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, configure: ['width', 'floating', 'floatingposition', 'backgroundcolor']},
+        {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configure: ['height', 'backgroundcolor'] },
+        {id:'content', htmlId:'layout_content', titleOverride: 'Map' },
+        {id:'content_bottom', htmlId:'layout_content_bottom', configure: ['height', 'backgroundcolor'], titleOverride: 'Map bottom'},
+        {id:'popupwindow', htmlId:'layout_popupwindow', configure: ['height', 'width', 'tabs', 'title', 'position', 'backgroundcolor']},
+        {id:'rightmargin_top', htmlId:'layout_right_top', configure: ['width', 'tabs', 'collapse', 'floating', 'backgroundcolor']},
+        {id:'rightmargin_bottom', htmlId:'layout_right_bottom', configure: ['height', 'tabs', 'backgroundcolor']},
+        {id:'footer', htmlId:'layout_footer', configure: ['height', 'tabs', 'backgroundcolor']}
     ],
+    configurationOptions: {
+        width: { title: 'Breedte', key: 'width', type: 'text' },
+        widthmeasure: { key: 'widthmeasure', options: ['px', '%'], type: 'select' },
+        maxwidth: { key: 'maxwidth', type: 'text' },
+        height: { title: 'Hoogte', key: 'height', type: 'text' },
+        heightmeasure: { key: 'heightmeasure', options: ['px', '%'], type: 'select' },
+        maxheight: { key: 'maxheight', type: 'text' },
+        tabs: { title: 'Gebruik tabs bij meerdere componenten', key: 'useTabs', type: 'checkbox' },
+        collapse: { title: 'Balk in/uit kunnen klappen', key: 'enableCollapse', type: 'checkbox' },
+        collapse_default: { title: 'Balk standaard ingeklapt', key: 'defaultCollapsed', type: 'checkbox' },
+        floating: { title: 'Maak balk zwevend', key: 'enableFloating', type: 'checkbox' },
+        floatingposition: { title: 'Positie zwevende balk', key: 'floatingPosition', type: 'select', options: [
+            { value: 'tl', label: 'Links-boven' },
+            { value: 'bl', label: 'Links-onder' },
+            { value: 'tr', label: 'Rechts-boven' },
+            { value: 'br', label: 'Rechts-onder' }
+        ]},
+        paneltitle: { title: 'Titel in/uitklapbare balk / zwevend paneel', key: 'panelTitle', type: 'text' },
+        position: { title: 'Startpositie (leeg = gecentreerd)' },
+        posx: { title: 'x', key: 'posx', type: 'text' },
+        posy: { title: 'y', key: 'posy', type: 'text' },
+        title: { title: 'Popup titel', key: 'title', type: 'text' },
+        backgroundcolor: { title: 'Achtergrondkleur', key: 'bgcolor', type: 'text' }
+    },
     layoutRegionsStore: null,
     popupWin: null,
     tooltips: {},
@@ -108,7 +126,7 @@ Ext.define('LayoutManager', {
         
         var me = this;
         Ext.get('savebutton').on('click', function() {
-            me.saveLayout();
+            me.saveLayout(true);
         });
         
         this.popupWin = Ext.create('Ext.window.Window', {
@@ -140,107 +158,12 @@ Ext.define('LayoutManager', {
     initRegions: function() {
         var me = this;
         this.layoutRegionsStore.each(function(layoutRegion) {
-            // TODO: make this better
-            var layoutRegionElement = Ext.get(layoutRegion.get('htmlId'));
-            if(layoutRegionElement) {
-                var layoutRegionConfigHtml = '';
-                var hasLayoutConfiguration = false;
-                if(layoutRegion.get('configureWidth')) {
-                    hasLayoutConfiguration = true;
-                    layoutRegionConfigHtml += me.getWidthHeightHtml(layoutRegion.get('id'), 'width');
-                }
-                if(layoutRegion.get('configureHeight') || layoutRegion.get('configureFloating')) {
-                    hasLayoutConfiguration = true;
-                    layoutRegionConfigHtml += me.getWidthHeightHtml(layoutRegion.get('id'), 'height');
-                }
-                if(layoutRegion.get('configureTabs')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' + 
-                                                    'Gebruik tabs bij meerdere componenten: ' + 
-                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_useTabs" />' + 
-                                                '</div>';
-                }
-                if(layoutRegion.get('configureCollapsible')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
-                                                    'Balk in/uit kunnen klappen : ' +
-                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableCollapse" />' +
-                                                '</div>';
-                    layoutRegionConfigHtml += '<div class="tabsconfig" style="display: none;" id="' + layoutRegion.get('id') + '_default_collapse_setting">' +
-                                                    'Balk standaard ingeklapt : ' +
-                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_defaultCollapsed" />' +
-                                                '</div>';
-                }
-                if(layoutRegion.get('configureFloating')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
-                                                    'Maak balk zwevend : ' +
-                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableFloating" />' +
-                                                '</div>';
-                }
-                if(layoutRegion.get('configureFloatingPosition')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
-                                                    'Positie zwevende balk : ' +
-                                                    '<select id="' + layoutRegion.get('id') + '_floatingPosition"><option value="tl">Links-boven</option><option value="bl">Links-onder</option><option value="tr">Rechts-boven</option><option value="br">Rechts-onder</option></select>' +
-                                                '</div>';
-                }
-                if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
-                                                    'Titel in/uitklapbare balk / zwevend paneel : ' +
-                                                    '<input type="text" id="' + layoutRegion.get('id') + '_panelTitle" style="width: 100%;" />' +
-                                              '</div>';
-                }
-                if(layoutRegion.get('configurePosition')) {
-                    layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
-                                                'Startpositie (leeg = gecentreerd):<br />' + 
-                                                'x: <input type="text" id="' + layoutRegion.get('id') + '_posx" /> ' + 
-                                                'y: <input type="text" id="' + layoutRegion.get('id') + '_posy" />' + 
-                                            '</div>';
-                }
-                if(layoutRegion.get('configureTitle')) {
-                    layoutRegionConfigHtml +=   '<div class="tabsconfig" style="clear: left;">' + 
-                                                'Popup titel: ' + 
-                                                '<input type="text" id="' + layoutRegion.get('id') + '_title" style="width: 100%;" />' + 
-                                            '</div>';
-                }
-                layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
-                                                '<div style="float: left;">Achtergrondkleur:</div>' + 
-                                                '<div style="float: left; clear: left; width: 90px;"><input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 60px; float: left;" /><div id="colorpicker_' + layoutRegion.get('id') + '_bgcolor" style="float: left;"></div></div>' + 
-                                            '</div>';
-                                        
-                var layoutRegionTitle = layoutRegion.get('titleOverride') || me.changeCaseFirstLetter(layoutRegion.get('id').replace('_', ' '), false);
-                layoutRegionElement.insertHtml('beforeEnd',
-                    '<div class="layout_title">' +
-                        '<strong class="layoutregion_title">' + layoutRegionTitle + '</strong><br />' + 
-                        '<div class="regionconfig" id="regionconfig_' + layoutRegion.get('id') + '">' + 
-                            '<u>Visuele configuratie</u><br />' + 
-                            layoutRegionConfigHtml +
-                        '</div>' + 
-                        '<div style="clear: both;"></div>' + 
-                     '</div>', true
-                );
-                if(hasLayoutConfiguration) {
-                    layoutRegionElement.child('.layout_title').child('.layoutregion_title').on('click', function(event, obj) {
-                        if(!me.configWindows.hasOwnProperty(layoutRegion.get('id'))) {
-                            me.configWindows[layoutRegion.get('id')] = Ext.create('Ext.window.Window', {
-                                title: 'Configuratie ' + layoutRegionTitle,
-                                closable: true,
-                                closeAction: 'hide',
-                                width: 400,
-                                height: 400,
-                                layout: 'fit',
-                                modal: true,
-                                contentEl: 'regionconfig_' + layoutRegion.get('id'),
-                                resizable: false,
-                                bodyPadding: 10,
-                                fbar: [
-                                    { type: 'button', text: 'Opslaan', handler: function() { me.configWindows[layoutRegion.get('id')].hide(); } }
-                                ]
-                            });
-                        }
-                        me.configWindows[layoutRegion.get('id')].show();
-                        Ext.get('regionconfig_' + layoutRegion.get('id')).setVisible(true);
-                    });
-                }
-                layoutRegionElement.child('.layout_title').child('.regionconfig').setVisibilityMode(2).setVisible(false);
+            var regionId = layoutRegion.get('id');
+            var layoutRegionElement = document.getElementById(layoutRegion.get('htmlId'));
+            if(!layoutRegionElement) {
+                throw ['There is a layout (', regionId, ') region without an container in the JSP page'].join('');
             }
+            me.createLayoutConfiguration(layoutRegion, layoutRegionElement);
             var layout = {
                 type: 'vbox',
                 align: 'stretch'
@@ -249,38 +172,26 @@ Ext.define('LayoutManager', {
                 width: '100%',
                 minHeight: '25px'
             };
-            var renderTo = layoutRegion.get('htmlId');
             if(layoutRegion.get('floatComponents')) {
                 layout = {
                     type: 'hbox'
                 };
                 styleConfig.height = '50px';
-                // styleConfig.overflow = 'auto';
-                // Add wrapper element for scrolling
-                /* renderTo = Ext.id();
-                layoutRegionElement.insertHtml('beforeEnd',
-                    '<div id="' + renderTo + '" class="floatwrapper">' +
-                    '</div>', true
-                    ); */
             }
             var regionContainer = Ext.create('Ext.container.Container', {
                 cls: 'component-container',
                 layout: layout,
                 style: styleConfig,
                 height: layoutRegion.get('floatComponents') ? 50 : undefined,
-                defaults: {
-                    reorderable: true
-                },
                 autoScroll: layoutRegion.get('floatComponents'),
-                renderTo: renderTo,
-                plugins : Ext.create('Ext.ux.BoxReorderer',{
+                renderTo: layoutRegionElement,
+                plugins : Ext.create('Ext.ux.BoxReorderer', {
                     listeners: {
                         changeindex: function(boxReorderer, container) {
                             me.resetWidthHeight(container, layoutRegion.get('floatComponents'));
                         },
                         drop: function(boxReorderer, container) {
-                            // After each reorder: add components in right order
-                            // to region
+                            // After each reorder: add components in right order to region
                             var addedComponents = [];
                             container.items.each(function(item) {
                                 addedComponents.push({
@@ -323,114 +234,188 @@ Ext.define('LayoutManager', {
                 }
             });
             layoutRegion.regionContainer = regionContainer;
-            var regionId = layoutRegion.get('id');
-            if(Ext.isDefined(me.config.layoutJson[regionId]) && Ext.isDefined(me.config.layoutJson[regionId]['layout'])) {
-                // Apply config
-                if(layoutRegion.get('configureWidth')) {
-                    me.applyConfig(regionId, 'width');
-                }
-                if(layoutRegion.get('configureHeight') || layoutRegion.get('configureFloating')) {
-                    me.applyConfig(regionId, 'height');
-                }
-                if(layoutRegion.get('configureTabs')) {
-                    var checked = false;
-                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['useTabs'])) {
-                        checked = me.config.layoutJson[regionId]['layout']['useTabs'];
-                    }
-                    Ext.get(regionId + '_useTabs').dom.checked = checked;
-                }
-                if(layoutRegion.get('configureTitle')) {
-                    var title = '';
-                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['title'])) {
-                        bgcolor = me.config.layoutJson[regionId]['layout']['title'];
-                    }
-                    Ext.get(regionId + '_title').set({
-                        value: title
-                    });
-                }
-                if(layoutRegion.get('configurePosition')) {
-                    Ext.get(regionId + '_posx').set({
-                        value:(me.config.layoutJson[regionId]['layout']['posx'] || '')
-                    });
-                    Ext.get(regionId + '_posy').set({
-                        value:(me.config.layoutJson[regionId]['layout']['posy'] || '')
-                    });
-                }
-                if(layoutRegion.get('configureFloating')) {
-                    var floatingChecked = false;
-                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['enableFloating']) && me.config.layoutJson[regionId]['layout']['enableFloating']) {
-                        floatingChecked = me.config.layoutJson[regionId]['layout']['enableFloating'];
-                    }
-                    var enableFloatingCheck = Ext.get(regionId + '_enableFloating');
-                    enableFloatingCheck.dom.checked = floatingChecked;
-                    if(!layoutRegion.get('configureHeight')) {
-                        var heightconfig = document.getElementById(regionId + '_height_container');
-                        if(!floatingChecked) {
-                            heightconfig.style.display = 'none';
-                        }
-                        enableFloatingCheck.on('click', function() {
-                            heightconfig.style.display = enableFloatingCheck.dom.checked ? 'block' : 'none';
-                        });
-                    }
-                }
-                if(layoutRegion.get('configureFloatingPosition')) {
-                    var floatingPosition = 'tl';
-                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['floatingPosition'])) {
-                        floatingPosition = me.config.layoutJson[regionId]['layout']['floatingPosition'];
-                    }
-                    document.getElementById(regionId + '_floatingPosition').value = floatingPosition;
-                }
-                if(layoutRegion.get('configureCollapsible')) {
-                    var collapseChecked = false;
-                    var defaultCollapsed = false;
-                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['enableCollapse']) && me.config.layoutJson[regionId]['layout']['enableCollapse']) {
-                        collapseChecked = me.config.layoutJson[regionId]['layout']['enableCollapse'];
-                    }
-                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['defaultCollapsed']) && me.config.layoutJson[regionId]['layout']['defaultCollapsed']) {
-                        defaultCollapsed = me.config.layoutJson[regionId]['layout']['defaultCollapsed'];
-                    }
-                    var enableCollapseCheckbox = Ext.get(regionId + '_enableCollapse');
-                    var defaultCollapseContainer = Ext.get(regionId + '_default_collapse_setting');
-                    enableCollapseCheckbox.dom.checked = collapseChecked;
-                    enableCollapseCheckbox.on('click', function() {
-                        defaultCollapseContainer.dom.style.display = enableCollapseCheckbox.dom.checked ? 'block' : 'none';
-                    });
-                    if(collapseChecked) {
-                        defaultCollapseContainer.dom.style.display = 'block';
-                        Ext.fly(regionId + '_defaultCollapsed').dom.checked = defaultCollapsed;
-                    }
-                }
-                if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
-                    Ext.fly(regionId + '_panelTitle').set({
-                        value:(me.config.layoutJson[regionId]['layout']['panelTitle'] || '')
-                    });
-                }
-                var bgcolor = '';
-                if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['bgcolor'])) {
-                    bgcolor = me.config.layoutJson[regionId]['layout']['bgcolor'];
-                }
-                Ext.get(regionId + '_bgcolor').set({
-                    value: bgcolor
-                });
-                var openOnLeft = false;
-                var openOnTop = false;
-                if(regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom') openOnLeft = true;
-                if(regionId === 'footer') openOnTop = true;
+            if(Ext.Array.indexOf(layoutRegion.get('configure'), 'backgroundcolor') !== -1) {
                 Ext.create('Ext.ux.b3p.ColorPickerButton', {
-                    startColor: bgcolor,
-                    renderTo: 'colorpicker_' + regionId + '_bgcolor',
-                    textfield: regionId + '_bgcolor',
-                    openOnLeft: openOnLeft,
-                    openOnTop: openOnTop
+                    startColor: me.getConfigOptionValue(regionId, 'backgroundcolor'),
+                    renderTo: 'colorpicker_' + regionId + '_backgroundcolor',
+                    textfield: regionId + '_backgroundcolor',
+                    openOnLeft: (regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom'),
+                    openOnTop: (regionId === 'footer')
+                });
+            }
+            
+            if(Ext.Array.indexOf(layoutRegion.get('configure'), 'collapse') !== -1) {
+                var collapseDefault = document.getElementById(regionId + '_collapse_default').parentNode;
+                var collapse = document.getElementById(regionId + '_collapse');
+                collapseDefault.style.display = collapse.checked ? 'block' : 'none';
+                collapse.addEventListener('click', function() {
+                    collapseDefault.style.display = collapse.checked ? 'block' : 'none';
                 });
             }
         });
-        
+
         Ext.on('resize', function() {
             me.layoutRegionsStore.each(function(region) {
                 me.resetWidthHeight(region.regionContainer, region.get('floatComponents'));
             });
         });
+    },
+
+    createLayoutConfiguration: function(layoutRegion, layoutRegionElement) {
+        var configuration = layoutRegion.get('configure');
+        var regionId = layoutRegion.get('id');
+        var layoutHtml = [];
+        var configOptions = {};
+        var floatingCollapseTitleAdded = false;
+        for(var i = 0; i < configuration.length; i++) {
+            configOptions = this.configurationOptions[configuration[i]];
+            switch (configuration[i]) {
+                case 'width':
+                    layoutHtml.push(this.getWidthHeightConfig(regionId, 'width'));
+                    break;
+                case 'height':
+                    layoutHtml.push(this.getWidthHeightConfig(regionId, 'height'));
+                    break;
+                case 'tabs':
+                    layoutHtml.push(this.getCheckboxConfig(regionId, 'tabs'));
+                    break;
+                case 'floating':
+                    layoutHtml.push(this.getCheckboxConfig(regionId, 'floating'));
+                    if(!floatingCollapseTitleAdded) {
+                        layoutHtml.push(this.getTextConfig(regionId, 'paneltitle'));
+                        floatingCollapseTitleAdded = true;
+                    }
+                    break;
+                case 'collapse':
+                    layoutHtml.push(this.getCheckboxConfig(regionId, 'collapse'));
+                    layoutHtml.push(this.getCheckboxConfig(regionId, 'collapse_default'));
+                    if(!floatingCollapseTitleAdded) {
+                        layoutHtml.push(this.getTextConfig(regionId, 'paneltitle'));
+                        floatingCollapseTitleAdded = true;
+                    }
+                    break;
+                case 'floatingposition':
+                    layoutHtml.push(this.getSelectConfig(regionId, 'floatingposition'));
+                    break;
+                case 'position':
+                    layoutHtml.push(
+                        '<div class="tabsconfig">',
+                        this.getConfigTitle('position'), '<br />',
+                        this.getConfigTitle('posx'),
+                        this.getTextField(regionId, 'posx'),
+                        this.getConfigTitle('posy'),
+                        this.getTextField(regionId, 'posy'),
+                        '</div>'
+                    );
+                    break;
+                case 'title':
+                    layoutHtml.push(this.getTextConfig(regionId, 'title'));
+                    break;
+                case 'backgroundcolor':
+                    layoutHtml.push(
+                        '<div class="tabsconfig">',
+                        '<div style="float: left;">', this.getConfigTitle('backgroundcolor'), '</div>',
+                        '<div style="float: left; clear: left; width: 90px;">',
+                        '<input type="text" id="' + regionId + '_backgroundcolor" style="width: 60px; float: left;" value="', this.getConfigOptionValue(regionId, 'backgroundcolor') || '' ,'" />',
+                        '<div id="colorpicker_' + regionId + '_backgroundcolor" style="float: left;"></div>',
+                        '</div></div>'
+                    );
+                    break;
+            }
+        }
+                                
+        var layoutRegionTitle = layoutRegion.get('titleOverride') || this.changeCaseFirstLetter(layoutRegion.get('id').replace('_', ' '), false);
+        layoutRegionElement.innerHTML = [
+            '<div class="layout_title">',
+                '<strong class="layoutregion_title">', layoutRegionTitle, '</strong><br />',
+                '<div class="regionconfig" id="regionconfig_', regionId, '" style="display: none;">',
+                    '<u>Visuele configuratie</u><br />',
+                    layoutHtml.join(''),
+                '</div>', 
+                '<div style="clear: both;"></div>',
+             '</div>'
+        ].join('');
+
+        if(layoutHtml.length !== 0) {
+            var window = Ext.create('Ext.window.Window', {
+                title: 'Configuratie ' + layoutRegionTitle,
+                closable: true,
+                closeAction: 'hide',
+                width: 400,
+                height: 400,
+                layout: 'fit',
+                modal: true,
+                contentEl: 'regionconfig_' + regionId,
+                resizable: false,
+                bodyPadding: 10,
+                fbar: [
+                    { type: 'button', text: 'Opslaan', handler: function() { this.saveLayout(false); window.hide(); }.bind(this) }
+                ]
+            });
+            layoutRegionElement.querySelector('.layoutregion_title').addEventListener('click', function() {
+                var regionConfig = layoutRegionElement.querySelector('.regionconfig');
+                if(regionConfig) {
+                    regionConfig.style.display = 'block';
+                }
+                window.show();
+            });
+        }
+    },
+
+    /**
+     * Gets the config HTML for width / height
+     * @param string id
+     * @param string type (width | height)
+     * @returns string
+     */
+    getWidthHeightConfig: function(id, type) {
+        return [
+            '<div class="', type, 'config" id="', id, '_', type, '_container">',
+                this.getConfigTitle(type), '<br />',
+                '<input type="text" id="', id, '_', type, '" value="', (this.getConfigOptionValue(id, type) || ''), '" />',
+                this.getSelectField(id, type + 'measure'),
+                '<br />',
+                '<input type="text" id="', id, '_max', type, '" value="', (this.getConfigOptionValue(id, 'max' + type) || ''), '" /> ',
+                'px, maximaal',
+            '</div>'
+        ].join('');
+    },
+
+    getCheckboxConfig: function(id, type) {
+        return [
+            '<div class="tabsconfig">',
+                this.getConfigTitle(type),
+                '<input type="checkbox" id="', id, , '_', type, '"', this.getConfigOptionValue(id, type) ? ' checked' : '',' />',
+            '</div>'
+        ].join('');
+    },
+
+    getSelectConfig: function(id, type) {
+        return [ '<div class="tabsconfig">', this.getConfigTitle(type), this.getSelectField(id, type), '</div>'].join('');
+    },
+
+    getTextConfig: function(id, type) {
+        return [ '<div class="tabsconfig">', this.getConfigTitle(type), this.getTextField(id, type), '</div>' ].join('');
+    },
+
+    getSelectField: function(id, type) {
+        var options = this.configurationOptions[type]['options'] || [];
+        var configValue = this.getConfigOptionValue(id, type);
+        var select = ['<select id="', id, '_', type, '">'];
+        var option = {};
+        for(var i = 0; i < options.length; i++) {
+            option = options[i];
+            if(typeof(option) === 'string') { // If option is a string, convert to object with value/label
+                option = { value: option, label: option };
+            }
+            select.push('<option value="', option.value, '"', (configValue === option.value ? ' selected' : '') ,'>', option.label, '</option>');
+        }
+        select.push('</select>');
+        return select.join('');
+    },
+
+    getTextField: function(id, type) {
+        return ['<input type="text" id="', id, '_', type, '" style="width: 100%;" value="', this.getConfigOptionValue(id, type) || '' ,'" />'].join('');
     },
     
     resetWidthHeight: function(container, floatingComponents) {
@@ -471,38 +456,19 @@ Ext.define('LayoutManager', {
             Ext.get('app_singlepopup').dom.checked = this.config.globalLayout.singlePopup || false;
         }
     },
-    
-    /**
-     * Gets the config HTML for width / height
-     * @param string id
-     * @param string type (width | height)
-     * @returns string
-     */
-    getWidthHeightHtml: function(id, type) {
-        return '<div class="' + type + 'config" id="' + id + '_' + type + '_container">' + 
-            (type === 'width' ? 'Breedte' : 'Hoogte') + ':<br />' + 
-            '<input type="text" id="' + id + '_' + type + '" />' +
-            '<select id="' + id + '_' + type + 'measure">' +
-                '<option value="px">px</option>' + 
-                '<option value="%">%</option>' + 
-            '</select><br />' + 
-            '<input type="text" id="' + id + '_max' + type + '" /> ' + 
-            'px, maximaal' + 
-        '</div>';
+
+    getLayoutConfig: function(id) {
+        return (Ext.isDefined(this.config.layoutJson[id]) && Ext.isDefined(this.config.layoutJson[id]['layout'])) ? this.config.layoutJson[id]['layout'] : {}
     },
-    
-    applyConfig: function(regionId, type) {
-        var me = this;
-        Ext.get(regionId + '_' + type).set({
-            value:(this.config.layoutJson[regionId]['layout'][type] || '')
-        });
-        var select = Ext.get(regionId + '_' + type + 'measure');
-        Ext.each(select.dom.options, function(item, index){
-            if(item.value === me.config.layoutJson[regionId]['layout'][type + 'measure']) select.dom.selectedIndex = index;
-        });
-        Ext.get(regionId + '_max' + type).set({
-            value:(this.config.layoutJson[regionId]['layout']['max' + type] || '')
-        });
+
+    getConfigTitle: function(type) {
+        return this.configurationOptions[type]['title'] + ': ' || '';
+    },
+
+    getConfigOptionValue: function(id, type) {
+        var layout = this.getLayoutConfig(id);
+        var configKey = this.configurationOptions[type]['key'];
+        return layout.hasOwnProperty(configKey) ? layout[configKey] : null;
     },
     
     createToolbox: function() {
@@ -572,19 +538,37 @@ Ext.define('LayoutManager', {
     },
     
     createComponentGroup: function(name, childs){
-        var me = this;
         var groupedStore = Ext.create('Ext.data.Store', {
             model: 'DraggableViewerComponent',
             data: childs
         });
-        var view = Ext.create('Ext.view.View', {
+        var groupPanel = Ext.create("Ext.panel.Panel", {
+            title: name,
+            id:'group-'+name,
+            autoScroll:true,
+            collapsible: true,
+            defaults: {
+                border: 0,
+                width: '100%'
+            },
+            style: {
+                padding: '0px 0px 10px 0px'
+            },
+            items: this.getComponentGroupView(groupedStore)
+        });
+        return groupPanel;
+    },
+    
+    getComponentGroupView: function(groupedStore) {
+        var me = this;
+        return Ext.create('Ext.view.View', {
             cls: 'component-view',
             tpl: '<tpl for=".">' +
             '<div class="component-block">' +
-            '<div class="remove"></div>' +
-            '<div class="wrangler"></div>' +
+            '<div class="icon remove"></div>' +
+            '<div class="icon wrangler"></div>' +
             '<span class="title">{name}</span>' +
-            '<div style="clear: both;"></div>' +
+            '<div class="icon draghandle"></div>' +
             '</div>' +
             '</tpl>',
             itemSelector: 'div.component-block',
@@ -632,21 +616,6 @@ Ext.define('LayoutManager', {
                 }
             }
         });
-        var groupPanel = Ext.create("Ext.panel.Panel", {
-            title: name,
-            id:'group-'+name,
-            autoScroll:true,
-            collapsible: true,
-            defaults: {
-                border: 0,
-                width: '100%'
-            },
-            style: {
-                padding: '0px 0px 10px 0px'
-            },
-            items: view
-        });
-        return groupPanel;
     },
     
     checkDropAllowed: function(layoutRegion, data) {
@@ -698,31 +667,19 @@ Ext.define('LayoutManager', {
     
     addComponentToRegion: function(container, data, layoutRegion, createTooltip) {
         var me = this;
-        if(Ext.isEmpty(data.componentData.componentsAdded)) {
-            data.componentData.componentsAdded = 0;
-        }
-        
         var itemId = Ext.id();
-        var componentName = data.componentData.className;
-        var i = parseInt(componentName.lastIndexOf('.'), 10);
-        if(i !== -1) {
-            componentName = componentName.substring((i+1));
-        }
-        componentName = this.changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);            
-        // used when loading existing conf
-        if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
+        var componentName = '';
+        if(data.hasOwnProperty('moveComponent') && data.moveComponent) {
+            if(data.componentRegion.get('id') === layoutRegion.get('id')) {
+                // Same layoutRegion, skip rest
+                return;
+            }
+            // Remove from previous region
+            me.removeComponent(data.componentRegion.regionContainer, data.componentRegion, data.componentName, data.componentItemId);
+            // Keep componentName to keep configuration
             componentName = data.componentName;
         } else {
-           // Remove any dangling component config which remained after 
-           // adding a new component, saving it, but then not saving the layout
-           // then when re-adding the same component class it will reload the
-           // config
-            Ext.Ajax.request({ 
-                url: me.config.removeComponentUrl, 
-                params: { 
-                    name: componentName
-                }
-            });             
+            componentName = this.getComponentName(data);
         }
 
         var addItem = {
@@ -735,9 +692,58 @@ Ext.define('LayoutManager', {
             style: layoutRegion.get('floatComponents') ? { marginRight: '5px' } : {},
             componentName: componentName,
             componentClass: data.componentData.className,
-            componentPrettyName: data.componentData.name
+            componentPrettyName: data.componentData.name,
+            reorderable: true,
+            listeners: {
+                render: function(v) {
+                    // Do not allow dragging the element if the element is restricted to 1 area only
+                    if(Ext.isArray(data.componentData.restrictions) && data.componentData.restrictions.length === 1) {
+                        v.getEl().addCls('hide-draghandle');
+                        return false;
+                    }
+                    v.dragZone = Ext.create('Ext.dd.DragZone', v.getEl(), {
+                        getDragData: function(e) {
+                            var dragHandle = e.getTarget('.draghandle', 10);
+                            var sourceEl;
+                            if (dragHandle) {
+                                sourceEl = dragHandle.parentNode;
+                                var d = sourceEl.cloneNode(true);
+                                d.id = Ext.id();
+                                return v.dragData = {
+                                    sourceEl: sourceEl,
+                                    repairXY: Ext.get(sourceEl).getXY(),
+                                    ddel: d,
+                                    componentData: data.componentData,
+                                    moveComponent: true,
+                                    componentItemId: itemId,
+                                    componentRegion: layoutRegion,
+                                    componentName: componentName
+                                };
+                            }
+                            return null;
+                        },
+                        getRepairXY: function() {
+                            return this.dragData.repairXY;
+                        },
+                        onStartDrag: function() {
+                            var data = v.dragData;
+                            me.layoutRegionsStore.each(function(region) {
+                                if(me.checkDropAllowed(region, data)) {
+                                    Ext.get(region.get('htmlId')).addCls('dropallowed');
+                                }
+                            });
+                        },
+                        endDrag: function() {
+                            me.layoutRegionsStore.each(function(region) {
+                                Ext.get(region.get('htmlId')).removeCls('dropallowed');
+                            });
+                        }
+                    });
+                }
+            }
         };
         container.add(addItem);
+        
         me.resetWidthHeight(container, layoutRegion.get('floatComponents'));
         var droppedEl = Ext.get(data.ddel);
         if(layoutRegion.get('useShortName')) {
@@ -758,19 +764,7 @@ Ext.define('LayoutManager', {
                 function(btnClicked) {
                     if(btnClicked === 'yes') {
                         Ext.get(data.sourceEl).removeCls("component-added");
-                        me.tooltips[itemId].destroy();
-                        container.remove(itemId);
-                        var addedComponents = layoutRegion.get('addedComponents');
-                        if(!Ext.isEmpty(addedComponents) && Ext.isArray(addedComponents)) {
-                            var newAddedComponents = [];
-                            Ext.Array.each(addedComponents, function(comp) {
-                                if(comp.name !== addItem.componentName) {
-                                    newAddedComponents.push(comp);
-                                }
-                            });
-                            layoutRegion.set('addedComponents', newAddedComponents);
-                        }
-                        me.resetWidthHeight(container, layoutRegion.get('floatComponents'));
+                        me.removeComponent(container, layoutRegion, addItem.componentName, itemId);
                         Ext.Ajax.request({ 
                             url: me.config.removeComponentUrl, 
                             params: { 
@@ -779,7 +773,6 @@ Ext.define('LayoutManager', {
                             success: function ( result, request ) { 
                                 Ext.MessageBox.alert("Gelukt", "Het component is verwijderd.");
                                 me.saveLayout(false);
-                            // doe wat met data 
                             }, 
                             failure: function ( result, request) { 
                                 Ext.MessageBox.alert('Foutmelding', result.responseText); 
@@ -803,6 +796,54 @@ Ext.define('LayoutManager', {
         if(createTooltip) {
             me.addTooltip(itemId, data.componentData.name);
         }
+
+        if(data.hasOwnProperty('moveComponent') && data.moveComponent) {
+            me.saveLayout(false);
+        }
+    },
+
+    removeComponent: function(container, layoutRegion, itemToRemove, itemId) {
+        this.tooltips[itemId].destroy();
+        container.remove(itemId);
+        var addedComponents = layoutRegion.get('addedComponents');
+        if(!Ext.isEmpty(addedComponents) && Ext.isArray(addedComponents)) {
+            var newAddedComponents = [];
+            Ext.Array.each(addedComponents, function(comp) {
+                if(comp.name !== itemToRemove) {
+                    newAddedComponents.push(comp);
+                }
+            });
+            layoutRegion.set('addedComponents', newAddedComponents);
+        }
+        this.resetWidthHeight(container, layoutRegion.get('floatComponents'));
+    },
+    
+    getComponentName: function(data) {
+        if(Ext.isEmpty(data.componentData.componentsAdded)) {
+            data.componentData.componentsAdded = 0;
+        }
+        var componentName = data.componentData.className;
+        var i = parseInt(componentName.lastIndexOf('.'), 10);
+        if(i !== -1) {
+            componentName = componentName.substring((i+1));
+        }
+        componentName = this.changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);            
+        // used when loading existing conf
+        if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
+            componentName = data.componentName;
+        } else {
+           // Remove any dangling component config which remained after 
+           // adding a new component, saving it, but then not saving the layout
+           // then when re-adding the same component class it will reload the
+           // config
+            Ext.Ajax.request({ 
+                url: this.config.removeComponentUrl, 
+                params: { 
+                    name: componentName
+                }
+            });             
+        }
+        return componentName;
     },
     
     initTooltips: function() {
@@ -851,75 +892,14 @@ Ext.define('LayoutManager', {
         this.popupWin.show();
     },
     
-    saveLayout: function(displaySuccessMessage){
-        if(typeof displaySuccessMessage === 'undefined'){
-            displaySuccessMessage = true;
-        }
+    saveLayout: function(displaySuccessMessage) {
         var layout = {};
         this.layoutRegionsStore.each(function(region) {
-            var regionId = region.get('id');
-            var layoutConfig = {};
-            if(region.get('configureWidth')) {
-                Ext.apply(layoutConfig, {
-                    'width': Ext.get(regionId + '_width').getValue() || '',
-                    'widthmeasure': Ext.get(regionId + '_widthmeasure').getValue() || '',
-                    'maxwidth': Ext.get(regionId + '_maxwidth').getValue() || ''
-                });
-            }
-            if(region.get('configureHeight') || region.get('configureFloating')) {
-                Ext.apply(layoutConfig, {
-                    'height': Ext.get(regionId + '_height').getValue() || '',
-                    'heightmeasure': Ext.get(regionId + '_heightmeasure').getValue() || '',
-                    'maxheight': Ext.get(regionId + '_maxheight').getValue() || ''
-                });
-            }
-            var useTabs = false;
-            if(region.get('configureTabs')) {
-                if(Ext.get(regionId + '_useTabs').dom.checked) {
-                    useTabs = true;
-                }
-            }
-            if(region.get('configureTitle')) {
-                Ext.apply(layoutConfig, {
-                    'title': Ext.get(regionId + '_title').getValue() || ''
-                });
-            }
-            if(region.get('configurePosition')) {
-                Ext.apply(layoutConfig, {
-                    'posx': Ext.get(regionId + '_posx').getValue() || '',
-                    'posy': Ext.get(regionId + '_posy').getValue() || ''
-                });
-            }
-            if(region.get('configureCollapsible')) {
-                Ext.apply(layoutConfig, {
-                    'enableCollapse': Ext.get(regionId + '_enableCollapse').dom.checked,
-                    'defaultCollapsed': Ext.fly(regionId + '_defaultCollapsed').dom.checked
-                });
-            }
-            if(region.get('configureFloating')) {
-                Ext.apply(layoutConfig, {
-                    'enableFloating': Ext.fly(regionId + '_enableFloating').dom.checked
-                });
-            }
-            if(region.get('configureFloatingPosition')) {
-                Ext.apply(layoutConfig, {
-                    'floatingPosition': Ext.fly(regionId + '_floatingPosition').getValue()
-                });
-            }
-            if(region.get('configureCollapsible') || region.get('configureFloating')) {
-                Ext.apply(layoutConfig, {
-                    'panelTitle': Ext.fly(regionId + '_panelTitle').getValue() || ''
-                });
-            }
-            Ext.apply(layoutConfig, {
-                'useTabs': useTabs,
-                'bgcolor': Ext.get(regionId + '_bgcolor').getValue() || ''
-            });
-            layout[regionId] = {
-                "layout": layoutConfig,
+            layout[region.get('id')] = {
+                "layout": this.getRegionLayoutConfig(region),
                 "components": region.data.addedComponents
             };
-        });
+        }.bind(this));
         var response = {
             "layout": Ext.JSON.encode(layout)
         };
@@ -941,14 +921,51 @@ Ext.define('LayoutManager', {
                 globalLayout: Ext.JSON.encode(globalLayout)
             }, 
             success: function ( result, request ) { 
-                if(displaySuccessMessage){
-                    Ext.MessageBox.alert("Gelukt", "De layout is opgeslagen.");
+                if(!displaySuccessMessage){
+                    return;
                 }
+                Ext.MessageBox.alert("Gelukt", "De layout is opgeslagen.");
             }, 
             failure: function ( result, request) { 
                 Ext.MessageBox.alert('Foutmelding', result.responseText); 
             } 
         });
+    },
+
+    getRegionLayoutConfig: function(region) {
+        var configuration = region.get('configure');
+        var regionId = region.get('id');
+        var layout = {};
+        var configOptions;
+        var extraConfigs = {
+            position: ['posx', 'posy'],
+            width: ['width', 'widthmeasure', 'maxwidth'],
+            height: ['height', 'heightmeasure', 'maxheight'],
+            collapse: ['collapse', 'collapse_default']
+        };
+        var config;
+        for(var i = 0; i < configuration.length; i++) {
+            config = configuration[i];
+            if(extraConfigs.hasOwnProperty(config)) {
+                for(var j = 0; j < extraConfigs[configuration[i]].length; j++) {
+                    config = extraConfigs[configuration[i]][j];
+                    configOptions = this.configurationOptions[config];
+                    layout[configOptions.key] = this.getValueFromField(regionId, config, configOptions.type);
+                }
+            } else {
+                configOptions = this.configurationOptions[config];
+                layout[configOptions.key] = this.getValueFromField(regionId, config, configOptions.type);
+            }
+        }
+        return layout;
+    },
+
+    getValueFromField: function(regionId, configurationId, configurationType) {
+        var field = document.getElementById([regionId, '_', configurationId].join(''));
+        if(configurationType === 'checkbox') {
+            return field.checked;
+        }
+        return field.value || '';
     }
     
 });
