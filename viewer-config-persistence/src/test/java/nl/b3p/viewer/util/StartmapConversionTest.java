@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class StartmapConversionTest extends TestUtil {
     
-    @Before
+ //  @Before
     public void revertChanged(){
         Application app = entityManager.find(Application.class, applicationId);
         List<StartLayer> startLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app", StartLayer.class).setParameter("app", app).getResultList();
@@ -51,7 +51,7 @@ public class StartmapConversionTest extends TestUtil {
         Level level = entityManager.find(Level.class,levelId);
         assertNotNull(level);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
-            File f = new File(TestUtil.class.getResource("scripts/postgresql-add_cyclorama_account.sql").toURI());
+        File f = new File(TestUtil.class.getResource("/../classes/scripts/postgresql-add_cyclorama_account.sql").toURI());
         assertTrue (f.exists());
         
         StartLevel sl = entityManager.createQuery("FROM StartLevel where level = :level", StartLevel.class).setParameter("level", level).getSingleResult();
