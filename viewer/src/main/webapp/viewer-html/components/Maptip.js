@@ -808,7 +808,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      * Adds the close and minimize buttons to the balloon
      */
     this._appendButtons = function() {
-        if(!this.showCloseButton || this.balloonContent.query('.balloonButton').length === 2){
+        if (!this.showCloseButton || this.balloon.query('.balloonButton').length === 2) {
             return;
         }
         var thisObj = this;
@@ -820,7 +820,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         closeButton.addListener("click",function(){
             thisObj.close();
         });
-        this.balloonContent.appendChild(closeButton);
+        this.balloon.appendChild(closeButton);
 
         var minMaximizeButton = new Ext.Element(document.createElement("div"));
         minMaximizeButton.addCls("x-tool-img x-tool-minimize balloonButton");
@@ -835,7 +835,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
                 minMaximizeButton.addCls('x-tool-minimize').removeCls('x-tool-maximize');
             }
         });
-        this.balloonContent.appendChild(minMaximizeButton);
+        this.balloon.appendChild(minMaximizeButton);
     };
 
     /**
