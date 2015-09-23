@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
@@ -28,7 +29,7 @@ import org.junit.Test;
  */
 public class StartmapConversionTest extends TestUtil {
     
-   // @Before
+    @Before
     public void revertChanged() throws IOException, SQLException, URISyntaxException{
         Application app = entityManager.find(Application.class, applicationId);
         List<StartLayer> startLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app", StartLayer.class).setParameter("app", app).getResultList();
@@ -51,24 +52,28 @@ public class StartmapConversionTest extends TestUtil {
     
     private Long levelId = 5L;
     
-  //  @Test
+    @Test
     public void convertTestStartLevels() throws URISyntaxException, IOException, SQLException{
         List<StartLevel> sls = entityManager.createQuery("FROM StartLevel", StartLevel.class).getResultList();
         assertEquals(6, sls.size());
     }
 
-   // @Test
+    @Test
     public void convertTestStartLayers(){
         List<StartLayer> startLayers = entityManager.createQuery("FROM StartLayer", StartLayer.class).getResultList();
         assertEquals(5, startLayers.size());
     }
 
-   // @Test
+    @Test
     public void convertTestStartLevel(){
         Level level = entityManager.find(Level.class,levelId);
         assertNotNull(level);
+        StartLevel sl = null;
+        try{
+            sl = entityManager.createQuery("FROM StartLevel where level = :level", StartLevel.class).setParameter("level", level).getSingleResult();
 
-        StartLevel sl = entityManager.createQuery("FROM StartLevel where level = :level", StartLevel.class).setParameter("level", level).getSingleResult();
+        }catch(EntityNotFoundException ex){
+        }
         assertNotNull("StartLevel not found: conversion not correct", sl);
     }
     

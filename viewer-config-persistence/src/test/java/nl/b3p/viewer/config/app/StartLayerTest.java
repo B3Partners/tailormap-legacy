@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import nl.b3p.viewer.util.TestUtil;
-import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
