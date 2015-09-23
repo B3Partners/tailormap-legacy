@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -267,35 +268,52 @@ public class DatabaseSynchronizer implements Servlet {
         public void execute(Connection cnctn) throws SQLException {
             ScriptRunner runner = new ScriptRunner(cnctn, true, true);
             for (Entry<String, UpdateElement> entry : this.updateScripts.entrySet()) {
-                UpdateElement scripts = entry.getValue();
-                for (String script : scripts.getElements()){
-                    InputStream is = null;
-                    try {
-                        String scriptName=SCRIPT_PATH+"/"+script;
-                        is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
-                        if (is==null){
-                            scriptName= SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script;
+                UpdateElement element = entry.getValue();
+                if(element.getClazz() == String.class){
+                    for (String script : element.getElements()){
+                        InputStream is = null;
+                        try {
+                            String scriptName=SCRIPT_PATH+"/"+script;
                             is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
-                        }
-                        if (is==null){
-                            throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
-                        }
-                        log.info("Run database script: "+scriptName);
-                        runner.runScript(new InputStreamReader(is));
-                        if (!this.errored){
-                            this.successVersion = entry.getKey();
-                        }
-                    } catch (Exception ex) {
-                        try{
-                            if (is!=null){
-                                is.close();
+                            if (is==null){
+                                scriptName= SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script;
+                                is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
                             }
-                        }catch(IOException ioe){
-                            log.error("Exception while closing InputStream",ex);
+                            if (is==null){
+                                throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
+                            }
+                            log.info("Run database script: "+scriptName);
+                            runner.runScript(new InputStreamReader(is));
+                            if (!this.errored){
+                                this.successVersion = entry.getKey();
+                            }
+                        } catch (Exception ex) {
+                            try{
+                                if (is!=null){
+                                    is.close();
+                                }
+                            }catch(IOException ioe){
+                                log.error("Exception while closing InputStream",ex);
+                            }
+                            log.error("Error while executing script: " + script, ex);
+                            this.errored = true;
+                            break;
                         }
-                        log.error("Error while executing script: " + script, ex);
+                    }
+                }else if(element.getClazz() == DatabaseSynchronizerEM.class){
+                    try {
+                        List<String> methods = element.getElements();
+                        DatabaseSynchronizerEM dsem = new DatabaseSynchronizerEM();
+                        for (String method : methods) {
+
+                            Method m = dsem.getClass().getMethod(method);
+                            Object o = m.invoke(dsem);
+                        }
+                    }catch (Exception e){
                         this.errored = true;
-                        break;
+                    }
+                    if (!this.errored){
+                        this.successVersion = entry.getKey();
                     }
                 }
                 if (this.isErrored()){
