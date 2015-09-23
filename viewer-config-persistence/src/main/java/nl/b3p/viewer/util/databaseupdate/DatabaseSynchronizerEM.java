@@ -17,7 +17,7 @@ import nl.b3p.viewer.config.app.Level;
  */
 public class DatabaseSynchronizerEM {
 
-    public String convertApplication(){
+    public String convertApplicationsToStartLevelLayer(){
         return "aapnootmies";
     }
 

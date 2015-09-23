@@ -3,24 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.b3p.viewer.util;
+package nl.b3p.viewer.util.databaseupdate;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
-import static nl.b3p.viewer.util.TestUtil.entityManager;
-import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
+import nl.b3p.viewer.util.TestUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,10 +26,18 @@ import org.junit.Test;
  *
  * @author Meine Toonen <meinetoonen@b3partners.nl>
  */
-public class StartmapConversionTest extends TestUtil {
+public class DatabaseSynchronizerEMTest extends TestUtil {
+
+    static DatabaseSynchronizer ds;
+    private int TEST_VERSION_NUMBER = 6666;
+
+    private boolean setupIsDone = false;
     
-    @Before
-    public void revertChanged() throws IOException, SQLException, URISyntaxException{
+    public void revertAndSetup() throws IOException, SQLException, URISyntaxException{
+        if(setupIsDone){
+            return;
+        }
+        setupIsDone = true;
         Application app = entityManager.find(Application.class, applicationId);
         List<StartLayer> startLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app", StartLayer.class).setParameter("app", app).getResultList();
         List<StartLevel> startLevels = entityManager.createQuery("FROM StartLevel WHERE application = :app", StartLevel.class).setParameter("app", app).getResultList();
@@ -47,10 +53,12 @@ public class StartmapConversionTest extends TestUtil {
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
-        File f = new File(TestUtil.class.getResource("/../classes/scripts/postgresql-convertToStartLayerLevel.sql").toURI());
-        executeScript(f);
+        ds = new DatabaseSynchronizer();
+        LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
+        updates.put(""+TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
+        ds.doInit(entityManager);
     }
-    
+
     private Long levelId = 5L;
     
     @Test

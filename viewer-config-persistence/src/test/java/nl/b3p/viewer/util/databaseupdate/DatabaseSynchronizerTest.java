@@ -52,7 +52,7 @@ public class DatabaseSynchronizerTest extends TestUtil{
 
         DatabaseSynchronizer ds = new DatabaseSynchronizer();
         LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
-        updates.put("" + TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("convertApplication"), DatabaseSynchronizerEM.class));
+        updates.put("" + TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
         ds.doInit(entityManager);
         Metadata newMetadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
 

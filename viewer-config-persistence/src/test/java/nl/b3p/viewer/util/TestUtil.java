@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import junit.extensions.TestDecorator;
 import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.hibernate.Session;
 import org.junit.After;
@@ -34,6 +35,7 @@ public abstract class TestUtil {
     protected static EntityManager entityManager;
     
     public Long applicationId = 1L;
+    public String originalVersion = null;
 
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
@@ -49,7 +51,21 @@ public abstract class TestUtil {
         entityManager = Persistence.createEntityManagerFactory(persistenceUnit).createEntityManager();
         entityManager.getTransaction().begin();
         loadTestData();
+        revertDBVersion();
+        entityManager.getTransaction().begin();
     }
+
+    
+    private void revertDBVersion(){
+        if(!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
+        }
+        Metadata metadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
+        metadata.setConfigValue(originalVersion);
+        entityManager.persist(metadata);
+        entityManager.getTransaction().commit();
+    }
+    
 
     private boolean testdataLoaded = false;
     
@@ -60,6 +76,9 @@ public abstract class TestUtil {
 
         File f = new File(TestUtil.class.getResource("testdata.sql").toURI());
         executeScript(f);
+        Metadata version = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
+        originalVersion = version.getConfigValue();
+
         testdataLoaded = true;
 
     }
