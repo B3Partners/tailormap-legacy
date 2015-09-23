@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
@@ -72,7 +73,7 @@ public class StartmapConversionTest extends TestUtil {
         try{
             sl = entityManager.createQuery("FROM StartLevel where level = :level", StartLevel.class).setParameter("level", level).getSingleResult();
 
-        }catch(EntityNotFoundException ex){
+        }catch(NoResultException ex){
         }
         assertNotNull("StartLevel not found: conversion not correct", sl);
     }
