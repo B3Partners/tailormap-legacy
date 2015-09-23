@@ -8,11 +8,8 @@ package nl.b3p.viewer.config.app;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.List;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.util.TestUtil;
+import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -49,7 +46,7 @@ public class StartLayerTest extends TestUtil{
         sl.setSelectedIndex(16);
         persistAndDeleteEntityTest(sl, StartLayer.class);
         
-        
+        entityManager.flush();
         ApplicationLayer appLayerExists = entityManager.find(ApplicationLayer.class, 2L);
         Application appExists = entityManager.find(Application.class, applicationId);
         

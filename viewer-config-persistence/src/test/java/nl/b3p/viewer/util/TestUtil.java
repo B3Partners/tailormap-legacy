@@ -57,16 +57,21 @@ public abstract class TestUtil {
         if(testdataLoaded){
             return;
         }
+
+        File f = new File(TestUtil.class.getResource("testdata.sql").toURI());
+        executeScript(f);
+        testdataLoaded = true;
+
+    }
+
+    public void executeScript(File f) throws IOException, SQLException {
         Connection conn = null;
 
         try {
             Session session = (Session) entityManager.getDelegate();
             conn = (Connection) session.connection();
             ScriptRunner sr = new ScriptRunner(conn, true, true);
-
-            File f = new File(TestUtil.class.getResource("testdata.sql").toURI());
             sr.runScript(new FileReader(f));
-            testdataLoaded = true;
             conn.commit();
             entityManager.flush();
         } finally {
@@ -84,7 +89,6 @@ public abstract class TestUtil {
      */
     @After
     public void close() throws Exception {
-        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
         if (entityManager.isOpen()) {
             entityManager.close();
         }
