@@ -76,6 +76,8 @@ public class StartmapConversionTest extends TestUtil {
         }catch(NoResultException ex){
         }
         assertNotNull("StartLevel not found: conversion not correct", sl);
+        assertEquals(level.getSelectedIndex(), sl.getSelectedIndex());
+        assertEquals(level,sl.getLevel());
     }
     
 }

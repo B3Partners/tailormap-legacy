@@ -62,7 +62,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class DatabaseSynchronizer implements Servlet {
 
     private static final Log log = LogFactory.getLog(DatabaseSynchronizer.class);
-    private static final LinkedHashMap<String, List<String>> updates = new LinkedHashMap<String, List<String>>();
+    static final LinkedHashMap<String, List<String>> updates = new LinkedHashMap<String, List<String>>();
     private static final String SCRIPT_PATH="/scripts";
     private String databaseProductName="postgresql";
     private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql","oracle"};
@@ -105,13 +105,12 @@ public class DatabaseSynchronizer implements Servlet {
      * Function is called in init() of servlet.
      * Starts the updating process.
      */
-    public void doInit(){
+    public void doInit(EntityManager em){
 
         try {
             checkScriptDir();
             log.info("Try to update the database");
-            Stripersist.requestInit();
-            EntityManager em = Stripersist.getEntityManager();
+            
             this.databaseProductName = DynamicStripersistInitializer.databaseProductName;
             if (em!=null){
                 Session session = em.unwrap(Session.class);
@@ -314,7 +313,9 @@ public class DatabaseSynchronizer implements Servlet {
     @Override
     public void init(ServletConfig sc) throws ServletException {
         this.sc=sc;
-        doInit();
+        Stripersist.requestInit();
+        EntityManager em = Stripersist.getEntityManager();
+        doInit(em);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Interface methods">
