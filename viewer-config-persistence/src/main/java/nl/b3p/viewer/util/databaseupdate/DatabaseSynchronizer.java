@@ -157,6 +157,9 @@ public class DatabaseSynchronizer implements Servlet {
                         }
                         mdVersion.setConfigValue(updatedVersion);
                         em.persist(mdVersion);
+                        if(!trans.isActive()){
+                            trans.begin();
+                        }
                         trans.commit();
                         log.info("Database updated to version: "+updatedVersion);
                         //em.getTransaction().commit();
@@ -259,10 +262,12 @@ public class DatabaseSynchronizer implements Servlet {
         LinkedHashMap<String, UpdateElement> updateScripts;
         private String successVersion=null;
         private boolean errored=false;
+        private EntityManager em;
 
 
         public ScriptWorker(LinkedHashMap<String, UpdateElement> scripts, EntityManager em){
             this.updateScripts=scripts;
+            this.em = em;
         }
         @Override
         public void execute(Connection cnctn) throws SQLException {
@@ -306,11 +311,12 @@ public class DatabaseSynchronizer implements Servlet {
                         DatabaseSynchronizerEM dsem = new DatabaseSynchronizerEM();
                         for (String method : methods) {
 
-                            Method m = dsem.getClass().getMethod(method);
-                            Object o = m.invoke(dsem);
+                            Method m = dsem.getClass().getMethod(method, EntityManager.class);
+                            Object o = m.invoke(dsem, em);
                         }
                     }catch (Exception e){
                         this.errored = true;
+                        log.error("Cannot run updatemethod", e);
                     }
                     if (!this.errored){
                         this.successVersion = entry.getKey();

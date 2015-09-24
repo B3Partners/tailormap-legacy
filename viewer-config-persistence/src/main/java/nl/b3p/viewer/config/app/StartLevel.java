@@ -39,8 +39,6 @@ public class StartLevel {
     
     private Integer selectedIndex;
     
-    private boolean checked;
-    
     // <editor-fold desc="Getters and setters" defaultstate="collapsed">
     public Long getId() {
         return id;
@@ -72,14 +70,6 @@ public class StartLevel {
 
     public void setSelectedIndex(Integer selectedIndex) {
         this.selectedIndex = selectedIndex;
-    }
-
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
     }
 
     // </editor-fold>
