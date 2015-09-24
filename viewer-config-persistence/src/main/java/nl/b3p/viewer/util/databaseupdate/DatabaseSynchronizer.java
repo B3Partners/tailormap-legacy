@@ -102,6 +102,9 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("9", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
 
         updates.put("10", new UpdateElement (Collections.singletonList("add_valueListFeatureSource.sql"), String.class));
+        
+        updates.put("11", new UpdateElement(Collections.singletonList("add_start_map.sql"), String.class));
+        updates.put("12", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
     }
     /**
      * Function is called in init() of servlet.
