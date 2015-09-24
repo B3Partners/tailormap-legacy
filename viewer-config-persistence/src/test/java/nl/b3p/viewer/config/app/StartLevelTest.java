@@ -22,7 +22,6 @@ public class StartLevelTest extends TestUtil{
     @Test
     public void persistLevel(){
         StartLevel sl = new StartLevel();
-        sl.setChecked(true);
         sl.setSelectedIndex(16);
         persistEntityTest(sl, StartLevel.class);
         
@@ -39,7 +38,6 @@ public class StartLevelTest extends TestUtil{
         Level level = entityManager.find(Level.class, 5L);
         
         StartLevel sl = new StartLevel();
-        sl.setChecked(true);
         sl.setLevel(level);
         sl.setApplication(app);
         sl.setSelectedIndex(16);
