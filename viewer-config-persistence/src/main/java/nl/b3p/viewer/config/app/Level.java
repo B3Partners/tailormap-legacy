@@ -71,6 +71,10 @@ public class Level implements Comparable{
     @JoinTable(joinColumns=@JoinColumn(name="level_"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "level")
+    @MapKey(name = "application")
+    private Map<Application, StartLevel> startLevels = new HashMap<Application, StartLevel>();
     
     
     private String url;
@@ -162,6 +166,14 @@ public class Level implements Comparable{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Map<Application, StartLevel> getStartLevels() {
+        return startLevels;
+    }
+
+    public void setStartLevels(Map<Application, StartLevel> startLevels) {
+        this.startLevels = startLevels;
     }
     //</editor-fold>
     
