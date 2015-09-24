@@ -13,14 +13,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
-import junit.extensions.TestDecorator;
-import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.hibernate.Session;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -33,9 +32,12 @@ import org.junit.BeforeClass;
 public abstract class TestUtil {
 
     protected static EntityManager entityManager;
+
+    private static boolean testdataLoaded = false;
+    protected static int TEST_VERSION_NUMBER = 666;
     
     public Long applicationId = 1L;
-    public String originalVersion = null;
+    public static String originalVersion = null;
 
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
@@ -45,41 +47,80 @@ public abstract class TestUtil {
      *
      * @see #entityManager
      */
-    @Before
-    public void setUp() throws Exception {
+
+    @BeforeClass
+    public static void createEntityManager(){
         final String persistenceUnit = System.getProperty("test.persistence.unit");
         entityManager = Persistence.createEntityManagerFactory(persistenceUnit).createEntityManager();
-        entityManager.getTransaction().begin();
-        loadTestData();
-        revertDBVersion();
-        entityManager.getTransaction().begin();
     }
 
-    
-    private void revertDBVersion(){
+    @Before
+    public void setUp() throws Exception {
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
         }
-        Metadata metadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
-        metadata.setConfigValue(originalVersion);
-        entityManager.persist(metadata);
+        loadTestData();
+
+        if(!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
+        }
+    }
+
+    /**
+     * sluiten van van EntityManager {@link #entityManager}.
+     *
+     * @throws Exception if any
+     * @see #entityManager
+     */
+    @AfterClass
+    public static void close() throws Exception {
+        if (entityManager.isOpen()) {
+            entityManager.close();
+        }
+    }
+
+    @After
+    public void closeTransaction(){
+         if(entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().commit();
+        }
+    }
+
+
+    // Helper functions for testing
+    public <T> void persistEntityTest(T entity, Class<T> clazz){
+        entityManager.persist(entity);
         entityManager.getTransaction().commit();
+
+        T test = entityManager.find(clazz, 1L);
+        Assert.assertNotNull(test);
     }
     
+    public <T> void persistAndDeleteEntityTest(T entity, Class<T> clazz){
+        persistEntityTest(entity, clazz);
+        entityManager.getTransaction().begin();
 
-    private boolean testdataLoaded = false;
-    
+        entityManager.remove(entity);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+    }
+
+    // Helper functions for initializing data
+
     public void loadTestData() throws URISyntaxException, IOException, SQLException {
         if(testdataLoaded){
             return;
         }
 
-        File f = new File(TestUtil.class.getResource("testdata.sql").toURI());
-        executeScript(f);
+        Application app = entityManager.find(Application.class, applicationId);
+        if( app == null) {
+            File f = new File(TestUtil.class.getResource("testdata.sql").toURI());
+            executeScript(f);
+
+            testdataLoaded = true;
+        }
         Metadata version = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         originalVersion = version.getConfigValue();
-
-        testdataLoaded = true;
 
     }
 
@@ -98,35 +139,5 @@ public abstract class TestUtil {
                 conn.close();
             }
         }
-    }
-
-    /**
-     * sluiten van van EntityManager {@link #entityManager}.
-     *
-     * @throws Exception if any
-     * @see #entityManager
-     */
-    @After
-    public void close() throws Exception {
-        if (entityManager.isOpen()) {
-            entityManager.close();
-        }
-    }
-    
-    public <T> void persistEntityTest(T entity, Class<T> clazz){
-        entityManager.persist(entity);
-        entityManager.getTransaction().commit();
-
-        T test = entityManager.find(clazz, 1L);
-        Assert.assertNotNull(test);
-    }
-    
-    public <T> void persistAndDeleteEntityTest(T entity, Class<T> clazz){
-        persistEntityTest(entity, clazz);
-        entityManager.getTransaction().begin();
-
-        entityManager.remove(entity);
-        entityManager.getTransaction().commit();
-        entityManager.getTransaction().begin();
     }
 }

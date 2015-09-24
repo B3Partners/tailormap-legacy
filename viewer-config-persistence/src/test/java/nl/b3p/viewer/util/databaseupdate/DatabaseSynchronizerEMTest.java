@@ -16,7 +16,6 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
-import nl.b3p.viewer.util.TestUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -26,21 +25,21 @@ import org.junit.Test;
  *
  * @author Meine Toonen <meinetoonen@b3partners.nl>
  */
-public class DatabaseSynchronizerEMTest extends TestUtil {
+public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterface {
 
     static DatabaseSynchronizer ds;
-    private int TEST_VERSION_NUMBER = 6666;
 
-    private boolean setupIsDone = false;
-    
+    private static boolean setupIsDone = false;
+
+    @Before
     public void revertAndSetup() throws IOException, SQLException, URISyntaxException{
         if(setupIsDone){
             return;
         }
         setupIsDone = true;
         Application app = entityManager.find(Application.class, applicationId);
-        List<StartLayer> startLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app", StartLayer.class).setParameter("app", app).getResultList();
-        List<StartLevel> startLevels = entityManager.createQuery("FROM StartLevel WHERE application = :app", StartLevel.class).setParameter("app", app).getResultList();
+        List<StartLayer> startLayers = entityManager.createQuery("FROM StartLayer", StartLayer.class).getResultList();
+        List<StartLevel> startLevels = entityManager.createQuery("FROM StartLevel", StartLevel.class).getResultList();
         
         for (StartLevel startLevel : startLevels) {
             entityManager.remove(startLevel);

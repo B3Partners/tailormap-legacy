@@ -6,12 +6,9 @@
 package nl.b3p.viewer.util.databaseupdate;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import nl.b3p.viewer.config.metadata.Metadata;
-import nl.b3p.viewer.util.TestUtil;
-import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -19,9 +16,7 @@ import org.junit.Test;
  *
  * @author Meine Toonen <meinetoonen@b3partners.nl>
  */
-public class DatabaseSynchronizerTest extends TestUtil{
-
-    private int TEST_VERSION_NUMBER = 666;
+public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
 
     @Test
     public void testSQLScriptUpdate(){
@@ -40,10 +35,6 @@ public class DatabaseSynchronizerTest extends TestUtil{
         assertEquals(TEST_VERSION_NUMBER, Integer.parseInt(newMetadata.getConfigValue()));
     }
 
-    @After
-    public void incrementVersionNumber(){
-        TEST_VERSION_NUMBER++;
-    }
 
     @Test
     public void testCodeUpdate() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
@@ -58,7 +49,6 @@ public class DatabaseSynchronizerTest extends TestUtil{
 
         assertEquals(TEST_VERSION_NUMBER, Integer.parseInt(newMetadata.getConfigValue()));
         assertNotEquals(oldVersion, newMetadata.getConfigValue());
-
     }
     
     @Test
@@ -72,6 +62,5 @@ public class DatabaseSynchronizerTest extends TestUtil{
         ds.doInit(entityManager);
         Metadata newMetadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         assertEquals(oldVersion, newMetadata.getConfigValue());
-
     }
 }
