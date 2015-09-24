@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import nl.b3p.viewer.util.TestUtil;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -24,9 +25,12 @@ public class StartLevelTest extends TestUtil{
         StartLevel sl = new StartLevel();
         sl.setSelectedIndex(16);
         persistEntityTest(sl, StartLevel.class);
+
+
+        entityManager.refresh(sl);
+        StartLevel test = entityManager.find(StartLevel.class,sl.getId());
+        assertNotNull(test);
         
-        StartLevel test = entityManager.find(StartLevel.class,1L);
-        Assert.assertNotNull(test);
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }

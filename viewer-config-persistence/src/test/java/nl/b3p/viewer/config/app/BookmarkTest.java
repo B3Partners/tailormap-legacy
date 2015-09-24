@@ -22,6 +22,10 @@ public class BookmarkTest extends TestUtil{
         bm.setCode("" + 16);
         bm.setParams("parameters");
         persistEntityTest(bm, Bookmark.class);
+
+        entityManager.refresh(bm);
+        Bookmark test = entityManager.find(Bookmark.class,bm.getId());
+        assertNotNull(test);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     

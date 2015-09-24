@@ -91,9 +91,6 @@ public abstract class TestUtil {
     public <T> void persistEntityTest(T entity, Class<T> clazz){
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
-
-        T test = entityManager.find(clazz, 1L);
-        Assert.assertNotNull(test);
     }
     
     public <T> void persistAndDeleteEntityTest(T entity, Class<T> clazz){

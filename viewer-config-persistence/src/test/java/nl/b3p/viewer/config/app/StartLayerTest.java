@@ -25,8 +25,10 @@ public class StartLayerTest extends TestUtil{
         sl.setChecked(true);
         sl.setSelectedIndex(16);
         persistEntityTest(sl, StartLayer.class);
+
+        entityManager.refresh(sl);
         
-        StartLayer test = entityManager.find(StartLayer.class,applicationId);
+        StartLayer test = entityManager.find(StartLayer.class,sl.getId());
         Assert.assertNotNull(test);
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
