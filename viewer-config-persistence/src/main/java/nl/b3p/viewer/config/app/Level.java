@@ -75,7 +75,8 @@ public class Level implements Comparable{
     private String url;
 
     @OneToMany(mappedBy = "level",orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<StartLevel> startLevels = new ArrayList<StartLevel>();
+    @MapKey(name = "application")
+    private Map<Application, StartLevel> startLevels = new HashMap<Application, StartLevel>();
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -166,18 +167,16 @@ public class Level implements Comparable{
         this.url = url;
     }
 
-    public List<StartLevel> getStartLevels() {
+    public Map<Application, StartLevel> getStartLevels() {
         return startLevels;
     }
 
-    public void setStartLevels(List<StartLevel> startLevels) {
+    public void setStartLevels(Map<Application, StartLevel> startLevels) {
         this.startLevels = startLevels;
     }
+
     //</editor-fold>
 
-    public JSONObject toJSONObject(EntityManager em) throws JSONException {
-        return toJSONObject(true,null,null,em);
-    }
     
     public JSONObject toJSONObject(boolean includeChildrenIds, Application app, HttpServletRequest request, EntityManager em) throws JSONException {
         JSONObject o = new JSONObject();
@@ -318,9 +317,9 @@ public class Level implements Comparable{
             copy.getLayers().add(appLayer.deepCopy(originalToCopy));
         }
 
-        copy.setStartLevels(new ArrayList<StartLevel>());
-        for (StartLevel startLevel : startLevels) {
-            copy.getStartLevels().add(startLevel.deepCopy(app, copy));
+        copy.setStartLevels(new HashMap<Application,StartLevel>());
+        for (StartLevel value : startLevels.values()) {
+            copy.getStartLevels().put(app, value.deepCopy(app, copy));
         }
         
         // do not clone documents, only the list

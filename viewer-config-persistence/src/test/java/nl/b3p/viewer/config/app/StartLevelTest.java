@@ -31,7 +31,7 @@ public class StartLevelTest extends TestUtil{
 
         testStartLevel = new StartLevel();
         testStartLevel.setLevel(testLevel);
-        testLevel.getStartLevels().add(testStartLevel);
+        testLevel.getStartLevels().put(null,testStartLevel);
         testStartLevel.setSelectedIndex(16);
         persistEntityTest(testStartLevel, StartLevel.class, false);
     }

@@ -107,7 +107,7 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
 
         for (Level level : levelsCopy) {
             assertEquals(1, level.getStartLevels().size());
-            for (StartLevel startLevel : level.getStartLevels()) {
+            for (StartLevel startLevel : level.getStartLevels().values()) {
                 assertEquals(copy, startLevel.getApplication());
             }
         }

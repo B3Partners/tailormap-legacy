@@ -45,6 +45,5 @@ public class SelectedContentCacheTest extends TestUtil {
         JSONAssert.assertEquals(expected.getJSONObject("services"), actual.getJSONObject("services"), JSONCompareMode.LENIENT);
         JSONAssert.assertEquals(expected.getJSONObject("levels"), actual.getJSONObject("levels"), JSONCompareMode.LENIENT);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
-
     }
 }
