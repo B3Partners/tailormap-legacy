@@ -12,6 +12,7 @@ import nl.b3p.viewer.util.TestUtil;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 /**
@@ -20,7 +21,7 @@ import org.junit.Test;
  */
 public class StartLevelTest extends TestUtil{
     
-    @Test
+   // @Test
     public void persistLevel(){
         StartLevel sl = new StartLevel();
         sl.setSelectedIndex(16);
@@ -34,7 +35,7 @@ public class StartLevelTest extends TestUtil{
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
-    @Test
+  // @Test
     public void deleteStartLevel() throws URISyntaxException, SQLException, IOException{
         Application app = entityManager.find(Application.class, applicationId);
         
@@ -53,11 +54,6 @@ public class StartLevelTest extends TestUtil{
         Assert.assertNotNull(levelExists);
         Assert.assertNotNull(appExists);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
-    }
-
-    @Test
-    public void deleteLevel(){
-        
     }
     
 }

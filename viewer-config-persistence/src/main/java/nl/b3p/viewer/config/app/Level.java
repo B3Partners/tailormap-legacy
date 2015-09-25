@@ -74,7 +74,7 @@ public class Level implements Comparable{
 
     private String url;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "level")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     private List<StartLevel> startLevels = new ArrayList<StartLevel>();
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -174,8 +174,6 @@ public class Level implements Comparable{
         this.startLevels = startLevels;
     }
     //</editor-fold>
-
-
 
     public JSONObject toJSONObject(EntityManager em) throws JSONException {
         return toJSONObject(true,null,null,em);

@@ -110,6 +110,7 @@ public abstract class TestUtil {
     public <T> void persistEntityTest(T entity, Class<T> clazz, boolean removeLater){
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
         if(removeLater){
             objectsToRemove.add(entity);
         }
@@ -117,7 +118,6 @@ public abstract class TestUtil {
     
     public <T> void persistAndDeleteEntityTest(T entity, Class<T> clazz){
         persistEntityTest(entity, clazz, false);
-        entityManager.getTransaction().begin();
 
         entityManager.remove(entity);
         entityManager.getTransaction().commit();
