@@ -107,46 +107,50 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                     emptyText : 'Type to search...',
                     enableKeyEvents : true,
                     listeners : {
-                        keyup : {
-                            fn : function() {
-                                var textvalue = this.getValue();
-                                if(me.filterTimer !== 0) {
-                                    clearTimeout(me.filterTimer);
-                                }
-                                me.filterTimer = window.setTimeout(function() {
-                                    if(textvalue === '') {
-                                        me.setAllNodesVisible(true);
-                                    } else {
-                                        var re = new RegExp(Ext.escapeRe(textvalue), 'i');
-                                        var visibleSum = 0;
-                                        var filter = function(node) {// descends into child nodes
-                                            if(node.hasChildNodes()) {
-                                                visibleSum = 0;
-                                                node.eachChild(function(childNode) {
-                                                    if(childNode.isLeaf()) {
-                                                        if(!re.test(childNode.data.text)) {
-                                                            me.filteredNodes.push(childNode);
-                                                        } else {
-                                                            visibleSum++;
-                                                        }
-                                                    } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
-                                                        visibleSum++;
+                        keyup :  function(textfield, e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            var timeout = 500;
+                            if(e.getKey() === Ext.event.Event.RETURN) {
+                                timeout = 0;
+                            }
+                            var textvalue = this.getValue();
+                            if(me.filterTimer !== 0) {
+                                clearTimeout(me.filterTimer);
+                            }
+                            me.filterTimer = window.setTimeout(function() {
+                                me.setAllNodesVisible(true);
+                                if(textvalue !== '') {
+                                    var re = new RegExp(Ext.String.escapeRegex(textvalue), 'i');
+                                    var visibleSum = 0;
+                                    var filter = function(node) {// descends into child nodes
+                                        if(node.hasChildNodes()) {
+                                            visibleSum = 0;
+                                            node.eachChild(function(childNode) {
+                                                if(childNode.isLeaf()) {
+                                                    if(!re.test(childNode.data.text)) {
+                                                        me.filteredNodes.push(childNode);
                                                     } else {
-                                                        filter(childNode);
+                                                        visibleSum++;
                                                     }
-                                                });
-                                                if(visibleSum === 0 && !re.test(node.data.text)) {
-                                                    me.filteredNodes.push(node);
+                                                } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
+                                                    visibleSum++;
+                                                } else {
+                                                    filter(childNode);
                                                 }
-                                            } else if(!re.test(node.data.text)) {
+                                            });
+                                            if(visibleSum === 0 && !re.test(node.data.text)) {
                                                 me.filteredNodes.push(node);
                                             }
-                                        };
-                                        me.tree.getRootNode().cascadeBy(filter);
-                                        me.setAllNodesVisible(false);
-                                    }
-                                }, 500);
-                            }
+                                        } else if(!re.test(node.data.text)) {
+                                            me.filteredNodes.push(node);
+                                        }
+                                    };
+                                    me.tree.getRootNode().cascadeBy(filter);
+                                    me.setAllNodesVisible(false);
+                                }
+                            }, timeout);
+                            return false;
                         }
                     }
                 }
