@@ -72,11 +72,6 @@ public class Level implements Comparable{
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "level")
-    @MapKey(name = "application")
-    private Map<Application, StartLevel> startLevels = new HashMap<Application, StartLevel>();
-    
-    
     private String url;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -166,14 +161,6 @@ public class Level implements Comparable{
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public Map<Application, StartLevel> getStartLevels() {
-        return startLevels;
-    }
-
-    public void setStartLevels(Map<Application, StartLevel> startLevels) {
-        this.startLevels = startLevels;
     }
     //</editor-fold>
     
@@ -304,7 +291,7 @@ public class Level implements Comparable{
         return false;
     }
 
-    Level deepCopy(Level parent, Map originalToCopy) throws Exception {
+    Level deepCopy(Level parent, Map originalToCopy, Application app) throws Exception {
         Level copy = (Level)BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
         copy.setId(null);
@@ -312,7 +299,7 @@ public class Level implements Comparable{
         
         copy.setChildren(new ArrayList<Level>());
         for(Level child: children) {
-            copy.getChildren().add(child.deepCopy(copy, originalToCopy));
+            copy.getChildren().add(child.deepCopy(copy, originalToCopy, app));
         }
         
         copy.setLayers(new ArrayList<ApplicationLayer>());

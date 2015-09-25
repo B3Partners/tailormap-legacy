@@ -26,13 +26,13 @@ public class StartLevelTest extends TestUtil{
         sl.setSelectedIndex(16);
         persistEntityTest(sl, StartLevel.class);
 
-
         entityManager.refresh(sl);
         StartLevel test = entityManager.find(StartLevel.class,sl.getId());
         assertNotNull(test);
         
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
+        objectsToRemove.add(sl);
     }
     
     @Test
@@ -43,7 +43,7 @@ public class StartLevelTest extends TestUtil{
         
         StartLevel sl = new StartLevel();
         sl.setLevel(level);
-        sl.setApplication(app);
+        //sl.setApplication(app);
         sl.setSelectedIndex(16);
         persistAndDeleteEntityTest(sl, StartLevel.class);
         

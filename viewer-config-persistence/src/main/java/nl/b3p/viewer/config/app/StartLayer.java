@@ -20,6 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import org.apache.commons.beanutils.BeanUtils;
 
 /**
  *
@@ -40,6 +41,14 @@ public class StartLayer {
     private Integer selectedIndex;
     
     private boolean checked;
+
+    StartLayer deepCopy(Application app) throws Exception{
+
+        StartLayer copy = (StartLayer) BeanUtils.cloneBean(this);
+        copy.setId(null);
+        setApplication(app);
+        return copy;
+    }
 
     // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
     public Long getId() {

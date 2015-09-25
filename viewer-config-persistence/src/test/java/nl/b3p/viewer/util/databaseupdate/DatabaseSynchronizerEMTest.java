@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import javax.persistence.NoResultException;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.Application.TreeCache;
+import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
@@ -30,6 +32,7 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
     static DatabaseSynchronizer ds;
 
     private static boolean setupIsDone = false;
+    private Long levelId = 5L;
 
     @Before
     public void revertAndSetup() throws IOException, SQLException, URISyntaxException{
@@ -37,7 +40,6 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
             return;
         }
         setupIsDone = true;
-        Application app = entityManager.find(Application.class, applicationId);
         List<StartLayer> startLayers = entityManager.createQuery("FROM StartLayer", StartLayer.class).getResultList();
         List<StartLevel> startLevels = entityManager.createQuery("FROM StartLevel", StartLevel.class).getResultList();
         
@@ -51,15 +53,12 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
         
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
         ds = new DatabaseSynchronizer();
         LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
         updates.put(""+TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
         ds.doInit(entityManager);
     }
 
-    private Long levelId = 5L;
-    
     @Test
     public void convertTestStartLevels() throws URISyntaxException, IOException, SQLException{
         List<StartLevel> sls = entityManager.createQuery("FROM StartLevel", StartLevel.class).getResultList();
@@ -86,5 +85,46 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
         assertEquals(level.getSelectedIndex(), sl.getSelectedIndex());
         assertEquals(level,sl.getLevel());
     }
+
+    @Test
+    public void applicationDeepCopyLevelTest() throws Exception{
+        Application app = entityManager.find(Application.class, applicationId);
+        TreeCache tcOld = app.loadTreeCache(entityManager);
+        List<Level> oldLevels =tcOld.getLevels();
+
+        Application copy = app.deepCopy();
+        copy.setVersion("" + 14);
+        entityManager.detach(app);
+        entityManager.persist(copy);
+        TreeCache tcCopy = copy.loadTreeCache(entityManager);
+        List<Level> levels = tcCopy.getLevels();
+
+        assertEquals(oldLevels.size(), levels.size());
+
+        for (Level level : levels) {
+         //   assertEquals(1, level.getStartLevels().size());
+        }
+        objectsToRemove.add(copy);
+   }
     
+    @Test
+    public void applicationDeepCopyAppLayerTest() throws Exception{
+        Application app = entityManager.find(Application.class, applicationId);
+        TreeCache tcOld = app.loadTreeCache(entityManager);
+        List<ApplicationLayer> oldAppLayers =tcOld.getApplicationLayers();
+
+        Application copy = app.deepCopy();
+        copy.setVersion("" + 14);
+        entityManager.detach(app);
+        entityManager.persist(copy);
+        objectsToRemove.add(copy);
+        TreeCache tcCopy = copy.loadTreeCache(entityManager);
+        List<ApplicationLayer> appLayers = tcCopy.getApplicationLayers();
+
+        assertEquals(oldAppLayers.size(), appLayers.size());
+
+        for (ApplicationLayer appLayer : appLayers) {
+         //   assertEquals(1, appLayer.getStartLayers().size());
+        }
+    }
 }

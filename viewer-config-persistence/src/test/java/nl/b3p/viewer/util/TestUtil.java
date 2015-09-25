@@ -11,15 +11,18 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -39,6 +42,9 @@ public abstract class TestUtil {
     public Long applicationId = 1L;
     public static String originalVersion = null;
 
+    protected static List<Object> objectsToRemove = new ArrayList<Object>();
+
+    private static final Log log = LogFactory.getLog(TestUtil.class);
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
      * transactie.
@@ -86,6 +92,19 @@ public abstract class TestUtil {
         }
     }
 
+    @After
+    public void stuffToRemove(){
+        for (Object obj : objectsToRemove) {
+            log.debug("Removing obj" + obj.toString());
+            entityManager.remove(obj);
+        }
+
+         if(!entityManager.getTransaction().isActive()){
+             entityManager.getTransaction().begin();
+         }
+        entityManager.getTransaction().commit();
+        objectsToRemove = new ArrayList<Object>();
+    }
 
     // Helper functions for testing
     public <T> void persistEntityTest(T entity, Class<T> clazz){

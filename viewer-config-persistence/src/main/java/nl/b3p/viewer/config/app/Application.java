@@ -125,12 +125,6 @@ public class Application {
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
-    private List<StartLevel> startLevels = new ArrayList<StartLevel>();
-
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
-    private List<StartLayer> startLayers = new ArrayList<StartLayer>();
-
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
@@ -234,22 +228,6 @@ public class Application {
 
     public void setBookmarks(List<Bookmark> bookmarks) {
         this.bookmarks = bookmarks;
-    }
-
-    public List<StartLevel> getStartLevels() {
-        return startLevels;
-    }
-
-    public void setStartLevels(List<StartLevel> startLevels) {
-        this.startLevels = startLevels;
-    }
-
-    public List<StartLayer> getStartLayers() {
-        return startLayers;
-    }
-
-    public void setStartLayers(List<StartLayer> startLayers) {
-        this.startLayers = startLayers;
     }
     //</editor-fold>
     
@@ -529,7 +507,7 @@ public class Application {
 
         copy.originalToCopy = new HashMap();
         if(root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy));
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy,copy));
         }
         
         return copy;

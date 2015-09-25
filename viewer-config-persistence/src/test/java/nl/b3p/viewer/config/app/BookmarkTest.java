@@ -27,6 +27,7 @@ public class BookmarkTest extends TestUtil{
         Bookmark test = entityManager.find(Bookmark.class,bm.getId());
         assertNotNull(test);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
+        objectsToRemove.add(bm);
     }
     
     @Test
