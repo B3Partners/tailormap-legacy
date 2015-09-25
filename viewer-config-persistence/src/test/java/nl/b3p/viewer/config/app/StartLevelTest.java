@@ -24,7 +24,7 @@ public class StartLevelTest extends TestUtil{
     public void persistLevel(){
         StartLevel sl = new StartLevel();
         sl.setSelectedIndex(16);
-        persistEntityTest(sl, StartLevel.class);
+        persistEntityTest(sl, StartLevel.class,true);
 
         entityManager.refresh(sl);
         StartLevel test = entityManager.find(StartLevel.class,sl.getId());
@@ -32,18 +32,17 @@ public class StartLevelTest extends TestUtil{
         
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
-        objectsToRemove.add(sl);
     }
     
     @Test
-    public void deleteLevel() throws URISyntaxException, SQLException, IOException{
+    public void deleteStartLevel() throws URISyntaxException, SQLException, IOException{
         Application app = entityManager.find(Application.class, applicationId);
         
         Level level = entityManager.find(Level.class, 5L);
         
         StartLevel sl = new StartLevel();
         sl.setLevel(level);
-        //sl.setApplication(app);
+        sl.setApplication(app);
         sl.setSelectedIndex(16);
         persistAndDeleteEntityTest(sl, StartLevel.class);
         
@@ -54,6 +53,11 @@ public class StartLevelTest extends TestUtil{
         Assert.assertNotNull(levelExists);
         Assert.assertNotNull(appExists);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
+    }
+
+    @Test
+    public void deleteLevel(){
+        
     }
     
 }

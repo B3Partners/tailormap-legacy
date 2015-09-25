@@ -74,6 +74,7 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
     @Test
     public void convertTestStartLevel(){
         Level level = entityManager.find(Level.class,levelId);
+        Application app = entityManager.find(Application.class, applicationId);
         assertNotNull(level);
         StartLevel sl = null;
         try{
@@ -84,6 +85,7 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
         assertNotNull("StartLevel not found: conversion not correct", sl);
         assertEquals(level.getSelectedIndex(), sl.getSelectedIndex());
         assertEquals(level,sl.getLevel());
+        assertEquals(app, sl.getApplication());
     }
 
     @Test
@@ -96,15 +98,19 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
         copy.setVersion("" + 14);
         entityManager.detach(app);
         entityManager.persist(copy);
-        TreeCache tcCopy = copy.loadTreeCache(entityManager);
-        List<Level> levels = tcCopy.getLevels();
-
-        assertEquals(oldLevels.size(), levels.size());
-
-        for (Level level : levels) {
-         //   assertEquals(1, level.getStartLevels().size());
-        }
         objectsToRemove.add(copy);
+        
+        TreeCache tcCopy = copy.loadTreeCache(entityManager);
+        List<Level> levelsCopy = tcCopy.getLevels();
+
+        assertEquals(oldLevels.size(), levelsCopy.size());
+
+        for (Level level : levelsCopy) {
+            assertEquals(1, level.getStartLevels().size());
+            for (StartLevel startLevel : level.getStartLevels()) {
+                assertEquals(copy, startLevel.getApplication());
+            }
+        }
    }
     
     @Test
@@ -124,7 +130,7 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
         assertEquals(oldAppLayers.size(), appLayers.size());
 
         for (ApplicationLayer appLayer : appLayers) {
-         //   assertEquals(1, appLayer.getStartLayers().size());
+         //  assertEquals(1, appLayer.getStartLayers().size());
         }
     }
 }

@@ -24,7 +24,7 @@ public class StartLayerTest extends TestUtil{
         StartLayer sl = new StartLayer();
         sl.setChecked(true);
         sl.setSelectedIndex(16);
-        persistEntityTest(sl, StartLayer.class);
+        persistEntityTest(sl, StartLayer.class,true);
 
         entityManager.refresh(sl);
         
@@ -32,7 +32,6 @@ public class StartLayerTest extends TestUtil{
         Assert.assertNotNull(test);
         Assert.assertEquals(new Integer(16), test.getSelectedIndex());
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
-        objectsToRemove.add(sl);
     }
     
     @Test

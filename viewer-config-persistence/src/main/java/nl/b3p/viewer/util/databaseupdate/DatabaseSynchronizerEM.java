@@ -35,7 +35,7 @@ public class DatabaseSynchronizerEM {
 
     private void convertStartLevels(Level level, Application app, EntityManager em){
         StartLevel sl = new StartLevel();
-       // sl.setApplication(app);
+        sl.setApplication(app);
         sl.setLevel(level);
         sl.setSelectedIndex(level.getSelectedIndex());
         em.persist(sl);

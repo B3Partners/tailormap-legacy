@@ -74,6 +74,9 @@ public class Level implements Comparable{
 
     private String url;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "level")
+    private List<StartLevel> startLevels = new ArrayList<StartLevel>();
+
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
@@ -162,8 +165,18 @@ public class Level implements Comparable{
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public List<StartLevel> getStartLevels() {
+        return startLevels;
+    }
+
+    public void setStartLevels(List<StartLevel> startLevels) {
+        this.startLevels = startLevels;
+    }
     //</editor-fold>
-    
+
+
+
     public JSONObject toJSONObject(EntityManager em) throws JSONException {
         return toJSONObject(true,null,null,em);
     }
@@ -305,6 +318,11 @@ public class Level implements Comparable{
         copy.setLayers(new ArrayList<ApplicationLayer>());
         for(ApplicationLayer appLayer: layers) {
             copy.getLayers().add(appLayer.deepCopy(originalToCopy));
+        }
+
+        copy.setStartLevels(new ArrayList<StartLevel>());
+        for (StartLevel startLevel : startLevels) {
+            copy.getStartLevels().add(startLevel.deepCopy(app, copy));
         }
         
         // do not clone documents, only the list

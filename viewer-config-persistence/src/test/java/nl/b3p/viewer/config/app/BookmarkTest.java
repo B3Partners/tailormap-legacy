@@ -21,13 +21,12 @@ public class BookmarkTest extends TestUtil{
         Bookmark bm = new Bookmark();
         bm.setCode("" + 16);
         bm.setParams("parameters");
-        persistEntityTest(bm, Bookmark.class);
+        persistEntityTest(bm, Bookmark.class,true);
 
         entityManager.refresh(bm);
         Bookmark test = entityManager.find(Bookmark.class,bm.getId());
         assertNotNull(test);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
-        objectsToRemove.add(bm);
     }
     
     @Test

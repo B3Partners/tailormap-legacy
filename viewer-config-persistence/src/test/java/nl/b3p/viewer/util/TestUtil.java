@@ -107,13 +107,16 @@ public abstract class TestUtil {
     }
 
     // Helper functions for testing
-    public <T> void persistEntityTest(T entity, Class<T> clazz){
+    public <T> void persistEntityTest(T entity, Class<T> clazz, boolean removeLater){
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
+        if(removeLater){
+            objectsToRemove.add(entity);
+        }
     }
     
     public <T> void persistAndDeleteEntityTest(T entity, Class<T> clazz){
-        persistEntityTest(entity, clazz);
+        persistEntityTest(entity, clazz, false);
         entityManager.getTransaction().begin();
 
         entityManager.remove(entity);
