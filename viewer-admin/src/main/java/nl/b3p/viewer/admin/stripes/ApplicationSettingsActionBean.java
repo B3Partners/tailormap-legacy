@@ -372,21 +372,27 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public Resolution mashup(){
         ValidationErrors errors = context.getValidationErrors();
         try {
-            Level root = application.getRoot();
-            // Prevent copy-ing levels/layers
-            application.setRoot(null);
-            Application mashup = application.deepCopy();
-            Stripersist.getEntityManager().detach(application);
-            mashup.setRoot(root);
-            mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
-            mashup.setName(mashup.getName() + "_" + mashupName);
-            Stripersist.getEntityManager().persist(mashup);
-            Stripersist.getEntityManager().getTransaction().commit();
+            EntityManager em = Stripersist.getEntityManager();
+            Application mashup = createMashup(application, em, mashupName);
             setApplication(mashup);
         } catch (Exception ex) {
                 errors.add("Fout", new SimpleError("De mashup kan niet worden gemaakt."));
         }
         return new RedirectResolution(ApplicationSettingsActionBean.class);
+    }
+
+    Application createMashup(Application motherApplication, EntityManager em, String mashupName) throws Exception{
+        Level root = motherApplication.getRoot();
+        // Prevent copy-ing levels/layers
+        motherApplication.setRoot(null);
+        Application mashup = motherApplication.deepCopy();
+        em.detach(motherApplication);
+        mashup.setRoot(root);
+        mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
+        mashup.setName(mashup.getName() + "_" + mashupName);
+        em.persist(mashup);
+        em.getTransaction().commit();
+        return mashup;
     }
     
     public Resolution publish (){
