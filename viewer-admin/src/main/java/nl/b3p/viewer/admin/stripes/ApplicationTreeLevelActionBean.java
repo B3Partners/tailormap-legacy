@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.StringReader;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -76,33 +77,21 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     }
     
     public Resolution delete() {
-        boolean inUse = false;
-        
-        if(level.getParent() == null) {
-            inUse = true;
-            getContext().getValidationErrors().add("niveau", new SimpleError("Het bovenste niveau kan niet worden verwijderd"));
-        } else if(level.getChildren().size() > 0){
-            inUse = true;
-            getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft."));
-        } else if(level.getSelectedIndex() != null){
-            inUse = true;
-            getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen"));
-        } else if(level.getLayers().size() > 0){
-            inUse = true;
-            getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat."));
-        }
-        
-        if(!inUse){
+        EntityManager em = Stripersist.getEntityManager();
+        String error = deleteLevel(em, level);
+        if(error != null){
+            getContext().getValidationErrors().add("niveau", new SimpleError(error));
+        }else{
             Level parent = level.getParent();
             parent.getChildren().remove(level);
-            Stripersist.getEntityManager().persist(parent);
-            Stripersist.getEntityManager().remove(level);
+            em.persist(parent);
+            em.remove(level);
             getContext().getMessages().add(new SimpleMessage("Het niveau is verwijderd"));
         }
         
         application.authorizationsModified();        
         SelectedContentCache.setApplicationCacheDirty(application, true, false);
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.getTransaction().commit();
         
         return new ForwardResolution(JSP);
     }
@@ -171,8 +160,21 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
-        String error = null;
+
+        String error = deleteLevel(Stripersist.getEntityManager(), level);
         
+        if (error != null) {
+            json.put("error", error);
+        } else {
+
+            json.put("success", Boolean.TRUE);
+        }
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+
+    private String deleteLevel(EntityManager em, Level level){
+        String error = null;
+
         if(level == null) {
             error = "Niveau niet gevonden";
         } else if(level.getParent() == null) {
@@ -187,12 +189,11 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             try {
                 Level parent = level.getParent();
                 parent.getChildren().remove(level);
-                Stripersist.getEntityManager().remove(level);
+                em.remove(level);
                 application.authorizationsModified();
                 SelectedContentCache.setApplicationCacheDirty(application, true, false);
-                Stripersist.getEntityManager().getTransaction().commit();
+                em.getTransaction().commit();
 
-                json.put("success", Boolean.TRUE);
             } catch(Exception e) {
                 log.error("Fout bij verwijderen niveau", e);
                 error = "Kan niveau niet verwijderen: " + e;
@@ -200,15 +201,11 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 while(t.getCause() != null) {
                     t = t.getCause();
                     error += "; " + t;
-                }                
+                }
             }
         }
-        
-        if(error != null) {
-            json.put("error", error);
-        }              
-        return new StreamingResolution("application/json", new StringReader(json.toString()));
-    }    
+        return error;
+    }
     
     public Resolution save() {                
         level.getReaders().clear();

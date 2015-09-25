@@ -74,7 +74,7 @@ public class Level implements Comparable{
 
     private String url;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "level",orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<StartLevel> startLevels = new ArrayList<StartLevel>();
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">

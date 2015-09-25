@@ -21,7 +21,7 @@ import org.junit.Test;
  */
 public class StartLevelTest extends TestUtil{
     
-   // @Test
+    @Test
     public void persistLevel(){
         StartLevel sl = new StartLevel();
         sl.setSelectedIndex(16);
@@ -35,7 +35,7 @@ public class StartLevelTest extends TestUtil{
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
-  // @Test
+    @Test
     public void deleteStartLevel() throws URISyntaxException, SQLException, IOException{
         Application app = entityManager.find(Application.class, applicationId);
         
@@ -55,5 +55,5 @@ public class StartLevelTest extends TestUtil{
         Assert.assertNotNull(appExists);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
-    
+
 }
