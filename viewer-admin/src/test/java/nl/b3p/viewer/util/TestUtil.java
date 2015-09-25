@@ -1,9 +1,11 @@
+package nl.b3p.viewer.util;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.b3p.viewer.util;
+
 
 import java.io.File;
 import java.io.FileReader;
@@ -11,6 +13,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import nl.b3p.viewer.config.app.Application;
@@ -38,6 +42,8 @@ public abstract class TestUtil {
     
     public Long applicationId = 1L;
     public static String originalVersion = null;
+
+    protected static List<Object> objectsToRemove = new ArrayList<Object>();
 
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
@@ -86,6 +92,13 @@ public abstract class TestUtil {
         }
     }
 
+    @After
+    public void stuffToRemove(){
+        for (Object app : objectsToRemove) {
+            entityManager.remove(app);
+        }
+        objectsToRemove = new ArrayList<Object>();
+    }
 
     // Helper functions for testing
     public <T> void persistEntityTest(T entity, Class<T> clazz){
