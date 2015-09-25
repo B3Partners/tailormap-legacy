@@ -489,6 +489,7 @@ public class Application {
         Application copy = (Application) BeanUtils.cloneBean(this);   
         copy.setId(null);
         copy.setBookmarks(null);
+        copy.setTreeCache(null);
         
         // user reference is not deep copied, of course
         
@@ -509,7 +510,7 @@ public class Application {
         if(root != null) {
             copy.setRoot(root.deepCopy(null, copy.originalToCopy,copy));
         }
-        
+
         return copy;
     }
 
