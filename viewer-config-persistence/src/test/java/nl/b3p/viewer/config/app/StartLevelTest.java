@@ -8,15 +8,11 @@ package nl.b3p.viewer.config.app;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import nl.b3p.viewer.util.TestUtil;
-import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -28,7 +24,6 @@ public class StartLevelTest extends TestUtil{
     public Level testLevel;
     public StartLevel testStartLevel;
 
-    
     public void initData(){
         testLevel = new Level();
         testLevel.setName("testlevel");
@@ -39,19 +34,6 @@ public class StartLevelTest extends TestUtil{
         testLevel.getStartLevels().add(testStartLevel);
         testStartLevel.setSelectedIndex(16);
         persistEntityTest(testStartLevel, StartLevel.class, false);
-    }
-
-    @After
-    public void removeData(){
-        if(testLevel != null && entityManager.contains(testLevel)){
-            entityManager.remove(testLevel);
-        }
-
-        if(testStartLevel != null && entityManager.contains(testStartLevel)){
-            entityManager.remove(testStartLevel);
-        }
-        testLevel = null;
-        testStartLevel = null;
     }
     
     @Test
@@ -91,19 +73,19 @@ public class StartLevelTest extends TestUtil{
     @Test
     public void deleteLevel() throws URISyntaxException, SQLException, IOException{
         initData();
+        assertNotNull(testLevel);
+        assertNotNull(testStartLevel);
         long lid = testLevel.getId();
         Level l = entityManager.find(Level.class, lid);
-        
-        List<StartLevel> sls = l .getStartLevels();
-        for (StartLevel startLevel : sls) {
-            entityManager.remove(startLevel);
-        }
+    
         entityManager.remove(l);
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
 
         Level shouldBeNull = entityManager.find(Level.class, lid);
+        StartLevel shouldBeNullAsWell = entityManager.find(StartLevel.class, testStartLevel.getId());
         assertNull(shouldBeNull);
+        assertNull(shouldBeNullAsWell);
     }
 
 

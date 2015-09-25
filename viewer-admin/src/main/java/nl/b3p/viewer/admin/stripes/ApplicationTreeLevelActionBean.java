@@ -187,10 +187,6 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             error = "Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat.";
         } else {
             try {
-                List<StartLevel> sls = level.getStartLevels();
-                for (StartLevel startLevel : sls) {
-                    em.remove(startLevel);
-                }
                 Level parent = level.getParent();
                 parent.getChildren().remove(level);
                 em.remove(level);
