@@ -93,15 +93,15 @@ public abstract class TestUtil {
     }
 
     @After
-    public void stuffToRemove(){
+    public void stuffToRemove() {
         for (Object obj : objectsToRemove) {
             log.debug("Removing obj" + obj.toString());
             entityManager.remove(obj);
         }
 
-         if(!entityManager.getTransaction().isActive()){
-             entityManager.getTransaction().begin();
-         }
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
         entityManager.getTransaction().commit();
         objectsToRemove = new ArrayList<Object>();
     }
