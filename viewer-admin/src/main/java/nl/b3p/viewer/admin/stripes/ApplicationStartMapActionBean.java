@@ -359,15 +359,15 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         j.put("parentid", "");
                         j.put("checked", layer.isChecked());
                         children.put(j);
-                    }else if(map instanceof Level){
-                        Level level = (Level) map;
-                        
+                    }else if(map instanceof StartLevel){
+                        StartLevel startLevel = (StartLevel) map;
+                        Level level = startLevel.getLevel();
                         JSONArray checked = new JSONArray();
                         getCheckedLayerList(checked, level);
 
                         JSONObject j = new JSONObject();
                         j.put("id", "n" + level.getId());
-                        j.put("name", level.getName());
+                        j.put("name", startLevel.getLevel().getName());
                         j.put("type", "level");
                         j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
                         j.put("parentid", "");
@@ -419,7 +419,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     private static void walkAppTreeForStartMap(List selectedContent, Level l, Application app){
         StartLevel sl = l.getStartLevels().get(app);
-        if(sl.getSelectedIndex() != null) {
+        if(sl != null && sl.getSelectedIndex() != null) {
             selectedContent.add(sl);
         }
         
