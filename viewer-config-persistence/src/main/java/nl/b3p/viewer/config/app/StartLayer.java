@@ -42,10 +42,11 @@ public class StartLayer {
     
     private boolean checked;
 
-    StartLayer deepCopy(Application app) throws Exception{
+    StartLayer deepCopy(ApplicationLayer appLayer , Application app) throws Exception{
 
         StartLayer copy = (StartLayer) BeanUtils.cloneBean(this);
         copy.setId(null);
+        copy.setApplicationLayer(applicationLayer);
         setApplication(app);
         return copy;
     }

@@ -33,6 +33,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
@@ -132,7 +133,8 @@ public class DataStoreSpinupActionBean implements ActionBean {
             Map<FeatureSource,String> spunUpFeatureSources = new HashMap();
             int errorCount = 0, skipCount = 0, successCount = 0;
             for(ApplicationLayer al: tc.getApplicationLayers()) {
-                if(al.isChecked()) {
+                StartLayer startLayer = al.getStartLayers().get(application);
+                if(startLayer.isChecked()) {
                     
                     // XXX check if this layer needs to be spun up by checking
                     // summary title field is filled - no other way to check if 

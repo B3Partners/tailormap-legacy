@@ -75,6 +75,11 @@ public class ApplicationLayer {
     @OrderColumn(name="list_index")
     private List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();
 
+
+    @OneToMany(mappedBy = "applicationLayer",orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @MapKey(name = "application")
+    private Map<Application, StartLayer> startLayers = new HashMap<Application, StartLayer>();
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public List<ConfiguredAttribute> getAttributes() {
         return attributes;
@@ -84,7 +89,7 @@ public class ApplicationLayer {
         this.attributes = attributes;
     }
     
-    public boolean isChecked() {
+   public boolean isChecked() {
         return checked;
     }
     
@@ -148,6 +153,15 @@ public class ApplicationLayer {
     public void setLayerName(String layerName) {
         this.layerName = layerName;
     }
+
+    public Map<Application, StartLayer> getStartLayers() {
+        return startLayers;
+    }
+
+    public void setStartLayers(Map<Application, StartLayer> startLayers) {
+        this.startLayers = startLayers;
+    }
+
     //</editor-fold>
     
     /**
@@ -203,14 +217,13 @@ public class ApplicationLayer {
     }
 
     public JSONObject toJSONObject(EntityManager em) throws JSONException {
-        return toJSONObject(false, false, em);
+        return toJSONObject(false, false, em, null);
     }
     
-    public JSONObject toJSONObject(boolean includeAttributes, boolean includeRelations,EntityManager em) throws JSONException {
+    public JSONObject toJSONObject(boolean includeAttributes, boolean includeRelations,EntityManager em, Application app) throws JSONException {
 
         JSONObject o = new JSONObject();
         o.put("id", getId());
-        o.put("checked", isChecked());
         o.put("layerName", getLayerName());
         if(getService() != null) {
             o.put("serviceId", getService().getId());
@@ -234,6 +247,9 @@ public class ApplicationLayer {
         if(includeAttributes) {
             addAttributesJSON(o, includeRelations);
         }
+
+        StartLayer sl = getStartLayers().get(app);
+        o.put("checked", sl.isChecked());
 
         return o;
     }
@@ -312,7 +328,7 @@ public class ApplicationLayer {
         return featureTypeAttributes;
     }    
 
-    ApplicationLayer deepCopy(Map originalToCopy) throws Exception {
+    ApplicationLayer deepCopy(Map originalToCopy, Application app) throws Exception {
         ApplicationLayer copy = (ApplicationLayer) BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
         copy.setId(null);
@@ -326,6 +342,11 @@ public class ApplicationLayer {
         copy.setAttributes( new ArrayList<ConfiguredAttribute>());
         for(ConfiguredAttribute a: attributes) {
             copy.getAttributes().add(a.deepCopy());
+        }
+
+        copy.setStartLayers(new HashMap<Application, StartLayer>());
+        for (StartLayer value : startLayers.values()) {
+            copy.getStartLayers().put(app, value.deepCopy(copy,app));
         }
         return copy;
     }

@@ -314,7 +314,7 @@ public class Level implements Comparable{
         
         copy.setLayers(new ArrayList<ApplicationLayer>());
         for(ApplicationLayer appLayer: layers) {
-            copy.getLayers().add(appLayer.deepCopy(originalToCopy));
+            copy.getLayers().add(appLayer.deepCopy(originalToCopy, app));
         }
 
         copy.setStartLevels(new HashMap<Application,StartLevel>());

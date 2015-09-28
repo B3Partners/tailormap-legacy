@@ -33,6 +33,7 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
@@ -275,12 +276,12 @@ public class SelectedContentCache {
                     if (lhs instanceof StartLevel) {
                         lhsIndex = ((StartLevel) lhs).getSelectedIndex();
                     } else {
-                        lhsIndex = ((ApplicationLayer) lhs).getSelectedIndex();
+                        lhsIndex = ((StartLayer) lhs).getSelectedIndex();
                     }
                     if (rhs instanceof StartLevel) {
                     rhsIndex = ((StartLevel) rhs).getSelectedIndex();
                     } else {
-                        rhsIndex = ((ApplicationLayer) rhs).getSelectedIndex();
+                        rhsIndex = ((StartLayer) rhs).getSelectedIndex();
                     }
                     return lhsIndex.compareTo(rhsIndex);
                 }
@@ -292,7 +293,7 @@ public class SelectedContentCache {
                     j.put("id", ((StartLevel) obj).getLevel().getId().toString());
                 } else {
                     j.put("type", "appLayer");
-                    j.put("id", ((ApplicationLayer) obj).getId().toString());
+                    j.put("id", ((StartLayer) obj).getApplicationLayer().getId().toString());
                 }
                 selectedContent.put(j);
             }
@@ -330,13 +331,13 @@ public class SelectedContentCache {
         levels.put(levelId, o);
 
         StartLevel sl = l.getStartLevels().get(app);
-        if (sl.getSelectedIndex() != null) {
+        if (sl != null && sl.getSelectedIndex() != null) {
             selectedContent.add(sl);
         }
 
         for (ApplicationLayer al : l.getLayers()) {
 
-            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em);
+            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, app);
             p.put("background", l.isBackground() || parentIsBackground);
 
             Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
@@ -351,8 +352,9 @@ public class SelectedContentCache {
 
             appLayers.put(alId, p);
 
-            if (al.getSelectedIndex() != null) {
-                selectedContent.add(al);
+            StartLayer startLayer = al.getStartLayers().get(app);
+            if (startLayer != null && startLayer.getSelectedIndex() != null) {
+                selectedContent.add(startLayer);
             }
         }
 

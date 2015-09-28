@@ -130,7 +130,7 @@ public class DatabaseSynchronizerEMTest extends  DatabaseSynchronizerTestInterfa
         assertEquals(oldAppLayers.size(), appLayers.size());
 
         for (ApplicationLayer appLayer : appLayers) {
-         //  assertEquals(1, appLayer.getStartLayers().size());
+           assertEquals(1, appLayer.getStartLayers().size());
         }
     }
 }

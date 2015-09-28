@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import nl.b3p.viewer.util.TestUtil;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 /**
@@ -18,7 +20,23 @@ import org.junit.Test;
  * @author Meine Toonen <meinetoonen@b3partners.nl>
  */
 public class StartLayerTest extends TestUtil{
-    
+
+
+    public ApplicationLayer testLayer;
+    public StartLayer testStartLayer;
+
+    public void initData(){
+        testLayer = new ApplicationLayer();
+        testLayer.setLayerName("testlevel");
+        persistEntityTest(testLayer, ApplicationLayer.class, false);
+
+        testStartLayer = new StartLayer();
+        testStartLayer.setApplicationLayer(testLayer);
+        testLayer.getStartLayers().put(null,testStartLayer);
+        testStartLayer.setSelectedIndex(16);
+        persistEntityTest(testStartLayer, StartLayer.class, false);
+    }
+
     @Test
     public void persistLayer(){
         StartLayer sl = new StartLayer();
@@ -56,5 +74,22 @@ public class StartLayerTest extends TestUtil{
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
         
     }
-    
+
+    @Test
+    public void deleteLevel() throws URISyntaxException, SQLException, IOException{
+        initData();
+        assertNotNull(testLayer);
+        assertNotNull(testStartLayer);
+        long lid = testLayer.getId();
+        ApplicationLayer l = entityManager.find(ApplicationLayer.class, lid);
+
+        entityManager.remove(l);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+
+        ApplicationLayer shouldBeNull = entityManager.find(ApplicationLayer.class, lid);
+        StartLayer shouldBeNullAsWell = entityManager.find(StartLayer.class, testStartLayer.getId());
+        assertNull(shouldBeNull);
+        assertNull(shouldBeNullAsWell);
+    }
 }
