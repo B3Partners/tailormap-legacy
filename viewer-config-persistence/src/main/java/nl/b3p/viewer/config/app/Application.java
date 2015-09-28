@@ -406,8 +406,9 @@ public class Application {
             levelId="level_"+levelId;
         }
         levels.put(levelId, o);
-        
-        if(l.getSelectedIndex() != null) {
+
+        StartLevel sl = l.getStartLevels().get(this);
+        if(sl != null && sl.getSelectedIndex() != null) {
             selectedContent.add(l);
         }
         

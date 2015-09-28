@@ -39,7 +39,7 @@ public class SelectedContentCacheTest extends TestUtil {
         JSONObject actual = scc.createSelectedContent(app, false, false, false, entityManager);
         JSONObject expected = new JSONObject(expectedString);
 
-        JSONAssert.assertEquals(expected.getJSONArray("selectedContent"), actual.getJSONArray("selectedContent"), JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expected.getJSONArray("selectedContent"), actual.getJSONArray("selectedContent"), JSONCompareMode.STRICT_ORDER);
         assertEquals(expected.getString("rootLevel"), actual.getString("rootLevel"));
         JSONAssert.assertEquals(expected.getJSONObject("appLayers"), actual.getJSONObject("appLayers"), JSONCompareMode.LENIENT);
         JSONAssert.assertEquals(expected.getJSONObject("services"), actual.getJSONObject("services"), JSONCompareMode.LENIENT);

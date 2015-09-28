@@ -33,6 +33,7 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
 import org.apache.commons.logging.Log;
@@ -271,13 +272,13 @@ public class SelectedContentCache {
                 @Override
                 public int compare(Object lhs, Object rhs) {
                     Integer lhsIndex, rhsIndex;
-                    if (lhs instanceof Level) {
-                        lhsIndex = ((Level) lhs).getSelectedIndex();
+                    if (lhs instanceof StartLevel) {
+                        lhsIndex = ((StartLevel) lhs).getSelectedIndex();
                     } else {
                         lhsIndex = ((ApplicationLayer) lhs).getSelectedIndex();
                     }
-                    if (rhs instanceof Level) {
-                        rhsIndex = ((Level) rhs).getSelectedIndex();
+                    if (rhs instanceof StartLevel) {
+                    rhsIndex = ((StartLevel) rhs).getSelectedIndex();
                     } else {
                         rhsIndex = ((ApplicationLayer) rhs).getSelectedIndex();
                     }
@@ -286,9 +287,9 @@ public class SelectedContentCache {
             });
             for (Object obj : selectedObjects) {
                 JSONObject j = new JSONObject();
-                if (obj instanceof Level) {
+                if (obj instanceof StartLevel) {
                     j.put("type", "level");
-                    j.put("id", ((Level) obj).getId().toString());
+                    j.put("id", ((StartLevel) obj).getLevel().getId().toString());
                 } else {
                     j.put("type", "appLayer");
                     j.put("id", ((ApplicationLayer) obj).getId().toString());
@@ -328,8 +329,9 @@ public class SelectedContentCache {
         }
         levels.put(levelId, o);
 
-        if (l.getSelectedIndex() != null) {
-            selectedContent.add(l);
+        StartLevel sl = l.getStartLevels().get(app);
+        if (sl.getSelectedIndex() != null) {
+            selectedContent.add(sl);
         }
 
         for (ApplicationLayer al : l.getLayers()) {
