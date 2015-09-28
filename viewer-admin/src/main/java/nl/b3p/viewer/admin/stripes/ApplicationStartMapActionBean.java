@@ -208,8 +208,16 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
     }
     
-    private void walkAppTreeForSave(Level l) throws JSONException{ 
-        l.setSelectedIndex(getSelectedContentIndex(l));
+    private void walkAppTreeForSave(Level l) throws JSONException{
+        StartLevel sl = l.getStartLevels().get(application);
+        if(sl == null){
+            sl = new StartLevel();
+            sl.setApplication(application);
+            sl.setLevel(l);
+            l.getStartLevels().put(application, sl);
+        }
+
+        sl.setSelectedIndex(getSelectedContentIndex(l));
         
         for(ApplicationLayer al: l.getLayers()) {
             al.setSelectedIndex(getSelectedContentIndex(al));
@@ -316,20 +324,20 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
         if(levelId != null && levelId.substring(1).equals(rootlevel.getId().toString())){
             List selectedObjects = new ArrayList();
-            walkAppTreeForStartMap(selectedObjects, rootlevel);
+            walkAppTreeForStartMap(selectedObjects, rootlevel, application);
 
             Collections.sort(selectedObjects, new Comparator() {
 
                 @Override
                 public int compare(Object lhs, Object rhs) {
                     Integer lhsIndex, rhsIndex;
-                    if(lhs instanceof Level) {
-                        lhsIndex = ((Level)lhs).getSelectedIndex();
+                    if(lhs instanceof StartLevel) {
+                        lhsIndex = ((StartLevel)lhs).getSelectedIndex();
                     } else {
                         lhsIndex = ((ApplicationLayer)lhs).getSelectedIndex();
                     }
-                    if(rhs instanceof Level) {
-                        rhsIndex = ((Level)rhs).getSelectedIndex();
+                    if(rhs instanceof StartLevel) {
+                        rhsIndex = ((StartLevel)rhs).getSelectedIndex();
                     } else {
                         rhsIndex = ((ApplicationLayer)rhs).getSelectedIndex();
                     }
@@ -409,9 +417,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         };
     }
     
-    private static void walkAppTreeForStartMap(List selectedContent, Level l){       
-        if(l.getSelectedIndex() != null) {
-            selectedContent.add(l);
+    private static void walkAppTreeForStartMap(List selectedContent, Level l, Application app){
+        StartLevel sl = l.getStartLevels().get(app);
+        if(sl.getSelectedIndex() != null) {
+            selectedContent.add(sl);
         }
         
         for(ApplicationLayer al: l.getLayers()) {
@@ -422,7 +431,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
         
         for(Level child: l.getChildren()) {
-            walkAppTreeForStartMap(selectedContent, child);
+            walkAppTreeForStartMap(selectedContent, child,app);
         }
     }
     

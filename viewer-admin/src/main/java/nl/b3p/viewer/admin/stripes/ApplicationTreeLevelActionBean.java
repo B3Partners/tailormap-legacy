@@ -175,13 +175,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private String deleteLevel(EntityManager em, Level level){
         String error = null;
 
+        StartLevel sl = level.getStartLevels().get(application);
         if(level == null) {
             error = "Niveau niet gevonden";
         } else if(level.getParent() == null) {
             error = "Bovenste niveau kan niet worden verwijderd";
         } else if(level.getChildren().size() > 0) {
             error = "Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft.";
-        } else if(level.getSelectedIndex() != null) {
+        } else if(sl.getSelectedIndex() != null) {
             error = "Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen";
         } else if(level.getLayers().size() > 0) {
             error = "Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat.";
