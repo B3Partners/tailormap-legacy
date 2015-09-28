@@ -249,7 +249,7 @@ public class ApplicationLayer {
         }
 
         StartLayer sl = getStartLayers().get(app);
-        o.put("checked", sl.isChecked());
+        o.put("checked", sl != null ? sl.isChecked() : false);
 
         return o;
     }
