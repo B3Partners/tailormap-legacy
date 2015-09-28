@@ -134,7 +134,7 @@ public class DataStoreSpinupActionBean implements ActionBean {
             int errorCount = 0, skipCount = 0, successCount = 0;
             for(ApplicationLayer al: tc.getApplicationLayers()) {
                 StartLayer startLayer = al.getStartLayers().get(application);
-                if(startLayer.isChecked()) {
+                if(startLayer != null && startLayer.isChecked()) {
                     
                     // XXX check if this layer needs to be spun up by checking
                     // summary title field is filled - no other way to check if 
