@@ -128,8 +128,7 @@ Ext.define("viewer.FeatureInfo", {
             scope: this,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                var features = response.features;
-                successCallback(features);
+                successCallback(response);
             },
             failure: function(result) {
                 if(typeof failureCallback !== 'undefined') {

@@ -200,7 +200,6 @@ Ext.define ("viewer.components.Maptip",{
         var requestId = Ext.id();
 
         this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
-            console.log(data);
             if(me.config.spinnerWhileIdentify){
                 me.viewerController.mapComponent.getMap().removeMarker("edit");
             }
@@ -545,6 +544,7 @@ Ext.define ("viewer.components.Maptip",{
         if (Ext.isEmpty(text))
             return "";
         var newText=""+text;
+        newText = this.replaceRelatedFeatures(newText, feature, noHtmlEncode, nl2br, appLayer);
         //backwards compatibility. If the feature is the attributes (old way) use the feature as attribute obj.
         var attributes = feature.attributes? feature.attributes : feature;
         for (var key in attributes){
@@ -564,7 +564,6 @@ Ext.define ("viewer.components.Maptip",{
             }
             newText=newText.replace(regex,value);
         }
-        newText = this.replaceRelatedFeatures(newText, feature, noHtmlEncode, nl2br, appLayer);
         //remove all remaining [...]
         var begin=newText.indexOf("[");
         var end=newText.indexOf("]");
@@ -603,16 +602,17 @@ Ext.define ("viewer.components.Maptip",{
             appLayer: appLayer
         };
         // Now replace block in original text by placeholder link
-        var placeholderlink = ['<a href="#" class="load-releated-features" data-relatedfeature="', relatedfeature, '">+ meer laden</a>'].join('');
-        console.log(feature, this.relatedFeatureBlocks);
-        return [text.substring(0, text.indexOf(begintag) + begintag.length), placeholderlink, text.substring(text.indexOf(endtag))].join('');
+        var placeholderlink = ['<a href="#" class="load-releated-features" data-relatedfeature="', relatedfeature, '">+</a>'].join('');
+        var newText = [text.substring(0, text.indexOf(begintag)), placeholderlink, text.substring(text.indexOf(endtag) + endtag.length)].join('');
+        // Recursive call because there can be more related blocks
+        return this.replaceRelatedFeatures(newText, feature, noHtmlEncode, nl2br, appLayer);
     },
     findRelatedFeature: function(feature, name) {
         if(!feature.related_featuretypes) {
             return null;
         }
         for(var i = 0; i < feature.related_featuretypes.length; i++) {
-            if(feature.related_featuretypes[i].id == name) {
+            if(feature.related_featuretypes[i].foreignFeatureTypeName === name) {
                 return feature.related_featuretypes[i];
             }
         }
