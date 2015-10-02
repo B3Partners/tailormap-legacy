@@ -47,6 +47,7 @@ Ext.define ("viewer.components.Maptip",{
     requestExtent:null,
     requestManager: null,
     extraLinkCallbacks: [],
+    relatedFeatureBlocks: {},
     /**
      * @constructor
      */
@@ -84,7 +85,15 @@ Ext.define ("viewer.components.Maptip",{
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.config.viewerController.mapComponent.createComponent(conf);
-        this.config.viewerController.mapComponent.addComponent(this.maptipComponent);        
+        this.config.viewerController.mapComponent.addComponent(this.maptipComponent);
+        document.getElementById(this.getDiv()).addEventListener('click', function(e) {
+            if(e.target && e.target.className && e.target.className.indexOf('load-releated-features') !== -1) {
+                this.requestRelatedFeatureInfo(e.target);
+                return false;
+            }
+            return true;
+        }.bind(this));
+        
         return this;
     },
     /**
@@ -191,6 +200,7 @@ Ext.define ("viewer.components.Maptip",{
         var requestId = Ext.id();
 
         this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
+            console.log(data);
             if(me.config.spinnerWhileIdentify){
                 me.viewerController.mapComponent.getMap().removeMarker("edit");
             }
@@ -266,6 +276,7 @@ Ext.define ("viewer.components.Maptip",{
                 this.balloon.setPosition(x,y,true,browserZoomRatio);
                 this.balloon.addElements(components);
                 this.balloon.show();
+                
             }
         }catch(e){
             this.config.viewerController.logger.error(e);
@@ -300,8 +311,6 @@ Ext.define ("viewer.components.Maptip",{
                 var layerName= layer.request.appLayer;
                 for (var index = 0 ; index< layer.features.length ; index ++){
                     var feature = layer.features[index];
-                    //backwards compatibility. If the feature is the attributes (old way) use the feature as attribute obj.
-                    var attributes = feature.attributes? feature.attributes : feature;
                     var featureDiv = new Ext.Element(document.createElement("div"));
                     featureDiv.addCls("feature_summary_feature");
                     var id= "f";
@@ -322,7 +331,7 @@ Ext.define ("viewer.components.Maptip",{
                         if (details && details["summary.title"] ){
                             var titleDiv = new Ext.Element(document.createElement("div"));
                             titleDiv.addCls("feature_summary_title");
-                            titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],attributes,noHtmlEncode,nl2br));
+                            titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],feature,noHtmlEncode,nl2br, appLayer));
                             leftColumnDiv.appendChild(titleDiv);
                         }
                         //description
@@ -332,7 +341,7 @@ Ext.define ("viewer.components.Maptip",{
                             if (this.config.heightDescription){
                                 descriptionDiv.setHeight(Number(this.config.heightDescription));
                             }
-                            var desc = this.replaceByAttributes(details["summary.description"],attributes,noHtmlEncode,nl2br);
+                            var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br, appLayer);
 
                             descriptionDiv.insertHtml("beforeEnd",desc);
                             leftColumnDiv.appendChild(descriptionDiv);
@@ -341,7 +350,7 @@ Ext.define ("viewer.components.Maptip",{
                         if (details && details["summary.link"]){
                             var linkDiv = new Ext.Element(document.createElement("div"));
                             linkDiv.addCls("feature_summary_link");
-                            linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],attributes,noHtmlEncode,nl2br)+"'>link</a>");
+                            linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>", appLayer);
                             leftColumnDiv.appendChild(linkDiv);
                     }
 
@@ -378,7 +387,7 @@ Ext.define ("viewer.components.Maptip",{
                         if (this.getMoreLink()!=null){
                             var detailElem=document.createElement("a");
                             detailElem.href='javascript: void(0)';
-                            detailElem.feature=attributes;
+                            detailElem.feature= feature;
                             detailElem.appLayer=appLayer;
                             var detailLink = new Ext.Element(detailElem);
                             detailLink.addListener("click",
@@ -398,7 +407,7 @@ Ext.define ("viewer.components.Maptip",{
                         rightColumnDiv.addCls("feature_summary_rightcolumn");
                         var imageDiv = new Ext.Element(document.createElement("div"));
                         imageDiv.addCls("feature_summary_image");
-                        imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],attributes,noHtmlEncode,nl2br)+"'/>");
+                        imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>", appLayer);
                         rightColumnDiv.appendChild(imageDiv);
                         featureDiv.appendChild(rightColumnDiv);
                     }
@@ -440,21 +449,21 @@ Ext.define ("viewer.components.Maptip",{
             if (this.config.detailShowTitle && appLayer.details["summary.title"] ){
                 var titleDiv = new Ext.Element(document.createElement("div"));
                 titleDiv.addCls("feature_detail_title");
-                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature,noHtmlEncode,nl2br));
+                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature,noHtmlEncode,nl2br,appLayer));
                 featureDiv.appendChild(titleDiv);
             }
             //description
             if (this.config.detailShowDesc && appLayer.details["summary.description"]){
                 var descriptionDiv = new Ext.Element(document.createElement("div"));
                 descriptionDiv.addCls("feature_detail_description");
-                descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description"],feature,noHtmlEncode,nl2br));
+                descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description"],feature,noHtmlEncode,nl2br,appLayer));
                 featureDiv.appendChild(descriptionDiv);
             }
             //image
             if (this.config.detailShowImage && appLayer.details["summary.image"]){
                 var imageDiv = new Ext.Element(document.createElement("div"));
                 imageDiv.addCls("feature_detail_image");
-                var img = "<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature,noHtmlEncode,nl2br)+"' ";
+                var img = "<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature,noHtmlEncode,nl2br,appLayer)+"' ";
                 if (this.popup.config.details && this.popup.config.details.width){
                     img+="style='max-width: "+(this.popup.config.details.width-40)+"px;'";
                 }
@@ -466,14 +475,14 @@ Ext.define ("viewer.components.Maptip",{
             if (appLayer.details["summary.link"]){
                 var linkDiv = new Ext.Element(document.createElement("div"));
                 linkDiv.addCls("feature_detail_link");
-                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>");
+                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>",appLayer);
                 featureDiv.appendChild(linkDiv);
             }
             //description attribute
             if (appLayer.details["summary.description_attributes"]){
                 var descriptionDiv = new Ext.Element(document.createElement("div"));
                 descriptionDiv.addCls("feature_detail_description_attr");
-                descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description_attributes"],feature,noHtmlEncode,nl2br));
+                descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description_attributes"],feature,noHtmlEncode,nl2br,appLayer));
                 featureDiv.appendChild(descriptionDiv);
             }
         }
@@ -529,18 +538,21 @@ Ext.define ("viewer.components.Maptip",{
      * @param feature a object with object[key]=value
      * @param noHtmlEncode allow HTML tags in feature values
      * @param nl2br Replace newlines in feature values with br tags
+     * @param appLayer The appLayer
      * @return a new text with all [key]'s  replaced
      */
-    replaceByAttributes: function(text,feature,noHtmlEncode,nl2br){
+    replaceByAttributes: function(text,feature,noHtmlEncode,nl2br,appLayer){
         if (Ext.isEmpty(text))
             return "";
         var newText=""+text;
-        for (var key in feature){
-            if(!feature.hasOwnProperty(key)) {
+        //backwards compatibility. If the feature is the attributes (old way) use the feature as attribute obj.
+        var attributes = feature.attributes? feature.attributes : feature;
+        for (var key in attributes){
+            if(!attributes.hasOwnProperty(key)) {
                 continue;
             }
             var regex = new RegExp("\\["+key+"\\]","g");
-            var value = String(feature[key]);
+            var value = String(attributes[key]);
             if(!noHtmlEncode) {
                 value = Ext.String.htmlEncode(value);
             }
@@ -552,6 +564,7 @@ Ext.define ("viewer.components.Maptip",{
             }
             newText=newText.replace(regex,value);
         }
+        newText = this.replaceRelatedFeatures(newText, feature, noHtmlEncode, nl2br, appLayer);
         //remove all remaining [...]
         var begin=newText.indexOf("[");
         var end=newText.indexOf("]");
@@ -561,6 +574,75 @@ Ext.define ("viewer.components.Maptip",{
             end=newText.indexOf("]");
         }
         return newText;
+    },
+    replaceRelatedFeatures: function(text,feature, noHtmlEncode, nl2br, appLayer) {
+        var firstOccurence = text.indexOf('[begin.');
+        if(firstOccurence === -1) {
+            return text;
+        }
+        // First remove everything before first occurence
+        var subblock = text.substring(firstOccurence + '[begin.'.length);
+        // Find related feature name
+        var relatedfeature = subblock.substring(0, subblock.indexOf(']'));
+        // Create start and end tag
+        var begintag = ['[begin.', relatedfeature, ']'].join('');
+        var endtag = ['[end.', relatedfeature, ']'].join('');
+        // Get endtag position
+        var endtagpos = subblock.indexOf(endtag);
+        // If we cannot find endtag, return
+        if(endtagpos === -1) {
+            return text;
+        }
+        // Remove begin and end tag to keep repeating block
+        // Add to relatedFeatureBlocks object
+        this.relatedFeatureBlocks[relatedfeature] = {
+            block: subblock.substring(relatedfeature.length + 1, endtagpos),
+            relatedFeature: this.findRelatedFeature(feature, relatedfeature),
+            noHtmlEncode: noHtmlEncode,
+            nl2br: nl2br,
+            appLayer: appLayer
+        };
+        // Now replace block in original text by placeholder link
+        var placeholderlink = ['<a href="#" class="load-releated-features" data-relatedfeature="', relatedfeature, '">+ meer laden</a>'].join('');
+        console.log(feature, this.relatedFeatureBlocks);
+        return [text.substring(0, text.indexOf(begintag) + begintag.length), placeholderlink, text.substring(text.indexOf(endtag))].join('');
+    },
+    findRelatedFeature: function(feature, name) {
+        if(!feature.related_featuretypes) {
+            return null;
+        }
+        for(var i = 0; i < feature.related_featuretypes.length; i++) {
+            if(feature.related_featuretypes[i].id == name) {
+                return feature.related_featuretypes[i];
+            }
+        }
+        return null;
+    },
+    requestRelatedFeatureInfo: function(placeholder) {
+        var relatedFeature = placeholder.getAttribute('data-relatedfeature');
+        if(!this.relatedFeatureBlocks.hasOwnProperty(relatedFeature) || this.relatedFeatureBlocks[relatedFeature].relatedFeature === null) {
+            placeholder.style.display = 'none';
+            return;
+        }
+        var relatedFeatureBlock = this.relatedFeatureBlocks[relatedFeature];
+        this.requestManager.featureInfo.relatedFeatureInfo(relatedFeatureBlock.appLayer, relatedFeatureBlock.relatedFeature, function(featureinfo) {
+            if(featureinfo.success && featureinfo.total > 0) {
+                var parsedHtml = [];
+                for(var i = 0; i < featureinfo.features.length; i++) {
+                    parsedHtml.push(this.replaceByAttributes(
+                        relatedFeatureBlock.block,
+                        featureinfo.features[i],
+                        relatedFeatureBlock.noHtmlEncode,
+                        relatedFeatureBlock.nl2br,
+                        relatedFeatureBlock.appLayer
+                    ));
+                }
+                var parsedHtmlContainer = document.createElement('div');
+                parsedHtmlContainer.innerHTML = parsedHtml.join('');
+                placeholder.parentNode.insertBefore(parsedHtmlContainer, placeholder);
+                placeholder.style.display = 'none';
+            }
+        }.bind(this));
     },
     /**
      * Gets the layers that have a maptip configured
