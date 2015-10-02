@@ -83,9 +83,9 @@ public class StartLevelTest extends TestUtil{
         entityManager.getTransaction().begin();
 
         Level shouldBeNull = entityManager.find(Level.class, lid);
-        StartLevel shouldBeNullAsWell = entityManager.find(StartLevel.class, testStartLevel.getId());
+        StartLevel startLevelShouldBeNull = entityManager.find(StartLevel.class, testStartLevel.getId());
         assertNull(shouldBeNull);
-        assertNull(shouldBeNullAsWell);
+        assertNull(startLevelShouldBeNull);
     }
 
 

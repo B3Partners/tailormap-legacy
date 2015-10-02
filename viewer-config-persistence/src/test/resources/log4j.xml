@@ -20,7 +20,7 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
         <level value="error" />
     </logger>
     <logger name="org.hibernate.SQL">
-        <level value="error" />
+        <level value="trace" />
     </logger>
     <root>
         <level value="info" />

@@ -27,10 +27,7 @@ import org.junit.runners.Suite;
     StartLevelTest.class,
     DatabaseSynchronizerTest.class,
     DatabaseSynchronizerEMTest.class,
-    BookmarkTest.class,
-    
-    SelectedContentCacheTest.class
-   // TestUtil.class
+    BookmarkTest.class
 })
 public class ViewerConfigPersistenceSuite {
 

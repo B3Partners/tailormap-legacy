@@ -125,6 +125,12 @@ public class Application {
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    private List<StartLayer> startLayers = new ArrayList<StartLayer>();
+
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    private List<StartLevel> startLevels = new ArrayList<StartLevel>();
+
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
@@ -228,6 +234,22 @@ public class Application {
 
     public void setBookmarks(List<Bookmark> bookmarks) {
         this.bookmarks = bookmarks;
+    }
+
+    public List<StartLayer> getStartLayers() {
+        return startLayers;
+    }
+
+    public void setStartLayers(List<StartLayer> startLayers) {
+        this.startLayers = startLayers;
+    }
+
+    public List<StartLevel> getStartLevels() {
+        return startLevels;
+    }
+
+    public void setStartLevels(List<StartLevel> startLevels) {
+        this.startLevels = startLevels;
     }
     //</editor-fold>
     

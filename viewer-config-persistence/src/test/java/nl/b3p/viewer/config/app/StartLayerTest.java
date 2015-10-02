@@ -24,20 +24,28 @@ public class StartLayerTest extends TestUtil{
 
     public ApplicationLayer testLayer;
     public StartLayer testStartLayer;
+    public Application app;
 
-    public void initData(){
+    public void initData(boolean deleteApp){
+        app = new Application();
+        app.setName("testapp");
+        persistEntityTest(app, Application.class, deleteApp);
+        
         testLayer = new ApplicationLayer();
         testLayer.setLayerName("testlevel");
         persistEntityTest(testLayer, ApplicationLayer.class, false);
 
         testStartLayer = new StartLayer();
         testStartLayer.setApplicationLayer(testLayer);
-        testLayer.getStartLayers().put(null,testStartLayer);
+        testStartLayer.setApplication(app);
+        app.getStartLayers().add(testStartLayer);
+        
+        testLayer.getStartLayers().put(app,testStartLayer);
         testStartLayer.setSelectedIndex(16);
         persistEntityTest(testStartLayer, StartLayer.class, false);
     }
 
-    @Test
+   // @Test
     public void persistLayer(){
         StartLayer sl = new StartLayer();
         sl.setChecked(true);
@@ -52,7 +60,7 @@ public class StartLayerTest extends TestUtil{
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
-    @Test
+   // @Test
     public void deleteLayer() throws URISyntaxException, SQLException, IOException{
         Application app = entityManager.find(Application.class, 1L);
         
@@ -75,9 +83,9 @@ public class StartLayerTest extends TestUtil{
         
     }
 
-    @Test
+   // @Test
     public void deleteLevel() throws URISyntaxException, SQLException, IOException{
-        initData();
+        initData(true);
         assertNotNull(testLayer);
         assertNotNull(testStartLayer);
         long lid = testLayer.getId();
@@ -91,5 +99,26 @@ public class StartLayerTest extends TestUtil{
         StartLayer shouldBeNullAsWell = entityManager.find(StartLayer.class, testStartLayer.getId());
         assertNull(shouldBeNull);
         assertNull(shouldBeNullAsWell);
+    }
+    
+    
+    @Test
+    public void deleteApplication() throws URISyntaxException, SQLException, IOException{
+        initData(false);
+        assertNotNull(testLayer);
+        assertNotNull(app);
+        assertNotNull(testStartLayer);
+        long lid = testLayer.getId();
+
+        entityManager.remove(app);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+
+        ApplicationLayer shouldBeNull = entityManager.find(ApplicationLayer.class, lid);
+        StartLayer shouldBeNullAsWell = entityManager.find(StartLayer.class, testStartLayer.getId());
+        Application appShouldBeNull = entityManager.find(Application.class, app.getId());
+        assertNull(shouldBeNull);
+        assertNull(shouldBeNullAsWell);
+        assertNull(appShouldBeNull);
     }
 }
