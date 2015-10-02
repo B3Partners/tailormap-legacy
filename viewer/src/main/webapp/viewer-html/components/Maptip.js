@@ -86,14 +86,8 @@ Ext.define ("viewer.components.Maptip",{
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.config.viewerController.mapComponent.createComponent(conf);
         this.config.viewerController.mapComponent.addComponent(this.maptipComponent);
-        document.getElementById(this.getDiv()).addEventListener('click', function(e) {
-            if(e.target && e.target.className && e.target.className.indexOf('load-releated-features') !== -1) {
-                this.requestRelatedFeatureInfo(e.target);
-                return false;
-            }
-            return true;
-        }.bind(this));
-        
+        document.getElementById(this.getDiv()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
         return this;
     },
     /**
@@ -594,7 +588,8 @@ Ext.define ("viewer.components.Maptip",{
         }
         // Remove begin and end tag to keep repeating block
         // Add to relatedFeatureBlocks object
-        this.relatedFeatureBlocks[relatedfeature] = {
+        var relatedFeatureId = Ext.id();
+        this.relatedFeatureBlocks[relatedFeatureId] = {
             block: subblock.substring(relatedfeature.length + 1, endtagpos),
             relatedFeature: this.findRelatedFeature(feature, relatedfeature),
             noHtmlEncode: noHtmlEncode,
@@ -602,7 +597,7 @@ Ext.define ("viewer.components.Maptip",{
             appLayer: appLayer
         };
         // Now replace block in original text by placeholder link
-        var placeholderlink = ['<a href="#" class="load-releated-features" data-relatedfeature="', relatedfeature, '">+</a>'].join('');
+        var placeholderlink = ['<a href="#" class="load-releated-features x-tool-img x-tool-plus" data-relatedfeatureid="', relatedFeatureId, '">+</a>'].join('');
         var newText = [text.substring(0, text.indexOf(begintag)), placeholderlink, text.substring(text.indexOf(endtag) + endtag.length)].join('');
         // Recursive call because there can be more related blocks
         return this.replaceRelatedFeatures(newText, feature, noHtmlEncode, nl2br, appLayer);
@@ -618,31 +613,60 @@ Ext.define ("viewer.components.Maptip",{
         }
         return null;
     },
+    relatedFeaturesListener: function(e) {
+        if(e.target && e.target.className && e.target.className.indexOf('load-releated-features') !== -1) {
+            this.requestRelatedFeatureInfo(e.target);
+            return false;
+        }
+        return true;
+    },
     requestRelatedFeatureInfo: function(placeholder) {
-        var relatedFeature = placeholder.getAttribute('data-relatedfeature');
-        if(!this.relatedFeatureBlocks.hasOwnProperty(relatedFeature) || this.relatedFeatureBlocks[relatedFeature].relatedFeature === null) {
+        var relatedFeatureId = placeholder.getAttribute('data-relatedfeatureid');
+        if(!this.relatedFeatureBlocks.hasOwnProperty(relatedFeatureId) || this.relatedFeatureBlocks[relatedFeatureId].relatedFeature === null) {
             placeholder.style.display = 'none';
             return;
         }
-        var relatedFeatureBlock = this.relatedFeatureBlocks[relatedFeature];
+        var relatedFeatureBlock = this.relatedFeatureBlocks[relatedFeatureId];
         this.requestManager.featureInfo.relatedFeatureInfo(relatedFeatureBlock.appLayer, relatedFeatureBlock.relatedFeature, function(featureinfo) {
             if(featureinfo.success && featureinfo.total > 0) {
-                var parsedHtml = [];
-                for(var i = 0; i < featureinfo.features.length; i++) {
-                    parsedHtml.push(this.replaceByAttributes(
-                        relatedFeatureBlock.block,
-                        featureinfo.features[i],
-                        relatedFeatureBlock.noHtmlEncode,
-                        relatedFeatureBlock.nl2br,
-                        relatedFeatureBlock.appLayer
-                    ));
-                }
-                var parsedHtmlContainer = document.createElement('div');
-                parsedHtmlContainer.innerHTML = parsedHtml.join('');
-                placeholder.parentNode.insertBefore(parsedHtmlContainer, placeholder);
-                placeholder.style.display = 'none';
+                this.replaceRelatedFeature(featureinfo, relatedFeatureBlock, placeholder);
             }
         }.bind(this));
+    },
+    replaceRelatedFeature: function(featureinfo, relatedFeatureBlock, placeholder) {
+        var parsedHtml = [];
+        var text = relatedFeatureBlock.block;
+        var relatedFeatureName = relatedFeatureBlock.relatedFeature.foreignFeatureTypeName;
+        var replaceResult = this.splitByTag(text, '[begin.repeat.' + relatedFeatureName + ']', '[end.repeat.' + relatedFeatureName + ']');
+        var repeatingText = replaceResult.blockText;
+        if(repeatingText === '') {
+            repeatingText = text;
+        }
+        parsedHtml.push(replaceResult.textBefore);
+        for(var i = 0; i < featureinfo.features.length; i++) {
+            parsedHtml.push(this.replaceByAttributes(
+                repeatingText,
+                featureinfo.features[i],
+                relatedFeatureBlock.noHtmlEncode,
+                relatedFeatureBlock.nl2br,
+                relatedFeatureBlock.appLayer
+            ));
+        }
+        parsedHtml.push(replaceResult.textAfter);
+        var parsedHtmlContainer = document.createElement('div');
+        parsedHtmlContainer.innerHTML = parsedHtml.join('');
+        placeholder.parentNode.insertBefore(parsedHtmlContainer, placeholder);
+        placeholder.style.display = 'none';
+    },
+    splitByTag: function(text, begintag, endtag) {
+        if(text.indexOf(begintag) === -1 || text.indexOf(endtag) === -1) {
+            return { blockText: '', textBefore: '', textAfter: '' };
+        }
+        return {
+            blockText: text.substring(text.indexOf(begintag) + begintag.length, text.indexOf(endtag)),
+            textBefore: text.substring(0, text.indexOf(begintag)),
+            textAfter: text.substring(text.indexOf(endtag) + endtag.length)
+        };
     },
     /**
      * Gets the layers that have a maptip configured
