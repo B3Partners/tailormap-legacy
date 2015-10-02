@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,35 @@ public class AttributeDescriptor {
     private String alias;
 
     private String type;
+    
+    /**
+     * Returns the ExtJS
+     * {@link https://docs.sencha.com/extjs/5.1/5.1.0-apidocs/#!/api/Ext.data.field.Field field}
+     * type for this attribute.
+     *
+     * @return a string representing the field type (one of
+     * auto,string,int,number,boolean,date)
+     */
+    public String getExtJSType() {
+        // default to "auto" field type
+        String ext_type = "auto";
+
+        if (this.type.equals(TYPE_STRING)) {
+            ext_type = "string";
+        } else if (this.type.equals(TYPE_INTEGER)) {
+            ext_type = "int";
+        } else if (this.type.equals(TYPE_DOUBLE)) {
+            ext_type = "number";
+        } else if (this.type.equals(TYPE_BOOLEAN)) {
+            ext_type = "boolean";
+        } else if (this.type.equals(TYPE_DATE)) {
+            ext_type = "date";
+        } else if (this.type.equals(TYPE_TIMESTAMP)) {
+            ext_type = "date";
+        }
+
+        return ext_type;
+    }
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
