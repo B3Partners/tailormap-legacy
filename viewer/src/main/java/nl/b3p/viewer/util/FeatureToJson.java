@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 B3Partners B.V.
+ * Copyright (C) 2013-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -235,6 +235,7 @@ public class FeatureToJson {
                     JSONObject related_ft = new JSONObject();
                     related_ft.put("filter", CQL.toCQL(filter));
                     related_ft.put("id",rel.getForeignFeatureType().getId());
+                    related_ft.put("foreignFeatureTypeName",rel.getForeignFeatureType().getDescription());
                     related_featuretypes.put(related_ft);
                 }
             }
