@@ -235,7 +235,7 @@ public class FeatureToJson {
                     JSONObject related_ft = new JSONObject();
                     related_ft.put("filter", CQL.toCQL(filter));
                     related_ft.put("id",rel.getForeignFeatureType().getId());
-                    related_ft.put("foreignFeatureTypeName",rel.getForeignFeatureType().getDescription());
+                    related_ft.put("foreignFeatureTypeName",rel.getForeignFeatureType().getTypeName());
                     related_featuretypes.put(related_ft);
                 }
             }
