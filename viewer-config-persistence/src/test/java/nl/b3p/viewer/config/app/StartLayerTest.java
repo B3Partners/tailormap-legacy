@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.config.app;
 
@@ -24,44 +35,6 @@ import org.junit.Test;
 public class StartLayerTest extends TestUtil{
 
     private static final Log log = LogFactory.getLog(StartLayerTest.class);
-
-    public ApplicationLayer testAppLayer;
-    public Level testLevel;
-    public StartLayer testStartLayer;
-    public Application app;
-
-    public void initData(boolean deleteAfterwards) {
-        app = new Application();
-        app.setName("testapp");
-        persistEntityTest(app, Application.class, deleteAfterwards);
-
-        testLevel = new Level();
-        testLevel.setName("testStartLayerLevel");
-        app.setRoot(testLevel);
-        entityManager.persist(app);
-        persistEntityTest(testLevel, Level.class, deleteAfterwards);
-
-        testAppLayer = new ApplicationLayer();
-        testAppLayer.setLayerName("testlevel");
-        testLevel.getLayers().add(testAppLayer);
-        persistEntityTest(testAppLayer, ApplicationLayer.class, deleteAfterwards);
-
-        testStartLayer = new StartLayer();
-        testStartLayer.setApplicationLayer(testAppLayer);
-        testStartLayer.setApplication(app);
-        testStartLayer.setSelectedIndex(16);
-        app.getStartLayers().add(testStartLayer);
-        
-        testAppLayer.getStartLayers().put(app,testStartLayer);
-
-        entityManager.persist(testAppLayer);
-        entityManager.persist(app);
-
-        persistEntityTest(testStartLayer, StartLayer.class, deleteAfterwards);
-
-        entityManager.getTransaction().commit();
-        entityManager.getTransaction().begin();
-    }
 
     @Test
     public void persistLayer(){

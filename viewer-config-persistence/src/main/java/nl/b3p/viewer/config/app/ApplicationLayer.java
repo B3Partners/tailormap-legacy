@@ -346,7 +346,9 @@ public class ApplicationLayer {
 
         copy.setStartLayers(new HashMap<Application, StartLayer>());
         for (StartLayer value : startLayers.values()) {
-            copy.getStartLayers().put(app, value.deepCopy(copy,app));
+            StartLayer slCopy = value.deepCopy(copy,app);
+            copy.getStartLayers().put(app, slCopy);
+            app.getStartLayers().add(slCopy);
         }
         return copy;
     }

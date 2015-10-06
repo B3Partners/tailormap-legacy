@@ -47,7 +47,7 @@ public class StartLayer {
         StartLayer copy = (StartLayer) BeanUtils.cloneBean(this);
         copy.setId(null);
         copy.setApplicationLayer(applicationLayer);
-        setApplication(app);
+        copy.setApplication(app);
         return copy;
     }
 
