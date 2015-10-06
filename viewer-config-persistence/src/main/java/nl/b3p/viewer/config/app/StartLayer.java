@@ -32,10 +32,10 @@ public class StartLayer {
     @Id
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Application application;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private ApplicationLayer applicationLayer;
     
     private Integer selectedIndex;

@@ -76,7 +76,7 @@ public class ApplicationLayer {
     private List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();
 
 
-    @OneToMany(mappedBy = "applicationLayer",orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "applicationLayer",orphanRemoval = true, cascade = CascadeType.ALL)
     @MapKey(name = "application")
     private Map<Application, StartLayer> startLayers = new HashMap<Application, StartLayer>();
 

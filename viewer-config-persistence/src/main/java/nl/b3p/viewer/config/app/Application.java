@@ -125,10 +125,10 @@ public class Application {
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    @OneToMany( orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private List<StartLayer> startLayers = new ArrayList<StartLayer>();
 
-    @OneToMany(fetch = FetchType.LAZY,orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private List<StartLevel> startLevels = new ArrayList<StartLevel>();
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -513,6 +513,8 @@ public class Application {
         copy.setId(null);
         copy.setBookmarks(null);
         copy.setTreeCache(null);
+        copy.setStartLayers(new ArrayList<StartLayer>());
+        copy.setStartLevels(new ArrayList<StartLevel>());
         
         // user reference is not deep copied, of course
         

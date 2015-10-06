@@ -14,7 +14,7 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
         <level value="error" />
     </logger>
     <logger name="org.hibernate.type">
-        <level value="error" />
+        <level value="trace" />
     </logger>
     <logger name="org.hibernate.tool.hbm2ddl">
         <level value="error" />

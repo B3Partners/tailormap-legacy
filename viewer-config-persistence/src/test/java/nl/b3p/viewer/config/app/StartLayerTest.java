@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import nl.b3p.viewer.util.TestUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,31 +23,47 @@ import org.junit.Test;
  */
 public class StartLayerTest extends TestUtil{
 
+    private static final Log log = LogFactory.getLog(StartLayerTest.class);
 
-    public ApplicationLayer testLayer;
+    public ApplicationLayer testAppLayer;
+    public Level testLevel;
     public StartLayer testStartLayer;
     public Application app;
 
-    public void initData(boolean deleteApp){
+    public void initData(boolean deleteAfterwards) {
         app = new Application();
         app.setName("testapp");
-        persistEntityTest(app, Application.class, deleteApp);
-        
-        testLayer = new ApplicationLayer();
-        testLayer.setLayerName("testlevel");
-        persistEntityTest(testLayer, ApplicationLayer.class, false);
+        persistEntityTest(app, Application.class, deleteAfterwards);
+
+        testLevel = new Level();
+        testLevel.setName("testStartLayerLevel");
+        app.setRoot(testLevel);
+        entityManager.persist(app);
+        persistEntityTest(testLevel, Level.class, deleteAfterwards);
+
+        testAppLayer = new ApplicationLayer();
+        testAppLayer.setLayerName("testlevel");
+        testLevel.getLayers().add(testAppLayer);
+        persistEntityTest(testAppLayer, ApplicationLayer.class, deleteAfterwards);
 
         testStartLayer = new StartLayer();
-        testStartLayer.setApplicationLayer(testLayer);
+        testStartLayer.setApplicationLayer(testAppLayer);
         testStartLayer.setApplication(app);
+        testStartLayer.setSelectedIndex(16);
         app.getStartLayers().add(testStartLayer);
         
-        testLayer.getStartLayers().put(app,testStartLayer);
-        testStartLayer.setSelectedIndex(16);
-        persistEntityTest(testStartLayer, StartLayer.class, false);
+        testAppLayer.getStartLayers().put(app,testStartLayer);
+
+        entityManager.persist(testAppLayer);
+        entityManager.persist(app);
+
+        persistEntityTest(testStartLayer, StartLayer.class, deleteAfterwards);
+
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
     }
 
-   // @Test
+    @Test
     public void persistLayer(){
         StartLayer sl = new StartLayer();
         sl.setChecked(true);
@@ -60,7 +78,7 @@ public class StartLayerTest extends TestUtil{
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
     
-   // @Test
+    @Test
     public void deleteLayer() throws URISyntaxException, SQLException, IOException{
         Application app = entityManager.find(Application.class, 1L);
         
@@ -83,32 +101,41 @@ public class StartLayerTest extends TestUtil{
         
     }
 
-   // @Test
-    public void deleteLevel() throws URISyntaxException, SQLException, IOException{
+    @Test
+    public void deleteApplayer() throws URISyntaxException, SQLException, IOException{
         initData(true);
-        assertNotNull(testLayer);
+        assertNotNull(testAppLayer);
         assertNotNull(testStartLayer);
-        long lid = testLayer.getId();
-        ApplicationLayer l = entityManager.find(ApplicationLayer.class, lid);
+        long lid = testAppLayer.getId();
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, lid);
+        StartLayer startLayer = entityManager.find(StartLayer.class, testStartLayer.getId());
+        assertNotNull(startLayer);
 
-        entityManager.remove(l);
-        entityManager.getTransaction().commit();
+        testLevel.getLayers().remove(appLayer);
+        app.getStartLayers().removeAll(appLayer.getStartLayers().values());
+        entityManager.remove(appLayer);
+        try{
+            entityManager.getTransaction().commit();
+        }catch (Exception e){
+            log.error("Fout bij verwijderen", e);
+            assert(false);
+        }
         entityManager.getTransaction().begin();
 
-        ApplicationLayer shouldBeNull = entityManager.find(ApplicationLayer.class, lid);
-        StartLayer shouldBeNullAsWell = entityManager.find(StartLayer.class, testStartLayer.getId());
-        assertNull(shouldBeNull);
-        assertNull(shouldBeNullAsWell);
+        ApplicationLayer appLayerNull = entityManager.find(ApplicationLayer.class, lid);
+        StartLayer startLayerNull = entityManager.find(StartLayer.class, testStartLayer.getId());
+        assertNull(appLayerNull);
+        assertNull(startLayerNull);
     }
     
     
     @Test
     public void deleteApplication() throws URISyntaxException, SQLException, IOException{
         initData(false);
-        assertNotNull(testLayer);
+        assertNotNull(testAppLayer);
         assertNotNull(app);
         assertNotNull(testStartLayer);
-        long lid = testLayer.getId();
+        long lid = testAppLayer.getId();
 
         entityManager.remove(app);
         entityManager.getTransaction().commit();

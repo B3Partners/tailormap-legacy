@@ -96,7 +96,9 @@ public abstract class TestUtil {
     public void stuffToRemove() {
         for (Object obj : objectsToRemove) {
             log.debug("Removing obj" + obj.toString());
-            entityManager.remove(obj);
+            if(entityManager.contains(obj)){
+                entityManager.remove(obj);
+            }
         }
 
         if (!entityManager.getTransaction().isActive()) {
