@@ -184,18 +184,19 @@ public abstract class TestUtil {
     public void initData(boolean deleteAfterwards) {
         app = new Application();
         app.setName("testapp");
+        app.setVersion("154");
         persistEntityTest(app, Application.class, deleteAfterwards);
 
         testLevel = new Level();
-        testLevel.setName("testStartLayerLevel");
+        testLevel.setName("testLevel");
         app.setRoot(testLevel);
         entityManager.persist(app);
         persistEntityTest(testLevel, Level.class, deleteAfterwards);
 
         testAppLayer = new ApplicationLayer();
-        testAppLayer.setLayerName("testlevel");
+        testAppLayer.setLayerName("testApplayer");
         testLevel.getLayers().add(testAppLayer);
-        persistEntityTest(testAppLayer, ApplicationLayer.class, deleteAfterwards);
+        persistEntityTest(testAppLayer, ApplicationLayer.class, false);
 
         testStartLayer = new StartLayer();
         testStartLayer.setApplicationLayer(testAppLayer);
@@ -208,7 +209,7 @@ public abstract class TestUtil {
         entityManager.persist(testAppLayer);
         entityManager.persist(app);
 
-        persistEntityTest(testStartLayer, StartLayer.class, deleteAfterwards);
+        persistEntityTest(testStartLayer, StartLayer.class, false);
 
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();

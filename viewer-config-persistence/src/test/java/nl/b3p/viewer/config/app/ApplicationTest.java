@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.app;
 
+import java.util.List;
 import nl.b3p.viewer.util.TestUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,8 +30,7 @@ public class ApplicationTest extends TestUtil{
 
     @Test
     public void testDeepCopy() throws Exception{
-
-        initData(true);
+        initData(false);
 
         int expectedStartLayerSize = app.getStartLayers().size();
         int expectedStartLevelSize = app.getStartLevels().size();
@@ -45,7 +45,6 @@ public class ApplicationTest extends TestUtil{
         assertEquals(expectedStartLayerSize, copy.getStartLayers().size());
         assertEquals(expectedStartLevelSize, copy.getStartLevels().size());
 
-
         for (StartLayer startLayer : copy.getStartLayers()) {
             assertEquals(copy.getId(),startLayer.getApplication().getId());
         }
@@ -53,7 +52,22 @@ public class ApplicationTest extends TestUtil{
         for (StartLevel startLevel : copy.getStartLevels()) {
             assertEquals(copy.getId(), startLevel.getApplication().getId());
         }
+        app = entityManager.merge(app);
+        objectsToRemove.add(app);
+    }
 
+    @Test
+    public void testDeleteApplications() throws Exception{
+        initData(false);
+        Application application = entityManager.find(Application.class, app.getId());
+        Application copy = application.deepCopy();
+        entityManager.detach(application);
+        copy.setVersion("123");
+        entityManager.persist(copy);
+
+        application = entityManager.merge(application);
+        objectsToRemove.add(application);
+        objectsToRemove.add(copy);
 
     }
 
