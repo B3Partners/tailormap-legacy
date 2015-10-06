@@ -32,10 +32,10 @@ public class StartLevel {
     @Id
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Level level;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Application application;
     
     private Integer selectedIndex;

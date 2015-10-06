@@ -30,6 +30,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.apache.commons.logging.Log;
@@ -59,6 +60,7 @@ public abstract class TestUtil {
     public ApplicationLayer testAppLayer;
     public Level testLevel;
     public StartLayer testStartLayer;
+    public StartLevel testStartLevel;
     public Application app;
 
     protected static List<Object> objectsToRemove = new ArrayList<Object>();
@@ -191,7 +193,7 @@ public abstract class TestUtil {
         testLevel.setName("testLevel");
         app.setRoot(testLevel);
         entityManager.persist(app);
-        persistEntityTest(testLevel, Level.class, deleteAfterwards);
+        persistEntityTest(testLevel, Level.class, false);
 
         testAppLayer = new ApplicationLayer();
         testAppLayer.setLayerName("testApplayer");
@@ -205,6 +207,14 @@ public abstract class TestUtil {
         app.getStartLayers().add(testStartLayer);
 
         testAppLayer.getStartLayers().put(app,testStartLayer);
+
+        testStartLevel = new StartLevel();
+        testStartLevel.setApplication(app);
+        testStartLevel.setLevel(testLevel);
+        testStartLevel.setSelectedIndex(9);
+        testLevel.getStartLevels().put(app, testStartLevel);
+        app.getStartLevels().add(testStartLevel);
+        persistEntityTest(testStartLevel, StartLevel.class, false);
 
         entityManager.persist(testAppLayer);
         entityManager.persist(app);

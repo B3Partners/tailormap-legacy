@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import nl.b3p.viewer.util.TestUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,21 +34,8 @@ import org.junit.Test;
  */
 public class StartLevelTest extends TestUtil{
 
-    public Level testLevel;
-    public StartLevel testStartLevel;
+    private static final Log log = LogFactory.getLog(StartLevelTest.class);
 
-    public void initData(){
-        testLevel = new Level();
-        testLevel.setName("testlevel");
-        persistEntityTest(testLevel, Level.class, false);
-
-        testStartLevel = new StartLevel();
-        testStartLevel.setLevel(testLevel);
-        testLevel.getStartLevels().put(null,testStartLevel);
-        testStartLevel.setSelectedIndex(16);
-        persistEntityTest(testStartLevel, StartLevel.class, false);
-    }
-    
     @Test
     public void persistLevel(){
         StartLevel sl = new StartLevel();
@@ -83,20 +72,25 @@ public class StartLevelTest extends TestUtil{
 
     @Test
     public void deleteLevel() throws URISyntaxException, SQLException, IOException{
-        initData();
+        initData(false);
         assertNotNull(testLevel);
         assertNotNull(testStartLevel);
         long lid = testLevel.getId();
         Level l = entityManager.find(Level.class, lid);
-    
-        entityManager.remove(l);
-        entityManager.getTransaction().commit();
+
+        try {
+            entityManager.remove(l);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            log.error("Fout", e);
+        }
         entityManager.getTransaction().begin();
 
         Level shouldBeNull = entityManager.find(Level.class, lid);
         StartLevel startLevelShouldBeNull = entityManager.find(StartLevel.class, testStartLevel.getId());
         assertNull(shouldBeNull);
         assertNull(startLevelShouldBeNull);
+        objectsToRemove.add(app);
     }
 
 

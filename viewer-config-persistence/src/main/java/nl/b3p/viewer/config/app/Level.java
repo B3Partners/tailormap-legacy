@@ -74,7 +74,7 @@ public class Level implements Comparable{
 
     private String url;
 
-    @OneToMany(mappedBy = "level",orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "level",orphanRemoval = true, cascade = CascadeType.ALL)
     @MapKey(name = "application")
     private Map<Application, StartLevel> startLevels = new HashMap<Application, StartLevel>();
 
