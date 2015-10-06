@@ -48,6 +48,7 @@ public class StartLayer {
         copy.setId(null);
         copy.setApplicationLayer(appLayer);
         copy.setApplication(app);
+        app.getStartLayers().add(copy);
         return copy;
     }
 

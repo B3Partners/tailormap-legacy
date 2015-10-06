@@ -319,9 +319,7 @@ public class Level implements Comparable{
 
         copy.setStartLevels(new HashMap<Application,StartLevel>());
         for (StartLevel value : startLevels.values()) {
-            StartLevel slcopy = value.deepCopy(app, copy);
-            copy.getStartLevels().put(app, slcopy);
-            app.getStartLevels().add(slcopy);
+            copy.getStartLevels().put(app, value.deepCopy(app, copy));
         }
         
         // do not clone documents, only the list
