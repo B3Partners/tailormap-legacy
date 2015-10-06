@@ -705,6 +705,7 @@ public class GeoServiceActionBean implements ActionBean {
                 params.put(TileService.PARAM_IMAGEEXTENSION, imageExtension);
                 params.put(TileService.PARAM_TILESIZE, tileSize);
                 params.put(TileService.PARAM_TILINGPROTOCOL, tilingProtocol);
+                service = new TileService().loadFromUrl(url, params, status,em);
             } else {
                 getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
             }
