@@ -326,7 +326,14 @@ public class ApplicationLayer {
             }
         }
         return featureTypeAttributes;
-    }    
+    }
+    
+    void processStartLayers(Application app) throws Exception{
+        this.setStartLayers(new HashMap<Application, StartLayer>());
+        for (StartLayer value : startLayers.values()) {
+            this.getStartLayers().put(app, value.deepCopy(this,app));
+        }
+    }
 
     ApplicationLayer deepCopy(Map originalToCopy, Application app) throws Exception {
         ApplicationLayer copy = (ApplicationLayer) BeanUtils.cloneBean(this);
@@ -343,11 +350,8 @@ public class ApplicationLayer {
         for(ConfiguredAttribute a: attributes) {
             copy.getAttributes().add(a.deepCopy());
         }
-
-        copy.setStartLayers(new HashMap<Application, StartLayer>());
-        for (StartLayer value : startLayers.values()) {
-            copy.getStartLayers().put(app, value.deepCopy(copy,app));
-        }
+        copy.processStartLayers(app);
+        
         return copy;
     }
     

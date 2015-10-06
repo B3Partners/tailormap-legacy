@@ -70,5 +70,31 @@ public class ApplicationTest extends TestUtil{
         objectsToRemove.add(copy);
 
     }
+    
+    @Test
+    public void testMakeMashup() throws Exception{
+        initData(true);
+        
+        int expectedStartLayerSize = app.getStartLayers().size();
+        int expectedStartLevelSize = app.getStartLevels().size();
+        
+        Application mashup = app.createMashup("mashup", entityManager);
+        entityManager.persist(mashup);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        assertFalse(app.getId().equals(mashup.getId()));
+        assertEquals(expectedStartLayerSize * 2, mashup.getStartLayers().size());
+        assertEquals(expectedStartLevelSize * 2 , mashup.getStartLevels().size());
+
+        for (StartLayer startLayer : mashup.getStartLayers()) {
+            assertEquals(mashup.getId(),startLayer.getApplication().getId());
+        }
+
+        for (StartLevel startLevel : mashup.getStartLevels()) {
+            assertEquals(mashup.getId(), startLevel.getApplication().getId());
+        }
+        
+        objectsToRemove.add(mashup);
+    }
 
 }

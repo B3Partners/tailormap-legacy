@@ -380,7 +380,16 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         return new RedirectResolution(ApplicationSettingsActionBean.class);
     }
+    
 
+    Application createMashup(Application motherApplication, EntityManager em, String mashupName) throws Exception{
+        Application mashup = motherApplication.createMashup(mashupName, em);
+        em.persist(mashup);
+        em.getTransaction().commit();
+        return mashup;
+    }
+    
+/*    
     Application createMashup(Application motherApplication, EntityManager em, String mashupName) throws Exception{
         Level root = motherApplication.getRoot();
         // Prevent copy-ing levels/layers
@@ -393,7 +402,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         em.persist(mashup);
         em.getTransaction().commit();
         return mashup;
-    }
+    }*/
     
     public Resolution publish (){
         // Find current published application and make backup
