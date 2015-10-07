@@ -301,6 +301,18 @@ public class Level implements Comparable{
         return false;
     }
 
+    public void processForMashup(Application app) throws Exception{
+        for (Level child : children) {
+            child.processForMashup(app);
+        }
+        processStartLevels(app);    }
+    
+    private void processStartLevels(Application app) throws Exception{
+        for (StartLevel value : startLevels.values()) {
+            this.getStartLevels().put(app, value.deepCopy(app, this));
+        }
+    }
+
     Level deepCopy(Level parent, Map originalToCopy, Application app) throws Exception {
         Level copy = (Level)BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
@@ -316,13 +328,9 @@ public class Level implements Comparable{
         for(ApplicationLayer appLayer: layers) {
             copy.getLayers().add(appLayer.deepCopy(originalToCopy, app));
         }
-
+        
         copy.setStartLevels(new HashMap<Application,StartLevel>());
-        for (StartLevel value : startLevels.values()) {
-            StartLevel slcopy = value.deepCopy(app, copy);
-            copy.getStartLevels().put(app, slcopy);
-            app.getStartLevels().add(slcopy);
-        }
+        processStartLevels(app);
         
         // do not clone documents, only the list
         copy.setDocuments(new ArrayList<Document>(documents));

@@ -506,9 +506,36 @@ public class Application {
              return false;
          }
     }
+    
+    public Application createMashup( String mashupName, EntityManager em) throws Exception{
+        Level root = this.getRoot();
+        // Prevent copy-ing levels/layers
+        this.setRoot(null);
+        Application mashup = this.deepCopyAllButLevels();
+        
+        em.detach(this);
+        mashup.setRoot(root);
+        if(mashup.getRoot() != null){
+            mashup.getRoot().processForMashup(mashup);
+        }
+        
+        mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
+        mashup.setName(mashup.getName() + "_" + mashupName);
+        return mashup;
+    }
 
     public Application deepCopy() throws Exception {
+        Application copy = deepCopyAllButLevels();
         
+        copy.originalToCopy = new HashMap();
+        if(root != null) {
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy,copy));
+        }
+
+        return copy;
+    }
+    
+    private Application deepCopyAllButLevels() throws Exception{
         Application copy = (Application) BeanUtils.cloneBean(this);   
         copy.setId(null);
         copy.setBookmarks(null);
@@ -530,12 +557,6 @@ public class Application {
         for(ConfiguredComponent cc: components) {
             copy.getComponents().add(cc.deepCopy(copy));
         }
-
-        copy.originalToCopy = new HashMap();
-        if(root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy,copy));
-        }
-
         return copy;
     }
 

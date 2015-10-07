@@ -46,6 +46,7 @@ public class StartLevel {
         copy.setSelectedIndex(selectedIndex);
         copy.setApplication(app);
         copy.setLevel(levelCopy);
+        app.getStartLevels().add(copy);
         return copy;
         
     }
