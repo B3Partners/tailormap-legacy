@@ -125,4 +125,20 @@ public class ApplicationTest extends TestUtil {
         }
     }
 
+    @Test
+    public void testUpdateComponentsInMotherApplication() throws Exception{
+        initData(true);
+        Application mashup = app.createMashup("mashup",  entityManager);
+
+        String differentString = "different";
+        for (ConfiguredComponent component : app.getComponents()) {
+            component.setConfig(component.getConfig() + differentString);
+        }
+
+        for (ConfiguredComponent component : mashup.getComponents()) {
+            assertTrue(component.getConfig().contains(differentString));
+        }
+
+    }
+
 }

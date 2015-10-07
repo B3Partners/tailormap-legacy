@@ -28,6 +28,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
@@ -225,6 +226,14 @@ public abstract class TestUtil {
         entityManager.persist(app);
 
         persistEntityTest(testStartLayer, StartLayer.class, false);
+
+        ConfiguredComponent cc = new ConfiguredComponent();
+        cc.setApplication(app);
+        cc.setClassName("TestClassName");
+        cc.setConfig("aapnootmies");
+        cc.setName("testClassName1");
+        app.getComponents().add(cc);
+        persistEntityTest(cc, ConfiguredComponent.class, false);
 
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
