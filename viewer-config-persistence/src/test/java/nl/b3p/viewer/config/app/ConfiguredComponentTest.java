@@ -8,6 +8,8 @@ package nl.b3p.viewer.config.app;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
@@ -37,16 +39,63 @@ public class ConfiguredComponentTest extends TestUtil {
     }
 
     @Test
-    public void deleteLinkedConfiguredComponent(){
+    public void deleteLinkedConfiguredComponent() {
         initData(true);
-        
+        try {
+            Application mashup = app.createMashup("mashup", entityManager);
+
+            entityManager.persist(mashup);
+            objectsToRemove.add(mashup);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            ConfiguredComponent cc = (ConfiguredComponent)mashup.getComponents().toArray()[0];
+
+            long cId =testComponent.getId();
+
+            mashup.getComponents().remove(cc);
+            entityManager.remove(cc);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            assertEquals(1, app.getComponents().size());
+            assertNotNull(entityManager.find(ConfiguredComponent.class, cId));
+        } catch (Exception e) {
+            log.error("Error:", e);
+            assert (false);
+        }
+
+
     }
 
-
     @Test
-    public void deleteMotherConfiguredComponent(){
+    public void deleteMotherConfiguredComponent() {
         initData(true);
-        
+        try {
+            Application mashup = app.createMashup("mashup", entityManager);
+
+            entityManager.persist(mashup);
+            objectsToRemove.add(mashup);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            ConfiguredComponent cc = (ConfiguredComponent)mashup.getComponents().toArray()[0];
+            long cId =cc.getId();
+
+            app.getComponents().remove(testComponent);
+            entityManager.remove(testComponent);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            assertEquals(1, mashup.getComponents().size());
+            assertNotNull(entityManager.find(ConfiguredComponent.class, cId));
+        } catch (Exception e) {
+            log.error("Error:", e);
+            assert (false);
+        }
+
     }
 
 }

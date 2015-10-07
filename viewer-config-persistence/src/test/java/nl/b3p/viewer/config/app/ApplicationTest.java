@@ -138,7 +138,6 @@ public class ApplicationTest extends TestUtil {
         for (ConfiguredComponent component : mashup.getComponents()) {
             assertTrue(component.getConfig().contains(differentString));
         }
-
     }
 
 }
