@@ -373,36 +373,16 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         ValidationErrors errors = context.getValidationErrors();
         try {
             EntityManager em = Stripersist.getEntityManager();
-            Application mashup = createMashup(application, em, mashupName);
+            Application mashup = application.createMashup(mashupName, em);
+            em.persist(mashup);
+            em.getTransaction().commit();
+
             setApplication(mashup);
         } catch (Exception ex) {
                 errors.add("Fout", new SimpleError("De mashup kan niet worden gemaakt."));
         }
         return new RedirectResolution(ApplicationSettingsActionBean.class);
     }
-    
-
-    Application createMashup(Application motherApplication, EntityManager em, String mashupName) throws Exception{
-        Application mashup = motherApplication.createMashup(mashupName, em);
-        em.persist(mashup);
-        em.getTransaction().commit();
-        return mashup;
-    }
-    
-/*    
-    Application createMashup(Application motherApplication, EntityManager em, String mashupName) throws Exception{
-        Level root = motherApplication.getRoot();
-        // Prevent copy-ing levels/layers
-        motherApplication.setRoot(null);
-        Application mashup = motherApplication.deepCopy();
-        em.detach(motherApplication);
-        mashup.setRoot(root);
-        mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
-        mashup.setName(mashup.getName() + "_" + mashupName);
-        em.persist(mashup);
-        em.getTransaction().commit();
-        return mashup;
-    }*/
     
     public Resolution publish (){
         // Find current published application and make backup
