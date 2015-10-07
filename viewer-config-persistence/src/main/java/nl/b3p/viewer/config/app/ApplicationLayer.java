@@ -328,9 +328,8 @@ public class ApplicationLayer {
         return featureTypeAttributes;
     }
     
-    void processStartLayers(Application app) throws Exception{
-        this.setStartLayers(new HashMap<Application, StartLayer>());
-        for (StartLayer value : startLayers.values()) {
+    void processStartLayers(Application app, ApplicationLayer original) throws Exception{
+        for (StartLayer value : original.startLayers.values()) {
             this.getStartLayers().put(app, value.deepCopy(this,app));
         }
     }
@@ -350,7 +349,8 @@ public class ApplicationLayer {
         for(ConfiguredAttribute a: attributes) {
             copy.getAttributes().add(a.deepCopy());
         }
-        copy.processStartLayers(app);
+        copy.setStartLayers(new HashMap<Application, StartLayer>());
+        copy.processStartLayers(app,this);
         
         return copy;
     }

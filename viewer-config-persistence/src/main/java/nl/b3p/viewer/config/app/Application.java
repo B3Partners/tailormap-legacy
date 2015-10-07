@@ -508,13 +508,7 @@ public class Application {
     }
     
     public Application createMashup( String mashupName, EntityManager em) throws Exception{
-        Level root = this.getRoot();
-        // Prevent copy-ing levels/layers
-        this.setRoot(null);
         Application mashup = this.deepCopyAllButLevels();
-        
-        em.detach(this);
-        mashup.setRoot(root);
         if(mashup.getRoot() != null){
             mashup.getRoot().processForMashup(mashup);
         }

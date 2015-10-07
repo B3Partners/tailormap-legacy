@@ -125,8 +125,13 @@ public abstract class TestUtil {
         if (!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
         }
-        entityManager.getTransaction().commit();
-        objectsToRemove = new ArrayList<Object>();
+        try {
+            entityManager.getTransaction().commit();
+            objectsToRemove = new ArrayList<Object>();
+        } catch (Exception e) {
+            log.error("Error committing transaction: ", e);
+            assert (false);
+        }
     }
 
     // Helper functions for testing

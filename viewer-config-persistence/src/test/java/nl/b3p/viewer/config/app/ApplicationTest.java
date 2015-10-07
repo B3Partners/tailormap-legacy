@@ -17,36 +17,42 @@
 package nl.b3p.viewer.config.app;
 
 import java.util.List;
+import nl.b3p.viewer.config.app.Application.TreeCache;
 import nl.b3p.viewer.util.TestUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author Meine Toonen <meinetoonen@b3partners.nl>
  */
-public class ApplicationTest extends TestUtil{
+public class ApplicationTest extends TestUtil {
+
+    private static final Log log = LogFactory.getLog(ApplicationTest.class);
 
     @Test
-    public void testDeepCopy() throws Exception{
+    public void testDeepCopy() throws Exception {
         initData(false);
 
         int expectedStartLayerSize = app.getStartLayers().size();
         int expectedStartLevelSize = app.getStartLevels().size();
 
         Application copy = app.deepCopy();
-        copy.setVersion("" +666);
+        copy.setVersion("" + 666);
         entityManager.detach(app);
         entityManager.persist(copy);
         objectsToRemove.add(copy);
-        
+
         assertFalse(app.getId().equals(copy.getId()));
         assertEquals(expectedStartLayerSize, copy.getStartLayers().size());
         assertEquals(expectedStartLevelSize, copy.getStartLevels().size());
 
         for (StartLayer startLayer : copy.getStartLayers()) {
-            assertEquals(copy.getId(),startLayer.getApplication().getId());
+            assertEquals(copy.getId(), startLayer.getApplication().getId());
         }
 
         for (StartLevel startLevel : copy.getStartLevels()) {
@@ -57,7 +63,7 @@ public class ApplicationTest extends TestUtil{
     }
 
     @Test
-    public void testDeleteApplications() throws Exception{
+    public void testDeleteApplications() throws Exception {
         initData(false);
         Application application = entityManager.find(Application.class, app.getId());
         Application copy = application.deepCopy();
@@ -70,31 +76,53 @@ public class ApplicationTest extends TestUtil{
         objectsToRemove.add(copy);
 
     }
-    
+
     @Test
-    public void testMakeMashup() throws Exception{
-        initData(true);
-        
-        int expectedStartLayerSize = app.getStartLayers().size();
-        int expectedStartLevelSize = app.getStartLevels().size();
-        
-        Application mashup = app.createMashup("mashup", entityManager);
-        entityManager.persist(mashup);
-        entityManager.getTransaction().commit();
-        entityManager.getTransaction().begin();
-        assertFalse(app.getId().equals(mashup.getId()));
-        assertEquals(expectedStartLayerSize * 2, mashup.getStartLayers().size());
-        assertEquals(expectedStartLevelSize * 2 , mashup.getStartLevels().size());
+    public void testMakeMashup() throws Exception {
+        initData(false);
+        try {
+            int expectedStartLayerSize = app.getStartLayers().size();
+            int expectedStartLevelSize = app.getStartLevels().size();
+            int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
 
-        for (StartLayer startLayer : mashup.getStartLayers()) {
-            assertEquals(mashup.getId(),startLayer.getApplication().getId());
-        }
+            Application mashup = app.createMashup("mashup", entityManager);
+            entityManager.persist(mashup);
 
-        for (StartLevel startLevel : mashup.getStartLevels()) {
-            assertEquals(mashup.getId(), startLevel.getApplication().getId());
+            objectsToRemove.add(app);
+            objectsToRemove.add(mashup);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            assertFalse(app.getId().equals(mashup.getId()));
+            assertEquals(expectedStartLayerSize, mashup.getStartLayers().size());
+            assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
+
+            for (StartLayer startLayer : mashup.getStartLayers()) {
+                assertEquals(mashup.getId(), startLayer.getApplication().getId());
+            }
+
+            for (StartLevel startLevel : mashup.getStartLevels()) {
+                assertEquals(mashup.getId(), startLevel.getApplication().getId());
+            }
+
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), mashup.getRoot());
+
+            TreeCache tc = mashup.loadTreeCache(entityManager);
+            List<Level> levels = tc.getLevels();
+            List<ApplicationLayer> appLayers = tc.getApplicationLayers();
+            for (ApplicationLayer appLayer : appLayers) {
+                assertTrue(appLayer.getStartLayers().containsKey(mashup));
+            }
+
+            for (Level level : levels) {
+                assertTrue(level.getStartLevels().containsKey(mashup));
+            }
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
         }
-        
-        objectsToRemove.add(mashup);
     }
 
 }

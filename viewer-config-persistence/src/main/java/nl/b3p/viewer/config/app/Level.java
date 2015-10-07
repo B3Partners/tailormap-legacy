@@ -305,10 +305,14 @@ public class Level implements Comparable{
         for (Level child : children) {
             child.processForMashup(app);
         }
-        processStartLevels(app);    }
+        for (ApplicationLayer layer : layers) {
+            layer.processStartLayers(app, layer);
+        }
+        processStartLevels(app, this);
+    }
     
-    private void processStartLevels(Application app) throws Exception{
-        for (StartLevel value : startLevels.values()) {
+    private void processStartLevels(Application app, Level original) throws Exception{
+        for (StartLevel value : original.startLevels.values()) {
             this.getStartLevels().put(app, value.deepCopy(app, this));
         }
     }
@@ -330,7 +334,7 @@ public class Level implements Comparable{
         }
         
         copy.setStartLevels(new HashMap<Application,StartLevel>());
-        processStartLevels(app);
+        copy.processStartLevels(app, this);
         
         // do not clone documents, only the list
         copy.setDocuments(new ArrayList<Document>(documents));

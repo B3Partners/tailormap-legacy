@@ -5,7 +5,7 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender name="consoleAppender" class="org.apache.log4j.FileAppender">
-        <param name="File" value="target/test.log" />
+        <param name="File" value="test.log" />
         <param name="Append" value="false" />
         <param name="Threshold" value="debug" />
         <layout class="org.apache.log4j.PatternLayout">
