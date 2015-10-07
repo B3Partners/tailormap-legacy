@@ -62,6 +62,7 @@ public abstract class TestUtil {
     public Level testLevel;
     public StartLayer testStartLayer;
     public StartLevel testStartLevel;
+    public ConfiguredComponent testComponent;
     public Application app;
 
     protected static List<Object> objectsToRemove = new ArrayList<Object>();
@@ -227,13 +228,13 @@ public abstract class TestUtil {
 
         persistEntityTest(testStartLayer, StartLayer.class, false);
 
-        ConfiguredComponent cc = new ConfiguredComponent();
-        cc.setApplication(app);
-        cc.setClassName("TestClassName");
-        cc.setConfig("aapnootmies");
-        cc.setName("testClassName1");
-        app.getComponents().add(cc);
-        persistEntityTest(cc, ConfiguredComponent.class, false);
+        testComponent = new ConfiguredComponent();
+        testComponent.setApplication(app);
+        testComponent.setClassName("TestClassName");
+        testComponent.setConfig("aapnootmies");
+        testComponent.setName("testClassName1");
+        app.getComponents().add(testComponent);
+        persistEntityTest(testComponent, ConfiguredComponent.class, false);
 
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
