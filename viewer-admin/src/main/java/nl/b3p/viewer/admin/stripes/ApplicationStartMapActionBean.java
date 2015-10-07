@@ -84,7 +84,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         walkAppTreeForSave(rootlevel);
         
-        SelectedContentCache.setApplicationCacheDirty(application, true,false);
+        SelectedContentCache.setApplicationCacheDirty(application, true,false,true);
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
         

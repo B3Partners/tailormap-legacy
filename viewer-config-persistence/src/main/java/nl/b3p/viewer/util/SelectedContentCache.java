@@ -409,8 +409,12 @@ public class SelectedContentCache {
     }
 
     public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded) {
+        setApplicationCacheDirty(app, dirty, expanded, false);
+    }
+
+    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, Boolean onlyThisApplication) {
         Set<Application> apps = new HashSet<Application>();
-        if (dirty) {
+        if (dirty && !onlyThisApplication) {
             apps = app.getRoot().findApplications();
         } else {
             apps.add(app);
