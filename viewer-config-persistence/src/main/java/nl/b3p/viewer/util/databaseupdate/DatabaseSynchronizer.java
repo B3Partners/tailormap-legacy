@@ -86,6 +86,7 @@ public class DatabaseSynchronizer implements Servlet {
     private ServletConfig sc;
     UpdateElement uel=    new UpdateElement(new ArrayList<String>(), String.class);
     //The updates definition
+    // Use String.class for .sql files, use DatabaseSynchronizerEM.class and the methodName for coded upgrades.
     static {
         //don't edit the 'init' one.
         updates.put("init", new UpdateElement (new ArrayList<String>(), String.class));
@@ -121,6 +122,8 @@ public class DatabaseSynchronizer implements Servlet {
         
         updates.put("11", new UpdateElement(Collections.singletonList("add_start_map.sql"), String.class));
         updates.put("12", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
+        
+        updates.put("13", new UpdateElement(Collections.singletonList("add_linked_components.sql"), String.class));
     }
     /**
      * Function is called in init() of servlet.
