@@ -1,4 +1,4 @@
-alter table configured_component add  (mother_component int8);
+alter table configured_component add  (mother_component  number(19,0));
 
 
     alter table configured_component 
