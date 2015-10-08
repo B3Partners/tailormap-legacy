@@ -231,7 +231,7 @@ public abstract class TestUtil {
         testComponent = new ConfiguredComponent();
         testComponent.setApplication(app);
         testComponent.setClassName("TestClassName");
-        testComponent.setConfig("aapnootmies");
+        testComponent.setConfig("{value: 'aapnootmies'}");
         testComponent.setName("testClassName1");
         app.getComponents().add(testComponent);
         persistEntityTest(testComponent, ConfiguredComponent.class, false);

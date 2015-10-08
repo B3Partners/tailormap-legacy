@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -95,7 +96,6 @@ public class ConfiguredComponentTest extends TestUtil {
             long cId =cc.getId();
 
             app.getComponents().remove(testComponent);
-           // cc.setMotherComponent(null);
             entityManager.remove(testComponent);
 
             entityManager.getTransaction().commit();
@@ -107,7 +107,29 @@ public class ConfiguredComponentTest extends TestUtil {
             log.error("Error:", e);
             assert (false);
         }
-
     }
+
+
+    @Test
+    public void testUpdateComponentsInMotherApplication() throws Exception{
+        initData(true);
+        Application mashup = app.createMashup("mashup",  entityManager,true);
+        objectsToRemove.add(mashup);
+        entityManager.persist(mashup);
+
+        String newConfig = "{value: 'different'}";
+        for (ConfiguredComponent component : app.getComponents()) {
+            component.setConfig(newConfig);
+            entityManager.persist(component);
+        }
+
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+
+        for (ConfiguredComponent component : mashup.getComponents()) {
+            assertTrue(component.getConfig().equals(newConfig));
+        }
+    }
+
 
 }

@@ -146,6 +146,13 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
         }
     }
 
+    @PreUpdate
+    private void pushChangesToLinkedComponents(){
+        for (ConfiguredComponent linkedComponent : linkedComponents) {
+            linkedComponent.setConfig(this.getConfig());
+        }
+    }
+
     /**
      * Retrieve the metadata from the component registry for the class of this
      * component
