@@ -373,7 +373,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         ValidationErrors errors = context.getValidationErrors();
         try {
             EntityManager em = Stripersist.getEntityManager();
-            Application mashup = application.createMashup(mashupName, em);
+            boolean linkComponents = true;
+            Application mashup = application.createMashup(mashupName, em,linkComponents);
             em.persist(mashup);
             em.getTransaction().commit();
 

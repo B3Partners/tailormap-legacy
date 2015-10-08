@@ -507,8 +507,8 @@ public class Application {
          }
     }
     
-    public Application createMashup( String mashupName, EntityManager em) throws Exception{
-        Application mashup = this.deepCopyAllButLevels();
+    public Application createMashup( String mashupName, EntityManager em, boolean linkComponents) throws Exception{
+        Application mashup = this.deepCopyAllButLevels(linkComponents);
         if(mashup.getRoot() != null){
             mashup.getRoot().processForMashup(mashup);
         }
@@ -519,7 +519,7 @@ public class Application {
     }
 
     public Application deepCopy() throws Exception {
-        Application copy = deepCopyAllButLevels();
+        Application copy = deepCopyAllButLevels(false);
         
         copy.originalToCopy = new HashMap();
         if(root != null) {
@@ -529,7 +529,7 @@ public class Application {
         return copy;
     }
     
-    private Application deepCopyAllButLevels() throws Exception{
+    private Application deepCopyAllButLevels( boolean linkComponents) throws Exception{
         Application copy = (Application) BeanUtils.cloneBean(this);   
         copy.setId(null);
         copy.setBookmarks(null);
@@ -549,7 +549,12 @@ public class Application {
         
         copy.setComponents(new HashSet<ConfiguredComponent>());
         for(ConfiguredComponent cc: components) {
-            copy.getComponents().add(cc.deepCopy(copy));
+            ConfiguredComponent componentCopy = cc.deepCopy(copy);
+            copy.getComponents().add(componentCopy);
+            if(linkComponents){
+                componentCopy.setMotherComponent(cc);
+                cc.getLinkedComponents().add(componentCopy);
+            }
         }
         return copy;
     }

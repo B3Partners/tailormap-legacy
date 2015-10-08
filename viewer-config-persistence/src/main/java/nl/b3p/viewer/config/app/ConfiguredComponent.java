@@ -56,6 +56,12 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     @ElementCollection
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
+
+    @ManyToOne
+    private ConfiguredComponent motherComponent;
+
+    @OneToMany(mappedBy = "motherComponent")
+    private List<ConfiguredComponent> linkedComponents = new ArrayList<ConfiguredComponent>();
     
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -113,7 +119,32 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     public void setApplication(Application application) {
         this.application = application;
     }
+
+    public ConfiguredComponent getMotherComponent() {
+        return motherComponent;
+    }
+
+    public void setMotherComponent(ConfiguredComponent motherComponent) {
+        this.motherComponent = motherComponent;
+    }
+
+    public List<ConfiguredComponent> getLinkedComponents() {
+        return linkedComponents;
+    }
+
+    public void setLinkedComponents(List<ConfiguredComponent> linkedComponents) {
+        this.linkedComponents = linkedComponents;
+    }
+    
     //</editor-fold>
+
+
+    @PreRemove
+    private void removeFromLinkedComponents() {
+        for (ConfiguredComponent linkedComponent : linkedComponents) {
+            linkedComponent.setMotherComponent(null);
+        }
+    }
 
     /**
      * Retrieve the metadata from the component registry for the class of this
@@ -148,6 +179,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
         copy.setId(null);
         copy.setDetails(new HashMap<String,String>(details));
         copy.setReaders(new HashSet<String>(readers));
+        copy.setLinkedComponents(new ArrayList<ConfiguredComponent>());
         copy.setApplication(app);
         return copy;
     }

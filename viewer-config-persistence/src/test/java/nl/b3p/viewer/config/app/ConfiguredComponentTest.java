@@ -53,7 +53,7 @@ public class ConfiguredComponentTest extends TestUtil {
     public void deleteLinkedConfiguredComponent() {
         initData(true);
         try {
-            Application mashup = app.createMashup("mashup", entityManager);
+            Application mashup = app.createMashup("mashup", entityManager,true);
 
             entityManager.persist(mashup);
             objectsToRemove.add(mashup);
@@ -84,7 +84,7 @@ public class ConfiguredComponentTest extends TestUtil {
     public void deleteMotherConfiguredComponent() {
         initData(true);
         try {
-            Application mashup = app.createMashup("mashup", entityManager);
+            Application mashup = app.createMashup("mashup", entityManager,true);
 
             entityManager.persist(mashup);
             objectsToRemove.add(mashup);
@@ -95,6 +95,7 @@ public class ConfiguredComponentTest extends TestUtil {
             long cId =cc.getId();
 
             app.getComponents().remove(testComponent);
+           // cc.setMotherComponent(null);
             entityManager.remove(testComponent);
 
             entityManager.getTransaction().commit();
