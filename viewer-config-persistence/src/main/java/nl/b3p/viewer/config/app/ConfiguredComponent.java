@@ -146,10 +146,17 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
         }
     }
 
+    private final static List<String> classesExcludedFromPushing = new ArrayList<String>();
+    static {
+        classesExcludedFromPushing.add("viewer.components.HTML");
+    }
+
     @PreUpdate
     private void pushChangesToLinkedComponents(){
         for (ConfiguredComponent linkedComponent : linkedComponents) {
-            linkedComponent.setConfig(this.getConfig());
+            if(!classesExcludedFromPushing.contains(linkedComponent.getClassName())){
+                linkedComponent.setConfig(this.getConfig());
+            }
         }
     }
 

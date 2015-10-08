@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.app;
 
+import java.util.HashSet;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,16 +55,16 @@ public class ConfiguredComponentTest extends TestUtil {
     public void deleteLinkedConfiguredComponent() {
         initData(true);
         try {
-            Application mashup = app.createMashup("mashup", entityManager,true);
+            Application mashup = app.createMashup("mashup", entityManager, true);
 
             entityManager.persist(mashup);
             objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
-            ConfiguredComponent cc = (ConfiguredComponent)mashup.getComponents().toArray()[0];
+            ConfiguredComponent cc = (ConfiguredComponent) mashup.getComponents().toArray()[0];
 
-            long cId =testComponent.getId();
+            long cId = testComponent.getId();
 
             mashup.getComponents().remove(cc);
             entityManager.remove(cc);
@@ -78,22 +79,21 @@ public class ConfiguredComponentTest extends TestUtil {
             assert (false);
         }
 
-
     }
 
     @Test
     public void deleteMotherConfiguredComponent() {
         initData(true);
         try {
-            Application mashup = app.createMashup("mashup", entityManager,true);
+            Application mashup = app.createMashup("mashup", entityManager, true);
 
             entityManager.persist(mashup);
             objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
-            ConfiguredComponent cc = (ConfiguredComponent)mashup.getComponents().toArray()[0];
-            long cId =cc.getId();
+            ConfiguredComponent cc = (ConfiguredComponent) mashup.getComponents().toArray()[0];
+            long cId = cc.getId();
 
             app.getComponents().remove(testComponent);
             entityManager.remove(testComponent);
@@ -109,11 +109,10 @@ public class ConfiguredComponentTest extends TestUtil {
         }
     }
 
-
     @Test
-    public void testUpdateComponentsInMotherApplication() throws Exception{
+    public void testUpdateComponentsInMotherApplication() throws Exception {
         initData(true);
-        Application mashup = app.createMashup("mashup",  entityManager,true);
+        Application mashup = app.createMashup("mashup", entityManager, true);
         objectsToRemove.add(mashup);
         entityManager.persist(mashup);
 
@@ -131,5 +130,43 @@ public class ConfiguredComponentTest extends TestUtil {
         }
     }
 
+    @Test
+    public void testUpdateHTMLComponentsInMotherApplication() throws Exception {
+        try {
+            initData(true);
+            app.getComponents().remove(testComponent);
+            entityManager.remove(testComponent);
+
+            String expectedConfig = "{ change: false}";
+            ConfiguredComponent cc = new ConfiguredComponent();
+            cc.setClassName("viewer.components.HTML");
+            cc.setConfig(expectedConfig);
+            cc.setName("htmlComponent1");
+            cc.setApplication(app);
+            persistEntityTest(cc, ConfiguredComponent.class, true);
+            
+            app.getComponents().add(cc);
+
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            objectsToRemove.add(mashup);
+            entityManager.persist(mashup);
+
+            String newConfig = "{value: 'different'}";
+            for (ConfiguredComponent component : app.getComponents()) {
+                component.setConfig(newConfig);
+                entityManager.persist(component);
+            }
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            for (ConfiguredComponent component : mashup.getComponents()) {
+                assertTrue(component.getConfig().equals(expectedConfig));
+            }
+        } catch (Exception e) {
+            log.error("Error:", e);
+            assert (false);
+        }
+    }
 
 }
