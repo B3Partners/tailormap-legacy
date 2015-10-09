@@ -18,6 +18,7 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
@@ -149,17 +150,17 @@ public class DocumentActionBean implements ActionBean {
 
     @DontValidate
     public Resolution delete() {
+        EntityManager em = Stripersist.getEntityManager();
         if(documentInUse()){
             String message="Het document kan niet worden verwijderd omdat deze nog in gebruik is.<br> "
                     + "Dit document is nog geconfigureerd in:<ul> ";
-            
-            List<Level> levels = Stripersist.getEntityManager().createQuery(
+            List<Level> levels = em.createQuery(
                 "from Level l where :doc member of l.documents")
                 .setParameter("doc", document)
                 .getResultList();
         
             for (Level level: levels){
-                for(Application app: level.findApplications()) {
+                for(Application app: level.findApplications(em)) {
                     message+="<li>Level: \""+ level.getPath() +"\" in de Applicatie \""+app.getNameWithVersion()+"\".</li>";
                 }
             }
@@ -167,8 +168,8 @@ public class DocumentActionBean implements ActionBean {
             getContext().getValidationErrors().add("document", new SimpleError(message));
             return new ForwardResolution(EDITJSP);
         }        
-        Stripersist.getEntityManager().remove(document);
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.remove(document);
+        em.getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Document is verwijderd"));
         

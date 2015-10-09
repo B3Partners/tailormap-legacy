@@ -338,14 +338,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             bindAppProperties();
 
             Application copy = application.deepCopy();
-
+            EntityManager em = Stripersist.getEntityManager();
             // don't save changes to original app
-            Stripersist.getEntityManager().detach(application);
+            em.detach(application);
 
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().flush();
-            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE,false);
+            em.persist(copy);
+            em.persist(copy);
+            em.flush();
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE,false,em);
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
@@ -407,7 +407,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                     .setParameter("level", oldPublished.getRoot()).setParameter("oldId", oldPublished.getId()).getResultList();
                 for (Application mashup : mashups) {
                     mashup.setRoot(application.getRoot());//nog iets doen met veranderde layerids uit cofniguratie
-                    SelectedContentCache.setApplicationCacheDirty(mashup,true, false);
+                    SelectedContentCache.setApplicationCacheDirty(mashup,true, false,em);
                     mashup.transferMashup(oldPublished,em);
                     em.persist(mashup);
                 }

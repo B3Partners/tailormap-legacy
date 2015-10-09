@@ -90,7 +90,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         }
         
         application.authorizationsModified();        
-        SelectedContentCache.setApplicationCacheDirty(application, true, false);
+        SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
         em.getTransaction().commit();
         
         return new ForwardResolution(JSP);
@@ -134,9 +134,10 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             error = "Naam moet zijn ingevuld";
         } else {
             try {
-                Stripersist.getEntityManager().persist(level);
-                SelectedContentCache.setApplicationCacheDirty(application, true, false);
-                Stripersist.getEntityManager().getTransaction().commit();
+                EntityManager em = Stripersist.getEntityManager();
+                em.persist(level);
+                SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
+                em.getTransaction().commit();
                 json.put("name", level.getName());
                 json.put("success", Boolean.TRUE);
             } catch(Exception e) {
@@ -192,7 +193,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 parent.getChildren().remove(level);
                 em.remove(level);
                 application.authorizationsModified();
-                SelectedContentCache.setApplicationCacheDirty(application, true, false);
+                SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
                 em.getTransaction().commit();
 
             } catch(Exception e) {
@@ -257,10 +258,11 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
              }
         }
         
-        Stripersist.getEntityManager().persist(level);
+        EntityManager em = Stripersist.getEntityManager();
+        em.persist(level);
         application.authorizationsModified();
-        SelectedContentCache.setApplicationCacheDirty(application, true, false);
-        Stripersist.getEntityManager().getTransaction().commit();
+        SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
+        em.getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
         return edit();

@@ -18,6 +18,7 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
@@ -261,8 +262,9 @@ public class LayerActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(layer);
         layer.getService().authorizationsModified();
         List<Application> apps = findApplications();
+        EntityManager em = Stripersist.getEntityManager();
         for (Application application : apps) {
-            SelectedContentCache.setApplicationCacheDirty(application, true, false);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
         }
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));

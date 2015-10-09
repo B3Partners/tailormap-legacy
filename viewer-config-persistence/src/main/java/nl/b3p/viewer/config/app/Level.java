@@ -228,14 +228,14 @@ public class Level implements Comparable{
      * can be used in more than one application.
      * @return 
      */
-    public Set<Application> findApplications() {
+    public Set<Application> findApplications(EntityManager em) {
         Level l = this;
         while(l.getParent() != null) {
             l = l.getParent();
         }
         
         Set<Application> apps = new HashSet();
-        apps.addAll(Stripersist.getEntityManager().createQuery(
+        apps.addAll(em.createQuery(
                     "from Application where root = :level")
                     .setParameter("level", l)
                     .getResultList());        

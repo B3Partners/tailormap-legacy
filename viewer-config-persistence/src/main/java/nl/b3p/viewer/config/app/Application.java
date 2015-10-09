@@ -716,7 +716,7 @@ public class Application {
         return idMap;
     }
 
-    public void processBookmarks(Application previousApplication, ActionBeanContext context){
+    public void processBookmarks(Application previousApplication, ActionBeanContext context, EntityManager em){
         // bookmark krijgt een appId kolom
             // bij maken werkversie
                 // check of bookmarkcomponent de configuratie: followsApplication
@@ -735,7 +735,6 @@ public class Application {
                 // Gebruik ook applicatienaam en versienummer om bookmark op te halen
 
                 
-        EntityManager em = Stripersist.getEntityManager();
         List<ConfiguredComponent> bookmarkComponents = em.createQuery("FROM ConfiguredComponent where application.id = :app and className = :className", ConfiguredComponent.class)
                 .setParameter("app", previousApplication.getId()).setParameter("className", "viewer.components.Bookmark").getResultList();
 

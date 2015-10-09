@@ -16,9 +16,9 @@
  */
 package nl.b3p.viewer.util;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -163,7 +163,7 @@ public abstract class TestUtil {
 
         Application app = entityManager.find(Application.class, applicationId);
         if( app == null) {
-            File f = new File(TestUtil.class.getResource("testdata.sql").toURI());
+            Reader f = new InputStreamReader(TestUtil.class.getResourceAsStream("testdata.sql"));
             executeScript(f);
 
             testdataLoaded = true;
@@ -173,14 +173,14 @@ public abstract class TestUtil {
 
     }
 
-    public void executeScript(File f) throws IOException, SQLException {
+    public void executeScript(Reader f) throws IOException, SQLException {
         Connection conn = null;
 
         try {
             Session session = (Session) entityManager.getDelegate();
             conn = (Connection) session.connection();
             ScriptRunner sr = new ScriptRunner(conn, true, true);
-            sr.runScript(new FileReader(f));
+            sr.runScript(f);
             conn.commit();
             entityManager.flush();
         } finally {
