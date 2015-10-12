@@ -119,7 +119,7 @@ public abstract class TestUtil {
     public void stuffToRemove() {
         for (Object obj : objectsToRemove) {
             log.debug("Removing obj" + obj.toString());
-            if(entityManager.contains(obj)){
+            if (entityManager.contains(obj)) {
                 entityManager.remove(obj);
             }
         }
