@@ -507,14 +507,20 @@ public class Application {
          }
     }
     
-    public Application createMashup( String mashupName, EntityManager em, boolean linkComponents) throws Exception{
-        Application mashup = this.deepCopyAllButLevels(linkComponents);
+    public Application createMashup(String mashupName, EntityManager em, boolean linkComponents) throws Exception {
+        Application source = this;
+
+        if (!em.contains(source)) {
+            source = em.merge(source);
+        }
+        Application mashup = source.deepCopyAllButLevels(linkComponents);
+        mashup.setName(mashup.getName() + "_" + mashupName);
+        em.persist(mashup);
         if(mashup.getRoot() != null){
             mashup.getRoot().processForMashup(mashup);
         }
         
         mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
-        mashup.setName(mashup.getName() + "_" + mashupName);
         return mashup;
     }
 

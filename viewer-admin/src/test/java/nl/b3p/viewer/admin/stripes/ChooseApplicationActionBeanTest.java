@@ -35,6 +35,72 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             Application prev = entityManager.merge(app);
             objectsToRemove.add(workVersion);
             objectsToRemove.add(prev);
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+
+    @Test
+    public void testMakeWorkVersionFromAppWithMashup() {
+            initData(false);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            ActionBeanContext context = new ActionBeanContext();
+            caab.setContext(context);
+
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(app, entityManager, version);
+
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            Application prev = entityManager.merge(app);
+            objectsToRemove.add(entityManager.merge(mashup));
+            objectsToRemove.add(prev);
+
+            objectsToRemove.add(workVersion);
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+    
+    @Test
+    public void testMakeMashupFromAppWithWorkversion() {
+         initData(false);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            ActionBeanContext context = new ActionBeanContext();
+            caab.setContext(context);
+
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(app, entityManager, version);
+
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            
+            
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+
+            Application prev = entityManager.merge(app);
+            objectsToRemove.add(entityManager.merge(mashup));
+            objectsToRemove.add(prev);
+
+            objectsToRemove.add(workVersion);
         } catch (Exception e) {
             log.error("Fout", e);
             assert (false);

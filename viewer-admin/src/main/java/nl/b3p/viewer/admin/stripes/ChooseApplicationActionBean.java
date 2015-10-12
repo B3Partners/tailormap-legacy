@@ -343,8 +343,12 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     Application createWorkversion(Application base, EntityManager em, String version) throws Exception {
         Application copy = base.deepCopy();
         copy.setVersion(version);
-        // don't save changes to original app
-        em.detach(base);
+        // don't save changes to original app and it's mashups
+
+        Set<Application> apps = base.getRoot().findApplications(em);
+        for (Application app : apps) {
+            em.detach(app);
+        }
 
         em.persist(copy);
         em.persist(copy);
