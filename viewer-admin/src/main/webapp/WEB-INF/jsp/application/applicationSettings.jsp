@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm">
                     <stripes:hidden name="application" value="${actionBean.application}"/>
                     <stripes:hidden name="mashupName"/>
+                    <stripes:hidden name="mustUpdateComponents"/>
                     <table class="formtable" style="float: left; width: 580px;">
                         <tr>
                             <td>Naam:</td>
@@ -174,17 +175,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             function confirmMashup() {
                 Ext.MessageBox.show({
                     title: 'Maak een mashup',
-                    msg: 'Naam van mashup:',
+                    width: 300,
+                    msg: 'Naam van mashup: <br/>'+
+                    '<input type="text" id="mashupNameText" width="200px"><br/>' +
+                    '<label><input type="checkbox" id="mustUpdateComponents">Moeten wijzigingen aan de componenten in de moederapplicatie ook doorwerken in de mashup?</label><br/>'  ,
                     buttons: Ext.MessageBox.OKCANCEL,
-                    prompt:true,
                     fn: function(btn, text){
-                        if(btn=='ok' && text){
-                    
-                            var frm = document.forms[0];
-                    
-                            frm.mashupName.value = text;
-                            frm.action = "?mashup=t";
-                            frm.submit();
+                        if(btn=='ok'){
+                            var text = Ext.get("mashupNameText").getValue();
+                            var mustUpdateComponents = Ext.get("mustUpdateComponents").getValue() === "on";
+                            if(text){
+                                var frm = document.forms[0];
+
+                                frm.mashupName.value = text;
+                                frm.mustUpdateComponents.value = mustUpdateComponents;
+                                frm.action = "?mashup=t";
+                                frm.submit();
+                            }
                         }
                     }
                 });  

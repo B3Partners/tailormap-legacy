@@ -37,6 +37,10 @@ import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.event.EventListeners;
+import org.hibernate.event.PreUpdateEventListener;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -268,6 +272,10 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         if (component == null) {
             component = new ConfiguredComponent();
         }
+        Session s = (Session)em.getDelegate();
+        SessionFactoryImpl sf =(SessionFactoryImpl) s.getSessionFactory();
+        EventListeners el = sf.getEventListeners();
+        PreUpdateEventListener[] puels = el.getPreUpdateEventListeners();
         component.setConfig(configObject);
         component.setName(name);
         component.setClassName(className);

@@ -63,6 +63,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private String mashupName;
     
     @Validate
+    private boolean mustUpdateComponents;
+    
+    @Validate
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
     
     @ValidateNestedProperties({
@@ -153,6 +156,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     public void setMashupMustPointToPublishedVersion(boolean mashupMustPointToPublishedVersion) {
         this.mashupMustPointToPublishedVersion = mashupMustPointToPublishedVersion;
+    }
+
+    public boolean isMustUpdateComponents() {
+        return mustUpdateComponents;
+    }
+
+    public void setMustUpdateComponents(boolean mustUpdateComponents) {
+        this.mustUpdateComponents = mustUpdateComponents;
     }
     //</editor-fold>
     
@@ -373,8 +384,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         ValidationErrors errors = context.getValidationErrors();
         try {
             EntityManager em = Stripersist.getEntityManager();
-            boolean linkComponents = true;
-            Application mashup = application.createMashup(mashupName, em,linkComponents);
+            Application mashup = application.createMashup(mashupName, em,mustUpdateComponents);
             em.persist(mashup);
             em.getTransaction().commit();
 

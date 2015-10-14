@@ -153,6 +153,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
 
     @PreUpdate
     private void pushChangesToLinkedComponents(){
+        log.e
         for (ConfiguredComponent linkedComponent : linkedComponents) {
             if(!classesExcludedFromPushing.contains(linkedComponent.getClassName())){
                 linkedComponent.setConfig(this.getConfig());
