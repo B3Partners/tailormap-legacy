@@ -139,28 +139,11 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     //</editor-fold>
 
 
-    @PreRemove
-    private void removeFromLinkedComponents() {
-        for (ConfiguredComponent linkedComponent : linkedComponents) {
-            linkedComponent.setMotherComponent(null);
-        }
-    }
-
-    private final static List<String> classesExcludedFromPushing = new ArrayList<String>();
+    public final static List<String> classesExcludedFromPushing = new ArrayList<String>();
     static {
         classesExcludedFromPushing.add("viewer.components.HTML");
     }
-
-    @PreUpdate
-    private void pushChangesToLinkedComponents(){
-        log.e
-        for (ConfiguredComponent linkedComponent : linkedComponents) {
-            if(!classesExcludedFromPushing.contains(linkedComponent.getClassName())){
-                linkedComponent.setConfig(this.getConfig());
-            }
-        }
-    }
-
+    
     /**
      * Retrieve the metadata from the component registry for the class of this
      * component

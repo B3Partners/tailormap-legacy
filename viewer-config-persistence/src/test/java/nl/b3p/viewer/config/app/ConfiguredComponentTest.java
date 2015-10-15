@@ -96,6 +96,10 @@ public class ConfiguredComponentTest extends TestUtil {
             long cId = cc.getId();
 
             app.getComponents().remove(testComponent);
+            for (ConfiguredComponent linkedComponent : testComponent.getLinkedComponents()) {
+                linkedComponent.setMotherComponent(null);
+            }
+            
             entityManager.remove(testComponent);
 
             entityManager.getTransaction().commit();
@@ -109,64 +113,5 @@ public class ConfiguredComponentTest extends TestUtil {
         }
     }
 
-    @Test
-    public void testUpdateComponentsInMotherApplication() throws Exception {
-        initData(true);
-        Application mashup = app.createMashup("mashup", entityManager, true);
-        objectsToRemove.add(mashup);
-        entityManager.persist(mashup);
-
-        String newConfig = "{value: 'different'}";
-        for (ConfiguredComponent component : app.getComponents()) {
-            component.setConfig(newConfig);
-            entityManager.persist(component);
-        }
-
-        entityManager.getTransaction().commit();
-        entityManager.getTransaction().begin();
-
-        for (ConfiguredComponent component : mashup.getComponents()) {
-            assertTrue(component.getConfig().equals(newConfig));
-        }
-    }
-
-    @Test
-    public void testUpdateHTMLComponentsInMotherApplication() throws Exception {
-        try {
-            initData(true);
-            app.getComponents().remove(testComponent);
-            entityManager.remove(testComponent);
-
-            String expectedConfig = "{ change: false}";
-            ConfiguredComponent cc = new ConfiguredComponent();
-            cc.setClassName("viewer.components.HTML");
-            cc.setConfig(expectedConfig);
-            cc.setName("htmlComponent1");
-            cc.setApplication(app);
-            persistEntityTest(cc, ConfiguredComponent.class, true);
-            
-            app.getComponents().add(cc);
-
-            Application mashup = app.createMashup("mashup", entityManager, true);
-            objectsToRemove.add(mashup);
-            entityManager.persist(mashup);
-
-            String newConfig = "{value: 'different'}";
-            for (ConfiguredComponent component : app.getComponents()) {
-                component.setConfig(newConfig);
-                entityManager.persist(component);
-            }
-
-            entityManager.getTransaction().commit();
-            entityManager.getTransaction().begin();
-
-            for (ConfiguredComponent component : mashup.getComponents()) {
-                assertTrue(component.getConfig().equals(expectedConfig));
-            }
-        } catch (Exception e) {
-            log.error("Error:", e);
-            assert (false);
-        }
-    }
 
 }

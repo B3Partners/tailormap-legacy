@@ -33,14 +33,11 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.event.EventListeners;
-import org.hibernate.event.PreUpdateEventListener;
-import org.hibernate.impl.SessionFactoryImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -272,14 +269,17 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         if (component == null) {
             component = new ConfiguredComponent();
         }
-        Session s = (Session)em.getDelegate();
-        SessionFactoryImpl sf =(SessionFactoryImpl) s.getSessionFactory();
-        EventListeners el = sf.getEventListeners();
-        PreUpdateEventListener[] puels = el.getPreUpdateEventListeners();
+        saveComponent(em, component, configObject, name, className, application, componentLayout);
+
+        return config();
+    }
+    
+    protected void saveComponent(EntityManager em, ConfiguredComponent component, String configObject, String name, String className, Application application, String componentLayout){
         component.setConfig(configObject);
         component.setName(name);
         component.setClassName(className);
         component.setApplication(application);
+        pushChangesToLinkedComponents(component);
         Map<String, String> compDetails = new HashMap<String, String>();
         try {
             if (componentLayout != null) {
@@ -301,8 +301,24 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         em.persist(component);
         application.authorizationsModified();
         em.getTransaction().commit();
-
-        return config();
+    }
+    
+    
+    private void pushChangesToLinkedComponents(ConfiguredComponent comp){
+        log.error("pushChangesToLinkedComponents");
+        for (ConfiguredComponent linkedComponent : comp.getLinkedComponents()) {
+            if(!ConfiguredComponent.classesExcludedFromPushing.contains(linkedComponent.getClassName())){
+                linkedComponent.setConfig(comp.getConfig());
+            }
+        }
+    }
+    
+    
+    private void removeFromLinkedComponents(ConfiguredComponent comp) {
+        for (ConfiguredComponent linkedComponent : comp.getLinkedComponents()) {
+            linkedComponent.setMotherComponent(null);
+        }
+        comp.setLinkedComponents(new ArrayList<ConfiguredComponent>());
     }
 
     public Resolution removeComponent() {
@@ -312,7 +328,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         try {
             component = (ConfiguredComponent) em.createQuery(
                     "from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", name).getSingleResult();
-
+            removeFromLinkedComponents(component);
             em.remove(component);
         } catch (NoResultException e) {
         }
