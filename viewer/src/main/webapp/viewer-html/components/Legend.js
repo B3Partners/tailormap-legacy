@@ -343,7 +343,7 @@ Ext.define("viewer.components.Legend", {
             img = document.createElement("img");
             
             if (part.url.search("SCALE") == -1){
-                img.src = part.url  +  "&SCALE=" + legendScale;
+                img.src = Ext.String.urlAppend(part.url, "SCALE=" + legendScale);
             } else {
                 img.src = part.url.replace(/SCALE=[0-9.,]*/i, "SCALE=" + legendScale);
             }
