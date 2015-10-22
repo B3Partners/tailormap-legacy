@@ -1098,21 +1098,30 @@ Ext.define ("viewer.components.SelectionModule",{
             children : [],
             id: levelId,
             layers: [],
-            name : 'Test'
+            name : 'Nieuw niveau'
         };
         this.levels [levelId] = level;
-        var node = this.addLevel (levelId, false, false, this.config.showBackgroundLevels);
 
-        this.selectedContent.push({
-            id: levelId,
-            type: 'level'
-        });
-        this.addedLevels.push({id:levelId,status:'new'});
-        var rootNode = parent;
-        if(!parent){
+        var rootNode = null;
+
+        if (parent) {
+            rootNode = parent;
+            var rootLevel = this.levels[rootNode.data.origData.id];
+            if (!rootLevel.children) {
+                rootLevel.children = [];
+            }
+            rootLevel.children.push(levelId);
+        } else {
             rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
+            this.selectedContent.push({
+                id: levelId,
+                type: 'level'
+            });
         }
 
+        var node = this.addLevel (levelId, false, false, this.config.showBackgroundLevels);
+
+        this.addedLevels.push({id:levelId,status:'new'});
         node = this.insertTreeNode(node,rootNode);
     },
 
