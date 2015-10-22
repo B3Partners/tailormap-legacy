@@ -37,11 +37,15 @@ Ext.define("viewer.components.SelectionModuleMenu", {
             },
             items: [{
                     text: 'Voeg niveau toe',
-                    // icon: imagesPath + "wrench.png",
+                    icon: contextPath + "/resources/images/add.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
-                                this.config.selectionModule.createAndAddLevel(this.levelMenu.config.data.clickedItem);
+                                var me = this;
+                                var f = function(name){
+                                    me.config.selectionModule.createAndAddLevel(me.levelMenu.config.data.clickedItem, name);
+                                };
+                                this.editName("",f);
                             },
                             scope: this
                         }
@@ -49,11 +53,19 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                 },
                 {
                     text: 'Naam wijzigen',
-                    // icon: imagesPath + "wrench.png",
+                    icon: contextPath + "/resources/images/wrench.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
-                                this.editName(this.levelMenu.config.data.clickedItem);
+                                var record = this.levelMenu.config.data.clickedItem;
+                                var me = this;
+                                var f = function (name) {
+                                    record.set("text", name);
+                                    var levelId = record.data.origData.id;
+                                    var level = me.config.selectionModule.levels[levelId];
+                                    level.name = name;
+                                };
+                                this.editName(this.levelMenu.config.data.clickedItem.data.text,f);
                             },
                             scope: this
                         }
@@ -65,21 +77,17 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         this.levelMenu.showAt(event.getXY());
         this.levelMenu.config.data.clickedItem = record;
     },
-    editName: function (record) {
+    editName: function (initialText,okFunction) {
         var me = this;
         Ext.MessageBox.show({
             title: 'Naam wijzigen',
             msg: 'Naam van niveau:',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
-            value: record.data.text,
+            value: initialText,// record.data.text,
             fn: function (btn, text, cBoxes) {
                 if (btn === 'ok' && text) {
-                    record.set("text", text);
-                    var levelId = record.data.origData.id;
-                    var level = me.config.selectionModule.levels[levelId];
-                    level.name = text;
-                    // Don't edit the viewerController.app.levels directly (it's a reference). Only edit that when clicking ok in the main selectionmodule window.
+                    okFunction(text)
                 }
             }
         });

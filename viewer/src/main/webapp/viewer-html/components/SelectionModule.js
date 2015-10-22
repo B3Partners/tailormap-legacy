@@ -1091,14 +1091,14 @@ Ext.define ("viewer.components.SelectionModule",{
         me.insertTreeNode(nodes, rootNode);
     },
 
-    createAndAddLevel : function ( parent) {
+    createAndAddLevel : function ( parent,name) {
         var levelId  = Ext.id();
         var level = {
             background : false,
             children : [],
             id: levelId,
             layers: [],
-            name : 'Nieuw niveau'
+            name : name
         };
         this.levels [levelId] = level;
 
