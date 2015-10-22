@@ -36,12 +36,24 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                 clickedItem: null
             },
             items: [{
-                    text: 'Bewerken',
+                    text: 'Voeg niveau toe',
                     // icon: imagesPath + "wrench.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
                                 this.config.selectionModule.createAndAddLevel(this.levelMenu.config.data.clickedItem);
+                            },
+                            scope: this
+                        }
+                    }
+                },
+                {
+                    text: 'Naam wijzigen',
+                    // icon: imagesPath + "wrench.png",
+                    listeners: {
+                        click: {
+                            fn: function (item, e, eOpts) {
+                                this.editName(this.levelMenu.config.data.clickedItem);
                             },
                             scope: this
                         }
@@ -52,5 +64,24 @@ Ext.define("viewer.components.SelectionModuleMenu", {
     handleClick: function (record, event) {
         this.levelMenu.showAt(event.getXY());
         this.levelMenu.config.data.clickedItem = record;
+    },
+    editName: function (record) {
+        var me = this;
+        Ext.MessageBox.show({
+            title: 'Naam wijzigen',
+            msg: 'Naam van niveau:',
+            buttons: Ext.MessageBox.OKCANCEL,
+            prompt: true,
+            value: record.data.text,
+            fn: function (btn, text, cBoxes) {
+                if (btn === 'ok' && text) {
+                    record.set("text", text);
+                    var levelId = record.data.origData.id;
+                    var level = me.config.selectionModule.levels[levelId];
+                    level.name = text;
+                    // Don't edit the viewerController.app.levels directly (it's a reference). Only edit that when clicking ok in the main selectionmodule window.
+                }
+            }
+        });
     }
 });
