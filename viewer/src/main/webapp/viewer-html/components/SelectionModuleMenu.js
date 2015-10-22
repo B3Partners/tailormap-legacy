@@ -41,7 +41,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
-                                this.config.selectionModule.createAndAddLevel();
+                                this.config.selectionModule.createAndAddLevel(this.levelMenu.config.data.clickedItem);
                             },
                             scope: this
                         }

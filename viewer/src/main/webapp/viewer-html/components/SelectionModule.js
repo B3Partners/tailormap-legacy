@@ -871,13 +871,6 @@ Ext.define ("viewer.components.SelectionModule",{
                 },
                 itemcontextmenu: function(view, record, item, index, event, eOpts) {
                     me.menus.handleClick(record, event);
-                   /* if(record.get('type') === "level") {
-                     //   levelMenu.config.data.clickedItem = record;
-                      //  levelMenu.showAt(event.getXY());
-                    } else {
-                        //appLayerMenu.config.data.clickedItem = record;
-                        //appLayerMenu.showAt(event.getXY());
-                    }*/
                     event.stopEvent();
                 },
                 containercontextmenu: function(view, event, eOpts) {
@@ -1098,7 +1091,7 @@ Ext.define ("viewer.components.SelectionModule",{
         me.insertTreeNode(nodes, rootNode);
     },
 
-    createAndAddLevel : function ( showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions) {
+    createAndAddLevel : function ( parent) {
         var levelId  = Ext.id();
         var level = {
             background : false,
@@ -1115,7 +1108,10 @@ Ext.define ("viewer.components.SelectionModule",{
             type: 'level'
         });
         this.addedLevels.push({id:levelId,status:'new'});
-        var rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
+        var rootNode = parent;
+        if(!parent){
+            rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
+        }
 
         node = this.insertTreeNode(node,rootNode);
     },
