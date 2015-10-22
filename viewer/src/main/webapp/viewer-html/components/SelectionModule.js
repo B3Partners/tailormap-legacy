@@ -141,6 +141,7 @@ Ext.define ("viewer.components.SelectionModule",{
         this.renderButton();
         // if there is no selected content, show selection module
         var me = this;
+        this.menus = Ext.create("viewer.components.SelectionModuleMenu",{selectionModule:this});
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
             if(this.config.viewerController.app.selectedContent.length == 0 ){
                 me.openWindow();
@@ -867,6 +868,24 @@ Ext.define ("viewer.components.SelectionModule",{
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.removeNodes([ record ]);
+                },
+                itemcontextmenu: function(view, record, item, index, event, eOpts) {
+                    me.menus.handleClick(record, event);
+                   /* if(record.get('type') === "level") {
+                     //   levelMenu.config.data.clickedItem = record;
+                      //  levelMenu.showAt(event.getXY());
+                    } else {
+                        //appLayerMenu.config.data.clickedItem = record;
+                        //appLayerMenu.showAt(event.getXY());
+                    }*/
+                    event.stopEvent();
+                },
+                containercontextmenu: function(view, event, eOpts) {
+                    me.menus.handleClick(null, event);
+                    // When rightclicking in the treecontainer (not on a node) than
+                    // show the context menu for adding a new level
+                    // Addlevel
+                    event.stopEvent();
                 }
             },
             tbar: null
@@ -1077,6 +1096,28 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         }
         me.insertTreeNode(nodes, rootNode);
+    },
+
+    createAndAddLevel : function ( showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions) {
+        var levelId  = Ext.id();
+        var level = {
+            background : false,
+            children : [],
+            id: levelId,
+            layers: [],
+            name : 'Test'
+        };
+        this.levels [levelId] = level;
+        var node = this.addLevel (levelId, false, false, this.config.showBackgroundLevels);
+
+        this.selectedContent.push({
+            id: levelId,
+            type: 'level'
+        });
+        this.addedLevels.push({id:levelId,status:'new'});
+        var rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
+
+        node = this.insertTreeNode(node,rootNode);
     },
 
     addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions) {
