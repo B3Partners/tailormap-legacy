@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -860,8 +860,8 @@ Ext.define ("viewer.components.SelectionModule",{
         }
 
         me.treePanels.selectionTree.treeStore = Ext.create('Ext.data.TreeStore', Ext.apply({}, defaultStoreConfig));
-        me.treePanels.selectionTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply({}, defaultTreeConfig, {
-            treePanelType: 'selectionTree',
+        me.treePanels.selectionTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply({}, {
+           treePanelType: 'selectionTree',
             store: me.treePanels.selectionTree.treeStore,
             viewConfig: me.getViewConfig('selection'),
             listeners: {
@@ -870,7 +870,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 }
             },
             tbar: null
-        }));
+        },defaultTreeConfig));
         Ext.getCmp('selectionTreeContainer').add(me.treePanels.selectionTree.treePanel);
     },
     
