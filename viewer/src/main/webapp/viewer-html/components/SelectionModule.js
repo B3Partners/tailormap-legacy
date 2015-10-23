@@ -1058,7 +1058,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var rootLevel = me.levels[me.rootLevel];
         if(Ext.isDefined(rootLevel.children)) {
             for(var i = 0 ; i < rootLevel.children.length; i++) {
-                var l = me.addLevel(rootLevel.children[i], true, false, this.config.showBackgroundLevels);
+                var l = me.addLevel(rootLevel.children[i], true, true, this.config.showBackgroundLevels);
                 if(l !== null) {
                     l.expanded = true; // Make top levels expand
                     levels.push(l);
@@ -1079,7 +1079,7 @@ Ext.define ("viewer.components.SelectionModule",{
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
             if(contentItem.type ==  "level") {
-                var level = me.addLevel(contentItem.id, false, false, this.config.showBackgroundLevels);
+                var level = me.addLevel(contentItem.id, true, true, this.config.showBackgroundLevels);
                 if(level != null){
                     nodes.push(level);
                 }
@@ -1119,7 +1119,7 @@ Ext.define ("viewer.components.SelectionModule",{
             });
         }
 
-        var node = this.addLevel (levelId, false, false, this.config.showBackgroundLevels);
+        var node = this.addLevel (levelId, true, true, this.config.showBackgroundLevels);
 
         this.addedLevels.push({id:levelId,status:'new'});
         node = this.insertTreeNode(node,rootNode);
@@ -1135,14 +1135,12 @@ Ext.define ("viewer.components.SelectionModule",{
             return null;
         }
         var description = descriptions ? descriptions[level.id] : null;
-        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, !Ext.isDefined(level.children), undefined,description);
+        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false, false, description);
         treeNodeLayer.type = 'level';
         // Create a leaf node when a level has layers (even if it has children)
         if(Ext.isDefined(level.layers)) {
             treeNodeLayer.type = 'maplevel';
             treeNodeLayer.nodeid = 'm' + level.id;
-            treeNodeLayer.leaf = true;
-            showChildren = false;
         }
         if(showChildren) {
             var nodes = [];
