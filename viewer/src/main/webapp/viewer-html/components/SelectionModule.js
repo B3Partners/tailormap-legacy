@@ -1587,18 +1587,25 @@ Ext.define ("viewer.components.SelectionModule",{
             return;
         }
         var objData = record.data;
-        if(nodeType == "appLayer") {
-            // Own service
-            var customService = Ext.clone(me.userServices[recordOrigData.userService]);
-            customService.status = 'new';
-            me.addService(customService);
+        if(nodeType === "appLayer") {
+            var serviceId = null;
+            if(Ext.isDefined(recordOrigData.userService)){
+                // Own service
+                var customService = Ext.clone(me.userServices[recordOrigData.userService]);
+                customService.status = 'new';
+                me.addService(customService);
+                serviceId = customService.id;
+            }else{
+                var service = me.services[recordOrigData.service];
+                serviceId = service.id;
+            }
             me.addedLayers.push({
                 background: false,
                 checked: this.autoCheck(),
                 id: recordOrigData.id,
                 layerName: recordOrigData.layerName,
                 alias: recordOrigData.alias,
-                serviceId: customService.id,
+                serviceId: serviceId,
                 status: 'new'
             });
             me.selectedContent.push({
@@ -1606,7 +1613,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 type: 'appLayer'
             });
         }
-        else if(nodeType == "maplevel") {
+        else if(nodeType === "maplevel") {
             // Added from application
             me.addedLevels.push({id:recordOrigData.id,status:'new'});
             me.selectedContent.push({
@@ -1617,12 +1624,11 @@ Ext.define ("viewer.components.SelectionModule",{
             if(level && !level.background && this.autoCheck()) {
                 this.checkAllChildren(level, true);
             }
-        }
-        else if(nodeType == "layer") {
+        } else if(nodeType === "layer") {
             // Added from registry
             var service = me.findService(record);
             objData = null;
-            if(service != null) {
+            if(service !== null) {
                 service.status = 'new';
                 me.addService(service);
                 me.addedLayers.push({
