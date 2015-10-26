@@ -70,6 +70,31 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                             scope: this
                         }
                     }
+                },
+                {
+                    text: 'Niveau verwijderen',
+                    icon: contextPath + "/resources/images/delete.png",
+                    listeners: {
+                        click: {
+                            fn: function (item, e, eOpts) {
+                                var record = this.levelMenu.config.data.clickedItem;
+                                var me = this;
+                                me.record = record;
+                                Ext.Msg.show({
+                                    title: 'Niveau verwijderen?',
+                                    message: 'Weet u zeker dat u het geselecteerde niveau wilt verwijderen?',
+                                    buttons: Ext.Msg.YESNO,
+                                    icon: Ext.Msg.QUESTION,
+                                    fn: function (btn) {
+                                        if (btn === 'yes') {
+                                            me.config.selectionModule.removeNodes(me.record);
+                                        } 
+                                    }
+                                });
+                            },
+                            scope: this
+                        }
+                    }
                 }]
         });
     },

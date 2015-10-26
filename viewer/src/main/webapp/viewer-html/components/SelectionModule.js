@@ -915,6 +915,8 @@ Ext.define ("viewer.components.SelectionModule",{
                     onNodeDrop: function(targetNode, dragZone, e, data) {
                         // We are in the selection tree && target and dragged node are both in same tree
                         if(treeType === 'selection' && targetNode.offsetParent === data.item.offsetParent) {
+
+                            var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
                             // Check where the element is dropped
                             var bounds = targetNode.getBoundingClientRect();
                             var dropY = e.getY();
