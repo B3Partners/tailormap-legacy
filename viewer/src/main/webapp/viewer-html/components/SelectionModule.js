@@ -142,7 +142,7 @@ Ext.define ("viewer.components.SelectionModule",{
         // if there is no selected content, show selection module
         var me = this;
         this.menus = Ext.create("viewer.components.SelectionModuleMenu",{selectionModule:this});
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,function(){
             if(this.config.viewerController.app.selectedContent.length == 0 ){
                 me.openWindow();
             }else{

@@ -245,9 +245,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();
+                this.layersInitialized=true;
+                this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
             }
-            this.layersInitialized=true;
-            this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
         } catch(e) {
             this.logger.error(e);
         }
@@ -1507,7 +1507,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         if (this.app.selectedContent[s].id === value[v]){
                             selectedContent.push(this.app.selectedContent[s]);
                             break;
-                        }
+                }
                     }
                 }
                 for (var s=0; s < this.app.selectedContent.length; s++){
@@ -1536,6 +1536,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(layersLoaded && !bookmark){
             this.app.appLayers = appLayers;
             this.setSelectedContent(selectedContent);
+            this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,function(){
+                
+                this.layersInitialized = true;
+                this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
+            }, this,{single:true});
         }
 
         return layersLoaded;
