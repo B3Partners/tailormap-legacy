@@ -1523,6 +1523,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         comp.loadVariables(value);
                     }
                 }
+            }else if(key === "levels"){
+                this.app.levels = value;
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
@@ -1650,6 +1652,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             name: "selectedContent",
             value: this.app.selectedContent
         });
+
+        paramJSON.params.push({
+            name: "levels",
+            value: this.app.levels
+        });
+
         return paramJSON;
     },
     getApplicationSprite: function() {
