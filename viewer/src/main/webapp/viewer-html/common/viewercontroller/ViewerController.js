@@ -1498,22 +1498,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 };
                 this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             }else if (key === "levelOrder"){
-               selectedContent=[];
-               if(!Ext.isArray(value)){
+                selectedContent=[];
+                if(!Ext.isArray(value)){
                     value = value.split(",");
                 }
-                for (var v=0; v < value.length; v++){
-                    for (var s=0; s < this.app.selectedContent.length; s++){
-                        if (this.app.selectedContent[s].id === value[v]){
-                            selectedContent.push(this.app.selectedContent[s]);
-                            break;
-                }
-                    }
-                }
-                for (var s=0; s < this.app.selectedContent.length; s++){
-                    if (!Ext.Array.contains(selectedContent,this.app.selectedContent[s])){
-                        selectedContent.push(this.app.selectedContent[s]);
-                    }
+
+                for( var i = 0 ; i < value.length ; i++){
+                    selectedContent.push({
+                        type: "level",
+                        id : value[i]
+                    });
                 }
             }else if(key === "search"){
                 if(!Ext.isEmpty(value)){
