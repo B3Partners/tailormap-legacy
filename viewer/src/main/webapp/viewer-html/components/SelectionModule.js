@@ -914,7 +914,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     // On nodeDrop is executed when node is dropped on other node in tree
                     onNodeDrop: function(targetNode, dragZone, e, data) {
                         // We are in the selection tree && target and dragged node are both in same tree
-                        if(treeType === 'selection' && targetNode.offsetParent === data.item.offsetParent) {
+                        if(treeType === 'selection' && targetNode.offsetParent) {
 
                             var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
                             // Check where the element is dropped
@@ -1763,7 +1763,6 @@ Ext.define ("viewer.components.SelectionModule",{
 
     removeNodes: function(records) {
         var me = this;
-        var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
         Ext.Array.each(records, function(record) {
             var nodeType = me.getNodeType(record);
             var recordOrigData = me.getOrigData(record);
@@ -1781,7 +1780,10 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.removeLayer(recordOrigData.id, null);
                 me.removeService(recordOrigData.userService);
             }
-            rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
+
+            var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
+            var parent = rootNode.findChild('id', record.get('id'), true).parentNode;
+            parent.removeChild(rootNode.findChild('id', record.get('id'), true));
         });
     },
 
