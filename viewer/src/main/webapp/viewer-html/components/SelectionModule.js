@@ -1782,7 +1782,11 @@ Ext.define ("viewer.components.SelectionModule",{
             }
 
             var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
-            var parent = rootNode.findChild('id', record.get('id'), true).parentNode;
+            var node = rootNode.findChild('id', record.get('id'), true);
+            var parent = rootNode;
+            if(node){
+                parent = node.parentNode;
+            }
             parent.removeChild(rootNode.findChild('id', record.get('id'), true));
         });
     },
