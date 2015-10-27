@@ -923,7 +923,21 @@ Ext.define ("viewer.components.SelectionModule",{
                             // If dropped at the top 50% of the element, append above
                             // else append below
                             var halfWay = bounds.top + (bounds.height / 2);
-                            me.moveNodesToPosition(data, dropY >= halfWay);
+                            console.log("target",targetRecord);
+                            // insertNode: function(parentNode, insertNode) {
+                            //me.insertTreeNode(data.records[0], targetRecord,true);
+                            var shouldAdd = true;
+                            if(shouldAdd){
+                                var targetIsLevel = targetRecord.data.type === "maplevel";
+                                var nodeIsLayer = data.records[0].data.type === "appLayer";
+                                if(nodeIsLayer && targetIsLevel){
+                                   me.addLayerToLevel(targetRecord, data.records);
+                                    //me.handleDrag(treeType, data,targetRecord);
+                                }
+                            }else{
+                                me.moveNodesToPosition(data, dropY >= halfWay);
+                            }
+
                             return true;
                         }
                         me.handleDrag(treeType, data);
@@ -969,6 +983,17 @@ Ext.define ("viewer.components.SelectionModule",{
         treeStore.getProxy().extraParams = {};
     },
 
+    addLayerToLevel : function(levelNode, layerNodes){
+        var level = this.levels[levelNode.data.origData.id];
+        for( var i = 0 ; i < layerNodes.length; i++){
+            var layer = layerNodes[i];
+            this.removeNodes(layer);
+            var layerObj = layer.data.origData;
+            level.layers.push(layerObj.id);
+            this.insertNode(levelNode, layer);
+        }
+    },
+    
     filterNodes: function(tree, textvalue) {
         var me = this;
         var rootNode = tree.getRootNode();
@@ -1776,6 +1801,22 @@ Ext.define ("viewer.components.SelectionModule",{
                 selectedContent.push(content);
             }
         });
+
+        var levels = [];
+        Ext.Object.each(me.levels, function(key,level) {
+            var layers = []
+            if(level.layers){
+                Ext.Array.each(level.layers, function(layer) {
+                    if(layer !== layerid){
+                        layers.push(layer);
+                    }
+                });
+                level.layers = layers;
+            }
+            levels[key] = level;
+        });
+
+        me.levels = levels;
         me.selectedContent = selectedContent;
         me.addedLayers = addedLayers;
     },
