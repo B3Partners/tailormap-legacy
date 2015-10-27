@@ -933,6 +933,8 @@ Ext.define ("viewer.components.SelectionModule",{
                                 if(nodeIsLayer && targetIsLevel){
                                    me.addLayerToLevel(targetRecord, data.records);
                                     //me.handleDrag(treeType, data,targetRecord);
+                                }else if(!nodeIsLayer && targetIsLevel){
+                                    me.addLevelToLevel(targetRecord, data.records);
                                 }
                             }else{
                                 me.moveNodesToPosition(data, dropY >= halfWay);
@@ -991,6 +993,21 @@ Ext.define ("viewer.components.SelectionModule",{
             var layerObj = layer.data.origData;
             level.layers.push(layerObj.id);
             this.insertNode(levelNode, layer);
+        }
+    },
+
+    addLevelToLevel: function (targetLevelNode, levelNodesToAdd) {
+        var targetLevel = this.levels[targetLevelNode.data.origData.id];
+
+        for (var i = 0; i < levelNodesToAdd.length; i++) {
+            var level = levelNodesToAdd[i];
+            this.removeNodes(level);
+            var levelObj = level.data.origData;
+            if(!targetLevel.children){
+                targetLevel.children = [];
+            }
+            targetLevel.children.push(levelObj.id);
+            this.insertNode(targetLevelNode, level);
         }
     },
     
