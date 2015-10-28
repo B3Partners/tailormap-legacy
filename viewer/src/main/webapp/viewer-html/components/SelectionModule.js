@@ -917,9 +917,11 @@ Ext.define ("viewer.components.SelectionModule",{
                     // On nodeDrop is executed when node is dropped on other node in tree
                     onNodeDrop: function(targetNode, dragZone, e, data) {
                         // We are in the selection tree && target and dragged node are both in same tree
-                        if(treeType === 'selection' && targetNode.offsetParent) {
+                        var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
+                        var targetIsLevel = targetRecord.data.type === "maplevel";
+                        var nodeIsLayer = data.records[0].data.type === "appLayer";
+                        if (treeType === 'selection' && targetNode.offsetParent) {
 
-                            var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
                             // Check where the element is dropped
                             var bounds = targetNode.getBoundingClientRect();
                             var dropY = e.getY();
@@ -931,8 +933,6 @@ Ext.define ("viewer.components.SelectionModule",{
                             //me.insertTreeNode(data.records[0], targetRecord,true);
                             var shouldAdd = true;
                             if(shouldAdd){
-                                var targetIsLevel = targetRecord.data.type === "maplevel";
-                                var nodeIsLayer = data.records[0].data.type === "appLayer";
                                 if(nodeIsLayer && targetIsLevel){
                                    me.addLayerToLevel(targetRecord, data.records);
                                     //me.handleDrag(treeType, data,targetRecord);
@@ -992,11 +992,10 @@ Ext.define ("viewer.components.SelectionModule",{
         var level = this.levels[levelNode.data.origData.id];
         for( var i = 0 ; i < layerNodes.length; i++){
             var layer = layerNodes[i];
-            this.addToSelection(level);
-           /*this.removeNodes(layer);
+            this.removeNodes(layer);
+            this.addToSelection(layer, levelNode);
             var layerObj = layer.data.origData;
             level.layers.push(layerObj.id);
-            this.insertNode(levelNode, layer);*/
         }
     },
 
@@ -1004,14 +1003,13 @@ Ext.define ("viewer.components.SelectionModule",{
         var targetLevel = this.levels[targetLevelNode.data.origData.id];
         for (var i = 0; i < levelNodesToAdd.length; i++) {
             var level = levelNodesToAdd[i];
+            this.removeNodes(level);
             this.addToSelection(level,targetLevelNode);
-            /*this.removeNodes(level);*/
             var levelObj = level.data.origData;
             if(!targetLevel.children){
                 targetLevel.children = [];
             }
             targetLevel.children.push(levelObj.id);
-           /* this.insertNode(targetLevelNode, level);*/
         }
     },
     
@@ -1656,10 +1654,12 @@ Ext.define ("viewer.components.SelectionModule",{
                 serviceId: serviceId,
                 status: 'new'
             });
-            me.selectedContent.push({
-                id: recordOrigData.id,
-                type: 'appLayer'
-            });
+            if(!parent){
+                me.selectedContent.push({
+                    id: recordOrigData.id,
+                    type: 'appLayer'
+                });
+            }
         }
         else if(nodeType === "maplevel") {
             // Added from application
