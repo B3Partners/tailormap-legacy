@@ -920,6 +920,10 @@ Ext.define ("viewer.components.SelectionModule",{
                         var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
                         var targetIsLevel = targetRecord.data.type === "maplevel";
                         var nodeIsLayer = data.records[0].data.type === "appLayer";
+                        var treeOfTarget = targetRecord.getOwnerTree();
+                        var treeOfNode = data.records[0].getOwnerTree();
+
+                        var shouldAdd = true;
                         if (treeType === 'selection' && targetNode.offsetParent) {
 
                             // Check where the element is dropped
@@ -928,24 +932,28 @@ Ext.define ("viewer.components.SelectionModule",{
                             // If dropped at the top 50% of the element, append above
                             // else append below
                             var halfWay = bounds.top + (bounds.height / 2);
-                            console.log("target",targetRecord);
-                            // insertNode: function(parentNode, insertNode) {
-                            //me.insertTreeNode(data.records[0], targetRecord,true);
-                            var shouldAdd = true;
-                            if(shouldAdd){
-                                if(nodeIsLayer && targetIsLevel){
-                                   me.addLayerToLevel(targetRecord, data.records);
-                                    //me.handleDrag(treeType, data,targetRecord);
-                                }else if(!nodeIsLayer && targetIsLevel){
-                                    me.addLevelToLevel(targetRecord, data.records);
-                                }
-                            }else{
-                                me.moveNodesToPosition(data, dropY >= halfWay);
-                            }
-
-                            return true;
+                            // Compute shouldAdd. Should be false when dragging meant the node should be reordered.
                         }
-                        me.handleDrag(treeType, data);
+                        if(me.treePanels.selectionTree.treePanel !== treeOfTarget){
+                            me.removeNodes(data.records);
+                        }else if (shouldAdd) {
+                           /* if(treeOfTarget !== treeOfNode){
+                                // Node is coming from another tree, so it should be added
+                                me.addToSelection(data.records[0], targetRecord);
+                            }else */if (nodeIsLayer && targetIsLevel) {
+                                me.addLayerToLevel(targetRecord, data.records);
+                                //me.handleDrag(treeType, data,targetRecord);
+                            } else if (!nodeIsLayer && targetIsLevel) {
+                                me.addLevelToLevel(targetRecord, data.records);
+                            }else if( targetNode.id === "root"){
+                                 me.removeNodes(data.records);
+                                 //me.addNodes(data.records);
+                                //me.addToSelection(data.records[0]);
+                               me.addNodes(data.records);
+                            }
+                        } else {
+                            me.moveNodesToPosition(data, dropY >= halfWay);
+                        }
                         return true;
                     }
                 }
@@ -1831,7 +1839,7 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         });
 
-        var levels = [];
+        var levels = {};
         Ext.Object.each(me.levels, function(key,level) {
             var layers = []
             if(level.layers){
