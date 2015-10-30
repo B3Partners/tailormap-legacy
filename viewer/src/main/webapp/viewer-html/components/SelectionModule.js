@@ -129,8 +129,6 @@ Ext.define ("viewer.components.SelectionModule",{
             conf.selectOwnServices = true;
         } if(Ext.isEmpty(conf.selectCsw)){
             conf.selectCsw = true;
-        } if(Ext.isEmpty(conf.showWhenOnlyBackground)){
-            conf.showWhenOnlyBackground = true;
         } if(Ext.isEmpty(conf.alwaysShow)){
             conf.alwaysShow = false;
         } if(Ext.isEmpty(conf.showBackgroundLevels)){
@@ -143,15 +141,24 @@ Ext.define ("viewer.components.SelectionModule",{
         // if there is no selected content, show selection module
         var me = this;
         this.menus = Ext.create("viewer.components.SelectionModuleMenu",{selectionModule:this});
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,function(){
-            if(this.config.viewerController.app.selectedContent.length == 0 ){
+
+        var autoShowSelectionModule = 'nolayers';
+        if(conf.showWhenOnlyBackground) { // Support for legacy config option
+            autoShowSelectionModule = 'onlybackground';
+        }
+        if(typeof conf.autoShowSelectionModule !== "undefined") {
+            autoShowSelectionModule = conf.autoShowSelectionModule;
+        }
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,function() {
+            if(
+                (autoShowSelectionModule === 'nolayers' && this.config.viewerController.app.selectedContent.length === 0) ||
+                (autoShowSelectionModule === 'onlybackground' && this.selectedContentHasOnlyBackgroundLayers()) ||
+                (autoShowSelectionModule === 'always')
+            ) {
                 me.openWindow();
-            }else{
-                if(this.config.showWhenOnlyBackground && this.selectedContentHasOnlyBackgroundLayers()){
-                    me.openWindow();
-                }
             }
         },this);
+
         return this;
     },
     renderButton: function() {
