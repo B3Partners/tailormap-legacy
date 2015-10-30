@@ -901,88 +901,60 @@ Ext.define ("viewer.components.SelectionModule",{
         return {
             plugins: {
                 ptype: 'treeviewdragdrop',
-                appendOnly: true,
+                appendOnly: false,
                 allowContainerDrops: true,
                 allowParentInserts: true,
-                sortOnDrop: true,
-                dropZone: {
-                    // We always allow dragging over node
-                    onNodeOver: function(node, dragZone, e, data) {
-                        // If we find 1 allowed record we allow the drop (invalid ones will be filtered out)
-                        if(me.nodesAddAllowed(data.records)) {
-                            return Ext.dd.DropZone.prototype.dropAllowed;
-                        }
-                        return Ext.dd.DropZone.prototype.dropNotAllowed;
-                    },
-                    onContainerOver: function(dd, e, data) {
-                        // If we find 1 allowed record we allow the drop (invalid ones will be filtered out)
-                        if(me.nodesAddAllowed(data.records)) {
-                            return Ext.dd.DropZone.prototype.dropAllowed;
-                        }
-                        return Ext.dd.DropZone.prototype.dropNotAllowed;
-                    },
-                    // On nodeDrop is executed when node is dropped on other node in tree
-                    onNodeDrop: function(targetNode, dragZone, e, data) {
-                        // We are in the selection tree && target and dragged node are both in same tree
-                        var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
-                        var targetIsLevel = targetRecord.data.type === "maplevel";
-                        var nodeIsLayer = data.records[0].data.type === "appLayer";
-                        var treeOfTarget = targetRecord.getOwnerTree();
-                        var treeOfNode = data.records[0].getOwnerTree();
+                sortOnDrop: true
+            },
+            listeners: {
+                beforedrop: function(targetNode, data, overModel, dropPosition, dropHandlers, eOpts) {
+                    // We cancel the drop so we can follow our own logic for moving nodes
+                    dropHandlers.cancelDrop();
+                    var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
+                    var targetIsLevel = targetRecord.data.type === "maplevel";
+                    var nodeIsLayer = data.records[0].data.type === "appLayer";
+                    var treeOfTarget = targetRecord.getOwnerTree();
+                    var treeOfNode = data.records[0].getOwnerTree();
 
-                        var shouldAdd = true;
-                        if (treeType === 'selection' && targetNode.offsetParent) {
-
-                            // Check where the element is dropped
-                            var bounds = targetNode.getBoundingClientRect();
-                            var dropY = e.getY();
-                            // If dropped at the top 50% of the element, append above
-                            // else append below
-                            var halfWay = bounds.top + (bounds.height / 2);
-                            // Compute shouldAdd. Should be false when dragging meant the node should be reordered.
-                        }
-                        if (me.treePanels.selectionTree.treePanel !== treeOfTarget) {
-                            me.removeNodes(data.records);
-                        } else if (shouldAdd) {
-                            if (nodeIsLayer && targetIsLevel) {
+                    if (treeType === 'collection') {
+                        // Dragged to collection panels (left side), so remove items
+                        me.removeNodes(data.records);
+                    }
+                    else if (treeType === 'selection' && treeOfTarget.treePanelType !== 'selectionTree') {
+                        // Dragged to selection panel (right side) from panel on the left, so add items
+                        me.addNodes(data.records);
+                    }
+                    else {
+                        var movedOutOfNode = targetRecord.parentNode !== data.records[0].parentNode;
+                        // Dragged inside the selection panel (reordering, appending)
+                        if (dropPosition === 'append' || movedOutOfNode) {
+                            if(movedOutOfNode && dropPosition !== 'append') {
+                                // Node is moved out of a parent node and positioned before / after other node
+                                // New parent is the parent of the node after/before the node is dragged
+                                targetNode = targetRecord.parentNode;
+                                targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
+                                targetIsLevel = targetRecord.data.type === "maplevel";
+                            }
+                            if (targetNode.id === "root") {
+                                me.removeNodes(data.records);
+                                me.addNodes(data.records);
+                            } else if (nodeIsLayer && targetIsLevel) {
                                 me.addLayerToLevel(targetRecord, data.records);
                             } else if (!nodeIsLayer && targetIsLevel) {
                                 me.addLevelToLevel(targetRecord, data.records, treeOfNode !== me.treePanels.selectionTree.treePanel);
-                            } else if (targetNode.id === "root") {
-                                me.removeNodes(data.records);
-                                me.addNodes(data.records);
+                            }
+                            if(dropPosition !== 'append') {
+                                // Node was moved out of its parent and positioned between/after other node
+                                me.moveNodesToPosition(data, dropPosition === 'after');
                             }
                         } else {
-                            me.moveNodesToPosition(data, dropY >= halfWay);
+                            me.moveNodesToPosition(data, dropPosition === 'after');
                         }
-                        return true;
                     }
-                }
-            },
-            listeners: {
-                // beforedrop is executed when node is dropped on container (so not on another node but on 'empty' space'
-                beforedrop: function(node, data, overModel, dropPosition, dropHandlers, eOpts) {
-                    // We cancel the drop (do not append the actual layers because we still need some validation)
-                    dropHandlers.cancelDrop();
-                    // Add/remove layers
-                    me.handleDrag(treeType, data);
+                    return true;
                 }
             }  
         };
-    },
-    
-    /**
-     * Add/Remove layers after drag
-     */
-    handleDrag: function(treeType, data) {
-        if(treeType === 'collection') {
-            // Manually remove all layers which we dragged to other tree
-            this.removeNodes(data.records);
-        }
-        if(treeType === 'selection') {
-            // Manually move all layers which we dragged to other tree
-            this.addNodes(data.records);
-        }
     },
 
     filterRemote: function(tree, textvalue) {
@@ -1645,6 +1617,7 @@ Ext.define ("viewer.components.SelectionModule",{
             return;
         }
         var objData = record.data;
+        var addChildren = [];
         if(nodeType === "appLayer") {
             var serviceId = null;
             if(Ext.isDefined(recordOrigData.userService)){
@@ -1712,7 +1685,7 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         }
         if(objData !== null) {
-            rootNode.appendChild(objData);
+            this.insertNode(rootNode, objData);
         }
     },
     
@@ -1784,6 +1757,9 @@ Ext.define ("viewer.components.SelectionModule",{
         Ext.Array.each(records, function(record) {
             var nodeType = me.getNodeType(record);
             var recordOrigData = me.getOrigData(record);
+            if(recordOrigData === null) {
+                return;
+            }
             if(recordOrigData.service == null) {
                 // Own service
                 me.removeLayer(recordOrigData.id, null);
