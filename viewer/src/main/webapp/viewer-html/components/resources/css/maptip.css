@@ -67,33 +67,38 @@
 .infoBalloon.minimized .balloonContent * {
     display: none;
 }
-.infoBalloon.minimized .balloonContent .balloonButton {
+.infoBalloon.minimized .featureInfos .balloonButton {
     display: block;
 }
-.infoBalloon .balloonContent .balloonButton.x-tool-close {
+.infoBalloon .featureInfos .balloonButton.x-tool-close {
     right: 12px;
 }
-.infoBalloon.minimized .balloonContent .balloonButton.x-tool-close {
+.infoBalloon.minimized .featureInfos .balloonButton.x-tool-close {
     right: 3px;
 }
-.infoBalloon .balloonContent .balloonButton.x-tool-minimize {
+.infoBalloon .featureInfos .balloonButton.x-tool-minimize {
     right: 32px;
 }
-.infoBalloon .balloonContent .balloonButton.x-tool-maximize {
+.infoBalloon .featureInfos .balloonButton.x-tool-maximize {
     right: 24px;
 }
-.infoBalloon .balloonContent .x-tool-img {
+.infoBalloon .featureInfos .x-tool-img {
     opacity: 1;
 }
 .balloonButton{
     position: absolute;
     cursor: pointer;
 }
+
+.featureInfos{
+    width: 100%;
+    height: 100%;
+}
+
 /*** Features (feature info and maptip) css ***/
 .feature_summary_feature{
     float: left;
     width: 100%;
-    height: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
     border-bottom: 1px solid #D7D7D7;

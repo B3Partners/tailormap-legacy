@@ -718,7 +718,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.balloonHeight=300;
     this.balloonCornerSize=20;
     this.balloonArrowHeight=20;
-    this.balloonContent=null;
+    this.balloonContent = null;
+    this.balloonContentWrapper = null;
     this.mouseIsOverElement=new Object();
     this.maptipId=0;
     this.closeOnMouseOut=true;
@@ -776,6 +777,9 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+(2*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
         this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+(3*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
 
+        this.balloonContentWrapper = new Ext.Element(document.createElement("div"));
+        this.balloonContentWrapper.addCls('featureInfos');
+
         //content
         var balloonContentEl = document.createElement("div");
         //balloonContentEl.innerHTML=
@@ -792,7 +796,9 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloonContent.on("mouseout",function(){
             this.onMouseOut('balloonContent');
         },this);
-        this.balloon.appendChild(this.balloonContent);
+
+        this.balloonContentWrapper.appendChild(this.balloonContent);
+        this.balloon.appendChild(this.balloonContentWrapper);
 
         this.x=x;
         this.y=y;
@@ -808,7 +814,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      * Adds the close and minimize buttons to the balloon
      */
     this._appendButtons = function() {
-        if(!this.showCloseButton || this.balloonContent.query('.balloonButton').length === 2){
+        if (!this.showCloseButton || this.balloonContentWrapper.query('.balloonButton').length === 2) {
             return;
         }
         var thisObj = this;
@@ -820,7 +826,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         closeButton.addListener("click",function(){
             thisObj.close();
         });
-        this.balloonContent.appendChild(closeButton);
+        this.balloonContentWrapper.insertFirst(closeButton);
 
         var minMaximizeButton = new Ext.Element(document.createElement("div"));
         minMaximizeButton.addCls("x-tool-img x-tool-minimize balloonButton");
@@ -835,7 +841,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
                 minMaximizeButton.addCls('x-tool-minimize').removeCls('x-tool-maximize');
             }
         });
-        this.balloonContent.appendChild(minMaximizeButton);
+        this.balloonContentWrapper.insertFirst(minMaximizeButton);
     };
 
     /**
