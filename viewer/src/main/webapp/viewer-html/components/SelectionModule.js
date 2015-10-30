@@ -934,22 +934,16 @@ Ext.define ("viewer.components.SelectionModule",{
                             var halfWay = bounds.top + (bounds.height / 2);
                             // Compute shouldAdd. Should be false when dragging meant the node should be reordered.
                         }
-                        if(me.treePanels.selectionTree.treePanel !== treeOfTarget){
+                        if (me.treePanels.selectionTree.treePanel !== treeOfTarget) {
                             me.removeNodes(data.records);
-                        }else if (shouldAdd) {
-                           /* if(treeOfTarget !== treeOfNode){
-                                // Node is coming from another tree, so it should be added
-                                me.addToSelection(data.records[0], targetRecord);
-                            }else */if (nodeIsLayer && targetIsLevel) {
+                        } else if (shouldAdd) {
+                            if (nodeIsLayer && targetIsLevel) {
                                 me.addLayerToLevel(targetRecord, data.records);
-                                //me.handleDrag(treeType, data,targetRecord);
                             } else if (!nodeIsLayer && targetIsLevel) {
-                                me.addLevelToLevel(targetRecord, data.records);
-                            }else if( targetNode.id === "root"){
-                                 me.removeNodes(data.records);
-                                 //me.addNodes(data.records);
-                                //me.addToSelection(data.records[0]);
-                               me.addNodes(data.records);
+                                me.addLevelToLevel(targetRecord, data.records, treeOfNode !== me.treePanels.selectionTree.treePanel);
+                            } else if (targetNode.id === "root") {
+                                me.removeNodes(data.records);
+                                me.addNodes(data.records);
                             }
                         } else {
                             me.moveNodesToPosition(data, dropY >= halfWay);
@@ -1007,7 +1001,10 @@ Ext.define ("viewer.components.SelectionModule",{
         }
     },
 
-    addLevelToLevel: function (targetLevelNode, levelNodesToAdd) {
+    addLevelToLevel: function (targetLevelNode, levelNodesToAdd, useOriginalLevel) {
+        if(useOriginalLevel){
+            this.levels[targetLevelNode.data.origData.id] = this.originalLevels[targetLevelNode.data.origData.id];
+        }
         var targetLevel = this.levels[targetLevelNode.data.origData.id];
         for (var i = 0; i < levelNodesToAdd.length; i++) {
             var level = levelNodesToAdd[i];
