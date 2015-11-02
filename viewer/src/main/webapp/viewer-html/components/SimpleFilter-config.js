@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 B3Partners B.V.
+ * Copyright (C) 2012-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     currentEditIndex: null,
 
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        var title = config && config.title ? config.title : "";
+    constructor: function (parentid, config) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid, config);
 
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
@@ -68,6 +67,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             layout: 'vbox',
             renderTo: Ext.get(parentid),
             items: [{
+                xtype: 'textfield',
+                fieldLabel: 'Titel',
+                name: 'title',
+                id: 'title',
+                value: this.configObject.title ? this.configObject.title : "",
+                labelWidth: me.labelWidth,
+                width: 500
+            }, {
                 xtype: 'panel',
                 width: '100%',
                 padding: '5 5 15 0',
@@ -334,6 +341,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             this.filterStore.insert(oldIndex,{soort: soortString, description: description, id:filterControl.config.id});
             this.resetConfig(true);
         }
+        var t = Ext.getCmp("title").getValue();
+        this.configObject.title = t;
     },
     removeConfig : function( id ){
         for (var i = 0; i < this.filterConfigs.length; i++) {
@@ -393,6 +402,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 filter.appLayerId = index;
             }
         });
+        config.title = this.configObject.title;
         return config;
     },
 
