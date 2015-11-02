@@ -408,7 +408,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     createLayerStore: function() {
         var store = Ext.create("Ext.data.Store", {
-            fields: ["id", "serviceId", "layerName", "alias"]
+            fields: [{name: "id", type: 'int'}, "serviceId", "layerName", "alias"]
         });
 
         Ext.Object.each(appConfig.appLayers, function(id, appLayer) {
