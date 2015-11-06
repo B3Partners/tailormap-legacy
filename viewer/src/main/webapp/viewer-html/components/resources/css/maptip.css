@@ -38,6 +38,11 @@
     right: 0px;
     bottom: 0px;
 }
+.balloonContentWrapper {
+    height: 100%;
+    overflow: auto;
+    position: absolute;
+}
 /*Balloon Content*/
 .balloonContent{
     position: absolute;
@@ -93,7 +98,6 @@
 .feature_summary_feature{
     float: left;
     width: 100%;
-    height: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
     border-bottom: 1px solid #D7D7D7;

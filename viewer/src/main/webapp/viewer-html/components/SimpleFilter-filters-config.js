@@ -36,7 +36,7 @@ Ext.define("viewer.components.sf.Config", {
             items: items
         });
 
-        Ext.getCmp(config.renderTo).items.add(this.form);
+        Ext.ComponentQuery.query(config.renderTo)[0].add(this.form);
     },
     getFormItems: function () {
         var items = [{

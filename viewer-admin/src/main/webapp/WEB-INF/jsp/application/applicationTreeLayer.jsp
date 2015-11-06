@@ -219,6 +219,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <a href="#Context_Info_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <stripes:textarea cols="150" rows="5" name="details['context']" id="context_textarea" style="display: none;" />
                     <div id="contextHtmlEditorContainer" style="width: 475px; height: 400px;"></div>
+                    (Metadata)url: <stripes:text name="details['metadataurl']" style="width: 390px;"/>
                 </div>
             </div>
             <script type="text/javascript">
