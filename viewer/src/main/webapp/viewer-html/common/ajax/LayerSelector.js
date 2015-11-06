@@ -193,6 +193,13 @@ Ext.define ("viewer.components.LayerSelector",{
         this.combobox.setValue(appLayer);
     },
     /**
+     * Gets the store for the LayerSelector
+     * @returns Ext.data.Store
+     */
+    getStore: function() {
+        return this.combobox.getStore();
+    },
+    /**
      * Get the number of visible layers in the LayerSelector
      * @returns int
      */

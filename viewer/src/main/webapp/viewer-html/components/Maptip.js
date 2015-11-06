@@ -259,7 +259,7 @@ Ext.define ("viewer.components.Maptip",{
             if (data==null || data =="null" || data==undefined){
                 return;
             }
-            components = this.createInfoHtmlElements(data);
+            components = this.createInfoHtmlElements(data, options);
             if (!Ext.isEmpty(components)){
                 var x= options.x;
                 var y= options.y;
@@ -274,7 +274,7 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * create info elements for the balloon.
      */
-    createInfoHtmlElements: function (data){
+    createInfoHtmlElements: function (data, options){
         var me = this;
         var components=[];
         for (var layerIndex = 0 ; layerIndex < data.length ;layerIndex ++ ){
@@ -354,19 +354,7 @@ Ext.define ("viewer.components.Maptip",{
                                 // looking at an unspecified appLayer, skip adding the link
                                 continue;
                             }
-                            var a = document.createElement("a");
-                            a.href = 'javascript: void(0)';
-                            a.feature = feature;
-                            a.entry = entry;
-                            a.appLayer = appLayer;
-                            var detailLink = new Ext.Element(a);
-                            detailLink.addListener("click",
-                                    function (evt, el, o) {
-                                        el.entry.callback.call(el.entry.component, el.feature, el.appLayer);
-                                    },
-                                    this);
-                            detailLink.insertHtml("beforeEnd", entry.label);
-                            extraDiv.appendChild(detailLink);
+                            extraDiv.appendChild(this.createCallbackLink(entry, feature, appLayer, options.coord));
                         }
                         leftColumnDiv.insertFirst(extraDiv);
                     }
@@ -667,6 +655,17 @@ Ext.define ("viewer.components.Maptip",{
     },
     getExtComponents: function() {
         return [];
+    },
+    createCallbackLink: function(entry, feature, appLayer, coords) {
+        var callbackLink = document.createElement("a");
+        callbackLink.href = '#edit-feature';
+        callbackLink.innerHTML = entry.label;
+        callbackLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            entry.callback.call(entry.compponent, feature, appLayer, coords);
+        });
+        return callbackLink;
     },
     /**
      * Register the calling component for doing something extra called by a link.

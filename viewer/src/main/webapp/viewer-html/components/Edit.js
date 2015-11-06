@@ -32,6 +32,9 @@ Ext.define("viewer.components.Edit", {
     geometryEditable: null,
     deActivatedTools: [],
     schema:null,
+    editLinkInFeatureInfoCreated: false,
+    afterLoadAttributes: null,
+    filterFeature: null,
     config: {
         title: "",
         iconUrl: "",
@@ -41,7 +44,8 @@ Ext.define("viewer.components.Edit", {
         allowDelete: false,
         allowCopy: false,
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
-        formLayout: 'anchor'
+        formLayout: 'anchor',
+        showEditLinkInFeatureInfo: true
     },
     constructor: function (conf) {
         viewer.components.Edit.superclass.constructor.call(this, conf);
@@ -121,6 +125,9 @@ Ext.define("viewer.components.Edit", {
         this.popup.popupWin.setTitle(this.config.title);
         this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
+        this.popup.popupWin.addListener('hide', function() {
+            this.cancel();
+        }.bind(this));
     },
     loadWindow: function () {
         var me = this;
@@ -276,8 +283,49 @@ Ext.define("viewer.components.Edit", {
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
+        if(this.config.showEditLinkInFeatureInfo) {
+            this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.createFeatureInfoLink, this);
+        }
     },
-    layerChanged: function (appLayer, previousAppLayer, scope, afterLoadAttributes) {
+    createFeatureInfoLink: function(store) {
+        if(this.editLinkInFeatureInfoCreated) {
+            return;
+        }
+        var infoComponents = this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
+        var appLayers = [];
+        store.each(function(record) {
+            appLayers.push(this.viewerController.getAppLayerById(record.get('layerId')));
+        }, this);
+        for (var i = 0; i < infoComponents.length; i++) {
+            infoComponents[i].registerExtraLink(
+                this,
+                function (feature, appLayer, coords) {
+                    this.handleFeatureInfoLink(feature, appLayer, coords);
+                }.bind(this),
+                this.config.title || 'Edit',
+                appLayers
+            );
+        }
+        this.editLinkInFeatureInfoCreated = true;
+    },
+    handleFeatureInfoLink: function(feature, appLayer, coords) {
+        // Show the window
+        this.showWindow();
+        // Add event handler to get features for coordinates
+        this.afterLoadAttributes = function() {
+            this.afterLoadAttributes = null;
+            this.filterFeature = feature;
+            this.mode = "edit";
+            this.getFeaturesForCoords(coords);
+        };
+        // Find and select layerselector record
+        this.layerSelector.getStore().each(function(record) {
+            if(parseInt(record.get('layerId'), 10) === parseInt(appLayer.id, 10)) {
+                this.layerSelector.setValue(record);
+            }
+        }, this);
+    },
+    layerChanged: function (appLayer) {
         if (appLayer != null) {
             this.vectorLayer.removeAllFeatures();
             this.mode = null;
@@ -287,37 +335,28 @@ Ext.define("viewer.components.Edit", {
             }
             this.inputContainer.setLoading("Laadt attributen...");
             this.inputContainer.removeAll();
-            this.loadAttributes(appLayer, previousAppLayer, scope, afterLoadAttributes);
+            this.loadAttributes(appLayer);
             this.inputContainer.setLoading(false);
         } else {
             this.cancel();
         }
     },
-    loadAttributes: function (appLayer, previousAppLayer, scope, afterLoadAttributes) {
+    loadAttributes: function (appLayer) {
         this.appLayer = appLayer;
-
         var me = this;
-        if (scope == undefined) {
-            scope = me;
-        }
         if (this.appLayer != null) {
-
             this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
-
             // check if featuretype was loaded
             if (this.appLayer.attributes == undefined) {
                 this.featureService.loadAttributes(me.appLayer, function (attributes) {
                     me.initAttributeInputs(me.appLayer);
-                    if (afterLoadAttributes) {
-                        afterLoadAttributes.call(scope);
-                    }
                 });
             } else {
                 this.initAttributeInputs(me.appLayer);
-                if (afterLoadAttributes) {
-                    afterLoadAttributes.call(scope);
-                }
             }
+        }
+        if(this.afterLoadAttributes !== null) {
+            this.afterLoadAttributes.call(this);
         }
     },
     initAttributeInputs: function (appLayer) {
@@ -557,27 +596,40 @@ Ext.define("viewer.components.Edit", {
         this.deactivateMapClick();
         Ext.get(this.getContentDiv()).mask("Haalt features op...");
         var coords = comp.coord;
-        var x = coords.x;
-        var y = coords.y;
-
+        this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
+        this.getFeaturesForCoords(coords);
+    },
+    getFeaturesForCoords: function(coords) {
         var layer = this.layerSelector.getValue();
-        this.config.viewerController.mapComponent.getMap().setMarker("edit", x, y);
         var featureInfo = Ext.create("viewer.FeatureInfo", {
             viewerController: this.config.viewerController
         });
         var me = this;
-        featureInfo.editFeatureInfo(x, y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
+        featureInfo.editFeatureInfo(coords.x, coords.y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
             me.featuresReceived(features);
         }, function (msg) {
             me.failed(msg);
         });
     },
     featuresReceived: function (features) {
-        if (features.length == 1) {
+        if (features.length === 0) {
+            this.handleFeature(null);
+            return;
+        }
+        // A feature filter has been set, filter the right feature from the result set
+        if(this.filterFeature !== null) {
+            for(var i = 0; i < features.length; i++) {
+                if(features[i].__fid === this.filterFeature.__fid) {
+                    this.handleFeature(this.indexFeatureToNamedFeature(features[i]));
+                    this.filterFeature = null; // Remove filter after first use
+                    return;
+                }
+            }
+            // Filtered Feature is not found
+        }
+        if (features.length === 1) {
             var feat = this.indexFeatureToNamedFeature(features[0]);
             this.handleFeature(feat);
-        } else if (features.length == 0) {
-            this.handleFeature(null);
         } else {
             // Handel meerdere features af.
             this.createFeaturesGrid(features);
