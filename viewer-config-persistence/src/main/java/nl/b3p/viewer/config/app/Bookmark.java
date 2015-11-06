@@ -48,7 +48,7 @@ public class Bookmark {
     
     private String createdBy;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY)
     private Application application;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">

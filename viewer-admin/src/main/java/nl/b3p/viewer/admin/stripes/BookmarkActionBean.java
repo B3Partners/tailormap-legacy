@@ -19,13 +19,16 @@ package nl.b3p.viewer.admin.stripes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.StreamingResolution;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Bookmark;
@@ -67,6 +70,9 @@ public class BookmarkActionBean implements ActionBean{
 
     @Validate
     private String dir;
+
+    @Validate
+    private Bookmark bookmark;
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
@@ -125,6 +131,14 @@ public class BookmarkActionBean implements ActionBean{
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
+
+    public Bookmark getBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(Bookmark bookmark) {
+        this.bookmark = bookmark;
+    }
     // </editor-fold>
 
 
@@ -136,6 +150,20 @@ public class BookmarkActionBean implements ActionBean{
     public Resolution viewEdit(){
         return new ForwardResolution(EDITJSP);
         
+    }
+
+    public Resolution deleteBookmark() throws JSONException{
+        
+        
+        try{
+            EntityManager em = Stripersist.getEntityManager();
+            em.remove(bookmark);
+            em.getTransaction().commit();
+            context.getMessages().add(new SimpleMessage("Verwijderen gelukt"));
+        }catch(Exception e ){
+            context.getValidationErrors().add("Verwijderen",new SimpleError("Verwijderen bookmark mislukt", e.getLocalizedMessage()));
+        }
+        return viewEdit();
     }
 
     public Resolution getGridData() throws JSONException {
@@ -163,8 +191,6 @@ public class BookmarkActionBean implements ActionBean{
                 }
             }
         }
-
-
         
          /*
          * Sorting is delivered by the frontend as two variables: sort which

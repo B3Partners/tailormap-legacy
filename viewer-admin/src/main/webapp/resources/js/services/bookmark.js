@@ -9,12 +9,12 @@ Ext.require([
     'Ext.toolbar.Paging'
 ]);
 
-Ext.onReady(function(){
+Ext.onReady(function () {
 
     Ext.define('TableRow', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'id', type: 'int' },
+            {name: 'id', type: 'int'},
             {name: 'application.name', type: 'string'},
             {name: 'createdAt', type: 'string'}
         ]
@@ -38,7 +38,7 @@ Ext.onReady(function(){
             simpleSortMode: true
         },
         listeners: {
-            load: function() {
+            load: function () {
                 // Fix to apply filters
                 Ext.getCmp('editGrid').doLayout();
             }
@@ -57,7 +57,7 @@ Ext.onReady(function(){
                 filter: {
                     xtype: 'textfield'
                 }
-            },{
+            }, {
                 id: 'createdAt',
                 text: "Datum",
                 dataIndex: 'createdAt',
@@ -65,7 +65,7 @@ Ext.onReady(function(){
                 filter: {
                     xtype: 'textfield'
                 }
-            },{
+            }, {
                 id: 'delete',
                 header: '',
                 dataIndex: 'id',
@@ -73,7 +73,7 @@ Ext.onReady(function(){
                 sortable: false,
                 hideable: false,
                 menuDisabled: true,
-                renderer: function(value, style, row) {
+                renderer: function (value, style, row) {
                     return Ext.String.format('<a href="#" onclick="return deleteBookmark({0});">Verwijderen</a>', value);
                 }
             }
@@ -95,6 +95,25 @@ Ext.onReady(function(){
 });
 
 
-function reloadGrid(){
-Ext.getCmp('editGrid').getStore().load();
+function reloadGrid() {
+    Ext.getCmp('editGrid').getStore().load();
+}
+
+function deleteBookmark(id) {
+    var appRecord = Ext.getCmp('editGrid').store.getById(id);
+    Ext.MessageBox.show({
+        title: "Bevestiging",
+        msg: "Weet u zeker dat u de bookmark voor applicatie " + appRecord.get("application.name") + " wilt verwijderen?",
+        buttons: Ext.MessageBox.OKCANCEL,
+        fn: function (btn) {
+            if (btn == 'ok') {
+                 Ext.get('editFrame').dom.src = deleteurl + '&bookmark=' + id;
+                //document.location.href = deleteurl + '&bookmark=' + id;
+                var gridCmp = Ext.getCmp('editGrid')
+                gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', id));
+            }
+        }
+    });
+
+    return false;
 }

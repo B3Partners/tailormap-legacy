@@ -40,12 +40,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="applicationWorkversion"/>
                     <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
                 </stripes:form>
-                <!--iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe-->
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
             </div>
 
             <script type="text/javascript">
                 var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="getGridData"/>';
-                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>';
+                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="deleteBookmark"/>';
                 var activelink = 'menu_bookmarks';
 
                 function removeActiveAppMenu() {
