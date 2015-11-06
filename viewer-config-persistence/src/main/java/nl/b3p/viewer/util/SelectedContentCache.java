@@ -69,7 +69,7 @@ public class SelectedContentCache {
             if (!validXmlTags) {
                 ClobElement el = new ClobElement(cached.toString());
                 app.getDetails().put(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT, el);
-                setApplicationCacheDirty(app, false, useExpanded);
+                setApplicationCacheDirty(app, false, useExpanded,em);
                 Stripersist.getEntityManager().getTransaction().commit();
             }
         } else {
@@ -408,14 +408,14 @@ public class SelectedContentCache {
         }
     }
 
-    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded) {
-        setApplicationCacheDirty(app, dirty, expanded, false);
+    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, EntityManager em) {
+        setApplicationCacheDirty(app, dirty, expanded, false,em);
     }
 
-    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, Boolean onlyThisApplication) {
+    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, Boolean onlyThisApplication, EntityManager em) {
         Set<Application> apps = new HashSet<Application>();
         if (dirty && !onlyThisApplication) {
-            apps = app.getRoot().findApplications();
+            apps = app.getRoot().findApplications(em);
         } else {
             apps.add(app);
         }

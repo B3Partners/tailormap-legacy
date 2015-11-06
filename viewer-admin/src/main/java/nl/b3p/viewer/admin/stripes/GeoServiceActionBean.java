@@ -506,12 +506,12 @@ public class GeoServiceActionBean implements ActionBean {
             ((WMSService)service).setOverrideUrl(overrideUrl);
             ((WMSService)service).setException_type(exception_type);
         }
-
+        EntityManager em = Stripersist.getEntityManager();
         // Invalidate the cache of the applications using this service. Options like username/password, useProxy, etc. might have changed, which
         // affect the selectedContent
         List<Application> apps = findApplications();
         for (Application application : apps) {
-            SelectedContentCache.setApplicationCacheDirty(application, true, false);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
         }
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
         service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement(""+useProxy));
@@ -624,7 +624,7 @@ public class GeoServiceActionBean implements ActionBean {
 
         List<Application> apps = findApplications();
         for (Application application : apps) {
-            SelectedContentCache.setApplicationCacheDirty(application, true, false);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
         }
 
         Stripersist.getEntityManager().getTransaction().commit();

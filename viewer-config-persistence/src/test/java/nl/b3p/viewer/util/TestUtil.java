@@ -16,9 +16,9 @@
  */
 package nl.b3p.viewer.util;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,6 +28,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
@@ -61,6 +62,7 @@ public abstract class TestUtil {
     public Level testLevel;
     public StartLayer testStartLayer;
     public StartLevel testStartLevel;
+    public ConfiguredComponent testComponent;
     public Application app;
 
     protected static List<Object> objectsToRemove = new ArrayList<Object>();
@@ -117,7 +119,7 @@ public abstract class TestUtil {
     public void stuffToRemove() {
         for (Object obj : objectsToRemove) {
             log.debug("Removing obj" + obj.toString());
-            if(entityManager.contains(obj)){
+            if (entityManager.contains(obj)) {
                 entityManager.remove(obj);
             }
         }
@@ -161,7 +163,7 @@ public abstract class TestUtil {
 
         Application app = entityManager.find(Application.class, applicationId);
         if( app == null) {
-            File f = new File(TestUtil.class.getResource("testdata.sql").toURI());
+            Reader f = new InputStreamReader(TestUtil.class.getResourceAsStream("testdata.sql"));
             executeScript(f);
 
             testdataLoaded = true;
@@ -171,14 +173,14 @@ public abstract class TestUtil {
 
     }
 
-    public void executeScript(File f) throws IOException, SQLException {
+    public void executeScript(Reader f) throws IOException, SQLException {
         Connection conn = null;
 
         try {
             Session session = (Session) entityManager.getDelegate();
             conn = (Connection) session.connection();
             ScriptRunner sr = new ScriptRunner(conn, true, true);
-            sr.runScript(new FileReader(f));
+            sr.runScript(f);
             conn.commit();
             entityManager.flush();
         } finally {
@@ -225,6 +227,14 @@ public abstract class TestUtil {
         entityManager.persist(app);
 
         persistEntityTest(testStartLayer, StartLayer.class, false);
+
+        testComponent = new ConfiguredComponent();
+        testComponent.setApplication(app);
+        testComponent.setClassName("viewer.components.Bookmark");
+        testComponent.setConfig("{value: 'aapnootmies'}");
+        testComponent.setName("testClassName1");
+        app.getComponents().add(testComponent);
+        persistEntityTest(testComponent, ConfiguredComponent.class, false);
 
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();

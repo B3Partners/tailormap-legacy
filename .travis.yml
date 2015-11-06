@@ -4,6 +4,7 @@ sudo: false
 
 install:
   # install without testing
+  - mvn install -f viewer-config-persistence/pom.xml -B -V -fae -q
   - mvn install -Dmaven.test.skip=true -B -V -fae -q
 
 script:

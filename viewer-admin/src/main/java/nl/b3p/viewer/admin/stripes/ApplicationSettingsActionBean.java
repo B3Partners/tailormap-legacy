@@ -63,6 +63,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private String mashupName;
     
     @Validate
+    private boolean mustUpdateComponents;
+    
+    @Validate
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
     
     @ValidateNestedProperties({
@@ -153,6 +156,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     public void setMashupMustPointToPublishedVersion(boolean mashupMustPointToPublishedVersion) {
         this.mashupMustPointToPublishedVersion = mashupMustPointToPublishedVersion;
+    }
+
+    public boolean isMustUpdateComponents() {
+        return mustUpdateComponents;
+    }
+
+    public void setMustUpdateComponents(boolean mustUpdateComponents) {
+        this.mustUpdateComponents = mustUpdateComponents;
     }
     //</editor-fold>
     
@@ -338,14 +349,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             bindAppProperties();
 
             Application copy = application.deepCopy();
-
+            EntityManager em = Stripersist.getEntityManager();
             // don't save changes to original app
-            Stripersist.getEntityManager().detach(application);
+            em.detach(application);
 
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().flush();
-            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE,false);
+            em.persist(copy);
+            em.persist(copy);
+            em.flush();
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE,false,em);
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
@@ -373,7 +384,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         ValidationErrors errors = context.getValidationErrors();
         try {
             EntityManager em = Stripersist.getEntityManager();
-            Application mashup = application.createMashup(mashupName, em);
+            Application mashup = application.createMashup(mashupName, em,mustUpdateComponents);
             em.persist(mashup);
             em.getTransaction().commit();
 
@@ -406,7 +417,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                     .setParameter("level", oldPublished.getRoot()).setParameter("oldId", oldPublished.getId()).getResultList();
                 for (Application mashup : mashups) {
                     mashup.setRoot(application.getRoot());//nog iets doen met veranderde layerids uit cofniguratie
-                    SelectedContentCache.setApplicationCacheDirty(mashup,true, false);
+                    SelectedContentCache.setApplicationCacheDirty(mashup,true, false,em);
                     mashup.transferMashup(oldPublished,em);
                     em.persist(mashup);
                 }

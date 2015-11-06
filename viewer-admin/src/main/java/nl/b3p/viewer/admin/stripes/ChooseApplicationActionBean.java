@@ -318,18 +318,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
 
         try {
 
-            Application copy = applicationWorkversion.deepCopy();
-            copy.setVersion(version);
-            // don't save changes to original app
-            em.detach(applicationWorkversion);
-
-            em.persist(copy);
-            em.persist(copy);
-            em.flush();
-            Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", applicationWorkversion.getId()).getSingleResult();
-            copy.processBookmarks(prev, context);
-            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false);
-            em.getTransaction().commit();
+            Application copy = createWorkversion(applicationWorkversion, em,version);
             getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
             setApplication(copy);
 
@@ -349,6 +338,26 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het maken van werkversie applicatie: " + ex));
             return new ForwardResolution(JSP);
         }
+    }
+
+    Application createWorkversion(Application base, EntityManager em, String version) throws Exception {
+        Application copy = base.deepCopy();
+        copy.setVersion(version);
+        // don't save changes to original app and it's mashups
+
+        Set<Application> apps = base.getRoot().findApplications(em);
+        for (Application app : apps) {
+            em.detach(app);
+        }
+
+        em.persist(copy);
+        em.persist(copy);
+        em.flush();
+        Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
+        copy.processBookmarks(prev, context, em);
+        SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
+        em.getTransaction().commit();
+        return copy;
     }
 
     private JSONObject getGridRow(int i, String name, String published, String owner) throws JSONException {

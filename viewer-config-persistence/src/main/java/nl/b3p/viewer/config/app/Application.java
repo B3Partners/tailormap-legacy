@@ -507,19 +507,25 @@ public class Application {
          }
     }
     
-    public Application createMashup( String mashupName, EntityManager em) throws Exception{
-        Application mashup = this.deepCopyAllButLevels();
+    public Application createMashup(String mashupName, EntityManager em, boolean linkComponents) throws Exception {
+        Application source = this;
+
+        if (!em.contains(source)) {
+            source = em.merge(source);
+        }
+        Application mashup = source.deepCopyAllButLevels(linkComponents);
+        mashup.setName(mashup.getName() + "_" + mashupName);
+        em.persist(mashup);
         if(mashup.getRoot() != null){
             mashup.getRoot().processForMashup(mashup);
         }
         
         mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
-        mashup.setName(mashup.getName() + "_" + mashupName);
         return mashup;
     }
 
     public Application deepCopy() throws Exception {
-        Application copy = deepCopyAllButLevels();
+        Application copy = deepCopyAllButLevels(false);
         
         copy.originalToCopy = new HashMap();
         if(root != null) {
@@ -529,7 +535,7 @@ public class Application {
         return copy;
     }
     
-    private Application deepCopyAllButLevels() throws Exception{
+    private Application deepCopyAllButLevels( boolean linkComponents) throws Exception{
         Application copy = (Application) BeanUtils.cloneBean(this);   
         copy.setId(null);
         copy.setBookmarks(null);
@@ -549,7 +555,12 @@ public class Application {
         
         copy.setComponents(new HashSet<ConfiguredComponent>());
         for(ConfiguredComponent cc: components) {
-            copy.getComponents().add(cc.deepCopy(copy));
+            ConfiguredComponent componentCopy = cc.deepCopy(copy);
+            copy.getComponents().add(componentCopy);
+            if(linkComponents){
+                componentCopy.setMotherComponent(cc);
+                cc.getLinkedComponents().add(componentCopy);
+            }
         }
         return copy;
     }
@@ -711,7 +722,7 @@ public class Application {
         return idMap;
     }
 
-    public void processBookmarks(Application previousApplication, ActionBeanContext context){
+    public void processBookmarks(Application previousApplication, ActionBeanContext context, EntityManager em){
         // bookmark krijgt een appId kolom
             // bij maken werkversie
                 // check of bookmarkcomponent de configuratie: followsApplication
@@ -730,7 +741,6 @@ public class Application {
                 // Gebruik ook applicatienaam en versienummer om bookmark op te halen
 
                 
-        EntityManager em = Stripersist.getEntityManager();
         List<ConfiguredComponent> bookmarkComponents = em.createQuery("FROM ConfiguredComponent where application.id = :app and className = :className", ConfiguredComponent.class)
                 .setParameter("app", previousApplication.getId()).setParameter("className", "viewer.components.Bookmark").getResultList();
 

@@ -85,7 +85,7 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = app.createMashup("mashup", entityManager);
+            Application mashup = app.createMashup("mashup", entityManager,true);
             entityManager.persist(mashup);
 
             objectsToRemove.add(app);
