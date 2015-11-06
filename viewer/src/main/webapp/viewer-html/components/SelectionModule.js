@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ Ext.define ("viewer.components.SelectionModule",{
     layerMergeServices: {},
     rootLevel: null,
     rendered: false,
+    originalLevels:null,
     // keep track if we checked the first added layer
     firstChecked: false,
     treePanels: {
@@ -128,8 +129,6 @@ Ext.define ("viewer.components.SelectionModule",{
             conf.selectOwnServices = true;
         } if(Ext.isEmpty(conf.selectCsw)){
             conf.selectCsw = true;
-        } if(Ext.isEmpty(conf.showWhenOnlyBackground)){
-            conf.showWhenOnlyBackground = true;
         } if(Ext.isEmpty(conf.alwaysShow)){
             conf.alwaysShow = false;
         } if(Ext.isEmpty(conf.showBackgroundLevels)){
@@ -141,15 +140,25 @@ Ext.define ("viewer.components.SelectionModule",{
         this.renderButton();
         // if there is no selected content, show selection module
         var me = this;
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
-            if(this.config.viewerController.app.selectedContent.length == 0 ){
+        this.menus = Ext.create("viewer.components.SelectionModuleMenu",{selectionModule:this});
+
+        var autoShowSelectionModule = 'nolayers';
+        if(conf.showWhenOnlyBackground) { // Support for legacy config option
+            autoShowSelectionModule = 'onlybackground';
+        }
+        if(typeof conf.autoShowSelectionModule !== "undefined") {
+            autoShowSelectionModule = conf.autoShowSelectionModule;
+        }
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,function() {
+            if(
+                (autoShowSelectionModule === 'nolayers' && this.config.viewerController.app.selectedContent.length === 0) ||
+                (autoShowSelectionModule === 'onlybackground' && this.selectedContentHasOnlyBackgroundLayers()) ||
+                (autoShowSelectionModule === 'always')
+            ) {
                 me.openWindow();
-            }else{
-                if(this.config.showWhenOnlyBackground && this.selectedContentHasOnlyBackgroundLayers()){
-                    me.openWindow();
-                }
             }
         },this);
+
         return this;
     },
     renderButton: function() {
@@ -198,6 +207,8 @@ Ext.define ("viewer.components.SelectionModule",{
         me.moveDownIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-down.gif';
         // get data from viewer controller
         me.initViewerControllerData();
+        me.originalLevels = Ext.clone(me.config.viewerController.app.levels);
+
         // init base interface
         me.initInterface();
         // init tree containers
@@ -346,7 +357,7 @@ Ext.define ("viewer.components.SelectionModule",{
         // We make a cloned reference, so we can easily edit this array and merge it to the original after clicking 'Ok'
         me.selectedContent = Ext.clone(this.config.viewerController.app.selectedContent);
         me.appLayers = this.config.viewerController.app.appLayers;
-        me.levels = this.config.viewerController.app.levels;
+        me.levels = Ext.clone(this.config.viewerController.app.levels);
         me.services = this.config.viewerController.app.services;
         me.rootLevel = this.config.viewerController.app.rootLevel;
     },
@@ -385,7 +396,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         var levelsToShow = new Array();
                         for(var i = 0 ; i < levels.length ; i ++){
                             var level = levels[i];
-                            var l = me.addLevel(level.id, true, false, false, foundIds,descriptions);
+                            var l = me.addLevel(level.id, true, false, false, foundIds,descriptions,me.levels);
                             if(l !== null){
                                 l.expanded = true;
                                 levelsToShow.push(l);
@@ -860,17 +871,28 @@ Ext.define ("viewer.components.SelectionModule",{
         }
 
         me.treePanels.selectionTree.treeStore = Ext.create('Ext.data.TreeStore', Ext.apply({}, defaultStoreConfig));
-        me.treePanels.selectionTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply({}, defaultTreeConfig, {
-            treePanelType: 'selectionTree',
+        me.treePanels.selectionTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply({}, {
+           treePanelType: 'selectionTree',
             store: me.treePanels.selectionTree.treeStore,
             viewConfig: me.getViewConfig('selection'),
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.removeNodes([ record ]);
+                },
+                itemcontextmenu: function(view, record, item, index, event, eOpts) {
+                    me.menus.handleClick(record, event);
+                    event.stopEvent();
+                },
+                containercontextmenu: function(view, event, eOpts) {
+                    me.menus.handleClick(null, event);
+                    // When rightclicking in the treecontainer (not on a node) than
+                    // show the context menu for adding a new level
+                    // Addlevel
+                    event.stopEvent();
                 }
             },
             tbar: null
-        }));
+        },defaultTreeConfig));
         Ext.getCmp('selectionTreeContainer').add(me.treePanels.selectionTree.treePanel);
     },
     
@@ -879,68 +901,60 @@ Ext.define ("viewer.components.SelectionModule",{
         return {
             plugins: {
                 ptype: 'treeviewdragdrop',
-                appendOnly: true,
+                appendOnly: false,
                 allowContainerDrops: true,
                 allowParentInserts: true,
-                sortOnDrop: true,
-                dropZone: {
-                    // We always allow dragging over node
-                    onNodeOver: function(node, dragZone, e, data) {
-                        // If we find 1 allowed record we allow the drop (invalid ones will be filtered out)
-                        if(me.nodesAddAllowed(data.records)) {
-                            return Ext.dd.DropZone.prototype.dropAllowed;
-                        }
-                        return Ext.dd.DropZone.prototype.dropNotAllowed;
-                    },
-                    onContainerOver: function(dd, e, data) {
-                        // If we find 1 allowed record we allow the drop (invalid ones will be filtered out)
-                        if(me.nodesAddAllowed(data.records)) {
-                            return Ext.dd.DropZone.prototype.dropAllowed;
-                        }
-                        return Ext.dd.DropZone.prototype.dropNotAllowed;
-                    },
-                    // On nodeDrop is executed when node is dropped on other node in tree
-                    onNodeDrop: function(targetNode, dragZone, e, data) {
-                        // We are in the selection tree && target and dragged node are both in same tree
-                        if(treeType === 'selection' && targetNode.offsetParent === data.item.offsetParent) {
-                            // Check where the element is dropped
-                            var bounds = targetNode.getBoundingClientRect();
-                            var dropY = e.getY();
-                            // If dropped at the top 50% of the element, append above
-                            // else append below
-                            var halfWay = bounds.top + (bounds.height / 2);
-                            me.moveNodesToPosition(data, dropY >= halfWay);
-                            return true;
-                        }
-                        me.handleDrag(treeType, data);
-                        return true;
-                    }
-                }
+                sortOnDrop: true
             },
             listeners: {
-                // beforedrop is executed when node is dropped on container (so not on another node but on 'empty' space'
-                beforedrop: function(node, data, overModel, dropPosition, dropHandlers, eOpts) {
-                    // We cancel the drop (do not append the actual layers because we still need some validation)
+                beforedrop: function(targetNode, data, overModel, dropPosition, dropHandlers, eOpts) {
+                    // We cancel the drop so we can follow our own logic for moving nodes
                     dropHandlers.cancelDrop();
-                    // Add/remove layers
-                    me.handleDrag(treeType, data);
+                    var targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
+                    var targetIsLevel = targetRecord.data.type === "maplevel";
+                    var nodeIsLayer = data.records[0].data.type === "appLayer";
+                    var treeOfTarget = targetRecord.getOwnerTree();
+                    var treeOfNode = data.records[0].getOwnerTree();
+
+                    if (treeType === 'collection') {
+                        // Dragged to collection panels (left side), so remove items
+                        me.removeNodes(data.records);
+                    }
+                    else if (treeType === 'selection' && treeOfTarget.treePanelType !== 'selectionTree') {
+                        // Dragged to selection panel (right side) from panel on the left, so add items
+                        me.addNodes(data.records);
+                    }
+                    else {
+                        var movedOutOfNode = targetRecord.parentNode !== data.records[0].parentNode;
+                        // Dragged inside the selection panel (reordering, appending)
+                        if (dropPosition === 'append' || movedOutOfNode) {
+                            if(movedOutOfNode && dropPosition !== 'append') {
+                                // Node is moved out of a parent node and positioned before / after other node
+                                // New parent is the parent of the node after/before the node is dragged
+                                targetNode = targetRecord.parentNode;
+                                targetRecord = me.treePanels.selectionTree.treePanel.getView().getRecord(targetNode);
+                                targetIsLevel = targetRecord.data.type === "maplevel";
+                            }
+                            if (targetNode.id === "root") {
+                                me.removeNodes(data.records);
+                                me.addNodes(data.records);
+                            } else if (nodeIsLayer && targetIsLevel) {
+                                me.addLayerToLevel(targetRecord, data.records);
+                            } else if (!nodeIsLayer && targetIsLevel) {
+                                me.addLevelToLevel(targetRecord, data.records, treeOfNode !== me.treePanels.selectionTree.treePanel);
+                            }
+                            if(dropPosition !== 'append') {
+                                // Node was moved out of its parent and positioned between/after other node
+                                me.moveNodesToPosition(data, dropPosition === 'after');
+                            }
+                        } else {
+                            me.moveNodesToPosition(data, dropPosition === 'after');
+                        }
+                    }
+                    return true;
                 }
             }  
         };
-    },
-    
-    /**
-     * Add/Remove layers after drag
-     */
-    handleDrag: function(treeType, data) {
-        if(treeType === 'collection') {
-            // Manually remove all layers which we dragged to other tree
-            this.removeNodes(data.records);
-        }
-        if(treeType === 'selection') {
-            // Manually move all layers which we dragged to other tree
-            this.addNodes(data.records);
-        }
     },
 
     filterRemote: function(tree, textvalue) {
@@ -955,6 +969,34 @@ Ext.define ("viewer.components.SelectionModule",{
         treeStore.getProxy().extraParams = {};
     },
 
+    addLayerToLevel : function(levelNode, layerNodes){
+        var level = this.levels[levelNode.data.origData.id];
+        for( var i = 0 ; i < layerNodes.length; i++){
+            var layer = layerNodes[i];
+            this.removeNodes(layer);
+            this.addToSelection(layer, levelNode);
+            var layerObj = layer.data.origData;
+            level.layers.push(layerObj.id);
+        }
+    },
+
+    addLevelToLevel: function (targetLevelNode, levelNodesToAdd, useOriginalLevel) {
+        if(useOriginalLevel){
+            this.levels[targetLevelNode.data.origData.id] = this.originalLevels[targetLevelNode.data.origData.id];
+        }
+        var targetLevel = this.levels[targetLevelNode.data.origData.id];
+        for (var i = 0; i < levelNodesToAdd.length; i++) {
+            var level = levelNodesToAdd[i];
+            this.removeNodes(level);
+            this.addToSelection(level,targetLevelNode);
+            var levelObj = level.data.origData;
+            if(!targetLevel.children){
+                targetLevel.children = [];
+            }
+            targetLevel.children.push(levelObj.id);
+        }
+    },
+    
     filterNodes: function(tree, textvalue) {
         var me = this;
         var rootNode = tree.getRootNode();
@@ -1043,10 +1085,10 @@ Ext.define ("viewer.components.SelectionModule",{
     initApplicationLayers: function() {
         var me = this;
         var levels = [];
-        var rootLevel = me.levels[me.rootLevel];
+        var rootLevel = me.originalLevels[me.rootLevel];
         if(Ext.isDefined(rootLevel.children)) {
             for(var i = 0 ; i < rootLevel.children.length; i++) {
-                var l = me.addLevel(rootLevel.children[i], true, false, this.config.showBackgroundLevels);
+                var l = me.addLevel(rootLevel.children[i], true, true, this.config.showBackgroundLevels, null,null,me.originalLevels);
                 if(l !== null) {
                     l.expanded = true; // Make top levels expand
                     levels.push(l);
@@ -1067,7 +1109,7 @@ Ext.define ("viewer.components.SelectionModule",{
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
             if(contentItem.type ==  "level") {
-                var level = me.addLevel(contentItem.id, false, false, this.config.showBackgroundLevels);
+                var level = me.addLevel(contentItem.id, true, true, this.config.showBackgroundLevels, null,null,me.levels);
                 if(level != null){
                     nodes.push(level);
                 }
@@ -1079,24 +1121,56 @@ Ext.define ("viewer.components.SelectionModule",{
         me.insertTreeNode(nodes, rootNode);
     },
 
-    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions) {
+    createAndAddLevel : function ( parent,name) {
+        var levelId  = Ext.id();
+        var level = {
+            background : false,
+            children : [],
+            id: levelId,
+            layers: [],
+            name : name
+        };
+        this.levels [levelId] = level;
+
+        var rootNode = null;
+
+        if (parent) {
+            rootNode = parent;
+            var rootLevel = this.levels[rootNode.data.origData.id];
+            if (!rootLevel.children) {
+                rootLevel.children = [];
+            }
+            rootLevel.children.push(levelId);
+        } else {
+            rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
+            this.selectedContent.push({
+                id: levelId,
+                type: 'level'
+            });
+        }
+
+        var node = this.addLevel (levelId, true, true, this.config.showBackgroundLevels,null,null, this.levels);
+
+        this.addedLevels.push({id:levelId,status:'new'});
+        node = this.insertTreeNode(node,rootNode);
+    },
+
+    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions,levels) {
         var me = this;
-        if(!Ext.isDefined(me.levels[levelId])) {
+        if(!Ext.isDefined(levels[levelId])) {
             return null;
         }
-        var level = me.levels[levelId];
+        var level = levels[levelId];
         if(level.background && !showBackgroundLayers) {
             return null;
         }
         var description = descriptions ? descriptions[level.id] : null;
-        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, !Ext.isDefined(level.children), undefined,description);
+        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false, false, description);
         treeNodeLayer.type = 'level';
         // Create a leaf node when a level has layers (even if it has children)
         if(Ext.isDefined(level.layers)) {
             treeNodeLayer.type = 'maplevel';
             treeNodeLayer.nodeid = 'm' + level.id;
-            treeNodeLayer.leaf = true;
-            showChildren = false;
         }
         if(showChildren) {
             var nodes = [];
@@ -1104,7 +1178,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 for(var i = 0 ; i < level.children.length; i++) {
                     var child = level.children[i];
                     if(!childrenIdsToShow || me.containsId(child,childrenIdsToShow)){
-                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow,descriptions);
+                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow,descriptions,levels);
                         if(l !== null) {
                             nodes.push(l);
                         }
@@ -1526,13 +1600,13 @@ Ext.define ("viewer.components.SelectionModule",{
         return false;
     },
 
-    addToSelection: function(record) {
+    addToSelection: function(record, parent) {
         var me = this;
         var nodeType = me.getNodeType(record);
         if(!this.nodeAddAllowed(record)) {
             return;
         }
-        var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
+        var rootNode = parent ? parent : me.treePanels.selectionTree.treePanel.getRootNode();
         var recordOrigData = me.getOrigData(record);
         var recordid = record.get('id');
         if(nodeType == "layer") {
@@ -1543,42 +1617,53 @@ Ext.define ("viewer.components.SelectionModule",{
             return;
         }
         var objData = record.data;
-        if(nodeType == "appLayer") {
-            // Own service
-            var customService = Ext.clone(me.userServices[recordOrigData.userService]);
-            customService.status = 'new';
-            me.addService(customService);
+        var addChildren = [];
+        if(nodeType === "appLayer") {
+            var serviceId = null;
+            if(Ext.isDefined(recordOrigData.userService)){
+                // Own service
+                var customService = Ext.clone(me.userServices[recordOrigData.userService]);
+                customService.status = 'new';
+                me.addService(customService);
+                serviceId = customService.id;
+            }else{
+                var service = me.services[recordOrigData.service];
+                serviceId = service.id;
+            }
             me.addedLayers.push({
                 background: false,
                 checked: this.autoCheck(),
                 id: recordOrigData.id,
                 layerName: recordOrigData.layerName,
                 alias: recordOrigData.alias,
-                serviceId: customService.id,
+                serviceId: serviceId,
                 status: 'new'
             });
-            me.selectedContent.push({
-                id: recordOrigData.id,
-                type: 'appLayer'
-            });
+            if(!parent){
+                me.selectedContent.push({
+                    id: recordOrigData.id,
+                    type: 'appLayer'
+                });
+            }
         }
-        else if(nodeType == "maplevel") {
+        else if(nodeType === "maplevel") {
             // Added from application
             me.addedLevels.push({id:recordOrigData.id,status:'new'});
-            me.selectedContent.push({
-                id: recordOrigData.id,
-                type: 'level'
-            });
+            if(!parent){
+                me.selectedContent.push({
+                    id: recordOrigData.id,
+                    type: 'level'
+                });
+            }
             var level = this.levels[recordOrigData.id];
             if(level && !level.background && this.autoCheck()) {
                 this.checkAllChildren(level, true);
             }
-        }
-        else if(nodeType == "layer") {
+        } else if(nodeType === "layer") {
             // Added from registry
             var service = me.findService(record);
             objData = null;
-            if(service != null) {
+            if(service !== null) {
                 service.status = 'new';
                 me.addService(service);
                 me.addedLayers.push({
@@ -1600,7 +1685,7 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         }
         if(objData !== null) {
-            rootNode.appendChild(objData);
+            this.insertNode(rootNode, objData);
         }
     },
     
@@ -1669,10 +1754,12 @@ Ext.define ("viewer.components.SelectionModule",{
 
     removeNodes: function(records) {
         var me = this;
-        var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
         Ext.Array.each(records, function(record) {
             var nodeType = me.getNodeType(record);
             var recordOrigData = me.getOrigData(record);
+            if(recordOrigData === null) {
+                return;
+            }
             if(recordOrigData.service == null) {
                 // Own service
                 me.removeLayer(recordOrigData.id, null);
@@ -1687,7 +1774,14 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.removeLayer(recordOrigData.id, null);
                 me.removeService(recordOrigData.userService);
             }
-            rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
+
+            var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
+            var node = rootNode.findChild('id', record.get('id'), true);
+            var parent = rootNode;
+            if(node){
+                parent = node.parentNode;
+            }
+            parent.removeChild(rootNode.findChild('id', record.get('id'), true));
         });
     },
 
@@ -1724,6 +1818,22 @@ Ext.define ("viewer.components.SelectionModule",{
                 selectedContent.push(content);
             }
         });
+
+        var levels = {};
+        Ext.Object.each(me.levels, function(key,level) {
+            var layers = []
+            if(level.layers){
+                Ext.Array.each(level.layers, function(layer) {
+                    if(layer !== layerid){
+                        layers.push(layer);
+                    }
+                });
+                level.layers = layers;
+            }
+            levels[key] = level;
+        });
+
+        me.levels = levels;
         me.selectedContent = selectedContent;
         me.addedLayers = addedLayers;
     },
@@ -1732,16 +1842,33 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var addedLevels = [];
         Ext.Array.each(me.addedLevels, function(addedLevel) {
-            if(addedLevel.id != levelid) {
+            if(addedLevel.id !== levelid) {
                 addedLevels.push(addedLevel);
             }
         });
         var selectedContent = [];
         Ext.Array.each(me.selectedContent, function(content) {
-            if(!(content.id == levelid && content.type == "level")) {
+            if(!(content.id === levelid && content.type === "level")) {
                 selectedContent.push(content);
             }
         });
+
+        
+        var levels = {};
+        Ext.Object.each(me.levels, function (key,level) {
+            if(level.id !== levelid){
+                var childs = [];
+                Ext.Array.each(level.children, function (child) {
+                    if (child !== levelid) {
+                        childs.push(child);
+                    }
+                });
+                level.children = childs;
+                levels[key] = level;
+            }
+        });
+        
+        me.levels = levels;
         me.selectedContent = selectedContent;
         me.addedLevels = addedLevels;
     },
@@ -1817,6 +1944,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 }
             }
         }
+        me.config.viewerController.app.levels = me.levels;
         me.config.viewerController.setSelectedContent(me.selectedContent);
         me.popup.hide();
     },

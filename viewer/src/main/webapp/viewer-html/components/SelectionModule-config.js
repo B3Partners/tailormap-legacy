@@ -29,13 +29,24 @@ Ext.define("viewer.components.CustomConfiguration",{
         var me = this;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         
+        var autoShowSelectionModule = 'nolayers';
+        if(configObject.showWhenOnlyBackground) { // Support for legacy config option
+            autoShowSelectionModule = 'onlybackground';
+        }
+        if(typeof configObject.autoShowSelectionModule !== "undefined") {
+            autoShowSelectionModule = configObject.autoShowSelectionModule;
+        }
+
         this.form.add({
-            xtype: "checkbox",
-            checked: configObject.showWhenOnlyBackground !== undefined ? configObject.showWhenOnlyBackground : true,
-            name: "showWhenOnlyBackground",
+            xtype: "combobox",
+            value: autoShowSelectionModule,
+            store: [ ['never','Nooit'], ['nolayers','Indien er geen lagen zijn bij opstarten'], ['onlybackground','Indien er alleen achtergrond lagen zijn'], ['always','Altijd'] ],
+            name: "autoShowSelectionModule",
             labelWidth: this.labelWidth,
-            fieldLabel: "Laat zien bij opstarten indien er alleen achtergrondlagen zijn"
+            fieldLabel: "Openen bij starten",
+            width: 500
         });
+
         this.form.add({
             xtype: "checkbox",
             checked: configObject.showBackgroundLevels !== undefined ? configObject.showBackgroundLevels : false,

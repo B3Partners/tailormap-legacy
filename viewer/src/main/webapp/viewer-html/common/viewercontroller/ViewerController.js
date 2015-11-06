@@ -245,9 +245,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();
+                this.layersInitialized=true;
+                this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
             }
-            this.layersInitialized=true;
-            this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
         } catch(e) {
             this.logger.error(e);
         }
@@ -1498,22 +1498,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 };
                 this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             }else if (key === "levelOrder"){
-               selectedContent=[];
-               if(!Ext.isArray(value)){
+                selectedContent=[];
+                if(!Ext.isArray(value)){
                     value = value.split(",");
                 }
-                for (var v=0; v < value.length; v++){
-                    for (var s=0; s < this.app.selectedContent.length; s++){
-                        if (this.app.selectedContent[s].id === value[v]){
-                            selectedContent.push(this.app.selectedContent[s]);
-                            break;
-                        }
-                    }
-                }
-                for (var s=0; s < this.app.selectedContent.length; s++){
-                    if (!Ext.Array.contains(selectedContent,this.app.selectedContent[s])){
-                        selectedContent.push(this.app.selectedContent[s]);
-                    }
+
+                for( var i = 0 ; i < value.length ; i++){
+                    selectedContent.push({
+                        type: "level",
+                        id : value[i]
+                    });
                 }
             }else if(key === "search"){
                 if(!Ext.isEmpty(value)){
@@ -1523,6 +1517,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         comp.loadVariables(value);
                     }
                 }
+            }else if(key === "levels"){
+                this.app.levels = value;
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
@@ -1534,6 +1530,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(layersLoaded && !bookmark){
             this.app.appLayers = appLayers;
             this.setSelectedContent(selectedContent);
+            this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,function(){
+                
+                this.layersInitialized = true;
+                this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
+            }, this,{single:true});
         }
 
         return layersLoaded;
@@ -1650,6 +1651,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             name: "selectedContent",
             value: this.app.selectedContent
         });
+
+        paramJSON.params.push({
+            name: "levels",
+            value: this.app.levels
+        });
+
         return paramJSON;
     },
     getApplicationSprite: function() {
