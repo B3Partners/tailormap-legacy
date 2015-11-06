@@ -398,119 +398,15 @@ Ext.define("viewer.components.Edit", {
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
                 if (appLayer.featureType && attribute.featureType === appLayer.featureType && attribute.editable) {
-                    var allowedEditable = this.allowedEditable(attribute);
                     var values = Ext.clone(attribute.editValues);
                     var input = null;
                     if (i == appLayer.geometryAttributeIndex) {
                         continue;
                     }
                     if (attribute.valueList !== "dynamic" && (values == undefined || values.length == 1)) {
-                        var fieldText = "";
-                        if (values != undefined) {
-                            fieldText = values[0];
-                        }
-                        var options = {
-                            name: attribute.name,
-                            fieldLabel: attribute.editAlias || attribute.name,
-                            renderTo: this.name + 'InputPanel',
-                            value: fieldText,
-                            disabled: !allowedEditable
-                        };
-                        if (attribute.editHeight) {
-                            options.rows = attribute.editHeight;
-                            input = Ext.create("Ext.form.field.TextArea", options);
-                        } else {
-                            input = Ext.create("Ext.form.field.Text", options);
-                        }
+                        input = this.createStaticInput(attribute, values);
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
-                        var valueStore = Ext.create('Ext.data.Store', {
-                            fields: ['id', 'label']
-                        });
-                        if (values && values.length > 1) {
-                            var allBoolean = true;
-                            for (var v = 0; v < values.length; v++) {
-                                var hasLabel = values[v].indexOf(":") !== -1;
-                                var val = hasLabel ? values[v].substring(0, values[v].indexOf(":")) : values[v];
-                                if (val.toLowerCase() !== "true" && val.toLowerCase() !== "false") {
-                                    allBoolean = false;
-                                    break;
-                                }
-                            }
-
-                            Ext.each(values, function (value, index, original) {
-                                var hasLabel = value.indexOf(":") !== -1;
-                                var label = value;
-                                if (hasLabel) {
-                                    label = value.substring(value.indexOf(":") + 1);
-                                    value = value.substring(0, value.indexOf(":"));
-                                }
-
-                                if (allBoolean) {
-                                    value = value.toLowerCase() === "true";
-                                }
-                                original[index] = {
-                                    id: value,
-                                    label: label
-                                };
-                            });
-                            valueStore.setData(values);
-                        } else {
-                            // attributes.valueList === "dynamic"
-                            var reqOpts = {
-                                featureType: attribute.valueListFeatureType,
-                                attributes: [attribute.valueListValueName, attribute.valueListLabelName],
-                                maxFeatures: 1000,
-                                getKeyValuePairs: 't'
-                            };
-                            var proxy = Ext.create('Ext.data.proxy.Ajax', {
-                                url: actionBeans.unique,
-                                model: valueStore.model,
-                                extraParams: reqOpts,
-                                limitParam: '',
-                                reader: {
-                                    type: 'json',
-                                    rootProperty: 'valuePairs',
-                                    transform: {
-                                        fn: function (data) {
-                                            // transform and sort the data
-                                            var valuePairs = [];
-                                            Ext.Object.each(data.valuePairs, function (key, value, object) {
-                                                valuePairs.push({
-                                                    id: key,
-                                                    label: value
-                                                });
-                                            });
-                                            valuePairs = valuePairs.sort(function (a, b) {
-                                                if (a.label < b.label)
-                                                    return -1;
-                                                if (a.label > b.label)
-                                                    return 1;
-                                                return 0;
-                                            });
-                                            return {
-                                                success: data.success,
-                                                valuePairs: valuePairs
-                                            };
-                                        },
-                                        scope: this
-                                    }
-                                }
-                            });
-                            valueStore.setProxy(proxy);
-                            valueStore.load();
-                        }
-
-                        input = Ext.create('Ext.form.ComboBox', {
-                            fieldLabel: attribute.editAlias || attribute.name,
-                            store: valueStore,
-                            queryMode: 'local',
-                            displayField: 'label',
-                            name: attribute.name,
-                            id: attribute.name,
-                            renderTo: this.name + 'InputPanel',
-                            valueField: 'id',
-                            disabled: !allowedEditable
-                        });
+                        input = this.createDynamicInput(attribute, values);
                     }
                     this.inputContainer.add(input);
                     Ext.getCmp(this.name + "editButton").setDisabled(false);
@@ -527,6 +423,132 @@ Ext.define("viewer.components.Edit", {
                 Ext.getCmp(this.name + "copyButton").setDisabled(true);
             }
         }
+    },
+    createStaticInput: function(attribute, values) {
+        var fieldText = "";
+        if (typeof values !== 'undefined') {
+            fieldText = values[0];
+        }
+        var options = {
+            name: attribute.name,
+            fieldLabel: attribute.editAlias || attribute.name,
+            renderTo: this.name + 'InputPanel',
+            value: fieldText,
+            disabled: !this.allowedEditable(attribute)
+        };
+        var input;
+        if (attribute.editHeight) {
+            options.rows = attribute.editHeight;
+            input = Ext.create("Ext.form.field.TextArea", options);
+        } else {
+            input = Ext.create("Ext.form.field.Text", options);
+        }
+        return input;
+    },
+    createDynamicInput: function(attribute, values) {
+        var valueStore = Ext.create('Ext.data.Store', {
+            fields: ['id', 'label']
+        });
+        if (values && values.length > 1) {
+            var allBoolean = true;
+            for (var v = 0; v < values.length; v++) {
+                var hasLabel = values[v].indexOf(":") !== -1;
+                var val = hasLabel ? values[v].substring(0, values[v].indexOf(":")) : values[v];
+                if (val.toLowerCase() !== "true" && val.toLowerCase() !== "false") {
+                    allBoolean = false;
+                    break;
+                }
+            }
+
+            Ext.each(values, function (value, index, original) {
+                var hasLabel = value.indexOf(":") !== -1;
+                var label = value;
+                if (hasLabel) {
+                    label = value.substring(value.indexOf(":") + 1);
+                    value = value.substring(0, value.indexOf(":"));
+                }
+
+                if (allBoolean) {
+                    value = value.toLowerCase() === "true";
+                }
+                original[index] = {
+                    id: value,
+                    label: label
+                };
+            });
+            valueStore.setData(values);
+        } else {
+            // attributes.valueList === "dynamic"
+            var reqOpts = {
+                featureType: attribute.valueListFeatureType,
+                attributes: [attribute.valueListValueName, attribute.valueListLabelName],
+                maxFeatures: 1000,
+                getKeyValuePairs: 't'
+            };
+            var proxy = Ext.create('Ext.data.proxy.Ajax', {
+                url: actionBeans.unique,
+                model: valueStore.model,
+                extraParams: reqOpts,
+                limitParam: '',
+                reader: {
+                    type: 'json',
+                    rootProperty: 'valuePairs',
+                    transform: {
+                        fn: function (data) {
+                            // transform and sort the data
+                            var valuePairs = [];
+                            Ext.Object.each(data.valuePairs, function (key, value, object) {
+                                valuePairs.push({
+                                    id: key,
+                                    label: value
+                                });
+                            });
+                            valuePairs = valuePairs.sort(function (a, b) {
+                                if (a.label < b.label)
+                                    return -1;
+                                if (a.label > b.label)
+                                    return 1;
+                                return 0;
+                            });
+                            return {
+                                success: data.success,
+                                valuePairs: valuePairs
+                            };
+                        },
+                        scope: this
+                    }
+                }
+            });
+            valueStore.setProxy(proxy);
+            valueStore.load();
+        }
+
+        var input = Ext.create('Ext.form.ComboBox', {
+            fieldLabel: attribute.editAlias || attribute.name,
+            store: valueStore,
+            queryMode: 'local',
+            displayField: 'label',
+            name: attribute.name,
+            id: attribute.name,
+            renderTo: this.name + 'InputPanel',
+            valueField: 'id',
+            disabled: !this.allowedEditable(attribute),
+            editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly)
+        });
+
+        if(attribute.hasOwnProperty('disAllowNullValue') && attribute.disAllowNullValue) {
+            try {
+                if(valueStore.loadCount !== 0) { // if store is loaded already load event is not fired anymore
+                    input.select(valueStore.getAt(0));
+                } else {
+                    valueStore.on('load', function() {
+                        input.select(valueStore.getAt(0));
+                    });
+                }
+            } catch(e) {}
+        }
+        
+        return input;
     },
     setInputPanel: function (feature) {
         this.inputContainer.getForm().setValues(feature);
