@@ -155,7 +155,7 @@
             <dependency>
                 <groupId>nl.geozet</groupId>
                 <artifactId>openls-databinding</artifactId>
-                <version>0.3</version>
+                <version>0.4</version>
             </dependency>
             <!-- lucene for csw advanced searching -->
             <dependency>
@@ -418,17 +418,9 @@
     </dependencyManagement>
     <repositories>
         <repository>
-            <id>releases</id>
+            <id>B3Partners</id>
             <name>Releases hosted by B3Partners</name>
-            <url>http://repo.b3p.nl/nexus/content/repositories/releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>3rdparty</id>
-            <name>3rd party components hosted by B3Partners</name>
-            <url>http://repo.b3p.nl/nexus/content/repositories/thirdparty/</url>
+            <url>http://repo.b3p.nl/nexus/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -437,17 +429,6 @@
             <id>osgeo</id>
             <name>Open Source Geospatial Foundation Repository</name>
             <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-        <repository>
-            <id>github</id>
-            <name>geozet releases repository</name>
-            <url>https://github.com/geozet/geozet-maven-repo/raw/master/releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories />

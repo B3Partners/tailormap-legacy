@@ -82,7 +82,7 @@ Ext.define ("viewer.components.DirectSearch",{
         this.alignContainer();
         this.loadingContainer = this.mainContainer;
         this.searchField && this.searchField.inputEl && this.searchField.inputEl.set({
-            placeholder: 'Zoek op locatie, adres of postcode...',
+            placeholder: this.config.title,
 			style: 'height: 28px;'
         });
     },

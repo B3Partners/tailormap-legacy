@@ -717,7 +717,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.balloonWidth=300;
     this.balloonHeight=300;
     this.balloonCornerSize=20;
-    this.balloonArrowHeight=20;
+    this.balloonArrowHeight = 20;
+    this.balloonContentWrapper = null;
     this.balloonContent=null;
     this.mouseIsOverElement=new Object();
     this.maptipId=0;
@@ -791,7 +792,10 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         },this);
         this.balloonContent.on("mouseout",function(){
             this.onMouseOut('balloonContent');
-        },this);
+        }, this);
+        this.balloonContentWrapper = new Ext.Element(document.createElement("div"));
+        this.balloonContentWrapper.addCls('balloonContentWrapper');
+        this.balloonContent.appendChild(this.balloonContentWrapper);
         this.balloon.appendChild(this.balloonContent);
 
         this.x=x;
@@ -988,10 +992,10 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         delete this.balloon;
     }
     /*Get the DOM element where the content can be placed.*/
-    this.getContentElement = function(){
-        if (this.balloon==undefined || this.balloonContent ==undefined)
+    this.getContentElement = function () {
+        if (this.balloon == undefined || this.balloonContent == undefined || this.balloonContentWrapper === null)
             return null;
-        return this.balloonContent;
+        return this.balloonContentWrapper;
     }
     this.setContent = function (value){
         var element=this.getContentElement();
