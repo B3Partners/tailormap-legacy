@@ -100,6 +100,8 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("9", Collections.singletonList("selectedcontentcaches_dirty.sql"));
 
         updates.put("10", Collections.singletonList("add_valueListFeatureSource.sql"));
+
+        updates.put("11", Collections.singletonList("add_allowValueListOnly.sql"));
     }
     /**
      * Function is called in init() of servlet.

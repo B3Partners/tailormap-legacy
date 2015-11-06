@@ -536,7 +536,7 @@ Ext.define("viewer.components.Edit", {
             editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly)
         });
 
-        if(attribute.hasOwnProperty('disAllowNullValue') && attribute.disAllowNullValue) {
+        if (attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue) {
             try {
                 if(valueStore.loadCount !== 0) { // if store is loaded already load event is not fired anymore
                     input.select(valueStore.getAt(0));

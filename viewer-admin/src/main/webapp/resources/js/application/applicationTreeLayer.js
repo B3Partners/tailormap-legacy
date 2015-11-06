@@ -678,7 +678,7 @@ function getAttributeEditSettings(attribute, name) {
             fieldLabel: 'Alleen keuze uit lijst', name: 'allowValueListOnly', inputValue: 1, checked: attribute.allowValueListOnly || 0, xtype: 'checkbox'
         },
         {
-            fieldLabel: 'Geen lege waarde toestaan', name: 'disAllowNullValue', inputValue: 1, checked: attribute.disAllowNullValue || 0, xtype: 'checkbox'
+            fieldLabel: 'Geen lege waarde toestaan', name: 'disallowNullValue', inputValue: 1, checked: attribute.disallowNullValue || 0, xtype: 'checkbox'
         }
     ];
 }

@@ -72,6 +72,10 @@ public class ConfiguredAttribute {
 
     private String valueList;
 
+    private boolean allowValueListOnly;
+
+    private boolean disallowNullValue;
+
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
         return attributeName;
@@ -200,6 +204,22 @@ public class ConfiguredAttribute {
     public void setValueList(String valueList) {
         this.valueList = valueList;
     }
+
+    public boolean getAllowValueListOnly() {
+        return allowValueListOnly;
+    }
+
+    public void setAllowValueListOnly(boolean allowValueListOnly) {
+        this.allowValueListOnly = allowValueListOnly;
+    }
+
+    public boolean getDisAllowNullValue() {
+        return disallowNullValue;
+    }
+
+    public void setDisallowNullValue(boolean disallowNullValue) {
+        this.disallowNullValue = disallowNullValue;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -212,6 +232,8 @@ public class ConfiguredAttribute {
         o.put("selectable", selectable);
         o.put("editAlias", editAlias);
         o.put("editHeight", editHeight);
+        o.put("allowValueListOnly", allowValueListOnly);
+        o.put("disallowNullValue", disallowNullValue);
         
         if(editValues != null) {
             try {
