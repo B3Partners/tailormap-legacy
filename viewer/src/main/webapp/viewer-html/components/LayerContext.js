@@ -51,7 +51,8 @@ Ext.define ("viewer.components.LayerContext",{
     layerClicked: function(layerObj) {
         // Check if any data is present
         if( typeof layerObj.metadata !== 'undefined' ||typeof layerObj.download !== 'undefined' || typeof layerObj.info !== 'undefined' || typeof layerObj.url !== 'undefined' ||
-            (   typeof layerObj.appLayer !== 'undefined' && typeof layerObj.appLayer.details !== 'undefined' &&typeof layerObj.appLayer.details.context !== 'undefined')) {
+            (   typeof layerObj.appLayer !== 'undefined' && (typeof layerObj.appLayer.details !== 'undefined' &&
+            (typeof layerObj.appLayer.details.context !== 'undefined' || layerObj.appLayer.details.metadataurl !== 'undefined'  ) ))) {
             this.renderWindow(layerObj);
         }
     },
@@ -127,9 +128,12 @@ Ext.define ("viewer.components.LayerContext",{
                 html: layerObj.info
             });
         }
+        var appLayerHasMetadaturl = ( typeof layerObj.appLayer !== 'undefined' &&
+                (typeof layerObj.appLayer.details !== 'undefined' && typeof layerObj.appLayer.details.metadataurl !== 'undefined' ));
         
-        if(typeof layerObj.url !== 'undefined' && (typeof layerObj.info === 'undefined' || layerObj.info === '<br>' ) ){
-            var browserPopupWindow = window.open(layerObj.url, 'name', 'height='+this.config.details.height + ',width=' + this.config.details.width + ',location=no,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=yes');
+        if(appLayerHasMetadaturl || typeof layerObj.url !== 'undefined' && (typeof layerObj.info === 'undefined' || layerObj.info === '<br>' ) ){
+            var url = appLayerHasMetadaturl ? layerObj.appLayer.details.metadataurl : layerObj.url;
+            var browserPopupWindow = window.open(url, 'name', 'height='+this.config.details.height + ',width=' + this.config.details.width + ',location=no,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=yes');
             browserPopupWindow.focus();
         }else{
             if(!this.popup.popupWin.isVisible()) {
