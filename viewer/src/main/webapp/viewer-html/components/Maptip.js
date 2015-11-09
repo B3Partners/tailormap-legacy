@@ -347,7 +347,7 @@ Ext.define ("viewer.components.Maptip",{
 
                     if (this.extraLinkCallbacks && this.extraLinkCallbacks.length > 0) {
                         var extraDiv = new Ext.Element(document.createElement("div"));
-                        extraDiv.addCls("feature_summary_link");
+                        extraDiv.addCls("feature_callback_link");
                         for (var i = 0; i < this.extraLinkCallbacks.length; i++) {
                             var entry = this.extraLinkCallbacks[i];
                             if (entry.appLayers && !Ext.Array.contains(entry.appLayers, appLayer)) {
@@ -368,7 +368,7 @@ Ext.define ("viewer.components.Maptip",{
                             detailLink.insertHtml("beforeEnd", entry.label);
                             extraDiv.appendChild(detailLink);
                         }
-                        leftColumnDiv.appendChild(extraDiv);
+                        leftColumnDiv.insertFirst(extraDiv);
                     }
 
                         //detail

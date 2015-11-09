@@ -132,6 +132,10 @@
     width: 60%;
     clear: none;
 }
+.feature_callback_link{
+    width: 50%;
+    clear: none;
+}
 .feature_summary_detail{
     width: 40%;
 }
