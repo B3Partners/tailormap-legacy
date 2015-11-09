@@ -121,8 +121,8 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("10", new UpdateElement (Collections.singletonList("add_valueListFeatureSource.sql"), String.class));
         
         updates.put("11", new UpdateElement(Collections.singletonList("add_start_map.sql"), String.class));
-        updates.put("12", new UpdateElement(Collections.singletonList("add_linked_components.sql"), String.class));
-        updates.put("13", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
+        updates.put("12", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
+        updates.put("13", new UpdateElement(Collections.singletonList("add_linked_components.sql"), String.class));
         
     }
     /**
@@ -179,10 +179,10 @@ public class DatabaseSynchronizer implements Servlet {
                         }
                         mdVersion.setConfigValue(updatedVersion);
                         em.persist(mdVersion);
-                        if(!trans.isActive()){
-                            trans.begin();
+                        if(!em.getTransaction().isActive()){
+                            em.getTransaction().begin();
                         }
-                        trans.commit();
+                        em.getTransaction().commit();
                         log.info("Database updated to version: "+updatedVersion);
                         //em.getTransaction().commit();
 
