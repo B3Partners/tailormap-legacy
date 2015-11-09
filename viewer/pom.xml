@@ -13,7 +13,7 @@
     </parent>
     <name>viewer</name>
 
-   <properties>
+    <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <minify.outputdir>${project.build.directory}/${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
@@ -122,7 +122,7 @@
             <groupId>nl.geozet</groupId>
             <artifactId>openls-databinding</artifactId>
         </dependency>
-                <!-- lucene for csw advanced searching -->
+        <!-- lucene for csw advanced searching -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
@@ -132,9 +132,9 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
         </dependency>
-                <dependency>
-               <artifactId>solr-solrj</artifactId>
-               <groupId>org.apache.solr</groupId>
+        <dependency>
+            <artifactId>solr-solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -156,11 +156,11 @@
             <artifactId>org.eclipse.emf.common</artifactId>
         </dependency>
 
-	<dependency>
-	    <groupId>jaxen</groupId>
-	    <artifactId>jaxen</artifactId>
-	    <version>1.1.6</version>
-	</dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
@@ -214,6 +214,28 @@
                     <attachClasses>true</attachClasses>
                     <classesClassifier>classes</classesClassifier>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>truezip-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>remove-a-file</id>
+                        <goals>
+                            <goal>remove</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <fileset>
+                                <directory>${project.build.directory}/${project.artifactId}-${project.version}-classes.jar</directory>
+                                <includes>
+                                    <include>git.properties</include>
+                                </includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -379,10 +401,9 @@
                     <execution>
                         <goals>
                             <goal>revision</goal>
-                         </goals>
+                        </goals>
                     </execution>
                 </executions>
-
                 <configuration>
                     <prefix>builddetails</prefix>
                     <dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>
