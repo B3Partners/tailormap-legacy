@@ -658,9 +658,16 @@ Ext.define("viewer.components.Edit", {
         Ext.Msg.alert('Mislukt', msg);
         Ext.get(this.getContentDiv()).unmask();
     },
-    createNew: function () {
+    /**
+     * clear any loaded feature from the form and the map.
+     */
+    clearFeature: function () {
         this.vectorLayer.removeAllFeatures();
         this.inputContainer.getForm().reset();
+        this.currentFID = null;
+    },
+    createNew: function () {
+        this.clearFeature();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if (this.newGeomType != null && this.geometryEditable) {
@@ -668,18 +675,18 @@ Ext.define("viewer.components.Edit", {
         }
     },
     edit: function () {
-        this.vectorLayer.removeAllFeatures();
+        this.clearFeature();
         this.mode = "edit";
         this.activateMapClick();
     },
     copy: function () {
-        this.vectorLayer.removeAllFeatures();
+        this.clearFeature();
         this.mode = "copy";
         this.activateMapClick();
     },
     deleteFeature: function () {
         if (this.config.allowDelete) {
-            this.vectorLayer.removeAllFeatures();
+            this.clearFeature();
             this.mode = "delete";
             this.activateMapClick();
             Ext.getCmp(this.name + "saveButton").setText("Verwijderen");
