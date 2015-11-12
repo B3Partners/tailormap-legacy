@@ -658,7 +658,7 @@ Ext.define ("viewer.components.Maptip",{
     },
     createCallbackLink: function(entry, feature, appLayer, coords) {
         var callbackLink = document.createElement("a");
-        callbackLink.href = '#edit-feature';
+        callbackLink.href = '#callback-' + (entry.label).replace(' ', '');
         callbackLink.innerHTML = entry.label;
         callbackLink.addEventListener("click", function (e) {
             e.preventDefault();

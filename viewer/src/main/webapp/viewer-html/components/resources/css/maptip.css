@@ -100,7 +100,7 @@
     width: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
-    border-bottom: 1px solid #D7D7D7;
+    border-bottom: 1px solid #C7C7C7;
     overflow: auto;
 }
 .feature_summary_feature div{    
@@ -133,8 +133,12 @@
     clear: none;
 }
 .feature_callback_link{
-    width: 50%;
+    width: 100%;
     clear: none;
+    text-align: right;
+}
+.feature_callback_link a {
+    margin-right: .5em;
 }
 .feature_summary_detail{
     width: 40%;
