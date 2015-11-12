@@ -24,6 +24,7 @@ Ext.define("viewer.components.Edit", {
     inputContainer: null,
     showGeomType: null,
     newGeomType: null,
+    tekstGeom: 'feature',
     mode: null,
     layerSelector: null,
     toolMapClick: null,
@@ -376,29 +377,28 @@ Ext.define("viewer.components.Edit", {
         this.showGeomType = type;
         var possible = true;
         var tekst = "";
-        var tekstGeom = "";
         switch (type) {
             case "multipolygon":
                 this.showGeomType = "MultiPolygon";
                 this.newGeomType = "Polygon";
-                tekstGeom = "vlak";
+                this.tekstGeom = "vlak";
                 break;
             case "polygon":
                 this.showGeomType = "Polygon";
                 this.newGeomType = "Polygon";
-                tekstGeom = "vlak";
+                this.tekstGeom = "vlak";
                 break;
             case "multipoint":
             case "point":
                 this.showGeomType = "Point";
                 this.newGeomType = "Point";
-                tekstGeom = "punt";
+                this.tekstGeom = "punt";
                 break;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
                 this.newGeomType = "LineString";
-                tekstGeom = "lijn";
+                this.tekstGeom = "lijn";
                 break;
             case "geometry":
                 possible = true;
@@ -424,9 +424,9 @@ Ext.define("viewer.components.Edit", {
                     tekst = "Geometrie mag alleen bewerkt worden";
                 } else {
                     Ext.getCmp(this.name + "newButton").setDisabled(false);
-                    tekst = 'Bewerk een ' + tekstGeom + " op de kaart";
+                    tekst = 'Bewerk een ' + this.tekstGeom + " op de kaart";
                     if (this.config.allowDelete) {
-                        tekst = 'Verwijder een ' + tekstGeom + " uit de kaart";
+                        tekst = 'Bewerk of verwijder een ' + this.tekstGeom + " uit de kaart";
                     }
                 }
             } else {
@@ -669,24 +669,31 @@ Ext.define("viewer.components.Edit", {
     createNew: function () {
         this.clearFeature();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+        Ext.getCmp(this.name + "geomLabel").setText("");
         this.mode = "new";
         if (this.newGeomType != null && this.geometryEditable) {
             this.vectorLayer.drawFeature(this.newGeomType);
         }
+        Ext.getCmp(this.name + "saveButton").setText("Opslaan");
     },
     edit: function () {
         this.clearFeature();
+        Ext.getCmp(this.name + "geomLabel").setText("Selecteer een te bewerken " + this.tekstGeom + " in de kaart");
         this.mode = "edit";
         this.activateMapClick();
+        Ext.getCmp(this.name + "saveButton").setText("Opslaan");
     },
     copy: function () {
         this.clearFeature();
+        Ext.getCmp(this.name + "geomLabel").setText("Selecteer een te kopieren " + this.tekstGeom + " in de kaart");
         this.mode = "copy";
         this.activateMapClick();
+        Ext.getCmp(this.name + "saveButton").setText("Opslaan");
     },
     deleteFeature: function () {
         if (this.config.allowDelete) {
             this.clearFeature();
+            Ext.getCmp(this.name + "geomLabel").setText("Selecteer een te verwijderen " + this.tekstGeom + " in de kaart");
             this.mode = "delete";
             this.activateMapClick();
             Ext.getCmp(this.name + "saveButton").setText("Verwijderen");
