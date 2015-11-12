@@ -12,9 +12,10 @@
         id number(19,0) not null,
         selected_index number(10,0),
         application number(19,0),
-        level number(19,0),
+        level_ number(19,0),
         primary key (id)
     );
+
 
     alter table start_layer 
         add constraint FKA4C6AB342A91FB84 
@@ -32,6 +33,6 @@
         references application;
 
     alter table start_level 
-        add constraint FKA4C87167F47CA2EC 
-        foreign key (level) 
+        add constraint FKA4C87167AC6CDCC3 
+        foreign key (level_) 
         references level_;
