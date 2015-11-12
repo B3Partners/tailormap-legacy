@@ -221,10 +221,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         var olGeom, wkt;
         data.forEach(function (element, index, array) {
             // test for keys in element, some WFS just return all attributes anyway..
-            if (Object.keys(element).length > 1 && !(Object.keys(element).length === 2 && Object.keys(element)[1] === 'related_featuretypes')) {
+            if (Object.keys(element).length > 2 &&
+                    !(Object.keys(element).length === 3 && Object.keys(element)[2] === 'related_featuretypes')) {
                 wkt = element[Object.keys(element)[geometryAttributeIndex]];
             } else {
-                wkt = element[Object.keys(element)[0]];
+                wkt = element[Object.keys(element)[1]];
             }
             olGeom = OpenLayers.Geometry.fromWKT(wkt);
             olGeom.calculateBounds();
