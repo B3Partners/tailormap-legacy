@@ -36,3 +36,7 @@
         add constraint FKA4C87167AC6CDCC3 
         foreign key (level_) 
         references level_;
+
+    create sequence startlayer_id_seq;
+    create sequence startlevel_id_seq;
+
