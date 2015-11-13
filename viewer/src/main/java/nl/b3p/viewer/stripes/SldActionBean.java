@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.io.*;
 import java.net.URL;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -512,17 +511,10 @@ public class SldActionBean implements ActionBean {
                     Filter f = CQL.toFilter(filter);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
                     f = FeatureToJson.reformatFilter(f, sft);
-                    // TODO remove
-                    json.put("filter", CQL.toCQL(f));
-                    //
-                    // filter CQL opslaan in sessie, 
-                    // per kaartlaag is er 1 filter in de sessie, dus iedere keer overschrijven
-                    HttpSession sess = context.getRequest().getSession();
-                    sess.setAttribute(applicationLayer.getId().toString(), CQL.toCQL(f));
-                    json.put("filterSessID", sess.getId());
+                    json.put("filter",CQL.toCQL(f));                
                     json.put("success", Boolean.TRUE);
                 }
-
+                
             }else{
                 error="No filter to transform or no applicationlayer";
             }
@@ -535,6 +527,4 @@ public class SldActionBean implements ActionBean {
         }
         return new StreamingResolution("application/json",new StringReader(json.toString()));
     }
-
-
 }
