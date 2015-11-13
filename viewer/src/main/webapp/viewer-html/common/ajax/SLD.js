@@ -125,10 +125,11 @@ Ext.define("viewer.SLD", {
         return url;
     },
 
-    createURLWithHash: function(hash){
+    createURLWithHash: function(hash, sessionId){
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
        
         url = Ext.String.urlAppend(url, "hash=" + hash);
+        url = Ext.String.urlAppend(url, "sessionId=" + sessionId);
         return url;
     },
     
@@ -142,8 +143,9 @@ Ext.define("viewer.SLD", {
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 response.sldId = "asdf";
+                response.sessId = "SESSIONID";
                 if(response.success) {
-                    successFunction(response.filter,response.sldId);
+                    successFunction(response.filter,response.sldId, response.sessId);
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);

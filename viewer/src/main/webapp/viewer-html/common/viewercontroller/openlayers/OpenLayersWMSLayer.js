@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     getMapTipControl : function(){
         return this.mapTipControl;
     },
-    setQuery : function (filter, sldHash){
+    setQuery : function (filter, sldHash, sessionId){
         if(filter && filter.getCQL() != ""){
             var service = this.config.viewerController.app.services[this.serviceId];
             var layer = service.layers[this.options.name];
@@ -109,7 +109,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
                                 this.config.sld ? this.config.sld.id : null,
                                 filter.getCQL());
                         }else{
-                            url = Ext.create(viewer.SLD).createURLWithHash(sldHash);
+                            url = Ext.create(viewer.SLD).createURLWithHash(sldHash, sessionId);
                         }
                         this.setOGCParams({"SLD": url});
                         this.reload();
