@@ -124,6 +124,13 @@ Ext.define("viewer.SLD", {
         url = Ext.String.urlAppend(url, "format=xml");
         return url;
     },
+
+    createURLWithHash: function(hash){
+        var url = absoluteURIPrefix + this.config.actionbeanUrl;
+       
+        url = Ext.String.urlAppend(url, "hash=" + hash);
+        return url;
+    },
     
     transformFilter: function (filter,appLayerId,successFunction, failureFunction){
         Ext.Ajax.request({
@@ -134,9 +141,9 @@ Ext.define("viewer.SLD", {
             },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
+                response.sldId = "asdf";
                 if(response.success) {
-                    successFunction(response.filter);
+                    successFunction(response.filter,response.sldId);
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);
