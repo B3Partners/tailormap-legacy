@@ -125,12 +125,14 @@ Ext.define("viewer.SLD", {
         return url;
     },
 
-    createURLWithHash: function(hash, sessionId){
+    createURLWithHash: function(hash, sessionId, layers, styles){
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
        
         url = Ext.String.urlAppend(url, "sldId=" + hash);
         url = Ext.String.urlAppend(url, "sessionId=" + sessionId);
         url = Ext.String.urlAppend(url, "findSLD=t");
+        url = Ext.String.urlAppend(url, "layer=" + layers);
+        url = Ext.String.urlAppend(url, "style=" + styles);
         return url;
     },
     

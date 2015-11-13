@@ -109,7 +109,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
                                 this.config.sld ? this.config.sld.id : null,
                                 filter.getCQL());
                         }else{
-                            url = Ext.create(viewer.SLD).createURLWithHash(sldHash, sessionId);
+                            url = Ext.create(viewer.SLD).createURLWithHash(
+                                sldHash,
+                                sessionId,
+                                this.options["layers"],
+                                this.getOption("styles") || "default");
                         }
                         this.setOGCParams({"SLD": url});
                         this.reload();
