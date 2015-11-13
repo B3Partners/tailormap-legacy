@@ -558,7 +558,7 @@ public class SldActionBean implements ActionBean {
                 error = "No filter to transform or no applicationlayer";
             }
         } catch (Exception e) {
-            log.error("Error while reformating filter", e);
+            log.error("Error while reformatting filter", e);
             error = e.toString();
         }
         if (error != null) {
@@ -567,16 +567,13 @@ public class SldActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
-        
-
- 
-
     public Resolution findSLD() throws CQLException {
         Map<String, String> sharedData = SharedSessionData.find(sessId);
         String cql = sharedData.get(sldId);
         final Filter flt;
         if (cql != null) {
             flt = CQL.toFilter(cql);
+
         } else {
             // return a non-filtering flt
             flt = Filter.INCLUDE;

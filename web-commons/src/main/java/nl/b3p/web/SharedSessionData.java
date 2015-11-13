@@ -23,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Maintain a list of active sessions on the application to provide a means of
@@ -31,7 +33,7 @@ import javax.servlet.http.HttpSessionListener;
  * @author Mark Prins <mark@b3partners.nl>
  */
 public class SharedSessionData implements HttpSessionListener {
-
+    private static final Log log = LogFactory.getLog(SharedSessionData.class);
     /**
      * The map that holds a map per sessionid.
      */
@@ -39,10 +41,12 @@ public class SharedSessionData implements HttpSessionListener {
 
     public void sessionCreated(HttpSessionEvent event) {
         HttpSession session = event.getSession();
+        log.debug("adding a map for session: " + session.getId());
         sessions.put(session.getId(), new ConcurrentHashMap<String, String>(8));
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
+        log.debug("removing data for session: " + event.getSession().getId());
         sessions.remove(event.getSession().getId());
     }
 
@@ -57,6 +61,7 @@ public class SharedSessionData implements HttpSessionListener {
      * @return a Map with the stored data
      */
     public static Map<String, String> find(String sessionId) {
+        log.debug("Looking for data associated with session: " + sessionId);
         if (sessions.containsKey(sessionId)) {
             return sessions.get(sessionId);
         } else {
