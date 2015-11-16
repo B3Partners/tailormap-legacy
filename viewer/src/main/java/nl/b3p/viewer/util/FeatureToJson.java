@@ -161,7 +161,9 @@ public class FeatureToJson {
             }
         }
         //if edit and not yet set
-        if(edit && j.optString(FID,null)==null) {
+        // removed check for edit variable here because we need to compare features in edit component and feature info attributes
+        // was if(edit && j.optString(FID,null)==null) {
+        if(j.optString(FID,null)==null) {
             String id = f.getID();
             j.put(FID, id);
         }

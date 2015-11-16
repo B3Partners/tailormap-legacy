@@ -71,7 +71,7 @@ Ext.onReady(function() {
         bodyPadding: '8px 10px',
         collapsedCls: 'headerCollapsed',
         fieldDefaults: {
-            labelWidth: 150,
+            labelWidth: 170,
             size: 40
         },
         listeners: {
@@ -673,6 +673,12 @@ function getAttributeEditSettings(attribute, name) {
         },
         {
             fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'
+        },
+        {
+            fieldLabel: 'Alleen keuze uit lijst', name: 'allowValueListOnly', inputValue: 1, checked: attribute.allowValueListOnly || 0, xtype: 'checkbox'
+        },
+        {
+            fieldLabel: 'Geen lege waarde toestaan', name: 'disallowNullValue', inputValue: 1, checked: attribute.disallowNullValue || 0, xtype: 'checkbox'
         }
     ];
 }
@@ -684,8 +690,8 @@ function toggleStaticDynamic(type, attribute) {
 }
 
 function getAttributeEditHeight(type) {
-    var STATIC_HEIGHT = 190;
-    var DYNAMIC_HEIGHT = 290;
+    var STATIC_HEIGHT = 250;
+    var DYNAMIC_HEIGHT = 350;
     return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
 }
 

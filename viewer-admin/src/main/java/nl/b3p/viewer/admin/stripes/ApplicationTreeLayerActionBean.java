@@ -469,6 +469,12 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                         appAttribute.setValueList(attribute.getString("valueList"));
                     }
 
+                    if (attribute.has("allowValueListOnly")) {
+                        appAttribute.setAllowValueListOnly(new Boolean(attribute.get("allowValueListOnly").toString()));
+                    }
+                    if (attribute.has("disallowNullValue")) {
+                        appAttribute.setDisallowNullValue(new Boolean(attribute.get("disallowNullValue").toString()));
+                    }
                 }
                 i++;
             }
