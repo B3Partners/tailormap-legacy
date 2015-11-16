@@ -129,7 +129,7 @@ Ext.define("viewer.SLD", {
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
        
         url = Ext.String.urlAppend(url, "sldId=" + hash);
-        url = Ext.String.urlAppend(url, "sessionId=" + sessionId);
+        url = Ext.String.urlAppend(url, "sessId=" + sessionId);
         url = Ext.String.urlAppend(url, "findSLD=t");
         url = Ext.String.urlAppend(url, "layer=" + layers);
         url = Ext.String.urlAppend(url, "style=" + styles);
