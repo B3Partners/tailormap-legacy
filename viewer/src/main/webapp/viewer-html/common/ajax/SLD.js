@@ -124,6 +124,17 @@ Ext.define("viewer.SLD", {
         url = Ext.String.urlAppend(url, "format=xml");
         return url;
     },
+
+    createURLWithHash: function(hash, sessionId, layers, styles){
+        var url = absoluteURIPrefix + this.config.actionbeanUrl;
+       
+        url = Ext.String.urlAppend(url, "sldId=" + hash);
+        url = Ext.String.urlAppend(url, "sessId=" + sessionId);
+        url = Ext.String.urlAppend(url, "findSLD=t");
+        url = Ext.String.urlAppend(url, "layer=" + layers);
+        url = Ext.String.urlAppend(url, "style=" + styles);
+        return url;
+    },
     
     transformFilter: function (filter,appLayerId,successFunction, failureFunction){
         Ext.Ajax.request({
@@ -134,9 +145,8 @@ Ext.define("viewer.SLD", {
             },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
                 if(response.success) {
-                    successFunction(response.filter);
+                    successFunction(response.filter,response.sldId, response.sessId);
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);

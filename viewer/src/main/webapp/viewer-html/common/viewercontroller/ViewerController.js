@@ -1274,7 +1274,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             Ext.create("viewer.SLD",{
                 actionbeanUrl : url
             }).transformFilter(appLayer.filter.getCQL(),appLayer.id,
-                function(newFilter){
+                function(newFilter, hash, sessionId){
                     //success
                     var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper",{
                         id: "",
@@ -1282,8 +1282,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         operator : ""
                     });
                     //cqlBandage.addOrReplace(newFilter);
-                    mapLayer.setQuery(cqlBandage);
-                    me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,cqlBandage,appLayer);
+                    mapLayer.setQuery(cqlBandage, hash, sessionId);
+                    me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,null,appLayer);
                 },function(message){
                     //failure
                     me.logger.error("Error while transforming SLD for joined/related featuretypes: "+ message);

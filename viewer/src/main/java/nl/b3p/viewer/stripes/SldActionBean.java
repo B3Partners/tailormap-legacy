@@ -19,6 +19,7 @@ package nl.b3p.viewer.stripes;
 import java.awt.Color;
 import java.io.*;
 import java.net.URL;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,6 +35,7 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.StyleLibrary;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.web.SharedSessionData;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -511,10 +513,20 @@ public class SldActionBean implements ActionBean {
                     Filter f = CQL.toFilter(filter);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
                     f = FeatureToJson.reformatFilter(f, sft);
-                    json.put("filter",CQL.toCQL(f));                
+                    // TODO remove
+                    String cqlFilter = ECQL.toCQL(f);
+                    json.put("filter", cqlFilter);
+                    //
+                    // flt CQL opslaan in sessie,
+                    // per kaartlaag is er 1 flt in de sessie, dus iedere keer overschrijven
+                    String sId = context.getRequest().getSession().getId();
+                    Map<String, String> sharedData = SharedSessionData.find(sId);
+                    sharedData.put(applicationLayer.getId().toString(), cqlFilter);
+                    json.put("sessId", sId);
+                    json.put("sldId", applicationLayer.getId().toString());
                     json.put("success", Boolean.TRUE);
                 }
-                
+
             }else{
                 error="No filter to transform or no applicationlayer";
             }
@@ -527,4 +539,6 @@ public class SldActionBean implements ActionBean {
         }
         return new StreamingResolution("application/json",new StringReader(json.toString()));
     }
+
+
 }
