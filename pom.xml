@@ -28,7 +28,7 @@
     <properties>
         <flamingo.version>4.5.7-SNAPSHOT</flamingo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <geotools.version>9.2</geotools.version>
+        <geotools.version>14.0</geotools.version>
         <powermock.version>1.5.5</powermock.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
     </properties>
