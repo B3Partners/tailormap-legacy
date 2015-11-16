@@ -19,6 +19,8 @@ package nl.b3p.viewer.stripes;
 import java.awt.Color;
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -528,6 +530,15 @@ public class SldActionBean implements ActionBean {
      */
 
     public Resolution transformFilter() throws JSONException {
+
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        List<Integer> ar = new ArrayList<Integer>();
+        ar.add(1);
+        ar.add(2);
+        ar.add(3);
+        Filter fil = ff.equals(ff.property("id"), ff.literal(ar));
+
+        String s = CQL.toCQL(fil);
         JSONObject json = new JSONObject();
         String error = null;
         try {
@@ -538,17 +549,18 @@ public class SldActionBean implements ActionBean {
                     error = "Layer not found";
                 } else {
                     SimpleFeatureType sft = layer.getFeatureType();
-                    Filter f = CQL.toFilter(filter);
+                    Filter f = ECQL.toFilter(filter);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
                     f = FeatureToJson.reformatFilter(f, sft);
                     // TODO remove
-                    json.put("filter", CQL.toCQL(f));
+                    String cqlFilter = ECQL.toCQL(f);
+                    json.put("filter", cqlFilter);
                     //
                     // flt CQL opslaan in sessie,
                     // per kaartlaag is er 1 flt in de sessie, dus iedere keer overschrijven
                     String sId = context.getRequest().getSession().getId();
                     Map<String, String> sharedData = SharedSessionData.find(sId);
-                    sharedData.put(applicationLayer.getId().toString(), CQL.toCQL(f));
+                    sharedData.put(applicationLayer.getId().toString(), cqlFilter);
                     json.put("sessId", sId);
                     json.put("sldId", applicationLayer.getId().toString());
                     json.put("success", Boolean.TRUE);
