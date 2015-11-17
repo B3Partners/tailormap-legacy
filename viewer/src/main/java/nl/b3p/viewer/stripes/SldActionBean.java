@@ -42,6 +42,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.emf.common.util.URI;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.styling.*;
 import org.json.JSONArray;
@@ -98,6 +99,12 @@ public class SldActionBean implements ActionBean {
     
     @Validate
     private String format;
+
+    @Validate
+    private String sldId;
+
+    @Validate
+    private String sessId;
     
     @Validate 
     private ApplicationLayer applicationLayer;
@@ -195,6 +202,22 @@ public class SldActionBean implements ActionBean {
 
     public void setCommonOrFilter(String commonOrFilter) {
         this.commonOrFilter = commonOrFilter;
+    }
+
+    public String getSldId() {
+        return sldId;
+    }
+
+    public void setSldId(String sldId) {
+        this.sldId = sldId;
+    }
+
+    public String getSessId() {
+        return sessId;
+    }
+
+    public void setSessId(String sessId) {
+        this.sessId = sessId;
     }
     //</editor-fold>
     
@@ -513,10 +536,11 @@ public class SldActionBean implements ActionBean {
                     Filter f = CQL.toFilter(filter);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
                     f = FeatureToJson.reformatFilter(f, sft);
-                    // TODO remove
                     String cqlFilter = ECQL.toCQL(f);
-                    json.put("filter", cqlFilter);
-                    //
+                    if(f == Filter.EXCLUDE){
+                        String attributeName = sft.getAttributes().get(0).getName();
+                        cqlFilter = attributeName + " = 1 and " + attributeName + " <> 1";
+                    }
                     // flt CQL opslaan in sessie,
                     // per kaartlaag is er 1 flt in de sessie, dus iedere keer overschrijven
                     String sId = context.getRequest().getSession().getId();
@@ -540,5 +564,13 @@ public class SldActionBean implements ActionBean {
         return new StreamingResolution("application/json",new StringReader(json.toString()));
     }
 
+    public Resolution findSLD() throws CQLException, JSONException, UnsupportedEncodingException {
+        Map<String, String> sharedData = SharedSessionData.find(sessId);
+        String cqlFilter = sharedData.get(sldId);
+        JSONArray filterArray = new JSONArray();
+        filterArray.put(cqlFilter);
+        filter = filterArray.toString();
+        return this.create();
+    }
 
 }
