@@ -696,7 +696,7 @@ public class GeoServiceActionBean implements ActionBean {
 
         Map params = new HashMap();
 
-            if (protocol.equals(WMSService.PROTOCOL)) {
+        if (protocol.equals(WMSService.PROTOCOL)) {
             params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
             params.put(WMSService.PARAM_USERNAME, username);
             params.put(WMSService.PARAM_PASSWORD, password);

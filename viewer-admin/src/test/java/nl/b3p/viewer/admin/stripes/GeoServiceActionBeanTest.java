@@ -67,16 +67,32 @@ public class GeoServiceActionBeanTest extends TestUtil{
         }
     }
 
- //   @Test
+    @Test
     public void addArcGISService(){
-        //https://geodata.nationaalgeoregister.nl/rwsgeluidskaarten/wms?request=GetCapabilities
-        //protocol
-        //overrideUrl
-        //username
-        //password
-        // url
-        //exception_type
-        //agsVersion
+         try {
+            String url = "http://geoservices.zuid-holland.nl/arcgis/rest/services/Cultuur/CHS_2014_Archeologie/MapServer";
+            String protocol = "arcgis";
+            boolean overrideUrl = false;
+            Category cat = new Category();
+            cat.setId(1L);
+            ActionBeanContext context = new ActionBeanContext();
+
+            GeoServiceActionBean ab = new GeoServiceActionBean();
+            ab.setUrl(url);
+            ab.setProtocol(protocol);
+            ab.setOverrideUrl(overrideUrl);
+            ab.setCategory(cat);
+            ab.setContext(context);
+            ab.addService(entityManager);
+            GeoService service = ab.getService();
+
+            List<Layer> layers = service.loadLayerTree(entityManager);
+            assertEquals(layers.size(), 18);
+            assertEquals(service.getUrl(), url);
+        } catch (Exception ex) {
+            log.error("Error testing adding a geoservice:", ex);
+            assert(false);
+        }
     }
 
 }
