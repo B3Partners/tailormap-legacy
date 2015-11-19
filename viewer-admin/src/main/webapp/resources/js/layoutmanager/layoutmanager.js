@@ -693,6 +693,7 @@ Ext.define('LayoutManager', {
             componentName: componentName,
             componentClass: data.componentData.className,
             componentPrettyName: data.componentData.name,
+            currentRegion: layoutRegion.get('id'),
             reorderable: true,
             listeners: {
                 render: function(v) {
@@ -882,7 +883,14 @@ Ext.define('LayoutManager', {
         }else{
             url += "?";
         }
-        url += "name=" + componentData.componentName + "&className=" + componentData.componentClass;
+        url += [
+            "name=",
+            componentData.componentName,
+            "&className=",
+            componentData.componentClass,
+            "&currentRegion=",
+            componentData.currentRegion
+        ].join("");
         if(viewer_admin_debug_mode) {
             url += '&debug=true';
         }
