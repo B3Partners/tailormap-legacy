@@ -23,6 +23,8 @@ import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.TestUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -33,13 +35,14 @@ import org.junit.Test;
  */
 public class GeoServiceActionBeanTest extends TestUtil{
 
+    private static final Log log = LogFactory.getLog(GeoServiceActionBeanTest.class);
     public GeoServiceActionBeanTest() {
     }
 
     @Test
     public void addWMSService(){
         try {
-            String url = "http://geodata.nationaalgeoregister.nl/rwsgeluidskaarten/wms?request=GetCapabilities";
+            String url = "http://geodata.nationaalgeoregister.nl/rwsgeluidskaarten/wms?SERVICE=WMS&";
             String protocol = "wms";
             boolean overrideUrl = false;
             Category cat = new Category();
@@ -57,7 +60,9 @@ public class GeoServiceActionBeanTest extends TestUtil{
 
             List<Layer> layers = service.loadLayerTree(entityManager);
             assertEquals(layers.size(), 3);
+            assertEquals(service.getUrl(), url);
         } catch (Exception ex) {
+            log.error("Error testing adding a geoservice:", ex);
             assert(false);
         }
     }
