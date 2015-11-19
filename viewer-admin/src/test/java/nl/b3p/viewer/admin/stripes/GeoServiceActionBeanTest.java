@@ -70,7 +70,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
     @Test
     public void addArcGISService(){
          try {
-            String url = "http://geoservices.zuid-holland.nl/arcgis/rest/services/Cultuur/CHS_2014_Archeologie/MapServer";
+            String url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
             String protocol = "arcgis";
             boolean overrideUrl = false;
             Category cat = new Category();
@@ -87,7 +87,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
             GeoService service = ab.getService();
 
             List<Layer> layers = service.loadLayerTree(entityManager);
-            assertEquals(layers.size(), 18);
+            assertEquals(layers.size(), 2);
             assertEquals(service.getUrl(), url);
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice:", ex);
