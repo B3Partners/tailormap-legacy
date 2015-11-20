@@ -188,8 +188,9 @@ public class SplitFeatureActionBean implements ActionBean {
      * @param features a list of features that can be modified
      * @return the list of features to be committed to the database
      * @see #handleExtraData(org.opengis.feature.simple.SimpleFeature)
+     * @throws Exception if any
      */
-    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) {
+    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) throws Exception {
         return features;
     }
 
@@ -199,8 +200,9 @@ public class SplitFeatureActionBean implements ActionBean {
      * @param feature the feature that can be modified
      * @return the feature to be committed to the database @see
      * #handleExtraData(java.util.List)
+     * @throws Exception if any
      */
-    protected SimpleFeature handleExtraData(SimpleFeature feature) {
+    protected SimpleFeature handleExtraData(SimpleFeature feature) throws Exception {
         final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
         features.add(feature);
         return this.handleExtraData(features).get(0);
