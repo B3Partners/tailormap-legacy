@@ -323,10 +323,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
             }
         });
-        
-        // Sort the attributes by name (per featuretype)
-        sortPerFeatureType(layerSft, cas);
-        
+        if(layerSft != null){
+            // Sort the attributes by name (per featuretype)
+            sortPerFeatureType(layerSft, cas);
+        }
+
         for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
             
