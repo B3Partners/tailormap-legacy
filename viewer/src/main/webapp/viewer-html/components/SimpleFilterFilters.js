@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 Ext.define("viewer.components.sf.SimpleFilterBase",{
-    wrapSimpleFilter: function(label, contents) {
+    wrapSimpleFilter: function(label, contents, className) {
         var contentBefore = [
-            "<div class=\"simple-filter-container steunkleur1 steunkleur2\">",
+            "<div class=\"simple-filter-container steunkleur1 steunkleur2", (className ? " " + className : "") ,"\">",
                 "<div class=\"simple-filter-inner\">",
                     "<table>",
                         "<tbody>"
@@ -210,13 +210,13 @@ Ext.define("viewer.components.sf.Reset", {
     }
 });
 
-Ext.define("viewer.components.sf.Label", {
+Ext.define("viewer.components.sf.TextLabel", {
     extend: "viewer.components.sf.SimpleFilterBase",
     constructor : function(config){
         this.initConfig(config);
-        var t = this.wrapSimpleFilter(config.label, []);
+        var t = this.wrapSimpleFilter(config.filterConfig.textlabel, [], "simple-filter-textlabel");
         new Ext.Template(t).append(this.config.container, {
-            label: config.label
+            label: config.filterConfig.textlabel
         });
     }
 });
