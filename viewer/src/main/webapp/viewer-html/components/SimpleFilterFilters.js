@@ -14,7 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.define("viewer.components.sf.SimpleFilterBase",{
+    wrapSimpleFilter: function(label, contents) {
+        var contentBefore = [
+            "<div class=\"simple-filter-container steunkleur1 steunkleur2\">",
+                "<div class=\"simple-filter-inner\">",
+                    "<table>",
+                        "<tbody>"
+        ];
+        var labelContent = [];
+        if(!Ext.isEmpty(label)) {
+            labelContent.push("<tr><td colspan=\"3\" align=\"center\">{label}</td></tr>");
+        }
+        var contentAfter = [
+                        "</tbody>",
+                    "</table>",
+                "</div>",
+            "</div>"
+        ];
+        return contentBefore.concat(labelContent, contents, contentAfter).join("");
+    }
+});
 Ext.define("viewer.components.sf.SimpleFilter",{
+    extend: "viewer.components.sf.SimpleFilterBase",
     ready: null,
     layersLoaded:null,
     attributesLoaded:null,
@@ -154,29 +176,18 @@ Ext.define("viewer.components.sf.SimpleFilter",{
 });
 
 Ext.define("viewer.components.sf.Reset", {
+    extend: "viewer.components.sf.SimpleFilterBase",
     constructor : function(config){
         this.initConfig(config);
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_reset\"></div></td>" +
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(config.label, [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_reset\"></div></td>",
+            "</tr>"
+        ]);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: config.label,
             name: this.config.name
         });
-
         Ext.create("Ext.button.Button", {
             id: "reset" + this.config.name,
             name: "reset" + this.config.name,
@@ -199,6 +210,17 @@ Ext.define("viewer.components.sf.Reset", {
     }
 });
 
+Ext.define("viewer.components.sf.Label", {
+    extend: "viewer.components.sf.SimpleFilterBase",
+    constructor : function(config){
+        this.initConfig(config);
+        var t = this.wrapSimpleFilter(config.label, []);
+        new Ext.Template(t).append(this.config.container, {
+            label: config.label
+        });
+    }
+});
+
 Ext.define("viewer.components.sf.Checkbox", {
     extend: "viewer.components.sf.SimpleFilter",
     options:null,
@@ -211,23 +233,12 @@ Ext.define("viewer.components.sf.Checkbox", {
 
         var filterConfig = this.config.filterConfig;
         this.options = filterConfig.options;
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(filterConfig.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_checkbox\"></div></td>" +
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(filterConfig.label, [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_checkbox\"></div></td>",
+            "</tr>"
+        ]);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: filterConfig.label,
             name: this.config.name
         });
@@ -403,24 +414,12 @@ Ext.define("viewer.components.sf.Combo", {
         } else {
             config.start = config.start !== "" ? Number(config.start) : -1;
         }
-
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_combo\"></div></td>" +
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(config.label, [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_combo\"></div></td>",
+            "</tr>"
+        ]);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: config.label,
             name: this.config.name
         });
@@ -585,40 +584,30 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
 
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(c.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_slider\"></div></td>" +
-            "        </tr>";
-
+        var templatecontents = [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_slider\"></div></td>",
+            "</tr>"
+        ];
         if(!Ext.isEmpty(c.valueFormatString)) {
             if(c.sliderType === "range") {
-                t += "        <tr>" +
-                    "            <td><span id=\"" + n + "_min\"></span></td>" +
-                    "            <td></td>" +
-                    "            <td align=\"right\"><span id=\"{name}_max\"></span></td>" +
-                    "        </tr>";
+                templatecontents.push(
+                    "<tr>",
+                        "<td><span id=\"", n, "_min\"></span></td>",
+                        "<td></td>",
+                        "<td align=\"right\"><span id=\"{name}_max\"></span></td>",
+                    "</tr>"
+                );
             } else {
-                t += "        <tr>" +
-                    "            <td align=\"center\"><span id=\"{name}_value\"></span></td>" +
-                    "        </tr>";
+                templatecontents.push(
+                    "<tr>",
+                        "<td colspan=\"3\" align=\"center\"><span id=\"{name}_value\"></span></td>",
+                    "</tr>"
+                );
             }
         }
-
-        t +=
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(c.label, templatecontents);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: c.label,
             name: this.config.name
         });

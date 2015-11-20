@@ -1,0 +1,35 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 20, 2015, 4:43:13 PM
+    Author     : geertplaisier
+color: {steunkleur2};
+    background: {steunkleur1};
+*/
+
+.simple-filter-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    position: absolute;
+}
+
+.simple-filter-container {
+    padding-left: 5px;
+    padding-top: 3px;
+    padding-bottom: 16px;
+}
+
+.simple-filter-inner {
+    margin-top: 4px;
+    padding: 3px;
+    color: black;
+    background-color: #ced3d9;
+}
+
+.simple-filter-inner > table {
+    width: 100%;
+}
