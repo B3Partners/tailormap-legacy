@@ -38,6 +38,7 @@ Ext.define("viewer.components.Merge", {
     constructor: function (conf) {
         viewer.components.Merge.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        this.config.actionbeanUrl = contextPath + '/action/feature/merge';
 
         var me = this;
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
