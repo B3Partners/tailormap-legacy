@@ -70,7 +70,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
     @Test
     public void addArcGISService(){
          try {
-            String url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
+            String url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
             String protocol = "arcgis";
             boolean overrideUrl = false;
             Category cat = new Category();
