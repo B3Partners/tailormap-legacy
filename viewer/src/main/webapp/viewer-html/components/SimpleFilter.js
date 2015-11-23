@@ -35,7 +35,7 @@ Ext.define("viewer.components.SimpleFilter", {
             width: '100%',
             height: '100%',
             renderTo: this.div,
-            html: '<div style="width: 100%; height: 100%; overflow: auto;" id="' + containerContentId + '"></div>'
+            html: '<div class="simple-filter-wrapper" id="' + containerContentId + '"></div>'
         });
 
         var me = this;

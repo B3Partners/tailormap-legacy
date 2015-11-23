@@ -38,7 +38,8 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {type: "combo", label: "Selectielijst"},
                 {type: "checkbox", label: "Vinkvak"},
                 {type: "radio", label: "Keuzerondje"},
-                {type: "reset", label: "Reset filter knop"}
+                {type: "reset", label: "Reset filter knop"},
+                {type: "textLabel", label: "Tekst label"}
             ]
         });
 
@@ -319,7 +320,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.createFilterConfig(type, config.config);
     },
     createDescription: function(type, appLayer, filter) {
-        return type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + (filter.attributeAlias || filter.attributeName);
+        return (type === "Reset" || type === "TextLabel") ? " - " : (appLayer.alias || appLayer.layerName) + "." + (filter.attributeAlias || filter.attributeName);
     },
     saveCurrentConfig: function(button, e, eOpts) {
         if(this.filterConfigurer) {
