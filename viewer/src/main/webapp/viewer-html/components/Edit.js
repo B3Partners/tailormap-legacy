@@ -44,6 +44,7 @@ Ext.define("viewer.components.Edit", {
         label: "",
         allowDelete: false,
         allowCopy: false,
+        allowNew: true,
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor',
         showEditLinkInFeatureInfo: true
@@ -271,6 +272,9 @@ Ext.define("viewer.components.Edit", {
         if (!this.config.allowCopy) {
             Ext.getCmp(this.name + "copyButton").destroy();
         }
+        if (!this.config.allowNew) {
+            Ext.getCmp(this.name + "newButton").destroy();
+        }
 
         this.inputContainer = Ext.getCmp(this.name + 'InputPanel');
     },
@@ -423,7 +427,9 @@ Ext.define("viewer.components.Edit", {
                 if (this.newGeomType == null) {
                     tekst = "Geometrie mag alleen bewerkt worden";
                 } else {
-                    Ext.getCmp(this.name + "newButton").setDisabled(false);
+                    if (!this.config.allowNew) {
+                        Ext.getCmp(this.name + "newButton").setDisabled(false);
+                    }
                     tekst = 'Bewerk een ' + this.tekstGeom + " op de kaart";
                     if (this.config.allowDelete) {
                         tekst = 'Bewerk of verwijder een ' + this.tekstGeom + " uit de kaart";
@@ -454,7 +460,9 @@ Ext.define("viewer.components.Edit", {
         } else {
             gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
             Ext.getCmp(this.name + "editButton").setDisabled(true);
-            Ext.getCmp(this.name + "newButton").setDisabled(true);
+            if (!this.config.allowNew) {
+                Ext.getCmp(this.name + "newButton").setDisabled(true);
+            }         
             if (this.config.allowDelete) {
                 Ext.getCmp(this.name + "deleteButton").setDisabled(true);
             }
@@ -813,7 +821,9 @@ Ext.define("viewer.components.Edit", {
     },
     resetForm: function () {
         Ext.getCmp(this.name + "editButton").setDisabled(true);
-        Ext.getCmp(this.name + "newButton").setDisabled(true);
+        if (!this.config.allowNew) {
+            Ext.getCmp(this.name + "newButton").setDisabled(true);
+        }
         if (this.config.allowDelete) {
             Ext.getCmp(this.name + "deleteButton").setDisabled(true);
         }
