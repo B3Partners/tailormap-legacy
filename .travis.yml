@@ -12,7 +12,6 @@ script:
   - mvn -e test verify -B
 
 jdk:
-  - openjdk6
   - openjdk7
   - oraclejdk7
   - oraclejdk8
