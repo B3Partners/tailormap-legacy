@@ -219,8 +219,9 @@ public class DataStoreSpinupActionBean implements ActionBean {
                     }
                 }
             }
-
-            em.getTransaction().commit();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().commit();
+            }
             j.put("success", Boolean.TRUE);
             String summary = String.format("Succesfully spun up %d feature sources"
                     + ", already spun up: %d, errors: %d",
