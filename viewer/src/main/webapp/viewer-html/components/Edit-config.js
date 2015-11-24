@@ -44,6 +44,13 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'checkbox',
+                fieldLabel: 'Nieuw toestaan',
+                name: 'allowNew',
+                value: this.configObject.allowNew !== undefined ? this.configObject.allowNew : true,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
                 fieldLabel: 'Link toevoegen in Feature Info',
                 name: 'showEditLinkInFeatureInfo',
                 value: this.configObject.showEditLinkInFeatureInfo !== undefined ? this.configObject.showEditLinkInFeatureInfo : false,
