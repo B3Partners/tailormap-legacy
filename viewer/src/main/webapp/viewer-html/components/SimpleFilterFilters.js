@@ -210,7 +210,7 @@ Ext.define("viewer.components.sf.Reset", {
     }
 });
 
-Ext.define("viewer.components.sf.TextLabel", {
+Ext.define("viewer.components.sf.Textlabel", {
     extend: "viewer.components.sf.SimpleFilterBase",
     constructor : function(config){
         this.initConfig(config);
