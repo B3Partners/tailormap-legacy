@@ -490,6 +490,17 @@ Ext.define("viewer.components.Edit", {
         } else {
             input = Ext.create("Ext.form.field.Text", options);
         }
+        if (attribute.type === 'date') {
+            // Flamingo uses new SimpleDateFormat("dd-MM-yyyy HH:mm:ss") in
+            // FeatureToJson#formatValue eg. 14-11-2013 00:00:00
+            // Ext uses PHP conventions! see:
+            // https://docs.sencha.com/extjs/5.1/5.1.0-apidocs/#!/api/Ext.Date
+            options.format = 'd-m-Y H:i:s';
+            options.altFormats = 'd-m-y|d-M-Y';
+            // ISO 8601 (local time + UTC offset)
+            options.submitFormat = 'c';
+            input = Ext.create("Ext.form.field.Date", options);
+        }
         return input;
     },
     createDynamicInput: function(attribute, values) {
