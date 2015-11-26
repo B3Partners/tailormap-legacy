@@ -72,7 +72,7 @@
         name: "Streetview",
         group: "Tools",
         shortName: "Sv",
-        sources: ["StreetView.js"],
+        sources: ["tools/Tool.js", "StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
         configSource: ["ConfigObject.js","StreetView-config.js"]
