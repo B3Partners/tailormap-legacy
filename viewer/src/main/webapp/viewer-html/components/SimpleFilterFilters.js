@@ -697,13 +697,13 @@ Ext.define("viewer.components.sf.Slider", {
         this.setFilter(cql);
     },
     updateValueString : function (slider){
-        if(!slider){
+        var formatString = this.config.filterConfig.valueFormatString;
+        if(!slider || !formatString){
             return;
         }
         var slidername = slider.getName();
         var name = slidername.substring(0,slidername.indexOf("_extSlider"));
         var value = slider.getValue();
-        var formatString = this.config.filterConfig.valueFormatString;
 
         if(slider.$className === "Ext.slider.Multi"){
             var spanMin = name + "_min";
