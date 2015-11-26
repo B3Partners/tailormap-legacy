@@ -40,7 +40,8 @@ Ext.define("viewer.components.SimpleFilter", {
 
         var me = this;
         Ext.Array.each(this.config.filters, function(filter, index) {
-            var newFilter = Ext.create(filter.class, {
+            var className = filter["class"];
+            var newFilter = Ext.create(className, {
                 appLayerId: me.config.layers[filter.appLayerId], // convert from index to actual appLayerId
                 attributeName: filter.attributeName,
                 filterConfig: filter.config,
