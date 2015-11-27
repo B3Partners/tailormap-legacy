@@ -292,7 +292,7 @@ public class EditFeatureActionBean  implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
-    private String addNewFeature() throws Exception {
+    protected String addNewFeature() throws Exception {
 
         SimpleFeature f = DataUtilities.template(store.getSchema());
 
