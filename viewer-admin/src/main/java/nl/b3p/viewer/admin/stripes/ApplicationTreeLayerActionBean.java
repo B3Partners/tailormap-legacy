@@ -476,6 +476,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     if (attribute.has("disallowNullValue")) {
                         appAttribute.setDisallowNullValue(new Boolean(attribute.get("disallowNullValue").toString()));
                     }
+                    if (attribute.has("disableUserEdit")) {
+                        appAttribute.setDisableUserEdit(new Boolean(attribute.get("disableUserEdit").toString()));
+                    }
                 }
                 i++;
             }

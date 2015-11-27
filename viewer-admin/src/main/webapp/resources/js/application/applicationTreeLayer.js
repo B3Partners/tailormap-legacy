@@ -540,7 +540,7 @@ function getAttributeEditSettings(attribute, name) {
     }
 
     var disableUserEdit = false;
-    if(atribute.disableUserEdit) {
+    if (attribute.disableUserEdit) {
         disableUserEdit = true;
     }
     return [
@@ -552,7 +552,7 @@ function getAttributeEditSettings(attribute, name) {
             }
         },
         {
-            fieldLabel: 'Bewerkbaar', value: disableUserEdit, name: 'disableUserEdit', store: [[false,'Ja'],[true,'Nee (alleen lezen)']], xtype: 'combobox', width: 250
+            fieldLabel: 'Bewerkbaar', value: disableUserEdit, name: 'disableUserEdit', store: [[false, 'Ja'], [true, 'Nee (alleen lezen)']], xtype: 'combobox'
         },
         {
             fieldLabel: 'Alias', name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
