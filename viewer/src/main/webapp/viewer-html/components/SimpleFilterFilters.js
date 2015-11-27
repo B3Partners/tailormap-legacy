@@ -595,13 +595,13 @@ Ext.define("viewer.components.sf.Slider", {
                     "<tr>",
                         "<td><span id=\"", n, "_min\"></span></td>",
                         "<td></td>",
-                        "<td align=\"right\"><span id=\"{name}_max\"></span></td>",
+                        "<td align=\"right\"><span id=\"{name}_max\">{value}</span></td>",
                     "</tr>"
                 );
             } else {
                 templatecontents.push(
                     "<tr>",
-                        "<td colspan=\"3\" align=\"center\"><span id=\"{name}_value\"></span></td>",
+                        "<td colspan=\"3\" align=\"center\"><span id=\"{name}_value\">{value}</span></td>",
                     "</tr>"
                 );
             }
@@ -609,7 +609,8 @@ Ext.define("viewer.components.sf.Slider", {
         var t = this.wrapSimpleFilter(c.label, templatecontents);
         new Ext.Template(t).append(this.config.container, {
             label: c.label,
-            name: this.config.name
+            name: this.config.name,
+            value: c.start
         });
 
         if(c.sliderType === "range") {
@@ -686,13 +687,36 @@ Ext.define("viewer.components.sf.Slider", {
     applyFilter : function(){
         this.sliderChange();
     },
-    sliderChange: function() {
+    sliderChange: function(slider) {
         if(!this.ready){
             // This function will be called via eventlistener
             return;
         }
+        this.updateValueString(slider);
         var cql = this.getCQL();
         this.setFilter(cql);
+    },
+    updateValueString : function (slider){
+        var formatString = this.config.filterConfig.valueFormatString;
+        if(!slider || !formatString){
+            return;
+        }
+        var slidername = slider.getName();
+        var name = slidername.substring(0,slidername.indexOf("_extSlider"));
+        var value = slider.getValue();
+
+        if(slider.$className === "Ext.slider.Multi"){
+            var spanMin = name + "_min";
+            var spanMax = name + "_max";
+            var min = Ext.get(spanMin);
+            var max = Ext.get(spanMax);
+            min.dom.innerHTML = Ext.util.Format.number(value[0],formatString);
+            max.dom.innerHTML = Ext.util.Format.number(value[1],formatString);
+        }else{
+            var spanId = name+ "_value";
+            var span = Ext.get(spanId);
+            span.dom.innerHTML = Ext.util.Format.number(value,formatString);
+        }
     },
     getCQL : function(){
         var cql = "";
