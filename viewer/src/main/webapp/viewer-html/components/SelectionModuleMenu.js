@@ -60,7 +60,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
             },
             items: [
                 {
-                    text: 'Voeg niveau toe',
+                    text: 'Nieuwe map aanmaken',
                     icon: contextPath + "/resources/images/add.png",
                     listeners: {
                         click: {
@@ -76,7 +76,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                     }
                 },
                 {
-                    text: 'Niveau verwijderen',
+                    text: 'Map verwijderen',
                     icon: contextPath + "/resources/images/delete.png",
                     listeners: {
                         click: {
@@ -86,7 +86,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 me.record = record;
                                 Ext.Msg.show({
                                     title: 'Niveau verwijderen?',
-                                    message: 'Weet u zeker dat u het geselecteerde niveau wilt verwijderen?',
+                                    message: 'Weet u zeker dat u de geselecteerde map wilt verwijderen?',
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
