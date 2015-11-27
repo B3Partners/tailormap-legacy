@@ -142,7 +142,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         menu.config.data.clickedItem = record;
     },
     getMenu : function (record){
-        var isLayer = record.data.leaf;
+        var isLayer = record !== null && record.data.leaf;
         var menu = isLayer ? this.layerMenu : this.levelMenu;
         return menu;
     },
