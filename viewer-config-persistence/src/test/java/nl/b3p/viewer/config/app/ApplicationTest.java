@@ -78,7 +78,7 @@ public class ApplicationTest extends TestUtil {
     }
 
     @Test
-    public void testMakeMashup() throws Exception {
+    public void testMakeMashupLinkComponents() throws Exception {
         initData(false);
         try {
             int expectedStartLayerSize = app.getStartLayers().size();
@@ -86,6 +86,54 @@ public class ApplicationTest extends TestUtil {
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
 
             Application mashup = app.createMashup("mashup", entityManager,true);
+            entityManager.persist(mashup);
+
+            objectsToRemove.add(app);
+            objectsToRemove.add(mashup);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            assertFalse(app.getId().equals(mashup.getId()));
+            assertEquals(expectedStartLayerSize, mashup.getStartLayers().size());
+            assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
+
+            for (StartLayer startLayer : mashup.getStartLayers()) {
+                assertEquals(mashup.getId(), startLayer.getApplication().getId());
+            }
+
+            for (StartLevel startLevel : mashup.getStartLevels()) {
+                assertEquals(mashup.getId(), startLevel.getApplication().getId());
+            }
+
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), mashup.getRoot());
+
+            TreeCache tc = mashup.loadTreeCache(entityManager);
+            List<Level> levels = tc.getLevels();
+            List<ApplicationLayer> appLayers = tc.getApplicationLayers();
+            for (ApplicationLayer appLayer : appLayers) {
+                assertTrue(appLayer.getStartLayers().containsKey(mashup));
+            }
+
+            for (Level level : levels) {
+                assertTrue(level.getStartLevels().containsKey(mashup));
+            }
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+
+    @Test
+    public void testMakeMashupDontLinkComponents() throws Exception {
+        initData(false);
+        try {
+            int expectedStartLayerSize = app.getStartLayers().size();
+            int expectedStartLevelSize = app.getStartLevels().size();
+            int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
+
+            Application mashup = app.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup);
 
             objectsToRemove.add(app);
