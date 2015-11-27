@@ -453,6 +453,10 @@ Ext.define("viewer.components.Edit", {
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         input = this.createDynamicInput(attribute, values);
                     }
+                    if(attribute.disableUserEdit) {
+                        input.setReadOnly(true);
+                        input.addCls("x-item-disabled");
+                    }
                     this.inputContainer.add(input);
                     Ext.getCmp(this.name + "editButton").setDisabled(false);
                 }

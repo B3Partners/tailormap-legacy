@@ -538,14 +538,21 @@ function getAttributeEditSettings(attribute, name) {
     if(attribute.valueList && attribute.valueList === "dynamic") {
         featureSourceStore.load();
     }
-    
+
+    var disableUserEdit = false;
+    if(atribute.disableUserEdit) {
+        disableUserEdit = true;
+    }
     return [
         {
-            fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
+            fieldLabel: 'Toon in Edit component', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
                 change: function (field, newval) {
                     editPanelTitle(field.findParentByType('form'), name, newval);
                 }
             }
+        },
+        {
+            fieldLabel: 'Bewerkbaar', value: disableUserEdit, name: 'disableUserEdit', store: [[false,'Ja'],[true,'Nee (alleen lezen)']], xtype: 'combobox', width: 250
         },
         {
             fieldLabel: 'Alias', name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
