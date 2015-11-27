@@ -1513,6 +1513,9 @@ Ext.define ("viewer.components.SelectionModule",{
     moveNodesToPosition: function(data, below) {
         var rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
         var allNodes = rootNode.childNodes;
+        if(data.records[0].parentNode !== null){
+            allNodes = data.records[0].parentNode.childNodes;
+        }
         // Get the targetIndex
         var targetIndex = this.findIndex(allNodes, data.event.position.record);
         if(below) {
@@ -1562,7 +1565,8 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         function findIndex(allNodes, node) {
             for(var i = 0; i < allNodes.length; i++) {
-                if(allNodes[i].get('nodeid').replace(/[^0-9]/ig, '') === node.id) {
+                var curNode = allNodes[i];
+                if(curNode.get('nodeid').replace(/[^0-9]/ig, '') === node.id && node.type === (curNode.data.type === 'maplevel' ? 'level' : curNode.data.type)) {
                     return i;
                 }
             }
