@@ -1566,7 +1566,7 @@ Ext.define ("viewer.components.SelectionModule",{
         function findIndex(allNodes, node) {
             for(var i = 0; i < allNodes.length; i++) {
                 var curNode = allNodes[i];
-                if(curNode.get('nodeid').replace(/[^0-9]/ig, '') === node.id && node.type === (curNode.data.type === 'maplevel' ? 'level' : curNode.data.type)) {
+                if(curNode.get('nodeid').replace(/(?![ext-])[^0-9]/ig, '') === node.id && node.type === (curNode.data.type === 'maplevel' ? 'level' : curNode.data.type)) {
                     return i;
                 }
             }
@@ -1860,16 +1860,14 @@ Ext.define ("viewer.components.SelectionModule",{
         
         var levels = {};
         Ext.Object.each(me.levels, function (key,level) {
-            if(level.id !== levelid){
-                var childs = [];
-                Ext.Array.each(level.children, function (child) {
-                    if (child !== levelid) {
-                        childs.push(child);
-                    }
-                });
-                level.children = childs;
-                levels[key] = level;
-            }
+            var childs = [];
+            Ext.Array.each(level.children, function (child) {
+                if (child !== levelid) {
+                    childs.push(child);
+                }
+            });
+            level.children = childs;
+            levels[key] = level;
         });
         
         me.levels = levels;
