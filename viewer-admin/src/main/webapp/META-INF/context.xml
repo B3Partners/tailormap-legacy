@@ -32,7 +32,7 @@
     </Server>
     -->
   <!-- Tomcat resource link -->
-  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
+  <ResourceLink global="jdbc/geo_viewer_ora" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
   <!-- For Tomcat: define JavaMail resource in server.xml. See:
 
     http://tomcat.apache.org/tomcat-6.0-doc/jndi-resources-howto.html#JavaMail_Sessions
@@ -60,7 +60,7 @@
   <!-- Security configuration -->
   <!-- Optional: use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
   <Realm className="org.apache.catalina.realm.CombinedRealm">
-    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
+    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer_ora" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
     <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
              http://tomcat.apache.org/tomcat-6.0-doc/config/realm.html

@@ -919,12 +919,10 @@ Ext.define ("viewer.components.SelectionModule",{
                     if (treeType === 'collection') {
                         // Dragged to collection panels (left side), so remove items
                         me.removeNodes(data.records);
-                    }
-                    else if (treeType === 'selection' && treeOfTarget.treePanelType !== 'selectionTree') {
+                    }else if (treeType === 'selection' && treeOfTarget.treePanelType !== 'selectionTree') {
                         // Dragged to selection panel (right side) from panel on the left, so add items
                         me.addNodes(data.records);
-                    }
-                    else {
+                    }else {
                         var movedOutOfNode = targetRecord.parentNode !== data.records[0].parentNode;
                         // Dragged inside the selection panel (reordering, appending)
                         if (dropPosition === 'append' || movedOutOfNode) {
@@ -942,10 +940,6 @@ Ext.define ("viewer.components.SelectionModule",{
                                 me.addLayerToLevel(targetRecord, data.records);
                             } else if (!nodeIsLayer && targetIsLevel) {
                                 me.addLevelToLevel(targetRecord, data.records, treeOfNode !== me.treePanels.selectionTree.treePanel);
-                            }
-                            if(dropPosition !== 'append') {
-                                // Node was moved out of its parent and positioned between/after other node
-                                me.moveNodesToPosition(data, dropPosition === 'after');
                             }
                         } else {
                             me.moveNodesToPosition(data, dropPosition === 'after');
