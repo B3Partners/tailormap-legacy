@@ -363,19 +363,23 @@ public class EditFeatureActionBean  implements ActionBean {
 
                 AttributeDescriptor ad = store.getSchema().getDescriptor(attribute);
 
-                if(ad != null) {
-                    attributes.add(attribute);
+                if (ad != null) {
+                    if (!isAttributeUserEditingDisabled(attribute)) {
+                        attributes.add(attribute);
 
-                    if(ad.getType() instanceof GeometryType) {
-                        String wkt = jsonFeature.getString(ad.getLocalName());
-                        Geometry g = null;
-                        if(wkt != null) {
-                            g = new WKTReader().read(wkt);
+                        if (ad.getType() instanceof GeometryType) {
+                            String wkt = jsonFeature.getString(ad.getLocalName());
+                            Geometry g = null;
+                            if (wkt != null) {
+                                g = new WKTReader().read(wkt);
+                            }
+                            values.add(g);
+                        } else {
+                            String v = jsonFeature.getString(attribute);
+                            values.add(StringUtils.defaultIfBlank(v, null));
                         }
-                        values.add(g);
                     } else {
-                        String v = jsonFeature.getString(attribute);
-                        values.add(StringUtils.defaultIfBlank(v, null));
+                        log.info(String.format("Attribute \"%s\" not user editable; ignoring", attribute));
                     }
                 } else {
                     log.warn(String.format("Attribute \"%s\" not in feature type; ignoring", attribute));
@@ -399,6 +403,17 @@ public class EditFeatureActionBean  implements ActionBean {
        } finally {
             transaction.close();
         }
+    }
+
+    /**
+     * Check that if {@code disableUserEdit} flag is set on the attribute.
+     *
+     * @param attrName attribute to check
+     * @return {@code true} when the configured attribute is flagged as
+     * "readOnly"
+     */
+    protected boolean isAttributeUserEditingDisabled(String attrName) {
+        return this.getAppLayer().getAttribute(this.getLayer().getFeatureType(), attrName).isDisableUserEdit();
     }
 
     private boolean isFeatureWriteAuthorized(ApplicationLayer appLayer, JSONObject jsonFeature, HttpServletRequest request) {
