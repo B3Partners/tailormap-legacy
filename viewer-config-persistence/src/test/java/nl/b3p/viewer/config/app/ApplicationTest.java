@@ -34,7 +34,7 @@ public class ApplicationTest extends TestUtil {
 
     private static final Log log = LogFactory.getLog(ApplicationTest.class);
 
-  //  @Test
+    @Test
     public void testDeepCopy() throws Exception {
         initData(false);
 
@@ -62,7 +62,7 @@ public class ApplicationTest extends TestUtil {
         objectsToRemove.add(app);
     }
 
-    //@Test
+    @Test
     public void testDeleteApplications() throws Exception {
         initData(false);
         Application application = entityManager.find(Application.class, app.getId());
@@ -77,7 +77,7 @@ public class ApplicationTest extends TestUtil {
 
     }
 
-   // @Test
+    @Test
     public void testMakeMashupLinkComponents() throws Exception {
         initData(false);
         try {
@@ -125,7 +125,7 @@ public class ApplicationTest extends TestUtil {
         }
     }
 
-   // @Test
+    @Test
     public void testMakeMashupDontLinkComponents() throws Exception {
         initData(false);
         try {
@@ -177,9 +177,9 @@ public class ApplicationTest extends TestUtil {
     public void testMakeMashupOfApplicationWithExistingMashup() throws Exception {
         initData(false);
         try {
-            int expectedStartLayerSize = app.getStartLayers().size();
-            int expectedStartLevelSize = app.getStartLevels().size();
-            int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
+            int expectedStartLayerSize = app.getStartLayers().size() * 2;
+            int expectedStartLevelSize = app.getStartLevels().size() * 2;
+            int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 3;
 
             Application mashup1 = app.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup1);
