@@ -120,7 +120,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 JSONObject wmsStyle = wmsStyles.getJSONObject(i);
                 Map style = new HashMap();
                 style.put("id", "wms:" + wmsStyle.getString("name"));
-                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + " (" + wmsStyle.getString("title") + ")");
+                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : "") );
                 JSONObject styleTitleJson = new JSONObject();
                 styleTitleJson.put("styleTitle", wmsStyle.getString("title"));
                 styles.add(style);
