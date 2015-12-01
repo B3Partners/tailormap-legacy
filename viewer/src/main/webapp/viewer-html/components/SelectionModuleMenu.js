@@ -32,28 +32,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         this.createMenus();
     },
     createMenus: function () {
-        var commonItems = [
-        {
-            text: 'Naam wijzigen',
-            icon: contextPath + "/resources/images/wrench.png",
-            listeners: {
-                click: {
-                    fn: function (item, e, eOpts) {
-                        var record = this.levelMenu.config.data.clickedItem;
-                        var me = this;
-                        var f = function (name) {
-                            record.set("text", name);
-                            var levelId = record.data.origData.id;
-                            var level = me.config.selectionModule.levels[levelId];
-                            level.name = name;
-                        };
-                        this.editName(this.levelMenu.config.data.clickedItem.data.text,f);
-                    },
-                    scope: this
-                }
-            }
-        }];
-    
+ 
         this.levelMenu = new Ext.menu.Menu({
             data: {
                 clickedItem: null
@@ -85,7 +64,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 var me = this;
                                 me.record = record;
                                 Ext.Msg.show({
-                                    title: 'Niveau verwijderen?',
+                                    title: 'Map verwijderen?',
                                     message: 'Weet u zeker dat u de geselecteerde map wilt verwijderen?',
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
@@ -99,8 +78,28 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                             scope: this
                         }
                     }
+                },
+                {
+                    text: 'Naam wijzigen',
+                    icon: contextPath + "/resources/images/wrench.png",
+                    listeners: {
+                        click: {
+                            fn: function (item, e, eOpts) {
+                                var record = this.levelMenu.config.data.clickedItem;
+                                var me = this;
+                                var f = function (name) {
+                                    record.set("text", name);
+                                    var levelId = record.data.origData.id;
+                                    var level = me.config.selectionModule.levels[levelId];
+                                    level.name = name;
+                                };
+                                this.editName(this.levelMenu.config.data.clickedItem.data.text,f, "map");
+                            },
+                            scope: this
+                        }
+                    }
                 }
-            ].concat(commonItems)
+            ]
         });
 
         this.layerMenu = new Ext.menu.Menu({
@@ -118,7 +117,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 var me = this;
                                 me.record = record;
                                 Ext.Msg.show({
-                                    title: 'Niveau verwijderen?',
+                                    title: 'Kaartlaag verwijderen?',
                                     message: 'Weet u zeker dat u de geselecteerde kaartlaag wilt verwijderen?',
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
@@ -132,8 +131,28 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                             scope: this
                         }
                     }
+                },
+                {
+                    text: 'Naam wijzigen',
+                    icon: contextPath + "/resources/images/wrench.png",
+                    listeners: {
+                        click: {
+                            fn: function (item, e, eOpts) {
+                                var record = this.levelMenu.config.data.clickedItem;
+                                var me = this;
+                                var f = function (name) {
+                                    record.set("text", name);
+                                    var levelId = record.data.origData.id;
+                                    var level = me.config.selectionModule.levels[levelId];
+                                    level.name = name;
+                                };
+                                this.editName(this.layerMenu.config.data.clickedItem.data.text,f, "kaartlaag");
+                            },
+                            scope: this
+                        }
+                    }
                 }
-            ].concat(commonItems)
+            ]
         });
     },
     handleClick: function (record, event) {
@@ -146,11 +165,11 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         var menu = isLayer ? this.layerMenu : this.levelMenu;
         return menu;
     },
-    editName: function (initialText,okFunction) {
+    editName: function (initialText,okFunction, type) {
         var me = this;
         Ext.MessageBox.show({
             title: 'Naam wijzigen',
-            msg: 'Naam van niveau:',
+            msg: 'Naam van ' + type +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,// record.data.text,
