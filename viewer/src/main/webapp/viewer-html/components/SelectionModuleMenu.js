@@ -165,17 +165,22 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         var menu = isLayer ? this.layerMenu : this.levelMenu;
         return menu;
     },
+    closeAllMenus: function() {
+        this.layerMenu.hide();
+        this.levelMenu.hide();
+    },
     editName: function (initialText,okFunction, type) {
         var me = this;
+        var newLevel = typeof type === "undefined";
         Ext.MessageBox.show({
-            title: 'Naam wijzigen',
-            msg: 'Naam van ' + type +':',
+            title: newLevel ? 'Nieuwe map aanmaken' : 'Naam wijzigen',
+            msg: 'Naam van ' + (newLevel ? "nieuwe map" : type) +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,// record.data.text,
             fn: function (btn, text, cBoxes) {
                 if (btn === 'ok' && text) {
-                    okFunction(text)
+                    okFunction(text);
                 }
             }
         });

@@ -158,7 +158,9 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.openWindow();
             }
         },this);
-
+        this.popup.popupWin.addListener('hide', function() {
+            this.menus.closeAllMenus();
+        }, this);
         return this;
     },
     renderButton: function() {
@@ -172,7 +174,6 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.openWindow();
             }
         });
-
     },
     openWindow: function() {
         var me = this;
@@ -1147,6 +1148,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
         this.addedLevels.push({id:levelId,status:'new'});
         node = this.insertTreeNode(node,rootNode);
+        this.sortTreeAndContent(rootNode.childNodes, rootNode);
     },
 
     addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions,levels) {
@@ -1464,9 +1466,8 @@ Ext.define ("viewer.components.SelectionModule",{
     
     moveNodes: function(direction) {
         var me = this;
-        var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
         var selection = me.treePanels.selectionTree.treePanel.getSelectionModel().getSelection();
-        var allNodes = rootNode.childNodes;
+        var allNodes = this.getSiblingNodes(selection[0]);
         var doSort = true;
         // First check if we are going to sort (we do not sort when the first item is selected and direction = up
         // or we do not sort when last item is selected and direction = down
@@ -1481,11 +1482,7 @@ Ext.define ("viewer.components.SelectionModule",{
             return;
         }
         // Sort selection by index
-        selection.sort((function sortOnIndex(a, b) {
-            var indexA = this.findIndex(allNodes, a);
-            var indexB = this.findIndex(allNodes, b);
-            return indexA - indexB;
-        }).bind(this));
+        this.sortTreeSelection(selection, allNodes);
         // We manually sort because this is much faster than moving the nodes directly in the tree
         if(direction === 'down') {
             // Moving down we iterate back
@@ -1500,48 +1497,83 @@ Ext.define ("viewer.components.SelectionModule",{
                 this.moveNodeInArray(allNodes, index-1, index);
             }
         }
-        this.sortNodes(allNodes);
-        this.reorderSelectedContent(allNodes);
+        this.sortTreeAndContent(allNodes, selection[0].parentNode);
     },
     
     moveNodesToPosition: function(data, below) {
-        var rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
-        var allNodes = rootNode.childNodes;
-        if(data.records[0].parentNode !== null){
-            allNodes = data.records[0].parentNode.childNodes;
-        }
+        var allNodes = this.getSiblingNodes(data.records[0]);
         // Get the targetIndex
         var targetIndex = this.findIndex(allNodes, data.event.position.record);
         if(below) {
             targetIndex++;
         }
         // Sort records by index
-        data.records.sort((function sortOnIndex(a, b) {
-            var indexA = this.findIndex(allNodes, a);
-            var indexB = this.findIndex(allNodes, b);
-            if(below) {
-                return indexA - indexB;
-            }
-            return indexA - indexB;
-        }).bind(this));
+        this.sortTreeSelection(data.records, allNodes);
         for(var i = 0; i < data.records.length; i++) {
             var current = this.findIndex(allNodes, data.records[i]);
             this.moveNodeInArray(allNodes, (current < targetIndex ? targetIndex - 1 : targetIndex), current);
             targetIndex++;
         }
-        this.sortNodes(allNodes);
-        this.reorderSelectedContent(allNodes);
+        this.sortTreeAndContent(allNodes, data.records[0].parentNode);
     },
     
+    getSiblingNodes: function(record) {
+        var rootNode = this.treePanels.selectionTree.treePanel.getRootNode();
+        var siblingNodes = rootNode.childNodes;
+        if(record.parentNode !== null) {
+            siblingNodes = record.parentNode.childNodes;
+        }
+        return siblingNodes;
+    },
+    
+    sortTreeAndContent: function(allNodes, parentNode) {
+        this.sortNodes(allNodes);
+        if(parentNode === null || parentNode.id === "root") {
+            this.reorderSelectedContent(allNodes);
+        } else {
+            // ParentNode is always a level
+            var recordOrigData = this.getOrigData(parentNode);
+            this.reorderLevel(this.levels[recordOrigData.id], allNodes);
+        }
+    },
+    
+    /**
+     * This method makes sure the selection itself is ordered by current order,
+     * By default the selection is ordered by the order in which items are selected.
+     */
+    sortTreeSelection: function (selection, allNodes) {
+        selection.sort((function sortOnIndex(a, b) {
+            var indexA = this.findIndex(allNodes, a);
+            var indexB = this.findIndex(allNodes, b);
+            return indexA - indexB;
+        }).bind(this));
+    },
+    
+    /**
+     * Sorts the actual nodes in the tree
+     */
     sortNodes: function(allNodes) {
-        // Set indexes
+        // Set indexes, first for all levels, than for all layers (levels are always first)
+        var index = 0;
+        // First give all levels an index
         for(var i = 0; i < allNodes.length; i++) {
-            allNodes[i].set('index', i);
+            if(["level", "maplevel"].indexOf(this.getNodeType(allNodes[i])) !== -1) {
+                allNodes[i].set('index', index++);
+            }
+        }
+        // Then give all layers an index
+        for(var i = 0; i < allNodes.length; i++) {
+            if(["appLayer", "layer"].indexOf(this.getNodeType(allNodes[i])) !== -1) {
+                allNodes[i].set('index', index++);
+            }
         }
         // Sort indexes
         this.treePanels.selectionTree.treeStore.sort('index', 'ASC');
     },
     
+    /**
+     * Finds the index of a node in an array
+     */
     findIndex: function(allNodes, node) {
         for(var i = 0; i < allNodes.length; i++) {
             if(allNodes[i].get('nodeid') === node.get('nodeid')) {
@@ -1554,23 +1586,50 @@ Ext.define ("viewer.components.SelectionModule",{
     moveNodeInArray: function(list, to, from) {
         list.splice(to, 0, list.splice(from, 1)[0]);
     },
+    
+    reorderLevel: function(level, allNodes) {
+        function findIndex(allNodes, node) {
+            for(var i = 0; i < allNodes.length; i++) {
+                var curNode = allNodes[i];
+                if(this.getNodeId(curNode) === node) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        function sortFunction(a, b) {
+            var indexA = findIndex.call(this, allNodes, a);
+            var indexB = findIndex.call(this, allNodes, b);
+            return indexA - indexB;
+        }
+        if(level.hasOwnProperty("children")) {
+            level.children.sort(sortFunction.bind(this));
+        }
+        if(level.hasOwnProperty("layers")) {
+            level.layers.sort(sortFunction.bind(this));
+        }
+    },
 
     reorderSelectedContent: function(allNodes) {
         var me = this;
         function findIndex(allNodes, node) {
             for(var i = 0; i < allNodes.length; i++) {
                 var curNode = allNodes[i];
-                if(curNode.get('nodeid').replace(/(?![ext-])[^0-9]/ig, '') === node.id && node.type === (curNode.data.type === 'maplevel' ? 'level' : curNode.data.type)) {
+                if(this.getNodeId(curNode) === node.id && node.type === (curNode.data.type === 'maplevel' ? 'level' : curNode.data.type)) {
                     return i;
                 }
             }
             return -1;
         }
-        me.selectedContent.sort(function sortOnIndex(a, b) {
-            var indexA = findIndex(allNodes, a);
-            var indexB = findIndex(allNodes, b);
+        this.selectedContent.sort((function sortOnIndex(a, b) {
+            var indexA = findIndex.call(this, allNodes, a);
+            var indexB = findIndex.call(this, allNodes, b);
             return indexA - indexB;
-        });
+        }).bind(this));
+    },
+    
+    getNodeId: function(node) {
+        return node.get('nodeid').replace(/(?![ext-])[^0-9]/ig, '');
     },
 
     addNodes: function(selection) {
