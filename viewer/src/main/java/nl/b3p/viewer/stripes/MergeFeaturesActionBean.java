@@ -283,6 +283,7 @@ public class MergeFeaturesActionBean implements ActionBean {
             ids = this.handleStrategy(fA, fB, newGeom, filterA, filterB, this.store, this.strategy);
 
             transaction.commit();
+            afterMerge(ids);
         } catch (Exception e) {
             transaction.rollback();
             throw e;
@@ -350,6 +351,14 @@ public class MergeFeaturesActionBean implements ActionBean {
         return ids;
     }
 
+    /**
+     * Called after the merge is completed and commit was performed. Provides a
+     * hook for postprocessing.
+     * @param ids The list of committed feature ids
+     */
+    protected void afterMerge(List<FeatureId> ids) {
+    }
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     @Override
     public ActionBeanContext getContext() {
@@ -415,6 +424,10 @@ public class MergeFeaturesActionBean implements ActionBean {
 
     public void setExtraData(String extraData) {
         this.extraData = extraData;
+    }
+
+    public Layer getLayer() {
+        return layer;
     }
     //</editor-fold>
 }
