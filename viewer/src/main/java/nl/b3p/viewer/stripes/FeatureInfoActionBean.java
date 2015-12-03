@@ -310,8 +310,6 @@ public class FeatureInfoActionBean implements ActionBean {
                     q.setFilter(f);
                     q.setMaxFeatures(limit);
 
-                    q = preProcessQuery(q);
-
                     FeatureToJson ftjson =new FeatureToJson(arrays, edit,graph,attributesToInclude);
                     JSONArray features = ftjson.getJSONFeatures(al,l.getFeatureType(), fs, q,null,null);
 
@@ -331,16 +329,5 @@ public class FeatureInfoActionBean implements ActionBean {
         }
 
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
-    }
-
-    /**
-     * A method that is designed to be overridden in subclasses that may be used
-     * to modify the query before it is executed.
-     *
-     * @param q the input query
-     * @return a possible modified query
-     */
-    protected Query preProcessQuery(Query q) {
-        return q;
     }
 }
