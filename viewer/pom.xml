@@ -301,6 +301,7 @@
                                 <param>${viewerhtml.path}/common/overrides.js</param>
                                 <param>${viewerhtml.path}/common/ScreenPopup.js</param>
                                 <param>${viewerhtml.path}/common/CQLFilterWrapper.js</param>
+                                <param>${viewerhtml.path}/common/ClearTrigger.js</param>
                                 <!-- Server side Ajax Wrappers -->
                                 <param>${viewerhtml.path}/common/ajax/ServiceInfo.js</param>
                                 <param>${viewerhtml.path}/common/ajax/CSWClient.js</param>

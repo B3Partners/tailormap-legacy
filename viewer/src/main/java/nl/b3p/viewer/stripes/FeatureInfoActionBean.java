@@ -68,7 +68,7 @@ public class FeatureInfoActionBean implements ActionBean {
 
     private ActionBeanContext context;
 
-    public static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 5000;
 
     @Validate
     private Application application;

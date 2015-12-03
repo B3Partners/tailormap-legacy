@@ -777,22 +777,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 renderTo: 'applicationTreeContainer'
             });
             if(!me.config.hasOwnProperty('showSearchGroups') || me.config.showSearchGroups) {
-                applicationTreeConfig.tbar = [{xtype : 'textfield', id: 'applicationTreeSearchField',
-                    listeners: {
-                        specialkey: function(field, e){
-                            if (e.getKey() == e.ENTER) {
-                                me.filterNodes(me.treePanels.applicationTree.treePanel, Ext.getCmp('applicationTreeSearchField').getValue());
-                            }
-                        }
-                    }},
-                    {
-                        xtype: 'button',
-                        text: 'Zoeken',
-                        handler: function() {
-                            me.filterNodes(me.treePanels.applicationTree.treePanel, Ext.getCmp('applicationTreeSearchField').getValue());
-                        }
-                    }
-                ];
+                applicationTreeConfig.tbar = this.getSearchConfig(this.filterNodes.bind(this), "applicationTree");
             }
             me.treePanels.applicationTree.treePanel = Ext.create('Ext.tree.Panel', applicationTreeConfig);
         }
@@ -818,22 +803,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 renderTo: 'registryTreeContainer'
             });
             if(!me.config.hasOwnProperty('showSearchLayers') || me.config.showSearchLayers) {
-                registryTreeConfig.tbar = [{xtype : 'textfield', id: 'registryTreeSearchField',
-                    listeners: {
-                        specialkey: function(field, e){
-                            if (e.getKey() == e.ENTER) {
-                                me.filterRemote(me.treePanels.registryTree.treePanel, Ext.getCmp('registryTreeSearchField').getValue());
-                            }
-                        }
-                    }},
-                    {
-                        xtype: 'button',
-                        text: 'Zoeken',
-                        handler: function() {
-                            me.filterRemote(me.treePanels.registryTree.treePanel, Ext.getCmp('registryTreeSearchField').getValue());
-                        }
-                    }
-                ];
+                registryTreeConfig.tbar = this.getSearchConfig(this.filterRemote.bind(this), "registryTree");
             }
             me.treePanels.registryTree.treePanel = Ext.create('Ext.tree.Panel', registryTreeConfig);
         }
@@ -850,22 +820,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 (!me.config.hasOwnProperty('showSearchOwnServices') || me.config.showSearchOwnServices) ||
                 (!me.config.hasOwnProperty('showSearchCsw') || me.config.showSearchCsw)
             ) {
-                customServiceConfig.tbar = [{xtype : 'textfield', id: 'customServiceTreeSearchField',
-                    listeners: {
-                        specialkey: function(field, e){
-                            if (e.getKey() == e.ENTER) {
-                                me.filterNodes(me.treePanels.customServiceTree.treePanel, Ext.getCmp('customServiceTreeSearchField').getValue());
-                            }
-                        }
-                    }},
-                    {
-                        xtype: 'button',
-                        text: 'Zoeken',
-                        handler: function() {
-                            me.filterNodes(me.treePanels.customServiceTree.treePanel, Ext.getCmp('customServiceTreeSearchField').getValue());
-                        }
-                    }
-                ];
+                customServiceConfig.tbar = this.getSearchConfig(this.filterNodes.bind(this), "customServiceTree");
             }
             me.treePanels.customServiceTree.treePanel = Ext.create('Ext.tree.Panel', customServiceConfig);
         }
@@ -894,6 +849,38 @@ Ext.define ("viewer.components.SelectionModule",{
             tbar: null
         },defaultTreeConfig));
         Ext.getCmp('selectionTreeContainer').add(me.treePanels.selectionTree.treePanel);
+    },
+    
+    getSearchConfig: function(searchFn, treePanelType) {
+        var searchFieldId = Ext.id();
+        var treePanels = this.treePanels;
+        return [
+            {
+                xtype : 'textfield',
+                id: searchFieldId,
+                triggers: {
+                    clear: {
+                        type: 'clear'
+                    }
+                },
+                listeners: {
+                    specialkey: function(field, e){
+                        if (e.getKey() === e.ENTER) {
+                            searchFn(treePanels[treePanelType].treePanel, field.getValue());
+                        }
+                    },
+                    clear: function() {
+                        searchFn(treePanels[treePanelType].treePanel, "");
+                    }
+                }},
+                {
+                    xtype: 'button',
+                    text: 'Zoeken',
+                    handler: function() {
+                        searchFn(treePanels[treePanelType].treePanel, Ext.getCmp(searchFieldId).getValue());
+                    }
+                }
+        ];
     },
     
     getViewConfig: function(treeType) {
