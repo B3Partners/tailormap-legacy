@@ -541,41 +541,51 @@ public class ArcGISService extends GeoService implements Updatable {
 
         // Remove old layers from this service which are missing from updated
         // service
+
+        // Feature types will be removed from linked feature source by createQuery(),
+        // this causes the session to be flushed. This may cause a constraint
+        // violation when a layer is removed which still has child layers, so
+        // delete all layers first, then remove all feature types.
+        Set<Layer> layerFeatureTypesToRemove = new HashSet();
+
         for(Pair<Layer,UpdateResult.Status> p: result.getLayerStatus().values()) {
             if(p.getRight() == UpdateResult.Status.MISSING) {
                 Layer removed = p.getLeft();
                 if(removed.getFeatureType() != null) {
                     if(removed.getFeatureType().getFeatureSource().getLinkedService().equals(removed.getService())) {
-                        // The feature type may have been selected for use in
-                        // other entities. As it is removed from the service it
-                        // won't work anymore, so clear the references to it
-
-                        SimpleFeatureType ft = removed.getFeatureType();
-                        Stripersist.getEntityManager().createQuery("update ConfiguredAttribute set featureType = null where featureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update Layer set featureType = null where featureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update LayarSource set featureType = null where featureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update SolrConf set simpleFeatureType = null where simpleFeatureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update FeatureTypeRelation set foreignFeatureType = null where foreignFeatureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        removed.getFeatureType().getFeatureSource().removeFeatureType(removed.getFeatureType());
+                        layerFeatureTypesToRemove.add(removed);
                     }
                 }
                 Stripersist.getEntityManager().remove(removed);
             }
+        }
+
+        for(Layer removed: layerFeatureTypesToRemove) {
+            // The feature type may have been selected for use in
+            // other entities. As it is removed from the service it
+            // won't work anymore, so clear the references to it
+            SimpleFeatureType ft = removed.getFeatureType();
+            Stripersist.getEntityManager().createQuery("update ConfiguredAttribute set featureType = null where featureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update Layer set featureType = null where featureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update LayarSource set featureType = null where featureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update SolrConf set simpleFeatureType = null where simpleFeatureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update FeatureTypeRelation set foreignFeatureType = null where foreignFeatureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            removed.getFeatureType().getFeatureSource().removeFeatureType(removed.getFeatureType());
         }
     }
     //</editor-fold>
