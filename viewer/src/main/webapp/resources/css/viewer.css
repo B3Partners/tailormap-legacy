@@ -258,3 +258,10 @@ body > .legend {
 .mobile-mode .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
 }
+
+/* Remove IE10/11 clear button for fields with clear trigger */
+.x-form-has-clear-trigger input::-ms-clear {
+  width : 0;
+  height: 0;
+  display: none;
+}
