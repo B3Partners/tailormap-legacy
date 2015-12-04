@@ -493,7 +493,9 @@ Ext.define("viewer.components.Split", {
         }
     },
     activateMapClick: function () {
-        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
+            this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        }
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {
