@@ -408,7 +408,7 @@ Ext.define("viewer.components.Split", {
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
                             value: fieldText,
-                            disabled: !allowedEditable
+                            disabled: true
                         };
                         if (attribute.editHeight) {
                             options.rows = attribute.editHeight;
@@ -456,7 +456,7 @@ Ext.define("viewer.components.Split", {
                             name: attribute.name,
                             renderTo: this.name + 'InputPanel',
                             valueField: 'id',
-                            disabled: !allowedEditable
+                            disabled: true
                         });
                     }
                     this.inputContainer.add(input);
