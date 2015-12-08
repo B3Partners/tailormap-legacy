@@ -266,7 +266,7 @@ public class PrintActionBean implements ActionBean {
         JSONArray reqs = new JSONArray();
         
         JSONObject image = new JSONObject();
-        image.put("protocol", CombineImageActionBean.WMS);
+        image.put("protocol", overview.optString("protocol", CombineImageActionBean.WMS));
         image.put("url", overview.get("overviewUrl"));
         image.put("extent", overview.get("extent"));
         reqs.put(image);
