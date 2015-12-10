@@ -656,14 +656,16 @@ Ext.define ("viewer.components.Maptip",{
     getExtComponents: function() {
         return [];
     },
-    createCallbackLink: function(entry, feature, appLayer, coords) {
+    createCallbackLink: function (entry, feature, appLayer, coords) {
+        var me = this;
         var callbackLink = document.createElement("a");
         callbackLink.href = '#callback-' + (entry.label).replace(' ', '');
         callbackLink.innerHTML = entry.label;
         callbackLink.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            entry.callback.call(entry.compponent, feature, appLayer, coords);
+            me.balloon.close();
+            entry.callback.call(entry.component, feature, appLayer, coords);
         });
         return callbackLink;
     },
