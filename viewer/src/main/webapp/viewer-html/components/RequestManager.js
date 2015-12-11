@@ -55,9 +55,13 @@ Ext.define ("viewer.components.RequestManager",{
         }
     },
     
+    requestsFinished: function(requestId) {
+        return (this.previousRequests[requestId].done === this.previousRequests[requestId].total);
+    },
+    
     responseReceived: function (id){
         this.previousRequests[id].done++;
-        if(this.previousRequests[id].done === this.previousRequests[id].total){
+        if(this.requestsFinished(id)){
             this.config.viewerController.mapComponent.setCursor(false);
         }
     },

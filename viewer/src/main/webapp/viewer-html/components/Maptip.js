@@ -191,7 +191,7 @@ Ext.define ("viewer.components.Maptip",{
         var requestId = Ext.id();
 
         this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
-            if(me.config.spinnerWhileIdentify){
+            if(me.config.spinnerWhileIdentify && me.requestManager.requestsFinished(requestId)){
                 me.viewerController.mapComponent.getMap().removeMarker("edit");
             }
             options.data = data;
