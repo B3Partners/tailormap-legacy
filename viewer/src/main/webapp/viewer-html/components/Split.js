@@ -294,6 +294,12 @@ Ext.define("viewer.components.Split", {
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
+    },
+    layerSelectorInit: function() {
+        if(this.layerSelector.getVisibleLayerCount() === 1) {
+            this.layerSelector.selectFirstLayer();
+        }
     },
     layerChanged: function (appLayer, previousAppLayer, scope) {
         if (appLayer != null) {

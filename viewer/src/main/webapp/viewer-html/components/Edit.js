@@ -288,8 +288,14 @@ Ext.define("viewer.components.Edit", {
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
+    },
+    layerSelectorInit: function(store) {
+        if(this.layerSelector.getVisibleLayerCount() === 1) {
+            this.layerSelector.selectFirstLayer();
+        }
         if(this.config.showEditLinkInFeatureInfo) {
-            this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.createFeatureInfoLink, this);
+            this.createFeatureInfoLink(store);
         }
     },
     createFeatureInfoLink: function(store) {
