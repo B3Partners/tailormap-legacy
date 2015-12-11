@@ -338,7 +338,9 @@ Ext.define("viewer.components.Edit", {
     },
     layerChanged: function (appLayer) {
         if (appLayer != null) {
-            this.vectorLayer.removeAllFeatures();
+            if (this.vectorLayer) {
+                this.vectorLayer.removeAllFeatures();
+            }
             this.mode = null;
             this.config.viewerController.mapComponent.getMap().removeMarker("edit");
             if (appLayer.details && appLayer.details["editfunction.title"]) {
