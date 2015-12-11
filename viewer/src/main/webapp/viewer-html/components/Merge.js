@@ -354,6 +354,12 @@ Ext.define("viewer.components.Merge", {
                 viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,
                 this.layerChanged,
                 this);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
+    },
+    layerSelectorInit: function() {
+        if(this.layerSelector.getVisibleLayerCount() === 1) {
+            this.layerSelector.selectFirstLayer();
+        }
     },
     layerChanged: function (appLayer, previousAppLayer, scope) {
         this.appLayer = appLayer;

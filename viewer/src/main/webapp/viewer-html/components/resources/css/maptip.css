@@ -137,6 +137,9 @@
     clear: none;
     text-align: right;
 }
+.feature_summary_feature:first-child .feature_callback_link {
+    padding-right: 50px;
+}
 .feature_callback_link a {
     margin-right: .5em;
 }
