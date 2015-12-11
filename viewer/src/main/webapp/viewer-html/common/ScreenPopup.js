@@ -124,7 +124,9 @@ Ext.define ("viewer.components.ScreenPopup",{
             me.enableBody();
         });
         this.popupWin.addListener('show', function() {
-            conf.viewerController.registerPopupShow(me.popupWin);
+            if (conf.viewerController) {
+                conf.viewerController.registerPopupShow(me.popupWin);
+            }
             if(me.component) {
                 me.component.setButtonState('click', true);
             }
