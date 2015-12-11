@@ -10,6 +10,10 @@ div {
     margin: 0px;
 }
 
+b {
+    font-weight: bold;
+}
+
 #loadwrapper {
     position: relative;
     margin: 0 auto;
