@@ -371,7 +371,9 @@ Ext.define("viewer.components.Merge", {
         if (appLayer != null) {
             if (appLayer.geometryAttributeIndex != undefined) {
                 this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
-                this.vectorLayer.removeAllFeatures();
+                if (this.vectorLayer) {
+                    this.vectorLayer.removeAllFeatures();
+                }
                 this.mode = null;
                 this.config.viewerController.mapComponent.getMap().removeMarker("edit");
 
