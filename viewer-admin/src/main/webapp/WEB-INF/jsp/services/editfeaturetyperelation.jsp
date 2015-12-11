@@ -99,8 +99,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </tr>
                             <tr>
                                 <td>Type relatie:</td>
-                                <td><stripes:radio name="relation.type" value="join" checked="checked"/>Join<br>
-                                    <stripes:radio name="relation.type" value="relate"/>Relate
+                                <td><stripes:radio name="relation.type" value="join" checked="checked" class="joinrelateradio" />Join<br>
+                                    <stripes:radio name="relation.type" value="relate" class="joinrelateradio" />Relate
                                 </td>
                                 <td></td>
                                 <td></td>
@@ -152,6 +152,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var attributesUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getAttributesForFeaturetype"/>';
             var featureTypeUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getFeatureTypesForSource"/>';
             Ext.onReady(function() {
+                function ensureRadioSelection(radiobuttons) {
+                    var checkcount = 0;
+                    for(var i = 0; i < radiobuttons.length; i++) {
+                        if(radiobuttons[i].checked) {
+                            checkcount++;
+                        }
+                    }
+                    if(checkcount === 0) {
+                        radiobuttons[0].checked = true;
+                    }
+                }
+                ensureRadioSelection(document.querySelectorAll('.joinrelateradio'));
                 appendPanel('headertext', 'formcontent');
             });
         </script>
