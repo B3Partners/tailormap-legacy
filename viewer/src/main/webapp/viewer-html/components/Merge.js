@@ -261,7 +261,7 @@ Ext.define("viewer.components.Merge", {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
                     padding: "4px",
-                    width: '320px',
+                    width: '100%',
                     height: MobileManager.isMobile() ? 60 : 36,
                     items: [
                         {
@@ -373,7 +373,7 @@ Ext.define("viewer.components.Merge", {
                 Ext.getCmp(this.name + "selectAButton").setDisabled(false);
                 Ext.getCmp(this.name + "selectBButton").setDisabled(true);
 
-                Ext.getCmp(this.name + "geomLabel").setText("Selecteer A en B geometrie");
+                Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelB + " en " + this.labelB + " geometrie");
             } else {
                 Ext.getCmp(this.name + "geomLabel").setText('Geometrie mag niet bewerkt worden.');
             }
