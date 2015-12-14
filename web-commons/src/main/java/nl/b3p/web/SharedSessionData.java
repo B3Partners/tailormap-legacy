@@ -16,8 +16,6 @@
  */
 package nl.b3p.web;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpSession;
@@ -51,7 +49,8 @@ public class SharedSessionData implements HttpSessionListener {
     }
 
     /**
-     * Find the stored data and return that, if not found return an empty map.
+     * Find the stored data and return that, if not found return an empty map
+     * for the given key.
      * <strong>
      * Do NOT under any circumstance store sensitive information in the map
      * obtained from this object.
@@ -65,8 +64,9 @@ public class SharedSessionData implements HttpSessionListener {
         if (sessions.containsKey(sessionId)) {
             return sessions.get(sessionId);
         } else {
-            return Collections.EMPTY_MAP;
+            Map m = new ConcurrentHashMap<String, String>(8);
+            sessions.put(sessionId, m);
+            return m;
         }
     }
-
 }

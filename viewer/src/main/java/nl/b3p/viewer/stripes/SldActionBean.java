@@ -545,6 +545,8 @@ public class SldActionBean implements ActionBean {
                     // per kaartlaag is er 1 flt in de sessie, dus iedere keer overschrijven
                     String sId = context.getRequest().getSession().getId();
                     Map<String, String> sharedData = SharedSessionData.find(sId);
+                    log.debug(String.format("Adding filter (%s) for layer %s to shared session store %s.",
+                            cqlFilter, applicationLayer.getId().toString(), sId));
                     sharedData.put(applicationLayer.getId().toString(), cqlFilter);
                     json.put("sessId", sId);
                     json.put("sldId", applicationLayer.getId().toString());
