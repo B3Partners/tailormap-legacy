@@ -550,7 +550,6 @@ public class SldActionBean implements ActionBean {
                     json.put("sldId", applicationLayer.getId().toString());
                     json.put("success", Boolean.TRUE);
                 }
-
             }else{
                 error="No filter to transform or no applicationlayer";
             }
@@ -570,6 +569,7 @@ public class SldActionBean implements ActionBean {
         JSONArray filterArray = new JSONArray();
         filterArray.put(cqlFilter);
         filter = filterArray.toString();
+        log.debug(String.format("Filter (id: %s) retrieved for shared session data (%s): %s", sessId, sldId, filter));
         return this.create();
     }
 

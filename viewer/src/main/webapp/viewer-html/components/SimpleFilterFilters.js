@@ -573,19 +573,24 @@ Ext.define("viewer.components.sf.Number", {
             // This function will be called via eventlistener
             return;
         }
-        this.setFilter(this.getCQL());
+        var cql = this.getCQL();
+        if (cql.length > 0) {
+            this.setFilter(cql);
+        }
     },
     getCQL : function(){
         var cql = "";
         var type = this.config.filterConfig.numberType;
         var mustEscape = this.mustEscapeAttribute();
         var value = (mustEscape ? "'" : "") + this.numberField.getValue() + (mustEscape ? "'" : "");
-        if (type === "eq"){
-            cql = this.config.attributeName + " = " + value;
-        }else if (type === "gt"){
-            cql = this.config.attributeName + " >= " + value;
-        }else if (type === "lt"){
-            cql = this.config.attributeName + " <= " + value;
+        if (Ext.isNumeric(value)) {
+            if (type === "eq") {
+                cql = this.config.attributeName + " = " + value;
+            } else if (type === "gt") {
+                cql = this.config.attributeName + " >= " + value;
+            } else if (type === "lt") {
+                cql = this.config.attributeName + " <= " + value;
+            }
         }
         return cql;
     },
