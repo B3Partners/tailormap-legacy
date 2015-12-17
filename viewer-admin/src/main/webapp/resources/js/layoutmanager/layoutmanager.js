@@ -176,14 +176,14 @@ Ext.define('LayoutManager', {
                 layout = {
                     type: 'hbox'
                 };
-                styleConfig.height = '50px';
+                styleConfig.height = '55px';
             }
             var regionContainer = Ext.create('Ext.container.Container', {
                 cls: 'component-container',
                 layout: layout,
                 style: styleConfig,
-                height: layoutRegion.get('floatComponents') ? 50 : undefined,
-                autoScroll: layoutRegion.get('floatComponents'),
+                height: layoutRegion.get('floatComponents') ? 55 : undefined,
+                overflowX: layoutRegion.get('floatComponents') ? 'auto' : 'hidden',
                 renderTo: layoutRegionElement,
                 plugins : Ext.create('Ext.ux.BoxReorderer', {
                     listeners: {

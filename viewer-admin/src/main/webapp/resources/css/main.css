@@ -565,7 +565,7 @@ input[type="submit"]:hover,
 
 .box {
     padding: 5px;
-    margin-top: 5px;
+    margin-top: 0;
     margin-bottom: 5px;
 }
 
@@ -709,4 +709,8 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .extra-help-text {
     margin-top: 10px;
     width: 740px;
+}
+/** Fixes Ext issue with scrollbar in tree's */
+.x-tree-view > .x-grid-item-container {
+    width: 100% !important;
 }
