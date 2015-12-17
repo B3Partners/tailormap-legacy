@@ -206,7 +206,6 @@ Ext.onReady(function() {
             ]
         }]
     });
-    });
 });
 
 // Function for adding a node, should not be called directly, but trough the
