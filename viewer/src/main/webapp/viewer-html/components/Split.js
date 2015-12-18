@@ -351,6 +351,9 @@ Ext.define("viewer.components.Split", {
                 type = geomAttribute.type;
             }
             this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+            if (geomAttribute.userAllowedToEditGeom !== undefined) {
+                this.geometryEditable = geomAttribute.userAllowedToEditGeom;
+            }
         } else {
             this.geometryEditable = false;
         }

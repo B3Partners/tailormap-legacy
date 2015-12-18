@@ -277,11 +277,11 @@ public class AttributesActionBean implements ActionBean {
             appLayer.addAttributesJSON(json, true);
             if (!userAllowedToEditGeom) {
                 // set editable to false on geometry attribute when editing of the
-                //  geometry has been disabled on the layer
+                //  geometry has been disabled on the layer fot the current user
                 JSONArray attr = json.getJSONArray("attributes");
                 if (json.has("geometryAttributeIndex")) {
                     JSONObject geomAttr = attr.getJSONObject(json.getInt("geometryAttributeIndex"));
-                    geomAttr.put("editable", false);
+                    geomAttr.put("userAllowedToEditGeom", userAllowedToEditGeom);
                 }
             }
             json.put("success", Boolean.TRUE);
