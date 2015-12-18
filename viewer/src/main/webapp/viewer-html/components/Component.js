@@ -51,7 +51,7 @@ Ext.define("viewer.components.Component",{
         var me = this;
         viewer.components.Component.superclass.constructor.call(this, config);
         me.initConfig(config);
-        me.createIconStylesheet();
+        // me.createIconStylesheet();
         var screenAreas = ['header', 'leftmargin_top', 'leftmargin_bottom', 'rightmargin_top', 'rightmargin_bottom', 'footer'];
         if(!me.config.hasOwnProperty('isPopup')) {
             me.config.isPopup = true;
@@ -60,12 +60,13 @@ Ext.define("viewer.components.Component",{
             me.config.isPopup = false;
         }
         if(me.config.isPopup) {
+            config.popupIcon = this.getSvgIcon();
             me.popup = Ext.create("viewer.components.ScreenPopup",config);
             me.popup.setComponent(me);
             me.popup.popupWin.addListener("resize", function() {
                 me.doResize();
             });
-            me.popup.setIconClass(me.getPopupIcon());
+            // me.popup.setIconClass(me.getPopupIcon());
         }
         if(me.config.name && me.title) {
             me.config.viewerController.layoutManager.setTabTitle(me.config.name, me.title);
@@ -114,7 +115,7 @@ Ext.define("viewer.components.Component",{
         if(options.icon) {
             buttonIcon = options.icon;
             buttonCls = "customIconButton";
-        } else if(me.haveSprite) {
+        } else if(me.haveSprite || true) {
             buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
         } else {
             buttonText = (options.text || (me.config.name || ""));
@@ -126,7 +127,8 @@ Ext.define("viewer.components.Component",{
 
         me.button = Ext.create('Ext.button.Button', {
             text: buttonText,
-            cls: buttonCls,
+            cls: 'svg-button',
+            html: this.getSvgIcon(),
             renderTo: (showLabel ? null : me.config.div),
             scale: "large",
             icon: buttonIcon,
@@ -189,6 +191,34 @@ Ext.define("viewer.components.Component",{
                 ]
             });
         }
+    },
+
+    getSvgIcon: function() {
+        var svgSprite = {
+            'viewercomponentsSelectionModule': 'plus',
+            'viewercomponentsLegend': 'info',
+            'viewercomponentsBuffer': 'circle-thin',
+            'viewercomponentsDataSelection': 'filter',
+            'viewercomponentsSearch': 'search',
+            'viewercomponentsEdit': 'edit',
+            'viewercomponentsDrawing': 'pencil',
+            'viewercomponentsBookmark': 'bookmark',
+            'viewercomponentsTransparencySlider': 'sliders',
+            'viewercomponentsInfluenceImage': 'image',
+            'viewercomponentsRelatedDocuments': 'file-text-o',
+            'viewercomponentsAttributeList': 'table',
+            'viewercomponentsPrint': 'print',
+            'viewercomponentstoolsDownloadMap': 'download',
+            'viewercomponentsSpatialFilter': 'filter',
+            'viewercomponentsGraph': 'bar-chart',
+            'viewercomponentsTOC': 'list',
+            'viewercomponentsSnapping': 'magnet',
+            'viewercomponentsSplit': 'expand',
+            'viewercomponentsMerge': 'compress'
+        };
+        var appSprite = this.config.viewerController.getApplicationSprite();
+        var baseClass = this.getBaseClass();
+        return ['<svg role="img" title=""><use xlink:href="', appSprite, '#icon-', svgSprite[baseClass],'"/></svg>'].join('');
     },
 
     setButtonState: function(state, forceState) {

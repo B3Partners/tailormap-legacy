@@ -1656,10 +1656,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // XXX this class does not need to know about the sprite Component.js
         // uses - replace by generic app config details access function
         // or if sprite is used more widely provide it outside Component.js
-        if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
-            return this.app.details.iconSprite;
-        }
-        return null;
+        //if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
+            //return this.app.details.iconSprite;
+        //}
+        return "/viewer/resources/images/sprite.svg";
+        // return null;
     },
     /**
      * Gets the layout height for a layout container
