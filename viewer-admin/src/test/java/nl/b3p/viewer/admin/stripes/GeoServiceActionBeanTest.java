@@ -59,8 +59,8 @@ public class GeoServiceActionBeanTest extends TestUtil{
             GeoService service = ab.getService();
 
             List<Layer> layers = service.loadLayerTree(entityManager);
-            assertEquals(layers.size(), 3);
-            assertEquals(service.getUrl(), url);
+            assertEquals("The number of layers should be the same", 6, layers.size());
+            assertEquals("The url should be the same", url, service.getUrl());
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice:", ex);
             assert(false);
@@ -87,8 +87,8 @@ public class GeoServiceActionBeanTest extends TestUtil{
             GeoService service = ab.getService();
 
             List<Layer> layers = service.loadLayerTree(entityManager);
-            assertEquals(layers.size(), 2);
-            assertEquals(service.getUrl(), url);
+             assertEquals("The number of layers should be the same", 2, layers.size());
+             assertEquals("The url should be the same", url, service.getUrl());
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice:", ex);
             assert(false);
