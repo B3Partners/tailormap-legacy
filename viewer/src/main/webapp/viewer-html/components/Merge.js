@@ -371,6 +371,9 @@ Ext.define("viewer.components.Merge", {
         if (appLayer != null) {
             if (appLayer.geometryAttributeIndex != undefined) {
                 this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+                if (appLayer.attributes[appLayer.geometryAttributeIndex].userAllowedToEditGeom !== undefined) {
+                    this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].userAllowedToEditGeom;
+                }
                 if (this.vectorLayer) {
                     this.vectorLayer.removeAllFeatures();
                 }

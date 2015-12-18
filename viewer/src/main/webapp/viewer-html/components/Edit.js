@@ -383,9 +383,13 @@ Ext.define("viewer.components.Edit", {
                 type = geomAttribute.type;
             }
             this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+            if (geomAttribute.userAllowedToEditGeom !== undefined) {
+                this.geometryEditable = geomAttribute.userAllowedToEditGeom;
+            }
         } else {
             this.geometryEditable = false;
         }
+
         this.showGeomType = type;
         var possible = true;
         var tekst = "";
@@ -1025,14 +1029,20 @@ Ext.define("viewer.components.Edit", {
         var map = {};
         var index = 0;
         for (var i = 0; i < attributes.length; i++) {
-            if (attributes[i].name === appLayer.geometryAttribute) {
+            if (attributes[i].name === appLayer.geometryAttribute && attributes[i].editable) {
                 // if the editing of the geometry attribute is disabled at
-                // the layer level skip a level in the conversion map
-                if (!this.geometryEditable) {
-                    index++;
+                // the layer level (using a "G!B Geometrie NIET Bewerken" group)
+                // skip a level in the conversion map
+                console.debug(attributes[i].userAllowedToEditGeom, !attributes[i].userAllowedToEditGeom);
+                if (attributes[i].userAllowedToEditGeom !== undefined) {
+                    if (!attributes[i].userAllowedToEditGeom) {
+                        index++;
+                        continue;
+                    }
                 }
             }
             if (attributes[i].editable) {
+                console.debug("add attribute:", index, attributes[i].name, attributes[i].editable);
                 map["c" + index] = attributes[i].name;
                 index++;
             }
