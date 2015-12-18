@@ -77,7 +77,7 @@ Ext.onReady(function() {
         listeners: {
             beforeexpand: function(panel){
                 Ext.Array.each(panel.findParentByType('container').items.items, function(item) {
-                    if(item.collapse){
+                    if(item.collapse && item.getItemId() !== "autorisatie-panel") {
                         item.collapse();
                     }
                 });
@@ -274,6 +274,7 @@ Ext.onReady(function() {
             editPanelItems.push({
                 xtype: 'panel',
                 title: 'Autorisatie',
+                itemId: 'autorisatie-panel',
                 style: {
                     "margin-top": "5px"
                 },
@@ -697,8 +698,8 @@ function toggleStaticDynamic(type, attribute) {
 }
 
 function getAttributeEditHeight(type) {
-    var STATIC_HEIGHT = 250;
-    var DYNAMIC_HEIGHT = 350;
+    var STATIC_HEIGHT = 280;
+    var DYNAMIC_HEIGHT = 370;
     return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
 }
 
