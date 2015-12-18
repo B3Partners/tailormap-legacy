@@ -258,6 +258,9 @@ Ext.onReady(function() {
         if (editAllowed && editable){
             var data =[];
             Ext.Array.each(attributes, function(attribute) {
+                if(attribute.featureType !== applicationLayerFeatureType) {
+                    return;
+                }
                 data.push({
                     name: attribute.alias || attribute.name,
                     value: attribute.name
