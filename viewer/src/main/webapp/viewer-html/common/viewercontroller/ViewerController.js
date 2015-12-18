@@ -588,6 +588,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     initAppLayer: function(appLayerId,background) {
         var appLayer = this.app.appLayers[appLayerId];
+        if (appLayer === undefined) {
+            return;
+        }
         if (appLayer.background!=background){
             return;
         }
