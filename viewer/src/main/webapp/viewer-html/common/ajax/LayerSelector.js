@@ -151,24 +151,7 @@ Ext.define ("viewer.components.LayerSelector",{
         // Retrieve appLayer from config.viewerController. Because the applayers in the comboBox are not the same as in the viewercontroller but copies. So by retrieving the ones
         // from the ViewerController you get the correct appLayer
         var al = null;
-        // In Internet Explorer it is possible that this function is called with string
-        // instead of appLayer object. In this case we try to find the layer by name in the store
-        if(typeof appLayer === "string") {
-            try {
-                // Try to find the layer based on name.
-                var layerIndex = combobox.getStore().findBy(function(record) {
-                    if(record.get('title') === appLayer) {
-                        return true;
-                    }
-                    return false;
-                });
-                if(layerIndex !== -1) {
-                    appLayer = combobox.getStore().getAt(layerIndex).data.layer;
-                } else {
-                    appLayer = null;
-                }
-            } catch(e) {}
-        }
+        appLayer = this._validateAppLayer(appLayer);
         if(appLayer){
             al = this.config.viewerController.getAppLayerById(appLayer.id);
         }
@@ -182,12 +165,41 @@ Ext.define ("viewer.components.LayerSelector",{
         // Retrieve appLayer from viewerController. Because the applayers in the comboBox are not the same as in the viewercontroller but copies. So by retrieving the ones
         // from the ViewerController you get the correct appLayer
         var val = this.combobox.getValue();
-        if(val){
+        val = this._validateAppLayer(val);
+        if (val) {
             var al = this.config.viewerController.getAppLayerById(val.id);
             return al;
         }else{
             return null;
         }
+    },
+    /**
+     * In Internet Explorer it is possible that this function is called with
+     * string instead of appLayer object. In this case we try to find the layer by name in the store.
+     *
+     * @param {appLayer}| {String} appLayer the AppLayer to validate or possibly a string
+     * @private
+     *
+     */
+    _validateAppLayer: function (val) {
+        if (typeof val === "string") {
+            try {
+                // Try to find the layer based on name.
+                var layerIndex = this.combobox.getStore().findBy(function (record) {
+                    if (record.get('title') === val) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (layerIndex !== -1) {
+                    val = this.combobox.getStore().getAt(layerIndex).data.layer;
+                } else {
+                    val = null;
+                }
+            } catch (e) {
+            }
+        }
+        return val;
     },
     setValue : function (appLayer){
         this.combobox.setValue(appLayer);
