@@ -1033,7 +1033,6 @@ Ext.define("viewer.components.Edit", {
                 // if the editing of the geometry attribute is disabled at
                 // the layer level (using a "G!B Geometrie NIET Bewerken" group)
                 // skip a level in the conversion map
-                console.debug(attributes[i].userAllowedToEditGeom, !attributes[i].userAllowedToEditGeom);
                 if (attributes[i].userAllowedToEditGeom !== undefined) {
                     if (!attributes[i].userAllowedToEditGeom) {
                         index++;
@@ -1042,7 +1041,6 @@ Ext.define("viewer.components.Edit", {
                 }
             }
             if (attributes[i].editable) {
-                console.debug("add attribute:", index, attributes[i].name, attributes[i].editable);
                 map["c" + index] = attributes[i].name;
                 index++;
             }
