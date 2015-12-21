@@ -166,6 +166,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .olControlOverviewMapExtentRectangle {
                     border: 2px dotted ${steunkleur2} !important;
                 }
+                
+                .steunkleur1 {
+                    background-color: ${steunkleur1};
+                }
+                
+                .steunkleur2 {
+                    color: ${steunkleur2};
+                }
             </c:if>
             <c:if test="${!empty actionBean.application.details.font.value}">
                 /* Textcolor */

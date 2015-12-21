@@ -95,6 +95,23 @@ Ext.define("viewer.components.sf.ResetConfig", {
     }
 });
 
+Ext.define("viewer.components.sf.TextlabelConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor : function (config){
+        viewer.components.sf.TextlabelConfig.superclass.constructor.call(this, config);
+    },
+    getFormItems : function(){
+        return [{
+            fieldLabel: 'Tekst',
+            name: 'textlabel',
+            value: this.configObject.textlabel ? this.configObject.textlabel : ""
+        }];
+    },
+    getTitle : function(){
+        return "Tekst label";
+    }
+});
+
 Ext.define("viewer.components.sf.CheckboxConfig", {
     extend: "viewer.components.sf.Config",
     constructor: function(config) {

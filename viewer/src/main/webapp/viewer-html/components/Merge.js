@@ -24,6 +24,8 @@ Ext.define("viewer.components.Merge", {
     toolMapClick: null,
     fidA: null,
     fidB: null,
+    labelA: 'A',
+    labelB: 'B',
     geometryEditable: null,
     deActivatedTools: [],
     config: {
@@ -38,6 +40,7 @@ Ext.define("viewer.components.Merge", {
     constructor: function (conf) {
         viewer.components.Merge.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        this.config.actionbeanUrl = contextPath + '/action/feature/merge';
 
         var me = this;
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
@@ -80,7 +83,6 @@ Ext.define("viewer.components.Merge", {
     },
     /**
      * create selection layer.
-     * @todo labeling A and B seems to fail
      */
     createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
@@ -120,10 +122,10 @@ Ext.define("viewer.components.Merge", {
         if (this.mode == "selectA") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(false);
             Ext.getCmp(this.name + "selectAButton").setDisabled(true);
-            Ext.getCmp(this.name + "geomLabel").setText("Selecteer B geometrie");
+            Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelB + " geometrie");
         } else if (this.mode == "selectB") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(true);
-            Ext.getCmp(this.name + "geomLabel").setText("A en B geometrie geselecteerd");
+            Ext.getCmp(this.name + "geomLabel").setText(this.labelA + " en " + this.labelB + " geometrie geselecteerd");
         }
     },
     selectB: function () {
@@ -257,15 +259,15 @@ Ext.define("viewer.components.Merge", {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
                     padding: "4px",
-                    width: '280px',
+                    width: '320px',
                     height: MobileManager.isMobile() ? 60 : 36,
                     items: [
                         {
                             xtype: 'button',
                             id: this.name + "selectAButton",
                             disabled: true,
-                            tooltip: "Kies geometrie A",
-                            text: "Selecteer A",
+                            tooltip: "Kies geometrie " + this.labelA,
+                            text: "Selecteer " + this.labelA,
                             componentCls: 'mobileLarge',
                             listeners: {
                                 click: {
@@ -278,8 +280,8 @@ Ext.define("viewer.components.Merge", {
                             xtype: 'button',
                             id: this.name + "selectBButton",
                             disabled: true,
-                            tooltip: "Kies geometrie B",
-                            text: "Selecteer B",
+                            tooltip: "Kies geometrie " + this.labelB,
+                            text: "Selecteer " + this.labelB,
                             componentCls: 'mobileLarge',
                             listeners: {
                                 click: {
@@ -287,14 +289,14 @@ Ext.define("viewer.components.Merge", {
                                     fn: me.selectB
                                 }
                             }
-                        },
-                        {
-                            id: this.name + "geomLabel",
-                            margin: 5,
-                            text: '',
-                            xtype: "label"
                         }
                     ]
+                },
+                {
+                    id: this.name + "geomLabel",
+                    margin: 5,
+                    text: '',
+                    xtype: "label"
                 },
                 {
                     id: this.name + 'savePanel',
@@ -406,7 +408,7 @@ Ext.define("viewer.components.Merge", {
                 var feat = Ext.create("viewer.viewercontroller.controller.Feature", {
                     wktgeom: wkt,
                     id: feature.__fid,
-                    label: (this.mode === "selectA") ? "A" : "B"
+                    label: (this.mode === "selectA") ? this.labelA : this.labelB
                 });
                 this.vectorLayer.addFeature(feat);
             }

@@ -35,12 +35,13 @@ Ext.define("viewer.components.SimpleFilter", {
             width: '100%',
             height: '100%',
             renderTo: this.div,
-            html: '<div style="width: 100%; height: 100%; overflow: auto;" id="' + containerContentId + '"></div>'
+            html: '<div class="simple-filter-wrapper" id="' + containerContentId + '"></div>'
         });
 
         var me = this;
         Ext.Array.each(this.config.filters, function(filter, index) {
-            var newFilter = Ext.create(filter.class, {
+            var className = filter["class"];
+            var newFilter = Ext.create(className, {
                 appLayerId: me.config.layers[filter.appLayerId], // convert from index to actual appLayerId
                 attributeName: filter.attributeName,
                 filterConfig: filter.config,

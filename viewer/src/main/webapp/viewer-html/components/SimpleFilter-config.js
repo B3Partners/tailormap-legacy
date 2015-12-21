@@ -38,7 +38,8 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {type: "combo", label: "Selectielijst"},
                 {type: "checkbox", label: "Vinkvak"},
                 {type: "radio", label: "Keuzerondje"},
-                {type: "reset", label: "Reset filter knop"}
+                {type: "reset", label: "Reset filter knop"},
+                {type: "textlabel", label: "Tekst label"}
             ]
         });
 
@@ -319,7 +320,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.createFilterConfig(type, config.config);
     },
     createDescription: function(type, appLayer, filter) {
-        return type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + (filter.attributeAlias || filter.attributeName);
+        return (type === "Reset" || type === "Textlabel") ? " - " : (appLayer.alias || appLayer.layerName) + "." + (filter.attributeAlias || filter.attributeName);
     },
     saveCurrentConfig: function(button, e, eOpts) {
         if(this.filterConfigurer) {
@@ -329,7 +330,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 class: filterConfigurerClass.substring(0, filterConfigurerClass.length - 6),
                 appLayerId: Ext.ComponentQuery.query("#layerCombo")[0].getValue(),
                 attributeName: attributeCombo.getValue(),
-                attributeAlias: attributeCombo.getStore().findRecord("name", attributeCombo.getValue()).get('alias'),
+                attributeAlias: attributeCombo.getValue() ? attributeCombo.getStore().findRecord("name", attributeCombo.getValue()).get('alias') : '',
                 config: this.filterConfigurer.getConfig()
             };
 
