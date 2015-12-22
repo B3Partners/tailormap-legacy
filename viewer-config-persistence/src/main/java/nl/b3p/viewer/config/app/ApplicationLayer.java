@@ -329,8 +329,11 @@ public class ApplicationLayer {
     }
     
     void processStartLayers(Application app, ApplicationLayer original) throws Exception{
-        for (StartLayer value : original.startLayers.values()) {
-            this.getStartLayers().put(app, value.deepCopy(this,app));
+        List<StartLayer> al = new ArrayList(original.startLayers.values());
+        // gaat mis bij maken van mashup bij application die al mashup heeft. Dit is goed, nu ook bij procesStartLevels
+        for (int i = 0; i < al.size(); i++) {
+            StartLayer sl = al.get(i);
+            this.getStartLayers().put(app, sl.deepCopy(this,app));
         }
     }
 

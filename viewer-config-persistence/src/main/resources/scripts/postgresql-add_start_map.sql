@@ -12,7 +12,7 @@
         id  bigserial not null,
         selected_index int4,
         application int8,
-        level int8,
+        level_ int8,
         primary key (id)
     );
 
@@ -36,5 +36,5 @@
 
     alter table start_level 
         add constraint FKA4C87167F47CA2EC 
-        foreign key (level) 
+        foreign key (level_) 
         references level_;

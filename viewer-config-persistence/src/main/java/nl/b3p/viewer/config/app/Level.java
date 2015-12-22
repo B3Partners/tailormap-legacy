@@ -25,7 +25,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -312,7 +311,9 @@ public class Level implements Comparable{
     }
     
     private void processStartLevels(Application app, Level original) throws Exception{
-        for (StartLevel value : original.startLevels.values()) {
+        List<StartLevel> sls = new ArrayList<StartLevel>(original.startLevels.values());
+        for (int i = 0; i < sls.size(); i++) {
+            StartLevel value = sls.get(i);
             this.getStartLevels().put(app, value.deepCopy(app, this));
         }
     }
