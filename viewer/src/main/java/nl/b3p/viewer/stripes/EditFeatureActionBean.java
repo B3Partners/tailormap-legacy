@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -51,6 +52,7 @@ import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -140,18 +142,19 @@ public class EditFeatureActionBean  implements ActionBean {
         String error = null;
 
         FeatureSource fs = null;
+        EntityManager em = Stripersist.getEntityManager();
         try {
             do {
                 if(appLayer == null) {
                     error = "App layer or service not found";
                     break;
                 }
-                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
                     error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
 
-                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+                layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
                     error = "Layer not found";
@@ -215,24 +218,26 @@ public class EditFeatureActionBean  implements ActionBean {
         String error = null;
 
         FeatureSource fs = null;
+
+        EntityManager em = Stripersist.getEntityManager();
         try {
             do {
                 if(appLayer == null) {
                     error = "App layer or service not found";
                     break;
                 }
-                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
                     error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
 
-                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+                layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
                     error = "Layer not found";
                     break;
                 }
-                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
+                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), em)) {
                     error = "U heeft geen rechten om de geometrie van deze kaartlaag te bewerken";
                     break;
                 }

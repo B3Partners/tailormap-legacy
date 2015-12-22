@@ -42,6 +42,58 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>test-schema-export</id>
+                        <phase>generate-test-resources</phase>
+                        <configuration>
+                            <hibernatetool destdir="${project.build.outputDirectory}/scripts">
+                                <classpath>
+                                    <path location="target" />
+                                </classpath>
+                                <!-- voor de unit tests met HSQLDB -->
+                                <hbm2ddl export="true" drop="true" create="true" outputfilename="hsqldb-schema-export.sql" format="true">
+                                    <jpaconfiguration persistenceUnit="viewer-config-hsqldb" />
+                                </hbm2ddl>
+                            </hibernatetool>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <!-- hsqldb wordt allen voor unit tests gebruikt, maar als deze
+                        als test scope dep wordt opgevoerd treedt er een CNFE op tijdens de build. -->
+
+                        <groupId>org.hsqldb</groupId>
+                        <artifactId>hsqldb</artifactId>
+                        <version>2.3.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -110,6 +162,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
         </dependency>
     </dependencies>
 </project>

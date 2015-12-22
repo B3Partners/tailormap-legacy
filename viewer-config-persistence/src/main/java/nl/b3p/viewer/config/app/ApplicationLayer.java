@@ -75,6 +75,11 @@ public class ApplicationLayer {
     @OrderColumn(name="list_index")
     private List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();
 
+
+    @OneToMany(mappedBy = "applicationLayer",orphanRemoval = true, cascade = CascadeType.ALL)
+    @MapKey(name = "application")
+    private Map<Application, StartLayer> startLayers = new HashMap<Application, StartLayer>();
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public List<ConfiguredAttribute> getAttributes() {
         return attributes;
@@ -84,7 +89,7 @@ public class ApplicationLayer {
         this.attributes = attributes;
     }
     
-    public boolean isChecked() {
+   public boolean isChecked() {
         return checked;
     }
     
@@ -148,6 +153,15 @@ public class ApplicationLayer {
     public void setLayerName(String layerName) {
         this.layerName = layerName;
     }
+
+    public Map<Application, StartLayer> getStartLayers() {
+        return startLayers;
+    }
+
+    public void setStartLayers(Map<Application, StartLayer> startLayers) {
+        this.startLayers = startLayers;
+    }
+
     //</editor-fold>
     
     /**
@@ -189,11 +203,11 @@ public class ApplicationLayer {
         }
         return null;
     }
-    public String getDisplayName() {
+    public String getDisplayName(EntityManager em) {
         if(ClobElement.isNotBlank(getDetails().get("titleAlias"))) {
             return getDetails().get("titleAlias").getValue();
         } else {
-            Layer l = getService() == null ? null : getService().getLayer(getLayerName());
+            Layer l = getService() == null ? null : getService().getLayer(getLayerName(),em);
             if(l != null) {
                 return l.getDisplayName();
             } else {
@@ -202,22 +216,21 @@ public class ApplicationLayer {
         }
     }
 
-    public JSONObject toJSONObject() throws JSONException {
-        return toJSONObject(false, false);
+    public JSONObject toJSONObject(EntityManager em) throws JSONException {
+        return toJSONObject(false, false, em, null);
     }
     
-    public JSONObject toJSONObject(boolean includeAttributes, boolean includeRelations) throws JSONException {
+    public JSONObject toJSONObject(boolean includeAttributes, boolean includeRelations,EntityManager em, Application app) throws JSONException {
 
         JSONObject o = new JSONObject();
         o.put("id", getId());
-        o.put("checked", isChecked());
         o.put("layerName", getLayerName());
         if(getService() != null) {
             o.put("serviceId", getService().getId());
         }
-        o.put("alias", getDisplayName());
+        o.put("alias", getDisplayName(em));
 
-        Layer l = getService() == null ? null : getService().getLayer(getLayerName());
+        Layer l = getService() == null ? null : getService().getLayer(getLayerName(), em);
         if(l != null && l.getFeatureType() != null) {
             o.put("featureType", l.getFeatureType().getId());
         }
@@ -234,6 +247,9 @@ public class ApplicationLayer {
         if(includeAttributes) {
             addAttributesJSON(o, includeRelations);
         }
+
+        StartLayer sl = getStartLayers().get(app);
+        o.put("checked", sl != null ? sl.isChecked() : false);
 
         return o;
     }
@@ -310,9 +326,18 @@ public class ApplicationLayer {
             }
         }
         return featureTypeAttributes;
-    }    
+    }
+    
+    void processStartLayers(Application app, ApplicationLayer original) throws Exception{
+        List<StartLayer> al = new ArrayList(original.startLayers.values());
+        // gaat mis bij maken van mashup bij application die al mashup heeft. Dit is goed, nu ook bij procesStartLevels
+        for (int i = 0; i < al.size(); i++) {
+            StartLayer sl = al.get(i);
+            this.getStartLayers().put(app, sl.deepCopy(this,app));
+        }
+    }
 
-    ApplicationLayer deepCopy(Map originalToCopy) throws Exception {
+    ApplicationLayer deepCopy(Map originalToCopy, Application app) throws Exception {
         ApplicationLayer copy = (ApplicationLayer) BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
         copy.setId(null);
@@ -327,6 +352,9 @@ public class ApplicationLayer {
         for(ConfiguredAttribute a: attributes) {
             copy.getAttributes().add(a.deepCopy());
         }
+        copy.setStartLayers(new HashMap<Application, StartLayer>());
+        copy.processStartLayers(app,this);
+        
         return copy;
     }
     

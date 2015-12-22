@@ -43,6 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" id="menu_documenten">Documenten</stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" id="menu_serviceusagematrix">Service Gebruiks Matrix</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" id="menu_bookmarks">Beheer bookmarks</stripes:link></li>
                 </ul>
             </li>
 </security:allowed>

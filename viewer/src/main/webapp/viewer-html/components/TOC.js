@@ -272,7 +272,7 @@ Ext.define ("viewer.components.TOC",{
         if(level.children != undefined ){
             for(var i = 0 ; i < level.children.length; i++){
                 var l = this.addLevel(level.children[i]);
-                if(l.node != null) {
+                if(l !== null && l.node != null) {
                     totalChilds++;
                     if(l.tristate === 0) {
                         totalChilds++;

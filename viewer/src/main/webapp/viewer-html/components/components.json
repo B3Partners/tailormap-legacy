@@ -522,7 +522,7 @@
         name: "Selectie Module",
         shortName: "Sm",
         group: "Component",
-        sources: ["SelectionModule.js"],
+        sources: ["SelectionModule.js", "SelectionModuleMenu.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","SelectionModule-config.js"],
         singleton: true,
         restrictions: ["left_menu"],

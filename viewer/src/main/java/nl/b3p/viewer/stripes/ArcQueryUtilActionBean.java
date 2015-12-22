@@ -122,7 +122,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
     public void checkAuthorization() {
 
         if (application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
+                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
     }

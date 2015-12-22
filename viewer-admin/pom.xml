@@ -15,6 +15,7 @@
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
     </properties>
 
     <dependencies>
@@ -109,6 +110,14 @@
                <artifactId>solr-solrj</artifactId>
                <groupId>org.apache.solr</groupId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${flamingo.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -195,6 +204,19 @@
                     </gitDescribe>
                 </configuration>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>
