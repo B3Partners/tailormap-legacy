@@ -255,9 +255,12 @@ Ext.define("viewer.components.sf.Checkbox", {
         }
 
         Ext.create("Ext.container.Container", {
-            height: this.options.length * 25,
+            columns: 1,
             id: "checkboxcontainer" + this.config.name,
             name: "checkboxcontainer" + this.config.name,
+            defaults: {
+                height: 18
+            },
             layout: {
                 type: 'vbox',
                 align: "left"
@@ -521,6 +524,82 @@ Ext.define("viewer.components.sf.Combo", {
     }
 });
 
+Ext.define("viewer.components.sf.Number", {
+    extend: "viewer.components.sf.SimpleFilter",
+    config: {
+        simpleFilter: null,
+        filterConfig: null
+    },
+    numberField: null,
+    constructor: function(conf) {
+        viewer.components.sf.Number.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        var templatecontents = [
+            "<tr>",
+                "<td width=\"100\"><div id=\"{name}_field\">{value}</div></td>",
+                "<td colspan=\"2\">{fieldLabel}</td>",
+            "</tr>"
+        ];
+        var t = this.wrapSimpleFilter(this.config.filterConfig.label, templatecontents);
+        new Ext.Template(t).append(this.config.container, {
+            label: this.config.filterConfig.label,
+            name: this.config.name,
+            fieldLabel: this.config.filterConfig.fieldLabel || ""
+        });
+        this.numberField = this.createElement();
+    },
+    createElement : function () {
+        var filterChangeDelay = 500;
+        return Ext.create("Ext.form.field.Number", {
+            renderTo: this.config.name + "_field",
+            name:  this.config.name,
+            value: this.config.filterConfig.start ? this.config.filterConfig.start : "",
+            maxValue: this.config.filterConfig.max || Number.MAX_VALUE,
+            minValue: this.config.filterConfig.min || 0,
+            width: 100,
+            listeners: {
+                change: {
+                    scope: this,
+                    fn: function(){
+                        this.applyFilter();
+                    },
+                    buffer: filterChangeDelay
+                }
+            }
+         });
+    },
+    applyFilter : function(){
+        if(!this.ready){
+            // This function will be called via eventlistener
+            return;
+        }
+        var cql = this.getCQL();
+        if (cql.length > 0) {
+            this.setFilter(cql);
+        }
+    },
+    getCQL : function(){
+        var cql = "";
+        var type = this.config.filterConfig.numberType;
+        var mustEscape = this.mustEscapeAttribute();
+        var value = (mustEscape ? "'" : "") + this.numberField.getValue() + (mustEscape ? "'" : "");
+        if (Ext.isNumeric(value)) {
+            if (type === "eq") {
+                cql = this.config.attributeName + " = " + value;
+            } else if (type === "gt") {
+                cql = this.config.attributeName + " >= " + value;
+            } else if (type === "lt") {
+                cql = this.config.attributeName + " <= " + value;
+            }
+        }
+        return cql;
+    },
+    reset : function(){
+        this.callParent();
+        this.numberField.setValue(this.config.filterConfig.start || "");
+    }
+});
+
 Ext.define("viewer.components.sf.Slider", {
     extend: "viewer.components.sf.SimpleFilter",
     config: {
@@ -593,7 +672,7 @@ Ext.define("viewer.components.sf.Slider", {
             if(c.sliderType === "range") {
                 templatecontents.push(
                     "<tr>",
-                        "<td><span id=\"", n, "_min\"></span></td>",
+                        "<td><span id=\"{name}_min\"></span></td>",
                         "<td></td>",
                         "<td align=\"right\"><span id=\"{name}_max\">{value}</span></td>",
                     "</tr>"
@@ -601,7 +680,9 @@ Ext.define("viewer.components.sf.Slider", {
             } else {
                 templatecontents.push(
                     "<tr>",
-                        "<td colspan=\"3\" align=\"center\"><span id=\"{name}_value\">{value}</span></td>",
+                        "<td width=\"33%\"><span id=\"{name}_minvalue\">{minvalue}</span></td>",
+                        "<td width=\"33%\" align=\"center\"><span id=\"{name}_value\">{value}</span></td>",
+                        "<td width=\"34%\" align=\"right\"><span id=\"{name}_maxvalue\">{maxvalue}</span></td>",
                     "</tr>"
                 );
             }
@@ -610,7 +691,9 @@ Ext.define("viewer.components.sf.Slider", {
         new Ext.Template(t).append(this.config.container, {
             label: c.label,
             name: this.config.name,
-            value: c.start
+            value: c.start,
+            minvalue: c.min,
+            maxvalue: c.max
         });
 
         if(c.sliderType === "range") {

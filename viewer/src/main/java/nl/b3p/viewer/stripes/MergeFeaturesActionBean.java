@@ -187,22 +187,26 @@ public class MergeFeaturesActionBean implements ActionBean {
      *
      * @param features a list of features that can be modified
      * @return the list of features to be committed to the database
+     *
+     * @throws java.lang.Exception if any
+     *
      * @see #handleExtraData(org.opengis.feature.simple.SimpleFeature)
      */
-    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) {
+    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) throws Exception {
         return features;
     }
 
     /**
      * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
      *
+     * @param feature the feature that can be modified
+     * @return the feature to be committed to the database
+     *
+     * @throws java.lang.Exception if any
      *
      * @see #handleExtraData(java.util.List<SimpleFeature>)
-     *
-     * @param feature the feature that can be modified
-     * @return the feature to be committed to the database      *
      */
-    protected SimpleFeature handleExtraData(SimpleFeature feature) {
+    protected SimpleFeature handleExtraData(SimpleFeature feature) throws Exception {
         final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
         features.add(feature);
         return this.handleExtraData(features).get(0);
@@ -276,10 +280,10 @@ public class MergeFeaturesActionBean implements ActionBean {
             // TopologyPreservingSimplifier simplify = new TopologyPreservingSimplifier(newGeom);
             // simplify.setDistanceTolerance(tolerance);
             // newGeom = simplify.getResultGeometry();
-
             ids = this.handleStrategy(fA, fB, newGeom, filterA, filterB, this.store, this.strategy);
 
             transaction.commit();
+            afterMerge(ids);
         } catch (Exception e) {
             transaction.rollback();
             throw e;
@@ -347,6 +351,14 @@ public class MergeFeaturesActionBean implements ActionBean {
         return ids;
     }
 
+    /**
+     * Called after the merge is completed and commit was performed. Provides a
+     * hook for postprocessing.
+     * @param ids The list of committed feature ids
+     */
+    protected void afterMerge(List<FeatureId> ids) {
+    }
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     @Override
     public ActionBeanContext getContext() {
@@ -412,6 +424,10 @@ public class MergeFeaturesActionBean implements ActionBean {
 
     public void setExtraData(String extraData) {
         this.extraData = extraData;
+    }
+
+    public Layer getLayer() {
+        return layer;
     }
     //</editor-fold>
 }

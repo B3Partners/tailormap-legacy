@@ -17,8 +17,10 @@
 package nl.b3p.viewer.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
@@ -30,6 +32,8 @@ import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.BinaryComparisonOperator;
@@ -187,7 +191,7 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
                 Query q = new Query(fs.getName().toString());
                 q.setFilter(filter);
 
-                HashMap<String, ArrayList<Filter>> orFilters = new HashMap<String, ArrayList<Filter>>();
+                HashMap<String, List<Filter>> orFilters = new HashMap<String, List<Filter>>();
                 //get propertynames needed.
                 List<String> propertyNames = new ArrayList<String>();
                 for (FeatureTypeRelationKey key : relation.getRelationKeys()) {
@@ -198,6 +202,8 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
 
                 FeatureCollection fc = fs.getFeatures(q);
                 FeatureIterator<SimpleFeature> it = null;
+
+                Map<String,List<Object>> inFilters = new HashMap<String,List<Object>>();
                 try {
                     it = fc.features();
                     //walk the features, get the rightside values and create a list of filters (or)
@@ -213,10 +219,13 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
                                     && AttributeDescriptor.GEOMETRY_TYPES.contains(key.getLeftSide().getType())) {
                                 fil = ff.and(ff.not(ff.isNull(ff.property(key.getLeftSide().getName()))),
                                         ff.intersects(ff.property(key.getLeftSide().getName()), ff.literal(value)));
+                                orFilters.get(key.getRightSide().getName()).add(fil);
                             } else {
-                                fil = ff.equals(ff.property(key.getLeftSide().getName()), ff.literal(value));
+                                if(!inFilters.containsKey(key.getRightSide().getName())){
+                                    inFilters.put(key.getRightSide().getName(), new ArrayList<Object>());
+                                }
+                                inFilters.get(key.getRightSide().getName()).add(value);
                             }
-                            orFilters.get(key.getRightSide().getName()).add(fil);
                         }
                     }
                 } finally {
@@ -225,10 +234,30 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
                     }
                     fs.getDataStore().dispose();
                 }
+
+                for (String propertyName : inFilters.keySet()) {
+                    List<Object> values = inFilters.get(propertyName);
+                    String filterString = propertyName + " IN ";
+                    String valueString = null;
+                    for (Object value : values) {
+                        if(valueString == null){
+                            valueString = "(";
+                        }else{
+                            valueString += ", ";
+                        }
+                        valueString += value;
+                    }
+                    valueString +=  ")";
+
+                    Filter fil = ECQL.toFilter(filterString + valueString);
+                    
+                    orFilters.put(propertyName, Collections.singletonList(fil));
+                }
+
                 //make or filters and add them to a list of and filters.
                 List<Filter> andFilters = new ArrayList<Filter>();
                 for (FeatureTypeRelationKey key : relation.getRelationKeys()) {
-                    ArrayList<Filter> filters = orFilters.get(key.getRightSide().getName());
+                    List<Filter> filters = orFilters.get(key.getRightSide().getName());
                     if (filters==null){
                         continue;
                     }

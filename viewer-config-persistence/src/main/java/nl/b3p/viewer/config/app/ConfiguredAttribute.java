@@ -76,6 +76,8 @@ public class ConfiguredAttribute {
 
     private boolean disallowNullValue;
 
+    private boolean disableUserEdit;
+
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
         return attributeName;
@@ -220,6 +222,14 @@ public class ConfiguredAttribute {
     public void setDisallowNullValue(boolean disallowNullValue) {
         this.disallowNullValue = disallowNullValue;
     }
+
+    public boolean isDisableUserEdit() {
+        return disableUserEdit;
+    }
+
+    public void setDisableUserEdit(boolean disableUserEdit) {
+        this.disableUserEdit = disableUserEdit;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -228,6 +238,7 @@ public class ConfiguredAttribute {
         o.put("name", attributeName);
         o.put("visible", visible);
         o.put("editable", editable);
+        o.put("disableUserEdit", disableUserEdit);
         o.put("filterable", filterable);
         o.put("selectable", selectable);
         o.put("editAlias", editAlias);

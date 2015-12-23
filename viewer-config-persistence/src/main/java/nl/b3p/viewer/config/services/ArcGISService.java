@@ -238,7 +238,7 @@ public class ArcGISService extends GeoService implements Updatable {
             }
         }
 
-        setLayerTree(getTopLayer(), layersById, childrenByLayerId);
+        setLayerTree(getTopLayer(), layersById, childrenByLayerId, em);
         setAllChildrenDetail(getTopLayer(), em);
 
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
@@ -247,10 +247,10 @@ public class ArcGISService extends GeoService implements Updatable {
         }
     }
 
-    private static void setLayerTree(Layer topLayer, Map<String,Layer> layersById, Map<String,List<String>> childrenByLayerId) {
+    private static void setLayerTree(Layer topLayer, Map<String,Layer> layersById, Map<String,List<String>> childrenByLayerId, EntityManager em) {
         topLayer.getChildren().clear();
 
-        Stripersist.getEntityManager().flush();
+        em.flush();
 
         /* fill children list and parent references */
         for(Layer l: layersById.values()) {
@@ -436,7 +436,7 @@ public class ArcGISService extends GeoService implements Updatable {
                 // linked FeatureSource was removed by user
             }
 
-            updateLayers(update, linkedFS, result);
+            updateLayers(update, linkedFS, result, em   );
 
             removeOrphanLayersAfterUpdate(result);
 
@@ -452,7 +452,7 @@ public class ArcGISService extends GeoService implements Updatable {
         return result;
     }
 
-    private void updateLayers(final ArcGISService update, final ArcGISFeatureSource linkedFS, final UpdateResult result) {
+    private void updateLayers(final ArcGISService update, final ArcGISFeatureSource linkedFS, final UpdateResult result, EntityManager em) {
         /* This is a lot simpler than WMS, because layers always have an id
          * (name in WMS and our Layer object)
          */
@@ -531,7 +531,7 @@ public class ArcGISService extends GeoService implements Updatable {
             updatedLayersById.put(updateLayer.getName(), updatedLayer);
         }
 
-        setLayerTree(getTopLayer(), updatedLayersById, update.childrenByLayerId);
+        setLayerTree(getTopLayer(), updatedLayersById, update.childrenByLayerId, em);
     }
 
     private void removeOrphanLayersAfterUpdate(UpdateResult result) {

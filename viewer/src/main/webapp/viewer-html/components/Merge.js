@@ -114,7 +114,6 @@ Ext.define("viewer.components.Merge", {
         }
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
-        this.config.viewerController.mapComponent.deactivateTools();
         this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
     },
@@ -138,7 +137,9 @@ Ext.define("viewer.components.Merge", {
         this.activateMapClick();
     },
     activateMapClick: function () {
-        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
+            this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        }
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {
@@ -259,7 +260,7 @@ Ext.define("viewer.components.Merge", {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
                     padding: "4px",
-                    width: '320px',
+                    width: '100%',
                     height: MobileManager.isMobile() ? 60 : 36,
                     items: [
                         {
@@ -382,7 +383,7 @@ Ext.define("viewer.components.Merge", {
                 Ext.getCmp(this.name + "selectAButton").setDisabled(false);
                 Ext.getCmp(this.name + "selectBButton").setDisabled(true);
 
-                Ext.getCmp(this.name + "geomLabel").setText("Selecteer A en B geometrie");
+                Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelB + " en " + this.labelB + " geometrie");
             } else {
                 Ext.getCmp(this.name + "geomLabel").setText('Geometrie mag niet bewerkt worden.');
             }

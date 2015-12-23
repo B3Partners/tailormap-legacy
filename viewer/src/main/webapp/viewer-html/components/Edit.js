@@ -439,7 +439,7 @@ Ext.define("viewer.components.Edit", {
                 if (this.newGeomType == null) {
                     tekst = "Geometrie mag alleen bewerkt worden";
                 } else {
-                    if (!this.config.allowNew) {
+                    if (this.config.allowNew) {
                         Ext.getCmp(this.name + "newButton").setDisabled(false);
                     }
                     tekst = 'Bewerk een ' + this.tekstGeom + " op de kaart";
@@ -465,6 +465,10 @@ Ext.define("viewer.components.Edit", {
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         input = this.createDynamicInput(attribute, values);
                     }
+                    if(attribute.disableUserEdit) {
+                        input.setReadOnly(true);
+                        input.addCls("x-item-disabled");
+                    }
                     this.inputContainer.add(input);
                     Ext.getCmp(this.name + "editButton").setDisabled(false);
                 }
@@ -472,7 +476,7 @@ Ext.define("viewer.components.Edit", {
         } else {
             gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
             Ext.getCmp(this.name + "editButton").setDisabled(true);
-            if (!this.config.allowNew) {
+            if (this.config.allowNew) {
                 Ext.getCmp(this.name + "newButton").setDisabled(true);
             }         
             if (this.config.allowDelete) {
@@ -731,7 +735,9 @@ Ext.define("viewer.components.Edit", {
         }
     },
     activateMapClick: function () {
-        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
+            this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        }
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {
@@ -844,7 +850,7 @@ Ext.define("viewer.components.Edit", {
     },
     resetForm: function () {
         Ext.getCmp(this.name + "editButton").setDisabled(true);
-        if (!this.config.allowNew) {
+        if (this.config.allowNew) {
             Ext.getCmp(this.name + "newButton").setDisabled(true);
         }
         if (this.config.allowDelete) {

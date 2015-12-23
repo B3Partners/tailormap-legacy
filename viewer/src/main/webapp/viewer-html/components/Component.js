@@ -71,7 +71,19 @@ Ext.define("viewer.components.Component",{
             me.config.viewerController.layoutManager.setTabTitle(me.config.name, me.title);
         }
         me.events = [];
+        me.addContainerClass();
         return me;
+    },
+    addContainerClass: function() {
+        var myClassname = this.$className || "";
+        var containerCls = [
+            myClassname.toLowerCase().replace(/\./ig, "").replace(/viewercomponents/ig, ""),
+            "-component-container"
+        ].join("");
+        var container = this.getContentContainer();
+        if(container) {
+            container.addCls(containerCls);
+        }
     },
     /**
       *Returns the id of the content div.

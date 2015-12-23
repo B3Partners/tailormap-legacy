@@ -28,7 +28,7 @@
     <properties>
         <flamingo.version>4.6.0-SNAPSHOT</flamingo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <geotools.version>9.2</geotools.version>
+        <geotools.version>14.1</geotools.version>
         <powermock.version>1.5.5</powermock.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
     </properties>
@@ -49,7 +49,7 @@
             <dependency>
                 <groupId>com.vividsolutions</groupId>
                 <artifactId>jts</artifactId>
-                <version>1.12</version>
+                <version>1.13</version>
                 <type>jar</type>
             </dependency>
             <dependency>
@@ -299,7 +299,7 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-wfs</artifactId>
+                <artifactId>gt-wfs-ng</artifactId>
                 <version>${geotools.version}</version>
                 <type>jar</type>
             </dependency>

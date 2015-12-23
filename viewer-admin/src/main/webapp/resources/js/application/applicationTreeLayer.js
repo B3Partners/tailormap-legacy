@@ -77,7 +77,7 @@ Ext.onReady(function() {
         listeners: {
             beforeexpand: function(panel){
                 Ext.Array.each(panel.findParentByType('container').items.items, function(item) {
-                    if(item.collapse){
+                    if(item.collapse && item.getItemId() !== "autorisatie-panel") {
                         item.collapse();
                     }
                 });
@@ -277,6 +277,7 @@ Ext.onReady(function() {
             editPanelItems.push({
                 xtype: 'panel',
                 title: 'Autorisatie',
+                itemId: 'autorisatie-panel',
                 style: {
                     "margin-top": "5px"
                 },
@@ -541,14 +542,21 @@ function getAttributeEditSettings(attribute, name) {
     if(attribute.valueList && attribute.valueList === "dynamic") {
         featureSourceStore.load();
     }
-    
+
+    var disableUserEdit = false;
+    if (attribute.disableUserEdit) {
+        disableUserEdit = true;
+    }
     return [
         {
-            fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
+            fieldLabel: 'Toon in Edit component', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
                 change: function (field, newval) {
                     editPanelTitle(field.findParentByType('form'), name, newval);
                 }
             }
+        },
+        {
+            fieldLabel: 'Bewerkbaar', value: disableUserEdit, name: 'disableUserEdit', store: [[false, 'Ja'], [true, 'Nee (alleen lezen)']], xtype: 'combobox'
         },
         {
             fieldLabel: 'Alias', name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
@@ -693,8 +701,8 @@ function toggleStaticDynamic(type, attribute) {
 }
 
 function getAttributeEditHeight(type) {
-    var STATIC_HEIGHT = 250;
-    var DYNAMIC_HEIGHT = 350;
+    var STATIC_HEIGHT = 280;
+    var DYNAMIC_HEIGHT = 370;
     return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
 }
 

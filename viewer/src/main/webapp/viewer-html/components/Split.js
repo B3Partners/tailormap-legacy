@@ -172,7 +172,6 @@ Ext.define("viewer.components.Split", {
         }
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
-        this.config.viewerController.mapComponent.deactivateTools();
         this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
     },
@@ -419,7 +418,7 @@ Ext.define("viewer.components.Split", {
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
                             value: fieldText,
-                            disabled: !allowedEditable
+                            disabled: true
                         };
                         if (attribute.editHeight) {
                             options.rows = attribute.editHeight;
@@ -467,7 +466,7 @@ Ext.define("viewer.components.Split", {
                             name: attribute.name,
                             renderTo: this.name + 'InputPanel',
                             valueField: 'id',
-                            disabled: !allowedEditable
+                            disabled: true
                         });
                     }
                     this.inputContainer.add(input);
@@ -504,7 +503,9 @@ Ext.define("viewer.components.Split", {
         }
     },
     activateMapClick: function () {
-        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
+            this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        }
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {
