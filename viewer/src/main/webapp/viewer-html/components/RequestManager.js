@@ -27,8 +27,11 @@ Ext.define ("viewer.components.RequestManager",{
         this.featureInfo = featureInfo;
         this.config.viewerController = viewerController;
     },
-    request: function(id, options, radius, layers, callback, failure) {
+    request: function (id, options, radius, layers, callback, failure, scope) {
         var me = this;
+        if (!scope) {
+            scope = me;
+        }
         if (this.previousRequests[id] === undefined) {
             this.previousRequests[id] = new Object();
             this.previousRequests[id].requests = new Array();
@@ -43,7 +46,7 @@ Ext.define ("viewer.components.RequestManager",{
             var request = this.featureInfo.layersFeatureInfo(options.coord.x, options.coord.y, radius, [layers[i]], extraParams,function(data){
                 me.responseReceived(data[0].requestId);
                 callback(data);
-            }, this.onFailure,me);
+            }, failure, scope);
             
             if(request){
                 this.previousRequests[id].requests.push(request);
