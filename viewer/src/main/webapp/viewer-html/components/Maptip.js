@@ -205,7 +205,7 @@ Ext.define ("viewer.components.Maptip",{
             }
 
             me.onMapData(null, options);
-        }, this.onFailure);
+        }, this.onFailure, me);
     },
     /**
      * Handles when the mapping framework returns with data
@@ -498,10 +498,19 @@ Ext.define ("viewer.components.Maptip",{
         cDiv.appendChild(featureDiv);
         this.popup.show();
     },
-    onFailure: function(e){
-        this.config.viewerController.logger.error(e);
-        if(this.config.spinnerWhileIdentify){
-            this.viewerController.mapComponent.getMap().removeMarker("edit");
+    /**
+     * Handle failure of ajax requests.
+     * @param {String} e The error message
+     * @param {Window|viewer.components.Maptip} scope Either this or another object;
+     *         commonly 'this' is the global scope ('Window') which is why we make it possible to pass in.
+     */
+    onFailure: function (e, scope) {
+        var me = this;
+        if (!me.config) {
+            me = scope;
+        }
+        if (me.config.spinnerWhileIdentify) {
+            me.viewerController.mapComponent.getMap().removeMarker("edit");
         }
     },
     /**
