@@ -21,38 +21,38 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         /** @field 
          * @param map the map object
          * @param options the options returned
-         * @param options.nr number of layers that are identified
-         * @param options.total number of total layers that needs to be done.
+         * @property options.nr number of layers that are identified
+         * @property options.total number of total layers that needs to be done.
          **/
         ON_GET_FEATURE_INFO_PROGRESS          : "ON_GET_FEATURE_INFO_PROGRESS",       
         /**
          * @field
          * Occures when the map wants a maptip.
          * @param map the map where this event occured
-         * @param options.x x in pixels on the screen
-         * @param options.y y in pixels on the screen
-         * @param options.coord.x the x coord in world coords
-         * @param options.coord.y the y coord in world coords
+         * @property options.x x in pixels on the screen
+         * @property options.y y in pixels on the screen
+         * @property options.coord.x the x coord in world coords
+         * @property options.coord.y the y coord in world coords
          */
         ON_GET_FEATURE_INFO                   : "ON_GET_FEATURE_INFO",
         /** @field 
          * Occures when a maptip returns data
          * @param layer the layer where this event occured
          * @param options a object with options         
-         * @param options.data[i].features the data as a object array
-         * @param options.data[i].request.appLayer the id of the appLayer
-         * @param options.data[i].request.serviceLayer the service name for the layer 
-         * @param options.x the x pixel (screen location)
-         * @param options.y the y pixel (screen location)
-         * @param options.coord.x the x world coord 
-         * @param options.coord.y the y world coord
-         * @param options.extent (not always available) the place where this maptip for is done.
-         * @param options.extent.minx (not always available) the minx world coord (world location)
-         * @param options.extent.miny (not always available) the miny world coord (world location)
-         * @param options.extent.maxx (not always available) the maxx world coord (world location)
-         * @param options.extent.maxy (not always available) the maxy world coord (world location)
-         * @param options.nr nr of layer that is done
-         * @param options.total total identifies that needs to be done         
+         * @property options.data[i].features the data as a object array
+         * @property options.data[i].request.appLayer the id of the appLayer
+         * @property options.data[i].request.serviceLayer the service name for the layer
+         * @property options.x the x pixel (screen location)
+         * @property options.y the y pixel (screen location)
+         * @property options.coord.x the x world coord
+         * @property options.coord.y the y world coord
+         * @property options.extent (not always available) the place where this maptip for is done.
+         * @property options.extent.minx (not always available) the minx world coord (world location)
+         * @property options.extent.miny (not always available) the miny world coord (world location)
+         * @property options.extent.maxx (not always available) the maxx world coord (world location)
+         * @property options.extent.maxy (not always available) the maxy world coord (world location)
+         * @property options.nr nr of layer that is done
+         * @property options.total total identifies that needs to be done
          * 
          * Example: <appLayer>,
          *           {
@@ -81,15 +81,15 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         /** @field 
          * Occures when the extent is changed
          * @param map the map on which this occures
-         * @param options a options object
-         * @param options.extent the new extent
+         * @param options an options object
+         * @property options.extent the new extent
          */
         ON_CHANGE_EXTENT                      : "ON_CHANGE_EXTENT",
         /** @field 
          * Occures when the extent is finished changing
          * @param map the map on which this occures
-         * @param options a options object
-         * @param options.extent the new extent
+         * @param options an options object
+         * @property options.extent the new extent
          */
         ON_FINISHED_CHANGE_EXTENT             : "ON_FINISHED_CHANGE_EXTENT",
         /**
@@ -104,14 +104,14 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         /** @field 
          * Occures when a layer is added to this map
          * @param map the map object
-         * @param options.layer the layer that is added.
+         * @property options.layer the layer that is added.
          **/
         ON_LAYER_ADDED                        : "ON_LAYER_ADDED",
         /**
          * @field
          * Occures when a layer is removed from the map.
          * @param map the map object 
-         * @param options.layer the layer that is removed.
+         * @property options.layer the layer that is removed.
          */
         ON_LAYER_REMOVED                        : "ON_LAYER_REMOVED",
         /**
@@ -141,26 +141,26 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @field
          * Occures when the map wants a maptip.
          * @param map the map where this event occured
-         * @param options.x x in pixels on the screen
-         * @param options.y y in pixels on the screen
-         * @param options.coord.x the x coord in world coords
-         * @param options.coord.y the y coord in world coords
+         * @property options.x x in pixels on the screen
+         * @property options.y y in pixels on the screen
+         * @property options.coord.x the x coord in world coords
+         * @property options.coord.y the y coord in world coords
          */
         ON_MAPTIP                             : "ON_MAPTIP",        
         /** @field 
          * Occures when a maptip returns data
          * @param layer the layer where this event occured
-         * @param options a object with options
-         * @param options.data the data as a multi array
-         * @param options.x the x pixel (screen location)
-         * @param options.y the y pixel (screen location)
-         * @param options.coord.x the x world coord 
-         * @param options.coord.y the y world coord
-         * @param options.extent (not always available) the place where this maptip for is done.
-         * @param options.extent.minx (not always available) the minx world coord (world location)
-         * @param options.extent.miny (not always available) the miny world coord (world location)
-         * @param options.extent.maxx (not always available) the maxx world coord (world location)
-         * @param options.extent.maxy (not always available) the maxy world coord (world location)
+         * @param options an object with options
+         * @property options.data the data as a multi array
+         * @property options.x the x pixel (screen location)
+         * @property options.y the y pixel (screen location)
+         * @property options.coord.x the x world coord
+         * @property options.coord.y the y world coord
+         * @property options.extent (not always available) the place where this maptip for is done.
+         * @property options.extent.minx (not always available) the minx world coord (world location)
+         * @property options.extent.miny (not always available) the miny world coord (world location)
+         * @property options.extent.maxx (not always available) the maxx world coord (world location)
+         * @property options.extent.maxy (not always available) the maxy world coord (world location)
          **/
         ON_MAPTIP_DATA                        : "ON_MAPTIP_DATA",
         
@@ -187,8 +187,8 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         /** @field
          * Thrown when the visibiliy of the layer is changed
          * @param map the map
-         * @param object.layer the layer that is changed
-         * @param object.visible the new value*/
+         * @property object.layer the layer that is changed
+         * @property object.visible the new value*/
         ON_LAYER_VISIBILITY_CHANGED           : "ON_LAYER_VISIBILITY_CHANGED",
         
         /**
@@ -213,8 +213,8 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_ACTIVE_FEATURE_CHANGED             :  "ON_ACTIVE_FEATURE_CHANGED",
         /** @field 
          * Fired when a feature is completed or added to the vector layer. 
-         * @param object.layer The vectorlayer on which the event occured
-         * @param object.feature The feature which was added/completed
+         * @property object.layer The vectorlayer on which the event occured
+         * @property object.feature The feature which was added/completed
          **/
         ON_FEATURE_ADDED                      : "ON_FEATURE_ADDED",
         

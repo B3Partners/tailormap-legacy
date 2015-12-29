@@ -25,7 +25,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     /**
      * editable/drawable OpenLayers Vector layer.
      * @private
-     * @TODO refactor to array as each edit & draw control have their own layer
+     * TODO refactor to array as each edit & draw control have their own layer
      */
     frameworkLayer: null,
     /** snapping control.*/
@@ -58,7 +58,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     /**
      * @constructor
      * @param {Object} config
-     * @returns {viewer.viewercontroller.openlayers.OpenLayersSnappingLayer|OpenLayersSnappingControllerAnonym$0.constructor}
+     * @returns {viewer.viewercontroller.openlayers.OpenLayersSnappingController}
      */
     constructor: function (config) {
         viewer.viewercontroller.openlayers.OpenLayersSnappingController.superclass.constructor.call(this, config);
@@ -93,7 +93,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
      * Attach the snapping control to the Openlayers layers of the added
      * editing or drawing layer or other layer.
      * @param {type} map
-     * @param {type} options
+     * @param {Object} options
      */
     layerAdded: function (map, options) {
         if (options.layer &&
@@ -105,7 +105,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     },
     /**
      * add the snapping target.
-     * @param {type} appLayer
+     * @param {Object} appLayer
      */
     addAppLayer: function (appLayer) {
         var me = this;
@@ -125,7 +125,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
      * fetch/load geometries.
      * @param {type} geomAttribute
      * @param {type} featureService
-     * @param {type} appLayer
+     * @param {Object} appLayer
      * @returns {void}
      */
     loadAttributes: function (geomAttribute, featureService, appLayer) {
@@ -154,7 +154,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     },
     /**
      * remove the snapping target.
-     * @param {type} appLayer
+     * @param {Object} appLayer
      */
     removeLayer: function (appLayer) {
         this.deactivate();
@@ -246,7 +246,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     },
     /**
      *
-     * @param {type} appLayer
+     * @param {Object} appLayer
      * @returns {String} local layer name
      * @see getAppLayer
      */
@@ -255,8 +255,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
     },
     /**
      *
-     * @param {type} name local name
-     * @returns {OpenLayersSnappingControllerAnonym$0@pro;config@pro;viewerController@call;getAppLayerById}
+     * @param {String} name local name
+     * @returns {Object}
      *
      * @see getlayerName
      */
