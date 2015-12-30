@@ -182,13 +182,15 @@ public class DatabaseSynchronizer implements Servlet {
                             updatedVersion=(String) updates.keySet().toArray()[updates.size()-1];
                         }
                         mdVersion.setConfigValue(updatedVersion);
-                        em.persist(mdVersion);
+                        if(em.getTransaction().getRollbackOnly()){
+                            em.getTransaction().rollback();
+                        }
                         if(!em.getTransaction().isActive()){
                             em.getTransaction().begin();
                         }
+                        em.persist(mdVersion);
                         em.getTransaction().commit();
                         log.info("Database updated to version: "+updatedVersion);
-                        //em.getTransaction().commit();
 
                     }else{
                         log.info("No updates done on database, maybe a error occured");
