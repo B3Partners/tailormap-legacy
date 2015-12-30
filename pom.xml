@@ -29,7 +29,7 @@
         </snapshotRepository>
     </distributionManagement>
     <properties>
-        <flamingo.version>4.6.1-SNAPSHOT</flamingo.version>
+        <flamingo.version>4.6.0-SNAPSHOT</flamingo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>14.1</geotools.version>
         <powermock.version>1.5.5</powermock.version>
