@@ -132,6 +132,15 @@ public class DatabaseSynchronizer implements Servlet {
 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 326
     }
+
+    /**
+     *
+     * @return the highest metadata number
+     */
+    public static int getUpdateNumber() {
+        return updates.keySet().size() - 1;
+    }
+
     /**
      * Function is called in init() of servlet.
      * Starts the updating process.

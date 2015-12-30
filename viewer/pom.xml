@@ -172,6 +172,14 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.7.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <!-- plugin repo for complosure -->
@@ -431,5 +439,67 @@
             </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+            <id>travis-ci</id>
+            <properties>
+                <!-- om unit tests met postgres te draaien gebruik je
+                -Dtest.persistence.unit=viewer-config-postgresql
+                voor oracle:
+                -Dtest.persistence.unit=viewer-config-oracle
+                voor hsqldb
+                -Dtest.persistence.unit=viewer-config-hsqldb
+                de schema's voor postgresql en oracle worden niet automatisch aangemaakt.
+                -->
+                <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.2</version>
+                        <configuration>
+                            <port>9090</port>
+                            <contextFile>src/test/tomcatconf/context.xml</contextFile>
+                            <systemProperties>
+                                <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                            <systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>tomcat-startup</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <fork>true</fork>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>tomcat-shutdown</id>
+                                <goals>
+                                    <goal>shutdown</goal>
+                                </goals>
+                                <phase>post-integration-test</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax.mail</groupId>
+                                <artifactId>mail</artifactId>
+                                <version>1.4.7</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>9.4.1207</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

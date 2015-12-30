@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/viewer">
+    <Parameter
+        name="componentregistry.path"
+        override="false"
+        value="/viewer-html/components"
+    />
+    
+    <Resource
+        name="jdbc/geo_viewer"
+        auth="Container"
+        type="javax.sql.DataSource"
+        username="flamingo4"
+        password="flamingo4"
+        driverClassName="org.postgresql.Driver"
+        url="jdbc:postgresql://localhost:5433/flamingo4"
+        maxActive="40"
+        validationQuery="select 1"
+        timeBetweenEvictionRunsMillis="30000"
+        minEvictableIdleTimeMillis="5000"
+    />
+
+    <Resource name="mail/session"
+              auth="Container"
+              type="javax.mail.Session"
+              mail.smtp.host="localhost"
+              mail.smtp.from="no-reply@b3partners.nl"
+    />
+
+    <Realm className="org.apache.catalina.realm.CombinedRealm">
+        <Realm allRolesMode="authOnly"
+               className="org.apache.catalina.realm.DataSourceRealm"
+               dataSourceName="jdbc/geo_viewer"
+               digest="SHA-1"
+               roleNameCol="group_"
+               userCredCol="password"
+               userNameCol="username"
+               userRoleTable="user_groups"
+               userTable="user_"
+        />
+        <!-- Use JNDIRealm for authenticating against a LDAP server (such as
+             Active Directory):
+             http://tomcat.apache.org/tomcat-6.0-doc/config/realm.html
+             http://tomcat.apache.org/tomcat-6.0-doc/realm-howto.html#JNDIRealm
+        -->
+        <!--Realm className="org.apache.catalina.realm.JNDIRealm"
+            allRolesMode="authOnly"
+            connectionURL="ldap://ldap:389"
+            connectionName="cn=ServiceUser,ou=Services,o=MyOrg"
+            connectionPassword=""
+            userBase="o=MyOrg"
+            userSubtree="true"
+            userSearch="cn={0}"
+            commonRole="ExtendedUser"
+        /-->
+    </Realm>
+</Context>
