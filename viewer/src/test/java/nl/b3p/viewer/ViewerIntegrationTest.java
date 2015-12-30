@@ -19,14 +19,14 @@ package nl.b3p.viewer;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import javax.persistence.EntityManager;
-import nl.b3p.viewer.config.metadata.Metadata;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
-import nl.b3p.viewer.util.TestUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -35,20 +35,19 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  *
- * @author Mark Prins <mark@b3partners.nl>
+ * @author Mark Prins
  */
-public class ViewerIntegrationTest extends TestUtil {
+public class ViewerIntegrationTest {
 
     /**
-     * the server root url. {@value}
+     * the viewer url. {@value}
      */
-    public static final String BASE_TEST_URL = "http://localhost:9090/";
+    public static final String BASE_TEST_URL = "http://localhost:9090/viewer/";
 
     /**
      * our test client.
@@ -59,11 +58,30 @@ public class ViewerIntegrationTest extends TestUtil {
      */
     private HttpResponse response;
 
+    private static final Properties postgresprop = new Properties();
+
+    /**
+     * initialize database props.
+     * @throws java.io.IOException if loading the property file fails
+     */
+    @BeforeClass
+    public static void loadDBprop() throws IOException {
+        postgresprop.load(ViewerIntegrationTest.class.getClassLoader().getResourceAsStream("postgres.properties"));
+    }
+
+    /**
+     * initialize http client.
+     */
     @BeforeClass
     public static void setUpClass() {
         client = HttpClientBuilder.create().build();
     }
 
+    /**
+     * close http client connections.
+     *
+     * @throws IOException if any occurs closing th ehttp connection
+     */
     @AfterClass
     public static void tearDownClass() throws IOException {
         client.close();
@@ -77,29 +95,40 @@ public class ViewerIntegrationTest extends TestUtil {
      */
     @Test
     public void request() throws UnsupportedEncodingException, IOException {
-        response = client.execute(new HttpGet(BASE_TEST_URL + "/viewer/index.jsp"));
+        response = client.execute(new HttpGet(BASE_TEST_URL));
 
-        final String body = new String(EntityUtils.toByteArray(response.getEntity()), "UTF-8");
+        final String body = EntityUtils.toString(response.getEntity());
         assertNotNull("Response body should not be null.", body);
-
-        // when looking at a pristine database it will report an application error
-        // assertThat("Response status is 500/Error.", response.getStatusLine().getStatusCode(),
-        //        equalTo(HttpStatus.SC_INTERNAL_SERVER_ERROR));
         assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
                 equalTo(HttpStatus.SC_OK));
     }
 
     /**
      * test if the database has the right metadata version.
+     *
+     * @throws SQLException if something goes wrong executing the query
+     * @throws ClassNotFoundException if the postgres driver cannot be found.
      */
     @Test
-    public void testMetadataVersion() {
+    public void testMetadataVersion() throws SQLException, ClassNotFoundException {
         // get 'database_version' from table metadata and check that is has the value of '15'
-        int expected = DatabaseSynchronizer.getUpdateNumber();
-        List<Metadata> metadata = entityManager.createQuery("From Metadata where configKey = :v").setParameter("v", Metadata.DATABASE_VERSION_KEY).getResultList();
-        assertFalse("There should be at least one metadata record.", metadata.isEmpty());
+        Class.forName(postgresprop.getProperty("postgres.driverClassName"));
+        Connection connection = DriverManager.getConnection(
+                postgresprop.getProperty("postgres.url"),
+                postgresprop.getProperty("postgres.username"),
+                postgresprop.getProperty("postgres.password")
+        );
+        ResultSet rs = connection.createStatement().executeQuery("SELECT config_value FROM metadata WHERE config_key = 'database_version';");
 
-        int actual = Integer.parseInt(metadata.get(0).getConfigValue());
-        assertEquals("The database version should be the same.", expected, actual);
+        String actual_config_value = "-1";
+        while (rs.next()) {
+            actual_config_value = rs.getString("config_value");
+        }
+        assertThat("There is only one 'database_version' record (first and last should be same record).", rs.isLast(), equalTo(rs.isFirst()));
+
+        rs.close();
+        connection.close();
+
+        assertEquals("The database version should be the same.", DatabaseSynchronizer.getUpdateNumber(), actual_config_value);
     }
 }

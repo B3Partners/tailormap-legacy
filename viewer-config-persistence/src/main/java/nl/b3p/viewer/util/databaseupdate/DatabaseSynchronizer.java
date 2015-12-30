@@ -134,11 +134,18 @@ public class DatabaseSynchronizer implements Servlet {
     }
 
     /**
+     * Determine the update number. The updates list has an "init"
+     * {@link UpdateElement} + a number of numbered patch
+     * {@link UpdateElement}'s, this method returns the key of the last patch.
      *
-     * @return the highest metadata number
+     * @return the highest/update metadata number
      */
-    public static int getUpdateNumber() {
-        return updates.keySet().size() - 1;
+    public static String getUpdateNumber() {
+        String update = "";
+        for (Entry<String, UpdateElement> e : updates.entrySet()) {
+            update = e.getKey();
+        }
+        return update;
     }
 
     /**

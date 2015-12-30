@@ -6,14 +6,16 @@
         value="/viewer-html/components"
     />
     
+    <!-- properties below are expanded at runtime and are available
+    in ../resources/postgres.properties -->
     <Resource
         name="jdbc/geo_viewer"
         auth="Container"
         type="javax.sql.DataSource"
-        username="flamingo4"
-        password="flamingo4"
-        driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql://localhost:5433/flamingo4"
+        username="${postgres.username}"
+        password="${postgres.password}"
+        driverClassName="${postgres.driverClassName}"
+        url="${postgres.url}"
         maxActive="40"
         validationQuery="select 1"
         timeBetweenEvictionRunsMillis="30000"
@@ -38,20 +40,5 @@
                userRoleTable="user_groups"
                userTable="user_"
         />
-        <!-- Use JNDIRealm for authenticating against a LDAP server (such as
-             Active Directory):
-             http://tomcat.apache.org/tomcat-6.0-doc/config/realm.html
-             http://tomcat.apache.org/tomcat-6.0-doc/realm-howto.html#JNDIRealm
-        -->
-        <!--Realm className="org.apache.catalina.realm.JNDIRealm"
-            allRolesMode="authOnly"
-            connectionURL="ldap://ldap:389"
-            connectionName="cn=ServiceUser,ou=Services,o=MyOrg"
-            connectionPassword=""
-            userBase="o=MyOrg"
-            userSubtree="true"
-            userSearch="cn={0}"
-            commonRole="ExtendedUser"
-        /-->
     </Realm>
 </Context>

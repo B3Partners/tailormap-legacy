@@ -172,14 +172,6 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.7.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.flamingo-mc</groupId>
-            <artifactId>viewer-config-persistence</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <!-- plugin repo for complosure -->
@@ -449,12 +441,48 @@
                 -Dtest.persistence.unit=viewer-config-oracle
                 voor hsqldb
                 -Dtest.persistence.unit=viewer-config-hsqldb
-                de schema's voor postgresql en oracle worden niet automatisch aangemaakt.
+                de schema's de test worden niet automatisch aangemaakt.
                 -->
                 <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>9.4.1207</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>src/test/resources/postgres.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <testFailureIgnore>false</testFailureIgnore>
+                            <systemPropertyVariables>
+                                <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                            </systemPropertyVariables>
+                            <useFile>false</useFile>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
@@ -463,8 +491,7 @@
                             <port>9090</port>
                             <contextFile>src/test/tomcatconf/context.xml</contextFile>
                             <systemProperties>
-                                <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
-                            <systemProperties>
+                            </systemProperties>
                         </configuration>
                         <executions>
                             <execution>
