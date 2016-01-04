@@ -40,7 +40,11 @@ public class ScriptRunner {
     private boolean fullLineDelimiter = false;
 
     /**
-     * Default constructor
+     * Default constructor.
+     *
+     * @param connection database connection
+     * @param autoCommit {@code true} when to autocommit
+     * @param stopOnError {@code true} when to stop on error
      */
     public ScriptRunner(Connection connection, boolean autoCommit,
             boolean stopOnError) {
@@ -55,9 +59,11 @@ public class ScriptRunner {
     }
 
     /**
-     * Runs an SQL script (read in using the Reader parameter)
+     * Runs a SQL script (read in using the Reader parameter).
      *
-     * @param reader - the source of the script
+     * @param reader the source of the script
+     * @throws IOException if any occurs connecting to the database
+     * @throws SQLException if any occurs executing the script
      */
     public void runScript(Reader reader) throws IOException, SQLException {
         try {
@@ -83,8 +89,8 @@ public class ScriptRunner {
      * Runs an SQL script (read in using the Reader parameter) using the
      * connection passed in
      *
-     * @param conn - the connection to use for the script
-     * @param reader - the source of the script
+     * @param conn the connection to use for the script
+     * @param reader the source of the script
      * @throws SQLException if any SQL errors occur
      * @throws IOException if there is an error reading from the Reader
      */

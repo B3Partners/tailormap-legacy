@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,12 @@ public class RemoveEmptyMapValuesUtil {
      * MAP. Hibernate fails to remove map entries with a null value when calling
      * clear() on a map on Oracle. This leads to duplicate key violations when
      * updating layer details.
-     * 
-     * @PreUpdate/@PrePersist nor @EntityListeners do not work consistenly with 
-     * cascaded objects in Hibernate, so call this manually!
+     *
+     * {@code @PreUpdate}/{@code @PrePersist} nor {@code @EntityListeners} do
+     * not work consistenly with cascaded objects in Hibernate, so call this
+     * manually!
+     *
+     * @param map the map to clean up
      */
     public static void removeEmptyMapValues(Map map) {
         List keysToRemove = new ArrayList();

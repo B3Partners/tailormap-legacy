@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -225,7 +225,9 @@ public class Level implements Comparable{
     /**
      * Find the applications this level is used in. Because of mashups a level
      * can be used in more than one application.
-     * @return 
+     *
+     * @param em the entity manager to use
+     * @return the applications this level is part of
      */
     public Set<Application> findApplications(EntityManager em) {
         Level l = this;

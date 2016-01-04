@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,14 +38,14 @@ import org.stripesstuff.stripersist.Stripersist;
  * <b>Geo services registry:</b>
  * <ul>
  * <li>Categories: currently disabled, not accessible via user interface</li>
- * <li>Layers of GeoServices: with inheritence, read/write authorizations</i>
+ * <li>Layers of GeoServices: with inheritence, read/write authorizations</li>
  * </ul>
  * <p>
  * <b>Application:</b>
  * <ul>
  * <li>Levels: with inheritence, read authorization only</li>
  * <li>ApplicationLayers of Levels: inherits from Level <i>and</i> the referenced Layer, read/write authorizations</li>
- * <li>ConfiguredComponents</i>
+ * <li>ConfiguredComponents</li>
  * </ul>
  * <p>
  * Authorizations are based on role names which are Group names.
@@ -299,10 +299,11 @@ public class Authorizations {
     /**
      * See if a user can edit geometry attribute of a layer in addition to
      * regular writing. Calling this will also call
-     * {@link #isLayerWriteAuthorized(nl.b3p.viewer.config.services.Layer, javax.servlet.http.HttpServletRequest)}
+     * {@link #isAppLayerWriteAuthorized(nl.b3p.viewer.config.app.Application, nl.b3p.viewer.config.app.ApplicationLayer, javax.servlet.http.HttpServletRequest, javax.persistence.EntityManager)}
      *
-     * @param l
-     * @param request
+     * @param l the layer
+     * @param request the servlet request that has the user credential
+     * @param em the entity manager to use
      * @return {@code true} if the user is allowed to edit the geometry
      * attribute of the layer (the user is not in any of the groups that prevent
      * editing geometry).
@@ -465,6 +466,10 @@ public class Authorizations {
      * returned, everyone is authorized for reading and writing. Note: even if 
      * not null, the "readers" and "writers" properties of the returned 
      * ReadWriteAuthorizations may be equal to EVERYONE.
+     *
+     * @param l the layer to check
+     * @param em the entity manager to use
+     * @return the authorizations
      */
     public static ReadWrite getLayerAuthorizations(Layer l, EntityManager em) {
         synchronized(LOCK) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,6 +295,9 @@ public abstract class GeoService {
      * 
      * The cache is not updated on changes, so will only represent the database
      * state when loadLayerTree() was last called.
+     *
+     * @param em the entity manager to use
+     * @return the list of layers of this service
      */
     public List<Layer> loadLayerTree(EntityManager em) {
         if(layers != null) {
@@ -485,6 +488,9 @@ public abstract class GeoService {
     /**
      * Gets a single layer without loading all layers. If multiple layers exist
      * with the same name, a random non-virtual layer is returned.
+     *
+     * @param layerName the name of the layer to find
+     * @return the named layer
      */
     public Layer getSingleLayer(final String layerName) {
         try {
@@ -505,7 +511,9 @@ public abstract class GeoService {
      * Returns the layer with the given name in this server. The first layer in
      * a depth-first tree traversal with the name is returned. If a child has
      * the same name as its parent, the child is returned.
+     *
      * @param layerName the layer name to search for
+     * @param em the entity manager to use
      * @return the Layer or null if not found
      */
     public Layer getLayer(final String layerName, EntityManager em) {

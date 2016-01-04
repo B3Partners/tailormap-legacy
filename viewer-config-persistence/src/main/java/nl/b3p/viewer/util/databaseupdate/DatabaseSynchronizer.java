@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * - the (at build) auto generated schema-export script
  * - the init script with data that is needed to start.
  * The database is at the latest defined version (fully up to date) so the latest
- * defined version is set in the metadata tabel. >> Update done.
+ * defined version is set in the metadata tabel. &gt;&gt; Update done.
  *
  * If there is a metadata table and a record with the key Metadata.DATABASE_VERSION_KEY
  * then that is the current version of the database model.
@@ -66,12 +66,13 @@ import org.stripesstuff.stripersist.Stripersist;
  * (without database product name) in the 'updates' param with a new version number.
  * When loading the scripts, the loader is first looking for the script with the defined
  * name. For example 'newscript.sql'. If the script is not found the loader is searching
- * for the script with the name '<database product name in lower case>-<script name>' for example:
- * 'postgresql-newscript.sql'.
+ * for the script with the name '&lt;database product name in lower
+ * case&gt;-&lt;script name&gt;' for example: 'postgresql-newscript.sql'.
  * So when a script is the same for all database products (for example simple inserts) you only
- * need to make 1 script '<script name>'. If there are specific database products statements make multiple
- * scripts and name them '<database product name in lower case>-<script name>' in the scripts
- * folder. Add the <script name> in the updates var of this class.
+ * need to make 1 script '&lt;script name&gt;'. If there are
+ * specific database products statements make multiple scripts and name them
+ * '&lt;database product name in lower case&gt;-&gt;script name&gt;' in the
+ * scripts folder. Add the &lt;script name&gt; in the updates var of this class.
  *
  *
  * @author Roy Braam
@@ -132,6 +133,8 @@ public class DatabaseSynchronizer implements Servlet {
     /**
      * Function is called in init() of servlet.
      * Starts the updating process.
+     *
+     * @param em the entity manager to use
      */
     public void doInit(EntityManager em){
 

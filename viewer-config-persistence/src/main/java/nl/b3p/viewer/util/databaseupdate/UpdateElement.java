@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  *
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class UpdateElement {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,6 +105,8 @@ public class WMSService extends GeoService implements Updatable {
      * on a simple HTTP server. According to the standard the URL in the Capabilities
      * should be used, so set this to false by default except if the user requests
      * an override.
+     *
+     * @return true when set
      */
     public Boolean getOverrideUrl() {
         return overrideUrl;
@@ -131,9 +133,13 @@ public class WMSService extends GeoService implements Updatable {
     /**
      * Load WMS metadata from URL or only check if the service is online when
      * PARAM_ONLINE_CHECK_ONLY is true.
+     *
      * @param url The location of the WMS.
      * @param params Map containing parameters, keys are finals in this class.
      * @param status For reporting progress.
+     * @param em the entity manager to use
+     * @return the service as retrieved from the url
+     * @throws java.lang.Exception if any
      */
     @Override
     public WMSService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) throws Exception {
@@ -163,7 +169,15 @@ public class WMSService extends GeoService implements Updatable {
     }
 
     /**
-     * Do the actual loading work.
+     * Does the actual loading work.
+     *
+     * @param wms WMS service
+     * @param params unused?
+     * @param status progress page
+     * @param em the entity manager to use
+     * @throws IOException when retrieving the capabilities
+     * @throws MalformedURLException if wms capabilities has improper urls
+     * @throws ServiceException if any occurs parsng the capabilities etc.
      */
     protected void load(WebMapServer wms, Map params, WaitPageStatus status, EntityManager em) throws IOException, MalformedURLException, ServiceException {
         ServiceInfo si = wms.getInfo();
@@ -231,6 +245,11 @@ public class WMSService extends GeoService implements Updatable {
     
     /**
      * Construct the GeoTools WebMapServer metadata object.
+     *
+     * @return the webmapserver for this service
+     * @throws IOException when the http connection fails
+     * @throws MalformedURLException when the url is invalid
+     * @throws ServiceException when the service is invalid
      */
     protected WebMapServer getWebMapServer() throws IOException, MalformedURLException, ServiceException {
         HTTPClient client = new SimpleHttpClient();
@@ -696,6 +715,7 @@ public class WMSService extends GeoService implements Updatable {
      * @param wfsUrl the WFS URL
      * @param layerDescriptions description of which feature types of the WFS are
      *   used in layers of this service according to DescribeLayer
+     * @param em the entity manager to use
      */
     public void loadLayerFeatureTypes(String wfsUrl, List<LayerDescription> layerDescriptions, EntityManager em) {
         Map p = new HashMap();
