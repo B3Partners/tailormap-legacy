@@ -9,6 +9,10 @@ install:
 script:
   # execute unit and integration tests
   - mvn -e test verify -B
+  # on java 8 run a javadoc build to check for errors
+  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
+         mvn javadoc:javadoc;
+    fi
 
 jdk:
   - openjdk7
