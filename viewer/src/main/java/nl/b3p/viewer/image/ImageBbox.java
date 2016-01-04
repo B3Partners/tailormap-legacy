@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,15 +65,17 @@ public class ImageBbox {
         this.height = height;
     }
     /**
-     * Get the units per pixel x
-     * @return 
+     * Get the units per pixel y.
+     *
+     * @return units per pixel y
      */
     public double getUnitsPixelY() {
         return bbox.getHeight()/height;
     }
     /**
-     * Get the units per pixel y
-     * @return 
+     * Get the units per pixel x
+     *
+     * @return units per pixel x
      */
     public double getUnitsPixelX() {
         return bbox.getWidth()/width;

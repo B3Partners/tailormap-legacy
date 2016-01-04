@@ -150,6 +150,8 @@ public class Bbox {
     }
     /**
      * Give wkt of this bbox.
+     *
+     * @return WKT representation of this bbox
      */
     public String toWKT(){
         String s="POLYGON((";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * one or more new features are created or the split feature is deleted and all
  * new features are created.
  *
- * @author Mark Prins <mark@b3partners.nl>
+ * @author Mark Prins mark@b3partners.nl
  */
 @UrlBinding("/action/feature/split")
 @StrictBinding
@@ -195,15 +195,15 @@ public class SplitFeatureActionBean implements ActionBean {
     }
 
     /**
-     * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
+     * Handle extra data, delegates to {@link #handleExtraData(java.util.List)}.
      *
      * @param feature the feature that can be modified
-     * @return the feature to be committed to the database @see
-     * #handleExtraData(java.util.List)
+     * @return the feature to be committed to the database
+     * @see #handleExtraData(java.util.List)
      * @throws Exception if any
      */
     protected SimpleFeature handleExtraData(SimpleFeature feature) throws Exception {
-        final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+        final List<SimpleFeature> features = new ArrayList();
         features.add(feature);
         return this.handleExtraData(features).get(0);
     }
@@ -348,8 +348,8 @@ public class SplitFeatureActionBean implements ActionBean {
     }
 
     /**
-     * @param toSplit
-     * @param line
+     * @param toSplit the line to split
+     * @param line the line to use for the split
      * @return a sorted list of geometries as a result of splitting toSplit with
      * line
      */
@@ -369,8 +369,8 @@ public class SplitFeatureActionBean implements ActionBean {
     }
 
     /**
-     * @param poly
-     * @param line
+     * @param poly the polygon to split
+     * @param line the line to use for the split
      * @return a sorted list of geometries as a result of splitting poly with
      * line
      */

@@ -1,9 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2012-2016 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package nl.b3p.viewer.print;
 
 import java.io.File;
@@ -16,8 +26,6 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.util.JAXBSource;
@@ -28,7 +36,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import nl.b3p.mail.Mailer;
-import nl.b3p.viewer.stripes.PrintActionBean;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -110,8 +117,9 @@ public class PrintGenerator  implements Runnable{
      * @param basePath the base path of that sheet
      * @param addJavascript addJavascript?
      * @param response the response for the outputstream
-     * @throws MalformedURLException
-     * @throws IOException 
+     * @param filename output filename
+     * @throws MalformedURLException if getting th eimage fails
+     * @throws IOException if saving the image fails
      */
     public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath,
             boolean addJavascript, HttpServletResponse response, String filename) throws MalformedURLException, IOException {
@@ -140,7 +148,8 @@ public class PrintGenerator  implements Runnable{
     }
     
     
-    public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream out, String filename) throws MalformedURLException, IOException {
+    public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream out, String filename)
+            throws MalformedURLException, IOException {
         
         /* Setup fopfactory */
         FopFactory fopFactory = FopFactory.newInstance();

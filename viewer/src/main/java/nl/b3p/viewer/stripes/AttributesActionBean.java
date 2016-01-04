@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2015 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -305,7 +305,10 @@ public class AttributesActionBean implements ActionBean {
 
     /**
      * Call this to clear the "total feature count" cached value when a new feature
-     * is added to a feature source. Only clears the cache for the current session.
+     * is added to a feature source. Only clears the cache for the
+     * current session.
+     *
+     * @param context the context that holds the session data
      */
     public static void clearTotalCountCache(ActionBeanContext context) {
         HttpSession sess = context.getRequest().getSession();

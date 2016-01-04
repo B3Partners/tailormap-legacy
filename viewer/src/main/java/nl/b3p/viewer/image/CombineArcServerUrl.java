@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,14 +58,13 @@ public class CombineArcServerUrl extends CombineXMLBodyUrl{
         super(casu);
     }
     /**
-     * Create a new CombineImageUrl with the given values
-     * In this implementation the body is changed.
-     * @param width width
-     * @param height height
-     * @param bbox bbox
+     * Create a new CombineImageUrl with the given values In this implementation
+     * the body is changed.
+     *
+     * @param imbbox bbox of image
      * @return new clone of this CombineImageUrl but with changed values.
-     * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox) 
-     */    
+     * @see CombineImageUrl#calculateNewUrl(nl.b3p.viewer.image.ImageBbox)
+     */ 
     @Override
     public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox) {
         Integer width = imbbox.getWidth();

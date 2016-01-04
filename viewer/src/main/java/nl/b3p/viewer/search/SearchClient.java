@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 B3Partners B.V.
+ * Copyright (C) 2013-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,13 +36,13 @@ public abstract class SearchClient {
      * [
      *      { 
      *          location :{ 
-     *              minx: <double>,
-     *              miny: <double>,
-     *              maxx: <double>,
-     *              maxy: <double>
+     *              minx: double,
+     *              miny: double,
+     *              maxx: double,
+     *              maxy: double
      *          }, 
-     *          type: <string>, // For openLS this is one of: Street, MunicipalitySubdivision, Municipality,CountrySubdivision, for solr it is the name of the configuration
-     *          label: <string>
+     *          type: {String}, // For openLS this is one of: Street, MunicipalitySubdivision, Municipality,CountrySubdivision, for solr it is the name of the configuration
+     *          label: {String}
      *      }
      * ]
      * </pre>

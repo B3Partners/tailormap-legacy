@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * and B and B will cease to exist. A may be a new feature if that strategy is
  * chosen.
  *
- * @author Mark Prins <mark@b3partners.nl>
+ * @author Mark Prins mark@b3partners.nl
  */
 @UrlBinding("/action/feature/merge")
 @StrictBinding
@@ -197,17 +197,17 @@ public class MergeFeaturesActionBean implements ActionBean {
     }
 
     /**
-     * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
+     * Handle extra data, delegates to {@link #handleExtraData(java.util.List)}.
      *
      * @param feature the feature that can be modified
      * @return the feature to be committed to the database
      *
      * @throws java.lang.Exception if any
      *
-     * @see #handleExtraData(java.util.List<SimpleFeature>)
+     * @see #handleExtraData(java.util.List)
      */
     protected SimpleFeature handleExtraData(SimpleFeature feature) throws Exception {
-        final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+        final List<SimpleFeature> features = new ArrayList();
         features.add(feature);
         return this.handleExtraData(features).get(0);
     }

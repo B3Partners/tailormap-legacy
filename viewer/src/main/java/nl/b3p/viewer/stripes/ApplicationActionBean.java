@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -248,6 +248,9 @@ public class ApplicationActionBean implements ActionBean {
      * Build a hash key to make the single component source for all components
      * cacheable but updateable when the roles of the user change. This is not
      * meant to be a secure hash, the roles of a user are not secret.
+     *
+     * @param request servlet request with user credential
+     * @return a key to use as a cache identifyer
      */
     public static int getRolesCachekey(HttpServletRequest request) {
         Set<String> roles = Authorizations.getRoles(request);

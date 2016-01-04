@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,13 +135,8 @@ public class TileServerSettings {
         
         return tileImages;
     }
-    /**
+    /*
      * Calculate the index of the tiling.
-     * @param serviceMin
-     * @param serviceMax
-     * @param tileSizeMapUnits
-     * @param coord
-     * @return 
      */
     public static int getTilingCoord(Double serviceMin, Double serviceMax,
             Double tileSizeMapUnits, Double coord) {
@@ -164,15 +159,8 @@ public class TileServerSettings {
         return tileIndex.intValue();   
     }
     
-    /**
-     * Calculate the position of the tile
-     * @param mapWidth
-     * @param mapHeight
-     * @param tileBbox
-     * @param requestBbox
-     * @param offsetX
-     * @param offsetY
-     * @return 
+    /*
+     * Calculate the position of the tile.
      */
     public CombineStaticImageUrl calcTilePosition(Integer mapWidth, Integer mapHeight,
             Bbox tileBbox, Bbox requestBbox, int offsetX, int offsetY) {

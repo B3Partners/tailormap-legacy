@@ -2,7 +2,7 @@
  * B3P Kaartenbalie is a OGC WMS/WFS proxy that adds functionality
  * for authentication/authorization, pricing and usage reporting.
  *
- * Copyright 2006, 2007, 2008 B3Partners BV
+ * Copyright 2006, 2007, 2008, 2016 B3Partners BV
  * 
  * This file is part of B3P Kaartenbalie.
  * 
@@ -75,7 +75,7 @@ public class ImageTool {
      *
      * @return BufferedImage
      *
-     * @throws Exception
+     * @throws Exception if any
      */
     // <editor-fold defaultstate="" desc="readImage(GetMethod method, String mime) method.">
     public static BufferedImage readImage(HttpMethod method, String mime) throws Exception {
@@ -145,13 +145,12 @@ public class ImageTool {
 
     /** First combines the given images to one image and then sends this image back to the client.
      *
-     * @param images BufferedImage array with the images tha have to be combined and sent to the client.
+     * @param image image to be sent to the client.
      * @param mime String representing the mime type of the image.
-     * @param dw DataWrapper object in which the request object is stored.
+     * @param os DataWrapper used to write the image.
      *
-     * @throws Exception
+     * @throws Exception if any
      */
-    // <editor-fold defaultstate="" desc="writeImage(BufferedImage [] images, String mime, DataWrapper dw) method.">
     public static void writeImage(BufferedImage image, String mime, OutputStream os) throws Exception {
 
         String mimeType = getMimeType(mime);
@@ -569,9 +568,6 @@ public class ImageTool {
         return imTest;
     }
 
-    /**
-     *
-     */
     public static BufferedImage changeColor(BufferedImage im, Color color, Color newColor) {
         for (int x = 0; x < im.getWidth(); x++) {
             for (int y = 0; y < im.getHeight(); y++) {
