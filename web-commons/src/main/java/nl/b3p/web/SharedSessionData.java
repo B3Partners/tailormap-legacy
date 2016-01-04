@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * Maintain a list of active sessions on the application to provide a means of
  * sharing session data.
  *
- * @author Mark Prins <mark@b3partners.nl>
+ * @author mprins
  */
 public class SharedSessionData implements HttpSessionListener {
     private static final Log log = LogFactory.getLog(SharedSessionData.class);
