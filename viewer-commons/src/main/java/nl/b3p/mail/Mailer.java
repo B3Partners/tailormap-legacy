@@ -65,7 +65,7 @@ public class Mailer {
      * @param mailContent The content of the message
      * @param attachment The attachment to be sent
      * @param filename Give that attachment a naem.
-     * @throws Exception 
+     * @throws Exception if any
      */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, File attachment, String filename) throws Exception {
     

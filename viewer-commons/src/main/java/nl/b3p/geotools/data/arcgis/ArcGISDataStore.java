@@ -40,9 +40,10 @@ import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
- * DataStore for ArcGIS Server REST API for MapServer or FeatureServer (read-only) services. 
+ * DataStore for ArcGIS Server REST API for MapServer or FeatureServer
+ * (read-only) services.
  * <p>
- * Because of the nature of the REST API, paging is not suited for stateless 
+ * Because of the nature of the REST API, paging is not suited for stateless
  * code such as web pages. When you request a FeatureReader with a Query with
  * paging parameters set using {@link org.geotools.data.Query#setStartIndex} and
  * {@link org.geotools.data.Query#setMaxFeatures}, the data store must always
@@ -50,34 +51,39 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * features in the page using the object ids. If the feature collection is very
  * large this can take a long time.
  * <p>
- * It is possible to request the object ids matching the Query using {@link ArcGISFeatureReader#getObjectIds()}
- * and use this List later on to request features with {@link ArcGISFeatureReader#getFeaturesByObjectIds(java.util.List)}.
- * The list with object ids can be cached where appropriate and be used to request a 
+ * It is possible to request the object ids matching the Query using
+ * {@link ArcGISFeatureReader#getObjectIds()} and use this List later on to
+ * request features with
+ * {@link ArcGISFeatureReader#getFeaturesByObjectIds(java.util.List)}. The list
+ * with object ids can be cached where appropriate and be used to request a
  * sublist for paging.
  * <p>
- * Unfortunately the object ids cannot be used as a row id in a query to pass on 
- * the start index and max features. While sometimes the object ids start at 1 
+ * Unfortunately the object ids cannot be used as a row id in a query to pass on
+ * the start index and max features. While sometimes the object ids start at 1
  * and increment for each subsequent feature, this is not guaranteed.
  * <p>
  * Although ArcGIS server sends ETag headers in response to requests, there is
  * not really a performance improvement using conditional HTTP requests - with
- * very large feature collections the performance is abysmal no matter what. 
- * Because of this the HTTP cache (using {@link <a href=http://httpcache4j.codehaus.org/">HttpCache4j</a>})
- * is disabled by default so the HttpCache4j libraries are not required. To enable
- * HTTP caching you must patch HttpCache4j to support non-conformant ETag headers
- * sent by ESRI (see {@link CachingHTTPClient}), rename CachingHTTPClient.java.disabled
- * and uncomment the relevant lines in this class and {@link ArcGISDataStoreFactory}. 
- * Then pass a HTTPCache instance to the constructor or using the HTTP_CACHE
- * Param for the factory. 
+ * very large feature collections the performance is abysmal no matter what.
+ * Because of this the HTTP cache (using
+ * <a href="http://httpcache4j.codehaus.org/">HttpCache4j</a>) is disabled by
+ * default * so the HttpCache4j libraries are not required. To enable HTTP caching you
+ * must patch HttpCache4j to support non-conformant ETag headers sent by ESRI
+ * (see CachingHTTPClient, renamed to CachingHTTPClient.java.disabled) and
+ * uncomment the relevant lines in this class and
+ * {@link ArcGISDataStoreFactory}. Then pass a HTTPCache instance to the
+ * constructor or using the HTTP_CACHE Param for the factory.
  * <p>
- * When reading features ArcGIS server may produce invalid JSON when it apparently 
- * has an invalid coordinate and sends "*****************" instead. Like non-well
- * formed XML we do not accept this so ArcGISFeatureReader.next() may throw an exception 
- * (consistently, the ESRI WFS server also produces invalid posLists this way).
+ * When reading features ArcGIS server may produce invalid JSON when it
+ * apparently has an invalid coordinate and sends "*****************" instead.
+ * Like non-well formed XML we do not accept this so ArcGISFeatureReader.next()
+ * may throw an exception (consistently, the ESRI WFS server also produces
+ * invalid posLists this way).
  * <p>
- * The standard ESRI spatial querying restrictions apply: only one spatial operator
- * with the default geometry and a literal geometry operand is supported and can 
- * only be combined with other attribute queries in a Boolean AND.
+ * The standard ESRI spatial querying restrictions apply: only one spatial
+ * operator with the default geometry and a literal geometry operand is
+ * supported and can only be combined with other attribute queries in a Boolean
+ * AND.
  *
  * @author Matthijs Laan
  */
