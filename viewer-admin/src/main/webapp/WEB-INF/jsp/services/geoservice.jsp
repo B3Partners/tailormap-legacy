@@ -196,7 +196,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </tr>
         <tr>
             <td>Gebruikersnaam:</td>
-            <td><stripes:text name="username" maxlength="255" size="30"/></td>
+            <td><stripes-dynattr:text name="username" autocomplete="off" maxlength="255" size="30">${username}</stripes-dynattr:text></td>
         </tr>
         <tr>
             <td>Wachtwoord:</td>

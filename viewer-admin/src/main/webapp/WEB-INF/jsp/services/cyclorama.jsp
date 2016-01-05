@@ -33,13 +33,13 @@
                 <table class="formtable">
                     <tr>
                         <td>Gebruikersnaam</td>
-                        <td><stripes:text name="account.username"/></td>
-                    </tr>
-                    <tr>
+                        <td><stripes-dynattr:text autocomplete="off" name="account.username">${account.username}</stripes-dynattr:text></td>
+                </tr>
+                <tr>
                         <td>Wachtwoord</td>
-                        <td><stripes:text name="account.password"/></td>
-                    </tr>
-                    <tr>
+                        <td><stripes-dynattr:text autocomplete="off" name="account.password"/></td>
+                </tr>
+                <tr>
                         <td>PFX-bestand</td>
                         <td><stripes:file name="key"/></td>
                     </tr>
