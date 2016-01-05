@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2015 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public class AttributeDescriptor {
     
     /**
      * Returns the ExtJS
-     * {@link https://docs.sencha.com/extjs/5.1/5.1.0-apidocs/#!/api/Ext.data.field.Field field}
+     * <a href="https://docs.sencha.com/extjs/5.1/5.1.0-apidocs/#!/api/Ext.data.field.Field">field</a>
      * type for this attribute.
      *
      * @return a string representing the field type (one of

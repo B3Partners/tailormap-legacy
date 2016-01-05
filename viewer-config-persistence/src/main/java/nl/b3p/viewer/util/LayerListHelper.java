@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,19 @@ import nl.b3p.viewer.config.services.WMSService;
 public class LayerListHelper {
 
     /**
-     * Get a list of Layers from the level and its subLevels
+     * Get a list of Layers from the level and its subLevels.
      *
-     * @param level
+     * @param application the application
+     * @param filterable {@code true} to get filterable layers
+     * @param bufferable {@code true} to get bufferable layers
+     * @param editable {@code true} to get editable layers
+     * @param influence {@code true} to get influence map layers
+     * @param arc {@code true} to get arc layers
+     * @param wfs {@code true} to get wfs layers
+     * @param attribute {@code true} to get attribute
+     * @param hasConfiguredLayers {@code true} to get configured layers
+     * @param possibleLayers a list of layers
+     * @param em the entity manager to use
      * @return A list of Layer objects
      */
     public static List<ApplicationLayer> getLayers(Application application,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,

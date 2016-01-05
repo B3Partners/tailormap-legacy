@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2012-2016 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.image;
 
@@ -31,7 +42,6 @@ public class CombineTMSUrl extends CombineTileImageUrl {
      * @param res The resolution for which the tile should be calculated
      * @param max If it is the max, increase the index with one more, to prevent missing tiles
      * @return The index of the tile specified at the coordinate/resolution pair
-     * @see coremodel.service.tiling.factory.TileFactoryInterface#getTileIndexX
      */
     @Override
     public Integer getTileIndexX(Double xCoord, Double res, boolean max) {
@@ -56,7 +66,7 @@ public class CombineTMSUrl extends CombineTileImageUrl {
 
     /**
      * Get the index number Y of the tile on coordinate 'yCoord' o
-     * @param xCoord The x coord.
+     * @param yCoord The y coord.
      * @param res The resolution for which the tile should be calculated
      * @param max If it is the max, increase the index with one more, to prevent missing tiles
      * @return The index of the tile specified at the coordinate/resolution pair

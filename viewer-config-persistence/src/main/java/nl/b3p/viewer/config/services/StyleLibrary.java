@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,6 +134,10 @@ public class StyleLibrary {
     /** 
      * Parse SLD XML and create the JSON object as described for the 
      * namedLayerUserStylesJson property.
+     *
+     * @param sldBody SLD to parse
+     * @return a json representation of the sld
+     * @throws java.lang.Exception is any
      */
     public static JSONObject parseSLDNamedLayerUserStyles(InputSource sldBody) throws Exception {
         JSONObject j = new JSONObject();

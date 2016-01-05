@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,9 +84,9 @@ public abstract class PrePostImageCollector extends ImageCollector{
      * Recieve the url from the xml.
      * @param returnXML The xml that is recieved bij doing a post request
      * @return the url.
-     * @throws XPathExpressionException
-     * @throws JDOMException
-     * @throws IOException 
+     * @throws XPathExpressionException if any
+     * @throws JDOMException if any
+     * @throws IOException if any
      */
     protected abstract String getUrlFromXML(String returnXML) throws XPathExpressionException, JDOMException, IOException;
 

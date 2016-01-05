@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -277,7 +277,9 @@ public class ConfiguredAttribute {
         return copy;
     }
     /**
-     * Returns full name. That is the id of the featuretype + ":" + attributeName
+     * Returns full name.
+     *
+     * @return the id of the featuretype + ":" + attributeName
      */
     public String getFullName() {
         String uniqueName= "";

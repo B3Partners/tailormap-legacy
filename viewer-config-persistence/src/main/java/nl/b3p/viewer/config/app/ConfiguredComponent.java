@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,7 +146,9 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     
     /**
      * Retrieve the metadata from the component registry for the class of this
-     * component
+     * component.
+     *
+     * @return the configured ViewerComponent for this component
      */
     public ViewerComponent getViewerComponent() {
         return ComponentRegistry.getInstance().getViewerComponent(className);

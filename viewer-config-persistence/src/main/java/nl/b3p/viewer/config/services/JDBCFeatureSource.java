@@ -83,8 +83,10 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
     }
     
     /**
-     * Creates list of featuretypes for this FeatureSource
-     * @return list of featuretypes.
+     * Creates list of featuretypes for this FeatureSource.
+     *
+     * @return list of featuretypes
+     * @throws java.lang.Exception if any
      */
     public List<SimpleFeatureType> createFeatureTypes() throws Exception{
         return createFeatureTypes(new WaitPageStatus());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * A abstract class for implementing the body string as a xml (document)
+ * A abstract class for implementing the body string as a xml (document).
+ *
  * @author Roy Braam
  */
 public abstract class CombineXMLBodyUrl extends CombineImageUrl{
@@ -45,11 +46,12 @@ public abstract class CombineXMLBodyUrl extends CombineImageUrl{
     }
         
     /**
-     * Returns the body as a xml document
+     * Returns the body as a xml document.
+     *
      * @return the body as document
-     * @throws ParserConfigurationException
-     * @throws SAXException
-     * @throws IOException 
+     * @throws ParserConfigurationException if any
+     * @throws SAXException if any
+     * @throws IOException if any
      */
     protected Document bodyAsDocument() throws ParserConfigurationException, SAXException, IOException{
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -59,10 +61,11 @@ public abstract class CombineXMLBodyUrl extends CombineImageUrl{
         return doc;
     }
     /**
-     * Set the body with the given doc. Its transforms the document to a string
+     * Set the body with the given doc. Its transforms the document to a string.
+     *
      * @param doc the Document that's the new body
-     * @throws TransformerConfigurationException
-     * @throws TransformerException 
+     * @throws TransformerConfigurationException if any
+     * @throws TransformerException if any
      */
     protected void setBody(Document doc) throws TransformerConfigurationException, TransformerException{
         DOMSource domSource = new DOMSource(doc);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -368,8 +368,19 @@ public class Application {
     }
     
     /**
-     * Create a JSON representation for use in browser to start this application
-     * @return
+     * Create a JSON representation for use in browser to start this
+     * application.
+     *
+     * @param request servlet request to check authorisation
+     * @param validXmlTags {@code true} if valid xml names should be produced
+     * @param onlyServicesAndLayers {@code true} if only services and layers
+     * should be returned
+     * @param includeAppLayerAttributes {@code true} if applayer attributes
+     * should be included
+     * @param includeRelations {@code true} if relations should be included
+     * @param em the entity manager to use
+     * @return a json representation of this object
+     * @throws JSONException if transforming to json fails
      */
     public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
         JSONObject o = null;
@@ -572,6 +583,7 @@ public class Application {
      * In this method an Map is created in the same way as deepCopy creates. This Map is used for converting the layerIds in the
      * component configuration.
      * @param old The Application to which the layerIds should be matched.
+     * @param em the entity manager to use
      */
     public void transferMashup (Application old, EntityManager em){
         originalToCopy = new HashMap();

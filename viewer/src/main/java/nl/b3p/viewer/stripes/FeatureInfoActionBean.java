@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,14 +342,14 @@ public class FeatureInfoActionBean implements ActionBean {
      * This will execute the actual featureinfo query, can be overridden in
      * subclasses to modify behaviour such as workflow.
      *
-     * @param al
-     * @param ft
-     * @param fs
-     * @param q
+     * @param al the application layer
+     * @param ft the featuretype
+     * @param fs the feature source
+     * @param q a query
      * @return the features embedded in a {@code JSONArray}
-     * @throws IOException
-     * @throws JSONException
-     * @throws Exception
+     * @throws IOException if any
+     * @throws JSONException if transforming to json fails
+     * @throws Exception if any
      */
     protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
             throws IOException, JSONException, Exception {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -165,10 +165,14 @@ public class ApplicationLayer {
     //</editor-fold>
     
     /**
-     * Get all the attributes from this applicationLayer that are from the given 
-     * SimpleFeatureType (or the SimpleFeatureType == null, for configured attributes
-     * that don't have a SimpleFeatureType set yet)
-     * Optional the joined SimpleFeatureType attributes that are joined can be added (includeJoined=true)
+     * Get all the attributes from this applicationLayer that are from the given
+     * SimpleFeatureType (or the SimpleFeatureType == null, for configured
+     * attributes that don't have a SimpleFeatureType set yet). Optional the
+     * joined SimpleFeatureType attributes that are joined can be added
+     * (includeJoined=true)
+     *
+     * @param sft the type to get the attributes
+     * @return list of configured attributes
      */
     public List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft){
         return getAttributes(sft, false, new ArrayList<ConfiguredAttribute>());

@@ -102,8 +102,8 @@ public class ImageCollector implements Callable<ImageCollector> {
      * @param user username
      * @param pass password
      * @return The image
-     * @throws IOException
-     * @throws Exception 
+     * @throws IOException if any
+     * @throws Exception if any
      */
     protected BufferedImage loadImage(String url, String user, String pass) throws IOException, Exception {
         HttpMethod method = null;

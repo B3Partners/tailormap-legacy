@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,8 +185,9 @@ public class CombineImageActionBean implements ActionBean {
     }
     /**
      * Combines the image settings to a new image.
-     * @return a image.
-     * @throws Exception
+     *
+     * @return an image
+     * @throws Exception if any
      */
     public Resolution getImage() throws Exception {
         if (imageId==null || imageSettings.get(imageId)==null){
@@ -246,6 +247,7 @@ public class CombineImageActionBean implements ActionBean {
 
     /**
      * Create unique number.
+     * @return a unique number
      */
     public static String uniqueId() {
         // Use miliseconds to generate a code

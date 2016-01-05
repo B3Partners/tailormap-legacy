@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
     /**
      * Creates list of featuretypes for this FeatureSource
      * @return list of featuretypes.
+     * @throws java.lang.Exception if any
      */
     public List<SimpleFeatureType> createFeatureTypes() throws Exception{
         return createFeatureTypes(new WaitPageStatus());

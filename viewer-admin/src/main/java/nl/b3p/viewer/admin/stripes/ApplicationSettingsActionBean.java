@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -437,7 +437,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
       /**
      * Checks if a Application with given name already exists and if needed
      * returns name with sequence number in brackets added to make it unique.
+     *
      * @param name Name to make unique
+     * @param version version to check
+     *
      * @return A unique name for a FeatureSource
      */
     public static String findUniqueVersion(String name, String version) {

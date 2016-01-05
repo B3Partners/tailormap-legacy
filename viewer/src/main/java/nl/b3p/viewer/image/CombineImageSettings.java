@@ -1,6 +1,18 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2012-2016 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.image;
 
@@ -46,14 +58,17 @@ public class CombineImageSettings {
     
     /**
      * Calculate the urls in the combineImageSettings.
+     *
+     * @return list CombineImageUrl
      */
-    public List getCalculatedUrls(){
+    public List<CombineImageUrl> getCalculatedUrls() {
         return getCalculatedUrls(urls);
     }
     /**
-     * Return a list of CombineImagesUrl's with correct bbox,height and width
-     * @param oldList
-     * @return 
+     * Return a list of CombineImagesUrl's with correct bbox,height and width.
+     *
+     * @param oldList list of CombineImageUrl
+     * @return list of recalculated CombineImageUrl
      */
     private List<CombineImageUrl> getCalculatedUrls(List<CombineImageUrl> oldList){
         List<CombineImageUrl> returnValue=new ArrayList();
@@ -101,8 +116,9 @@ public class CombineImageSettings {
     }
     
     /**
-     * Add the CombineImageUrl
-     * @param ciu 
+     * Add the CombineImageUrl.
+     *
+     * @param ciu to add
      */
     public void addUrl(CombineImageUrl ciu) {
         if (this.urls==null){
@@ -111,8 +127,9 @@ public class CombineImageSettings {
         this.urls.add(ciu);
     }
     /**
-     * Set the wktGeoms
-     * @param wktGeoms Array of wktGeoms
+     * Set the wktGeoms.
+     *
+     * @param wktGeoms array of wktGeoms
      */
     public void setWktGeoms(String[] wktGeoms){
         this.wktGeoms=new ArrayList();
@@ -124,7 +141,9 @@ public class CombineImageSettings {
    
     
     /**
-     * Gets the bbox from a url
+     * Gets the bbox from a url.
+     *
+     * @return the bbox from a url
      */
     public Bbox getBboxFromUrls() {
         Bbox bb = null;
@@ -137,7 +156,8 @@ public class CombineImageSettings {
         return bb;
     }
     /**
-     * Try to resolve the width and height from the CombineImageUrl's
+     * Try to resolve the width and height from the CombineImageUrl's.
+     *
      * @return Array of int's width is the first in the array, height second
      */
     public Integer[] getWidthAndHeightFromUrls() {
@@ -230,10 +250,11 @@ public class CombineImageSettings {
    
     //</editor-fold>   
     /**
-     * Create a new BBOX that covers the original and the rotated bbox
-     * @param bbox
-     * @param rotation
-     * @return 
+     * Create a new BBOX that covers the original and the rotated bbox.
+     *
+     * @param bbox original bbox
+     * @param rotation angle in degrees
+     * @return a new BBOX that covers the original and the rotated bbox
      */
     private Bbox getBboxWithRotation(Bbox bb, Integer rotation) {
         //copy the bbox
@@ -291,8 +312,9 @@ public class CombineImageSettings {
         return returnValue;
     }
     /**
-     * Get the request Bbox,height and width
-     * @return 
+     * Get the request Bbox,height and width.
+     *
+     * @return the imagebox of the request
      */
     public ImageBbox getRequestBbox() {
         Bbox correctedBbox= getCalculatedBbox();
@@ -310,7 +332,7 @@ public class CombineImageSettings {
         return new ImageBbox(correctedBbox,reqWidth,reqHeight);
     }
     /**
-     * @settings a JSONObject in the following format:
+     * @param settings a JSONObject in the following format:      <pre>
      * {            
      *      requests: [
      *          {
@@ -335,6 +357,10 @@ public class CombineImageSettings {
      *      angle: "",
      *      quality: ""
      *  }
+     * </pre>
+     * @return a new CombineImageSettings from the passed in json
+     * @throws org.json.JSONException if parsing the json failed
+     * @throws Exception if any
      */
     public static CombineImageSettings fromJson(JSONObject settings) throws JSONException, Exception{        
         JSONObject jResponse = new JSONObject();

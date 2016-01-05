@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,6 +113,8 @@ public class LayarActionBean implements ActionBean {
     /**
      * Get's the LayarService by the given name.
      * Loads features with the LayarSources and makes the hotspots.
+     * @return json for the layar component
+     * @throws org.json.JSONException if transforming to json fails
      */
     public Resolution json() throws JSONException{
         String error="";

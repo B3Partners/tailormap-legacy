@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         return tileImages;
     }
 
-    /**
+    /*
      * create the tile
      * @param imageBbox the original imageBbox reqeust
      * @param tileBbox the bbox of this tile
@@ -165,11 +165,14 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         return tile;
     }
 
-    /** Get the index number X of the tile on coordinate 'xCoord'.
+    /**
+     * Get the index number X of the tile on coordinate 'xCoord'.
+     *
      * @param xCoord The x coord.
-     * @param zoomLevel the zoomLevel of the server.
-	 * @see coremodel.service.tiling.factory.TileFactoryInterface#getTileIndexX
-    */
+     * @param res The resolution for which the tile should be calculated
+     * @param max not used?
+     * @return the zoomlevel
+     */
     public Integer getTileIndexX(Double xCoord,Double res, boolean max){
         Double tileSpanX= res*getTileWidth();
         Double tileIndexX = Math.floor((xCoord - serviceBbox.getMinx()) / (tileSpanX+epsilon));
@@ -182,10 +185,15 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         }
         return tileIndexX.intValue();
     }
-    /** Get the index number Y of the tile on coordinate 'yCoord' on zoomlevel 'zoomLevel'.
+    /**
+     * Get the index number Y of the tile on coordinate 'yCoord' on zoomlevel
+     * 'zoomLevel'.
+     *
      * @param yCoord The y coord.
-     * @param zoomLevel the zoomLevel of the server.
-    */
+     * @param res The resolution for which the tile should be calculated
+     * @param max not used?
+     * @return the zoomlevel
+     */
     public Integer getTileIndexY(double yCoord,Double res, boolean max){
        Double tileSpanY= res*getTileHeight();
         Double tileIndexY = Math.floor((yCoord - serviceBbox.getMiny()) / (tileSpanY+epsilon));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,8 +96,8 @@ public class CombineWmsUrl extends CombineImageUrl{
     }
     
     /**
-     * Try to resolve the width and height from the given CombineImageUrl
-     * @param ciu 
+     * Try to resolve the width and height from the given CombineImageUrl.
+     *
      * @return Array of int's width is the first in the array, height second
      */
     public Integer[] getWidthAndHeightFromUrl() {
@@ -122,7 +122,9 @@ public class CombineWmsUrl extends CombineImageUrl{
         return result;
     }
     /**
-     * Gets the bbox from the url in the CombineImageUrl
+     * Gets the bbox from the url in the CombineImageUrl.
+     *
+     * @return the bbox for this url
      */
     public Bbox getBboxFromUrl() {
         if (this.getUrl()==null) {
@@ -154,7 +156,8 @@ public class CombineWmsUrl extends CombineImageUrl{
         }
     }
     /**
-     * Returned a url with changed param     
+     * Returned a url with changed param.
+     *
      * @param key the param name
      * @param newValue the new value
      * @return the changed url
@@ -187,10 +190,11 @@ public class CombineWmsUrl extends CombineImageUrl{
         }
     }
     /**
-      * Get a parameter from this url.      
-      * @param key
-      * @return 
-      */
+     * Get a parameter from this url.
+     *
+     * @param key param to get
+     * @return parameter value (possibly {@code null})
+     */
     public String getParameter(String key) {
         String lowerUrl = url.toLowerCase();
         if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
