@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
         this.enabledEvents= new Object();
-        this.overwriteStyle();
+        setTimeout(this.overwriteStyle.bind(this), 0);
         if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
             var me = this;
             frameworkObject.trigger= function(){
@@ -45,6 +45,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
      * the Tool is added to the panel
      */
     overwriteStyle: function(){
+        var svgicon = this.getSvgIcon(this.frameworkObject.displayClass);
+        var buttondiv = this.getFrameworkTool().panel_div;
+        if(svgicon !== "" && buttondiv) {
+            buttondiv.innerHTML = svgicon;
+            buttondiv.style.backgroundImage = 'none';
+        }
         if (this.iconUrl_up!= null || this.iconUrl_sel!=null){
             var html=""
             if (this.iconUrl_up!= null){
@@ -58,7 +64,20 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             Ext.util.CSS.createStyleSheet(html);            
         }
 
-    },            
+    },  
+    
+    getSvgIcon: function(baseClass) {
+        var svgSprite = {
+            'olControlDefault': 'mouse-pointer',
+            'olControlIdentify': 'info',
+            'currentLocation': 'gps_fixed'
+        };
+        var appSprite = "/viewer/resources/images/sprite.svg";
+        if(!svgSprite.hasOwnProperty(baseClass)) {
+            return "";
+        }
+        return ['<svg role="img" title=""><use xlink:href="', appSprite, '#icon-', svgSprite[baseClass],'"/></svg>'].join('');
+    },
     
     /**
      * @see viewer.viewercontroller.controller.Tool#setToolVisible

@@ -279,6 +279,12 @@ body > .legend {
     fill: #6C6C6C;
 }
 
+.olButton svg {
+    width: 28px;
+    height: 28px;
+    fill: #6C6C6C;
+}
+
 .svg-icon-header svg {
     width: 16px;
     height: 16px;
