@@ -1657,11 +1657,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // XXX this class does not need to know about the sprite Component.js
         // uses - replace by generic app config details access function
         // or if sprite is used more widely provide it outside Component.js
-        //if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
-            //return this.app.details.iconSprite;
-        //}
-        return this.checkSvgSupport("/viewer/viewer-html/sprite.svg");
-        // return null;
+        if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
+            if(this.hasSvgSprite()) {
+                return this.checkSvgSupport(this.app.details.iconSprite);
+            }
+            return this.app.details.iconSprite;
+        }
+        return null;
+    },
+    /**
+     * Checks is the sprite URL is using a SVG sprite
+     * @param {String} sprite
+     * @returns {Boolean}
+     */
+    hasSvgSprite: function() {
+        // Check if extension is SVG
+        var sprite = this.app.details.iconSprite || "";
+        return sprite.substring(sprite.length - 4, sprite.length) === ".svg";
     },
     /**
      * Check support for External Content for SVG

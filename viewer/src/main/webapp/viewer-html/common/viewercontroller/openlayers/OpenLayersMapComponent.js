@@ -135,6 +135,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     },
     
     initSvgSupport: function(panel) {
+        if(!this.viewerController.hasSvgSprite()) {
+            return;
+        }
         // Override the rendering of panel buttons 
         // to be able to use SVG
         var appSprite = this.viewerController.getApplicationSprite();

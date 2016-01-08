@@ -30,12 +30,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
         this.enabledEvents= new Object();
-        setTimeout(this.overwriteStyle.bind(this), 0);
+        this.overwriteStyle();
         if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
             var me = this;
             frameworkObject.trigger= function(){
                 me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);
-            }
+            };
         }
         return this;
     },

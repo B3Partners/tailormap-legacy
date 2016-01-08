@@ -51,7 +51,7 @@ Ext.define("viewer.components.Component",{
         var me = this;
         viewer.components.Component.superclass.constructor.call(this, config);
         me.initConfig(config);
-        // me.createIconStylesheet();
+        me.createIconStylesheet();
         var screenAreas = ['header', 'leftmargin_top', 'leftmargin_bottom', 'rightmargin_top', 'rightmargin_bottom', 'footer'];
         if(!me.config.hasOwnProperty('isPopup')) {
             me.config.isPopup = true;
@@ -60,13 +60,16 @@ Ext.define("viewer.components.Component",{
             me.config.isPopup = false;
         }
         if(me.config.isPopup) {
-            config.popupIcon = this.getSvgIcon();
-            me.popup = Ext.create("viewer.components.ScreenPopup",config);
+            if(this.viewerController.hasSvgSprite()) {
+                config.popupIcon = this.getSvgIcon();
+            } else {
+                config.iconCls = this.getPopupIcon();
+            }
+            me.popup = Ext.create("viewer.components.ScreenPopup", config);
             me.popup.setComponent(me);
             me.popup.popupWin.addListener("resize", function() {
                 me.doResize();
             });
-            // me.popup.setIconClass(me.getPopupIcon());
         }
         if(me.config.name && me.title) {
             me.config.viewerController.layoutManager.setTabTitle(me.config.name, me.title);
@@ -107,7 +110,8 @@ Ext.define("viewer.components.Component",{
             buttonCls = '',
             buttonWidth = me.defaultButtonWidth,
             baseClass = this.getBaseClass(),
-            showLabel = false;
+            showLabel = false
+            buttonHtml = "";
 
         if(!me.config.isPopup) return;
 
@@ -116,8 +120,12 @@ Ext.define("viewer.components.Component",{
         if(options.icon && !hasDefinedSpriteIcon) {
             buttonIcon = options.icon;
             buttonCls = "customIconButton";
-        } else if(me.haveSprite || true) {
+        } else if(me.haveSprite) {
             buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
+            if(this.config.viewerController.hasSvgSprite()) {
+                buttonHtml = this.getSvgIcon(hasDefinedSpriteIcon ? options.icon : null);
+                buttonCls += ' svg-button';
+            }
         } else {
             buttonText = (options.text || (me.config.name || ""));
             buttonWidth = 'autoWidth';
@@ -128,8 +136,8 @@ Ext.define("viewer.components.Component",{
 
         me.button = Ext.create('Ext.button.Button', {
             text: buttonText,
-            cls: 'svg-button',
-            html: buttonIcon === null ? this.getSvgIcon(hasDefinedSpriteIcon ? options.icon : null) : "",
+            cls: buttonCls,
+            html: buttonHtml,
             renderTo: (showLabel ? null : me.config.div),
             scale: "large",
             icon: buttonIcon,
@@ -212,7 +220,7 @@ Ext.define("viewer.components.Component",{
         if (!me.options || !me.button){
             return;
         }
-        if(!me.options.icon && (!me.forceState || forceState)) {
+        if(!me.options.icon && me.haveSprite && (!me.forceState || forceState)) {
             if(state == 'hover') {
                 button.removeCls(baseClass + '_normal');
                 button.removeCls(baseClass + '_click');
@@ -276,6 +284,11 @@ Ext.define("viewer.components.Component",{
      */
     createIconStylesheet: function() {
         var me = this;
+
+        if(this.viewerController.hasSvgSprite()) {
+            me.haveSprite = true;
+            return;
+        }
 
         var SPRITE_STYLE = "appSpriteStyle";
 
