@@ -3,3 +3,4 @@ nb-configuration.xml
 */src/main/resources/git.properties
 /solr-commons/target/
 /target/
+viewer/src/main/webapp/viewer-html/node_modules

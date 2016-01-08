@@ -129,9 +129,32 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             saveState: true,
             div: this.contentTop // Render the panel to the previously created div
         });
+        this.initSvgSupport(panel);
         this.panel = panel;
         this.maps[0].getFrameworkMap().addControl(this.panel);
     },
+    
+    initSvgSupport: function(panel) {
+        // Override the rendering of panel buttons 
+        // to be able to use SVG
+        var appSprite = this.viewerController.getApplicationSprite();
+        OpenLayers.Util.extend(panel, {
+            createControlMarkup: function(control) {
+                var buttondiv = document.createElement("div");
+                var displayClass = control.displayClass.toLowerCase().replace("olcontrolnavigationhistory ", "");
+                buttondiv.innerHTML = [
+                    '<svg role="img" title=""><use xlink:href="',
+                    appSprite,
+                    '#icon-',
+                    displayClass,
+                    '"/></svg>'
+                ].join('');
+                buttondiv.setAttribute('style', 'background-image:none !important');
+                return buttondiv;
+            }
+        });
+    },
+    
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
      *@see viewer.viewercontroller.MapComponent#createMap

@@ -1,0 +1,37 @@
+.svg-button svg {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 36px;
+    height: 36px;
+}
+
+.olButton svg {
+    width: 28px;
+    height: 28px;
+}
+
+.svg-icon-header svg {
+    width: 16px;
+    height: 16px;
+}
+
+.svg-button svg *,
+.olButton svg *,
+.svg-icon-header svg * {
+    fill: #6C6C6C;
+    transition: fill .3s
+}
+
+.svg-button:hover,
+.svg-button.buttonDefaultClass_hover {
+    background-color: #F1F1F1 !important;
+}
+
+.svg-button:hover svg *,
+.svg-button.buttonDefaultClass_hover svg *,
+.olButton:hover svg *,
+.svg-button.buttonDefaultClass_click svg *
+{
+    fill: #4A4A4A;
+}

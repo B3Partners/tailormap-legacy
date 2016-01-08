@@ -44,13 +44,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
      * This needs to add a style to the page because the html element is loaded after
      * the Tool is added to the panel
      */
-    overwriteStyle: function(){
-        var svgicon = this.getSvgIcon(this.frameworkObject.displayClass);
-        var buttondiv = this.getFrameworkTool().panel_div;
-        if(svgicon !== "" && buttondiv) {
-            buttondiv.innerHTML = svgicon;
-            buttondiv.style.backgroundImage = 'none';
-        }
+    overwriteStyle: function() {
         if (this.iconUrl_up!= null || this.iconUrl_sel!=null){
             var html=""
             if (this.iconUrl_up!= null){
@@ -64,19 +58,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             Ext.util.CSS.createStyleSheet(html);            
         }
 
-    },  
-    
-    getSvgIcon: function(baseClass) {
-        var svgSprite = {
-            'olControlDefault': 'mouse-pointer',
-            'olControlIdentify': 'info',
-            'currentLocation': 'gps_fixed'
-        };
-        var appSprite = "/viewer/resources/images/sprite.svg";
-        if(!svgSprite.hasOwnProperty(baseClass)) {
-            return "";
-        }
-        return ['<svg role="img" title=""><use xlink:href="', appSprite, '#icon-', svgSprite[baseClass],'"/></svg>'].join('');
     },
     
     /**

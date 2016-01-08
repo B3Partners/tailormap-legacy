@@ -269,28 +269,3 @@ body > .legend {
   height: 0;
   display: none;
 }
-
-.svg-button svg {
-    position: absolute;
-    left: 4px;
-    top: 4px;
-    width: 36px;
-    height: 36px;
-    fill: #6C6C6C;
-}
-
-.olButton svg {
-    width: 28px;
-    height: 28px;
-    fill: #6C6C6C;
-}
-
-.svg-icon-header svg {
-    width: 16px;
-    height: 16px;
-    fill: #6C6C6C;
-}
-
-.x-btn-over.svg-button svg {
-    fill: #4A4A4A;
-}

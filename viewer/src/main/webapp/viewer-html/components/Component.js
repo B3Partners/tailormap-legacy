@@ -111,8 +111,9 @@ Ext.define("viewer.components.Component",{
 
         if(!me.config.isPopup) return;
 
+        var hasDefinedSpriteIcon = options.icon && options.icon.charAt(0) === "#";
         me.options = options;
-        if(options.icon) {
+        if(options.icon && !hasDefinedSpriteIcon) {
             buttonIcon = options.icon;
             buttonCls = "customIconButton";
         } else if(me.haveSprite || true) {
@@ -128,7 +129,7 @@ Ext.define("viewer.components.Component",{
         me.button = Ext.create('Ext.button.Button', {
             text: buttonText,
             cls: 'svg-button',
-            html: this.getSvgIcon(),
+            html: buttonIcon === null ? this.getSvgIcon(hasDefinedSpriteIcon ? options.icon : null) : "",
             renderTo: (showLabel ? null : me.config.div),
             scale: "large",
             icon: buttonIcon,
@@ -193,32 +194,14 @@ Ext.define("viewer.components.Component",{
         }
     },
 
-    getSvgIcon: function() {
-        var svgSprite = {
-            'viewercomponentsSelectionModule': 'plus',
-            'viewercomponentsLegend': 'info',
-            'viewercomponentsBuffer': 'circle-thin',
-            'viewercomponentsDataSelection': 'filter',
-            'viewercomponentsSearch': 'search',
-            'viewercomponentsEdit': 'edit',
-            'viewercomponentsDrawing': 'pencil',
-            'viewercomponentsBookmark': 'bookmark',
-            'viewercomponentsTransparencySlider': 'sliders',
-            'viewercomponentsInfluenceImage': 'image',
-            'viewercomponentsRelatedDocuments': 'file-text-o',
-            'viewercomponentsAttributeList': 'table',
-            'viewercomponentsPrint': 'print',
-            'viewercomponentstoolsDownloadMap': 'download',
-            'viewercomponentsSpatialFilter': 'filter',
-            'viewercomponentsGraph': 'bar-chart',
-            'viewercomponentsTOC': 'list',
-            'viewercomponentsSnapping': 'magnet',
-            'viewercomponentsSplit': 'expand',
-            'viewercomponentsMerge': 'compress'
-        };
+    getSvgIcon: function(iconCls) {
         var appSprite = this.config.viewerController.getApplicationSprite();
-        var baseClass = this.getBaseClass();
-        return ['<svg role="img" title=""><use xlink:href="', appSprite, '#icon-', svgSprite[baseClass],'"/></svg>'].join('');
+        var baseClass = this.getBaseClass().replace("viewercomponents", "").toLowerCase();
+        var spriteCls = '#icon-' + baseClass;
+        if(iconCls) {
+            spriteCls = iconCls;
+        }
+        return ['<svg role="img" title=""><use xlink:href="', appSprite, spriteCls,'"/></svg>'].join('');
     },
 
     setButtonState: function(state, forceState) {
@@ -229,7 +212,7 @@ Ext.define("viewer.components.Component",{
         if (!me.options || !me.button){
             return;
         }
-        if(!me.options.icon && me.haveSprite && (!me.forceState || forceState)) {
+        if(!me.options.icon && (!me.forceState || forceState)) {
             if(state == 'hover') {
                 button.removeCls(baseClass + '_normal');
                 button.removeCls(baseClass + '_click');

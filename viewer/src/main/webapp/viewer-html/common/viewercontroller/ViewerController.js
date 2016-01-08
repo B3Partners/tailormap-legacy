@@ -41,6 +41,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * layers that have been registered by controls that wish to benefit from snapping.
      */
     registeredSnappingLayers: [],
+    spriteUrl: null,
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -1659,8 +1660,45 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
             //return this.app.details.iconSprite;
         //}
-        return "/viewer/resources/images/sprite.svg";
+        return this.checkSvgSupport("/viewer/viewer-html/sprite.svg");
         // return null;
+    },
+    /**
+     * Check support for External Content for SVG
+     * If not supported, get SVG using Ajax and add to body
+     * @param {String} sprite
+     * @returns {String}
+     */
+    checkSvgSupport: function(sprite) {
+        // Check already executed, return spriteUrl
+        if(this.spriteUrl !== null) {
+            return this.spriteUrl;
+        }
+        // Unfortunately it is not easy to detect support for external content
+        // This check is borrowed from https://github.com/jonathantneal/svg4everybody
+        var noExternalContentSupport = /\bEdge\/12\b|\bTrident\/[567]\b|\bVersion\/7.0 Safari\b/.test(navigator.userAgent) || (navigator.userAgent.match(/AppleWebKit\/(\d+)/) || [])[1] < 537;
+        if(!noExternalContentSupport) {
+            // External content is supported, return full sprite URL
+            this.spriteUrl = sprite;
+            return this.spriteUrl;
+        }
+        // Versions of IE/Edge and Safari do not support external content in xlink:href
+        // This can be solved by adding the SVG document to the body
+        // The SVG is fetched using Ajax and then appended to the body
+        Ext.Ajax.request({
+            url: sprite,
+            success: function(result) {
+                var svgsprite = result.responseText;
+                var body = document.querySelector('body');
+                var svgcontainer = document.createElement('div');
+                svgcontainer.style.display = 'none';
+                svgcontainer.innerHTML = svgsprite;
+                body.insertBefore(svgcontainer, body.firstChild);
+            }
+        });
+        // Return empty sprite url so the SVG inside the body is used
+        this.spriteUrl = "";
+        return this.spriteUrl;
     },
     /**
      * Gets the layout height for a layout container
