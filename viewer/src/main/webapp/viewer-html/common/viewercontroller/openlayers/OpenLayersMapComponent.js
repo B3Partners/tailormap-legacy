@@ -152,7 +152,15 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     displayClass,
                     '"/></svg>'
                 ].join('');
-                buttondiv.setAttribute('style', 'background-image:none !important');
+                buttondiv.className += 'svg-tool';
+                control.events.on({
+                    activate: function() {
+                        buttondiv.className += ' svg-tool-active';
+                    },
+                    deactivate: function() {
+                        buttondiv.className = buttondiv.className.replace(' svg-tool-active', '');
+                    }
+                });
                 return buttondiv;
             }
         });

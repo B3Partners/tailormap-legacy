@@ -6,9 +6,25 @@
     height: 36px;
 }
 
-.olButton svg {
+.svg-tool svg {
     width: 28px;
     height: 28px;
+}
+
+/* unfortunatyle we need a strong selector to override default behaviour.
+this can be removed when we stop supporting png sprites */
+#wrapper .olControlPanel .svg-tool,
+div.olControlZoom a.svg-tool {
+    background-image: none !important;
+}
+
+div.olControlZoom a.svg-tool {
+    text-indent: 0;
+}
+
+div.olControlZoom a.svg-tool svg {
+    width: 22px;
+    height: 22px;
 }
 
 .svg-icon-header svg {
@@ -17,7 +33,7 @@
 }
 
 .svg-button svg *,
-.olButton svg *,
+.svg-tool svg *,
 .svg-icon-header svg * {
     fill: #6C6C6C;
     transition: fill .3s
@@ -29,9 +45,11 @@
 }
 
 .svg-button:hover svg *,
-.svg-button.buttonDefaultClass_hover svg *,
-.olButton:hover svg *,
-.svg-button.buttonDefaultClass_click svg *
-{
+.svg-tool:hover svg * {
     fill: #4A4A4A;
+}
+
+.svg-tool.svg-tool-active svg *,
+.svg-button.buttonDefaultClass_click svg * {
+    fill: #333333;
 }
