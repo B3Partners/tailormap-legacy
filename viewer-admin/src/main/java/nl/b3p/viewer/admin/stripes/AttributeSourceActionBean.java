@@ -138,46 +138,10 @@ public class AttributeSourceActionBean implements ActionBean {
 
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution save() throws JSONException, Exception {
-        Map params = new HashMap();
+        
 
         try {
-            if (protocol.equals("jdbc")) {
-                params.put("dbtype", dbtype);
-                params.put("host", host);
-                params.put("port", port);
-                params.put("database", database);
-                params.put("schema", schema);
-                params.put("user", username);
-                params.put("passwd", password);
-
-                JDBCFeatureSource fs = new JDBCFeatureSource(params);
-                fs.setName(name);
-                fs.loadFeatureTypes(status);
-
-                Stripersist.getEntityManager().persist(fs);
-                Stripersist.getEntityManager().getTransaction().commit();
-
-                featureSource = fs;
-
-                getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-
-            } else if (protocol.equals("wfs")) {
-                params.put(WFSDataStoreFactory.URL.key, url);
-                params.put(WFSDataStoreFactory.USERNAME.key, username);
-                params.put(WFSDataStoreFactory.PASSWORD.key, password);
-                WFSFeatureSource fs = new WFSFeatureSource(params);
-                fs.setName(name);
-                fs.loadFeatureTypes(status);
-                Stripersist.getEntityManager().persist(fs);
-                Stripersist.getEntityManager().getTransaction().commit();
-
-                featureSource = fs;
-
-                getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-
-            } else {
-                getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
-            }
+            addService(Stripersist.getEntityManager());
         } catch (Exception e) {
             log.error("Error loading new feauture source", e);
             String s = e.toString();
@@ -188,6 +152,47 @@ public class AttributeSourceActionBean implements ActionBean {
         }
 
         return new ForwardResolution(EDITJSP);
+    }
+
+    protected void addService(EntityManager em) throws Exception {
+        Map params = new HashMap();
+        if (protocol.equals("jdbc")) {
+            params.put("dbtype", dbtype);
+            params.put("host", host);
+            params.put("port", port);
+            params.put("database", database);
+            params.put("schema", schema);
+            params.put("user", username);
+            params.put("passwd", password);
+
+            JDBCFeatureSource fs = new JDBCFeatureSource(params);
+            fs.setName(name);
+            fs.loadFeatureTypes(status);
+
+            em.persist(fs);
+            em.getTransaction().commit();
+
+            featureSource = fs;
+
+            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+
+        } else if (protocol.equals("wfs")) {
+            params.put(WFSDataStoreFactory.URL.key, url);
+            params.put(WFSDataStoreFactory.USERNAME.key, username);
+            params.put(WFSDataStoreFactory.PASSWORD.key, password);
+            WFSFeatureSource fs = new WFSFeatureSource(params);
+            fs.setName(name);
+            fs.loadFeatureTypes(status);
+            em.persist(fs);
+            em.getTransaction().commit();
+
+            featureSource = fs;
+
+            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+
+        } else {
+            getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
+        }
     }
 
     public Resolution saveEdit() {
