@@ -56,29 +56,41 @@ public class WFSTypeNamingTest extends TestUtil {
 
     private AttributeSourceActionBean sb;
 
+    /**
+     * The parameter collection for this testcase. A paramet set consists of an
+     * array containing:
+     * <ol>
+     * <li>(String) service url</li>
+     * <li>(String) server type</li>
+     * <li>(String) service type</li>
+     * <li>(int) expected number of feature types</li>
+     * </ol>
+     *
+     * @return parameter collection that contains input and response values for
+     * this test.
+     */
     @Parameters
     public static Collection params() {
         return Arrays.asList(new Object[][]{
-            //{"url","name","wfs",typecount},
+            // {"url","name","wfs",typecount},
             {"http://ibis.b3p.nl/geoserver/ibis/wfs?SERVICE=WFS", "geoserver-namespaced-url", "wfs", 3},
-            {"http://ibis.b3p.nl/geoserver/wfs?SERVICE=WFS", "geoserver", "wfs", 3}
-
-        // {"url", "ags", "wfs", 5},
-        // disable for now as the describeFeaturetype responsen fail to validate
+            {"http://ibis.b3p.nl/geoserver/wfs?SERVICE=WFS", "geoserver", "wfs", 3},
+            {"http://services.geodataoverijssel.nl/geoserver/B07_Adressen/wfs?SERVICE=WFS", "geoserver", "wfs", 2},
+            {"http://services.geodataoverijssel.nl/geoserver/wfs?SERVICE=WFS", "geoserver", "wfs", 467}
+        // disable for now as the describeFeaturetype responses fail to validate
         // ,{"http://geoservices.rijkswaterstaat.nl/verkeersscheidingsstelsel_noordzee?SERVICE=WFS", "mapserver", "wfs", 10}
-        /* some more mapserver WFS
-         http://geoservices.knmi.nl/cgi-bin/SCIA__CONS_V___IMAP____L2__2004.cgi?SERVICE=WFS
-         http://geoservices.rijkswaterstaat.nl/verkeersscheidingsstelsel_noordzee?SERVICE=WFS
-         */
+        //    http://geoservices.knmi.nl/cgi-bin/SCIA__CONS_V___IMAP____L2__2004.cgi?SERVICE=WFS
+        //    http://geoservices.rijkswaterstaat.nl/verkeersscheidingsstelsel_noordzee?SERVICE=WFS
         });
     }
 
+    /* test parameter */
     private final String serviceUrl;
-
+    /* test parameter */
     private final String serviceName;
-
+    /* test parameter */
     private final String serviceProtocol;
-
+    /* test expectation */
     private final int serviceTypeCount;
 
     public WFSTypeNamingTest(String serviceUrl, String serviceName, String serviceProtocol, int serviceTypeCount) {
@@ -123,7 +135,7 @@ public class WFSTypeNamingTest extends TestUtil {
         List<SimpleFeatureType> types = fs.getFeatureTypes();
         assertEquals("The number of layers should be the same", serviceTypeCount, types.size());
         for (SimpleFeatureType type : types) {
-            log.debug("testing type: " + type.getTypeName());
+            log.debug("Testing type: " + type.getTypeName());
             assertFalse("Type name does not contain a colon", type.getTypeName().contains(":"));
             try {
                 FeatureSource fs2 = type.openGeoToolsFeatureSource();
@@ -136,7 +148,7 @@ public class WFSTypeNamingTest extends TestUtil {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return this.getClass().getCanonicalName()
                 + ", serviceUrl: " + this.serviceUrl
                 + ", serviceName: " + this.serviceName
