@@ -444,6 +444,7 @@
                 de schema's de test worden niet automatisch aangemaakt.
                 -->
                 <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
+                <test.skip.integrationtests>false</test.skip.integrationtests>
             </properties>
             <dependencies>
                 <dependency>
@@ -476,7 +477,6 @@
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
-                            <testFailureIgnore>false</testFailureIgnore>
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                             </systemPropertyVariables>

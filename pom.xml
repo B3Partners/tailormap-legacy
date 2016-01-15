@@ -35,6 +35,9 @@
         <geotools.version>14.1</geotools.version>
         <powermock.version>1.5.5</powermock.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
+        <!-- skip integration tests by default, override this property from commandline
+        or as part of a profile, see eg. 'travis-ci' profile in viewer -->
+        <test.skip.integrationtests>true</test.skip.integrationtests>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -464,8 +467,9 @@
                     <includes>
                         <include>**/*IntegrationTest.java</include>
                     </includes>
-                    <testFailureIgnore>true</testFailureIgnore>
                     <trimStackTrace>false</trimStackTrace>
+                    <testFailureIgnore>${test.skip.integrationtests}</testFailureIgnore>
+                    <skipTests>${test.skip.integrationtests}</skipTests>
                 </configuration>
                 <executions>
                     <execution>
