@@ -204,6 +204,15 @@ Ext.define ("viewer.components.LayerSelector",{
     setValue : function (appLayer){
         this.combobox.setValue(appLayer);
     },
+    hasValue: function(appLayer) {
+        var hasValue = false;
+        this.combobox.getStore().each(function(val) {
+            if(val.layerId === appLayer.id) {
+                hasValue = true;
+            }
+        });
+        return hasValue;
+    },
     /**
      * Gets the store for the LayerSelector
      * @returns Ext.data.Store

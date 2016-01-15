@@ -67,6 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="${contextPath}/viewer-html/components/resources/css/relatedDocuments.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/simpleFilter.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/attributeList.css" rel="stylesheet">
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>
@@ -114,6 +115,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:set var="scriptDir" value="${contextPath}/viewer-html/common/ajax"/>
                 <script type="text/javascript" src="${scriptDir}/ServiceInfo.js"></script>
                 <script type="text/javascript" src="${scriptDir}/CSWClient.js"></script>
+                <script type="text/javascript" src="${scriptDir}/FeatureExtent.js"></script>
        			<script type="text/javascript" src="${scriptDir}/FeatureService.js"></script>
        			<script type="text/javascript" src="${scriptDir}/SLD.js"></script>
        			<script type="text/javascript" src="${scriptDir}/Bookmark.js"></script>
@@ -255,7 +257,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "css":                 <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>,
                 "download":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
                 "buffergeom":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>,
-                "cyclorama":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CycloramaActionBean"/></js:quote>
+                "cyclorama":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CycloramaActionBean"/></js:quote>,
+                "featureExtend":      ""
             };
 
             <c:if test="${actionBean.viewerType == 'openlayers'}">
