@@ -20,17 +20,18 @@
  */
 Ext.define("viewer.viewercontroller.controller.Component",{
     extend: "Ext.util.Observable",
-    config :{
+    config: {
+        /** @property the id of this component */
         id: null,
+        /** @property a reference to the implementing object. */
         frameworkObject: null,
+        /** @property the type of the object (see #statics) */
         type: -1,
         viewerController:null
     },
     /**
-     * @param config
-     * @param config.id the id of this component
-     * @param config.frameworkObject a reference to the implementing object
-     * @param config.type the type of the object (see statics)
+     * @param {Object} config A config object having, config.id, config.frameworkObject and config.type.
+     * @see #config
      */
     constructor: function (config){
         this.initConfig(config);

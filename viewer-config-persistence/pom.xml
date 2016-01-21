@@ -18,7 +18,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>3.0</version>
                 <executions>
                     <execution>
                         <id>schema-export</id>
@@ -63,31 +62,26 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <!-- hsqldb wordt allen voor unit tests gebruikt, maar als deze
+                        <!-- hsqldb wordt alleen voor unit tests gebruikt, maar als deze
                         als test scope dep wordt opgevoerd treedt er een CNFE op tijdens de build. -->
-
                         <groupId>org.hsqldb</groupId>
                         <artifactId>hsqldb</artifactId>
-                        <version>2.3.3</version>
+                        <version>${hsqldb.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
                 <configuration>
                     <systemPropertyVariables>
                         <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
                 <executions>
                     <execution>
                         <goals>

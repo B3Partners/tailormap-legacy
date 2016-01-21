@@ -27,19 +27,19 @@ Ext.define('Ext.ux.form.trigger.Clear', {
     },
 
     /**
-     * @cfg {Boolean} Hides the clear trigger when the field is empty (has no value)
+     * @property {Boolean} Hides the clear trigger when the field is empty (has no value)
      *      (default: true).
      */
     hideWhenEmpty: true,
 
     /**
-     * @cfg {Boolean} Hides the clear trigger until the mouse hovers over the field
+     * @property {Boolean} Hides the clear trigger until the mouse hovers over the field
      *      (default: false).
      */
     hideWhenMouseOut: false,
 
     /**
-     * @cfg {Boolean} Clears the textfield/combobox when the escape (ESC) key is pressed
+     * @property {Boolean} Clears the textfield/combobox when the escape (ESC) key is pressed
      */
     clearOnEscape: false,
 

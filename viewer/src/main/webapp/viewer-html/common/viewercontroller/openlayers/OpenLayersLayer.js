@@ -164,8 +164,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
     },    
 
     /**
-     * Sets the visibility of the layer
-     * @visible true or false
+     * Sets the visibility of the layer.
+     * @param visible true or false
      */
     setVisible : function (visible){
         this.visible=visible;

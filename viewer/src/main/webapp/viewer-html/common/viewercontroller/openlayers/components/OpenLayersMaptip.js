@@ -22,6 +22,12 @@
 Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
     map: null,
+    /**
+     * @constructor
+     * @param {Object} conf
+     * @param {type} map
+     * @returns {viewer.viewercontroller.openlayers.components.OpenLayersMaptip}
+     */
     constructor: function(conf,map){
         viewer.viewercontroller.openlayers.components.OpenLayersMaptip.superclass.constructor.call(this,conf);
         this.map=map;
@@ -46,16 +52,16 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
         return this.frameworkObject;
     },
     onPause: function(object){         
+        var lonLat = this.map.getFrameworkMap().getLonLatFromViewPortPx(object.xy);
         /**
          * @field
-         * Occures when the map wants a maptip.
-         * @param map the map where this event occured
-         * @param options.x x in pixels on the screen
-         * @param options.y y in pixels on the screen
-         * @param options.coord.x the x coord in world coords
-         * @param options.coord.y the y coord in world coords
+         * Occurs when the map wants a maptip.
+         * @property map the map where this event occured
+         * @property options.x x in pixels on the screen
+         * @property options.y y in pixels on the screen
+         * @property options.coord.x the x coord in world coords
+         * @property options.coord.y the y coord in world coords
          */
-        var lonLat= this.map.getFrameworkMap().getLonLatFromViewPortPx(object.xy);
         var options={
             x: object.xy.x,
             y: object.xy.y,
