@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,25 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype: 'container',
             html: 'Indien automatisch downloaden wordt ingeschakeld wordt er automatisch een download gestart bij het openen van de Attributenlijst indien slechts 1 laag beschikbaar is en de Standaard download methode is ingesteld.'
         });
+
+        this.form.add({
+            xtype: 'checkbox',
+            fieldLabel: 'ZoomTo knop tonen',
+            inputValue: true,
+            name: 'addZoomTo',
+            checked: this.configObject.addZoomTo || true,
+            labelWidth: this.labelWidth
+        });
+
+        this.form.add({
+            xtype: 'numberfield',
+            fieldLabel: 'Minimum afmeting van zoomTo gebied (kaart eenheden / meter)',
+            name: 'zoomToSize',
+            value: this.configObject.zoomToSize || 100,
+            labelWidth: this.labelWidth,
+        });
+
+
 
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
     }
