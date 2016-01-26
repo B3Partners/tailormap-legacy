@@ -324,7 +324,7 @@ INSERT INTO level_layers (level_, layer, list_index) VALUES (6, 5, 0);
 
 
 
-INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '16');
+INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '15');
 
 
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');

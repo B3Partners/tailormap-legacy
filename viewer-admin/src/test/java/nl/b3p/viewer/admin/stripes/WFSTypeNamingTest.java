@@ -39,6 +39,7 @@ import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
@@ -166,7 +167,7 @@ public class WFSTypeNamingTest extends TestUtil {
             for (Layer lyr : layers) {
                 if (!lyr.isVirtual()) {
                     log.debug("Inspecting layer, name: " + lyr.getName() + ", featuretype: " + lyr.getFeatureType().getDescription());
-                    assertFalse("Attribute type name does not contain a colon", lyr.getFeatureType().getTypeName().contains(":"));
+                    assertTrue("Attribute type name does contain a colon", lyr.getFeatureType().getTypeName().contains(":"));
                     try {
                         FeatureSource fs2 = lyr.getFeatureType().openGeoToolsFeatureSource();
                         assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
@@ -180,7 +181,7 @@ public class WFSTypeNamingTest extends TestUtil {
     }
 
     @Test
-    public void addService() {
+    public void addWFSService() {
         if (serviceProtocol.equalsIgnoreCase("wfs")) {
             log.debug("Starting WFS test with: " + this.toString());
             try {
@@ -200,7 +201,7 @@ public class WFSTypeNamingTest extends TestUtil {
             assertEquals("The number of layers should be the same", serviceTypeCount, types.size());
             for (SimpleFeatureType type : types) {
                 log.debug("Testing type: " + type.getTypeName());
-                assertFalse("Type name does not contain a colon", type.getTypeName().contains(":"));
+                assertTrue("Type name does contain a colon", type.getTypeName().contains(":"));
                 try {
                     FeatureSource fs2 = type.openGeoToolsFeatureSource();
                     assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));

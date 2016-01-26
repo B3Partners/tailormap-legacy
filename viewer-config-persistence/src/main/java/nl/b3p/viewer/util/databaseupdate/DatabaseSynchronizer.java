@@ -128,8 +128,6 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("14", new UpdateElement(Collections.singletonList("add_disableEditing.sql"), String.class));
         updates.put("15", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
 
-        updates.put("16", new UpdateElement(Collections.singletonList("rename_wfsfeaturetype.sql"), String.class));
-
         // NB when adding an update also update the metadata version in the testdata.sql file around line 326
     }
 
