@@ -309,7 +309,7 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-wfs-ng</artifactId>
+                <artifactId>gt-wfs</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
             <dependency>
