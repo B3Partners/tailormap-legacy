@@ -739,11 +739,8 @@ public class WMSService extends GeoService implements Updatable {
                         log.warn("Cannot handle multiple typeNames for layer " + l.getName() + ", only using the first. Type names: " + Arrays.toString(ld.getQueries()));
                     }
                     // Queries is not empty, checked before this method is called
-                    // replace any colon in the feature type name as geotools gt-wfs-ng does this as well
-                    // ie the namespace:typename separator ':' is replaced by a '_'
-                    // see: https://github.com/flamingo-geocms/flamingo/issues/519
-                    SimpleFeatureType sft = wfsFs.getFeatureType(uniqueQueries.first().replace(':', '_'));
-                    if(sft != null) {
+                    SimpleFeatureType sft = wfsFs.getFeatureType(uniqueQueries.first());
+                    if (sft != null) {
                         // Type name may not exist in the referenced WFS
                         l.setFeatureType(sft);
                         log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
