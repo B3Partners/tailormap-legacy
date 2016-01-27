@@ -62,19 +62,19 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: 'ZoomTo knop tonen',
+            fieldLabel: 'Zoom naar attribuut knop tonen',
             inputValue: true,
             name: 'addZoomTo',
-            checked: this.configObject.addZoomTo || true,
+            checked: this.configObject.addZoomTo || false,
             labelWidth: this.labelWidth
         });
 
         this.form.add({
             xtype: 'numberfield',
-            fieldLabel: 'Minimum afmeting van zoomTo gebied (kaart eenheden / meter)',
+            fieldLabel: 'Minimum afmeting van zoom gebied (kaart eenheden / meter)',
             name: 'zoomToSize',
             value: this.configObject.zoomToSize || 100,
-            labelWidth: this.labelWidth,
+            labelWidth: this.labelWidth
         });
 
 

@@ -36,6 +36,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: 500,
             id: "maxFeatures",
             value: configObject.maxFeatures ? configObject.maxFeatures : 250
+        },
+        {
+            xtype: 'checkbox',
+            fieldLabel: 'Open attributenlijst na filteren',
+            inputValue: true,
+            name: 'openAttributeListAfterFilter',
+            checked: this.configObject.openAttributeListAfterFilter || false,
+            labelWidth: this.labelWidth
         }
         ]);
         this.createCheckBoxes(this.configObject.layers,{filterable:true});

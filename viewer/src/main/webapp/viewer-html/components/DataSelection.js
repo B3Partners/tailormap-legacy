@@ -45,7 +45,7 @@ Ext.define ("viewer.components.DataSelection",{
             width: null,
             height:null
         },
-        openAttributeListAfterFilter: true
+        openAttributeListAfterFilter: false
     },
     constructor: function (conf){
         // minimal width = 600

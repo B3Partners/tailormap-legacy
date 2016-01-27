@@ -33,6 +33,9 @@ Ext.define("viewer.FeatureExtent", {
         this._doRequest(filter, appLayer, minSize, successFn, failedFn);
     },
     getExtentForFilter: function (filter, appLayer, minSize, successFn, failedFn) {
+        if(filter === "") {
+            // Get all features? How?
+        }
         this._doRequest(filter, appLayer, minSize, successFn, failedFn);
     },
     _doRequest: function (filter, appLayer, minSize, successFunction, failureFunction) {

@@ -35,7 +35,7 @@ Ext.define ("viewer.components.AttributeList",{
         defaultDownload: "SHP",
         autoDownload: false,
         downloadParams: "",
-        addZoomTo: true,
+        addZoomTo: false,
         zoomToSize: 100
     },
     appLayer: null,
@@ -144,13 +144,23 @@ Ext.define ("viewer.components.AttributeList",{
                     marginRight: '10px'
                 },
                 layout: {
-                    type:'hbox',
-                    pack:'end'
+                    type:'hbox'
                 },
                 items: [
-                     {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
+                    {
+                        xtype: 'button',
+                        style: { marginLeft: '5px' },
+                        itemId: 'zoomToAll',
+                        text: 'Zoom naar alle attributen',
+                        disabled: true,
+                        scope: this,
+                        handler: this.zoomToAllFeatures,
+                        hidden: !this.config.addZoomTo
+                    },
+                    { xtype: 'container', flex: 1 },
+                    {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
                              this.download();
-                     }},
+                    }},
                     {
                         xtype: "combobox",
                         disabled:true,
@@ -275,6 +285,9 @@ Ext.define ("viewer.components.AttributeList",{
     layerChanged : function (appLayer){
         if(!appLayer || !this.popup.isVisible()) {
             return true;
+        }
+        if(this.config.addZoomTo) {
+            Ext.ComponentQuery.query('#zoomToAll')[0].setDisabled(!this.hasGeometry(appLayer));
         }
         this.loadAttributes(appLayer);
         if(this.layerSelector.getVisibleLayerCount() === 1 && this.config.autoDownload) {
@@ -410,13 +423,8 @@ Ext.define ("viewer.components.AttributeList",{
         var attributeList = new Array();
         var columns = new Array();
         var index = 0;
-        var hasGeometry = false;
-        var geometryTypes = ["geometry", "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon"];
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
-            if(geometryTypes.indexOf(attribute.type) !== -1) {
-                hasGeometry = true;
-            }
             if(attribute.visible){
 
                 var attIndex = index++;
@@ -436,7 +444,7 @@ Ext.define ("viewer.components.AttributeList",{
                 });
             }
         }
-        if(hasGeometry && this.config.addZoomTo) {
+        if(this.hasGeometry(appLayer) && this.config.addZoomTo) {
             attributeList.unshift({
                 name: "__fid",
                 type: "string"
@@ -600,7 +608,7 @@ Ext.define ("viewer.components.AttributeList",{
                 }
             }
         };
-        if(hasGeometry && this.config.addZoomTo) {
+        if(this.hasGeometry(appLayer) && this.config.addZoomTo) {
             listeners.cellclick = {
                 scope: me,
                 fn: function(grid, td, cellIdx, record) {
@@ -643,6 +651,9 @@ Ext.define ("viewer.components.AttributeList",{
             this.pagers[gridId]=p;
         }
     },
+    hasGeometry: function(appLayer) {
+        return (appLayer.hasOwnProperty("geometryAttribute") && typeof appLayer.geometryAttribute !== "undefined" && appLayer.geometryAttribute !== null && appLayer.geometryAttribute !== "");
+    },
     zoomToFeature: function(feature) {
         if (this.featureExtentService === null) {
             this.featureExtentService = Ext.create('viewer.FeatureExtent');
@@ -656,6 +667,38 @@ Ext.define ("viewer.components.AttributeList",{
                     this.config.viewerController.mapComponent.getMap().zoomToExtent(e);
             }).bind(this),
             /*failedFn=*/function(msg) {
+                console.log(msg);
+            }
+        );
+    },
+    zoomToAllFeatures: function(btn) {
+        if (!this.config.addZoomTo) {
+            return;
+        }
+        var appLayer = this.layerSelector.getValue();
+        if (!this.hasGeometry(appLayer)) {
+            btn.setDisabled(true);
+            return;
+        }
+        if (this.featureExtentService === null) {
+            this.featureExtentService = Ext.create('viewer.FeatureExtent');
+        }
+
+        var store =  this.grids.main.store;
+        var ids = [];
+        store.each(function(feature){
+            ids.push(feature.data.__fid);
+        });
+
+        this.featureExtentService.getExtentForFeatures(
+             ids,
+             this.layerSelector.getValue(),
+             this.config.zoomToSize,
+             (function (extent) {
+                 var e = Ext.create("viewer.viewercontroller.controller.Extent", extent.minx, extent.miny, extent.maxx, extent.maxy);
+                 this.config.viewerController.mapComponent.getMap().zoomToExtent(e);
+            }).bind(this),
+            function(msg) {
                 console.log(msg);
             }
         );
