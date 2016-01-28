@@ -318,6 +318,7 @@ public class DatabaseSynchronizer implements Servlet {
         }
         @Override
         public void execute(Connection cnctn) throws SQLException {
+            
             ScriptRunner runner = new ScriptRunner(cnctn, true, true);
             for (Entry<String, UpdateElement> entry : this.updateScripts.entrySet()) {
                 UpdateElement element = entry.getValue();
@@ -345,7 +346,7 @@ public class DatabaseSynchronizer implements Servlet {
                                     is.close();
                                 }
                             }catch(IOException ioe){
-                                log.error("Exception while closing InputStream",ex);
+                                log.error("Exception while closing InputStream",ioe);
                             }
                             log.error("Error while executing script: " + script, ex);
                             this.errored = true;
