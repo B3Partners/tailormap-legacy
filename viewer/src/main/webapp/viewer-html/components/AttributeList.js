@@ -36,7 +36,7 @@ Ext.define ("viewer.components.AttributeList",{
         autoDownload: false,
         downloadParams: "",
         addZoomTo: false,
-        zoomToSize: 100
+        zoomToBuffer: 10
     },
     appLayer: null,
     featureService: null,
@@ -661,7 +661,7 @@ Ext.define ("viewer.components.AttributeList",{
         this.featureExtentService.getExtentForFeatures(
                 /*featureIds=*/feature.__fid,
                 /*appLayer=*/this.layerSelector.getValue(),
-                this.config.zoomToSize,
+                this.config.zoomToBuffer,
                 /*successFn=*/(function (extent) {
                     var e = Ext.create("viewer.viewercontroller.controller.Extent", extent.minx, extent.miny, extent.maxx, extent.maxy);
                     this.config.viewerController.mapComponent.getMap().zoomToExtent(e);
@@ -693,7 +693,7 @@ Ext.define ("viewer.components.AttributeList",{
         this.featureExtentService.getExtentForFeatures(
              ids,
              this.layerSelector.getValue(),
-             this.config.zoomToSize,
+                this.config.zoomToBuffer,
              (function (extent) {
                  var e = Ext.create("viewer.viewercontroller.controller.Extent", extent.minx, extent.miny, extent.maxx, extent.maxy);
                  this.config.viewerController.mapComponent.getMap().zoomToExtent(e);

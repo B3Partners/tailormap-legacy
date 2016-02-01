@@ -41,6 +41,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,10 +79,10 @@ public class FeatureExtentActionBean implements ActionBean {
     private ApplicationLayer appLayer;
 
     /**
-     * minimum size in any axis direction of the returned extent.
+     * Buffer distance in mapping units.
      */
     @Validate
-    private int minSize;
+    private int buffer;
 
     private Layer layer;
     private boolean unauthorized;
@@ -116,9 +117,9 @@ public class FeatureExtentActionBean implements ActionBean {
             error = "Not authorized";
         } else {
             FeatureSource fs = null;
-            if (minSize <= 0) {
-                minSize = 100;
-            }
+//            if (minSize <= 0) {
+//                minSize = 100;
+//            }
             try {
                 fs = this.layer.getFeatureType().openGeoToolsFeatureSource();
                 BoundingBox extent = this.getExtent(fs);
@@ -157,27 +158,57 @@ public class FeatureExtentActionBean implements ActionBean {
         q.setFilter(f);
         q.setHandle("extent-query");
         q.setMaxFeatures(FeatureToJson.MAX_FEATURES);
+        q.setPropertyNames(new String[]{fs.getSchema().getGeometryDescriptor().getName().toString()});
         SimpleFeatureCollection feats = (SimpleFeatureCollection) fs.getFeatures(q);
         BoundingBox extent = feats.getBounds();
 
-        if (extent.getSpan(0) < minSize || extent.getSpan(1) < minSize) {
+//        if (extent.getSpan(0) < minSize || extent.getSpan(1) < minSize) {
+//            // buffer the extent if smaller than the limit eg. a single point or line
+//            // a point does not have extents, so we need to use the point itself to construct a buffer
+//            log.debug("enlarging extent by: " + minSize);
+//            try (SimpleFeatureIterator sfi = feats.features()) {
+//                if (sfi.hasNext()) {
+//                    SimpleFeature sf = sfi.next();
+//                    Geometry geom = (Geometry) sf.getDefaultGeometry();
+//                    if (geom != null) {
+//                        geom = geom.buffer(minSize);
+//                        extent = new ReferencedEnvelope(geom.getEnvelopeInternal(), extent.getCoordinateReferenceSystem());
+//                    }
+//                }
+//            }
+//        }
+        if (extent.getSpan(0) < buffer || extent.getSpan(1) < buffer) {
             // buffer the extent if smaller than the limit eg. a single point or line
-            log.debug("buffering extent by: " + minSize);
+            // a point does not have extents, so we need to use the point itself to construct a buffer
+            log.debug("enlarging extent by: 1");
             try (SimpleFeatureIterator sfi = feats.features()) {
                 if (sfi.hasNext()) {
                     SimpleFeature sf = sfi.next();
                     Geometry geom = (Geometry) sf.getDefaultGeometry();
                     if (geom != null) {
-                        geom = geom.buffer(minSize);
+                        geom = geom.buffer(1);
                         extent = new ReferencedEnvelope(geom.getEnvelopeInternal(), extent.getCoordinateReferenceSystem());
                     }
                 }
             }
         }
+        if (buffer > 0) {
+            log.debug("enlarging extent using buffer by: " + buffer);
+            Geometry geom = JTS.toGeometry(extent).buffer(buffer);
+            extent = new ReferencedEnvelope(geom.getEnvelopeInternal(), extent.getCoordinateReferenceSystem());
+        }
         return extent;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
+    public int getBuffer() {
+        return buffer;
+    }
+
+    public void setBuffer(int buffer) {
+        this.buffer = buffer;
+    }
+
     public String getFilter() {
         return filter;
     }
@@ -192,14 +223,6 @@ public class FeatureExtentActionBean implements ActionBean {
 
     public void setAppLayer(ApplicationLayer appLayer) {
         this.appLayer = appLayer;
-    }
-
-    public int getMinSize() {
-        return minSize;
-    }
-
-    public void setMinSize(int minSize) {
-        this.minSize = minSize;
     }
 
     @Override

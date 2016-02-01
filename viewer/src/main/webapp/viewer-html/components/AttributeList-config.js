@@ -71,13 +71,13 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'numberfield',
-            fieldLabel: 'Minimum afmeting van zoom gebied (kaart eenheden / meter)',
-            name: 'zoomToSize',
-            value: this.configObject.zoomToSize || 100,
+            fieldLabel: 'Buffer zoom gebied afstand (kaart eenheden / meter)',
+            name: 'zoomToBuffer',
+            value: this.configObject.zoomBuffer || 10,
+            minValue: 0,
+            step: 10,
             labelWidth: this.labelWidth
         });
-
-
 
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
     }
