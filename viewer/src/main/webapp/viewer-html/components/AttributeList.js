@@ -118,7 +118,6 @@ Ext.define ("viewer.components.AttributeList",{
                 id: this.name + 'LayerSelectorPanel',
                 xtype: "container",
                 padding: "4px",
-                width: '100%',
                 height: 36,
                 items: [
                     this.layerSelector.combobox
@@ -127,17 +126,18 @@ Ext.define ("viewer.components.AttributeList",{
                 id: this.name + 'mainGridPanel',
                 xtype: "container",
                 autoScroll: true,
-                width: '100%',
-                flex: 1
+                flex: 1,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                }
             },{
                 id: this.name + 'mainPagerPanel',
                 xtype: "container",
-                width: '100%',
                 height: 43
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
-                width: '100%',
                 height: MobileManager.isMobile() ? 45 : 32,
                 style: {
                     marginTop: '10px',
@@ -437,7 +437,9 @@ Ext.define ("viewer.components.AttributeList",{
                 columns.push({
                     header:colName,
                     dataIndex: "c" + attIndex,
-                    flex: 1,
+                    // flex: 1,
+                    shrinkWrap: true,
+                    maxWidth: 200,
                     filter: {
                         xtype: 'textfield'
                     }
@@ -450,10 +452,13 @@ Ext.define ("viewer.components.AttributeList",{
                 type: "string"
             });
             columns.unshift({
-                header: "Zoom",
+                header: "",
                 dataIndex: "__fid",
                 sortable: false,
+                hideable: false,
+                menuDisabled: true,
                 width: 24,
+                maxWidth: 24,
                 tdCls: 'zoom-to-feature',
                 renderer: function(fid) {
                     return '<a href="#" class="x-grid-filters-icon x-grid-filters-find"></a>';
@@ -606,6 +611,13 @@ Ext.define ("viewer.components.AttributeList",{
                 fn: function(rowNode,record,expandRow,eOpts,recordIndex){
                     this.onCollapseBody(rowNode,record,expandRow,eOpts,recordIndex);
                 }
+            },
+            refresh: function(dataview) {
+                var cols = dataview.panel.columns;
+                for(var i = 0; i < cols.length; i++) {
+                    cols[i].autoSize();
+                }
+                dataview.panel.updateLayout();
             }
         };
         if(this.hasGeometry(appLayer) && this.config.addZoomTo) {
