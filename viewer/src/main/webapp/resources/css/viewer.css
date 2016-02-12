@@ -269,3 +269,12 @@ body > .legend {
   height: 0;
   display: none;
 }
+
+.legend-toggle {
+    background-image: url(../../extjs/resources/css/crisp/images/toolbar/default-more.png);
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: top;
+}

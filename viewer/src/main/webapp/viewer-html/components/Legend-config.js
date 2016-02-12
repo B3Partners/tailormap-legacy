@@ -73,6 +73,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: configObject.showBackground || false,
                 labelWidth: this.labelWidth
             },
+            { 
+                xtype: 'checkbox',
+                fieldLabel: 'Toon legenda in TOC',
+                name: 'showInlineLegend',
+                inputValue: true,
+                value: configObject.showInlineLegend || false,
+                labelWidth: this.labelWidth
+            },
             this.htmlEditor],
             renderTo: this.parentId//(2)
         });

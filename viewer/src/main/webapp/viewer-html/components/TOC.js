@@ -667,6 +667,10 @@ Ext.define ("viewer.components.TOC",{
             }
         }
     },
+    
+    getTree: function() {
+        return this.panel;
+    },
     /*************************  Event handlers ***********************************************************/
 
     checkboxClicked : function(nodeObj,checked,toc){
