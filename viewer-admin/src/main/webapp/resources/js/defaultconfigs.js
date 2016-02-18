@@ -62,6 +62,17 @@ Ext.onReady(function() {
             stopEvent: true
         });
     }
+    document.body.addEventListener('click', function(e) {
+        if(e.target && e.target.className && e.target.className.indexOf('inlinehelp-toggle') !== -1) {
+            var target = e.target.getAttribute('data-target');
+            if(target) {
+                var targetEl = document.querySelector('.' + target);
+                if(targetEl) {
+                    targetEl.style.display = targetEl.style.display === 'none' ? 'block' : 'none';
+                }
+            }
+        }
+    });
 });
 
 Ext.define('Ext.b3p.iFramePopupController', {
