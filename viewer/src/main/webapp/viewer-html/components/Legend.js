@@ -233,7 +233,7 @@ Ext.define("viewer.components.Legend", {
         }
         this.legends = null;
         this.orderedElements = null;
-        this.treenodes = null;
+        this.resetInlineLegend();
     },
     
     initLegend: function() {
@@ -349,17 +349,34 @@ Ext.define("viewer.components.Legend", {
         }
     },
 
-    loadTreeNodes: function() {
-        this.treenodes = [];
-        var tocs = this.config.viewerController.getComponentsByClassName("viewer.components.TOC");
-        if(tocs.length === 0) {
+    resetInlineLegend: function() {
+        this.treenodes = null;
+        var tree = this.getTocTree();
+        if(tree === null) {
             return;
         }
-        var tree = tocs[0].getTree();
+        tree.getEl().dom.removeEventListener("click", this.toggleLegendImage);
+    },
+
+    getTocTree: function() {
+        var tocs = this.config.viewerController.getComponentsByClassName("viewer.components.TOC");
+        if(tocs.length === 0) {
+            return null;
+        }
+        return tocs[0].getTree();
+    },
+
+    loadTreeNodes: function() {
+        this.treenodes = [];
+        var tree = this.getTocTree();
+        if(tree === null) {
+            return;
+        }
         var nodes = tree.getStore().query("leaf", "true").items;
         for(var i = 0; i < nodes.length; i++) {
             this.treenodes.push(nodes[i].getData());
         }
+        tree.getEl().dom.addEventListener("click", this.toggleLegendImage);
     },
     
     appendLegendToToc: function(appLayer, legend) {
@@ -386,19 +403,27 @@ Ext.define("viewer.components.Legend", {
                 var link = document.createElement('a');
                 link.href = "#";
                 link.className = 'legend-toggle';
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if(clonedImage.style.display === 'none') {
-                        clonedImage.style.display = 'block';
-                    } else {
-                        clonedImage.style.display = 'none';
-                    }
-                });
                 el.style.display = 'inline-block';
                 el.parentNode.insertBefore(link, el);
                 el.appendChild(clonedImage);
             }
+        }
+    },
+
+    toggleLegendImage: function(e) {
+        if(!e.target.className || e.target.className.indexOf("legend-toggle") === -1) {
+            return true;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        var clonedImage = e.target.parentNode.querySelector(".image");
+        if(!clonedImage) {
+            return;
+        }
+        if(clonedImage.style.display === 'none') {
+            clonedImage.style.display = 'block';
+        } else {
+            clonedImage.style.display = 'none';
         }
     },
     
