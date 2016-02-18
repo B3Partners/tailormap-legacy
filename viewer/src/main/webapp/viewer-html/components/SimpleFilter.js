@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 B3Partners B.V.
+ * Copyright (C) 2012-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,8 @@ Ext.define("viewer.components.SimpleFilter", {
     config: {
         filters: null,
         layers: null,
-        name: null
+        name: null,
+        title: ""
     },
     simpleFilters:null,
     constructor: function (conf){
@@ -34,12 +35,13 @@ Ext.define("viewer.components.SimpleFilter", {
             width: '100%',
             height: '100%',
             renderTo: this.div,
-            html: '<div style="width: 100%; height: 100%; overflow: auto;" id="' + containerContentId + '"></div>'
+            html: '<div class="simple-filter-wrapper" id="' + containerContentId + '"></div>'
         });
 
         var me = this;
         Ext.Array.each(this.config.filters, function(filter, index) {
-            var newFilter = Ext.create(filter.class, {
+            var className = filter["class"];
+            var newFilter = Ext.create(className, {
                 appLayerId: me.config.layers[filter.appLayerId], // convert from index to actual appLayerId
                 attributeName: filter.attributeName,
                 filterConfig: filter.config,

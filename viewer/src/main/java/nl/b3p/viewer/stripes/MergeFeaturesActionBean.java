@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,13 +58,14 @@ import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  * Merge two features, A and B so that A will have the combined geometry of A
  * and B and B will cease to exist. A may be a new feature if that strategy is
  * chosen.
  *
- * @author Mark Prins <mark@b3partners.nl>
+ * @author Mark Prins mark@b3partners.nl
  */
 @UrlBinding("/action/feature/merge")
 @StrictBinding
@@ -116,7 +117,7 @@ public class MergeFeaturesActionBean implements ActionBean {
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (application == null || appLayer == null
-                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
+                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
     }
@@ -186,23 +187,27 @@ public class MergeFeaturesActionBean implements ActionBean {
      *
      * @param features a list of features that can be modified
      * @return the list of features to be committed to the database
+     *
+     * @throws java.lang.Exception if any
+     *
      * @see #handleExtraData(org.opengis.feature.simple.SimpleFeature)
      */
-    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) {
+    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) throws Exception {
         return features;
     }
 
     /**
-     * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
-     *
-     *
-     * @see #handleExtraData(java.util.List<SimpleFeature>)
+     * Handle extra data, delegates to {@link #handleExtraData(java.util.List)}.
      *
      * @param feature the feature that can be modified
-     * @return the feature to be committed to the database      *
+     * @return the feature to be committed to the database
+     *
+     * @throws java.lang.Exception if any
+     *
+     * @see #handleExtraData(java.util.List)
      */
-    protected SimpleFeature handleExtraData(SimpleFeature feature) {
-        final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+    protected SimpleFeature handleExtraData(SimpleFeature feature) throws Exception {
+        final List<SimpleFeature> features = new ArrayList();
         features.add(feature);
         return this.handleExtraData(features).get(0);
     }
@@ -275,10 +280,10 @@ public class MergeFeaturesActionBean implements ActionBean {
             // TopologyPreservingSimplifier simplify = new TopologyPreservingSimplifier(newGeom);
             // simplify.setDistanceTolerance(tolerance);
             // newGeom = simplify.getResultGeometry();
-
             ids = this.handleStrategy(fA, fB, newGeom, filterA, filterB, this.store, this.strategy);
 
             transaction.commit();
+            afterMerge(ids);
         } catch (Exception e) {
             transaction.rollback();
             throw e;
@@ -346,6 +351,14 @@ public class MergeFeaturesActionBean implements ActionBean {
         return ids;
     }
 
+    /**
+     * Called after the merge is completed and commit was performed. Provides a
+     * hook for postprocessing.
+     * @param ids The list of committed feature ids
+     */
+    protected void afterMerge(List<FeatureId> ids) {
+    }
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     @Override
     public ActionBeanContext getContext() {
@@ -411,6 +424,10 @@ public class MergeFeaturesActionBean implements ActionBean {
 
     public void setExtraData(String extraData) {
         this.extraData = extraData;
+    }
+
+    public Layer getLayer() {
+        return layer;
     }
     //</editor-fold>
 }

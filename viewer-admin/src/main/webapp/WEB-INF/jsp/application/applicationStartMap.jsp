@@ -34,12 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <a href="#Startkaartbeeld_Help" title="Help" class="helplink"></a>
             </h1>
 
-            <c:choose>
-                <c:when test="${!empty actionBean.application.details['isMashup'] && actionBean.application.details['isMashup'].value }">
-                    <span class="status_error">Applicatie is een mashup. Startkaartbeeld kan niet bewerkt worden!</span>
-                </div>
-            </c:when>
-            <c:otherwise>
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="startmapform">
 
                     <div id="tree" class="tree-selection-tree">
@@ -83,8 +77,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/TreeSelection.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/applicationStartMap.js"></script>
 
-        </c:otherwise>
-    </c:choose>
     <script type="text/javascript">
         var activelink = 'menu_startkaartbeeld';
     </script>

@@ -121,6 +121,12 @@ function createHelpTab() {
     }); 
 }
 function createLayoutTab(){
+    if(!metadata.hasOwnProperty('type') || metadata.type !== "popup") {
+        return;
+    }
+    if(currentRegion && Ext.Array.indexOf(['header', 'leftmargin_top', 'leftmargin_bottom', 'rightmargin_top', 'rightmargin_bottom', 'footer'], currentRegion) !== -1) {
+        return;
+    }
     if(typeof details === "undefined" || details === null){
         details = {
             changeablePosition: "true",
@@ -292,7 +298,7 @@ function createHeightLayoutTab() {
                 labelWidth:100
             }]
         }],
-        renderTo: "component-layout"
+        renderTo: "layout"
     }); 
 }
 
@@ -333,16 +339,18 @@ function continueSave(config){
     if(metadata.type != undefined && metadata.type == "popup"){
         config.isPopup = true;
         var layout = new Object();
-        for( var i = 0 ; i < layoutForm.items.length ; i++){
-            var fieldSetItems = layoutForm.items.get(i);
-            for ( var j = 0 ; j < fieldSetItems.items.length ; j ++){
-                var item = fieldSetItems.items.get(j);
-                if(item.name != undefined){
-                    if(Ext.isObject(item.getValue())){
-                        layout[item.name] = item.getValue().position;  
-                    }else{
-                        if (item.getValue()!=""){
-                            layout[item.name] = item.getValue();
+        if(layoutForm) {
+            for( var i = 0 ; i < layoutForm.items.length ; i++){
+                var fieldSetItems = layoutForm.items.get(i);
+                for ( var j = 0 ; j < fieldSetItems.items.length ; j ++){
+                    var item = fieldSetItems.items.get(j);
+                    if(item.name != undefined){
+                        if(Ext.isObject(item.getValue())){
+                            layout[item.name] = item.getValue().position;  
+                        }else{
+                            if (item.getValue()!=""){
+                                layout[item.name] = item.getValue();
+                            }
                         }
                     }
                 }
@@ -409,15 +417,9 @@ Ext.onReady(function() {
         contentEl:'rights', 
         title: 'Rechten'
     }];
-    if(metadata.type != undefined && metadata.type == "popup"){
+    if((metadata.type != undefined && metadata.type == "popup") || showConfigureHeight()) {
         tabs.push({
             contentEl:'layout', 
-            title: 'Layout'
-        });
-    }
-    if(showConfigureHeight()){
-        tabs.push({
-            contentEl:'component-layout', 
             title: 'Layout'
         });
     }

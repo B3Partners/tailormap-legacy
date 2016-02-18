@@ -27,6 +27,8 @@ Ext.define("viewer.components.CustomConfiguration", {
             configObject = {};
             configObject.snapColour = this.defaultSnapColour;
             configObject.snapColourOpacity = this.defaultSnapColourOpacity;
+            configObject.snapFillColour = this.defaultSnapColour;
+            configObject.snapFillColourOpacity = this.defaultSnapColourOpacity;
         }
         configObject.showLabelconfig = true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
@@ -49,6 +51,24 @@ Ext.define("viewer.components.CustomConfiguration", {
                 name: 'snapColourOpacity',
                 fieldLabel: 'Matheid van snapping features (%)',
                 value: configObject.snapColourOpacity ? configObject.snapColourOpacity : this.defaultSnapColourOpacity,
+                maxValue: 100,
+                step: 5,
+                minValue: 0,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'colorfield',
+                fieldLabel: 'Kleur van de "snappable" features vulling',
+                name: 'snapFillColour',
+                value: configObject.snapFillColour ? configObject.snapFillColour : this.defaultSnapColour,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'numberfield',
+                anchor: '100%',
+                name: 'snapFillColourOpacity',
+                fieldLabel: 'Matheid van snapping features vulling (%)',
+                value: configObject.snapFillColourOpacity ? configObject.snapFillColourOpacity : this.defaultSnapColourOpacity,
                 maxValue: 100,
                 step: 5,
                 minValue: 0,

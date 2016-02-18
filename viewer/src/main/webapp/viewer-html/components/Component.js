@@ -42,10 +42,11 @@ Ext.define("viewer.components.Component",{
     haveSprite: false,
     /**
     * @constructs
-    * @param config.name {String} the unique name of the object
-    * @param config.div {DomElement} the div where the component must be placed
-    * @param config.viewerController {ViewerController} a reference to the ViewerController
-    * @param config.isPopup {Boolean} Indicates whether or not to render this component to a popup
+    * @param {Object} config configuration object
+    * @property config.name {String} the unique name of the object
+    * @property config.div {DomElement} the div where the component must be placed
+    * @property config.viewerController {ViewerController} a reference to the ViewerController
+    * @property config.isPopup {Boolean} Indicates whether or not to render this component to a popup
     */
     constructor: function(config){
         var me = this;
@@ -71,7 +72,19 @@ Ext.define("viewer.components.Component",{
             me.config.viewerController.layoutManager.setTabTitle(me.config.name, me.title);
         }
         me.events = [];
+        me.addContainerClass();
         return me;
+    },
+    addContainerClass: function() {
+        var myClassname = this.$className || "";
+        var containerCls = [
+            myClassname.toLowerCase().replace(/\./ig, "").replace(/viewercomponents/ig, ""),
+            "-component-container"
+        ].join("");
+        var container = this.getContentContainer();
+        if(container) {
+            container.addCls(containerCls);
+        }
     },
     /**
       *Returns the id of the content div.
@@ -92,12 +105,14 @@ Ext.define("viewer.components.Component",{
     },
 
     /**
-     * Renders a button in the div (holder)
+     * Renders a button in the div (holder).
      * if a titlebarIcon is set, its used to generate in the button. Otherwise the title or name.
-     * @param options.handler the handler function called when the button is clicked.
-     * @param options.text the text in the button
-     * @param options.icon the url to a  icon for this button.
-     * @param options.tooltip the tooltip for this button.
+     *
+     * @param {Object} options config options for the button
+     * @property options.handler the handler function called when the button is clicked.
+     * @property options.text the text in the button
+     * @property options.icon the url to a  icon for this button.
+     * @property options.tooltip the tooltip for this button.
      */
     renderButton: function(options) {
         var me = this,

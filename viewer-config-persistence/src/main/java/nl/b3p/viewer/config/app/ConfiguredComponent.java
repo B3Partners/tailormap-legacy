@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,12 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     @ElementCollection
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
+
+    @ManyToOne
+    private ConfiguredComponent motherComponent;
+
+    @OneToMany(mappedBy = "motherComponent")
+    private List<ConfiguredComponent> linkedComponents = new ArrayList<ConfiguredComponent>();
     
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -113,11 +119,36 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     public void setApplication(Application application) {
         this.application = application;
     }
+
+    public ConfiguredComponent getMotherComponent() {
+        return motherComponent;
+    }
+
+    public void setMotherComponent(ConfiguredComponent motherComponent) {
+        this.motherComponent = motherComponent;
+    }
+
+    public List<ConfiguredComponent> getLinkedComponents() {
+        return linkedComponents;
+    }
+
+    public void setLinkedComponents(List<ConfiguredComponent> linkedComponents) {
+        this.linkedComponents = linkedComponents;
+    }
+    
     //</editor-fold>
 
+
+    public final static List<String> classesExcludedFromPushing = new ArrayList<String>();
+    static {
+        classesExcludedFromPushing.add("viewer.components.HTML");
+    }
+    
     /**
      * Retrieve the metadata from the component registry for the class of this
-     * component
+     * component.
+     *
+     * @return the configured ViewerComponent for this component
      */
     public ViewerComponent getViewerComponent() {
         return ComponentRegistry.getInstance().getViewerComponent(className);
@@ -148,6 +179,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
         copy.setId(null);
         copy.setDetails(new HashMap<String,String>(details));
         copy.setReaders(new HashSet<String>(readers));
+        copy.setLinkedComponents(new ArrayList<ConfiguredComponent>());
         copy.setApplication(app);
         return copy;
     }

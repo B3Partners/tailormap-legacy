@@ -110,9 +110,10 @@ public class ImageManager {
         threadPool.shutdown();
     }
     /**
-     * Combine all the images recieved
+     * Combine all the images recieved.
+     *
      * @return a combined image
-     * @throws Exception 
+     * @throws Exception if any
      */
     public List<ReferencedImage> getCombinedImages() throws Exception {
         ImageCollector ic = null;

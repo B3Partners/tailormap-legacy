@@ -3,7 +3,7 @@
 /**
  * MapComponent
  * @class 
- * @constructor
+ * 
  * @param viewerObject Het viewerObject
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
@@ -25,8 +25,9 @@ Ext.define("viewer.viewercontroller.MapComponent",{
      * Construct a map component
      * @param viewerController the viewerController
      * @param domId id of the dom where this map component must be added
-     * @param config a config object
-     * @param config.resolutions a array of resolutions for the map     
+     * @param {Object} config a config object having:
+     *        config.resolutions a array of resolutions for the map
+     * @constructor
      */    
     constructor :function (viewerController,domId,config){
         //init values
@@ -44,28 +45,28 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     },
        
     /**
-    *Creates a Map object for this framework
-    *@param id the id of the map
-    *@param options extra options for the map
-    *@param options.startExtent the starting extent (viewer.viewercontroller.controller.Extent) of the map 
-    *@param options.maxExtent the max extent (viewer.viewercontroller.controller.Extent) of the map
-    *Must be implemented by subclass
+    * Creates a Map object for this framework. Must be implemented by subclass.
+    * @param id the id of the map
+    * @param {Object} options extra options for the map, having:
+    *       options.startExtent the starting extent (viewer.viewercontroller.controller.Extent) of the map
+    *       options.maxExtent the max extent (viewer.viewercontroller.controller.Extent) of the map
+    *
     */
     createMap : function(id, options){
         Ext.Error.raise({msg: "MapComponent.createMap(...) not implemented! Must be implemented in sub-class"});
     },
-    /**
+    /*
     *Create functions. SubClass needs to implement these so the user can
     *create Framework specific objects.
-    **/
+    */
 
     /**
-    *Creates a layer for this framework
+    *Creates a layer for this framework, Must be implemented by subclass
     *@param name the showable name of the layer
     *@param url the url to the serviceProvider
     *@param ogcParams the params that are used in the OGC-WMS request
     *@param options extra options for this wms layer
-    *Must be implemented by subclass
+    *
     */
     createWMSLayer : function(name, url, ogcParams,options){
         Ext.Error.raise({msg: "MapComponent.createWMSLayer() Not implemented! Must be implemented in sub-class"});
@@ -74,13 +75,13 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     * @description Creates a OSGEO TMS layer.
     * @param name the showable name of the layer
     * @param url the url to the tms service
-    * @param options extra options for this tiling layer
-    * @param options.tileHeight the tile height
-    * @param options.tileWidth the tile width
-    * @param options.serviceEnvelop the envelope of the service
-    * @param options.resolutions the resolutions of this service
-    * @param options.protocol tiling protocol
-    * @returns Returns the TilingLayer
+    * @param {Object} options extra options for this tiling layer, having:
+    *         options.tileHeight the tile height,
+    *         options.tileWidth the tile width,
+    *         options.serviceEnvelop the envelope of the service,
+    *         options.resolutions the resolutions of this service,
+    *         options.protocol tiling protocol
+    * @returns  the TilingLayer
     */
     createTilingLayer : function (id,name,url, options){
         Ext.Error.raise({msg: "MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class"});
@@ -124,24 +125,24 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     *Creates a drawable vectorlayer
     *Must be implemented by subclass
     * A vectorlayer is a layer on which features can be drawn by the user (a EditMap in Flamingo, a VectorLayer in OpenLayers)
-    * @param name The name of this laye
+    * @param name The name of this layer
     */
     createVectorLayer : function (name){
         Ext.Error.raise({msg: "MapComponent.createVectorLayer() Not implemented! Must be implemented in sub-class"});
     },
     /**
-    *Must be implemented by the sub-class
-    *Create a tool
-    *@param conf: the options used for initializing the Tool
-    *@param conf.id the id
-    *@param conf.type the type tool @see viewer.viewercontroller.controller.Tool#statics
-    *@param conf.tooltip the tooltip for this tool
-    *@param conf.iconUrl_up overwrite (or set if not available for the tool type) the icon url for the up state of the control
-    *@param conf.iconUrl_over  overwrite (or set if not available for the tool type) the icon url for the over state of the control
-    *@param conf.iconUrl_sel overwrite (or set if not available for the tool type) the icon url for the selected state of the control
-    *@param conf.iconUrl_dis overwrite (or set if not available for the tool type) the icon url for the disabled state of the control
-    *@return object of type: viewer.viewercontroller.controller.Tool
-    **/
+    *Must be implemented by the sub-class, Create a tool.
+    *
+    * @param {Object} conf: the options used for initializing the Tool, having:
+    *        conf.id the id
+    *        conf.type the type tool @see viewer.viewercontroller.controller.Tool#statics
+    *        conf.tooltip the tooltip for this tool
+    *        conf.iconUrl_up overwrite (or set if not available for the tool type) the icon url for the up state of the control
+    *        conf.iconUrl_over  overwrite (or set if not available for the tool type) the icon url for the over state of the control
+    *        conf.iconUrl_sel overwrite (or set if not available for the tool type) the icon url for the selected state of the control
+    *        conf.iconUrl_dis overwrite (or set if not available for the tool type) the icon url for the disabled state of the control
+    * @return object of type: viewer.viewercontroller.controller.Tool
+    */
     createTool: function (conf){
         Ext.Error.raise({msg: "MapComponent.createTool(...) not implemented! Must be implemented in sub-class"});
     },

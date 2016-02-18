@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -71,9 +70,12 @@ public class Level implements Comparable{
     @JoinTable(joinColumns=@JoinColumn(name="level_"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
-    
-    
+
     private String url;
+
+    @OneToMany(mappedBy = "level",orphanRemoval = true, cascade = CascadeType.ALL)
+    @MapKey(name = "application")
+    private Map<Application, StartLevel> startLevels = new HashMap<Application, StartLevel>();
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -163,13 +165,19 @@ public class Level implements Comparable{
     public void setUrl(String url) {
         this.url = url;
     }
-    //</editor-fold>
-    
-    public JSONObject toJSONObject() throws JSONException {
-        return toJSONObject(true,null,null);
+
+    public Map<Application, StartLevel> getStartLevels() {
+        return startLevels;
     }
+
+    public void setStartLevels(Map<Application, StartLevel> startLevels) {
+        this.startLevels = startLevels;
+    }
+
+    //</editor-fold>
+
     
-    public JSONObject toJSONObject(boolean includeChildrenIds, Application app, HttpServletRequest request) throws JSONException {
+    public JSONObject toJSONObject(boolean includeChildrenIds, Application app, HttpServletRequest request, EntityManager em) throws JSONException {
         JSONObject o = new JSONObject();
  
         /* TODO check readers */
@@ -193,7 +201,7 @@ public class Level implements Comparable{
             JSONArray ls = new JSONArray();
             o.put("layers", ls);
             for(ApplicationLayer l: layers) {
-                if(request == null || Authorizations.isAppLayerReadAuthorized(app, l, request)) {
+                if(request == null || Authorizations.isAppLayerReadAuthorized(app, l, request, em)) {
                     ls.put(l.getId().toString());
                 }
             }            
@@ -204,7 +212,7 @@ public class Level implements Comparable{
                 JSONArray cs = new JSONArray();
                 o.put("children", cs);
                 for(Level l: children) {
-                    if(request == null || Authorizations.isLevelReadAuthorized(app, l, request)) {
+                    if(request == null || Authorizations.isLevelReadAuthorized(app, l, request, em)) {
                         cs.put(l.getId().toString());
                     }
                 }
@@ -217,16 +225,18 @@ public class Level implements Comparable{
     /**
      * Find the applications this level is used in. Because of mashups a level
      * can be used in more than one application.
-     * @return 
+     *
+     * @param em the entity manager to use
+     * @return the applications this level is part of
      */
-    public Set<Application> findApplications() {
+    public Set<Application> findApplications(EntityManager em) {
         Level l = this;
         while(l.getParent() != null) {
             l = l.getParent();
         }
         
         Set<Application> apps = new HashSet();
-        apps.addAll(Stripersist.getEntityManager().createQuery(
+        apps.addAll(em.createQuery(
                     "from Application where root = :level")
                     .setParameter("level", l)
                     .getResultList());        
@@ -292,7 +302,25 @@ public class Level implements Comparable{
         return false;
     }
 
-    Level deepCopy(Level parent, Map originalToCopy) throws Exception {
+    public void processForMashup(Application app) throws Exception{
+        for (Level child : children) {
+            child.processForMashup(app);
+        }
+        for (ApplicationLayer layer : layers) {
+            layer.processStartLayers(app, layer);
+        }
+        processStartLevels(app, this);
+    }
+    
+    private void processStartLevels(Application app, Level original) throws Exception{
+        List<StartLevel> sls = new ArrayList<StartLevel>(original.startLevels.values());
+        for (int i = 0; i < sls.size(); i++) {
+            StartLevel value = sls.get(i);
+            this.getStartLevels().put(app, value.deepCopy(app, this));
+        }
+    }
+
+    Level deepCopy(Level parent, Map originalToCopy, Application app) throws Exception {
         Level copy = (Level)BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
         copy.setId(null);
@@ -300,13 +328,16 @@ public class Level implements Comparable{
         
         copy.setChildren(new ArrayList<Level>());
         for(Level child: children) {
-            copy.getChildren().add(child.deepCopy(copy, originalToCopy));
+            copy.getChildren().add(child.deepCopy(copy, originalToCopy, app));
         }
         
         copy.setLayers(new ArrayList<ApplicationLayer>());
         for(ApplicationLayer appLayer: layers) {
-            copy.getLayers().add(appLayer.deepCopy(originalToCopy));
+            copy.getLayers().add(appLayer.deepCopy(originalToCopy, app));
         }
+        
+        copy.setStartLevels(new HashMap<Application,StartLevel>());
+        copy.processStartLevels(app, this);
         
         // do not clone documents, only the list
         copy.setDocuments(new ArrayList<Document>(documents));

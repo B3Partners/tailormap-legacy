@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     getMapTipControl : function(){
         return this.mapTipControl;
     },
-    setQuery : function (filter){
+    setQuery : function (filter, sldHash, sessionId){
         if(filter && filter.getCQL() != ""){
             var service = this.config.viewerController.app.services[this.serviceId];
             var layer = service.layers[this.options.name];
@@ -99,13 +99,22 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
                 if(filterable != undefined && filterable != null ){
                     filterable = Ext.JSON.decode(filterable);
                     if(filterable){
-                        var url = Ext.create(viewer.SLD).createURL(
-                            this.options["layers"], 
-                            this.getOption("styles") || "default", 
-                            null,
-                            layer.hasFeatureType ? layer.featureTypeName : null,
-                            this.config.sld ? this.config.sld.id : null,
-                            filter.getCQL());
+                        var url;
+                        if(!sldHash){
+                            url = Ext.create(viewer.SLD).createURL(
+                                this.options["layers"],
+                                this.getOption("styles") || "default",
+                                null,
+                                layer.hasFeatureType ? layer.featureTypeName : null,
+                                this.config.sld ? this.config.sld.id : null,
+                                filter.getCQL());
+                        }else{
+                            url = Ext.create(viewer.SLD).createURLWithHash(
+                                sldHash,
+                                sessionId,
+                                this.options["layers"],
+                                this.getOption("styles") || "default");
+                        }
                         this.setOGCParams({"SLD": url});
                         this.reload();
                     }

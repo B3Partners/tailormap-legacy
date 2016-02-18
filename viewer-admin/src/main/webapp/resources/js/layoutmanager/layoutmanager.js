@@ -176,14 +176,14 @@ Ext.define('LayoutManager', {
                 layout = {
                     type: 'hbox'
                 };
-                styleConfig.height = '50px';
+                styleConfig.height = '55px';
             }
             var regionContainer = Ext.create('Ext.container.Container', {
                 cls: 'component-container',
                 layout: layout,
                 style: styleConfig,
-                height: layoutRegion.get('floatComponents') ? 50 : undefined,
-                autoScroll: layoutRegion.get('floatComponents'),
+                height: layoutRegion.get('floatComponents') ? 55 : undefined,
+                overflowX: layoutRegion.get('floatComponents') ? 'auto' : 'hidden',
                 renderTo: layoutRegionElement,
                 plugins : Ext.create('Ext.ux.BoxReorderer', {
                     listeners: {
@@ -693,6 +693,7 @@ Ext.define('LayoutManager', {
             componentName: componentName,
             componentClass: data.componentData.className,
             componentPrettyName: data.componentData.name,
+            currentRegion: layoutRegion.get('id'),
             reorderable: true,
             listeners: {
                 render: function(v) {
@@ -882,7 +883,14 @@ Ext.define('LayoutManager', {
         }else{
             url += "?";
         }
-        url += "name=" + componentData.componentName + "&className=" + componentData.componentClass;
+        url += [
+            "name=",
+            componentData.componentName,
+            "&className=",
+            componentData.componentClass,
+            "&currentRegion=",
+            componentData.currentRegion
+        ].join("");
         if(viewer_admin_debug_mode) {
             url += '&debug=true';
         }

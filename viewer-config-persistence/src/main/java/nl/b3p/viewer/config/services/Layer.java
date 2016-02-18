@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2015 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,6 +306,8 @@ public class Layer implements Cloneable, Serializable {
      * Copy user modified properties of given layer onto this instance. Used for
      * updating the topLayer. Not called for other layers, those instances are
      * updated with update().
+     *
+     * @param other the source of properties to copy
      */
     protected void copyUserModifiedProperties(Layer other) {
         setTitleAlias(other.getTitleAlias());
@@ -339,8 +341,9 @@ public class Layer implements Cloneable, Serializable {
 
     /**
      * Checks if the layer is bufferable.
-     * if service type of this layer is ArcIms or ArcGis or if the layer has a featuretype
-     * return true, otherwise return false
+     * 
+     * @return {@code true} if service type of this layer is ArcIms or ArcGis or
+     * if the layer has a featuretype, {@code false} otherwise
      */
     public boolean isBufferable(){
         return getService().getProtocol().equals(ArcIMSService.PROTOCOL) ||
@@ -348,21 +351,24 @@ public class Layer implements Cloneable, Serializable {
     }
 
     public interface Visitor {
-        public boolean visit(Layer l);
+        public boolean visit(Layer l, EntityManager em);
     }
 
     /**
      * Do a depth-first traversal while the visitor returns true. Uses the call
      * stack to save layers yet to visit.
-     * @return true if visitor accepted all layers
+     *
+     * @param visitor the Layer.Visitor
+     * @param em the entity manager to use
+     * @return {@code true} if visitor accepted all layers
      */
-    public boolean accept(Layer.Visitor visitor) {
-        for(Layer child: getCachedChildren()) {
-            if(!child.accept(visitor)) {
+    public boolean accept(Layer.Visitor visitor, EntityManager em) {
+        for(Layer child: getCachedChildren(em)) {
+            if(!child.accept(visitor, em)) {
                 return false;
             }
         }
-        return visitor.visit(this);
+        return visitor.visit(this, em);
     }
 
     public String getDisplayName() {
@@ -423,7 +429,7 @@ public class Layer implements Cloneable, Serializable {
             o.put("details", d);
             for(Map.Entry<String,ClobElement> e: details.entrySet()) {
                 if(interestingDetails.contains(e.getKey())) {
-                    d.put(e.getKey(), e.getValue());
+                    d.put(e.getKey(), e.getValue().getValue());
                 }
             }
         }
@@ -452,8 +458,8 @@ public class Layer implements Cloneable, Serializable {
         return o;
     }
 
-    public List<Layer> getCachedChildren() {
-        return service.getLayerChildrenCache(this);
+    public List<Layer> getCachedChildren(EntityManager em) {
+        return service.getLayerChildrenCache(this, em);
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">

@@ -21,22 +21,19 @@ import java.lang.String;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
-import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
@@ -124,19 +121,20 @@ public class DataStoreSpinupActionBean implements ActionBean {
             }          
             
             log.debug("Spinning up data stores for application " + application.getNameWithVersion());
-             
+            EntityManager em = Stripersist.getEntityManager();
             // Immediately save new time, so a new spinup isn't started during
             // this spin up which may take some time
             application.getDetails().put(Application.DETAIL_LAST_SPINUP_TIME, new ClobElement(sdf.format(new Date())));
-            Stripersist.getEntityManager().getTransaction().commit();
+            em.getTransaction().commit();
 
-            application = Stripersist.getEntityManager().find(Application.class, application.getId());
-            Application.TreeCache tc = application.loadTreeCache();
+            application = em.find(Application.class, application.getId());
+            Application.TreeCache tc = application.loadTreeCache(em);
             
             Map<FeatureSource,String> spunUpFeatureSources = new HashMap();
             int errorCount = 0, skipCount = 0, successCount = 0;
             for(ApplicationLayer al: tc.getApplicationLayers()) {
-                if(al.isChecked()) {
+                StartLayer startLayer = al.getStartLayers().get(application);
+                if(startLayer != null && startLayer.isChecked()) {
                     
                     // XXX check if this layer needs to be spun up by checking
                     // summary title field is filled - no other way to check if 
@@ -221,8 +219,9 @@ public class DataStoreSpinupActionBean implements ActionBean {
                     }
                 }
             }
-
-            Stripersist.getEntityManager().getTransaction().commit();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().commit();
+            }
             j.put("success", Boolean.TRUE);
             String summary = String.format("Succesfully spun up %d feature sources"
                     + ", already spun up: %d, errors: %d",

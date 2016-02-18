@@ -120,7 +120,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 JSONObject wmsStyle = wmsStyles.getJSONObject(i);
                 Map style = new HashMap();
                 style.put("id", "wms:" + wmsStyle.getString("name"));
-                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + " (" + wmsStyle.getString("title") + ")");
+                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : "") );
                 JSONObject styleTitleJson = new JSONObject();
                 styleTitleJson.put("styleTitle", wmsStyle.getString("title"));
                 styles.add(style);
@@ -323,10 +323,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
             }
         });
-        
-        // Sort the attributes by name (per featuretype)
-        sortPerFeatureType(layerSft, cas);
-        
+        if(layerSft != null){
+            // Sort the attributes by name (per featuretype)
+            sortPerFeatureType(layerSft, cas);
+        }
+
         for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
             
@@ -469,6 +470,15 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                         appAttribute.setValueList(attribute.getString("valueList"));
                     }
 
+                    if (attribute.has("allowValueListOnly")) {
+                        appAttribute.setAllowValueListOnly(new Boolean(attribute.get("allowValueListOnly").toString()));
+                    }
+                    if (attribute.has("disallowNullValue")) {
+                        appAttribute.setDisallowNullValue(new Boolean(attribute.get("disallowNullValue").toString()));
+                    }
+                    if (attribute.has("disableUserEdit")) {
+                        appAttribute.setDisableUserEdit(new Boolean(attribute.get("disableUserEdit").toString()));
+                    }
                 }
                 i++;
             }
@@ -477,8 +487,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         em.persist(applicationLayer);
         application.authorizationsModified();
 
-        displayName = applicationLayer.getDisplayName();
-        SelectedContentCache.setApplicationCacheDirty(application, true, false);
+        displayName = applicationLayer.getDisplayName(em);
+        SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
         
         em.getTransaction().commit();
 

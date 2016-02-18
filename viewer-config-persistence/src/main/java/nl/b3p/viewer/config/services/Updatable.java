@@ -16,11 +16,13 @@
  */
 package nl.b3p.viewer.config.services;
 
+import javax.persistence.EntityManager;
+
 /**
  *
  * @author Matthijs Laan
  */
 public interface Updatable {
     
-    public UpdateResult update();
+    public UpdateResult update(EntityManager em);
 }

@@ -935,6 +935,7 @@ Ext.define ("viewer.components.Print",{
                 config.overview = new Object();
                 config.overview.overviewUrl = url;
                 config.overview.extent = overview.config.lox + "," + overview.config.loy + "," + overview.config.rbx + "," + overview.config.rby;
+                config.overview.protocol = url.toLowerCase().indexOf("getmap") > 0 ? 'WMS' : 'IMAGE';
             }
         }
         return config;

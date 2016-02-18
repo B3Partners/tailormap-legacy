@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- voor de ConversionPattern parameters zie:
+http://logging.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html
+LEVELS: debug, info, warn, error, fatal en off, all -->
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="consoleAppender" class="org.apache.log4j.FileAppender">
+        <param name="File" value="target/test.log" />
+        <param name="Append" value="false" />
+        <param name="Threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH:mm:ss} Flamingo-viewer-config-persistence-test: %5p (%C#%M:%L) - %m%n" />
+        </layout>
+    </appender>
+    <logger name="org.hibernate">
+        <level value="error" />
+    </logger>
+    <logger name="org.hibernate.type">
+        <level value="error" />
+    </logger>
+    <logger name="org.hibernate.tool.hbm2ddl">
+        <level value="error" />
+    </logger>
+    <logger name="org.hibernate.SQL">
+        <level value="error" />
+    </logger>
+    <root>
+        <level value="info" />
+        <appender-ref ref="consoleAppender" />
+    </root>
+</log4j:configuration>

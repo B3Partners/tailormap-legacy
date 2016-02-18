@@ -478,7 +478,7 @@ public class UserActionBean implements ActionBean {
 
         List<GeoService> services = em.createQuery("from GeoService").getResultList();
         for (GeoService service : services) {
-            Authorizations.getLayerAuthorizations(service.getTopLayer());
+            Authorizations.getLayerAuthorizations(service.getTopLayer(),em);
         }
 
         Set<String> roles = new HashSet<String>();
@@ -515,7 +515,7 @@ public class UserActionBean implements ActionBean {
         applications = em.createQuery("from Application order by name, version").getResultList();
         if (application != null) {
 
-            applicationCache = Authorizations.getApplicationCache(application);
+            applicationCache = Authorizations.getApplicationCache(application,em);
 
             if (!roles.isEmpty()) {
                 authorizedLevels = new HashSet<Level>();

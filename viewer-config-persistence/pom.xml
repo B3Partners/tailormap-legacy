@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.5.7-SNAPSHOT</version>
+        <version>4.6.2-SNAPSHOT</version>
     </parent>
     <name>viewer-config-persistence</name>
 
@@ -18,7 +18,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>3.0</version>
                 <executions>
                     <execution>
                         <id>schema-export</id>
@@ -40,6 +39,53 @@
                         </configuration>
                         <goals>
                             <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-schema-export</id>
+                        <phase>generate-test-resources</phase>
+                        <configuration>
+                            <hibernatetool destdir="${project.build.outputDirectory}/scripts">
+                                <classpath>
+                                    <path location="target" />
+                                </classpath>
+                                <!-- voor de unit tests met HSQLDB -->
+                                <hbm2ddl export="true" drop="true" create="true" outputfilename="hsqldb-schema-export.sql" format="true">
+                                    <jpaconfiguration persistenceUnit="viewer-config-hsqldb" />
+                                </hbm2ddl>
+                            </hibernatetool>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <!-- hsqldb wordt alleen voor unit tests gebruikt, maar als deze
+                        als test scope dep wordt opgevoerd treedt er een CNFE op tijdens de build. -->
+                        <groupId>org.hsqldb</groupId>
+                        <artifactId>hsqldb</artifactId>
+                        <version>${hsqldb.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -110,6 +156,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
         </dependency>
     </dependencies>
 </project>

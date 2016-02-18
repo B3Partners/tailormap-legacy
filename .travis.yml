@@ -2,16 +2,28 @@ language: java
 
 sudo: false
 
+addons:
+  postgresql: "9.4"
+
+before_install:
+  - psql -U postgres -a -c "CREATE ROLE flamingo4 LOGIN PASSWORD 'flamingo4' SUPERUSER CREATEDB;"
+  - psql -U postgres -a -c 'create database flamingo4;'
+  - psql -U postgres -a -c 'ALTER DATABASE flamingo4 OWNER TO flamingo4;'
+
 install:
   # install without testing
-  - mvn install -Dmaven.test.skip=true -B -V -fae -q
+  - mvn install -U -DskipTests -B -V -fae -q
 
 script:
   # execute unit and integration tests
-  - mvn -e test verify -B
+  - mvn -e test -B
+  - mvn -e verify -B -Ptravis-ci
+  # on java 8 run a javadoc build to check for errors
+  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
+         mvn javadoc:javadoc;
+    fi
 
 jdk:
-  - openjdk6
   - openjdk7
   - oraclejdk7
   - oraclejdk8

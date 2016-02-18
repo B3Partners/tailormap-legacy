@@ -113,7 +113,7 @@ public class ArcGISService extends GeoService implements Updatable {
 
     //<editor-fold defaultstate="collapsed" desc="Loading service metadata from ArcGIS">
     @Override
-    public ArcGISService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
+    public ArcGISService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
 
@@ -144,8 +144,7 @@ public class ArcGISService extends GeoService implements Updatable {
             String name = temp.substring(i+1);
 
             s.setName(name);
-
-            s.load(client, status);
+            s.load(client, status, em);
 
             return s;
         } finally {
@@ -187,7 +186,7 @@ public class ArcGISService extends GeoService implements Updatable {
         getDetails().put(DETAIL_CURRENT_VERSION, new ClobElement(currentVersion));
     }
 
-    private void load(HTTPClient client, WaitPageStatus status) throws Exception {
+    private void load(HTTPClient client, WaitPageStatus status, EntityManager em) throws Exception {
         int layerCount = serviceInfo.getJSONArray("layers").length();
 
         status.setProgress((int)Math.round(100.0/(layerCount+1)));
@@ -239,8 +238,8 @@ public class ArcGISService extends GeoService implements Updatable {
             }
         }
 
-        setLayerTree(getTopLayer(), layersById, childrenByLayerId);
-        setAllChildrenDetail(getTopLayer());
+        setLayerTree(getTopLayer(), layersById, childrenByLayerId, em);
+        setAllChildrenDetail(getTopLayer(), em);
 
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
         if(!fs.getFeatureTypes().isEmpty()) {
@@ -248,10 +247,10 @@ public class ArcGISService extends GeoService implements Updatable {
         }
     }
 
-    private static void setLayerTree(Layer topLayer, Map<String,Layer> layersById, Map<String,List<String>> childrenByLayerId) {
+    private static void setLayerTree(Layer topLayer, Map<String,Layer> layersById, Map<String,List<String>> childrenByLayerId, EntityManager em) {
         topLayer.getChildren().clear();
 
-        Stripersist.getEntityManager().flush();
+        em.flush();
 
         /* fill children list and parent references */
         for(Layer l: layersById.values()) {
@@ -399,11 +398,11 @@ public class ArcGISService extends GeoService implements Updatable {
 
     //<editor-fold desc="Updating">
     @Override
-    public UpdateResult update() {
+    public UpdateResult update(EntityManager em) {
 
         initLayerCollectionsForUpdate();
 
-        final UpdateResult result = new UpdateResult(this);
+        final UpdateResult result = new UpdateResult(this, em);
 
         try {
 
@@ -411,7 +410,7 @@ public class ArcGISService extends GeoService implements Updatable {
             params.put(PARAM_USERNAME, getUsername());
             params.put(PARAM_PASSWORD, getPassword());
 
-            ArcGISService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
+            ArcGISService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80),em);
 
             getDetails().put(DETAIL_CURRENT_VERSION, update.getDetails().get(DETAIL_CURRENT_VERSION));
 
@@ -437,7 +436,7 @@ public class ArcGISService extends GeoService implements Updatable {
                 // linked FeatureSource was removed by user
             }
 
-            updateLayers(update, linkedFS, result);
+            updateLayers(update, linkedFS, result, em   );
 
             removeOrphanLayersAfterUpdate(result);
 
@@ -453,7 +452,7 @@ public class ArcGISService extends GeoService implements Updatable {
         return result;
     }
 
-    private void updateLayers(final ArcGISService update, final ArcGISFeatureSource linkedFS, final UpdateResult result) {
+    private void updateLayers(final ArcGISService update, final ArcGISFeatureSource linkedFS, final UpdateResult result, EntityManager em) {
         /* This is a lot simpler than WMS, because layers always have an id
          * (name in WMS and our Layer object)
          */
@@ -532,7 +531,7 @@ public class ArcGISService extends GeoService implements Updatable {
             updatedLayersById.put(updateLayer.getName(), updatedLayer);
         }
 
-        setLayerTree(getTopLayer(), updatedLayersById, update.childrenByLayerId);
+        setLayerTree(getTopLayer(), updatedLayersById, update.childrenByLayerId, em);
     }
 
     private void removeOrphanLayersAfterUpdate(UpdateResult result) {
@@ -542,41 +541,51 @@ public class ArcGISService extends GeoService implements Updatable {
 
         // Remove old layers from this service which are missing from updated
         // service
+
+        // Feature types will be removed from linked feature source by createQuery(),
+        // this causes the session to be flushed. This may cause a constraint
+        // violation when a layer is removed which still has child layers, so
+        // delete all layers first, then remove all feature types.
+        Set<Layer> layerFeatureTypesToRemove = new HashSet();
+
         for(Pair<Layer,UpdateResult.Status> p: result.getLayerStatus().values()) {
             if(p.getRight() == UpdateResult.Status.MISSING) {
                 Layer removed = p.getLeft();
                 if(removed.getFeatureType() != null) {
                     if(removed.getFeatureType().getFeatureSource().getLinkedService().equals(removed.getService())) {
-                        // The feature type may have been selected for use in
-                        // other entities. As it is removed from the service it
-                        // won't work anymore, so clear the references to it
-
-                        SimpleFeatureType ft = removed.getFeatureType();
-                        Stripersist.getEntityManager().createQuery("update ConfiguredAttribute set featureType = null where featureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update Layer set featureType = null where featureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update LayarSource set featureType = null where featureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update SolrConf set simpleFeatureType = null where simpleFeatureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        Stripersist.getEntityManager().createQuery("update FeatureTypeRelation set foreignFeatureType = null where foreignFeatureType = :ft")
-                                .setParameter("ft", ft)
-                                .executeUpdate();
-
-                        removed.getFeatureType().getFeatureSource().removeFeatureType(removed.getFeatureType());
+                        layerFeatureTypesToRemove.add(removed);
                     }
                 }
                 Stripersist.getEntityManager().remove(removed);
             }
+        }
+
+        for(Layer removed: layerFeatureTypesToRemove) {
+            // The feature type may have been selected for use in
+            // other entities. As it is removed from the service it
+            // won't work anymore, so clear the references to it
+            SimpleFeatureType ft = removed.getFeatureType();
+            Stripersist.getEntityManager().createQuery("update ConfiguredAttribute set featureType = null where featureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update Layer set featureType = null where featureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update LayarSource set featureType = null where featureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update SolrConf set simpleFeatureType = null where simpleFeatureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            Stripersist.getEntityManager().createQuery("update FeatureTypeRelation set foreignFeatureType = null where foreignFeatureType = :ft")
+                    .setParameter("ft", ft)
+                    .executeUpdate();
+
+            removed.getFeatureType().getFeatureSource().removeFeatureType(removed.getFeatureType());
         }
     }
     //</editor-fold>
@@ -603,13 +612,13 @@ public class ArcGISService extends GeoService implements Updatable {
     //<editor-fold desc="Add currentVersion to toJSONObject()">
 
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags) throws JSONException {
-        return toJSONObject(validXmlTags, layersToInclude, validXmlTags, false);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, EntityManager em) throws JSONException {
+        return toJSONObject(validXmlTags, layersToInclude, validXmlTags, false, em);
     }
 
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations, em);
 
         // Add currentVersion info to service info
 
@@ -638,8 +647,8 @@ public class ArcGISService extends GeoService implements Updatable {
     }
 
     @Override
-    public JSONObject toJSONObject(boolean flatten) throws JSONException {
-        return toJSONObject(flatten, null,false);
+    public JSONObject toJSONObject(boolean flatten, EntityManager em) throws JSONException {
+        return toJSONObject(flatten, null,false, em);
     }
     //</editor-fold>
 

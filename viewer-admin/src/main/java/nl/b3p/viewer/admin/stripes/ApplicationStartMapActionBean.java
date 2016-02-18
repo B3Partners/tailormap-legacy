@@ -25,7 +25,6 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
-import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.*;
@@ -63,7 +62,6 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     private Level rootlevel;
 
     @DefaultHandler
-    @HandlesEvent("default")
     @DontValidate
     public Resolution view() throws JSONException {
         if (application == null) {
@@ -71,7 +69,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
         } else {
             rootlevel = application.getRoot();
-            getCheckedLayerList(allCheckedLayers, rootlevel);
+            getCheckedLayerList(allCheckedLayers, rootlevel, application);
         }
 
         return new ForwardResolution(JSP);
@@ -85,12 +83,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         
         walkAppTreeForSave(rootlevel);
-        
-        SelectedContentCache.setApplicationCacheDirty(application, true,false);
-        Stripersist.getEntityManager().getTransaction().commit();
+        EntityManager em = Stripersist.getEntityManager();
+        SelectedContentCache.setApplicationCacheDirty(application, true,false,true,em);
+        em.getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
         
-        getCheckedLayerList(allCheckedLayers, rootlevel);
+        getCheckedLayerList(allCheckedLayers, rootlevel, application);
         
         return new ForwardResolution(JSP);
     }
@@ -208,12 +206,28 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
     }
     
-    private void walkAppTreeForSave(Level l) throws JSONException{ 
-        l.setSelectedIndex(getSelectedContentIndex(l));
+    private void walkAppTreeForSave(Level l) throws JSONException{
+        StartLevel sl = l.getStartLevels().get(application);
+        if(sl == null){
+            sl = new StartLevel();
+            sl.setApplication(application);
+            sl.setLevel(l);
+            l.getStartLevels().put(application, sl);
+        }
+
+        sl.setSelectedIndex(getSelectedContentIndex(l));
         
         for(ApplicationLayer al: l.getLayers()) {
-            al.setSelectedIndex(getSelectedContentIndex(al));
-            al.setChecked(getCheckedForLayerId(al.getId()));
+            StartLayer startLayer = al.getStartLayers().get(application);
+            if(startLayer == null){
+                startLayer = new StartLayer();
+                startLayer.setApplication(application);
+                startLayer.setApplicationLayer(al);
+                al.getStartLayers().put(application, startLayer);
+            }
+
+            startLayer.setSelectedIndex(getSelectedContentIndex(al));
+            startLayer.setChecked(getCheckedForLayerId(al.getId()));
         }
         
         for(Level child: l.getChildren()) {
@@ -289,7 +303,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 for (ApplicationLayer layer : l.getLayers()) {
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
-                    j.put("name", layer.getDisplayName());
+                    j.put("name", layer.getDisplayName(em));
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
@@ -316,22 +330,22 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
         if(levelId != null && levelId.substring(1).equals(rootlevel.getId().toString())){
             List selectedObjects = new ArrayList();
-            walkAppTreeForStartMap(selectedObjects, rootlevel);
+            walkAppTreeForStartMap(selectedObjects, rootlevel, application);
 
             Collections.sort(selectedObjects, new Comparator() {
 
                 @Override
                 public int compare(Object lhs, Object rhs) {
                     Integer lhsIndex, rhsIndex;
-                    if(lhs instanceof Level) {
-                        lhsIndex = ((Level)lhs).getSelectedIndex();
+                    if(lhs instanceof StartLevel) {
+                        lhsIndex = ((StartLevel)lhs).getSelectedIndex();
                     } else {
-                        lhsIndex = ((ApplicationLayer)lhs).getSelectedIndex();
+                        lhsIndex = ((StartLayer)lhs).getSelectedIndex();
                     }
-                    if(rhs instanceof Level) {
-                        rhsIndex = ((Level)rhs).getSelectedIndex();
+                    if(rhs instanceof StartLevel) {
+                        rhsIndex = ((StartLevel)rhs).getSelectedIndex();
                     } else {
-                        rhsIndex = ((ApplicationLayer)rhs).getSelectedIndex();
+                        rhsIndex = ((StartLayer)rhs).getSelectedIndex();
                     }
                     return lhsIndex.compareTo(rhsIndex);
                 }
@@ -340,26 +354,26 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             if(selectedObjects != null){
                 for (Iterator it = selectedObjects.iterator(); it.hasNext();) {
                     Object map = it.next();
-                    if(map instanceof ApplicationLayer){
-                        ApplicationLayer layer = (ApplicationLayer) map;
-
+                    if(map instanceof StartLayer){
+                        StartLayer startLayer = (StartLayer) map;
+                        ApplicationLayer layer = startLayer.getApplicationLayer();
                         JSONObject j = new JSONObject();
                         j.put("id", "s" + layer.getId());
-                        j.put("name", layer.getDisplayName());
+                        j.put("name", layer.getDisplayName(em));
                         j.put("type", "layer");
                         j.put("isLeaf", true);
                         j.put("parentid", "");
-                        j.put("checked", layer.isChecked());
+                        j.put("checked", startLayer.isChecked());
                         children.put(j);
-                    }else if(map instanceof Level){
-                        Level level = (Level) map;
-                        
+                    }else if(map instanceof StartLevel){
+                        StartLevel startLevel = (StartLevel) map;
+                        Level level = startLevel.getLevel();
                         JSONArray checked = new JSONArray();
-                        getCheckedLayerList(checked, level);
+                        getCheckedLayerList(checked, level,application);
 
                         JSONObject j = new JSONObject();
                         j.put("id", "n" + level.getId());
-                        j.put("name", level.getName());
+                        j.put("name", startLevel.getLevel().getName());
                         j.put("type", "level");
                         j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
                         j.put("parentid", "");
@@ -388,13 +402,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 }
 
                 for (ApplicationLayer layer : l.getLayers()) {
+                    StartLayer startLayer = layer.getStartLayers().get(application);
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
-                    j.put("name", layer.getDisplayName());
+                    j.put("name", layer.getDisplayName(em));
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", levelId);
-                    j.put("checked", layer.isChecked());
+                    j.put("checked", startLayer != null ? startLayer.isChecked() : false);
                     children.put(j);
                 }
             }
@@ -409,31 +424,33 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         };
     }
     
-    private static void walkAppTreeForStartMap(List selectedContent, Level l){       
-        if(l.getSelectedIndex() != null) {
-            selectedContent.add(l);
+    private static void walkAppTreeForStartMap(List selectedContent, Level l, Application app){
+        StartLevel sl = l.getStartLevels().get(app);
+        if(sl != null && sl.getSelectedIndex() != null) {
+            selectedContent.add(sl);
         }
         
         for(ApplicationLayer al: l.getLayers()) {
-            
-            if(al.getSelectedIndex() != null) {
+            StartLayer startLayer = al.getStartLayers().get(app);
+            if(startLayer != null && startLayer.getSelectedIndex() != null) {
                 selectedContent.add(al);
             }
         }
         
         for(Level child: l.getChildren()) {
-            walkAppTreeForStartMap(selectedContent, child);
+            walkAppTreeForStartMap(selectedContent, child,app);
         }
     }
     
-    private static void getCheckedLayerList(JSONArray layers, Level l) throws JSONException{
+    private static void getCheckedLayerList(JSONArray layers, Level l, Application app) throws JSONException{
         for(ApplicationLayer al: l.getLayers()) {
-            if(al.isChecked()) {
+            StartLayer startLayer = al.getStartLayers().get(app);
+            if(startLayer != null && startLayer.isChecked()) {
                 layers.put(al.getId());
             }
         }
         for(Level child: l.getChildren()) {
-            getCheckedLayerList(layers, child);
+            getCheckedLayerList(layers, child, app);
         }
     }
 

@@ -9,11 +9,11 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.5.7-SNAPSHOT</version>
+        <version>4.6.2-SNAPSHOT</version>
     </parent>
     <name>viewer</name>
 
-   <properties>
+    <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <minify.outputdir>${project.build.directory}/${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
@@ -74,6 +74,12 @@
         <dependency>
             <groupId>org.flamingo-mc</groupId>
             <artifactId>viewer-config-persistence</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc</groupId>
@@ -122,7 +128,7 @@
             <groupId>nl.geozet</groupId>
             <artifactId>openls-databinding</artifactId>
         </dependency>
-                <!-- lucene for csw advanced searching -->
+        <!-- lucene for csw advanced searching -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
@@ -132,9 +138,9 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
         </dependency>
-                <dependency>
-               <artifactId>solr-solrj</artifactId>
-               <groupId>org.apache.solr</groupId>
+        <dependency>
+            <artifactId>solr-solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -143,7 +149,6 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <type>jar</type>
         </dependency>
 
         <dependency>
@@ -156,41 +161,22 @@
             <artifactId>org.eclipse.emf.common</artifactId>
         </dependency>
 
-	<dependency>
-	    <groupId>jaxen</groupId>
-	    <artifactId>jaxen</artifactId>
-	    <version>1.1.6</version>
-	</dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+        </dependency>
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>2.7.1</version>
         </dependency>
     </dependencies>
-
-    <!-- plugin repo for complosure -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>sonatype-oss-public</id>
-            <url>https://oss.sonatype.org/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
@@ -199,7 +185,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <webResources>
@@ -216,9 +201,29 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>truezip-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>remove-a-file</id>
+                        <goals>
+                            <goal>remove</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <fileset>
+                                <directory>${project.build.directory}/${project.artifactId}-${project.version}-classes.jar</directory>
+                                <includes>
+                                    <include>git.properties</include>
+                                </includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -243,7 +248,6 @@
             <plugin>
                 <groupId>nl.geodienstencentrum.maven</groupId>
                 <artifactId>closure-compiler-maven-plugin</artifactId>
-                <version>1.0.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -273,6 +277,7 @@
                                 <param>${viewerhtml.path}/common/overrides.js</param>
                                 <param>${viewerhtml.path}/common/ScreenPopup.js</param>
                                 <param>${viewerhtml.path}/common/CQLFilterWrapper.js</param>
+                                <param>${viewerhtml.path}/common/ClearTrigger.js</param>
                                 <!-- Server side Ajax Wrappers -->
                                 <param>${viewerhtml.path}/common/ajax/ServiceInfo.js</param>
                                 <param>${viewerhtml.path}/common/ajax/CSWClient.js</param>
@@ -374,15 +379,13 @@
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.1.5</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>revision</goal>
-                         </goals>
+                        </goals>
                     </execution>
                 </executions>
-
                 <configuration>
                     <prefix>builddetails</prefix>
                     <dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>
@@ -403,5 +406,100 @@
             </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+            <id>travis-ci</id>
+            <properties>
+                <!-- om unit tests met postgres te draaien gebruik je
+                -Dtest.persistence.unit=viewer-config-postgresql
+                voor oracle:
+                -Dtest.persistence.unit=viewer-config-oracle
+                voor hsqldb
+                -Dtest.persistence.unit=viewer-config-hsqldb
+                de schema's de test worden niet automatisch aangemaakt.
+                -->
+                <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
+                <test.skip.integrationtests>false</test.skip.integrationtests>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>${postgresql.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>src/test/resources/postgres.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                            </systemPropertyVariables>
+                            <useFile>false</useFile>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <port>9090</port>
+                            <contextFile>src/test/tomcatconf/context.xml</contextFile>
+                            <systemProperties>
+                            </systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>tomcat-startup</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <fork>true</fork>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>tomcat-shutdown</id>
+                                <goals>
+                                    <goal>shutdown</goal>
+                                </goals>
+                                <phase>post-integration-test</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax.mail</groupId>
+                                <artifactId>mail</artifactId>
+                                <version>1.4.7</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgresql.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

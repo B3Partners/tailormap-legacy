@@ -51,7 +51,7 @@ Ext.define("viewer.components.Split", {
     constructor: function (conf) {
         viewer.components.Split.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-
+        this.config.actionbeanUrl = contextPath + '/action/feature/split';
         var me = this;
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
                 function (event) {
@@ -172,7 +172,6 @@ Ext.define("viewer.components.Split", {
         }
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
-        this.config.viewerController.mapComponent.deactivateTools();
         this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.popup.show();
     },
@@ -294,10 +293,18 @@ Ext.define("viewer.components.Split", {
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
+    },
+    layerSelectorInit: function() {
+        if(this.layerSelector.getVisibleLayerCount() === 1) {
+            this.layerSelector.selectFirstLayer();
+        }
     },
     layerChanged: function (appLayer, previousAppLayer, scope) {
         if (appLayer != null) {
-            this.vectorLayer.removeAllFeatures();
+            if (this.vectorLayer) {
+                this.vectorLayer.removeAllFeatures();
+            }
             this.mode = null;
             this.config.viewerController.mapComponent.getMap().removeMarker("edit");
             if (appLayer.details && appLayer.details["editfunction.title"]) {
@@ -343,6 +350,9 @@ Ext.define("viewer.components.Split", {
                 type = geomAttribute.type;
             }
             this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+            if (geomAttribute.userAllowedToEditGeom !== undefined) {
+                this.geometryEditable = geomAttribute.userAllowedToEditGeom;
+            }
         } else {
             this.geometryEditable = false;
         }
@@ -408,7 +418,7 @@ Ext.define("viewer.components.Split", {
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
                             value: fieldText,
-                            disabled: !allowedEditable
+                            disabled: true
                         };
                         if (attribute.editHeight) {
                             options.rows = attribute.editHeight;
@@ -456,7 +466,7 @@ Ext.define("viewer.components.Split", {
                             name: attribute.name,
                             renderTo: this.name + 'InputPanel',
                             valueField: 'id',
-                            disabled: !allowedEditable
+                            disabled: true
                         });
                     }
                     this.inputContainer.add(input);
@@ -493,7 +503,9 @@ Ext.define("viewer.components.Split", {
         }
     },
     activateMapClick: function () {
-        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
+            this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        }
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {

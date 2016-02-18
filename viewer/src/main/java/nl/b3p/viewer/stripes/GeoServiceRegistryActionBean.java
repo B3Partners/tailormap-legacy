@@ -101,7 +101,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             for(GeoService service: c.getServices()) {
                 JSONObject j = new JSONObject();
                 j.put("id", "s" + service.getId());
-                j.put("service", service.toJSONObject(false));
+                j.put("service", service.toJSONObject(false, em));
                 j.put("name", service.getName());
                 j.put("type", "service");
                 j.put("isLeaf", service.getTopLayer() == null);
@@ -114,10 +114,10 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             
             GeoService gs = em.find(GeoService.class, new Long(id));
             // GeoService may be invalid and not have a top layer
-            if(gs.getTopLayer() != null && Authorizations.isLayerReadAuthorized(gs.getTopLayer(), context.getRequest())) {
+            if(gs.getTopLayer() != null && Authorizations.isLayerReadAuthorized(gs.getTopLayer(), context.getRequest(), em)) {
                 
                 for(Layer sublayer: gs.getTopLayer().getChildren()) {
-                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest())) {
+                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest(), em)) {
                         JSONObject j = layerJSON(sublayer);
                         j.put("parentid", nodeId);
                         children.put(j);
@@ -126,10 +126,10 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             }
         } else if(type.equals("l")) {
             Layer layer = em.find(Layer.class, new Long(id));
-            if(Authorizations.isLayerReadAuthorized(layer, context.getRequest())) {
+            if(Authorizations.isLayerReadAuthorized(layer, context.getRequest(), em)) {
                 for(Layer sublayer: layer.getChildren()) {
 
-                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest())) {
+                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest(), em)) {
                         JSONObject j = layerJSON(sublayer);
                         j.put("parentid", nodeId);
                         children.put(j);
@@ -177,7 +177,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         for(GeoService service: results) {
             JSONObject j = new JSONObject();
             j.put("id", "s" + service.getId());
-            j.put("service", service.toJSONObject(false));
+            j.put("service", service.toJSONObject(false, em));
             j.put("name", service.getName());
             j.put("type", "service");
             j.put("isLeaf", service.getTopLayer() == null);

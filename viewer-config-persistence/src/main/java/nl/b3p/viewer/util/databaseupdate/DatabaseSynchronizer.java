@@ -1,9 +1,26 @@
+/*
+ * Copyright (C) 2015-2016 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nl.b3p.viewer.util.databaseupdate;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,7 +54,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * - the (at build) auto generated schema-export script
  * - the init script with data that is needed to start.
  * The database is at the latest defined version (fully up to date) so the latest
- * defined version is set in the metadata tabel. >> Update done.
+ * defined version is set in the metadata tabel. &gt;&gt; Update done.
  *
  * If there is a metadata table and a record with the key Metadata.DATABASE_VERSION_KEY
  * then that is the current version of the database model.
@@ -49,12 +66,13 @@ import org.stripesstuff.stripersist.Stripersist;
  * (without database product name) in the 'updates' param with a new version number.
  * When loading the scripts, the loader is first looking for the script with the defined
  * name. For example 'newscript.sql'. If the script is not found the loader is searching
- * for the script with the name '<database product name in lower case>-<script name>' for example:
- * 'postgresql-newscript.sql'.
+ * for the script with the name '&lt;database product name in lower
+ * case&gt;-&lt;script name&gt;' for example: 'postgresql-newscript.sql'.
  * So when a script is the same for all database products (for example simple inserts) you only
- * need to make 1 script '<script name>'. If there are specific database products statements make multiple
- * scripts and name them '<database product name in lower case>-<script name>' in the scripts
- * folder. Add the <script name> in the updates var of this class.
+ * need to make 1 script '&lt;script name&gt;'. If there are
+ * specific database products statements make multiple scripts and name them
+ * '&lt;database product name in lower case&gt;-&gt;script name&gt;' in the
+ * scripts folder. Add the &lt;script name&gt; in the updates var of this class.
  *
  *
  * @author Roy Braam
@@ -62,61 +80,89 @@ import org.stripesstuff.stripersist.Stripersist;
 public class DatabaseSynchronizer implements Servlet {
 
     private static final Log log = LogFactory.getLog(DatabaseSynchronizer.class);
-    private static final LinkedHashMap<String, List<String>> updates = new LinkedHashMap<String, List<String>>();
+    static final LinkedHashMap<String, UpdateElement> updates = new LinkedHashMap<String, UpdateElement>();
     private static final String SCRIPT_PATH="/scripts";
     private String databaseProductName="postgresql";
     private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql","oracle"};
     private ServletConfig sc;
+    UpdateElement uel=    new UpdateElement(new ArrayList<String>(), String.class);
     //The updates definition
+    // Use String.class for .sql files, use DatabaseSynchronizerEM.class and the methodName for coded upgrades.
     static {
         //don't edit the 'init' one.
-        updates.put("init", new ArrayList<String>());
+        updates.put("init", new UpdateElement (new ArrayList<String>(), String.class));
         //init scripts:
-        updates.put("0", new ArrayList<String>());
+        updates.put("0", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("0").add("schema-export.sql");
         updates.get("0").add("initialize_database.sql");
 
-        updates.put("1", new ArrayList());
+        updates.put("1", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("1").add("add_solr_config.sql");
 
-        updates.put("2", new ArrayList());
+        updates.put("2", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("2").add("update_solr_config.sql");
 
-        updates.put("3", new ArrayList());
+        updates.put("3", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("3").add("add_url_level.sql");
 
-        updates.put("4", new ArrayList());
+        updates.put("4", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("4").add("configure_exception_layer.sql");
 
-        updates.put("5", new ArrayList());
+        updates.put("5", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("5").add("add_cyclorama_account.sql");
 
-        updates.put("6", Collections.singletonList("alter_layer_children_child_unique.sql"));
+        updates.put("6", new UpdateElement (Collections.singletonList("alter_layer_children_child_unique.sql"), String.class));
 
-        updates.put("7", Collections.singletonList("add_application_to_bookmark.sql"));
+        updates.put("7", new UpdateElement (Collections.singletonList("add_application_to_bookmark.sql"), String.class));
 
-        updates.put("8", Collections.singletonList("add_layer_prevent_geom_editors.sql"));
+        updates.put("8", new UpdateElement (Collections.singletonList("add_layer_prevent_geom_editors.sql"), String.class));
         
-        updates.put("9", Collections.singletonList("selectedcontentcaches_dirty.sql"));
+        updates.put("9", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
 
-        updates.put("10", Collections.singletonList("add_valueListFeatureSource.sql"));
+
+        updates.put("10", new UpdateElement(Collections.singletonList("add_allowValueListOnly.sql"), String.class));
+        updates.put("11", new UpdateElement (Collections.singletonList("add_valueListFeatureSource.sql"), String.class));
+        
+        updates.put("12", new UpdateElement(Collections.singletonList("add_start_map.sql"), String.class));
+        updates.put("13", new UpdateElement(Collections.singletonList("add_linked_components.sql"), String.class));
+        updates.put("14", new UpdateElement(Collections.singletonList("add_disableEditing.sql"), String.class));
+        updates.put("15", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
+
+        // NB when adding an update also update the metadata version in the testdata.sql file around line 326
     }
+
+    /**
+     * Determine the update number. The updates list has an "init"
+     * {@link UpdateElement} + a number of numbered patch
+     * {@link UpdateElement}'s, this method returns the key of the last patch.
+     *
+     * @return the highest/update metadata number
+     */
+    public static String getUpdateNumber() {
+        String update = "";
+        for (Entry<String, UpdateElement> e : updates.entrySet()) {
+            update = e.getKey();
+        }
+        return update;
+    }
+
     /**
      * Function is called in init() of servlet.
      * Starts the updating process.
+     *
+     * @param em the entity manager to use
      */
-    public void doInit(){
+    public void doInit(EntityManager em){
 
         try {
             checkScriptDir();
             log.info("Try to update the database");
-            Stripersist.requestInit();
-            EntityManager em = Stripersist.getEntityManager();
+            
             this.databaseProductName = DynamicStripersistInitializer.databaseProductName;
             if (em!=null){
                 Session session = em.unwrap(Session.class);
                 Transaction trans=session.beginTransaction();
-                LinkedHashMap<String, List<String>> scripts = new LinkedHashMap<String, List<String>>();
+                LinkedHashMap<String,UpdateElement> scripts = new LinkedHashMap<String, UpdateElement>();
                 Metadata mdVersion = null;
                 //check if any db exists
                 try {
@@ -137,7 +183,7 @@ public class DatabaseSynchronizer implements Servlet {
                 if (scripts.isEmpty()){
                     log.info("Database is up to date. No need for running update scripts");
                 }else{
-                    ScriptWorker w = new ScriptWorker(scripts);
+                    ScriptWorker w = new ScriptWorker(scripts, em);
                     //do the work, execute the scripts.
                     session.doWork(w);
                     if (w.isErrored()){
@@ -155,10 +201,15 @@ public class DatabaseSynchronizer implements Servlet {
                             updatedVersion=(String) updates.keySet().toArray()[updates.size()-1];
                         }
                         mdVersion.setConfigValue(updatedVersion);
+                        if(em.getTransaction().getRollbackOnly()){
+                            em.getTransaction().rollback();
+                        }
+                        if(!em.getTransaction().isActive()){
+                            em.getTransaction().begin();
+                        }
                         em.persist(mdVersion);
-                        trans.commit();
+                        em.getTransaction().commit();
                         log.info("Database updated to version: "+updatedVersion);
-                        //em.getTransaction().commit();
 
                     }else{
                         log.info("No updates done on database, maybe a error occured");
@@ -189,11 +240,11 @@ public class DatabaseSynchronizer implements Servlet {
      * @param version
      * @return List of updates needed categorized by the version
      */
-    private LinkedHashMap<String, List<String>> getUpdates(String version) {
-        LinkedHashMap<String, List<String>> scripts = new LinkedHashMap<String, List<String>>();
+    private LinkedHashMap<String, UpdateElement> getUpdates(String version) {
+        LinkedHashMap<String, UpdateElement> scripts = new LinkedHashMap<String, UpdateElement>();
 
         boolean versionFound = false;
-        for (Entry<String, List<String>> entry : this.updates.entrySet()) {
+        for (Entry<String, UpdateElement> entry : this.updates.entrySet()) {
             if (!versionFound) {
                 String v = entry.getKey();
                 if (v.equalsIgnoreCase(version)) {
@@ -232,8 +283,8 @@ public class DatabaseSynchronizer implements Servlet {
                     }
                     if (scriptName!=null){
                         boolean found=false;
-                        for (Entry<String, List<String>> entry : this.updates.entrySet()) {
-                            for (String registeredScript : entry.getValue()){
+                        for (Entry<String, UpdateElement> entry : this.updates.entrySet()) {
+                            for (String registeredScript : entry.getValue().getElements()){
                                 if (scriptName.equals(registeredScript)){
                                     found=true;
                                     break;
@@ -255,47 +306,68 @@ public class DatabaseSynchronizer implements Servlet {
     }
 
     public class ScriptWorker implements Work{
-        LinkedHashMap<String, List<String>> updateScripts;
+        LinkedHashMap<String, UpdateElement> updateScripts;
         private String successVersion=null;
         private boolean errored=false;
+        private EntityManager em;
 
 
-        public ScriptWorker(LinkedHashMap<String, List<String>> scripts){
+        public ScriptWorker(LinkedHashMap<String, UpdateElement> scripts, EntityManager em){
             this.updateScripts=scripts;
+            this.em = em;
         }
         @Override
         public void execute(Connection cnctn) throws SQLException {
+            
             ScriptRunner runner = new ScriptRunner(cnctn, true, true);
-            for (Entry<String, List<String>> entry : this.updateScripts.entrySet()) {
-                List<String> scripts = entry.getValue();
-                for (String script : scripts){
-                    InputStream is = null;
-                    try {
-                        String scriptName=SCRIPT_PATH+"/"+script;
-                        is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
-                        if (is==null){
-                            scriptName= SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script;
+            for (Entry<String, UpdateElement> entry : this.updateScripts.entrySet()) {
+                UpdateElement element = entry.getValue();
+                if(element.getClazz() == String.class){
+                    for (String script : element.getElements()){
+                        InputStream is = null;
+                        try {
+                            String scriptName=SCRIPT_PATH+"/"+script;
                             is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
-                        }
-                        if (is==null){
-                            throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
-                        }
-                        log.info("Run database script: "+scriptName);
-                        runner.runScript(new InputStreamReader(is));
-                        if (!this.errored){
-                            this.successVersion = entry.getKey();
-                        }
-                    } catch (Exception ex) {
-                        try{
-                            if (is!=null){
-                                is.close();
+                            if (is==null){
+                                scriptName= SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script;
+                                is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
                             }
-                        }catch(IOException ioe){
-                            log.error("Exception while closing InputStream",ex);
+                            if (is==null){
+                                throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
+                            }
+                            log.info("Run database script: "+scriptName);
+                            runner.runScript(new InputStreamReader(is));
+                            if (!this.errored){
+                                this.successVersion = entry.getKey();
+                            }
+                        } catch (Exception ex) {
+                            try{
+                                if (is!=null){
+                                    is.close();
+                                }
+                            }catch(IOException ioe){
+                                log.error("Exception while closing InputStream",ioe);
+                            }
+                            log.error("Error while executing script: " + script, ex);
+                            this.errored = true;
+                            break;
                         }
-                        log.error("Error while executing script: " + script, ex);
+                    }
+                }else if(element.getClazz() == DatabaseSynchronizerEM.class){
+                    try {
+                        List<String> methods = element.getElements();
+                        DatabaseSynchronizerEM dsem = new DatabaseSynchronizerEM();
+                        for (String method : methods) {
+
+                            Method m = dsem.getClass().getMethod(method, EntityManager.class);
+                            Object o = m.invoke(dsem, em);
+                        }
+                    }catch (Exception e){
                         this.errored = true;
-                        break;
+                        log.error("Cannot run updatemethod", e);
+                    }
+                    if (!this.errored){
+                        this.successVersion = entry.getKey();
                     }
                 }
                 if (this.isErrored()){
@@ -314,7 +386,9 @@ public class DatabaseSynchronizer implements Servlet {
     @Override
     public void init(ServletConfig sc) throws ServletException {
         this.sc=sc;
-        doInit();
+        Stripersist.requestInit();
+        EntityManager em = Stripersist.getEntityManager();
+        doInit(em);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Interface methods">

@@ -46,12 +46,11 @@ OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
             }
         });
     },
-    /**      *
+    /**      
      * Method: wheelChange
      * Copied from: @see OpenLayers.Control.Navigation#wheelChange
-     * Parameters:
-     * evt - {Event}
-     * deltaZ - {Integer}
+     * @param {Event} evt
+     * @param {Integer} deltaZ
      */
     wheelChange: function(evt, deltaZ) {
         var currentZoom = this.map.getZoom();
@@ -77,9 +76,8 @@ OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
      * Copied from: @see OpenLayers.Control.Navigation#wheelUp
      * User spun scroll wheel up
      *
-     * Parameters:
-     * evt - {Event}
-     * delta - {Integer}
+     * @param {Event} evt
+     * @param {Integer} delta
      */
     wheelUp: function(evt, delta) {
         this.wheelChange(evt, delta || 1);
@@ -90,9 +88,8 @@ OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
      * Copied from: @see OpenLayers.Control.Navigation#wheelDown
      * User spun scroll wheel down
      *
-     * Parameters:
-     * evt - {Event}
-     * delta - {Integer}
+     * @param {Event} evt
+     * @param {Integer} delta
      */
     wheelDown: function(evt, delta) {
         this.wheelChange(evt, delta || -1);
@@ -307,11 +304,7 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
 
 /**
  * Create a Click controller
- * @param options
- * @param options.handlerOptions options passed to the OpenLayers.Handler.Click
- * @param options.click the function that is called on a single click (optional)
- * @param options.dblclick the function that is called on a dubble click (optional)
- */
+*/
 OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
     defaultHandlerOptions: {
         'single': true,
@@ -319,6 +312,14 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
         'stopSingle': false,
         'stopDouble': false
     },
+    /**
+     *
+     * @param {Object} options having:
+     *        options.handlerOptions: options passed to the OpenLayers.Handler.Click,
+     *        options.click the function that is called on a single click (optional),
+     *        options.dblclick the function that is called on a dubble click (optional)
+     * @returns {OpenLayers.Control.Click}
+     */
     initialize: function(options) {
         this.handlerOptions = OpenLayers.Util.extend(
             {}, this.defaultHandlerOptions

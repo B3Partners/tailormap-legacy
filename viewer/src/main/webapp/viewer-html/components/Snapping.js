@@ -198,8 +198,8 @@ Ext.define("viewer.components.Snapping", {
             strokeOpacity: this.config.snapColourOpacity / 100,
             strokeWidth: 1,
             pointRadius: 1,
-            fillOpacity: this.config.snapColourOpacity / 100,
-            fillColor: '#' + this.config.snapColour
+            fillColor: '#' + this.config.snapFillColour,
+            fillOpacity: this.config.snapFillColourOpacity / 100
         };
         this.snapCtl = this.config.viewerController.mapComponent.createComponent(this.config);
     },

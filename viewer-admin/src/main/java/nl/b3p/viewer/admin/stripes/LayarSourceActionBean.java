@@ -224,11 +224,12 @@ public class LayarSourceActionBean implements ActionBean {
     }
     /**
      * Get the attribute names for the given FeatureType that are not of type Geometry
-     * @return A JSON object formated as:
+     * @return A JSON object formated as: <pre>
      *  Object {
-     *      attributes [<attributeName>,<attributeName>]
+     *      attributes ['attributeName','attributeName',...],
      *      error
      *  }
+     * </pre>
      */
     public Resolution getAttributes () throws JSONException{
         final JSONObject json = new JSONObject();

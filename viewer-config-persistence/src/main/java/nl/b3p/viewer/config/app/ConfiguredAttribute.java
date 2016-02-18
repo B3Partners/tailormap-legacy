@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,12 @@ public class ConfiguredAttribute {
     private String valueListValueName;
 
     private String valueList;
+
+    private boolean allowValueListOnly;
+
+    private boolean disallowNullValue;
+
+    private boolean disableUserEdit;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
@@ -200,6 +206,30 @@ public class ConfiguredAttribute {
     public void setValueList(String valueList) {
         this.valueList = valueList;
     }
+
+    public boolean getAllowValueListOnly() {
+        return allowValueListOnly;
+    }
+
+    public void setAllowValueListOnly(boolean allowValueListOnly) {
+        this.allowValueListOnly = allowValueListOnly;
+    }
+
+    public boolean getDisAllowNullValue() {
+        return disallowNullValue;
+    }
+
+    public void setDisallowNullValue(boolean disallowNullValue) {
+        this.disallowNullValue = disallowNullValue;
+    }
+
+    public boolean isDisableUserEdit() {
+        return disableUserEdit;
+    }
+
+    public void setDisableUserEdit(boolean disableUserEdit) {
+        this.disableUserEdit = disableUserEdit;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -208,10 +238,13 @@ public class ConfiguredAttribute {
         o.put("name", attributeName);
         o.put("visible", visible);
         o.put("editable", editable);
+        o.put("disableUserEdit", disableUserEdit);
         o.put("filterable", filterable);
         o.put("selectable", selectable);
         o.put("editAlias", editAlias);
         o.put("editHeight", editHeight);
+        o.put("allowValueListOnly", allowValueListOnly);
+        o.put("disallowNullValue", disallowNullValue);
         
         if(editValues != null) {
             try {
@@ -244,7 +277,9 @@ public class ConfiguredAttribute {
         return copy;
     }
     /**
-     * Returns full name. That is the id of the featuretype + ":" + attributeName
+     * Returns full name.
+     *
+     * @return the id of the featuretype + ":" + attributeName
      */
     public String getFullName() {
         String uniqueName= "";

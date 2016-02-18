@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
@@ -36,6 +37,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.logging.Log;
@@ -100,6 +102,8 @@ public class FeatureInfoActionBean implements ActionBean {
 
     @Validate
     private boolean graph = false;
+
+    private Layer layer;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -197,6 +201,10 @@ public class FeatureInfoActionBean implements ActionBean {
     public void setGraph(boolean graph) {
         this.graph = graph;
     }
+
+    public Layer getLayer() {
+        return this.layer;
+    }
     //</editor-fold>
 
     public Resolution info() throws JSONException {
@@ -206,6 +214,7 @@ public class FeatureInfoActionBean implements ActionBean {
 
         FeatureSource fs = null;
 
+        EntityManager em = Stripersist.getEntityManager();
         for(int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
 
@@ -223,16 +232,16 @@ public class FeatureInfoActionBean implements ActionBean {
                 GeoService gs = null;
 
                 if(query.has("appLayer")) {
-                    al = Stripersist.getEntityManager().find(ApplicationLayer.class, query.getLong("appLayer"));
+                    al = em.find(ApplicationLayer.class, query.getLong("appLayer"));
                 } else {
-                    gs = Stripersist.getEntityManager().find(GeoService.class, query.getLong("service"));
+                    gs = em.find(GeoService.class, query.getLong("service"));
                 }
                 do {
                     if(al == null && gs == null) {
                         error = "App layer or service not found";
                         break;
                     }
-                    if(!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest())) {
+                    if(!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
                         error = "Not authorized";
                         break;
                     }
@@ -243,26 +252,25 @@ public class FeatureInfoActionBean implements ActionBean {
                     //    error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     //    break;
                     //}
-                    Layer l;
                     if(al != null) {
-                        l = al.getService().getLayer(al.getLayerName());
+                        layer = al.getService().getLayer(al.getLayerName(), em);
                     } else {
-                        l = gs.getLayer(query.getString("layer"));
+                        layer = gs.getLayer(query.getString("layer"), em);
                     }
-                    if(l == null) {
+                    if(layer == null) {
                         error = "Layer not found";
                         break;
                     }
-                    if(l.getFeatureType() == null) {
+                    if(layer.getFeatureType() == null) {
                         response.put("noFeatureType",true);
                         break;
                     }else{
-                        response.put("featureType", l.getFeatureType().getId());
+                        response.put("featureType", layer.getFeatureType().getId());
 
                     }
                     String filter = query.optString("filter", null);
 
-                    fs = l.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
                     Query q = new Query(fs.getName().toString());
 
                     String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
@@ -272,8 +280,8 @@ public class FeatureInfoActionBean implements ActionBean {
                     Filter spatialFilter=null;
 
                     boolean useIntersect = false;
-                    if (l.getService().getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
-                        ClobElement ce = l.getService().getDetails().get(GeoService.DETAIL_USE_INTERSECT);
+                    if (layer.getService().getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
+                        ClobElement ce = layer.getService().getDetails().get(GeoService.DETAIL_USE_INTERSECT);
                         useIntersect = Boolean.parseBoolean(ce.getValue());
                     }
                     if (!useIntersect){
@@ -301,17 +309,16 @@ public class FeatureInfoActionBean implements ActionBean {
                     Filter f = currentFilter != null ? ff.and(spatialFilter, currentFilter) : spatialFilter;
 
                     //only remove unit if it is a JDBC datastore
-                    if (JDBCFeatureSource.PROTOCOL.equals(l.getService().getProtocol())){
+                    if (JDBCFeatureSource.PROTOCOL.equals(layer.getService().getProtocol())){
                         f = (Filter)f.accept(new RemoveDistanceUnit(), null);
                     }
 
-                    f = FeatureToJson.reformatFilter(f, l.getFeatureType());
+                    f = FeatureToJson.reformatFilter(f, layer.getFeatureType());
 
                     q.setFilter(f);
                     q.setMaxFeatures(limit);
 
-                    FeatureToJson ftjson =new FeatureToJson(arrays, edit,graph,attributesToInclude);
-                    JSONArray features = ftjson.getJSONFeatures(al,l.getFeatureType(), fs, q,null,null);
+                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
 
                     response.put("features", features);
                 } while(false);
@@ -329,5 +336,26 @@ public class FeatureInfoActionBean implements ActionBean {
         }
 
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
+    }
+
+    /**
+     * This will execute the actual featureinfo query, can be overridden in
+     * subclasses to modify behaviour such as workflow.
+     *
+     * @param al the application layer
+     * @param ft the featuretype
+     * @param fs the feature source
+     * @param q a query
+     * @return the features embedded in a {@code JSONArray}
+     * @throws IOException if any
+     * @throws JSONException if transforming to json fails
+     * @throws Exception if any
+     */
+    protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
+            throws IOException, JSONException, Exception {
+
+        FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, attributesToInclude);
+        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null);
+        return features;
     }
 }

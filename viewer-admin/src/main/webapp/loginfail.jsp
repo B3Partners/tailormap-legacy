@@ -23,20 +23,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Inloggen</title>
+        <style type="text/css">
+            .loginfield {
+                width: 130px;
+                margin-left: 5px;
+            }
+        </style>
     </head>
     <body>
         <h2>Inloggen</h2>
-
         <p style="color: red; font-weight: bold">Ongeldige logingegevens.</p>
-
         <form method="post" action="j_security_check">
-
             <table>
-                <tr><td>Gebruikersnaam:</td><td><input type="text" name="j_username" /></td></tr>
-                <tr><td>Wachtwoord:</td><td><input type="password" name="j_password"/></td></tr>
+                <tr><td>Gebruikersnaam:</td><td><input type="text" name="j_username" class="loginfield" /></td></tr>
+                <tr><td>Wachtwoord:</td><td><input type="password" name="j_password" class="loginfield" /></td></tr>
             </table>
-
-            <p>
+            <br />
             <input type="submit" name="submit" value="Login"/>
         </form>
         <script type="text/javascript">

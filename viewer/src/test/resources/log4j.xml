@@ -4,7 +4,7 @@
     <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
         <param name="Threshold" value="debug" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%5p %d{HH:mm:ss} (%C#%M:%L) - %m%n" />
+            <param name="ConversionPattern" value="%d{HH:mm:ss} Flamingo-viewer-test: %5p (%C#%M:%L) - %m%n" />
         </layout>
     </appender>
     <root>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 B3Partners B.V.
+ * Copyright (C) 2012-2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     currentEditIndex: null,
 
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        var title = config && config.title ? config.title : "";
+    constructor: function (parentid, config) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid, config);
 
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
@@ -36,10 +35,12 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ["type", "label"],
             data: [
                 {type: "slider", label: "Slider"},
+                {type: "number", label: "Getalfilter"},
                 {type: "combo", label: "Selectielijst"},
                 {type: "checkbox", label: "Vinkvak"},
                 {type: "radio", label: "Keuzerondje"},
-                {type: "reset", label: "Reset filter knop"}
+                {type: "reset", label: "Reset filter knop"},
+                {type: "textlabel", label: "Tekst label"}
             ]
         });
 
@@ -68,6 +69,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             layout: 'vbox',
             renderTo: Ext.get(parentid),
             items: [{
+                xtype: 'textfield',
+                fieldLabel: 'Titel',
+                name: 'title',
+                itemId: 'title',
+                value: this.configObject.title ? this.configObject.title : "",
+                labelWidth: me.labelWidth,
+                width: 500
+            }, {
                 xtype: 'panel',
                 width: '100%',
                 padding: '5 5 15 0',
@@ -92,7 +101,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         xtype: 'combo',
                         fieldLabel: 'Soort filtergereedschap',
                         store: this.filterTypes,
-                        id: "filterType",
+                        itemId: "filterType",
                         queryModes: "local",
                         displayField: "label",
                         editable: false,
@@ -116,7 +125,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         },
                         items: [{
                             xtype: "combo",
-                            id: "layerCombo",
+                            itemId: "layerCombo",
                             fieldLabel: "Laag",
                             store: layerStore,
                             queryMode: "local",
@@ -132,7 +141,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
                                     var appLayer = appConfig.appLayers[layerId];
 
-                                    var ac = Ext.getCmp("attributeCombo");
+                                    var ac = Ext.ComponentQuery.query("#attributeCombo")[0];
                                     ac.clearValue();
                                     var store = ac.getStore();
 
@@ -153,7 +162,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             }
                         },{
                             xtype: "combo",
-                            id: "attributeCombo",
+                            itemId: "attributeCombo",
                             fieldLabel: "Attribuut",
                             store: Ext.create("Ext.data.Store", {
                                 fields: ["name", "alias", "type"]
@@ -164,18 +173,18 @@ Ext.define("viewer.components.CustomConfiguration",{
                             valueField: "name",
                             listeners: {
                                 select: function(combo, records, eOpts) {
-                                    Ext.getCmp("attributeInfo").setValue("Type: " + records[0].get("type"));
+                                    Ext.ComponentQuery.query("#attributeInfo")[0].setValue("Type: " + records[0].get("type"));
                                 }
                             }
                         },{
                             xtype: 'displayfield',
-                            id: 'attributeInfo',
+                            itemId: 'attributeInfo',
                             fieldLabel: 'Attribuut info',
                             value: ''
                         }]
                     },{
                         xtype: "fieldset",
-                        id: "filterConfigFieldset",
+                        itemId: "filterConfigFieldset",
                         title: "Instellingen voor filtergereedschap",
                         collapsible: false,
                         defaultType: "textfield",
@@ -216,7 +225,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             click :{
                                 scope: me,
                                 fn:function(){
-                                    var grid = Ext.getCmp( "configuredFiltersGrid");
+                                    var grid = Ext.ComponentQuery.query("#configuredFiltersGrid")[0];
                                     var record = grid.getSelectionModel().getSelection();
 
                                     if(record.length > 0){
@@ -260,7 +269,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }]
                 }, {
                     xtype: 'gridpanel',
-                    id: 'configuredFiltersGrid',
+                    itemId: 'configuredFiltersGrid',
                     title: 'Toegevoegde filters',
                     height: 430,
                     columnWidth: 0.48,
@@ -285,9 +294,9 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.filterConfigurer = Ext.create(configurerClass, {
             configObject: config,
-            renderTo: "filterConfigFieldset"
+            renderTo: "#filterConfigFieldset"
         });
-        Ext.getCmp("filterConfigFieldset").doLayout();
+        Ext.ComponentQuery.query("#filterConfigFieldset")[0].updateLayout();
     },
     addFilter : function(filter,config){
         var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
@@ -295,7 +304,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
         if(appLayer){
             filter.appLayerId = appLayer.id;
-            var description = type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + filter.attributeName;
+            var description = this.createDescription(type, appLayer, filter);
         }
         this.filterConfigs.push(filter);
         this.filterStore.add({soort: soort, description: description, id:filter.config.id});
@@ -306,18 +315,23 @@ Ext.define("viewer.components.CustomConfiguration",{
         var type = config.class.substring(config.class.lastIndexOf(".")+1).toLowerCase();
 
         this.resetConfig(true);
-        Ext.getCmp("layerCombo").setValue(config.appLayerId);
-        Ext.getCmp("attributeCombo").setValue(config.attributeName);
-        Ext.getCmp("filterType").setValue(type);
+        Ext.ComponentQuery.query("#layerCombo")[0].setValue(config.appLayerId);
+        Ext.ComponentQuery.query('#attributeCombo')[0].setValue(config.attributeName);
+        Ext.ComponentQuery.query("#filterType")[0].setValue(type);
         this.createFilterConfig(type, config.config);
+    },
+    createDescription: function(type, appLayer, filter) {
+        return (type === "Reset" || type === "Textlabel") ? " - " : (appLayer.alias || appLayer.layerName) + "." + (filter.attributeAlias || filter.attributeName);
     },
     saveCurrentConfig: function(button, e, eOpts) {
         if(this.filterConfigurer) {
             var filterConfigurerClass = this.filterConfigurer.self.getName();
+            var attributeCombo = Ext.ComponentQuery.query('#attributeCombo')[0];
             var filterControl = {
                 class: filterConfigurerClass.substring(0, filterConfigurerClass.length - 6),
-                appLayerId: Ext.getCmp("layerCombo").getValue(),
-                attributeName: Ext.getCmp("attributeCombo").getValue(),
+                appLayerId: Ext.ComponentQuery.query("#layerCombo")[0].getValue(),
+                attributeName: attributeCombo.getValue(),
+                attributeAlias: attributeCombo.getValue() ? attributeCombo.getStore().findRecord("name", attributeCombo.getValue()).get('alias') : '',
                 config: this.filterConfigurer.getConfig()
             };
 
@@ -328,12 +342,14 @@ Ext.define("viewer.components.CustomConfiguration",{
 
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
             var appLayer = appConfig.appLayers[filterControl.appLayerId];
-            var description = soort === "Reset" ? " - " : appLayer.alias + "." + filterControl.attributeName;
+            var description = this.createDescription(soort, appLayer, filterControl);
             Ext.Array.insert(this.filterConfigs, oldIndex, [filterControl]);
             var soortString = this.filterTypes.findRecord("type", soort).get("label");
             this.filterStore.insert(oldIndex,{soort: soortString, description: description, id:filterControl.config.id});
             this.resetConfig(true);
         }
+        var t = Ext.ComponentQuery.query("#title")[0].getValue();
+        this.configObject.title = t;
     },
     removeConfig : function( id ){
         for (var i = 0; i < this.filterConfigs.length; i++) {
@@ -348,7 +364,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
     move : function(moveAmount){
         var record = this.getSelectedRecord();
-        var grid = Ext.getCmp("configuredFiltersGrid");
+        var grid = Ext.ComponentQuery.query("#configuredFiltersGrid")[0];
         if(record){
             var config = this.getFilter(record.data.id);
             var configIndex = Ext.Array.indexOf(this.filterConfigs, config);
@@ -359,7 +375,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
     },
     getSelectedRecord : function(){
-        var grid = Ext.getCmp("configuredFiltersGrid");
+        var grid = Ext.ComponentQuery.query("#configuredFiltersGrid")[0];
         var records = grid.getSelectionModel().getSelection();
         var record = null;
         if(records.length > 0){
@@ -393,12 +409,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 filter.appLayerId = index;
             }
         });
+        config.title = this.configObject.title;
         return config;
     },
 
     createLayerStore: function() {
         var store = Ext.create("Ext.data.Store", {
-            fields: ["id", "serviceId", "layerName", "alias"]
+            fields: [{name: "id", type: 'int'}, "serviceId", "layerName", "alias"]
         });
 
         Ext.Object.each(appConfig.appLayers, function(id, appLayer) {
@@ -410,11 +427,11 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
     resetConfig: function (alsoType) {
         if(alsoType){
-            Ext.getCmp("filterType").setValue(null);
+            Ext.ComponentQuery.query("#filterType")[0].setValue(null);
         }
-        Ext.getCmp("layerCombo").setValue(null);
-        Ext.getCmp("attributeCombo").setValue(null);
-        Ext.getCmp("filterConfigFieldset").removeAll();
+        Ext.ComponentQuery.query("#layerCombo")[0].setValue(null);
+        Ext.ComponentQuery.query('#attributeCombo')[0].setValue(null);
+        Ext.ComponentQuery.query("#filterConfigFieldset")[0].removeAll();
         this.filterConfigurer = null;
     }
 });

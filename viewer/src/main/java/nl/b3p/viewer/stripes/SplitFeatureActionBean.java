@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  * Split a feature using a line. Depending on the chosen strategy the split
@@ -70,7 +71,7 @@ import org.opengis.filter.identity.FeatureId;
  * one or more new features are created or the split feature is deleted and all
  * new features are created.
  *
- * @author Mark Prins <mark@b3partners.nl>
+ * @author Mark Prins mark@b3partners.nl
  */
 @UrlBinding("/action/feature/split")
 @StrictBinding
@@ -119,7 +120,7 @@ public class SplitFeatureActionBean implements ActionBean {
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (application == null || appLayer == null
-                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
+                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
     }
@@ -187,20 +188,22 @@ public class SplitFeatureActionBean implements ActionBean {
      * @param features a list of features that can be modified
      * @return the list of features to be committed to the database
      * @see #handleExtraData(org.opengis.feature.simple.SimpleFeature)
+     * @throws Exception if any
      */
-    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) {
+    protected List<SimpleFeature> handleExtraData(List<SimpleFeature> features) throws Exception {
         return features;
     }
 
     /**
-     * Handle extra data, delegates to {@link #handleExtraData(java.util.List).
+     * Handle extra data, delegates to {@link #handleExtraData(java.util.List)}.
      *
      * @param feature the feature that can be modified
-     * @return the feature to be committed to the database @see
-     * #handleExtraData(java.util.List)
+     * @return the feature to be committed to the database
+     * @see #handleExtraData(java.util.List)
+     * @throws Exception if any
      */
-    protected SimpleFeature handleExtraData(SimpleFeature feature) {
-        final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+    protected SimpleFeature handleExtraData(SimpleFeature feature) throws Exception {
+        final List<SimpleFeature> features = new ArrayList();
         features.add(feature);
         return this.handleExtraData(features).get(0);
     }
@@ -251,6 +254,7 @@ public class SplitFeatureActionBean implements ActionBean {
             ids = handleStrategy(f, geoms, filter, this.store, this.strategy);
 
             transaction.commit();
+            afterSplit(ids);
         } catch (Exception e) {
             transaction.rollback();
             throw e;
@@ -261,6 +265,14 @@ public class SplitFeatureActionBean implements ActionBean {
             ids.add(0, new FeatureIdImpl(this.splitFeatureFID));
         }
         return ids;
+    }
+
+    /**
+     * Called after the split is completed and commit was performed. Provides a
+     * hook for postprocessing.
+     * @param ids The list of committed feature ids
+     */
+    protected void afterSplit(List<FeatureId> ids) {
     }
 
     /**
@@ -281,7 +293,7 @@ public class SplitFeatureActionBean implements ActionBean {
      */
     protected List<FeatureId> handleStrategy(SimpleFeature feature, List<? extends Geometry> geoms,
             Filter filter, SimpleFeatureStore localStore, String localStrategy) throws Exception {
-        
+
         List<SimpleFeature> newFeats = new ArrayList();
         GeometryTypeConverterFactory cf = new GeometryTypeConverterFactory();
         Converter c = cf.createConverter(Geometry.class,
@@ -319,28 +331,25 @@ public class SplitFeatureActionBean implements ActionBean {
     }
 
     /**
-     * Sort geometries by size, either circumference or length.
+     * Sort geometries by (descending) size, either circumference or length. The
+     * list will have the largest geometry as the first element.
      *
      * @param geoms to sort
+     *
+     * @see com.​vividsolutions.​jts.​geom.​Geometry#compareTo(Object)
      */
     private void geometrySorter(List<? extends Geometry> geoms) {
         Collections.sort(geoms, new Comparator<Geometry>() {
             @Override
             public int compare(Geometry a, Geometry b) {
-                if (a.getLength() > b.getLength()) {
-                    return 1;
-                } else if (a.getLength() < b.getLength()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
+                return b.compareTo(a);
             }
         });
     }
 
     /**
-     * @param toSplit
-     * @param line
+     * @param toSplit the line to split
+     * @param line the line to use for the split
      * @return a sorted list of geometries as a result of splitting toSplit with
      * line
      */
@@ -360,8 +369,8 @@ public class SplitFeatureActionBean implements ActionBean {
     }
 
     /**
-     * @param poly
-     * @param line
+     * @param poly the polygon to split
+     * @param line the line to use for the split
      * @return a sorted list of geometries as a result of splitting poly with
      * line
      */
@@ -448,6 +457,10 @@ public class SplitFeatureActionBean implements ActionBean {
 
     public void setExtraData(String extraData) {
         this.extraData = extraData;
+    }
+
+    public Layer getLayer() {
+        return this.layer;
     }
     //</editor-fold>
 }

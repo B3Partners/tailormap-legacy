@@ -45,6 +45,11 @@ Ext.onReady(function() {
         ]
     });
     
+    // Weird encoding issue
+    if(rootName === "Categori√´n") {
+        rootName = "Categorieën";
+    }
+    
     // Definition of the store, which takes care of loading the necessary json
     var treeStore = Ext.create('Ext.data.TreeStore', {
         autoLoad: true,
@@ -189,12 +194,17 @@ Ext.onReady(function() {
                 record.expand(false);
             }
         },
-        bbar: [
-            {
-                xtype: "label",
-                text: "Gebruik het contextmenu (rechtermuisknop) om de categoriën te bewerken"
-            }
-        ]
+        dockedItems: [{
+            xtype: 'toolbar',
+            dock: 'bottom',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [
+                { xtype: 'container', html: "Gebruik het contextmenu (rechtermuisknop) om de categoriën te bewerken" }
+            ]
+        }]
     });
 });
 

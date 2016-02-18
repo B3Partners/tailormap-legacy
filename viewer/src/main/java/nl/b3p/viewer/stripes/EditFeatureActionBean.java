@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -51,6 +52,7 @@ import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -140,18 +142,19 @@ public class EditFeatureActionBean  implements ActionBean {
         String error = null;
 
         FeatureSource fs = null;
+        EntityManager em = Stripersist.getEntityManager();
         try {
             do {
                 if(appLayer == null) {
                     error = "App layer or service not found";
                     break;
                 }
-                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
                     error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
 
-                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+                layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
                     error = "Layer not found";
@@ -215,24 +218,26 @@ public class EditFeatureActionBean  implements ActionBean {
         String error = null;
 
         FeatureSource fs = null;
+
+        EntityManager em = Stripersist.getEntityManager();
         try {
             do {
                 if(appLayer == null) {
                     error = "App layer or service not found";
                     break;
                 }
-                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
                     error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
 
-                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+                layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
                     error = "Layer not found";
                     break;
                 }
-                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest())) {
+                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), em)) {
                     error = "U heeft geen rechten om de geometrie van deze kaartlaag te bewerken";
                     break;
                 }
@@ -287,7 +292,7 @@ public class EditFeatureActionBean  implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
-    private String addNewFeature() throws Exception {
+    protected String addNewFeature() throws Exception {
 
         SimpleFeature f = DataUtilities.template(store.getSchema());
 
@@ -358,19 +363,23 @@ public class EditFeatureActionBean  implements ActionBean {
 
                 AttributeDescriptor ad = store.getSchema().getDescriptor(attribute);
 
-                if(ad != null) {
-                    attributes.add(attribute);
+                if (ad != null) {
+                    if (!isAttributeUserEditingDisabled(attribute)) {
+                        attributes.add(attribute);
 
-                    if(ad.getType() instanceof GeometryType) {
-                        String wkt = jsonFeature.getString(ad.getLocalName());
-                        Geometry g = null;
-                        if(wkt != null) {
-                            g = new WKTReader().read(wkt);
+                        if (ad.getType() instanceof GeometryType) {
+                            String wkt = jsonFeature.getString(ad.getLocalName());
+                            Geometry g = null;
+                            if (wkt != null) {
+                                g = new WKTReader().read(wkt);
+                            }
+                            values.add(g);
+                        } else {
+                            String v = jsonFeature.getString(attribute);
+                            values.add(StringUtils.defaultIfBlank(v, null));
                         }
-                        values.add(g);
                     } else {
-                        String v = jsonFeature.getString(attribute);
-                        values.add(StringUtils.defaultIfBlank(v, null));
+                        log.info(String.format("Attribute \"%s\" not user editable; ignoring", attribute));
                     }
                 } else {
                     log.warn(String.format("Attribute \"%s\" not in feature type; ignoring", attribute));
@@ -394,6 +403,17 @@ public class EditFeatureActionBean  implements ActionBean {
        } finally {
             transaction.close();
         }
+    }
+
+    /**
+     * Check that if {@code disableUserEdit} flag is set on the attribute.
+     *
+     * @param attrName attribute to check
+     * @return {@code true} when the configured attribute is flagged as
+     * "readOnly"
+     */
+    protected boolean isAttributeUserEditingDisabled(String attrName) {
+        return this.getAppLayer().getAttribute(this.getLayer().getFeatureType(), attrName).isDisableUserEdit();
     }
 
     private boolean isFeatureWriteAuthorized(ApplicationLayer appLayer, JSONObject jsonFeature, HttpServletRequest request) {

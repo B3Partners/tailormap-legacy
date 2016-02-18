@@ -14,7 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.define("viewer.components.sf.SimpleFilterBase",{
+    wrapSimpleFilter: function(label, contents, className) {
+        var contentBefore = [
+            "<div class=\"simple-filter-container steunkleur1 steunkleur2", (className ? " " + className : "") ,"\">",
+                "<div class=\"simple-filter-inner\">",
+                    "<table>",
+                        "<tbody>"
+        ];
+        var labelContent = [];
+        if(!Ext.isEmpty(label)) {
+            labelContent.push("<tr><td colspan=\"3\" align=\"center\">{label}</td></tr>");
+        }
+        var contentAfter = [
+                        "</tbody>",
+                    "</table>",
+                "</div>",
+            "</div>"
+        ];
+        return contentBefore.concat(labelContent, contents, contentAfter).join("");
+    }
+});
 Ext.define("viewer.components.sf.SimpleFilter",{
+    extend: "viewer.components.sf.SimpleFilterBase",
     ready: null,
     layersLoaded:null,
     attributesLoaded:null,
@@ -154,29 +176,18 @@ Ext.define("viewer.components.sf.SimpleFilter",{
 });
 
 Ext.define("viewer.components.sf.Reset", {
+    extend: "viewer.components.sf.SimpleFilterBase",
     constructor : function(config){
         this.initConfig(config);
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_reset\"></div></td>" +
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(config.label, [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_reset\"></div></td>",
+            "</tr>"
+        ]);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: config.label,
             name: this.config.name
         });
-
         Ext.create("Ext.button.Button", {
             id: "reset" + this.config.name,
             name: "reset" + this.config.name,
@@ -199,6 +210,17 @@ Ext.define("viewer.components.sf.Reset", {
     }
 });
 
+Ext.define("viewer.components.sf.Textlabel", {
+    extend: "viewer.components.sf.SimpleFilterBase",
+    constructor : function(config){
+        this.initConfig(config);
+        var t = this.wrapSimpleFilter(config.filterConfig.textlabel, [], "simple-filter-textlabel");
+        new Ext.Template(t).append(this.config.container, {
+            label: config.filterConfig.textlabel
+        });
+    }
+});
+
 Ext.define("viewer.components.sf.Checkbox", {
     extend: "viewer.components.sf.SimpleFilter",
     options:null,
@@ -211,23 +233,12 @@ Ext.define("viewer.components.sf.Checkbox", {
 
         var filterConfig = this.config.filterConfig;
         this.options = filterConfig.options;
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(filterConfig.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_checkbox\"></div></td>" +
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(filterConfig.label, [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_checkbox\"></div></td>",
+            "</tr>"
+        ]);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: filterConfig.label,
             name: this.config.name
         });
@@ -244,9 +255,12 @@ Ext.define("viewer.components.sf.Checkbox", {
         }
 
         Ext.create("Ext.container.Container", {
-            height: this.options.length * 25,
+            columns: 1,
             id: "checkboxcontainer" + this.config.name,
             name: "checkboxcontainer" + this.config.name,
+            defaults: {
+                height: 18
+            },
             layout: {
                 type: 'vbox',
                 align: "left"
@@ -403,24 +417,12 @@ Ext.define("viewer.components.sf.Combo", {
         } else {
             config.start = config.start !== "" ? Number(config.start) : -1;
         }
-
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_combo\"></div></td>" +
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(config.label, [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_combo\"></div></td>",
+            "</tr>"
+        ]);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: config.label,
             name: this.config.name
         });
@@ -522,6 +524,82 @@ Ext.define("viewer.components.sf.Combo", {
     }
 });
 
+Ext.define("viewer.components.sf.Number", {
+    extend: "viewer.components.sf.SimpleFilter",
+    config: {
+        simpleFilter: null,
+        filterConfig: null
+    },
+    numberField: null,
+    constructor: function(conf) {
+        viewer.components.sf.Number.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        var templatecontents = [
+            "<tr>",
+                "<td width=\"100\"><div id=\"{name}_field\">{value}</div></td>",
+                "<td colspan=\"2\">{fieldLabel}</td>",
+            "</tr>"
+        ];
+        var t = this.wrapSimpleFilter(this.config.filterConfig.label, templatecontents);
+        new Ext.Template(t).append(this.config.container, {
+            label: this.config.filterConfig.label,
+            name: this.config.name,
+            fieldLabel: this.config.filterConfig.fieldLabel || ""
+        });
+        this.numberField = this.createElement();
+    },
+    createElement : function () {
+        var filterChangeDelay = 500;
+        return Ext.create("Ext.form.field.Number", {
+            renderTo: this.config.name + "_field",
+            name:  this.config.name,
+            value: this.config.filterConfig.start ? this.config.filterConfig.start : "",
+            maxValue: this.config.filterConfig.max || Number.MAX_VALUE,
+            minValue: this.config.filterConfig.min || 0,
+            width: 100,
+            listeners: {
+                change: {
+                    scope: this,
+                    fn: function(){
+                        this.applyFilter();
+                    },
+                    buffer: filterChangeDelay
+                }
+            }
+         });
+    },
+    applyFilter : function(){
+        if(!this.ready){
+            // This function will be called via eventlistener
+            return;
+        }
+        var cql = this.getCQL();
+        if (cql.length > 0) {
+            this.setFilter(cql);
+        }
+    },
+    getCQL : function(){
+        var cql = "";
+        var type = this.config.filterConfig.numberType;
+        var mustEscape = this.mustEscapeAttribute();
+        var value = (mustEscape ? "'" : "") + this.numberField.getValue() + (mustEscape ? "'" : "");
+        if (Ext.isNumeric(value)) {
+            if (type === "eq") {
+                cql = this.config.attributeName + " = " + value;
+            } else if (type === "gt") {
+                cql = this.config.attributeName + " >= " + value;
+            } else if (type === "lt") {
+                cql = this.config.attributeName + " <= " + value;
+            }
+        }
+        return cql;
+    },
+    reset : function(){
+        this.callParent();
+        this.numberField.setValue(this.config.filterConfig.start || "");
+    }
+});
+
 Ext.define("viewer.components.sf.Slider", {
     extend: "viewer.components.sf.SimpleFilter",
     config: {
@@ -585,42 +663,37 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
 
-        var t =
-            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
-            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
-            "  <table width=\"100%\">" +
-            "    <tbody>" +
-            (!Ext.isEmpty(c.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
-            "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_slider\"></div></td>" +
-            "        </tr>";
-
+        var templatecontents = [
+            "<tr>",
+                "<td colspan=\"3\"><div id=\"{name}_slider\"></div></td>",
+            "</tr>"
+        ];
         if(!Ext.isEmpty(c.valueFormatString)) {
             if(c.sliderType === "range") {
-                t += "        <tr>" +
-                    "            <td><span id=\"" + n + "_min\"></span></td>" +
-                    "            <td></td>" +
-                    "            <td align=\"right\"><span id=\"{name}_max\"></span></td>" +
-                    "        </tr>";
+                templatecontents.push(
+                    "<tr>",
+                        "<td><span id=\"{name}_min\"></span></td>",
+                        "<td></td>",
+                        "<td align=\"right\"><span id=\"{name}_max\">{value}</span></td>",
+                    "</tr>"
+                );
             } else {
-                t += "        <tr>" +
-                    "            <td align=\"center\"><span id=\"{name}_value\"></span></td>" +
-                    "        </tr>";
+                templatecontents.push(
+                    "<tr>",
+                        "<td width=\"33%\"><span id=\"{name}_minvalue\">{minvalue}</span></td>",
+                        "<td width=\"33%\" align=\"center\"><span id=\"{name}_value\">{value}</span></td>",
+                        "<td width=\"34%\" align=\"right\"><span id=\"{name}_maxvalue\">{maxvalue}</span></td>",
+                    "</tr>"
+                );
             }
         }
-
-        t +=
-            "        </tr>" +
-            "    </tbody>" +
-            "  </table>" +
-            "</div>";
-
-        var vc = this.config.simpleFilter.viewerController;
+        var t = this.wrapSimpleFilter(c.label, templatecontents);
         new Ext.Template(t).append(this.config.container, {
-            steunkleur1: vc.app.details.steunkleur1,
-            steunkleur2: vc.app.details.steunkleur2,
             label: c.label,
-            name: this.config.name
+            name: this.config.name,
+            value: c.start,
+            minvalue: c.min,
+            maxvalue: c.max
         });
 
         if(c.sliderType === "range") {
@@ -697,13 +770,36 @@ Ext.define("viewer.components.sf.Slider", {
     applyFilter : function(){
         this.sliderChange();
     },
-    sliderChange: function() {
+    sliderChange: function(slider) {
         if(!this.ready){
             // This function will be called via eventlistener
             return;
         }
+        this.updateValueString(slider);
         var cql = this.getCQL();
         this.setFilter(cql);
+    },
+    updateValueString : function (slider){
+        var formatString = this.config.filterConfig.valueFormatString;
+        if(!slider || !formatString){
+            return;
+        }
+        var slidername = slider.getName();
+        var name = slidername.substring(0,slidername.indexOf("_extSlider"));
+        var value = slider.getValue();
+
+        if(slider.$className === "Ext.slider.Multi"){
+            var spanMin = name + "_min";
+            var spanMax = name + "_max";
+            var min = Ext.get(spanMin);
+            var max = Ext.get(spanMax);
+            min.dom.innerHTML = Ext.util.Format.number(value[0],formatString);
+            max.dom.innerHTML = Ext.util.Format.number(value[1],formatString);
+        }else{
+            var spanId = name+ "_value";
+            var span = Ext.get(spanId);
+            span.dom.innerHTML = Ext.util.Format.number(value,formatString);
+        }
     },
     getCQL : function(){
         var cql = "";

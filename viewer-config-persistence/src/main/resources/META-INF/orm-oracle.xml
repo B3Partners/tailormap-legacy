@@ -205,7 +205,6 @@
         </attributes>
     </entity>
 
-
     <entity class="nl.b3p.viewer.config.CycloramaAccount">
         <attributes>
             <id name="id">
@@ -214,6 +213,22 @@
             </id>
         </attributes>
     </entity>
-
-
+  
+    <entity class="nl.b3p.viewer.config.app.StartLayer">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="startlayer_id_seq"/>
+                <sequence-generator name="startlayer_id_seq" sequence-name="startlayer_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+  
+    <entity class="nl.b3p.viewer.config.app.StartLevel">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="startlevel_id_seq"/>
+                <sequence-generator name="startlevel_id_seq" sequence-name="startlevel_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
 </entity-mappings>

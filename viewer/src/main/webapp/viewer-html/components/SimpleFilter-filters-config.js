@@ -21,7 +21,7 @@ Ext.define("viewer.components.sf.Config", {
     form: null,
     constructor: function (config) {
         this.configObject = config.configObject;
-        this.id = this.configObject.id ? this.configObject.id : Ext.id();
+        this.id = this.configObject.id ? this.configObject.id : Date.now();
         var items = this.getFormItems();
         this.form = Ext.create("Ext.form.Panel", {
             title: this.getTitle(),
@@ -36,7 +36,7 @@ Ext.define("viewer.components.sf.Config", {
             items: items
         });
 
-        Ext.getCmp(config.renderTo).items.add(this.form);
+        Ext.ComponentQuery.query(config.renderTo)[0].add(this.form);
     },
     getFormItems: function () {
         var items = [{
@@ -92,6 +92,23 @@ Ext.define("viewer.components.sf.ResetConfig", {
     },
     getTitle : function(){
         return "Reset filter knop";
+    }
+});
+
+Ext.define("viewer.components.sf.TextlabelConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor : function (config){
+        viewer.components.sf.TextlabelConfig.superclass.constructor.call(this, config);
+    },
+    getFormItems : function(){
+        return [{
+            fieldLabel: 'Tekst',
+            name: 'textlabel',
+            value: this.configObject.textlabel ? this.configObject.textlabel : ""
+        }];
+    },
+    getTitle : function(){
+        return "Tekst label";
     }
 });
 
@@ -381,6 +398,81 @@ Ext.define("viewer.components.sf.ComboConfig", {
     getTitle : function (){
         return "Selectielijst";
     }
+});
+
+Ext.define("viewer.components.sf.NumberConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor: function(config) {
+        viewer.components.sf.NumberConfig.superclass.constructor.call(this, config);
+    },
+    getFormItems : function(){
+        var items = this.callParent();
+        items = items.concat([{
+            fieldLabel: "Label achter nummerveld",
+            name: "fieldLabel",
+            qtip: "Label dat achter het nummer veld komt",
+            value: this.configObject.fieldLabel ? this.configObject.fieldLabel : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        },{
+            fieldLabel: "Minimale waarde",
+            name: "min",
+            qtip: "Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt",
+            value: this.configObject.min ? this.configObject.min : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        }, {
+            fieldLabel: "Maximale waarde",
+            name: "max",
+            value: this.configObject.max ? this.configObject.max : "",
+            qtip: "Indien geen waarde ingevuld wordt grootste attribuutwaarde uit de attribuutlijst gebruikt",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        },{
+            xtype: 'combo',
+            fieldLabel: "Type",
+            name: "numberType",
+            store: Ext.create("Ext.data.Store", {
+                fields: ["type", "label"],
+                data: [
+                    {type: "eq", label: "Attribuut gelijk aan ingevuld nummer"},
+                    {type: "gt", label: "Attribuut groter dan ingevuld nummer"},
+                    {type: "lt", label: "Attribuut kleiner dan ingevuld nummer"}
+                ]
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "type",
+            value: this.configObject.numberType ? this.configObject.numberType : "eq"
+        }]);
+        return items;
+    },
+    getDefaultStartValue : function (){
+        return 0;
+    },
+    getTitle : function(){
+        return "Getalfilter";
+    }
+
 });
 
 Ext.define("viewer.components.sf.SliderConfig", {

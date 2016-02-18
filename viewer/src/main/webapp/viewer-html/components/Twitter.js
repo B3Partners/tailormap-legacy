@@ -19,7 +19,8 @@ Ext.define ("viewer.components.Twitter",{
         this.interval = 5000;
         return this;
     },
-    loadWindow : function(){
+    loadWindow: function () {
+        this.config.viewerController.logger.warn("De Twitter component is niet langer functioneel.");
         /*Ext.create("Ext.button.Button",{
             renderTo: this.div,
             text: "Haal Tweets op!",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ public class ApplicationActionBean implements ActionBean {
 
         EntityManager em = Stripersist.getEntityManager();
         SelectedContentCache cache = new SelectedContentCache();
-        JSONObject sc = cache.createSelectedContent(application, false,false, false);
+        JSONObject sc = cache.createSelectedContent(application, false,false, false,em);
         application.getDetails().put("selected_content_cache", new ClobElement(sc.toString()));
         em.getTransaction().commit();
         return view;
@@ -189,8 +189,6 @@ public class ApplicationActionBean implements ActionBean {
 
      public Resolution retrieveCache() throws JSONException, IOException{
         Resolution view = view();
-        EntityManager em = Stripersist.getEntityManager();
-        SelectedContentCache cache = new SelectedContentCache();
         ClobElement el = application.getDetails().get("selected_content_cache");
         appConfigJSON = el.getValue();
         return view;
@@ -230,7 +228,8 @@ public class ApplicationActionBean implements ActionBean {
 
         buildComponentSourceHTML();
 
-        appConfigJSON = application.toJSON(context.getRequest(),false, false);
+        EntityManager em = Stripersist.getEntityManager();
+        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
 
         //make hashmap for jsonobject.
@@ -249,6 +248,9 @@ public class ApplicationActionBean implements ActionBean {
      * Build a hash key to make the single component source for all components
      * cacheable but updateable when the roles of the user change. This is not
      * meant to be a secure hash, the roles of a user are not secret.
+     *
+     * @param request servlet request with user credential
+     * @return a key to use as a cache identifyer
      */
     public static int getRolesCachekey(HttpServletRequest request) {
         Set<String> roles = Authorizations.getRoles(request);

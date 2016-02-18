@@ -335,18 +335,24 @@ Ext.define("viewer.components.Legend", {
         divName.innerHTML = Ext.htmlEncode(al.alias);
         divLayer.appendChild(divName);
 
-        var img, divImage;        
+        var img, divImage;
+        function getImageSource(url) {
+            // Only WMS support SCALE for legend images
+            if(url.search(/service=wms/i) === -1) {
+                return url;
+            }
+            // Append SCALE when not present
+            if (url.search(/SCALE/i) === -1){
+                return Ext.String.urlAppend(url, "SCALE=" + legendScale);
+            }
+            return url.replace(/SCALE=[0-9.,]*/i, "SCALE=" + legendScale);
+        }
         Ext.Array.each(legendInfo.parts, function(part) {
             divImage = document.createElement("div");
             var divLabel = document.createElement("div");
 
             img = document.createElement("img");
-            
-            if (part.url.search("SCALE") == -1){
-                img.src = part.url  +  "&SCALE=" + legendScale;
-            } else {
-                img.src = part.url.replace(/SCALE=[0-9.,]*/i, "SCALE=" + legendScale);
-            }
+            img.src = getImageSource(part.url);
             img.onload = function() {
                 //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
                 divLabel.style.lineHeight = (this.height + 4) + "px";

@@ -72,7 +72,7 @@
         name: "Streetview",
         group: "Tools",
         shortName: "Sv",
-        sources: ["StreetView.js"],
+        sources: ["tools/Tool.js", "StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
         configSource: ["ConfigObject.js","StreetView-config.js"]
@@ -522,7 +522,7 @@
         name: "Selectie Module",
         shortName: "Sm",
         group: "Component",
-        sources: ["SelectionModule.js"],
+        sources: ["SelectionModule.js", "SelectionModuleMenu.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","SelectionModule-config.js"],
         singleton: true,
         restrictions: ["left_menu"],
@@ -832,7 +832,8 @@
                      iconUrl_sel: "http://localhost:8084/viewer/resources/images/buffer_down.png",
                      iconUrl_dis: "http://localhost:8084/viewer/resources/images/buffer.png"}
         }
-    },
+        },
+/* this component no longer works, see https://github.com/flamingo - geocms/flamingo/issues/467
     {
         className: "viewer.components.Twitter",
         name: "Twitter",
@@ -846,7 +847,7 @@
             propertyNames: {search: "Zoekterm"},
             source: {search: "B3Partners"}
         }
-    },
+        }, */
     /**
     Needs more work... Not reusable
     {

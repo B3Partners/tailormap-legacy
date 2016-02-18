@@ -456,8 +456,8 @@ Ext.define("viewer.components.SearchConfiguration",{
                             align: 'stretch'
                         },
                         items: [
-                            { xtype: 'container', flex: 1, margin: '0 10px 0 0', itemId: 'requiredLayersOn' },
-                            { xtype: 'container', flex: 1, itemId: 'switchLayersOn' }
+                            { xtype: 'container', flex: 1, margin: '0 10px 0 0', itemId: 'requiredLayersOn', layout: 'fit' },
+                            { xtype: 'container', flex: 1, itemId: 'switchLayersOn', layout: 'fit' }
                         ]
                     }
                 ]

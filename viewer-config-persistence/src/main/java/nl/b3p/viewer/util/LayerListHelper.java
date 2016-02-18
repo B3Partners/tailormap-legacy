@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,12 @@
 package nl.b3p.viewer.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level; 
 import nl.b3p.viewer.config.services.ArcGISFeatureSource;
 import nl.b3p.viewer.config.services.ArcGISService;
-import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WMSService;
 
@@ -36,20 +33,30 @@ import nl.b3p.viewer.config.services.WMSService;
 public class LayerListHelper {
 
     /**
-     * Get a list of Layers from the level and its subLevels
+     * Get a list of Layers from the level and its subLevels.
      *
-     * @param level
+     * @param application the application
+     * @param filterable {@code true} to get filterable layers
+     * @param bufferable {@code true} to get bufferable layers
+     * @param editable {@code true} to get editable layers
+     * @param influence {@code true} to get influence map layers
+     * @param arc {@code true} to get arc layers
+     * @param wfs {@code true} to get wfs layers
+     * @param attribute {@code true} to get attribute
+     * @param hasConfiguredLayers {@code true} to get configured layers
+     * @param possibleLayers a list of layers
+     * @param em the entity manager to use
      * @return A list of Layer objects
      */
     public static List<ApplicationLayer> getLayers(Application application,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,
-        Boolean hasConfiguredLayers, List<Long> possibleLayers) {
+        Boolean hasConfiguredLayers, List<Long> possibleLayers, EntityManager em) {
         List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
-        Application.TreeCache tc = application.loadTreeCache();
+        Application.TreeCache tc = application.loadTreeCache(em);
 
         for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
 
-            Layer l = appLayer.getService().getLayer(appLayer.getLayerName());
+            Layer l = appLayer.getService().getLayer(appLayer.getLayerName(),em);
             if(l == null){
                     continue;
             }

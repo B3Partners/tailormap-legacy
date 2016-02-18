@@ -53,9 +53,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="layout" class="tabdiv">
                     <a href="#Component_Layout_Tab_Help" title="Help" class="helplink"></a>
                 </div>
-                <div id="component-layout" class="tabdiv">
-                    <a href="#Component_ComponentLayout_Tab_Help" title="Help" class="helplink"></a>
-                </div>
                 <div id="help" class="tabdiv">
                     <a href="#Component_Help_Tab_Help" title="Help" class="helplink"></a>
                 </div>
@@ -65,6 +62,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var applicationId= ${actionBean.application.id};
             var className = "${actionBean.className}";
             var name = "${actionBean.name}";
+            var currentRegion = "${param.currentRegion}";
             var metadata = new Object();
             <c:if test="${!empty actionBean.metadata}">
                 metadata = ${actionBean.metadata};

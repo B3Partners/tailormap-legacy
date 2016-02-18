@@ -19,6 +19,7 @@ package nl.b3p.viewer.stripes;
 import java.awt.Color;
 import java.io.*;
 import java.net.URL;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,12 +35,14 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.StyleLibrary;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.web.SharedSessionData;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.emf.common.util.URI;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.styling.*;
 import org.json.JSONArray;
@@ -96,6 +99,12 @@ public class SldActionBean implements ActionBean {
     
     @Validate
     private String format;
+
+    @Validate
+    private String sldId;
+
+    @Validate
+    private String sessId;
     
     @Validate 
     private ApplicationLayer applicationLayer;
@@ -193,6 +202,22 @@ public class SldActionBean implements ActionBean {
 
     public void setCommonOrFilter(String commonOrFilter) {
         this.commonOrFilter = commonOrFilter;
+    }
+
+    public String getSldId() {
+        return sldId;
+    }
+
+    public void setSldId(String sldId) {
+        this.sldId = sldId;
+    }
+
+    public String getSessId() {
+        return sessId;
+    }
+
+    public void setSessId(String sessId) {
+        this.sessId = sessId;
     }
     //</editor-fold>
     
@@ -503,7 +528,7 @@ public class SldActionBean implements ActionBean {
         try{
             json.put("success", Boolean.FALSE);
             if (filter!=null && applicationLayer!=null){
-                Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName());
+                Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
                 if (layer==null){
                     error = "Layer not found";
                 }else{
@@ -511,10 +536,22 @@ public class SldActionBean implements ActionBean {
                     Filter f = CQL.toFilter(filter);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
                     f = FeatureToJson.reformatFilter(f, sft);
-                    json.put("filter",CQL.toCQL(f));                
+                    String cqlFilter = ECQL.toCQL(f);
+                    if(f == Filter.EXCLUDE){
+                        String attributeName = sft.getAttributes().get(0).getName();
+                        cqlFilter = attributeName + " = 1 and " + attributeName + " <> 1";
+                    }
+                    // flt CQL opslaan in sessie,
+                    // per kaartlaag is er 1 flt in de sessie, dus iedere keer overschrijven
+                    String sId = context.getRequest().getSession().getId();
+                    Map<String, String> sharedData = SharedSessionData.find(sId);
+                    log.debug(String.format("Adding filter (%s) for layer %s to shared session store %s.",
+                            cqlFilter, applicationLayer.getId().toString(), sId));
+                    sharedData.put(applicationLayer.getId().toString(), cqlFilter);
+                    json.put("sessId", sId);
+                    json.put("sldId", applicationLayer.getId().toString());
                     json.put("success", Boolean.TRUE);
                 }
-                
             }else{
                 error="No filter to transform or no applicationlayer";
             }
@@ -527,4 +564,15 @@ public class SldActionBean implements ActionBean {
         }
         return new StreamingResolution("application/json",new StringReader(json.toString()));
     }
+
+    public Resolution findSLD() throws CQLException, JSONException, UnsupportedEncodingException {
+        Map<String, String> sharedData = SharedSessionData.find(sessId);
+        String cqlFilter = sharedData.get(sldId);
+        JSONArray filterArray = new JSONArray();
+        filterArray.put(cqlFilter);
+        filter = filterArray.toString();
+        log.debug(String.format("Filter (id: %s) retrieved for shared session data (%s): %s", sessId, sldId, filter));
+        return this.create();
+    }
+
 }

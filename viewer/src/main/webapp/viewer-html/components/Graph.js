@@ -74,6 +74,9 @@ Ext.define("viewer.components.Graph", {
         });
 
         this.layers = [];
+        if(!this.config.graphs){
+            this.config.graphs = [];
+        }
         for (var i = 0 ; i < this.config.graphs.length ;i ++){
             var graph = this.config.graphs[i];
             this.layers.push(graph.layer);

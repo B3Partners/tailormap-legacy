@@ -27,14 +27,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.util.DB;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -55,7 +57,7 @@ public class SelectedContentCache {
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT = "cachedExpandedSelectedContent";
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY = "cachedExpandedSelectedContentDirty";
 
-    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
+    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
 
         // Don't use cache when any of these parameters is true, cache only
         // the JSON variant used when starting up the viewer
@@ -63,11 +65,11 @@ public class SelectedContentCache {
 
         JSONObject cached = null;
         if (mustCreateNewCache(app, validXmlTags, useExpanded)) {
-            cached = createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations);
+            cached = createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations,em);
             if (!validXmlTags) {
                 ClobElement el = new ClobElement(cached.toString());
                 app.getDetails().put(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT, el);
-                setApplicationCacheDirty(app, false, useExpanded);
+                setApplicationCacheDirty(app, false, useExpanded,em);
                 Stripersist.getEntityManager().getTransaction().commit();
             }
         } else {
@@ -246,16 +248,16 @@ public class SelectedContentCache {
         return true;
     }
 
-    public JSONObject createSelectedContent(Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
+    public JSONObject createSelectedContent(Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
         Level root = app.getRoot();
         JSONObject o = new JSONObject();
         if (root != null) {
             o.put("rootLevel", root.getId().toString());
 
-            Application.TreeCache treeCache = app.loadTreeCache();
-            treeCache.initializeLevels("left join fetch l.documents");
-            treeCache.initializeApplicationLayers("left join fetch al.details");
-            Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app);
+            Application.TreeCache treeCache = app.loadTreeCache(em);
+            treeCache.initializeLevels("left join fetch l.documents",em);
+            treeCache.initializeApplicationLayers("left join fetch al.details",em);
+            Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app, em);
 
             JSONObject levels = new JSONObject();
             o.put("levels", levels);
@@ -265,33 +267,33 @@ public class SelectedContentCache {
             o.put("selectedContent", selectedContent);
 
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
 
             Collections.sort(selectedObjects, new Comparator() {
                 @Override
                 public int compare(Object lhs, Object rhs) {
                     Integer lhsIndex, rhsIndex;
-                    if (lhs instanceof Level) {
-                        lhsIndex = ((Level) lhs).getSelectedIndex();
+                    if (lhs instanceof StartLevel) {
+                        lhsIndex = ((StartLevel) lhs).getSelectedIndex();
                     } else {
-                        lhsIndex = ((ApplicationLayer) lhs).getSelectedIndex();
+                        lhsIndex = ((StartLayer) lhs).getSelectedIndex();
                     }
-                    if (rhs instanceof Level) {
-                        rhsIndex = ((Level) rhs).getSelectedIndex();
+                    if (rhs instanceof StartLevel) {
+                    rhsIndex = ((StartLevel) rhs).getSelectedIndex();
                     } else {
-                        rhsIndex = ((ApplicationLayer) rhs).getSelectedIndex();
+                        rhsIndex = ((StartLayer) rhs).getSelectedIndex();
                     }
                     return lhsIndex.compareTo(rhsIndex);
                 }
             });
             for (Object obj : selectedObjects) {
                 JSONObject j = new JSONObject();
-                if (obj instanceof Level) {
+                if (obj instanceof StartLevel) {
                     j.put("type", "level");
-                    j.put("id", ((Level) obj).getId().toString());
+                    j.put("id", ((StartLevel) obj).getLevel().getId().toString());
                 } else {
                     j.put("type", "appLayer");
-                    j.put("id", ((ApplicationLayer) obj).getId().toString());
+                    j.put("id", ((StartLayer) obj).getApplicationLayer().getId().toString());
                 }
                 selectedContent.put(j);
             }
@@ -309,15 +311,15 @@ public class SelectedContentCache {
                     if (validXmlTags) {
                         serviceId = "service_" + serviceId;
                     }
-                    services.put(serviceId, gs.toJSONObject(false, usedLayers, validXmlTags, true));
+                    services.put(serviceId, gs.toJSONObject(false, usedLayers, validXmlTags, true,em));
                 }
             }
         }
         return o;
     }
 
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache) throws JSONException {
-        JSONObject o = l.toJSONObject(false, app, null);
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em) throws JSONException {
+        JSONObject o = l.toJSONObject(false, app, null, em);
 
         Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
         o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
@@ -328,13 +330,14 @@ public class SelectedContentCache {
         }
         levels.put(levelId, o);
 
-        if (l.getSelectedIndex() != null) {
-            selectedContent.add(l);
+        StartLevel sl = l.getStartLevels().get(app);
+        if (sl != null && sl.getSelectedIndex() != null) {
+            selectedContent.add(sl);
         }
 
         for (ApplicationLayer al : l.getLayers()) {
 
-            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations);
+            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, app);
             p.put("background", l.isBackground() || parentIsBackground);
 
             Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
@@ -349,8 +352,9 @@ public class SelectedContentCache {
 
             appLayers.put(alId, p);
 
-            if (al.getSelectedIndex() != null) {
-                selectedContent.add(al);
+            StartLayer startLayer = al.getStartLayers().get(app);
+            if (startLayer != null && startLayer.getSelectedIndex() != null) {
+                selectedContent.add(startLayer);
             }
         }
 
@@ -369,7 +373,7 @@ public class SelectedContentCache {
                 Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
                 childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache);
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
             }
         }
     }
@@ -404,10 +408,14 @@ public class SelectedContentCache {
         }
     }
 
-    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded) {
+    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, EntityManager em) {
+        setApplicationCacheDirty(app, dirty, expanded, false,em);
+    }
+
+    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, Boolean onlyThisApplication, EntityManager em) {
         Set<Application> apps = new HashSet<Application>();
-        if (dirty) {
-            apps = app.getRoot().findApplications();
+        if (dirty && !onlyThisApplication) {
+            apps = app.getRoot().findApplications(em);
         } else {
             apps.add(app);
         }

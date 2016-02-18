@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -505,12 +506,12 @@ public class GeoServiceActionBean implements ActionBean {
             ((WMSService)service).setOverrideUrl(overrideUrl);
             ((WMSService)service).setException_type(exception_type);
         }
-
+        EntityManager em = Stripersist.getEntityManager();
         // Invalidate the cache of the applications using this service. Options like username/password, useProxy, etc. might have changed, which
         // affect the selectedContent
         List<Application> apps = findApplications();
         for (Application application : apps) {
-            SelectedContentCache.setApplicationCacheDirty(application, true, false);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
         }
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
         service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement(""+useProxy));
@@ -600,7 +601,8 @@ public class GeoServiceActionBean implements ActionBean {
                     service.getProtocol()));
             return new ForwardResolution(JSP);
         }
-        UpdateResult result = ((Updatable)service).update();
+        EntityManager em = Stripersist.getEntityManager();
+        UpdateResult result = ((Updatable)service).update(em);
 
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
@@ -622,7 +624,7 @@ public class GeoServiceActionBean implements ActionBean {
 
         List<Application> apps = findApplications();
         for (Application application : apps) {
-            SelectedContentCache.setApplicationCacheDirty(application, true, false);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
         }
 
         Stripersist.getEntityManager().getTransaction().commit();
@@ -672,40 +674,9 @@ public class GeoServiceActionBean implements ActionBean {
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution add() throws JSONException {
 
-        status = new WaitPageStatus();
-
-        Map params = new HashMap();
-
+        EntityManager em = Stripersist.getEntityManager();
         try {
-            if (protocol.equals(WMSService.PROTOCOL)) {
-                params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
-                params.put(WMSService.PARAM_USERNAME, username);
-                params.put(WMSService.PARAM_PASSWORD, password);
-                service = new WMSService().loadFromUrl(url, params, status);
-                ((WMSService)service).setException_type(exception_type);
-                service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement(""+useProxy));
-            } else if (protocol.equals(ArcGISService.PROTOCOL)) {
-                params.put(ArcGISService.PARAM_USERNAME, username);
-                params.put(ArcGISService.PARAM_PASSWORD, password);
-                params.put(ArcGISService.PARAM_ASSUME_VERSION, agsVersion);
-                service = new ArcGISService().loadFromUrl(url, params, status);
-            } else if (protocol.equals(ArcIMSService.PROTOCOL)) {
-                params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
-                params.put(ArcIMSService.PARAM_USERNAME, username);
-                params.put(ArcIMSService.PARAM_PASSWORD, password);
-                service = new ArcIMSService().loadFromUrl(url, params, status);
-            } else if (protocol.equals(TileService.PROTOCOL)) {
-                params.put(TileService.PARAM_SERVICENAME, serviceName);
-                params.put(TileService.PARAM_RESOLUTIONS, resolutions);
-                params.put(TileService.PARAM_SERVICEBBOX, serviceBbox);
-                params.put(TileService.PARAM_CRS, crs);
-                params.put(TileService.PARAM_IMAGEEXTENSION, imageExtension);
-                params.put(TileService.PARAM_TILESIZE, tileSize);
-                params.put(TileService.PARAM_TILINGPROTOCOL, tilingProtocol);
-                service = new TileService().loadFromUrl(url, params, status);
-            } else {
-                getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
-            }
+            addService(em);
         } catch (Exception e) {
             log.error("Exception loading " + protocol + " service from url " + url, e);
             String s = e.toString();
@@ -715,6 +686,46 @@ public class GeoServiceActionBean implements ActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het laden van de service: {2}", s));
             return new ForwardResolution(JSP);
         }
+
+        getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
+        return edit();
+    }
+
+    protected void addService(EntityManager em) throws Exception{
+        status = new WaitPageStatus();
+
+        Map params = new HashMap();
+
+        if (protocol.equals(WMSService.PROTOCOL)) {
+            params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
+            params.put(WMSService.PARAM_USERNAME, username);
+            params.put(WMSService.PARAM_PASSWORD, password);
+            service = new WMSService().loadFromUrl(url, params, status, em);
+            ((WMSService) service).setException_type(exception_type);
+            service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement("" + useProxy));
+        } else if (protocol.equals(ArcGISService.PROTOCOL)) {
+            params.put(ArcGISService.PARAM_USERNAME, username);
+            params.put(ArcGISService.PARAM_PASSWORD, password);
+            params.put(ArcGISService.PARAM_ASSUME_VERSION, agsVersion);
+            service = new ArcGISService().loadFromUrl(url, params, status, em);
+        } else if (protocol.equals(ArcIMSService.PROTOCOL)) {
+            params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
+            params.put(ArcIMSService.PARAM_USERNAME, username);
+            params.put(ArcIMSService.PARAM_PASSWORD, password);
+            service = new ArcIMSService().loadFromUrl(url, params, status, em);
+        } else if (protocol.equals(TileService.PROTOCOL)) {
+            params.put(TileService.PARAM_SERVICENAME, serviceName);
+            params.put(TileService.PARAM_RESOLUTIONS, resolutions);
+            params.put(TileService.PARAM_SERVICEBBOX, serviceBbox);
+            params.put(TileService.PARAM_CRS, crs);
+            params.put(TileService.PARAM_IMAGEEXTENSION, imageExtension);
+            params.put(TileService.PARAM_TILESIZE, tileSize);
+            params.put(TileService.PARAM_TILINGPROTOCOL, tilingProtocol);
+            service = new TileService().loadFromUrl(url, params, status, em);
+        } else {
+            getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
+        }
+
 
         if (name != null) {
             service.setName(name);
@@ -728,24 +739,21 @@ public class GeoServiceActionBean implements ActionBean {
 
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
 
-        category = Stripersist.getEntityManager().find(Category.class, category.getId());
+        category = em.find(Category.class, category.getId());
         service.setCategory(category);
         category.getServices().add(service);
 
-        Stripersist.getEntityManager().persist(service);
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.persist(service);
+        em.getTransaction().commit();
 
         newService = new JSONObject();
         newService.put("id", "s" + service.getId());
         newService.put("name", service.getName());
         newService.put("type", "service");
         newService.put("isLeaf", service.getTopLayer() == null);
-        newService.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
+        newService.put("status", "ok");
         newService.put("parentid", "c" + category.getId());
 
-        getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
-
-        return edit();
     }
 
     @DontValidate
@@ -807,12 +815,13 @@ public class GeoServiceActionBean implements ActionBean {
         sldEl.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd");
         sldEl.setAttribute("xmlns:ogc", NS_OGC);
         sldEl.setAttribute("xmlns:gml", NS_GML);
-        service.loadLayerTree();
+        EntityManager em = Stripersist.getEntityManager();
+        service.loadLayerTree(em);
 
         Queue<Layer> layerStack = new LinkedList();
         Layer l = service.getTopLayer();
         while(l != null) {
-            layerStack.addAll(service.getLayerChildrenCache(l));
+            layerStack.addAll(service.getLayerChildrenCache(l, em));
 
             if(l.getName() != null) {
                 Element nlEl = sldDoc.createElementNS(NS_SLD, "NamedLayer");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,6 +105,8 @@ public class WMSService extends GeoService implements Updatable {
      * on a simple HTTP server. According to the standard the URL in the Capabilities
      * should be used, so set this to false by default except if the user requests
      * an override.
+     *
+     * @return true when set
      */
     public Boolean getOverrideUrl() {
         return overrideUrl;
@@ -131,12 +133,16 @@ public class WMSService extends GeoService implements Updatable {
     /**
      * Load WMS metadata from URL or only check if the service is online when
      * PARAM_ONLINE_CHECK_ONLY is true.
+     *
      * @param url The location of the WMS.
      * @param params Map containing parameters, keys are finals in this class.
      * @param status For reporting progress.
+     * @param em the entity manager to use
+     * @return the service as retrieved from the url
+     * @throws java.lang.Exception if any
      */
     @Override
-    public WMSService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
+    public WMSService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
             
@@ -152,7 +158,7 @@ public class WMSService extends GeoService implements Updatable {
                 return null;
             }
             
-            wmsService.load(wms, params, status);
+            wmsService.load(wms, params, status, em);
             
             return wmsService;
         } finally {
@@ -163,9 +169,17 @@ public class WMSService extends GeoService implements Updatable {
     }
 
     /**
-     * Do the actual loading work.
+     * Does the actual loading work.
+     *
+     * @param wms WMS service
+     * @param params unused?
+     * @param status progress page
+     * @param em the entity manager to use
+     * @throws IOException when retrieving the capabilities
+     * @throws MalformedURLException if wms capabilities has improper urls
+     * @throws ServiceException if any occurs parsng the capabilities etc.
      */
-    protected void load(WebMapServer wms, Map params, WaitPageStatus status) throws IOException, MalformedURLException, ServiceException {
+    protected void load(WebMapServer wms, Map params, WaitPageStatus status, EntityManager em) throws IOException, MalformedURLException, ServiceException {
         ServiceInfo si = wms.getInfo();
         setName(si.getTitle());
         
@@ -221,7 +235,7 @@ public class WMSService extends GeoService implements Updatable {
                 try {
                     List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
 
-                    loadLayerFeatureTypes(wfsUrl, layerDescriptions);
+                    loadLayerFeatureTypes(wfsUrl, layerDescriptions, em);
                 } catch(Exception e) {
                     log.error("Failed loading feature types from WFS " + wfsUrl, e);
                 }
@@ -231,6 +245,11 @@ public class WMSService extends GeoService implements Updatable {
     
     /**
      * Construct the GeoTools WebMapServer metadata object.
+     *
+     * @return the webmapserver for this service
+     * @throws IOException when the http connection fails
+     * @throws MalformedURLException when the url is invalid
+     * @throws ServiceException when the service is invalid
      */
     protected WebMapServer getWebMapServer() throws IOException, MalformedURLException, ServiceException {
         HTTPClient client = new SimpleHttpClient();
@@ -261,17 +280,17 @@ public class WMSService extends GeoService implements Updatable {
      * from the service.
      */
     @Override
-    public UpdateResult update() {
+    public UpdateResult update(EntityManager em) {
         
         initLayerCollectionsForUpdate();
-        final UpdateResult result = new UpdateResult(this);
+        final UpdateResult result = new UpdateResult(this, em);
         
         try {
             Map params = new HashMap();
             params.put(PARAM_OVERRIDE_URL, getOverrideUrl());
             params.put(PARAM_USERNAME, getUsername());
             params.put(PARAM_PASSWORD, getPassword());
-            WMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
+            WMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80),em);
             
             if(!getUrl().equals(update.getUrl())) {
                 this.setUrl(update.getUrl());
@@ -298,13 +317,13 @@ public class WMSService extends GeoService implements Updatable {
             
             // Find auto-linked FeatureSource (manually linked feature sources
             // not updated automatically)
-            Set<FeatureSource> linkedFS = getAutomaticallyLinkedFeatureSources(getTopLayer());
+            Set<FeatureSource> linkedFS = getAutomaticallyLinkedFeatureSources(getTopLayer(), em);
             Map<String,WFSFeatureSource> linkedFSByURL = createFeatureSourceMapByURL(linkedFS); 
             
             List<SimpleFeatureType> typesToRemove = new ArrayList();
             Set<SimpleFeatureType> updatedFeatureTypes = new HashSet();
-            updateWFS(update, linkedFSByURL, updatedFeatureTypes, typesToRemove, result);            
-            updateLayers(update, linkedFSByURL, updatedFeatureTypes, result);
+            updateWFS(update, linkedFSByURL, updatedFeatureTypes, typesToRemove, result, em);            
+            updateLayers(update, linkedFSByURL, updatedFeatureTypes, result, em);
             updateLayerTree(update, result);
             
             removeOrphanLayersAfterUpdate(result);
@@ -341,12 +360,12 @@ public class WMSService extends GeoService implements Updatable {
         }
     }
     
-    private static Set<FeatureSource> getAutomaticallyLinkedFeatureSources(Layer top) {
+    private static Set<FeatureSource> getAutomaticallyLinkedFeatureSources(Layer top, EntityManager em) {
         final GeoService service = top.getService();
         final Set<FeatureSource> featureSources = new HashSet();
         top.accept(new Layer.Visitor() {
             @Override
-            public boolean visit(Layer l) {
+            public boolean visit(Layer l, EntityManager em) {
                 if(l.getFeatureType() != null) {
                     FeatureSource fs = l.getFeatureType().getFeatureSource();
                     // Do not include manually linked feature sources
@@ -356,13 +375,13 @@ public class WMSService extends GeoService implements Updatable {
                 }
                 return true;
             }
-        });
+        }, em);
         return featureSources;
     }
 
-    private void updateWFS(final WMSService updateWMS, final Map<String,WFSFeatureSource> linkedFSesByURL, Set<SimpleFeatureType> updatedFeatureTypes, Collection<SimpleFeatureType> outTypesToRemove, final UpdateResult result) {
+    private void updateWFS(final WMSService updateWMS, final Map<String,WFSFeatureSource> linkedFSesByURL, Set<SimpleFeatureType> updatedFeatureTypes, Collection<SimpleFeatureType> outTypesToRemove, final UpdateResult result, EntityManager em) {
         
-        final Set<FeatureSource> updateFSes = getAutomaticallyLinkedFeatureSources(updateWMS.getTopLayer());
+        final Set<FeatureSource> updateFSes = getAutomaticallyLinkedFeatureSources(updateWMS.getTopLayer(), em);
         
         for(FeatureSource fs: updateFSes) {
             
@@ -418,13 +437,13 @@ public class WMSService extends GeoService implements Updatable {
      * <p>
      * Grouping layers (no name) are ignored.
      */
-    private void updateLayers(final WMSService update, final Map<String,WFSFeatureSource> linkedFSesByURL, final Set<SimpleFeatureType> updatedFeatureTypes, final UpdateResult result) {
+    private void updateLayers(final WMSService update, final Map<String,WFSFeatureSource> linkedFSesByURL, final Set<SimpleFeatureType> updatedFeatureTypes, final UpdateResult result, EntityManager em) {
         
         final WMSService updatingWMSService = this;
         
         update.getTopLayer().accept(new Layer.Visitor() {
             @Override
-            public boolean visit(Layer l) {
+            public boolean visit(Layer l, EntityManager em) {
                 if(l.getName() == null) {
                     // Grouping layer only
                     return true;
@@ -493,7 +512,7 @@ public class WMSService extends GeoService implements Updatable {
                 }
                 return true;
             }
-        });
+        }, em);
     }
     
     /**
@@ -696,8 +715,9 @@ public class WMSService extends GeoService implements Updatable {
      * @param wfsUrl the WFS URL
      * @param layerDescriptions description of which feature types of the WFS are
      *   used in layers of this service according to DescribeLayer
+     * @param em the entity manager to use
      */
-    public void loadLayerFeatureTypes(String wfsUrl, List<LayerDescription> layerDescriptions) {
+    public void loadLayerFeatureTypes(String wfsUrl, List<LayerDescription> layerDescriptions, EntityManager em) {
         Map p = new HashMap();
         p.put(WFSDataStoreFactory.URL.key, wfsUrl);
         p.put(WFSDataStoreFactory.USERNAME.key, getUsername());
@@ -709,7 +729,7 @@ public class WMSService extends GeoService implements Updatable {
             
             boolean used = false;
             for(LayerDescription ld: layerDescriptions) {
-                Layer l = getLayer(ld.getName());
+                Layer l = getLayer(ld.getName(), em);
                 if(l != null) {
                     // Prevent warning when multiple queries for all the same type name
                     // by removing duplicates, but keeping sort order to pick the first
@@ -720,7 +740,7 @@ public class WMSService extends GeoService implements Updatable {
                     }
                     // Queries is not empty, checked before this method is called
                     SimpleFeatureType sft = wfsFs.getFeatureType(uniqueQueries.first());
-                    if(sft != null) {
+                    if (sft != null) {
                         // Type name may not exist in the referenced WFS
                         l.setFeatureType(sft);
                         log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());

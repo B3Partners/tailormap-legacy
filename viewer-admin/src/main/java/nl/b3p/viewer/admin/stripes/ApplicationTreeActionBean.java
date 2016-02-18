@@ -144,7 +144,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
-                    j.put("name", layer.getDisplayName());
+                    j.put("name", layer.getDisplayName(em));
                     children.put(j);
                 }
             } 
@@ -172,10 +172,10 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                 j.put("id", "al" + appl.getId());
                 j.put("type", "layer");
                 j.put("isLeaf", true);
-                j.put("name", appl.getDisplayName());
+                j.put("name", appl.getDisplayName(em));
                 children.put(j);
 
-                Layer serviceLayer = appl.getService().getLayer(appl.getLayerName());
+                Layer serviceLayer = appl.getService().getLayer(appl.getLayerName(), em);
                 j.put("status", serviceLayer != null && appl.getService().isMonitoringStatusOK() ? "ok" : "error");
             }
         }
@@ -268,7 +268,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
         em.persist(l);
         em.persist(parent);
-        SelectedContentCache.setApplicationCacheDirty(application, true,false);
+        SelectedContentCache.setApplicationCacheDirty(application, true,false,em);
         application.authorizationsModified();
         em.getTransaction().commit();
 

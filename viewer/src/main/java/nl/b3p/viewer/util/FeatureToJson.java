@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 B3Partners B.V.
+ * Copyright (C) 2013-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,9 +81,9 @@ public class FeatureToJson {
      * @param sort The attribute name that is used to sort
      * @param dir Sort direction (DESC or ASC)
      * @return JSONArray with features.
-     * @throws IOException
-     * @throws JSONException
-     * @throws Exception
+     * @throws IOException if any
+     * @throws JSONException if transforming to json fails
+     * @throws Exception if any
      */
     public JSONArray getJSONFeatures(ApplicationLayer al,SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir) throws IOException, JSONException, Exception{
         Map<String,String> attributeAliases = new HashMap<String,String>();
@@ -161,7 +161,9 @@ public class FeatureToJson {
             }
         }
         //if edit and not yet set
-        if(edit && j.optString(FID,null)==null) {
+        // removed check for edit variable here because we need to compare features in edit component and feature info attributes
+        // was if(edit && j.optString(FID,null)==null) {
+        if(j.optString(FID,null)==null) {
             String id = f.getID();
             j.put(FID, id);
         }

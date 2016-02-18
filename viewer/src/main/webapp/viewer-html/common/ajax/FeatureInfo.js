@@ -60,8 +60,8 @@ Ext.define("viewer.FeatureInfo", {
                 successFunction(response);
             },
             failure: function(result) {
-                if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                if (failureFunction !== undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText, scope);
                 }
             }
         });

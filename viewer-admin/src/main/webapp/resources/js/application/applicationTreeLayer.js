@@ -71,13 +71,13 @@ Ext.onReady(function() {
         bodyPadding: '8px 10px',
         collapsedCls: 'headerCollapsed',
         fieldDefaults: {
-            labelWidth: 150,
+            labelWidth: 170,
             size: 40
         },
         listeners: {
             beforeexpand: function(panel){
                 Ext.Array.each(panel.findParentByType('container').items.items, function(item) {
-                    if(item.collapse){
+                    if(item.collapse && item.getItemId() !== "autorisatie-panel") {
                         item.collapse();
                     }
                 });
@@ -258,6 +258,9 @@ Ext.onReady(function() {
         if (editAllowed && editable){
             var data =[];
             Ext.Array.each(attributes, function(attribute) {
+                if(attribute.featureType !== applicationLayerFeatureType) {
+                    return;
+                }
                 data.push({
                     name: attribute.alias || attribute.name,
                     value: attribute.name
@@ -274,6 +277,7 @@ Ext.onReady(function() {
             editPanelItems.push({
                 xtype: 'panel',
                 title: 'Autorisatie',
+                itemId: 'autorisatie-panel',
                 style: {
                     "margin-top": "5px"
                 },
@@ -538,14 +542,21 @@ function getAttributeEditSettings(attribute, name) {
     if(attribute.valueList && attribute.valueList === "dynamic") {
         featureSourceStore.load();
     }
-    
+
+    var disableUserEdit = false;
+    if (attribute.disableUserEdit) {
+        disableUserEdit = true;
+    }
     return [
         {
-            fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
+            fieldLabel: 'Toon in Edit component', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
                 change: function (field, newval) {
                     editPanelTitle(field.findParentByType('form'), name, newval);
                 }
             }
+        },
+        {
+            fieldLabel: 'Bewerkbaar', value: disableUserEdit, name: 'disableUserEdit', store: [[false, 'Ja'], [true, 'Nee (alleen lezen)']], xtype: 'combobox'
         },
         {
             fieldLabel: 'Alias', name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
@@ -673,6 +684,12 @@ function getAttributeEditSettings(attribute, name) {
         },
         {
             fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'
+        },
+        {
+            fieldLabel: 'Alleen keuze uit lijst', name: 'allowValueListOnly', inputValue: 1, checked: attribute.allowValueListOnly || 0, xtype: 'checkbox'
+        },
+        {
+            fieldLabel: 'Geen lege waarde toestaan', name: 'disallowNullValue', inputValue: 1, checked: attribute.disallowNullValue || 0, xtype: 'checkbox'
         }
     ];
 }
@@ -684,8 +701,8 @@ function toggleStaticDynamic(type, attribute) {
 }
 
 function getAttributeEditHeight(type) {
-    var STATIC_HEIGHT = 190;
-    var DYNAMIC_HEIGHT = 290;
+    var STATIC_HEIGHT = 280;
+    var DYNAMIC_HEIGHT = 370;
     return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2015 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
@@ -46,6 +47,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -254,12 +256,12 @@ public class AttributesActionBean implements ActionBean {
 
     @Before(stages=LifecycleStage.EventHandling)
     public void checkAuthorization() {
-
+        EntityManager em = Stripersist.getEntityManager();
         if(application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
+                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
             unauthorized = true;
         }
-        userAllowedToEditGeom = Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest());
+        userAllowedToEditGeom = Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(),em);
      }
 
     public Resolution attributes() throws JSONException {
@@ -277,11 +279,11 @@ public class AttributesActionBean implements ActionBean {
             appLayer.addAttributesJSON(json, true);
             if (!userAllowedToEditGeom) {
                 // set editable to false on geometry attribute when editing of the
-                //  geometry has been disabled on the layer
+                //  geometry has been disabled on the layer fot the current user
                 JSONArray attr = json.getJSONArray("attributes");
                 if (json.has("geometryAttributeIndex")) {
                     JSONObject geomAttr = attr.getJSONObject(json.getInt("geometryAttributeIndex"));
-                    geomAttr.put("editable", false);
+                    geomAttr.put("userAllowedToEditGeom", userAllowedToEditGeom);
                 }
             }
             json.put("success", Boolean.TRUE);
@@ -303,7 +305,10 @@ public class AttributesActionBean implements ActionBean {
 
     /**
      * Call this to clear the "total feature count" cached value when a new feature
-     * is added to a feature source. Only clears the cache for the current session.
+     * is added to a feature source. Only clears the cache for the
+     * current session.
+     *
+     * @param context the context that holds the session data
      */
     public static void clearTotalCountCache(ActionBeanContext context) {
         HttpSession sess = context.getRequest().getSession();

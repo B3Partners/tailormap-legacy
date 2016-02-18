@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     
     @Validate
     private String mashupName;
+    
+    @Validate
+    private boolean mustUpdateComponents;
     
     @Validate
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
@@ -153,6 +156,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     public void setMashupMustPointToPublishedVersion(boolean mashupMustPointToPublishedVersion) {
         this.mashupMustPointToPublishedVersion = mashupMustPointToPublishedVersion;
+    }
+
+    public boolean isMustUpdateComponents() {
+        return mustUpdateComponents;
+    }
+
+    public void setMustUpdateComponents(boolean mustUpdateComponents) {
+        this.mustUpdateComponents = mustUpdateComponents;
     }
     //</editor-fold>
     
@@ -338,14 +349,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             bindAppProperties();
 
             Application copy = application.deepCopy();
-
+            EntityManager em = Stripersist.getEntityManager();
             // don't save changes to original app
-            Stripersist.getEntityManager().detach(application);
+            em.detach(application);
 
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().persist(copy);
-            Stripersist.getEntityManager().flush();
-            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE,false);
+            em.persist(copy);
+            em.persist(copy);
+            em.flush();
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE,false,em);
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
@@ -372,19 +383,15 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public Resolution mashup(){
         ValidationErrors errors = context.getValidationErrors();
         try {
-            Level root = application.getRoot();
-            // Prevent copy-ing levels/layers
-            application.setRoot(null);
-            Application mashup = application.deepCopy();
-            Stripersist.getEntityManager().detach(application);
-            mashup.setRoot(root);
-            mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
-            mashup.setName(mashup.getName() + "_" + mashupName);
-            Stripersist.getEntityManager().persist(mashup);
-            Stripersist.getEntityManager().getTransaction().commit();
+            EntityManager em = Stripersist.getEntityManager();
+            Application mashup = application.createMashup(mashupName, em,mustUpdateComponents);
+            em.persist(mashup);
+            em.getTransaction().commit();
+
             setApplication(mashup);
         } catch (Exception ex) {
-                errors.add("Fout", new SimpleError("De mashup kan niet worden gemaakt."));
+            log.error("Error creating mashup",ex);
+            errors.add("Fout", new SimpleError("De mashup kan niet worden gemaakt."));
         }
         return new RedirectResolution(ApplicationSettingsActionBean.class);
     }
@@ -411,8 +418,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                     .setParameter("level", oldPublished.getRoot()).setParameter("oldId", oldPublished.getId()).getResultList();
                 for (Application mashup : mashups) {
                     mashup.setRoot(application.getRoot());//nog iets doen met veranderde layerids uit cofniguratie
-                    SelectedContentCache.setApplicationCacheDirty(mashup,true, false);
-                    mashup.transferMashup(oldPublished);
+                    SelectedContentCache.setApplicationCacheDirty(mashup,true, false,em);
+                    mashup.transferMashup(oldPublished,em);
                     em.persist(mashup);
                 }
             }
@@ -430,7 +437,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
       /**
      * Checks if a Application with given name already exists and if needed
      * returns name with sequence number in brackets added to make it unique.
+     *
      * @param name Name to make unique
+     * @param version version to check
+     *
      * @return A unique name for a FeatureSource
      */
     public static String findUniqueVersion(String name, String version) {

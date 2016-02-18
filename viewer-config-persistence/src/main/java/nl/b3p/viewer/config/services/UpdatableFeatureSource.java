@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 B3Partners B.V.
+ * Copyright (C) 2013-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,12 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class UpdatableFeatureSource extends FeatureSource{    
     private static final Log log = LogFactory.getLog(UpdatableFeatureSource.class);
+
     /**
-     * Update this featuresource
+     * Update this featuresource.
+     *
+     * @return the result of the update
+     * @throws java.lang.Exception if any
      */
     public FeatureSourceUpdateResult update() throws Exception{
         final FeatureSourceUpdateResult result = new FeatureSourceUpdateResult(this);         
@@ -79,7 +83,12 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
     }
     
     /**
-     * return a list of featuretypes that are currently present in the FeatureSource
+     * return a list of featuretypes that are currently present in the
+     * FeatureSource.
+     *
+     * @param wps status page to monitor featuretype creation
+     * @return a list of created featuretypes
+     * @throws java.lang.Exception if any
      */
     public abstract List<SimpleFeatureType> createFeatureTypes(WaitPageStatus wps) throws Exception;
 }

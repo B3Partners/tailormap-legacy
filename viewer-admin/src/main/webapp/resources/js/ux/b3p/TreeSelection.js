@@ -179,11 +179,11 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                     me.removeNodes([ record ]);
                 },
                 itemclick: function(view, record, item, index, event, eOpts) {
-                    if(me.onlyMoveRootLevels && me.onlyRootLevels(me.selectedlayers.getSelectionModel().getSelection())) {
-                        me.disableMoveButtons(false);
-                    } else {
-                        me.disableMoveButtons(true);
+                    var disableButtons = false;
+                    if(me.onlyMoveRootLevels && !me.onlyRootLevels(me.selectedlayers.getSelectionModel().getSelection())) {
+                        disableButtons = true;
                     }
+                    me.disableMoveButtons(disableButtons);
                 }
             }
         });
@@ -256,43 +256,26 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         return {
             plugins: {
                 ptype: 'treeviewdragdrop',
-                appendOnly: true,
+                appendOnly: false,
                 allowContainerDrops: true,
                 allowParentInserts: true,
-                sortOnDrop: true,
-                dropZone: {
-                    // We always allow dragging over node
-                    onNodeOver: function() {
-                        return Ext.dd.DropZone.prototype.dropAllowed;
-                    },
-                    // On nodeDrop is executed when node is dropped on other node in tree
-                    onNodeDrop: function(targetNode, dragZone, e, data) {
-                        // We are in the selection tree && target and dragged node are both in same tree
-                        if(treeType === 'selection' && targetNode.offsetParent === data.item.offsetParent) {
-                            // If moveOnlyRootLevels is configured, check if we only selected root levels,
-                            // else return false
-                            if(me.onlyMoveRootLevels && !me.onlyRootLevels(data.records)) {
-                                return false;
-                            }
-                            // Check where the element is dropped
-                            var bounds = targetNode.getBoundingClientRect();
-                            var dropY = e.getY();
-                            // If dropped at the top 50% of the element, append above
-                            // else append below
-                            var halfWay = bounds.top + (bounds.height / 2);
-                            me.moveNodesToPosition(data, dropY >= halfWay);
-                            return true;
-                        }
-                        me.handleDrag(treeType, data);
-                        return true;
-                    }
-                }
+                sortOnDrop: true
             },
             listeners: {
                 // beforedrop is executed when node is dropped on container (so not on another node but on 'empty' space'
-                beforedrop: function(node, data, overModel, dropPosition, dropHandlers, eOpts) {
+                beforedrop: function(targetNode, data, overModel, dropPosition, dropHandlers, eOpts) {
                     // We cancel the drop (do not append the actual layers because we still need some validation)
                     dropHandlers.cancelDrop();
+                    // We are in the selection tree && target and dragged node are both in same tree
+                    if(treeType === 'selection' && targetNode.offsetParent === data.item.offsetParent) {
+                        // If moveOnlyRootLevels is configured, check if we only selected root levels,
+                        // else return false
+                        if(me.onlyMoveRootLevels && !me.onlyRootLevels(data.records)) {
+                            return false;
+                        }
+                        me.moveNodesToPosition(data, dropPosition === 'after');
+                        return true;
+                    }
                     // Add/remove layers
                     me.handleDrag(treeType, data);
                 }
@@ -315,13 +298,12 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     },
     
     onlyRootLevels: function(records) {
-        var onlyRootLevels = true;
         for(var i = 0; i < records.length; i++) {
             if(records[i].parentNode.parentNode !== null) {
-                onlyRootLevels = false;
+                return false;
             }
         }
-        return onlyRootLevels;
+        return true;
     },
 
     disableMoveButtons: function(disable) {

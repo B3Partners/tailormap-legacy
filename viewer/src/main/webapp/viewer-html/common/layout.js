@@ -559,7 +559,7 @@ Ext.define('viewer.LayoutManager', {
                 }
                 compFlex = 1;
                 // If a height is set in the viewer admin then the component will have a fixed height, otherwise flex
-                if(me.componentsConfig.hasOwnProperty(component.name) && me.componentsConfig[component.name].config.hasOwnProperty('componentHeight')) {
+                if(me.componentsConfig.hasOwnProperty(component.name) && me.componentsConfig[component.name].config.hasOwnProperty('componentHeight') && me.componentsConfig[component.name].config.componentHeight !== null) {
                     compFlex = 0;
                     compStyle.height = parseInt(me.componentsConfig[component.name].config.componentHeight, 10) + 'px';
                 }

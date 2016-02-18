@@ -66,6 +66,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="${contextPath}/viewer-html/components/resources/css/featureinfo.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/relatedDocuments.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/simpleFilter.css" rel="stylesheet">
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>
@@ -108,6 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/ClearTrigger.js"></script>
 
                 <c:set var="scriptDir" value="${contextPath}/viewer-html/common/ajax"/>
                 <script type="text/javascript" src="${scriptDir}/ServiceInfo.js"></script>
@@ -244,7 +246,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
                 "advancedcsw":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean" event="advancedSearch"/></js:quote>,
                 "unique":             <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.UniqueValuesActionBean"/></js:quote>,
-                "twitter":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>,
+                // "twitter":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>, 
                 "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>,
                 "proxy":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ProxyActionBean"/></js:quote>,
                 "datastorespinup":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DataStoreSpinupActionBean"/></js:quote>,
@@ -370,5 +372,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:forEach>
         <div id="wrapper" style="width: 100%; height: 100%; max-width: ${maxWidth}; max-height: ${maxHeight}; margin-left: auto; margin-right: auto; padding: ${margin}; background-color: ${backgroundColor}; background-image: ${backgroundImage}; background-repeat: ${backgroundRepeat}; background-position: ${backgroundPosition};"></div>
 
+        <%@include file="/WEB-INF/jsp/app_overrides.jsp"%>
     </body>
 </html>
