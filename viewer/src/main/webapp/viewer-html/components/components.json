@@ -302,7 +302,7 @@
         restrictions: ["top_menu"],
 
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "PreviousExtent"},
+            propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Previous Extent"}
         },
         notInCombinationWith: ["OpenLayersMap"]
@@ -319,7 +319,7 @@
         restrictions: ["top_menu"],
 
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "NextExtent"},
+            propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Next Extent"}
         },
         notInCombinationWith: ["OpenLayersMap"]

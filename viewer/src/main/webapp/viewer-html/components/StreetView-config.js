@@ -37,7 +37,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Tooltip',
                 name: 'tooltip',
-                value: config.tooltip,
+                value: config.tooltip || 'Streetview',
                 labelWidth:me.labelWidth
             
             },{

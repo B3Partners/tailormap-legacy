@@ -31,7 +31,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         title: "",
         nonSticky:null,
         titlebarIcon : "",
-        tooltip : ""
+        tooltip : "Streetview"
     },
     toolMapClick: null,
     markerName:null,

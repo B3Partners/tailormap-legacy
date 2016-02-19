@@ -23,6 +23,7 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "Google Navigation",
+        tooltip: "Pan(slepen), zoom(dubbel klikken) en identify(enkele klik)",
         navigationPanel : true
     },
     navComp: null,

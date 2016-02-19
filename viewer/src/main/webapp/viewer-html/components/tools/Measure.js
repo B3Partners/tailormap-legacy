@@ -25,7 +25,8 @@
 Ext.define ("viewer.components.tools.Measure",{
     extend: "viewer.components.tools.Tool",
     config: {},
-    constructor: function (conf){
+    constructor: function (conf) {
+        viewer.components.tools.Measure.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         conf.frameworkOptions = {
             persist: true,
