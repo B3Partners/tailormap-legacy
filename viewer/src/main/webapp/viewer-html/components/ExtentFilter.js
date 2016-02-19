@@ -48,6 +48,6 @@ Ext.define ("viewer.components.ExtentFilter",{
         });
     },
     getExtComponents: function() {
-        return [ this.form.getId() ];
+        return [];
     }
 });
