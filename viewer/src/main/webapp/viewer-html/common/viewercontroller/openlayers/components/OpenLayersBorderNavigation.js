@@ -77,16 +77,21 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
             setTimeout(function(){me.resize();},50);
             return;
         }
-        var height  = Ext.select(".olMap").item(0).getHeight();
-        var width  = Ext.select(".olMap").item(0).getWidth();
-        
+
+        var mapEl = Ext.select(".olMap").item(0);
+        var height  = mapEl.getHeight();
+        var width  = mapEl.getWidth();
+        var top = mapEl.getTop(/*local=*/true);
+
         var halfwayHeight = Number((height-this.buttonSize)/2);
         var halfwayWidth = Number((width-this.buttonSize)/2);
         this.north.setStyle("top","0px");
         this.north.setStyle("left",halfwayWidth+"px");
-        
+
         //set width of top panel if the border nav is added. Otherwise the panel is on top of the north button.
-        Ext.get(this.config.viewerController.mapComponent.contentTop).setStyle("width",halfwayWidth+"px");
+        if(top <= this.buttonSize) {
+            Ext.get(this.config.viewerController.mapComponent.contentTop).setStyle("width", halfwayWidth + "px");
+        }
         
         this.south.setStyle("top",height-this.buttonSize+"px");
         this.south.setStyle("left",halfwayWidth+"px");
