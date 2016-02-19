@@ -28,6 +28,14 @@
             <url>http://repo.b3p.nl/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+    <licenses>
+        <license>
+            <distribution>repo</distribution>
+            <name>GNU General Public License v3.0</name>
+            <comments>For any parts of the Flamingo codebase</comments>
+            <url>https://raw.githubusercontent.com/flamingo-geocms/flamingo/master/LICENSE.txt</url>
+        </license>
+    </licenses>
     <properties>
         <flamingo.version>4.6.2-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.7</project.build.sourceVersion>
