@@ -169,7 +169,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 inputValue: true,
                 name: 'showAfterSelectedContentChange',
                 checked: config.showAfterSelectedContentChange !== undefined ? config.showAfterSelectedContentChange : false,
-                // value: true,
+                labelWidth:me.labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Aangevinkte kaartlagen onthouden<br />(werkt alleen voor applicatie lagen)',
+                inputValue: true,
+                name: 'persistCheckedLayers',
+                checked: config.persistCheckedLayers !== undefined ? config.persistCheckedLayers : false,
                 labelWidth:me.labelWidth
             }],
             renderTo: parentid

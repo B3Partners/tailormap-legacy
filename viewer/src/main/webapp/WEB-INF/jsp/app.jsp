@@ -110,6 +110,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ClearTrigger.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/LocalStorage.js"></script>
 
                 <c:set var="scriptDir" value="${contextPath}/viewer-html/common/ajax"/>
                 <script type="text/javascript" src="${scriptDir}/ServiceInfo.js"></script>

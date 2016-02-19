@@ -42,6 +42,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     registeredSnappingLayers: [],
     /**
+     * List of layers for this application and whether the user has them checked/unchecked
+     */
+    savedCheckedState: {},
+    /**
      * Creates a ViewerController and initializes the map container.
      *
      * @param {String} viewerType Currently only the value "flamingo" and "openlayers" are supported.
@@ -63,6 +67,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.app = app;
 
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));
+
+        this.savedCheckedState = this.restoreSavedCheckedState();
 
         var logLevel=viewer.components.Logger.LEVEL_ERROR;
         if (this.isDebug()){
@@ -598,8 +604,73 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layer = this.getOrCreateLayer(appLayer);
 
         if (layer){
-            this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
+            this.mapComponent.getMap().setLayerVisible(layer, this.getLayerChecked(appLayer));
         }
+    },
+
+    /**
+     * Get the key under which the checked layers are stored
+     * @returns {string}
+     */
+    getStorageKey: function() {
+        return ["checkedlayers", this.getApplicationName(), "v", this.getApplicationVersion()].join("_");
+    },
+
+    /**
+     * Returns the checked state for an appLayer. If state is saved return saved state, else return default state
+     * @param appLayer
+     * @returns {boolean}
+     */
+    getLayerChecked: function(appLayer) {
+        var layerid = "" + appLayer.id;
+        if(!this.savedCheckedState.hasOwnProperty(layerid)) {
+            return appLayer.checked;
+        }
+        return this.savedCheckedState[layerid];
+    },
+
+    /**
+     * Saves the checked state of an appLayer to the localstorage
+     * @param {Object} appLayer
+     * @param {bool} checked
+     */
+    saveCheckedState: function(appLayer, checked) {
+        var layerid = "" + appLayer.id;
+        this.savedCheckedState[layerid] = checked;
+        // Especially when the TOC is started multiple calls to this function are made
+        // so a small timeout is added before persisting to localstorage
+        if(this._persistTimer) window.clearTimeout(this._persistTimer);
+        this._persistTimer = window.setTimeout((function() {
+            viewer.components.LocalStorage.setItem(this.getStorageKey(), this.savedCheckedState);
+        }).bind(this), 150);
+    },
+
+    /**
+     * Restores the state of the checked layers from localstorage. Also checks current appLayers and removes
+     * any layers that are not present in the applications appLayers
+     * @returns {Object}
+     */
+    restoreSavedCheckedState: function() {
+        var storedLayers = viewer.components.LocalStorage.getItem(this.getStorageKey());
+        var checkedLayers = {};
+        if(storedLayers === null) {
+            return checkedLayers;
+        }
+        var appLayers = Ext.Object.getKeys(this.app.appLayers);
+        for(var layerid in storedLayers) if(storedLayers.hasOwnProperty(layerid)) {
+            if(Ext.Array.indexOf(appLayers, layerid) !== -1) {
+                checkedLayers[layerid] = storedLayers[layerid];
+            }
+        }
+        return checkedLayers;
+    },
+
+    /**
+     * Remove saved checked state from localstorage
+     */
+    removeSavedCheckedState: function() {
+        this.savedCheckedState = {};
+        viewer.components.LocalStorage.removeItem(this.getStorageKey());
     },
 
     /**
@@ -1704,6 +1775,22 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     getMapId: function() {
         return this.layoutManager.getMapId();
+    },
+
+    /**
+     * Get the application name
+     * @returns string
+     */
+    getApplicationName: function() {
+        return this.app.name;
+    },
+
+    /**
+     * Get the application version
+     * @returns string
+     */
+    getApplicationVersion: function() {
+        return this.app.version;
     },
     
     /**
