@@ -73,7 +73,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype: 'numberfield',
             fieldLabel: 'Buffer zoom gebied afstand (kaart eenheden / meter)',
             name: 'zoomToBuffer',
-            value: this.configObject.zoomBuffer || 10,
+            value: this.configObject.zoomToBuffer || 10,
             minValue: 0,
             step: 10,
             labelWidth: this.labelWidth

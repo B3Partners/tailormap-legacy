@@ -151,7 +151,7 @@ Ext.define ("viewer.components.AttributeList",{
                         xtype: 'button',
                         style: { marginLeft: '5px' },
                         itemId: 'zoomToAll',
-                        text: 'Zoom naar alle attributen',
+                            text: 'Zoom naar alle features',
                         disabled: true,
                         scope: this,
                         handler: this.zoomToAllFeatures,
