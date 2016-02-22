@@ -1,0 +1,8 @@
+.zoom-to-feature > div {
+    padding: 0;
+}
+.zoom-to-feature a {
+    width: 24px;
+    height: 24px;
+    display: block;
+}

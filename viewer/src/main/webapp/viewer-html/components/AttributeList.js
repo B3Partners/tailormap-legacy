@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,13 +34,16 @@ Ext.define ("viewer.components.AttributeList",{
         label: "",
         defaultDownload: "SHP",
         autoDownload: false,
-        downloadParams: ""
+        downloadParams: "",
+        addZoomTo: false,
+        zoomToBuffer: 10
     },
     appLayer: null,
     featureService: null,
     layerSelector:null,
     topContainer: null,
     schema: null,
+    featureExtentService: null,
     constructor: function (conf){
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
@@ -115,7 +118,6 @@ Ext.define ("viewer.components.AttributeList",{
                 id: this.name + 'LayerSelectorPanel',
                 xtype: "container",
                 padding: "4px",
-                width: '100%',
                 height: 36,
                 items: [
                     this.layerSelector.combobox
@@ -124,30 +126,41 @@ Ext.define ("viewer.components.AttributeList",{
                 id: this.name + 'mainGridPanel',
                 xtype: "container",
                 autoScroll: true,
-                width: '100%',
-                flex: 1
+                flex: 1,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                }
             },{
                 id: this.name + 'mainPagerPanel',
                 xtype: "container",
-                width: '100%',
                 height: 43
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
-                width: '100%',
                 height: MobileManager.isMobile() ? 45 : 32,
                 style: {
                     marginTop: '10px',
                     marginRight: '10px'
                 },
                 layout: {
-                    type:'hbox',
-                    pack:'end'
+                    type:'hbox'
                 },
                 items: [
-                     {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
+                    {
+                        xtype: 'button',
+                        style: { marginLeft: '5px' },
+                        itemId: 'zoomToAll',
+                            text: 'Zoom naar alle features',
+                        disabled: true,
+                        scope: this,
+                        handler: this.zoomToAllFeatures,
+                        hidden: !this.config.addZoomTo
+                    },
+                    { xtype: 'container', flex: 1 },
+                    {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
                              this.download();
-                     }},
+                    }},
                     {
                         xtype: "combobox",
                         disabled:true,
@@ -214,6 +227,16 @@ Ext.define ("viewer.components.AttributeList",{
         }
         this.popup.show();
     },
+    showWindowForLayer: function(layer) {
+        this.showWindow();
+        var listener = this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, function() {
+            if(this.layerSelector.hasValue(layer)) {
+                this.layerSelector.setValue(layer);
+            }
+            listener.destroy();
+        }, this, { destroyable: true });
+        this.layerSelector.initLayers();
+    },
     clear: function() {
         for(var gridId in this.grids) {
             if(!this.grids.hasOwnProperty(gridId)) {
@@ -262,6 +285,9 @@ Ext.define ("viewer.components.AttributeList",{
     layerChanged : function (appLayer){
         if(!appLayer || !this.popup.isVisible()) {
             return true;
+        }
+        if(this.config.addZoomTo) {
+            Ext.ComponentQuery.query('#zoomToAll')[0].setDisabled(!this.hasGeometry(appLayer));
         }
         this.loadAttributes(appLayer);
         if(this.layerSelector.getVisibleLayerCount() === 1 && this.config.autoDownload) {
@@ -411,12 +437,33 @@ Ext.define ("viewer.components.AttributeList",{
                 columns.push({
                     header:colName,
                     dataIndex: "c" + attIndex,
-                    flex: 1,
+                    // flex: 1,
+                    shrinkWrap: true,
+                    maxWidth: 200,
                     filter: {
                         xtype: 'textfield'
                     }
                 });
             }
+        }
+        if(this.hasGeometry(appLayer) && this.config.addZoomTo) {
+            attributeList.unshift({
+                name: "__fid",
+                type: "string"
+            });
+            columns.unshift({
+                header: "",
+                dataIndex: "__fid",
+                sortable: false,
+                hideable: false,
+                menuDisabled: true,
+                width: 24,
+                maxWidth: 24,
+                tdCls: 'zoom-to-feature',
+                renderer: function(fid) {
+                    return '<a href="#" class="x-grid-filters-icon x-grid-filters-find"></a>';
+                }
+            });
         }
         var modelName = name + appLayer.id + 'Model';
         if (!this.schema.hasEntity(modelName)) {
@@ -552,6 +599,37 @@ Ext.define ("viewer.components.AttributeList",{
                 ]
             });
         }
+        var listeners = {
+            expandbody : {
+                scope: me,
+                fn: function(rowNode,record,expandRow,eOpts,recordIndex){
+                    this.onExpandRow(rowNode,record,expandRow,eOpts,recordIndex);
+                }
+            },
+            collapsebody: {
+                scope: me,
+                fn: function(rowNode,record,expandRow,eOpts,recordIndex){
+                    this.onCollapseBody(rowNode,record,expandRow,eOpts,recordIndex);
+                }
+            },
+            refresh: function(dataview) {
+                var cols = dataview.panel.columns;
+                for(var i = 0; i < cols.length; i++) {
+                    cols[i].autoSize();
+                }
+                dataview.panel.updateLayout();
+            }
+        };
+        if(this.hasGeometry(appLayer) && this.config.addZoomTo) {
+            listeners.cellclick = {
+                scope: me,
+                fn: function(grid, td, cellIdx, record) {
+                    if((td.className || "").indexOf("zoom-to-feature") !== -1) {
+                        this.zoomToFeature(record.getData());
+                    }
+                }
+            };
+        }
         var g = Ext.create('Ext.grid.Panel',  {
             id: name + 'Grid',
             store: store,
@@ -560,20 +638,7 @@ Ext.define ("viewer.components.AttributeList",{
             viewConfig:{
                 trackOver: false,
                 enableMouseOverOverrideFix: true, // custom configuration option used in override below
-                listeners: {
-                    expandbody : {
-                        scope: me,
-                        fn: function(rowNode,record,expandRow,eOpts,recordIndex){
-                            this.onExpandRow(rowNode,record,expandRow,eOpts,recordIndex);
-                        }
-                    },
-                    collapsebody: {
-                        scope: me,
-                        fn: function(rowNode,record,expandRow,eOpts,recordIndex){
-                            this.onCollapseBody(rowNode,record,expandRow,eOpts,recordIndex);
-                        }
-                    }
-                }
+                listeners: listeners
             }
         });
         Ext.getCmp(name + 'GridPanel').add(g);
@@ -597,6 +662,58 @@ Ext.define ("viewer.components.AttributeList",{
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
         }
+    },
+    hasGeometry: function(appLayer) {
+        return (appLayer.hasOwnProperty("geometryAttribute") && typeof appLayer.geometryAttribute !== "undefined" && appLayer.geometryAttribute !== null && appLayer.geometryAttribute !== "");
+    },
+    zoomToFeature: function(feature) {
+        if (this.featureExtentService === null) {
+            this.featureExtentService = Ext.create('viewer.FeatureExtent');
+        }
+        this.featureExtentService.getExtentForFeatures(
+                /*featureIds=*/feature.__fid,
+                /*appLayer=*/this.layerSelector.getValue(),
+                this.config.zoomToBuffer,
+                /*successFn=*/(function (extent) {
+                    var e = Ext.create("viewer.viewercontroller.controller.Extent", extent.minx, extent.miny, extent.maxx, extent.maxy);
+                    this.config.viewerController.mapComponent.getMap().zoomToExtent(e);
+            }).bind(this),
+            /*failedFn=*/function(msg) {
+                console.log(msg);
+            }
+        );
+    },
+    zoomToAllFeatures: function(btn) {
+        if (!this.config.addZoomTo) {
+            return;
+        }
+        var appLayer = this.layerSelector.getValue();
+        if (!this.hasGeometry(appLayer)) {
+            btn.setDisabled(true);
+            return;
+        }
+        if (this.featureExtentService === null) {
+            this.featureExtentService = Ext.create('viewer.FeatureExtent');
+        }
+
+        var store =  this.grids.main.store;
+        var ids = [];
+        store.each(function(feature){
+            ids.push(feature.data.__fid);
+        });
+
+        this.featureExtentService.getExtentForFeatures(
+             ids,
+             this.layerSelector.getValue(),
+                this.config.zoomToBuffer,
+             (function (extent) {
+                 var e = Ext.create("viewer.viewercontroller.controller.Extent", extent.minx, extent.miny, extent.maxx, extent.maxy);
+                 this.config.viewerController.mapComponent.getMap().zoomToExtent(e);
+            }).bind(this),
+            function(msg) {
+                console.log(msg);
+            }
+        );
     },
     download : function(){
         var appLayer = this.appLayer;
