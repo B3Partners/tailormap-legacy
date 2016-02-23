@@ -31,7 +31,7 @@
     <licenses>
         <license>
             <distribution>repo</distribution>
-            <name>GNU General Public License v3.0</name>
+            <name>GNU Affero General Public License v3.0</name>
             <comments>For any parts of the Flamingo codebase</comments>
             <url>https://raw.githubusercontent.com/flamingo-geocms/flamingo/master/LICENSE.txt</url>
         </license>
