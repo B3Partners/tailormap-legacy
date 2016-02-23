@@ -832,22 +832,7 @@
                      iconUrl_sel: "http://localhost:8084/viewer/resources/images/buffer_down.png",
                      iconUrl_dis: "http://localhost:8084/viewer/resources/images/buffer.png"}
         }
-        },
-/* this component no longer works, see https://github.com/flamingo - geocms/flamingo/issues/467
-    {
-        className: "viewer.components.Twitter",
-        name: "Twitter",
-        group: "Component",
-        shortName: "Tw",
-        sources: ["Twitter.js"],
-        closureCompilerSafe: true,
-        singleton: true,
-        restrictions: ["header","leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom","footer"],
-        extPropertyGridConfigs: {
-            propertyNames: {search: "Zoekterm"},
-            source: {search: "B3Partners"}
-        }
-        }, */
+    },
     /**
     Needs more work... Not reusable
     {

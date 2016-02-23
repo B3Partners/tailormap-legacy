@@ -97,10 +97,6 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-        </dependency>
 
         <!-- nl b3p csw-->
         <dependency>
@@ -289,7 +285,6 @@
                                 <param>${viewerhtml.path}/common/ajax/FeatureInfo.js</param>
                                 <param>${viewerhtml.path}/common/ajax/EditFeature.js</param>
                                 <param>${viewerhtml.path}/common/ajax/ArcQueryUtil.js</param>
-                                <param>${viewerhtml.path}/common/ajax/Twitter.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureExtent.js</param>
                                 <!-- Abstracts MapComponent -->
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Map.js</param>
