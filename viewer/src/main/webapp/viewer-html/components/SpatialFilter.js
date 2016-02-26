@@ -110,7 +110,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
             multi += ")";
         }
-        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var appLayer = this.layerSelector.getValue();
         this.setFilter(multi, appLayer);
     },
     setFilter: function(geometry, appLayer){
@@ -367,7 +367,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             padding: 4,
             renderTo: this.getContentDiv(),
             items: [
-            this.layerSelector.combobox,
+            this.layerSelector.getLayerSelector(),
             {
                 id: this.config.name + 'filterButtons',
                 xtype: "container",
@@ -451,7 +451,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     resetForm : function () {
-        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var appLayer = this.layerSelector.getValue();
         if(!appLayer) {
             return;
         }

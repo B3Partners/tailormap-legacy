@@ -146,7 +146,7 @@ Ext.define("viewer.components.Edit", {
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
-            items: [this.layerSelector.combobox,
+            items: [this.layerSelector.getLayerSelector(),
                 {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
@@ -861,7 +861,7 @@ Ext.define("viewer.components.Edit", {
         }
         Ext.getCmp(this.name + "saveButton").setText("Opslaan");
         this.mode = null;
-        this.layerSelector.combobox.select(null);
+        this.layerSelector.getLayerSelector().clearSelection();
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");

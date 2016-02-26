@@ -133,7 +133,7 @@ Ext.define ("viewer.components.Buffer",{
             renderTo : this.getContentDiv(),
             margin: '0px 0px 0px 10px',
             items:[
-                this.layerSelector.combobox,
+                this.layerSelector.getLayerSelector(),
                 this.radius,
                 this.colorPicker,
                 this.buffer,

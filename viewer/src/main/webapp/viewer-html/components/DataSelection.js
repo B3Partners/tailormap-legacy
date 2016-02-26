@@ -114,7 +114,7 @@ Ext.define ("viewer.components.DataSelection",{
                 align: 'stretch'
             },
             items: [
-            this.layerSelector.combobox,
+            this.layerSelector.getLayerSelector(),
             {
                 xtype: 'tabpanel',
                 id: this.config.name + 'TabPanel',

@@ -79,6 +79,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth
         });
 
+        this.form.add({
+            xtype: 'checkbox',
+            fieldLabel: 'Lagen als tabbladen tonen',
+            inputValue: 'true',
+            name: 'showLayerSelectorTabs',
+            checked: this.configObject.showLayerSelectorTabs || false,
+            labelWidth: this.labelWidth
+        });
+
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
     }
 });

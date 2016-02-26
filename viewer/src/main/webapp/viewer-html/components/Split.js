@@ -190,7 +190,7 @@ Ext.define("viewer.components.Split", {
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
-            items: [this.layerSelector.combobox,
+            items: [this.layerSelector.getLayerSelector(),
                 {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
@@ -522,7 +522,7 @@ Ext.define("viewer.components.Split", {
             splitFeatureFID: this.currentFID,
             toSplitWithFeature: this.splitFeature.config.wktgeom,
             strategy: this.config.strategy,
-            appLayer: this.layerSelector.getSelectedAppLayer().id,
+            appLayer: this.layerSelector.getValue().id,
             application: this.config.viewerController.app.id
         };
         var extraData = this.getExtraData();
@@ -613,7 +613,7 @@ Ext.define("viewer.components.Split", {
         Ext.getCmp(this.name + "drawButton").setDisabled(true);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
         this.mode = null;
-        this.layerSelector.combobox.select(null);
+        this.layerSelector.getLayerSelector().clearSelection();
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
@@ -629,7 +629,7 @@ Ext.define("viewer.components.Split", {
         return [this.maincontainer.getId()];
     },
     createFeaturesGrid: function (features) {
-        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var appLayer = this.layerSelector.getValue();
         var attributes = appLayer.attributes;
         var index = 0;
         var attributeList = new Array();
@@ -775,7 +775,7 @@ Ext.define("viewer.components.Split", {
         return newFeature;
     },
     makeConversionMap: function () {
-        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var appLayer = this.layerSelector.getValue();
         var attributes = appLayer.attributes;
         var map = {};
         var index = 0;
