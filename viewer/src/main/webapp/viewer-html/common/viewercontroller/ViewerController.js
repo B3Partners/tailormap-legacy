@@ -892,6 +892,22 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return layerObj;
     },
     /**
+     * Get the geometry attributes from the argument.
+     * @param {appLayer} the initialized appLayer
+     * @returns {Array} of attributes
+     */
+    getAppLayerGeometryAttributes: function (appLayer) {
+        var geomFields = appLayer.attributes.filter(function (obj) {
+            if (obj.type === "polygon" || obj.type === "multipolygon"
+                    || obj.type === "point" || obj.type === "multipoint"
+                    || obj.type === "multilinestring" || obj.type === "linestring"
+                    || obj.type === "geometry") {
+                return obj.alias || obj.name;
+            }
+        });
+        return geomFields;
+    },
+    /**
      *Get map layer with id of the layer in the service object
      *@param id the id of the layer in a service object
      *@return viewer.viewercontroller.controller.Layer object
