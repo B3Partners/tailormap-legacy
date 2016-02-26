@@ -61,10 +61,7 @@ Ext.define ("viewer.components.FeatureInfo",{
          //Add event when started the identify (clicked on the map)
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,
-        function(map,options){
-            me.onChangeExtent(map,options);
-        },this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
         return this;        
     },    
     /**

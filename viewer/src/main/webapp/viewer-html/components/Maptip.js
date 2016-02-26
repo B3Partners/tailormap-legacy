@@ -77,10 +77,7 @@ Ext.define ("viewer.components.Maptip",{
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
         //listen to the onmaptipcancel
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);             
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,function(map,options){
-            this.balloon.close();
-        },this);
-
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,this.onChangeExtent,this);
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.config.viewerController.mapComponent.createComponent(conf);
@@ -143,6 +140,10 @@ Ext.define ("viewer.components.Maptip",{
     onResize : function(){
         var top = this.config.viewerController.getTopMenuHeightInPixels();        
         this.balloon.offsetY=Number(top);
+    },
+
+    onChangeExtent: function(map, options) {
+        this.balloon.close();
     },
 
     /**
