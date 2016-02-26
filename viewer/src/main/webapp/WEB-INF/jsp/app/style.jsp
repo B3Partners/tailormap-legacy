@@ -38,6 +38,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     box-shadow: 0 1px 0 0 ${steunkleur1} inset, -1px 0 0 0 ${steunkleur1} inset, 1px 0 0 0 ${steunkleur1} inset;
                 }
 
+                .x-window-header-default {
+                    border-color: ${steunkleur1};
+                }
+
                 /* Popup content colors */
                 .x-window-body-default {
                     background-color: ${steunkleur1};  /* Visible when dragging the popup  */
@@ -92,6 +96,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 /* Tool icon background */
                 .x-tool-img {
                     background-color: ${steunkleur1} !important;
+                    color: ${steunkleur2};
                 }
 
                 /* When using user-defined colors, disable header image in IE */

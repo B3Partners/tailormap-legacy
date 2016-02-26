@@ -502,7 +502,8 @@ Ext.define ("viewer.components.AttributeList",{
                 reader: {
                     type: 'json',
                     rootProperty: 'features',
-                    totalProperty: 'total'
+                    totalProperty: 'total',
+                    keepRawData: true
                 },
                 simpleSortMode: true,
                 listeners: {

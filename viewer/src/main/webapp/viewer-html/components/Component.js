@@ -346,7 +346,7 @@ Ext.define("viewer.components.Component",{
             paddingCorrection: 3,
             xOffset: 354
         };
-        var styleContent  = '.applicationSpriteClass .x-btn-button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
+        var styleContent  = '.applicationSpriteClass .x-btn-button { background-image: url(\'' + appSprite + '\') !important; position: absolute; left: 2px; top: 2px; bottom: 2px; right: 2px; } ';
             styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';
             styleContent += ' .buttonDefaultClass_normal .x-btn-button { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
             styleContent += ' .buttonDefaultClass_hover .x-btn-button { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
