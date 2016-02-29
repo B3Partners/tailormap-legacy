@@ -26,6 +26,14 @@ import org.json.JSONObject;
  */
 public class ErrorMessageResolution extends StreamingResolution {
 
+    private int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+
+    public ErrorMessageResolution(int status, String message) {
+        super("text/plain", message);
+        this.status = status;
+        setCharacterEncoding("UTF-8");
+    }
+
     public ErrorMessageResolution(String message) {
         super("text/plain", message);
         setCharacterEncoding("UTF-8");
@@ -38,7 +46,7 @@ public class ErrorMessageResolution extends StreamingResolution {
 
     @Override
     protected void stream(HttpServletResponse response) throws Exception {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.setStatus(status);
         super.stream(response);
     }
 }
