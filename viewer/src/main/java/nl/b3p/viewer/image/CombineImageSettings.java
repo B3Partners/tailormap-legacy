@@ -462,6 +462,9 @@ public class CombineImageSettings {
                     if (geom.has("label") && !geom.isNull("label")){
                         ciw.setLabel(geom.getString("label"));
                     }
+                    if (geom.has("strokeWidth") && !geom.isNull("strokeWidth")) {
+                        ciw.setStrokeWidth((float) geom.getDouble("strokeWidth"));
+                    }
                     wkts.add(ciw);
                 }
             }
