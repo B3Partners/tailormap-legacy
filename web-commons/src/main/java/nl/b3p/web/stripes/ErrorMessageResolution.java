@@ -17,6 +17,8 @@
 package nl.b3p.web.stripes;
 
 import javax.servlet.http.HttpServletResponse;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 import net.sourceforge.stripes.action.StreamingResolution;
 import org.json.JSONObject;
 
@@ -26,7 +28,7 @@ import org.json.JSONObject;
  */
 public class ErrorMessageResolution extends StreamingResolution {
 
-    private int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+    private int status = SC_INTERNAL_SERVER_ERROR;
 
     public ErrorMessageResolution(int status, String message) {
         super("text/plain", message);
@@ -41,6 +43,7 @@ public class ErrorMessageResolution extends StreamingResolution {
 
     public ErrorMessageResolution(JSONObject json) {
         super("application/json", json.toString());
+        this.status = SC_OK;
         setCharacterEncoding("UTF-8");
     }
 
