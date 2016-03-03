@@ -237,10 +237,14 @@ public class ImageTool {
                     centerPoint = calculateCenter(shape, srid, bbox, width, height);
                 }
                 gbi.setFont(font);
+                // witte halo
                 gbi.setColor(Color.WHITE);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() - 1);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 1, (float) centerPoint.getY());
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() - 2);
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() + 2);
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 2, (float) centerPoint.getY());
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() + 2, (float) centerPoint.getY());
                 gbi.setColor(Color.BLACK);
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY());
             }
         }
