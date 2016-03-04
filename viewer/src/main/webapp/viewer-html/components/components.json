@@ -500,7 +500,7 @@
         group: "Component",
         closureCompilerSafe: true,
         singleton: true,
-        restrictions: ["leftmargin_top", "rightmargin_top","leftmargin_bottom", "rightmargin_bottom","popupwindow","left_menu"],
+        restrictions: ["leftmargin_top", "rightmargin_top","leftmargin_bottom", "rightmargin_bottom","popupwindow","left_menu","content"],
         showHelp: true,
         type: "popup",
         configSource: ["ConfigObject.js","Legend-config.js"]
