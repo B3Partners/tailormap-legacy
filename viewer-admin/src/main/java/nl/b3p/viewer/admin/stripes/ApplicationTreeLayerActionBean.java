@@ -380,6 +380,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "influenceradius",
                 "summary.title",
                 "summary.image",
+                "summary.texteditor",
                 "summary.description",
                 "summary.link",
                 "editfunction.title",

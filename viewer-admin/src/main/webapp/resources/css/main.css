@@ -700,6 +700,12 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     margin-top: 40px;
 }
 
+.inline-help {
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #d8d8d8;
+}
+
 /* At page init Ext context menus take some space at the bottom, resulting in a scrollbar? */
 .x-menu {
     top: 0;
