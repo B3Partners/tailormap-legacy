@@ -131,6 +131,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                     inputValue: true,
                     checked: this.configObject.detailShowAttr !== undefined ? this.configObject.detailShowAttr : true,
                     labelWidth:this.labelWidth
+                }, {
+                    xtype: 'checkbox',
+                    fieldLabel: 'Verberg geometrie attributen',
+                    name: 'detailHideGeomAttr',
+                    id: 'detailHideGeomAttr',
+                    inputValue: true,
+                    checked: this.configObject.detailHideGeomAttr !== undefined ? this.configObject.detailHideGeomAttr : true,
+                    labelWidth: this.labelWidth
                 }
             ]
         } 

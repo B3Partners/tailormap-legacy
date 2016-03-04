@@ -34,6 +34,7 @@ Ext.define ("viewer.components.Maptip",{
         detailShowTitle: true,
         detailShowDesc: true,
         detailShowImage: true,
+        detailHideGeomAttr: true,
         heightDescription: null,
         clickRadius:null,
         spinnerWhileIdentify:null
@@ -468,14 +469,30 @@ Ext.define ("viewer.components.Maptip",{
                 featureDiv.appendChild(descriptionDiv);
             }
         }
-        if (this.config.detailShowAttr){
+        if (this.config.detailShowAttr) {
             //attributes:
-            if (!Ext.isEmpty(feature)){
-                var html="<table>";
+            if (!Ext.isEmpty(feature)) {
+                // find geometry attributes, a WFS attribute source may provide more than one geometry attribute,
+                // and a join may result in more than one as well
+                var geomFields = this.config.viewerController.getAppLayerGeometryAttributes(appLayer);
+
+                var html = "<table>";
+                outerloop:
                 for( var key in feature) {
                     if (!feature.hasOwnProperty(key) || key === "related_featuretypes" || key === "__fid") {
                         continue;
                     }
+                    if (!this.detailHideGeomAttr) {
+                        if (key === appLayer.geometryAttribute) {
+                            continue;
+                        }
+                        for (var n = 0; n < geomFields.length; n++) {
+                            if (key === geomFields[n].name || key === geomFields[n].alias) {
+                                continue outerloop;
+                            }
+                        }
+                    }
+
                     html+="<tr>"
                     html+="<td class='feature_detail_attr_key'>"+key+"</td>";
                     var value = String(feature[key]);
