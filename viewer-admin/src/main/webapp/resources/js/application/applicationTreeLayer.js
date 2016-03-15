@@ -591,12 +591,12 @@ function getAttributeEditSettings(attribute, name) {
             fieldLabel: 'Alias', name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
         },
         {
-            hidden: isGeometry,
             xtype: 'container',
             items: [
                 {
                     xtype: 'container',
                     layout: 'hbox',
+                    hidden: isGeometry,
                     items: [
                         {xtype: 'displayfield', fieldLabel: 'Waardelijst', labelWidth: '190px'},
                         {
@@ -637,14 +637,14 @@ function getAttributeEditSettings(attribute, name) {
                     xtype: 'container',
                     itemId: 'staticListValues' + attribute.id,
                     layout: 'hbox',
-                    hidden: attribute.valueList === "dynamic",
+                    hidden: !isGeometry && attribute.valueList === "dynamic",
                     items: possibleValuesFormItems
                 },
                 {
                     xtype: 'container',
                     layout: 'vbox',
                     itemId: 'dynamicListValues' + attribute.id,
-                    hidden: attribute.valueList !== "dynamic",
+                    hidden: !isGeometry && attribute.valueList !== "dynamic",
                     defaults: {
                         xtype: 'combo',
                         width: 400,
