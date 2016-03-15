@@ -1283,7 +1283,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             });
         }
         appLayer.filter.addOrReplace(filter);
+        this.applyFilter(appLayer);
+    },
 
+    applyFilter : function(appLayer){
         var mapLayer = this.getLayer(appLayer);
 
         if (appLayer.relations && appLayer.relations.length > 0 && appLayer.filter && appLayer.filter.getCQL()){
@@ -1323,9 +1326,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if(layer.filter.filters.length == 0){
                 layer.filter = null;
             }
-            var mapLayer = this.getOrCreateLayer(layer);
-            mapLayer.setQuery(layer.filter);
-            this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,layer.filter,layer);
+            this.applyFilter(layer);
         }
     },
     /**
