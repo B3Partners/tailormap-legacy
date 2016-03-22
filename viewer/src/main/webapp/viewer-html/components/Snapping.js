@@ -109,9 +109,9 @@ Ext.define("viewer.components.Snapping", {
         }
         this.layerSelector = {
             xtype: 'checkboxgroup',
-            fieldLabel: 'Kies snapping lagen',
             itemId: 'snapLayers',
             columns: 1,
+            margin: '0 0 0 10',
             listeners: {
                 change: function (checkboxgroup, data) {
                     me.selectionChanged(checkboxgroup, data.snaplayer);
@@ -133,7 +133,13 @@ Ext.define("viewer.components.Snapping", {
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
-            items: [this.layerSelector]
+            items: [{
+                    forId: 'snapLayers',
+                    xtype: 'label',
+                    text: 'Kies snapping lagen:',
+                    margin: '10 0 5 10'
+                }
+                , this.layerSelector]
         });
     },
     /**
