@@ -666,7 +666,7 @@ Ext.define("viewer.components.sf.Slider", {
             "</tr>"
         ];
         if(!Ext.isEmpty(c.valueFormatString)) {
-            if(c.sliderType === "range") {
+            if (c.sliderType === "range") {
                 templatecontents.push(
                     "<tr>",
                         "<td><span id=\"{name}_min\"></span></td>",
@@ -711,6 +711,7 @@ Ext.define("viewer.components.sf.Slider", {
                     }
                 }
             });
+            this.updateValueString(this.slider);
         } else if(c.sliderType === "eq" || c.sliderType === "gt" || c.sliderType === "lt" )  {
             this.slider = Ext.create('Ext.slider.Single', {
                 id: n + "_extSlider",
