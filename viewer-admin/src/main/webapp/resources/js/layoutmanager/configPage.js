@@ -177,7 +177,7 @@ function createLayoutTab(){
                 items: [
                 {
                     boxLabel: 'Gecentreerd', 
-                    name: 'position', 
+                    name: 'position',
                     inputValue: 'center' , 
                     checked: centerChecked
                 },
@@ -230,8 +230,7 @@ function createLayoutTab(){
                 fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
                 inputValue: true,
                 name: 'changeablePosition',
-                checked: "true" == details.changeablePosition,
-                value: "true" == details.changeablePosition,
+                checked: parseBooleanValue(details.changeablePosition),
                 labelWidth:labelWidth
             }]
         },
@@ -260,8 +259,7 @@ function createLayoutTab(){
                 fieldLabel: 'Gebruiker kan de grootte van de popup aanpassen',
                 inputValue: true,
                 name: 'changeableSize',
-                value: "true" == details.changeableSize,
-                checked: "true" == details.changeableSize,
+                checked: parseBooleanValue(details.changeableSize),
                 labelWidth:labelWidth
             }]
         }],
@@ -302,6 +300,13 @@ function createHeightLayoutTab() {
     }); 
 }
 
+function parseBooleanValue(val) {
+    if (val === true || val === false) {
+        return val;
+    }
+    return ("true" === val);
+}
+
 function toggleXY(show){
     if(show){
         Ext.getCmp('x').show();
@@ -338,23 +343,21 @@ function getPropertyGridConfig(){
 function continueSave(config){
     if(metadata.type != undefined && metadata.type == "popup"){
         config.isPopup = true;
-        var layout = new Object();
+        var layout = {};
         if(layoutForm) {
-            for( var i = 0 ; i < layoutForm.items.length ; i++){
-                var fieldSetItems = layoutForm.items.get(i);
-                for ( var j = 0 ; j < fieldSetItems.items.length ; j ++){
-                    var item = fieldSetItems.items.get(j);
-                    if(item.name != undefined){
-                        if(Ext.isObject(item.getValue())){
-                            layout[item.name] = item.getValue().position;  
-                        }else{
-                            if (item.getValue()!=""){
-                                layout[item.name] = item.getValue();
-                            }
-                        }
-                    }
+            var formFields = layoutForm.query("field");
+            var radiogroups = layoutForm.query("radiogroup");
+            // Iterate over all the fields to add the value to the layout object
+            Ext.Array.each(formFields, function(field) {
+                var value = field.getValue();
+                if(value !== "" && value !== "null") {
+                    layout[field.getName()] = value;
                 }
-            }
+            });
+            // Iterate over the radiogroups (position) and apply the value of the group to the layout object
+            Ext.Array.each(radiogroups, function(group) {
+                Ext.apply(layout, group.getValue());
+            });
         }
         var layoutFormObject = Ext.get("componentLayout");
         layoutFormObject.dom.value =  JSON.stringify(layout);
