@@ -89,9 +89,11 @@ public class ArcGISFeatureSource extends FeatureSource {
         try {
             ds = new ArcGISDataStoreFactory().createDataStore(params);
         } catch (Exception e) {
+            params.replace(ArcGISDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
         if (ds == null) {
+            params.replace(ArcGISDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params);
         } else {
             return ds;

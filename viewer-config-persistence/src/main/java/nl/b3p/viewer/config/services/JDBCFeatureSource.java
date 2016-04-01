@@ -207,10 +207,12 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         try {
             DataStore ds = DataStoreFinder.getDataStore(params);      
             if(ds == null) {
+                params.replace("passwd", "xxx");
                 throw new Exception("Cannot open datastore using parameters " + params);
             }
             return ds;
         } catch(Exception e) {
+            params.replace("passwd", "xxx");
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
     }

@@ -78,9 +78,11 @@ public class ArcXMLFeatureSource extends FeatureSource {
         try {
             ds = new ArcIMSDataStoreFactory().createDataStore(params);
         } catch (Exception e) {
+            params.replace(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
         if (ds == null) {
+            params.replace(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params);
         } else {
             return ds;
