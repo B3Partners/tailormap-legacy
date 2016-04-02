@@ -17,12 +17,8 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     form: null,
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        if(config == undefined || config == null){
-            config = new Object();
-        }
-
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         var me=this;
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
@@ -37,7 +33,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Tooltip',
                 name: 'tooltip',
-                value: config.tooltip || 'Streetview',
+                value: this.configObject.tooltip || 'Streetview',
                 labelWidth:me.labelWidth
             
             },{
@@ -45,7 +41,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: "Zet een marker na klikken",
                 inputValue: false,
                 name: 'useMarker',
-                checked: config.useMarker !== undefined ? config.useMarker : false,
+                checked: this.configObject.useMarker !== undefined ? this.configObject.useMarker : false,
                 value: false,
                 labelWidth: me.labelWidth
             },{
@@ -53,7 +49,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel:  "Ga na gebruik naar de eerste tool",
                 inputValue: false,
                 name: 'nonSticky',
-                checked: config.nonSticky !== undefined ? config.nonSticky : false,
+                checked: this.configObject.nonSticky !== undefined ? this.configObject.nonSticky : false,
                 value: false,
                 labelWidth: me.labelWidth
             },{
@@ -61,7 +57,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: "Gebruik pop-up voor streetview",
                 inputValue: false,
                 name: 'usePopup',
-                checked: config.usePopup !== undefined ? config.usePopup : false,
+                checked: this.configObject.usePopup !== undefined ? this.configObject.usePopup : false,
                 value: false,
                 labelWidth: me.labelWidth,
                 listeners: {
@@ -75,19 +71,19 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: "Hoogte popup",
                 name: 'height',
-                hidden:  config.usePopup!==undefined ? !config.usePopup : true,
-                value: config.height!==undefined? config.height:"400",
+                hidden:  this.configObject.usePopup!==undefined ? !this.configObject.usePopup : true,
+                value: this.configObject.height!==undefined? this.configObject.height:"400",
                 labelWidth:me.labelWidth
             },{
                 id: "popupWidth",
                 xtype: 'textfield',
                 fieldLabel: "Breedte popup",
                 name: 'width',
-                hidden:  config.usePopup!==undefined ? !config.usePopup : true,
-                value: config.width!==undefined? config.width:"400",
+                hidden:  this.configObject.usePopup!==undefined ? !this.configObject.usePopup : true,
+                value: this.configObject.width!==undefined? this.configObject.width:"400",
                 labelWidth:me.labelWidth
             }],
-            renderTo: parentid
+            renderTo: parentId
         });      
     }
 });

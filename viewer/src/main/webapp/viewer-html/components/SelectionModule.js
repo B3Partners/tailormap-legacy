@@ -115,7 +115,11 @@ Ext.define ("viewer.components.SelectionModule",{
         alwaysShow:null,
         showWhenOnlyBackground:null,
         showBackgroundLevels:null,
-        showCswUrl: null
+        showCswUrl: null,
+        details: {
+            minWidth: 575,
+            minHeight: 400
+        }
     },
     constructor: function (conf) {
         //set defaults

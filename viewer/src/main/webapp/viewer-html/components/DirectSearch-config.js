@@ -21,13 +21,13 @@
 Ext.define('viewer.components.CustomConfiguration', {
     extend: 'viewer.components.SearchConfiguration',
     maxSearchConfigs: 1,
-    constructor: function (parentId, configObject) {
+    constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {
                 title: 'Zoek op locatie, adres of postcode...'
             };
         }
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         var alignmentStore = Ext.create('Ext.data.ArrayStore', {
             autoDestroy: true,
             idIndex: 0,

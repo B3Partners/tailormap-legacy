@@ -40,10 +40,13 @@ Ext.define ("viewer.components.Bookmark",{
         shareTitle: "Sharing",
         showShortUrl: true,
         showFullUrl: true,
-        showLabels: true
+        showLabels: true,
+        details: {
+            minWidth: 450,
+            minHeight: 250
+        }
     },
-    constructor: function (conf){ 
-        if(!Ext.isDefined(conf.details.height)) conf.details.height = 200; 
+    constructor: function (conf){
         if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true; 
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);

@@ -36,7 +36,11 @@ Ext.define ("viewer.components.AttributeList",{
         autoDownload: false,
         downloadParams: "",
         addZoomTo: false,
-        zoomToBuffer: 10
+        zoomToBuffer: 10,
+        details: {
+            minWidth: 600,
+            minHeight: 300
+        }
     },
     appLayer: null,
     featureService: null,
@@ -45,8 +49,6 @@ Ext.define ("viewer.components.AttributeList",{
     schema: null,
     featureExtentService: null,
     constructor: function (conf){
-        var minwidth = 600;
-        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;

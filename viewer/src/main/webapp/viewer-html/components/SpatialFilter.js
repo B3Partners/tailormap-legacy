@@ -34,7 +34,11 @@ Ext.define ("viewer.components.SpatialFilter",{
         layers:null,
         applyDirect:null,
         multiGeometries:null,
-        label: ""
+        label: "",
+        details: {
+            minWidth: 330,
+            minHeight: 270
+        }
     },
     constructor: function (conf){        
         if(conf.details.width === undefined){

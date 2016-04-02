@@ -33,7 +33,11 @@ Ext.define ("viewer.components.RelatedDocuments",{
         title: "",
         titlebarIcon : "",
         tooltip : "",
-        label: ""
+        label: "",
+        details: {
+            minWidth: 450,
+            minHeight: 250
+        }
     },
     constructor: function (conf){   
         conf.isPopup=true;        

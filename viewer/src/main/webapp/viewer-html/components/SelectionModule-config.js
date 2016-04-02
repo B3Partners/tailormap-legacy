@@ -20,14 +20,11 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        if (configObject === null){
-            configObject = {};
-        }
+    constructor: function (parentId, configObject, configPage) {
         this.labelWidth=200;
         configObject.showLabelconfig =true;
         var me = this;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         
         var autoShowSelectionModule = 'nolayers';
         if(configObject.showWhenOnlyBackground) { // Support for legacy config option
@@ -340,6 +337,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         config.advancedValueConfigs = valueConfig;
         
         return config;
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 575,
+                minHeight: 400
+            }
+        }
     }
 });
 

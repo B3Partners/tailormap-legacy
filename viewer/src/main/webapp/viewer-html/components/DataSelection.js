@@ -43,14 +43,13 @@ Ext.define ("viewer.components.DataSelection",{
         label: "",
         details:{
             width: null,
-            height:null
+            height:null,
+            minWidth: 600,
+            minHeight: 300
         },
         openAttributeListAfterFilter: false
     },
     constructor: function (conf){
-        // minimal width = 600
-        var minwidth = 600;
-        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         if(!Ext.isDefined(conf.maxFeatures)){
             conf.maxFeatures=250;
         }

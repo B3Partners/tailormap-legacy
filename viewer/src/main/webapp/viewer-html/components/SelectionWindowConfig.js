@@ -22,8 +22,8 @@
  */
 Ext.define("viewer.components.SelectionWindowConfig",{
     extend: "viewer.components.ConfigObject",
-    constructor: function (parentId,configObject){
-        viewer.components.SelectionWindowConfig.superclass.constructor.call(this, parentId,configObject);        
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.SelectionWindowConfig.superclass.constructor.call(this, parentId, configObject, configPage);
         //Create the form.                 
         this.createForm(this.configObject);    
         //this.createCheckBoxes(this.configObject.layers);*/

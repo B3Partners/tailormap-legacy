@@ -20,8 +20,8 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
-    constructor: function (parentid,configObject){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,configObject);
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.createForm(this.configObject);
         return this;
     },

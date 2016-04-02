@@ -35,7 +35,11 @@ Ext.define("viewer.components.Merge", {
         actionbeanUrl: "/viewer/action/feature/merge",
         layers: null,
         mergeGapDist: null,
-        cancelOtherControls: ["viewer.components.Edit", "viewer.components.Split"]
+        cancelOtherControls: ["viewer.components.Edit", "viewer.components.Split"],
+        details: {
+            minWidth: 450,
+            minHeight: 250
+        }
     },
     constructor: function (conf) {
         viewer.components.Merge.superclass.constructor.call(this, conf);

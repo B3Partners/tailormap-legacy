@@ -18,12 +18,9 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
     keyStore:null,
-    constructor: function (parentid,config){
-          if(config === undefined || config === null){
-            config = new Object();
-        }
-        config.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+    constructor: function (parentId, configObject, configPage) {
+        configObject.showLabelconfig =true;
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.keyStore = Ext.create("Ext.data.Store", {
             fields: ["id", "filename"],
             data: []
@@ -34,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             {
                 xtype: "textfield",
                 name: "width",
-                value: config.width,
+                value: this.configObject.width,
                 width: 500,
                 labelWidth:this.labelWidth,
                 fieldLabel: "Breedte popup"
@@ -42,7 +39,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             {
                 xtype: "textfield",
                 name: "height",
-                value: config.height,
+                value: this.configObject.height,
                 width: 500,
                 labelWidth:this.labelWidth,
                 fieldLabel: "Hoogte popup"
@@ -59,7 +56,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 editable: false,
                 valueField: "id",
                 name: "keyCombo",
-                value: config.keyCombo
+                value: this.configObject.keyCombo
             },
             {
                 xtype: "combo",
@@ -73,7 +70,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 editable: false,
                 valueField: "id",
                 name: "layers",
-                value: config.layers,
+                value: this.configObject.layers,
                 listeners: {
                     change: function (combo, id) {
                         me.populateAttributeCombos(id);
@@ -119,11 +116,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
             }
         ]);
-        this.loadKeys(config.keyCombo);
-        if(config.layers){
-            this.populateAttributeCombos(config.layers);
-            Ext.getCmp("attributeCombo1").setValue(config.imageIdAttribute);
-            Ext.getCmp("attributeCombo2").setValue(config.imageDescriptionAttribute);
+        this.loadKeys(this.configObject.keyCombo);
+        if(this.configObject.layers){
+            this.populateAttributeCombos(this.configObject.layers);
+            Ext.getCmp("attributeCombo1").setValue(this.configObject.imageIdAttribute);
+            Ext.getCmp("attributeCombo2").setValue(this.configObject.imageDescriptionAttribute);
 
         }
 
@@ -134,7 +131,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         var layerId = id;
 
-        var appLayer = appConfig.appLayers[layerId];
+        var appLayer = this.getAppConfig().appLayers[layerId];
 
         var ac1 = Ext.getCmp("attributeCombo1");
         ac1.clearValue();
@@ -171,7 +168,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ["id", "serviceId", "layerName", "alias"]
         });
 
-        Ext.Object.each(appConfig.appLayers, function(id, appLayer) {
+        Ext.Object.each(this.getAppConfig().appLayers, function(id, appLayer) {
             if(appLayer.attributes.length > 0) {
                 store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
@@ -181,7 +178,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     loadKeys : function(value){
         var me = this;
         Ext.Ajax.request({
-            url: contextPath+"/action/cyclorama/accountList",
+            url: this.getContextpath() + "/action/cyclorama/accountList",
             success: function ( result, request ) {
                 var keys = Ext.JSON.decode(result.responseText);
                 Ext.each(keys,function(key){

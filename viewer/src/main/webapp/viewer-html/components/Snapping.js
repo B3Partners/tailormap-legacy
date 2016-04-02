@@ -44,7 +44,11 @@ Ext.define("viewer.components.Snapping", {
         iconUrl: "",
         tooltip: "",
         layers: null,
-        label: ""
+        label: "",
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     constructor: function (conf) {
         viewer.components.Snapping.superclass.constructor.call(this, conf);

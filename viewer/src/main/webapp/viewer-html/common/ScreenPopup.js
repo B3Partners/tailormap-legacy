@@ -29,6 +29,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             y: 100,
             width : 400,
             height: 600,
+            minWidth: null,
+            minHeight: null,
             changeablePosition:true,
             changeableSize:true,
             items:null,
@@ -65,12 +67,26 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.resizable = false;
             this.currentOrientation = MobileManager.getOrientation();
         }
-		
+
+        if(this.config.details.minWidth) {
+            config.minWidth = this.config.details.minWidth;
+            if(!conf.details.width) {
+                config.width = this.config.details.minWidth;
+            }
+        }
+        if(this.config.details.minHeight) {
+            config.minHeight = this.config.details.minHeight;
+            if(!conf.details.height) {
+                config.height = this.config.details.minHeight;
+            }
+        }
+
+        config.bodyStyle = {};
         if(this.config.details && this.config.details.items){
             config.items = this.config.details.items;
-            config.bodyStyle= { background: '#fff'};
+            config.bodyStyle.background = '#fff';
         }else if(this.config.details && this.config.details.useExtLayout) {
-            config.bodyStyle= { background: '#fff'};
+            config.bodyStyle.background = '#fff';
         } else {
             var con = document.createElement('div');
             con.style.height = "100%";

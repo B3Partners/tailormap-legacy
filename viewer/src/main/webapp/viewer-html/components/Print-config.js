@@ -23,8 +23,8 @@
 */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
         //this.createCheckBoxes(this.configObject.layers);
         this.addFormItems(configObject);
     },
@@ -152,7 +152,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 hidden: me.configObject.mailPrint === "cantMail"
             }
         ]);
-                 
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 550,
+                minHeight: 515
+            }
+        }
     }
 });
 

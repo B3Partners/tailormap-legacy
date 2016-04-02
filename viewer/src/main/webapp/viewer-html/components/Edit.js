@@ -47,7 +47,11 @@ Ext.define("viewer.components.Edit", {
         allowNew: true,
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor',
-        showEditLinkInFeatureInfo: true
+        showEditLinkInFeatureInfo: true,
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     constructor: function (conf) {
         viewer.components.Edit.superclass.constructor.call(this, conf);

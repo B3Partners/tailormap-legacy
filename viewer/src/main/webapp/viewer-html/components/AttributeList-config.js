@@ -20,12 +20,9 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        if (configObject === null){
-            configObject = {};
-        }
+    constructor: function (parentId, configObject, configPage) {
         configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
 
         this.form.add({
             xtype: 'combobox',
@@ -80,6 +77,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
 
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 600,
+                minHeight: 300
+            }
+        }
     }
 });
 

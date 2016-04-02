@@ -64,7 +64,11 @@ Ext.define ("viewer.components.Search",{
         formHeight:null,
         label: "",
         //not yet configurable:
-        showRemovePin: true
+        showRemovePin: true,
+        details: {
+            minWidth: 400,
+            minHeight: 400
+        }
     },    
     constructor: function (conf){
         conf.details.useExtLayout = true;

@@ -20,12 +20,12 @@
  */
 Ext.define("viewer.components.CustomConfiguration", {
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId, configObject) {
+    constructor: function (parentId, configObject, configPage) {
         if (configObject === null) {
             configObject = {};
         }
         configObject.showLabelconfig = true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.createCheckBoxes(this.configObject.layers, {editable: true});
 
         this.form.add([{
@@ -57,6 +57,14 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: this.labelWidth
             }
         ]);
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 400,
+                minHeight: 250
+            }
+        };
     }
 });
 

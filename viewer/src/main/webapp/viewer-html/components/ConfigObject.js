@@ -29,13 +29,12 @@ Ext.define("viewer.components.ConfigObject",{
     checkPanelHeight: 300,
     form: null,
     //URL for getting Layers
-    requestPath: contextPath+"/action/componentConfigLayerList",
-    constructor: function (parentId,configObject){
-        this.parentId=parentId;
-        this.configObject=configObject;
-        if (configObject==null || configObject==undefined){
-            this.configObject=new Object();
-        }
+    requestPath: "",
+    constructor: function (parentId, configObject, configPage) {
+        this.parentId = parentId;
+        this.configObject = configObject || {};
+        this.configPage = configPage;
+        this.requestPath = configPage.getContextpath() + "/action/componentConfigLayerList"
     },
     /**
      * Must return the configuration that is set by the user.
@@ -77,7 +76,7 @@ Ext.define("viewer.components.ConfigObject",{
             requestParams=new Object();
         }
         //add the application id that needs to be send with the ajax
-        requestParams.appId=applicationId;
+        requestParams.appId = this.getApplicationId();
         
         if (checkedIds==undefined)
             checkedIds=[];
@@ -103,6 +102,22 @@ Ext.define("viewer.components.ConfigObject",{
             checked: checkedIds,
             layerFilter: me.configObject.layerFilter
         });   
+    },
+    getActionBeanUrl: function(name) {
+        return this.configPage.getActionBeanUrl(name);
+    },
+    getContextpath: function() {
+        return this.configPage.getContextpath();
+    },
+    getApplicationId: function() {
+        return this.configPage.getApplicationId();
+    },
+    getAppConfig: function() {
+        return this.configPage.getAppConfig();
+    },
+    getDefaultValues: function() {
+        return {};
     }
+
 });
 

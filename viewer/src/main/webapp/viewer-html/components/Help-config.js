@@ -21,12 +21,12 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     htmlEditor: null,
-    constructor: function (parentId,configObject){        
+    constructor: function (parentId, configObject, configPage) {        
         if (configObject === null){
             configObject = {};
         }
         configObject.showLabelconfig = false;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         
         var defaultText="";
         if (configObject && configObject.defaultText) {
@@ -42,8 +42,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: 100,
             plugins: [
                 new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                    submitUrl: actionBeans['imageupload'],
-                    managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                    submitUrl: this.getActionBeanUrl('imageupload'),
+                    managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
                 })),
                 new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
             ]
