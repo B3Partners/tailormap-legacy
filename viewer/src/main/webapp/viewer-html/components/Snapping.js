@@ -51,8 +51,8 @@ Ext.define("viewer.components.Snapping", {
         }
     },
     constructor: function (conf) {
-        viewer.components.Snapping.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Snapping.superclass.constructor.call(this, conf);
         var me = this;
 
         // ajax to get the list of available layers

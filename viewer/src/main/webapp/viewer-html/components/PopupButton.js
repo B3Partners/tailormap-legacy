@@ -32,8 +32,8 @@ Ext.define ("viewer.components.PopupButton",{
         this.windowClosing = false;
         this.popup = conf.viewerController.layoutManager.popupWin;
         var selected = !this.popup.popupWin.isHidden() ||false ;
-        viewer.components.Component.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Component.superclass.constructor.call(this, conf);
         var me =this;
         this.renderButton({
             handler: function(){

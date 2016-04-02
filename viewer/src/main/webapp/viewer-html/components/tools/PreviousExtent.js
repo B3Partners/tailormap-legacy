@@ -27,8 +27,8 @@ Ext.define ("viewer.components.tools.PreviousExtent",{
         tooltip: "Previous Extent"
     },
     constructor: function (conf){        
-        viewer.components.tools.PreviousExtent.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.tools.PreviousExtent.superclass.constructor.call(this, conf);
         conf.type = viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT;        
         this.initTool(conf);
         return this;

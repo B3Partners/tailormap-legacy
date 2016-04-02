@@ -28,8 +28,8 @@ Ext.define ("viewer.components.tools.ZoomOut",{
         tooltip: "Zoom out"
     },
     constructor: function (conf){        
-        viewer.components.tools.ZoomOut.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.tools.ZoomOut.superclass.constructor.call(this, conf);
         if( conf.zoomBox === undefined || conf.zoomBox === null || conf.zoomBox === false){
             conf.type = viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON;
         }else{

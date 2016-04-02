@@ -36,8 +36,8 @@ Ext.define ("viewer.components.LayerContext",{
      */
     constructor: function (conf){
         conf.isPopup = true;
-        viewer.components.LayerContext.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.LayerContext.superclass.constructor.call(this, conf);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED,this.layerClicked,this);
         
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);

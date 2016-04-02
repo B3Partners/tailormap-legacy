@@ -28,8 +28,8 @@ Ext.define ("viewer.components.HTML",{
         loadScripts: false
     },
     constructor: function (conf){        
-        viewer.components.HTML.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.HTML.superclass.constructor.call(this, conf);
         this.loadHtml();
         return this;
     },

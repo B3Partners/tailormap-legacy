@@ -30,8 +30,8 @@ Ext.define ("viewer.components.NavigationPanel",{
     constructor: function (conf){ 
         conf.top = conf.top === undefined ? 20 : conf.top;
         conf.left = conf.left === undefined ? 0 : conf.left;
-        viewer.components.NavigationPanel.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.NavigationPanel.superclass.constructor.call(this, conf);
         
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.NAVIGATIONPANEL;

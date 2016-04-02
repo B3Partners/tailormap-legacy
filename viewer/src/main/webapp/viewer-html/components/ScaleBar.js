@@ -23,8 +23,8 @@
 Ext.define ("viewer.components.ScaleBar",{
     extend: "viewer.components.Component",    
     constructor: function (conf){        
-        viewer.components.ScaleBar.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.ScaleBar.superclass.constructor.call(this, conf);
         
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.SCALEBAR;

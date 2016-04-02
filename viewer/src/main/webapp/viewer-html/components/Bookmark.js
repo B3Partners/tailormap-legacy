@@ -48,8 +48,8 @@ Ext.define ("viewer.components.Bookmark",{
     },
     constructor: function (conf){
         if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true; 
-        viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Bookmark.superclass.constructor.call(this, conf);
        
         imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/";
         this.shareUrls ={

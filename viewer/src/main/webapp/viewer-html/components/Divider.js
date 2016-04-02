@@ -33,8 +33,8 @@ Ext.define ("viewer.components.Divider",{
         fontWeight: "bold"
     },
     constructor: function (conf){        
-        viewer.components.Divider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Divider.superclass.constructor.call(this, conf);
         this.createLabel();
         return this;
     },

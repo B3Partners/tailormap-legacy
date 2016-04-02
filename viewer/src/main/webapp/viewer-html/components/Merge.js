@@ -42,8 +42,8 @@ Ext.define("viewer.components.Merge", {
         }
     },
     constructor: function (conf) {
-        viewer.components.Merge.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Merge.superclass.constructor.call(this, conf);
         this.config.actionbeanUrl = contextPath + '/action/feature/merge';
 
         var me = this;

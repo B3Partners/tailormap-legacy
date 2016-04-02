@@ -32,8 +32,8 @@ Ext.define ("viewer.components.tools.Identify",{
      * @param conf configuration object that passes the configuration to the Tool
      */
     constructor: function (conf){        
-        viewer.components.tools.Identify.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.tools.Identify.superclass.constructor.call(this, conf);
         conf.type = viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO;        
         this.initTool(conf);
         return this;

@@ -27,8 +27,8 @@ Ext.define ("viewer.components.tools.Pan",{
         tooltip: "Pan"
     },
     constructor: function (conf){        
-        viewer.components.tools.Pan.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.tools.Pan.superclass.constructor.call(this, conf);
         conf.type = viewer.viewercontroller.controller.Tool.PAN;        
         this.initTool(conf);
         return this;

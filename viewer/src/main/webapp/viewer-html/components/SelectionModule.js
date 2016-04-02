@@ -139,8 +139,8 @@ Ext.define ("viewer.components.SelectionModule",{
             conf.showBackgroundLevels = false;
         }
         // call constructor and init config
-        viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.renderButton();
         // if there is no selected content, show selection module
         var me = this;

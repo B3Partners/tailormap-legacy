@@ -28,8 +28,8 @@ Ext.define ("viewer.components.FeatureInfo",{
     constructor: function (conf){    
         conf.isPopup=true;
         //don't call maptip constructor but that of super maptip.
-        viewer.components.FeatureInfo.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
+		viewer.components.FeatureInfo.superclass.constructor.call(this, conf);
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloonFeatureInfo",this.width,this.height);
         //set the offset of the map

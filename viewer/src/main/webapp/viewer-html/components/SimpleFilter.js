@@ -26,8 +26,8 @@ Ext.define("viewer.components.SimpleFilter", {
     },
     simpleFilters:null,
     constructor: function (conf){
-        viewer.components.SimpleFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.SimpleFilter.superclass.constructor.call(this, conf);
         this.simpleFilters = [];
 
         var containerContentId = Ext.id();
