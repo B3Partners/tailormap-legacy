@@ -33,7 +33,7 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
         Ext.apply(confNav,conf);
         
         this.initConfig(conf); 
-		viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, conf);
+		viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.DEFAULT;
         this.initTool(conf);
         if (this.getNavigationPanel()){  

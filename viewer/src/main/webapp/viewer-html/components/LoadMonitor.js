@@ -29,7 +29,7 @@ Ext.define ("viewer.components.LoadMonitor",{
         conf.timeout = conf.timeout == undefined? 60000 : conf.timeout;
         
         this.initConfig(conf);        
-		viewer.components.LoadMonitor.superclass.constructor.call(this, conf);
+		viewer.components.LoadMonitor.superclass.constructor.call(this, this.config);
         
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.LOADMONITOR;

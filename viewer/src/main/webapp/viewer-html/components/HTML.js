@@ -29,7 +29,7 @@ Ext.define ("viewer.components.HTML",{
     },
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.HTML.superclass.constructor.call(this, conf);
+		viewer.components.HTML.superclass.constructor.call(this, this.config);
         this.loadHtml();
         return this;
     },

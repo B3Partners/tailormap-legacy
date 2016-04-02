@@ -23,7 +23,7 @@ Ext.define ("viewer.components.Marker",{
     extend: "viewer.components.Component",
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.Marker.superclass.constructor.call(this, conf);
+		viewer.components.Marker.superclass.constructor.call(this, this.config);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.addMarker, this);
         return this;
     },

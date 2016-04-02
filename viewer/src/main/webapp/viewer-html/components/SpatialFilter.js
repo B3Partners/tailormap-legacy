@@ -55,7 +55,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             conf.multiGeometries = true;
         }
         this.initConfig(conf);     
-		viewer.components.SpatialFilter.superclass.constructor.call(this, conf);
+		viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
         var me = this;
         this.features = new Array();
         this.renderButton({

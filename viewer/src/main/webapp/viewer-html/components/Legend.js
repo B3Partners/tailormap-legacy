@@ -65,7 +65,7 @@ Ext.define("viewer.components.Legend", {
     constructor: function (conf){
         conf.details.useExtLayout = true;
         this.initConfig(conf);
-		viewer.components.Legend.superclass.constructor.call(this, conf);
+		viewer.components.Legend.superclass.constructor.call(this, this.config);
         var me = this;
         
         this.config.renderLegend = this.config.regionName !== "content";

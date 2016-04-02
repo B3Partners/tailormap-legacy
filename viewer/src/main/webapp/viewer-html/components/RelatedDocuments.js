@@ -42,7 +42,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
     constructor: function (conf){   
         conf.isPopup=true;        
         this.initConfig(conf);
-		viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);        
+		viewer.components.RelatedDocuments.superclass.constructor.call(this, this.config);        
         
         this.documentImg = new Object();
         this.iconPath=contextPath+"/viewer-html/components/resources/images/relatedDocuments/"

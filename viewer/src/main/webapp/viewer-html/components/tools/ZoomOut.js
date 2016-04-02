@@ -29,7 +29,7 @@ Ext.define ("viewer.components.tools.ZoomOut",{
     },
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.tools.ZoomOut.superclass.constructor.call(this, conf);
+		viewer.components.tools.ZoomOut.superclass.constructor.call(this, this.config);
         if( conf.zoomBox === undefined || conf.zoomBox === null || conf.zoomBox === false){
             conf.type = viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON;
         }else{

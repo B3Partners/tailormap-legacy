@@ -28,7 +28,7 @@ Ext.define ("viewer.components.tools.FullExtent",{
     },
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.tools.FullExtent.superclass.constructor.call(this, conf);
+		viewer.components.tools.FullExtent.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.FULL_EXTENT;        
         this.initTool(conf);
         return this;

@@ -41,7 +41,7 @@ Ext.define ("viewer.components.Help",{
             conf.showHelpButton=false;
         }
         this.initConfig(conf);
-		viewer.components.Help.superclass.constructor.call(this, conf);
+		viewer.components.Help.superclass.constructor.call(this, this.config);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_HELP, this.showHelp, this);
         this.renderWindow(null);
         return this;

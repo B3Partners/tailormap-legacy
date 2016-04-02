@@ -35,7 +35,7 @@ Ext.define ("viewer.components.tools.JSButton",{
     },
     constructor: function (conf){              
         this.initConfig(conf);
-		viewer.components.tools.JSButton.superclass.constructor.call(this, conf);
+		viewer.components.tools.JSButton.superclass.constructor.call(this, this.config);
         this.id = this.name;
         this.mapComponent = this.config.viewerController.mapComponent;
         this.frameworkObject = this.config.viewerController.mapComponent.viewerObject;

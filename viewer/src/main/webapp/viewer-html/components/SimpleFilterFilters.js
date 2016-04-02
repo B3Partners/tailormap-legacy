@@ -226,7 +226,7 @@ Ext.define("viewer.components.sf.Checkbox", {
     },
     constructor: function(config){
         this.initConfig(config);
-		viewer.components.sf.Checkbox.superclass.constructor.call(this, config);
+		viewer.components.sf.Checkbox.superclass.constructor.call(this, this.config);
 
         var filterConfig = this.config.filterConfig;
         this.options = filterConfig.options;
@@ -530,7 +530,7 @@ Ext.define("viewer.components.sf.Number", {
     numberField: null,
     constructor: function(conf) {
         this.initConfig(conf);
-		viewer.components.sf.Number.superclass.constructor.call(this, conf);
+		viewer.components.sf.Number.superclass.constructor.call(this, this.config);
         var templatecontents = [
             "<tr>",
                 "<td width=\"100\"><div id=\"{name}_field\">{value}</div></td>",
@@ -608,7 +608,7 @@ Ext.define("viewer.components.sf.Slider", {
 
     constructor: function(conf) {
         this.initConfig(conf);
-		viewer.components.sf.Slider.superclass.constructor.call(this, conf);
+		viewer.components.sf.Slider.superclass.constructor.call(this, this.config);
 
         var filterChangeDelay = 500;
 

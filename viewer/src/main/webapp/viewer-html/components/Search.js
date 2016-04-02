@@ -73,7 +73,7 @@ Ext.define ("viewer.components.Search",{
     constructor: function (conf){
         conf.details.useExtLayout = true;
         this.initConfig(conf);
-		viewer.components.Search.superclass.constructor.call(this, conf);
+		viewer.components.Search.superclass.constructor.call(this, this.config);
         this.renderButton(); 
         var notUrlConfigs = new Array();
         this.onlyUrlConfig = new Array();

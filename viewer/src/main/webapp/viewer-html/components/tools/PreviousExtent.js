@@ -28,7 +28,7 @@ Ext.define ("viewer.components.tools.PreviousExtent",{
     },
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.tools.PreviousExtent.superclass.constructor.call(this, conf);
+		viewer.components.tools.PreviousExtent.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT;        
         this.initTool(conf);
         return this;

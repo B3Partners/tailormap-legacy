@@ -28,7 +28,7 @@ Ext.define ("viewer.components.tools.SuperPan",{
     },
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.tools.SuperPan.superclass.constructor.call(this, conf);
+		viewer.components.tools.SuperPan.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.SUPERPAN;        
         this.initTool(conf);
         return this;

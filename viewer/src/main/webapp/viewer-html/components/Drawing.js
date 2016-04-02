@@ -50,7 +50,7 @@ Ext.define ("viewer.components.Drawing",{
     },
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.Drawing.superclass.constructor.call(this, conf);
+		viewer.components.Drawing.superclass.constructor.call(this, this.config);
         if(this.config.color === ""){
             this.config.color = "ff0000";
         }

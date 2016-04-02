@@ -28,7 +28,7 @@ Ext.define ("viewer.components.Cyclorama",{
     },
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.Cyclorama.superclass.constructor.call(this, conf);
+		viewer.components.Cyclorama.superclass.constructor.call(this, this.config);
         // Registreer voor layerinitialized
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initComp, this);
         return this;

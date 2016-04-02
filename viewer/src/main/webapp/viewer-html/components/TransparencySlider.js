@@ -34,7 +34,7 @@ Ext.define ("viewer.components.TransparencySlider",{
     
     constructor: function (conf){        
         this.initConfig(conf); 
-		viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
+		viewer.components.TransparencySlider.superclass.constructor.call(this, this.config);
         if(this.config.layers != null) {
             transparencySlider_layersArrayIndexesToAppLayerIds(this.config);
         }

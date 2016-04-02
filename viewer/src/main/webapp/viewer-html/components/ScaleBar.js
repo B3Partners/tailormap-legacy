@@ -24,7 +24,7 @@ Ext.define ("viewer.components.ScaleBar",{
     extend: "viewer.components.Component",    
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.ScaleBar.superclass.constructor.call(this, conf);
+		viewer.components.ScaleBar.superclass.constructor.call(this, this.config);
         
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.SCALEBAR;

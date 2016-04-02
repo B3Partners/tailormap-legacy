@@ -30,7 +30,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     constructor: function (conf){        
         this.hasButton = false;
         this.initConfig(conf);   
-		viewer.components.tools.DownloadMap.superclass.constructor.call(this, conf);
+		viewer.components.tools.DownloadMap.superclass.constructor.call(this, this.config);
         
         if(this.isPopup){
             var me = this;

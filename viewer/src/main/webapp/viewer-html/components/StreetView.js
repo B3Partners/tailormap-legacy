@@ -58,7 +58,7 @@ Ext.define ("viewer.components.tools.StreetView",{
             conf.nonSticky = false;
         }
         this.initConfig(conf);   
-		viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
+		viewer.components.tools.StreetView.superclass.constructor.call(this, this.config);
 
         this.markerName = this.id + "MARKER";
         

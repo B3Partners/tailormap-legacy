@@ -33,7 +33,7 @@ Ext.define ("viewer.components.PopupButton",{
         this.popup = conf.viewerController.layoutManager.popupWin;
         var selected = !this.popup.popupWin.isHidden() ||false ;
         this.initConfig(conf);
-		viewer.components.Component.superclass.constructor.call(this, conf);
+		viewer.components.Component.superclass.constructor.call(this, this.config);
         var me =this;
         this.renderButton({
             handler: function(){

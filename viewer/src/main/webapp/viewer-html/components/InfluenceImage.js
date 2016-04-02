@@ -30,7 +30,7 @@ Ext.define ("viewer.components.InfluenceImage",{
      */
     constructor: function (conf){               
         this.initConfig(conf);  
-		viewer.components.InfluenceImage.superclass.constructor.call(this, conf);
+		viewer.components.InfluenceImage.superclass.constructor.call(this, this.config);
         if (this.vectorLayer!=null){
             this.config.viewerController.mapComponent.getMap().removeLayer(this.vectorLayer);
             delete this.vectorLayer;

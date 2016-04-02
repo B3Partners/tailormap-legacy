@@ -28,7 +28,7 @@ Ext.define("viewer.components.BrowserCheck", {
     },
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.BrowserCheck.superclass.constructor.call(this, conf);
+		viewer.components.BrowserCheck.superclass.constructor.call(this, this.config);
         
         this.unsupported = (Ext.isIE && Ext.ieVersion < 9)
             || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari));

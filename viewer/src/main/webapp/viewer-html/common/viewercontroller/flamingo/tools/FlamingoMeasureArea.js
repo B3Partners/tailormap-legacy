@@ -36,8 +36,8 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
     vectorLayer : null,
     button:null,
     constructor: function (conf){              
-                this.initConfig
-viewer.components.tools.FlamingoMeasureArea.superclass.constructor.call(this, conf);(conf);
+        this.initConfig(conf);
+        viewer.components.tools.FlamingoMeasureArea.superclass.constructor.call(this, this.config);
         this.id = this.name;
         
         conf.iconUrl_up = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square.png";

@@ -67,7 +67,7 @@ Ext.define ("viewer.components.TOC",{
     constructor: function (config){
         config.details.useExtLayout = true;
         this.initConfig(config);
-		viewer.components.TOC.superclass.constructor.call(this, config);
+		viewer.components.TOC.superclass.constructor.call(this, this.config);
         /*backwards compatible, if 'showToggleAllLayers' is configured in the past
         both toggle all layers buttons must be shown*/
         if (config.showToggleAllLayers!==undefined){

@@ -34,7 +34,7 @@ Ext.define ("viewer.components.Divider",{
     },
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.Divider.superclass.constructor.call(this, conf);
+		viewer.components.Divider.superclass.constructor.call(this, this.config);
         this.createLabel();
         return this;
     },

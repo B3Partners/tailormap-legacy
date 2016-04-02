@@ -55,7 +55,7 @@ Ext.define ("viewer.components.Maptip",{
     constructor: function (conf){
         conf.isPopup=true;
         this.initConfig(conf);
-		viewer.components.Maptip.superclass.constructor.call(this, conf);
+		viewer.components.Maptip.superclass.constructor.call(this, this.config);
 
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.config.viewerController.mapComponent,"balloon",this.config.width,this.config.height);

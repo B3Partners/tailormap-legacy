@@ -33,7 +33,7 @@ Ext.define ("viewer.components.tools.Identify",{
      */
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.tools.Identify.superclass.constructor.call(this, conf);
+		viewer.components.tools.Identify.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO;        
         this.initTool(conf);
         return this;

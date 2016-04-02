@@ -50,7 +50,7 @@ Ext.define ("viewer.components.AttributeList",{
     featureExtentService: null,
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.AttributeList.superclass.constructor.call(this, conf);
+		viewer.components.AttributeList.superclass.constructor.call(this, this.config);
         var me = this;
         this.grids={};
         this.pagers={};

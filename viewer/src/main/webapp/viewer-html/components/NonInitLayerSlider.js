@@ -30,7 +30,7 @@ Ext.define("viewer.components.NonInitLayerSlider",{
     },
     /*constructor : function (conf){
         this.initConfig(conf);  
-		viewer.components.Slider.superclass.constructor.call(this, conf);        
+		viewer.components.Slider.superclass.constructor.call(this, this.config);        
         return this;
     },*/
     onAddLayer: function(map,options){
