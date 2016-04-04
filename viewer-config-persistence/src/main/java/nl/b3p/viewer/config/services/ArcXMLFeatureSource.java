@@ -62,7 +62,7 @@ public class ArcXMLFeatureSource extends FeatureSource {
             params.putAll(extraDataStoreParams);
         }
 
-        // Params which can not be overridden below        
+        // Params which can not be overridden below
 
         params.put(ArcIMSDataStoreFactory.URL.key, new URL(getUrl()));
         params.put(ArcIMSDataStoreFactory.SERVICENAME.key, serviceName);
@@ -78,17 +78,17 @@ public class ArcXMLFeatureSource extends FeatureSource {
         try {
             ds = new ArcIMSDataStoreFactory().createDataStore(params);
         } catch (Exception e) {
-            params.replace(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
+            params.put(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
         if (ds == null) {
-            params.replace(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
+            params.put(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params);
         } else {
             return ds;
         }
     }
-    
+
     @Override
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
         DataStore ds = createDataStore();
@@ -113,7 +113,7 @@ public class ArcXMLFeatureSource extends FeatureSource {
         }else{
             q = new org.geotools.data.Query(sft.getTypeName());
         }
-        
+
         q.setMaxFeatures(maxFeatures);
         FeatureCollection fc = sft.openGeoToolsFeatureSource().getFeatures(q);
         return fc;

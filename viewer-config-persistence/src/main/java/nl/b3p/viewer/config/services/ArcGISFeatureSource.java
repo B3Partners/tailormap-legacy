@@ -64,17 +64,17 @@ public class ArcGISFeatureSource extends FeatureSource {
                 log.debug("No ArcGIS Server version to pass on to datastore, extra version request will be performed!");
             }
         }
-        
+
         // Params which can be overridden
         if (extraDataStoreParams != null) {
             params.putAll(extraDataStoreParams);
-            
+
             if(extraDataStoreParams.containsKey(ArcGISDataStoreFactory.AGS_ASSUME_VERSION.key)) {
                 log.debug("NOTE: version parameter as determined above overridden to " + params.get(ArcGISDataStoreFactory.AGS_ASSUME_VERSION.key));
             }
         }
 
-        // Params which can not be overridden below        
+        // Params which can not be overridden below
 
         params.put(ArcGISDataStoreFactory.URL.key, new URL(getUrl()));
         params.put(ArcGISDataStoreFactory.USER.key, getUsername());
@@ -89,11 +89,11 @@ public class ArcGISFeatureSource extends FeatureSource {
         try {
             ds = new ArcGISDataStoreFactory().createDataStore(params);
         } catch (Exception e) {
-            params.replace(ArcGISDataStoreFactory.PASSWD.key, "xxx");
+            params.put(ArcGISDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
         if (ds == null) {
-            params.replace(ArcGISDataStoreFactory.PASSWD.key, "xxx");
+            params.put(ArcGISDataStoreFactory.PASSWD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params);
         } else {
             return ds;
@@ -130,7 +130,7 @@ public class ArcGISFeatureSource extends FeatureSource {
         }else{
             q = new org.geotools.data.Query(sft.getTypeName());
         }
-        
+
         q.setMaxFeatures(maxFeatures);
         org.geotools.data.FeatureSource fs = sft.openGeoToolsFeatureSource();
         FeatureCollection fc = fs.getFeatures(q);
