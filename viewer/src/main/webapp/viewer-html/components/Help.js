@@ -27,7 +27,11 @@ Ext.define ("viewer.components.Help",{
         name: "Help",
         title: "Help",
         titlebarIcon : "",
-        defaultText: ""
+        defaultText: "",
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     /**
      * @constructor

@@ -55,9 +55,9 @@ Ext.define ("viewer.components.DataSelection",{
         }
 		
         this.attributes =[];
-        viewer.components.DataSelection.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        viewer.components.DataSelection.superclass.constructor.call(this, this.config);
         this.filters = new Array();
-        this.initConfig(conf); 
         var me = this;
         this.renderButton({
             handler: function(){

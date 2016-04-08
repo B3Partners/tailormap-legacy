@@ -40,13 +40,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             minHeight: 270
         }
     },
-    constructor: function (conf){        
-        if(conf.details.width === undefined){
-            conf.details.width = 330;
-        }
-        if(conf.details.height === undefined){
-            conf.details.height = 270;
-        }
+    constructor: function (conf){
         if(conf.applyDirect === undefined){
             conf.applyDirect = true;
         }

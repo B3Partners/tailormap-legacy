@@ -25,7 +25,6 @@
  */
 Ext.define ("viewer.components.LayerSwitch",{
     extend: "viewer.components.Component",
-    container: null,
     
     items: null,
     selectedBackgroundLevels: null,

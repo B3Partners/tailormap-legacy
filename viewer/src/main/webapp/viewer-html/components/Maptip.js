@@ -37,7 +37,11 @@ Ext.define ("viewer.components.Maptip",{
         detailHideGeomAttr: true,
         heightDescription: null,
         clickRadius:null,
-        spinnerWhileIdentify:null
+        spinnerWhileIdentify:null,
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     serverRequestEnabled: false,
     serverRequestLayers: null,

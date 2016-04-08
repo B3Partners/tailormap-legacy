@@ -123,8 +123,6 @@ Ext.define ("viewer.components.SelectionModule",{
     },
     constructor: function (conf) {
         //set defaults
-        var minwidth = 600;
-        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         if (Ext.isEmpty(conf.selectGroups)){
             conf.selectGroups = true;
         }if (Ext.isEmpty(conf.selectLayers)){

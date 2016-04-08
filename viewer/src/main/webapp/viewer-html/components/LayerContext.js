@@ -28,7 +28,11 @@ Ext.define ("viewer.components.LayerContext",{
         name: "Informatie kaartlaag",
         title: "",
         titlebarIcon : "",
-        tooltip: null
+        tooltip: null,
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     /**
      * @constructor
