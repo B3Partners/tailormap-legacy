@@ -34,8 +34,8 @@ Ext.define ("viewer.components.LayerSelector",{
         layers:null
     }, 
     constructor: function (conf){
-        viewer.components.LayerSelector.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        viewer.components.LayerSelector.superclass.constructor.call(this, this.config);
         
         this.forcedLayers = new Array();
         var layers = Ext.create('Ext.data.Store', {

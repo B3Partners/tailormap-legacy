@@ -69,7 +69,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
 
     constructor: function (config){
         this.initConfig(config);
-        viewer.viewercontroller.controller.Tool.superclass.constructor.call(this, config);
+        viewer.viewercontroller.controller.Tool.superclass.constructor.call(this, this.config);
         this.events = [];
         this.blocksDefaultTool = true;
         return this;

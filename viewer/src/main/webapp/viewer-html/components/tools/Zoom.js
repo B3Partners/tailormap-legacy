@@ -24,8 +24,8 @@ Ext.define ("viewer.components.tools.Zoom",{
     extend: "viewer.components.tools.Tool",
     config:{},
     constructor: function (conf) {
-        viewer.components.tools.Zoom.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.tools.Zoom.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.ZOOM;
         this.initTool(conf);
         this.alignContainer(Ext.get(this.tool.frameworkObject.div));

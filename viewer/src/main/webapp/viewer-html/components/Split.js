@@ -46,11 +46,15 @@ Ext.define("viewer.components.Split", {
         iconUrl: "",
         layers: null,
         label: "",
-        cancelOtherControls: ["viewer.components.Edit", "viewer.components.Merge"]
+        cancelOtherControls: ["viewer.components.Edit", "viewer.components.Merge"],
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     constructor: function (conf) {
-        viewer.components.Split.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Split.superclass.constructor.call(this, this.config);
         this.config.actionbeanUrl = contextPath + '/action/feature/split';
         var me = this;
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,

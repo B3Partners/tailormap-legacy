@@ -30,8 +30,8 @@ Ext.define("viewer.components.BorderNavigation",{
         tooltip_pan_down: "Pan omlaag"
     },
     constructor : function (conf){
-        viewer.components.BorderNavigation.superclass.constructor.call(this,conf);
         this.initConfig(conf);
+		viewer.components.BorderNavigation.superclass.constructor.call(this,conf);
 
         conf.id = conf.name;
         conf.type = viewer.viewercontroller.controller.Component.BORDER_NAVIGATION;

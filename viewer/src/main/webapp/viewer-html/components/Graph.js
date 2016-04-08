@@ -33,9 +33,9 @@ Ext.define("viewer.components.Graph", {
         graphs: null
     },
     constructor: function(conf) {
-        viewer.components.Graph.superclass.constructor.call(this, conf);
-        this.loadCSS();
         this.initConfig(conf);
+        viewer.components.Graph.superclass.constructor.call(this, this.config);
+        this.loadCSS();
         if(this.config.layers !== null){
             graph_layersArrayIndexesToAppLayerIds(conf);
         }

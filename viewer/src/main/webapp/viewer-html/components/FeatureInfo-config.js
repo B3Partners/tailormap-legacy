@@ -21,13 +21,13 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
-    constructor: function (parentId,configObject){
+    constructor: function (parentId, configObject, configPage) {
         if (configObject===undefined || configObject===null){
             configObject={};
         }
         configObject.layerFilter=this.layerFilter;
         
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
         
         this.checkPanelHeight=270;
         

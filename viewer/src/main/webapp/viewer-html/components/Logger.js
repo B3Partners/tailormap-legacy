@@ -21,7 +21,11 @@
 Ext.define ("viewer.components.Logger",{    
     config:{
         title: "Logger",
-        logLevel: 0
+        logLevel: 0,
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     statics:{
         LEVEL_ERROR: 2,

@@ -64,12 +64,16 @@ Ext.define ("viewer.components.Search",{
         formHeight:null,
         label: "",
         //not yet configurable:
-        showRemovePin: true
+        showRemovePin: true,
+        details: {
+            minWidth: 400,
+            minHeight: 400
+        }
     },    
     constructor: function (conf){
         conf.details.useExtLayout = true;
-        viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Search.superclass.constructor.call(this, this.config);
         this.renderButton(); 
         var notUrlConfigs = new Array();
         this.onlyUrlConfig = new Array();

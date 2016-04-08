@@ -27,7 +27,11 @@ Ext.define ("viewer.components.Help",{
         name: "Help",
         title: "Help",
         titlebarIcon : "",
-        defaultText: ""
+        defaultText: "",
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     /**
      * @constructor
@@ -40,8 +44,8 @@ Ext.define ("viewer.components.Help",{
             //never show helpbutton for help window
             conf.showHelpButton=false;
         }
-        viewer.components.Help.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Help.superclass.constructor.call(this, this.config);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_HELP, this.showHelp, this);
         this.renderWindow(null);
         return this;

@@ -27,8 +27,8 @@ Ext.define ("viewer.components.tools.NextExtent",{
         tooltip: "Next Extent"
     },
     constructor: function (conf){        
-        viewer.components.tools.NextExtent.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.tools.NextExtent.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.NEXT_EXTENT;        
         this.initTool(conf);
         return this;

@@ -24,7 +24,11 @@ Ext.define ("viewer.components.Influence",{
     extend: "viewer.components.Search",  
     panel: null,
     config: {
-        layers: null
+        layers: null,
+        details: {
+            minWidth: 450,
+            minHeight: 250
+        }
     },
     location: null,
     vectorLayer: null,

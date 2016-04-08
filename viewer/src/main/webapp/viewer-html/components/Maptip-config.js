@@ -21,14 +21,12 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
-    constructor: function (parentId,configObject){
-        if (configObject==undefined || configObject==null){
-            configObject={};
-        }
+    constructor: function (parentId, configObject, configPage) {
+
         configObject.layerFilter=this.layerFilter;
         configObject.showLabelconfig = false;
         
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
         this.checkPanelHeight = 210;
         this.form.add([{
             xtype: 'textfield',
@@ -152,6 +150,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         }
         return filteredLayers;
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 400,
+                minHeight: 250
+            }
+        }
     }
 });
 

@@ -33,11 +33,15 @@ Ext.define ("viewer.components.Buffer",{
         maxFeatures:null,
         iconUrl:null,
         tooltip:null,
-        label: ""
+        label: "",
+        details: {
+            minWidth: 300,
+            minHeight: 175
+        }
     },
     constructor: function (conf){
-        viewer.components.Buffer.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
+		viewer.components.Buffer.superclass.constructor.call(this, this.config);
         if(this.config.maxFeatures == null){
             this.config.maxFeatures = 50;
         }

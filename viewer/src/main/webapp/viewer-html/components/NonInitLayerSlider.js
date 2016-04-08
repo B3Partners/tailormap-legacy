@@ -29,8 +29,8 @@ Ext.define("viewer.components.NonInitLayerSlider",{
         initSelectedContent: null
     },
     /*constructor : function (conf){
-        viewer.components.Slider.superclass.constructor.call(this, conf);        
         this.initConfig(conf);  
+		viewer.components.Slider.superclass.constructor.call(this, this.config);        
         return this;
     },*/
     onAddLayer: function(map,options){
