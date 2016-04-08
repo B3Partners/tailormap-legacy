@@ -55,6 +55,14 @@ Ext.define("viewer.components.CustomConfiguration",{
     windowHide: function() {
         // IE8 still showed HTML editor iframe after closing window so we manually hide the HTML editor
         this.htmlEditor.hide();
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 400,
+                minHeight: 250
+            }
+        }
     }
 });
 

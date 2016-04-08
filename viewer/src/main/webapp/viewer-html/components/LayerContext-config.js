@@ -26,6 +26,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         configObject.showLabelconfig = false;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 400,
+                minHeight: 250
+            }
+        }
     }
 });
 

@@ -150,6 +150,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         }
         return filteredLayers;
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 400,
+                minHeight: 250
+            }
+        }
     }
 });
 
