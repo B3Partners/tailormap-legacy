@@ -245,7 +245,11 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
                         }else{
                             valueString += ", ";
                         }
-                        valueString += value;
+                        if (value instanceof String) {
+                            valueString += "'" + value + "'";
+                        } else {
+                            valueString += value;
+                        }
                     }
                     valueString +=  ")";
 
