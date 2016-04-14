@@ -136,67 +136,78 @@ Ext.define('Ext.b3p.HelpController', {
     }
 });
 
-// Default grid config
-var defaultGridConfig = {
-    autoWidth: true,
-    height: '100%',
-    disableSelection: false,
-    loadMask: true,
-    viewConfig: {
-        trackOver: true,
-        stripeRows: true
-    }
-};
+Ext.define("vieweradmin.components.DefaultConfgurations", {
 
-// Default config for HTML-editor image uploader
-var defaultImageUploadConfig = {
-    dragResize: false,
-    dragWheel: false,
-    disableServerSideEdit: true,
-    iframeCss: csspath + 'iframe_styles.css',
-    lang: {
-        'Display': 'Weergave',
-        'By Default': 'Standaard',
-        'Inline': 'In regel',
-        'Block': 'Op aparte regel',
-        'Insert/Edit Image': 'Afbeelding invoegen/bewerken',
-        'Upload Image...': 'Uploaden...',
-        'Uploading your photo...': 'Afbeelding wordt geupload...',
-        'Error': 'Fout',
-        'Width': 'Breedte',
-        'Height': 'Hoogte',
-        'Real Size': 'Originele grootte',
-        'Align': 'Uitlijning',
-        'Title': 'Titel',
-        'Class': '',
-        'Padding': '',
-        'Margin': '',
-        'Top': 'Boven',
-        'Bottom': 'Onder',
-        'Right': 'Rechts',
-        'Left': 'Links',
-        'None': 'Geen',
-        'Size & Details': 'Grootte en details',
-        'More Options': 'Meer opties',
-        'Style' : 'Stijl',
-        'OK' : '',
-        'Cancel': 'Annuleren',
-        'Delete Image':'Afbeelding verwijderen',
-        'Confirmation':'Bevestiging',
-        'Are you sure you want to delete this image?': 'Weet u zeker dat u deze afbeelding wilt verwijderen?',
-        'Your photo has been uploaded.':'Uw afbeelding is geupload.'
-    }
-};
+    singleton: true,
 
-var defaultHtmleditorTableConfig = {
-    langTitle: 'Tabel toevoegen',
-    langInsert: 'Invoegen',
-    langCancel: 'Annuleren',
-    langRows: 'Rijen',
-    langColumns: 'Kolommen',
-    langBorder: 'Rand',
-    langCellLabel: 'Label in cellen tonen'
-};
+    getDefaultGridConfig: function() {
+        return {
+            autoWidth: true,
+            height: '100%',
+            disableSelection: false,
+            loadMask: true,
+            viewConfig: {
+                trackOver: true,
+                stripeRows: true
+            }
+        };
+    },
+
+    // Default config for HTML-editor image uploader
+    getDefaultImageUploadConfig: function() {
+        return {
+            dragResize: false,
+            dragWheel: false,
+            disableServerSideEdit: true,
+            iframeCss: csspath + 'iframe_styles.css',
+            lang: {
+                'Display': 'Weergave',
+                'By Default': 'Standaard',
+                'Inline': 'In regel',
+                'Block': 'Op aparte regel',
+                'Insert/Edit Image': 'Afbeelding invoegen/bewerken',
+                'Upload Image...': 'Uploaden...',
+                'Uploading your photo...': 'Afbeelding wordt geupload...',
+                'Error': 'Fout',
+                'Width': 'Breedte',
+                'Height': 'Hoogte',
+                'Real Size': 'Originele grootte',
+                'Align': 'Uitlijning',
+                'Title': 'Titel',
+                'Class': '',
+                'Padding': '',
+                'Margin': '',
+                'Top': 'Boven',
+                'Bottom': 'Onder',
+                'Right': 'Rechts',
+                'Left': 'Links',
+                'None': 'Geen',
+                'Size & Details': 'Grootte en details',
+                'More Options': 'Meer opties',
+                'Style' : 'Stijl',
+                'OK' : '',
+                'Cancel': 'Annuleren',
+                'Delete Image':'Afbeelding verwijderen',
+                'Confirmation':'Bevestiging',
+                'Are you sure you want to delete this image?': 'Weet u zeker dat u deze afbeelding wilt verwijderen?',
+                'Your photo has been uploaded.':'Uw afbeelding is geupload.'
+            }
+        };
+    },
+
+    getDefaultHtmlEditorTableConfig: function() {
+        return {
+            langTitle: 'Tabel toevoegen',
+            langInsert: 'Invoegen',
+            langCancel: 'Annuleren',
+            langRows: 'Rijen',
+            langColumns: 'Kolommen',
+            langBorder: 'Rand',
+            langCellLabel: 'Label in cellen tonen'
+        };
+    }
+
+});
 
 Ext.override(Ext.form.field.HtmlEditor, 
     // Fix upside down question mark appearing

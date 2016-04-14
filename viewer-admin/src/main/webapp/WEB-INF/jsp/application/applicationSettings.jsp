@@ -147,7 +147,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/ColorPickerButton.js"></script>
         <script type="text/javascript">
-            var activelink = 'menu_instellingen';
+            vieweradmin.components.Menu.setActiveLink('menu_instellingen');
             var actionBeans = { 
                 "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
             };
@@ -222,11 +222,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     value: Ext.get('details_opmerkingen').dom.value,
                     renderTo: 'details_opmerkingen_container',
                     plugins: [
-                        new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                        new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
                             submitUrl: actionBeans['imageupload'],
                             managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
                         })),
-                        new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                        new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
                     ]
                 });
                 Ext.get('settingsForm').on('submit', function() {

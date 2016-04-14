@@ -57,7 +57,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript">
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="edit"/>';
-            var activelink = 'menu_attributen';
+            vieweradmin.components.Menu.setActiveLink('menu_attributen');
 
             Ext.onReady(function() {
                 var featureSourceId = Ext.get('featureSourceId');

@@ -53,11 +53,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: value,
             renderTo: Ext.get(parentId) ,
             plugins: [
-                new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
                     submitUrl: this.getActionBeanUrl('imageupload'),
                     managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
                 })),
-                new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
             ]
         });
         this.htmlEditor.focus(false, true);

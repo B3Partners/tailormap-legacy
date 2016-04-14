@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <script type="text/javascript">
-            var activelink = 'menu_serviceusagematrix';
+            vieweradmin.components.Menu.setActiveLink('menu_serviceusagematrix');
             var deleteApplicationLayerUrl= <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="deleteApplicationLayer"/></js:quote>
             
             function deleteApplicationLayer(applicationId, appLayerId, store){

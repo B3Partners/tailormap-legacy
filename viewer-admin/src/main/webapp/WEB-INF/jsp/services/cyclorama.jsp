@@ -53,7 +53,7 @@
             </stripes:form>
         </div>
         <script type="text/javascript">
-            var activelink = 'menu_cyclorama';
+            vieweradmin.components.Menu.setActiveLink('menu_cyclorama');
 
             function changeSelection(obj){
                 var url = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean"/>';

@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="edit"/>';
             var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="delete"/>';
-            var activelink = 'menu_layarsource';
+            vieweradmin.components.Menu.setActiveLink('menu_layarsource');
             
             Ext.onReady(function() {
                 var layarServiceEl = Ext.get('layarServiceId');
