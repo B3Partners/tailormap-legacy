@@ -639,7 +639,7 @@ Ext.define ("viewer.components.Maptip",{
         return null;
     },
     relatedFeaturesListener: function(e) {
-        if(e.target && e.target.className && e.target.className.indexOf('load-releated-features') !== -1) {
+        if(e.target && e.target.className && e.target.className.indexOf && e.target.className.indexOf('load-releated-features') !== -1) {
             this.requestRelatedFeatureInfo(e.target);
             return false;
         }
