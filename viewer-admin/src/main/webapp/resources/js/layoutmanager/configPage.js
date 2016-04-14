@@ -397,7 +397,17 @@ Ext.define("vieweradmin.components.ConfigPage", {
                             fieldLabel: 'Breedte',
                             name: 'width',
                             value: this.config.details.width || defaults.minWidth || defaults.width,
-                            labelWidth:100
+                            labelWidth:100,
+                            validator: function(value) {
+                                // Always allow percentages and ignore if where is no minHeight
+                                if(value.indexOf("%") !== -1 || !defaults.minWidth) {
+                                    return true;
+                                }
+                                if(parseInt(value) < defaults.minWidth) {
+                                    return "Minimale breedte is " + defaults.minWidth;
+                                }
+                                return true;
+                            }
                         },
                         {
                             xtype: 'container',
@@ -412,7 +422,17 @@ Ext.define("vieweradmin.components.ConfigPage", {
                             fieldLabel: 'Hoogte',
                             name: 'height',
                             value: this.config.details.height || defaults.minHeight || defaults.height,
-                            labelWidth:100
+                            labelWidth:100,
+                            validator: function(value) {
+                                // Always allow percentages and ignore if where is no minHeight
+                                if(value.indexOf("%") !== -1 || !defaults.minHeight) {
+                                    return true;
+                                }
+                                if(parseInt(value) < defaults.minHeight) {
+                                    return "Minimale hoogte is " + defaults.minHeight;
+                                }
+                                return true;
+                            }
                         },
                         {
                             xtype: 'container',
@@ -515,16 +535,27 @@ Ext.define("vieweradmin.components.ConfigPage", {
         if(this.config.metadata.hasOwnProperty("type") && this.config.metadata.type == "popup") {
             config.isPopup = true;
             var layout = {};
+            var defaults = {};
+            if(this.customConfiguration) {
+                defaults = this.customConfiguration.getDefaultValues().details || {};
+            }
             if(this.layoutForm) {
                 var formFields = this.layoutForm.query("field");
                 var radiogroups = this.layoutForm.query("radiogroup");
                 // Iterate over all the fields to add the value to the layout object
                 Ext.Array.each(formFields, function(field) {
                     var value = field.getValue();
+                    var name = field.getName();
                     if(value !== "" && value !== "null") {
-                        layout[field.getName()] = value;
+                        if(name === "width" || name === "height") {
+                            var minKey = "min" + this.capitalizeFirstLetter(name);
+                            if(defaults[minKey] && value.indexOf("%") === -1 && value < defaults[minKey]) {
+                                value = defaults[minKey];
+                            }
+                        }
+                        layout[name] = value;
                     }
-                });
+                }, this);
                 // Iterate over the radiogroups (position) and apply the value of the group to the layout object
                 Ext.Array.each(radiogroups, function(group) {
                     Ext.apply(layout, group.getValue());
@@ -556,6 +587,10 @@ Ext.define("vieweradmin.components.ConfigPage", {
         var configFormObject = Ext.get("configObject");
         configFormObject.dom.value = JSON.stringify(config);
         document.getElementById('configForm').submit();
+    },
+
+    capitalizeFirstLetter: function(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     },
 
     showHelp: function () {
