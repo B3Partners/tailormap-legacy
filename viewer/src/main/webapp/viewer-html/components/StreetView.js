@@ -24,12 +24,12 @@ Ext.define ("viewer.components.tools.StreetView",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "Street View",
-        width:null,
-        height:null,
-        useMarker:null,
-        usePopup:null,
-        title: "",
-        nonSticky:null,
+        width: 600,
+        height: 600,
+        useMarker: false,
+        usePopup: false,
+        title: "Streetview",
+        nonSticky: false,
         titlebarIcon : "",
         tooltip : "Streetview"
     },
@@ -38,25 +38,7 @@ Ext.define ("viewer.components.tools.StreetView",{
     button: null,
     popupWindow:null,
     url: "",
-    constructor: function (conf){        
-        if(conf.title === null || conf.title === undefined){
-            conf.title = "Streetview";
-        }
-        if(conf.usePopup === null || conf.usePopup === undefined){
-            conf.usePopup = false;
-        }
-        if(conf.useMarker === null || conf.useMarker === undefined){
-            conf.useMarker = false;
-        }
-        if(conf.height === null || conf.height === undefined){
-            conf.height = "600";
-        }
-        if(conf.width === null || conf.width === undefined){
-            conf.width = "600";
-        }
-        if(conf.nonSticky === null || conf.nonSticky === undefined){
-            conf.nonSticky = false;
-        }
+    constructor: function (conf){
         this.initConfig(conf);   
 		viewer.components.tools.StreetView.superclass.constructor.call(this, this.config);
 

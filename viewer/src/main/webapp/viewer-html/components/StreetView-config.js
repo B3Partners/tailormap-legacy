@@ -39,26 +39,23 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: 'checkbox',
                 fieldLabel: "Zet een marker na klikken",
-                inputValue: false,
+                inputValue: true,
                 name: 'useMarker',
                 checked: this.configObject.useMarker !== undefined ? this.configObject.useMarker : false,
-                value: false,
                 labelWidth: me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel:  "Ga na gebruik naar de eerste tool",
-                inputValue: false,
+                inputValue: true,
                 name: 'nonSticky',
                 checked: this.configObject.nonSticky !== undefined ? this.configObject.nonSticky : false,
-                value: false,
                 labelWidth: me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: "Gebruik pop-up voor streetview",
-                inputValue: false,
+                inputValue: true,
                 name: 'usePopup',
                 checked: this.configObject.usePopup !== undefined ? this.configObject.usePopup : false,
-                value: false,
                 labelWidth: me.labelWidth,
                 listeners: {
                     change: function(obj, val) {
@@ -71,16 +68,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: "Hoogte popup",
                 name: 'height',
-                hidden:  this.configObject.usePopup!==undefined ? !this.configObject.usePopup : true,
-                value: this.configObject.height!==undefined? this.configObject.height:"400",
+                hidden:  this.configObject.usePopup !== undefined ? !this.configObject.usePopup : true,
+                value: this.configObject.height !== undefined? this.configObject.height:"400",
                 labelWidth:me.labelWidth
             },{
                 id: "popupWidth",
                 xtype: 'textfield',
                 fieldLabel: "Breedte popup",
                 name: 'width',
-                hidden:  this.configObject.usePopup!==undefined ? !this.configObject.usePopup : true,
-                value: this.configObject.width!==undefined? this.configObject.width:"400",
+                hidden:  this.configObject.usePopup !== undefined ? !this.configObject.usePopup : true,
+                value: this.configObject.width !== undefined? this.configObject.width:"400",
                 labelWidth:me.labelWidth
             }],
             renderTo: parentId
