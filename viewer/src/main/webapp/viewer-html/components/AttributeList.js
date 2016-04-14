@@ -127,12 +127,9 @@ Ext.define ("viewer.components.AttributeList",{
             },{
                 id: this.name + 'mainGridPanel',
                 xtype: "container",
-                autoScroll: true,
+                // autoScroll: true,
                 flex: 1,
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                }
+                layout: 'fit'
             },{
                 id: this.name + 'mainPagerPanel',
                 xtype: "container",
@@ -404,10 +401,11 @@ Ext.define ("viewer.components.AttributeList",{
         if (Ext.get(name + 'GridPanel')==null){
             Ext.create('Ext.container.Container', {
                 id: name + 'GridPanel',
-                autoScroll: true,
+                // autoScroll: true,
                 width: '100%',
                 flex: 1,
-                renderTo: renderToEl.id
+                renderTo: renderToEl.id,
+                layout: 'fit'
             });
             if(addPager){
                 Ext.create('Ext.container.Container', {
