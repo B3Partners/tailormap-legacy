@@ -25,7 +25,7 @@ Ext.define ("viewer.components.Maptip",{
     maptipComponent: null,
     config: {
         layers: null,
-        maptipdelay: null,
+        maptipdelay: 500,
         height: null,
         width: null,
         maxDescLength: 30,
@@ -208,6 +208,10 @@ Ext.define ("viewer.components.Maptip",{
             if (curExtent.equals(me.requestExtent)){
                 for( var i = 0 ; i < data.length ;i++){
                     var data = data[i];
+                    if(data.error) {
+                        me.config.viewerController.logger.error(data.error);
+                        continue;
+                    }
                     var layer = me.config.viewerController.getLayer(data.appLayer);
                     layer.fireEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, data.appLayer,data);
                 }
@@ -275,7 +279,9 @@ Ext.define ("viewer.components.Maptip",{
                 this.balloon.setPosition(x,y,true,browserZoomRatio);
                 this.balloon.addElements(components);
                 this.balloon.show();
-                
+            } else {
+                this.balloon.setContent("");
+                this.balloon.hide();
             }
         }catch(e){
             this.config.viewerController.logger.error(e);

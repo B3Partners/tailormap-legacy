@@ -39,7 +39,8 @@ function appendPanel(header, content, container) {
             title: headercontent,
             contentEl: contentobj,
             width: '100%',
-            renderTo: panelContainer
+            renderTo: panelContainer,
+            autoScroll: true
         });
         Ext.on('resize', function () {
             panel.doLayout();
