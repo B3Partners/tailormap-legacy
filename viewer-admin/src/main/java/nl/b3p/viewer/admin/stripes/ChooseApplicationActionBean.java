@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ChooseApplicationActionBean.class);
     private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/application/chooseApplicationEdit.jsp";
+    private static final String VIEWER_URL_PARAM = "viewer.url";
     @Validate
     private int page;
     @Validate
@@ -274,7 +275,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         c.setFirstResult(start);
 
         List applications = c.list();
-
+        String baseUrl = getContext().getServletContext().getInitParameter(VIEWER_URL_PARAM);
         for (Iterator it = applications.iterator(); it.hasNext();) {
             Application app = (Application) it.next();
             String appName = app.getName();
@@ -289,7 +290,14 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             if (app.getVersion() == null) {
                 published = "Ja";
             }
-            JSONObject j = this.getGridRow(app.getId().intValue(), appName, published, ownername);
+            JSONObject j = new JSONObject();
+            j.put("id", app.getId().intValue());
+            j.put("name", appName);
+            j.put("published", published);
+            j.put("owner", ownername);
+            j.put("baseName", app.getName());
+            j.put("version", app.getVersion());
+            j.put("baseUrl", baseUrl);
             jsonData.put(j);
         }
 
@@ -358,14 +366,5 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
         em.getTransaction().commit();
         return copy;
-    }
-
-    private JSONObject getGridRow(int i, String name, String published, String owner) throws JSONException {
-        JSONObject j = new JSONObject();
-        j.put("id", i);
-        j.put("name", name);
-        j.put("published", published);
-        j.put("owner", owner);
-        return j;
     }
 }
