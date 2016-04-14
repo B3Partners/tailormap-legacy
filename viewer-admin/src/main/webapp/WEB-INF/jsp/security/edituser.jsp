@@ -66,11 +66,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </tr>
                                     <tr>
                                         <td>Gebruikersnaam *:</td>
-                                        <td><stripes-dynattr:text name="username" autocomplete="off" required="" disabled="${!empty actionBean.user.username}" maxlength="255" size="30">${user.username}</stripes-dynattr:text></td>
+                                        <td><stripes-dynattr:text name="username" required="" disabled="${!empty actionBean.user.username}" maxlength="255" size="30">${user.username}</stripes-dynattr:text></td>
                                     </tr>
                                     <tr>
                                         <td>Wachtwoord *:</td>
-                                        <td><stripes-dynattr:password name="password" autocomplete="off" required="" maxlength="255" size="30"/></td>
+                                        <td><stripes-dynattr:password name="password" autocomplete="new-password" required="" maxlength="255" size="30"/></td>
                                     </tr>
                                 </table>
                             </td>
