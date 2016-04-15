@@ -194,6 +194,9 @@ public abstract class TestUtil {
         app = new Application();
         app.setName("testapp");
         app.setVersion("154");
+        app.getReaders().add("pietje");
+        app.getReaders().add("puk");
+        
         persistEntityTest(app, Application.class, deleteAfterwards);
 
         testLevel = new Level();
