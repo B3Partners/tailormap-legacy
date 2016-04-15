@@ -720,3 +720,8 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .x-tree-view > .x-grid-item-container {
     width: 100% !important;
 }
+
+.maximize {
+    width: 100%;
+    height: 100%;
+}
