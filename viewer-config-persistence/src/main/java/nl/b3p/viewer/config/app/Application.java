@@ -585,6 +585,10 @@ public class Application {
                 cc.getLinkedComponents().add(componentCopy);
             }
         }
+
+        for (String reader : readers) {
+            copy.getReaders().add(reader);
+        }
         return copy;
     }
 
