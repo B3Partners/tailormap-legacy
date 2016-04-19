@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import org.stripesstuff.stripersist.Stripersist;
@@ -216,6 +217,13 @@ public class ApplicationActionBean implements ActionBean {
             return login;
         }
 
+        EntityManager em = Stripersist.getEntityManager();
+        if(!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em)){
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
+            context.getRequest().getSession().invalidate();
+            return new ForwardResolution("/WEB-INF/jsp/error.jsp");
+        }
+
         if(username != null) {
             user = new JSONObject();
             user.put("name", username);
@@ -228,7 +236,6 @@ public class ApplicationActionBean implements ActionBean {
 
         buildComponentSourceHTML();
 
-        EntityManager em = Stripersist.getEntityManager();
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
 
