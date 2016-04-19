@@ -343,6 +343,12 @@ public class Authorizations {
         }
         return appCache;
     }
+
+    public static boolean isApplicationReadAuthorized(Application app, HttpServletRequest request, EntityManager em) {
+        Read auths = new Read(app.getReaders());
+
+        return isReadAuthorized(request, auths);
+    }
     
     public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request, EntityManager em) {
         return isLevelReadAuthorized(app, l, request, getApplicationCacheFromRequest(app, request,em), em);
