@@ -218,10 +218,12 @@ public class ApplicationActionBean implements ActionBean {
         }
 
         EntityManager em = Stripersist.getEntityManager();
-        if(!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em)){
+        if(!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username == null){
+            return login;
+        }else if(!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null){
             getContext().getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
             context.getRequest().getSession().invalidate();
-            return new ForwardResolution("/WEB-INF/jsp/error.jsp");
+            return new ForwardResolution("/WEB-INF/jsp/error_retry.jsp");
         }
 
         if(username != null) {
