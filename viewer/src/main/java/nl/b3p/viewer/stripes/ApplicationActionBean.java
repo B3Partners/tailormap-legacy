@@ -181,6 +181,10 @@ public class ApplicationActionBean implements ActionBean {
         Resolution view = view();
 
         EntityManager em = Stripersist.getEntityManager();
+        Resolution r = checkRestriction();
+        if (r != null) {
+            return r;
+        }
         SelectedContentCache cache = new SelectedContentCache();
         JSONObject sc = cache.createSelectedContent(application, false,false, false,em);
         application.getDetails().put("selected_content_cache", new ClobElement(sc.toString()));
@@ -190,6 +194,11 @@ public class ApplicationActionBean implements ActionBean {
 
      public Resolution retrieveCache() throws JSONException, IOException{
         Resolution view = view();
+
+        Resolution r = checkRestriction();
+        if (r != null) {
+            return r;
+        }
         ClobElement el = application.getDetails().get("selected_content_cache");
         appConfigJSON = el.getValue();
         return view;
@@ -218,12 +227,9 @@ public class ApplicationActionBean implements ActionBean {
         }
 
         EntityManager em = Stripersist.getEntityManager();
-        if(!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username == null){
-            return login;
-        }else if(!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null){
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
-            context.getRequest().getSession().invalidate();
-            return new ForwardResolution("/WEB-INF/jsp/error_retry.jsp");
+        Resolution r = checkRestriction();
+        if(r != null){
+            return r;
         }
 
         if(username != null) {
@@ -251,6 +257,25 @@ public class ApplicationActionBean implements ActionBean {
         }
         context.getResponse().addHeader("X-UA-Compatible", "IE=edge");
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
+    }
+
+    private Resolution checkRestriction(){
+        EntityManager em = Stripersist.getEntityManager();
+
+        String username = context.getRequest().getRemoteUser();
+        if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username == null) {
+            RedirectResolution login = new RedirectResolution(LoginActionBean.class)
+                    .addParameter("name", name) // binded parameters not included ?
+                    .addParameter("version", version)
+                    .addParameter("debug", debug)
+                    .includeRequestParameters(true);
+            return login;
+        } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
+            context.getRequest().getSession().invalidate();
+            return new ForwardResolution("/WEB-INF/jsp/error_retry.jsp");
+        }
+        return null;
     }
 
     /**
