@@ -181,7 +181,7 @@ public class ApplicationActionBean implements ActionBean {
         Resolution view = view();
 
         EntityManager em = Stripersist.getEntityManager();
-        Resolution r = checkRestriction();
+        Resolution r = checkRestriction(context, application, em);
         if (r != null) {
             return r;
         }
@@ -195,7 +195,8 @@ public class ApplicationActionBean implements ActionBean {
      public Resolution retrieveCache() throws JSONException, IOException{
         Resolution view = view();
 
-        Resolution r = checkRestriction();
+        EntityManager em = Stripersist.getEntityManager();
+        Resolution r = checkRestriction(context, application, em);
         if (r != null) {
             return r;
         }
@@ -227,7 +228,7 @@ public class ApplicationActionBean implements ActionBean {
         }
 
         EntityManager em = Stripersist.getEntityManager();
-        Resolution r = checkRestriction();
+        Resolution r = checkRestriction(context, application, em);
         if(r != null){
             return r;
         }
@@ -259,19 +260,17 @@ public class ApplicationActionBean implements ActionBean {
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
 
-    private Resolution checkRestriction(){
-        EntityManager em = Stripersist.getEntityManager();
+    private static Resolution checkRestriction(ActionBeanContext context, Application application, EntityManager em){
 
         String username = context.getRequest().getRemoteUser();
         if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username == null) {
             RedirectResolution login = new RedirectResolution(LoginActionBean.class)
-                    .addParameter("name", name) // binded parameters not included ?
-                    .addParameter("version", version)
-                    .addParameter("debug", debug)
+                    .addParameter("name", application.getName()) // binded parameters not included ?
+                    .addParameter("version", application.getVersion())
                     .includeRequestParameters(true);
             return login;
         } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
+            context.getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
             context.getRequest().getSession().invalidate();
             return new ForwardResolution("/WEB-INF/jsp/error_retry.jsp");
         }
