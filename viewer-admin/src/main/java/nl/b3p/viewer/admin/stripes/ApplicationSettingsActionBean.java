@@ -84,6 +84,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     })
     private BoundingBox maxExtent;
 
+
+    @Validate
+    private List<String> groupsRead = new ArrayList<String>();
+    
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
 
     public Map<String,ClobElement> getDetails() {
@@ -165,6 +169,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setMustUpdateComponents(boolean mustUpdateComponents) {
         this.mustUpdateComponents = mustUpdateComponents;
     }
+
+    public List<String> getGroupsRead() {
+        return groupsRead;
+    }
+
+    public void setGroupsRead(List<String> groupsRead) {
+        this.groupsRead = groupsRead;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -180,6 +192,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             name = application.getName();
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
+            groupsRead.addAll (application.getReaders());
         }
         // DEFAULT VALUES
         if(!details.containsKey("iconSprite")) {
@@ -262,6 +275,13 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application.setMaxExtent(maxExtent);
 
         application.setAuthenticatedRequired(authenticatedRequired);
+
+        application.getReaders().clear();
+        for (String group : groupsRead) {
+            application.getReaders().add(group);
+        }
+        application.authorizationsModified();
+
         Map<String, ClobElement> backupDetails = new HashMap();
         for (Map.Entry<String, ClobElement> e : application.getDetails().entrySet()) {
             if (Application.preventClearDetails.contains(e.getKey())) {

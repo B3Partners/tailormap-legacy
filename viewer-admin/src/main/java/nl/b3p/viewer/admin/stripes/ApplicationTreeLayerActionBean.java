@@ -45,7 +45,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLayer.jsp";
     @Validate
     private ApplicationLayer applicationLayer;
-    private List<Group> allGroups;
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
     @Validate
@@ -362,12 +361,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
-    @Before(stages = LifecycleStage.BindingAndValidation)
-    @SuppressWarnings("unchecked")
-    public void load() {
-        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
-    }
-
     public Resolution save() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
         // Only remove details which are editable and re-added layer if not empty,
@@ -509,14 +502,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setApplicationLayer(ApplicationLayer applicationLayer) {
         this.applicationLayer = applicationLayer;
-    }
-
-    public List<Group> getAllGroups() {
-        return allGroups;
-    }
-
-    public void setAllGroups(List<Group> allGroups) {
-        this.allGroups = allGroups;
     }
 
     public Map<String, String> getDetails() {

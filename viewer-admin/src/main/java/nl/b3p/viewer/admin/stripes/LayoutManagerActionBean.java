@@ -55,7 +55,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(LayoutManagerActionBean.class);
     private JSONObject metadata;
     private JSONArray components;
-    private List<Group> allGroups;
     @Validate(on = {"config", "removeComponent"})
     private String name;
     @Validate(on = "config")
@@ -123,14 +122,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public void setMetadata(JSONObject metadata) {
         this.metadata = metadata;
-    }
-
-    public List<Group> getAllGroups() {
-        return allGroups;
-    }
-
-    public void setAllGroups(List<Group> allGroups) {
-        this.allGroups = allGroups;
     }
 
     public List<String> getGroups() {
@@ -203,8 +194,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public Resolution config() {
         EntityManager em = Stripersist.getEntityManager();
-
-        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
 
         try {
             appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true,em);

@@ -125,6 +125,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <h1>Toegang:</h1>
+                                    <c:forEach var="group" items="${actionBean.allGroups}">
+                                        <stripes:checkbox name="groupsRead" value="${group.name}"/> ${group.name}<br>
+                                    </c:forEach>
+                                </td>
+                            </tr>
                         </table>
                     </div>
 

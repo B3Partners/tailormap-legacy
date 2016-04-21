@@ -131,6 +131,10 @@ public class Application {
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private List<StartLevel> startLevels = new ArrayList<StartLevel>();
 
+    @ElementCollection
+    @Column(name="role_name")
+    private Set<String> readers = new HashSet<String>();
+
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
@@ -250,6 +254,14 @@ public class Application {
 
     public void setStartLevels(List<StartLevel> startLevels) {
         this.startLevels = startLevels;
+    }
+
+    public Set<String> getReaders() {
+        return readers;
+    }
+
+    public void setReaders(Set<String> readers) {
+        this.readers = readers;
     }
     //</editor-fold>
     
@@ -553,7 +565,7 @@ public class Application {
         copy.setTreeCache(null);
         copy.setStartLayers(new ArrayList<StartLayer>());
         copy.setStartLevels(new ArrayList<StartLevel>());
-        
+        copy.setReaders(new HashSet<String>());
         // user reference is not deep copied, of course
         
         copy.setDetails(new HashMap<String,ClobElement>(details));
@@ -572,6 +584,10 @@ public class Application {
                 componentCopy.setMotherComponent(cc);
                 cc.getLinkedComponents().add(componentCopy);
             }
+        }
+
+        for (String reader : readers) {
+            copy.getReaders().add(reader);
         }
         return copy;
     }
