@@ -333,6 +333,13 @@ Ext.define("viewer.components.Edit", {
             this.mode = "edit";
             this.getFeaturesForCoords(coords);
         };
+        // Check if the appLayer is selected already
+        // If the layer is already selected, fire layerChanged ourself
+        var selectedAppLayer = this.layerSelector.getValue();
+        if(selectedAppLayer && selectedAppLayer.id === parseInt(appLayer.id, 10)) {
+            this.layerChanged(appLayer);
+            return;
+        }
         // Find and select layerselector record
         this.layerSelector.getStore().each(function(record) {
             if(parseInt(record.get('layerId'), 10) === parseInt(appLayer.id, 10)) {
