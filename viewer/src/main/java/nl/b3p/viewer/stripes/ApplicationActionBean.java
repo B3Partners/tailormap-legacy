@@ -260,7 +260,7 @@ public class ApplicationActionBean implements ActionBean {
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
 
-    private static Resolution checkRestriction(ActionBeanContext context, Application application, EntityManager em){
+    public static Resolution checkRestriction(ActionBeanContext context, Application application, EntityManager em){
 
         String username = context.getRequest().getRemoteUser();
         if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username == null) {

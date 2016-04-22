@@ -85,8 +85,11 @@ public class BookmarkActionBean implements ActionBean {
 
         json.put("success", Boolean.FALSE);
         String error = null;
-        
-        if(bookmark == null || bookmark.getParams() == null) {
+        EntityManager em = Stripersist.getEntityManager();
+        Resolution r = ApplicationActionBean.checkRestriction(context, application, em);
+        if( r != null){
+            error = "Not authorized";
+        }else if(bookmark == null || bookmark.getParams() == null) {
             error = "Invalid parameters";
         } else {
             try {
@@ -98,8 +101,8 @@ public class BookmarkActionBean implements ActionBean {
                 bookmark.setCreatedAt(new Date());
                 bookmark.setApplication(application);
                 bookmark.setCode(code);
-                Stripersist.getEntityManager().persist(bookmark);
-                Stripersist.getEntityManager().getTransaction().commit();
+                em.persist(bookmark);
+                em.getTransaction().commit();
 
                 log.debug("Bookmark created with code " + bookmark.getCode() + " and params " + bookmark.getParams());
 
@@ -136,8 +139,12 @@ public class BookmarkActionBean implements ActionBean {
     }
     
     public Resolution load() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
         JSONObject json = new JSONObject();
-
+        Resolution r = ApplicationActionBean.checkRestriction(context, application, em);
+        if (r != null) {
+            return r;
+        }
         if(bookmark == null || bookmark.getCode() == null) {
             json.put("success", Boolean.FALSE);
             json.put("error", "Can't find bookmark");
