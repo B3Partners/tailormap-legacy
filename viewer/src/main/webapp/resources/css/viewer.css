@@ -278,3 +278,9 @@ body > .legend {
     margin-right: 5px;
     vertical-align: top;
 }
+
+.button-toggle.active-state {
+    -webkit-box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
+    -moz-box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
+    box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
+}
