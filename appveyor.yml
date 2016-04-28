@@ -7,19 +7,21 @@ shallow_clone: true
 environment:
   fast_finish: true
   matrix:
-  - JAVA_HOME: C:\Program Files\Java\jdk1.7.0
-    JDK: JDK7
+  - JDK: JDK7
+    JAVA_HOME: C:\Program Files\Java\jdk1.7.0
   - JDK: JDK8
     JAVA_HOME: C:\Program Files\Java\jdk1.8.0
 
 install:
-  - set MVN_VERSION=3.3.1
-  - set PATH=%PATH%;C:\bin\apache-maven-%MVN_VERSION%\bin
-  - IF NOT exist "C:\bin\apache-maven-%MVN_VERSION%\bin\*.*" (echo Maven %MVN_VERSION% not installed, so install it & cinst maven -Version %MVN_VERSION%) ELSE (echo Maven %MVN_VERSION% already installed)
+  - set MVN_VERSION=3.3.3
+  - set PATH=%PATH%;C:\tools\apache-maven-%MVN_VERSION%\bin
+  - IF NOT exist "C:\tools\apache-maven-%MVN_VERSION%\bin\*.*" (echo Maven %MVN_VERSION% not installed, so install it & cinst maven -Version %MVN_VERSION%) ELSE (echo Maven %MVN_VERSION% already installed)
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
+  - ps: .\set-maven-proxy.ps1
   - mvn install -U -DskipTests -B -V -fae -q
   
 cache:
-  - C:\bin\apache-maven-3.3.1 -> appveyor.yml
+  - C:\tools\apache-maven-3.3.3 -> appveyor.yml
   - C:\Users\appveyor\.m2\repository -> pom.xml
 
 build: off

@@ -258,6 +258,7 @@ public class AttributesActionBean implements ActionBean {
     public void checkAuthorization() {
         EntityManager em = Stripersist.getEntityManager();
         if(application == null || appLayer == null
+                || !Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em)
                 || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
             unauthorized = true;
         }

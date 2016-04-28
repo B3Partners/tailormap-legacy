@@ -115,12 +115,14 @@ Ext.define ("viewer.components.SelectionModule",{
         alwaysShow:null,
         showWhenOnlyBackground:null,
         showBackgroundLevels:null,
-        showCswUrl: null
+        showCswUrl: null,
+        details: {
+            minWidth: 575,
+            minHeight: 400
+        }
     },
     constructor: function (conf) {
         //set defaults
-        var minwidth = 600;
-        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         if (Ext.isEmpty(conf.selectGroups)){
             conf.selectGroups = true;
         }if (Ext.isEmpty(conf.selectLayers)){
@@ -135,8 +137,8 @@ Ext.define ("viewer.components.SelectionModule",{
             conf.showBackgroundLevels = false;
         }
         // call constructor and init config
-        viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.SelectionModule.superclass.constructor.call(this, this.config);
         this.renderButton();
         // if there is no selected content, show selection module
         var me = this;

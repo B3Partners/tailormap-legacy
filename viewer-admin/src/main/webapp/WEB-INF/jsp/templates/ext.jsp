@@ -34,6 +34,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var csspath = '${contextPath}/resources/css/';
             var helppath = '${contextPath}/resources/html/help.html';
             var viewer_admin_debug_mode = ${param.debug == true ? 'true' : 'false'};
+            Ext.Loader.setConfig({enabled: true});
+            Ext.Loader.setPath('Ext.ux', uxpath);
         </script>      
         <script type="text/javascript" src="${contextPath}/resources/js/defaultconfigs.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/menu.js"></script>

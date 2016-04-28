@@ -36,8 +36,8 @@ Ext.define ("viewer.components.LayerSelector",{
         useTabs: false
     }, 
     constructor: function (conf){
-        viewer.components.LayerSelector.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        viewer.components.LayerSelector.superclass.constructor.call(this, this.config);
         
         this.forcedLayers = [];
         this.layerstore = Ext.create('Ext.data.Store', {

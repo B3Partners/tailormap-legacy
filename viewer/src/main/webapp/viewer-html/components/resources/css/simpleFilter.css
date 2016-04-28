@@ -13,9 +13,7 @@
 }
 
 .simple-filter-container {
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 16px;
+    padding: 3px 5px 16px;
 }
 
 .simple-filter-inner {

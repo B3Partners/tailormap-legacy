@@ -93,7 +93,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:if test="${param.debug}"><stripes:param name="debug" value="true"/></c:if>
         </stripes:url>
         <script type="text/javascript">
-            var activelink = 'menu_layout';
+            vieweradmin.components.Menu.setActiveLink('menu_layout');
             Ext.onReady(function() {
                 
                 <c:choose>    

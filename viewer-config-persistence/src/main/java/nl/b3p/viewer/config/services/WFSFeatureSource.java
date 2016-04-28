@@ -63,7 +63,7 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
     public void loadFeatureTypes(WaitPageStatus status) throws Exception {
          this.getFeatureTypes().addAll(createFeatureTypes(status));
     }
-    
+
     /**
      * Creates list of featuretypes for this FeatureSource
      * @return list of featuretypes.
@@ -74,16 +74,16 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
     }
     @Override
     public List<SimpleFeatureType> createFeatureTypes(WaitPageStatus status) throws Exception {
-        
+
         status.setCurrentAction("Ophalen informatie...");
         List<SimpleFeatureType> createdFeatureTypes = new ArrayList<SimpleFeatureType>();
-        
+
         DataStore store = null;
         try {
             store = createDataStore();
-            
+
             setName(store.getInfo().getTitle());
-            
+
             status.setProgress(10);
             status.setCurrentAction("Lijst van type-namen ophalen...");
             String[] typeNames = store.getTypeNames();
@@ -212,14 +212,16 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
         try {
             DataStore ds = DataStoreFinder.getDataStore(params);
             if (ds == null) {
+                params.put(WFSDataStoreFactory.PASSWORD.key, "xxx");
                 throw new Exception("Cannot open datastore using parameters " + params);
             }
             return ds;
         } catch (Exception e) {
+            params.put(WFSDataStoreFactory.PASSWORD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
     }
-    
+
     @Override
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
         return openGeoToolsFeatureSource(sft, null);

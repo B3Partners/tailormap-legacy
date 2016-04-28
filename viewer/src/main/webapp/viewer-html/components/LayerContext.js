@@ -28,7 +28,11 @@ Ext.define ("viewer.components.LayerContext",{
         name: "Informatie kaartlaag",
         title: "",
         titlebarIcon : "",
-        tooltip: null
+        tooltip: null,
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     /**
      * @constructor
@@ -36,8 +40,8 @@ Ext.define ("viewer.components.LayerContext",{
      */
     constructor: function (conf){
         conf.isPopup = true;
-        viewer.components.LayerContext.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.LayerContext.superclass.constructor.call(this, this.config);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED,this.layerClicked,this);
         
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);

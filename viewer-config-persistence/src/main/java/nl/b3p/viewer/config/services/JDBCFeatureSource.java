@@ -41,7 +41,7 @@ import org.opengis.filter.Filter;
 @DiscriminatorValue(JDBCFeatureSource.PROTOCOL)
 public class JDBCFeatureSource extends UpdatableFeatureSource{
     private static final Log log = LogFactory.getLog(JDBCFeatureSource.class);
-    
+
     public static final String PROTOCOL = "jdbc";
 
     @Column(name="db_schema")
@@ -54,34 +54,34 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
     public void setSchema(String schema) {
         this.schema = schema;
     }
-    
+
     public JDBCFeatureSource(){
         super();
     }
-    
+
     public JDBCFeatureSource(Map params) throws JSONException {
         super();
-        
+
         JSONObject urlObj = new JSONObject();
         urlObj.put("dbtype", params.get("dbtype"));
         urlObj.put("host", params.get("host"));
         urlObj.put("port", params.get("port"));
         urlObj.put("database", params.get("database"));
         setUrl(urlObj.toString());
-        
+
         schema = (String)params.get("schema");
         setUsername((String)params.get("user"));
         setPassword((String)params.get("passwd"));
     }
-    
+
     public void loadFeatureTypes() throws Exception {
         loadFeatureTypes(new WaitPageStatus());
     }
-    
+
     public void loadFeatureTypes(WaitPageStatus status) throws Exception {
         this.getFeatureTypes().addAll(createFeatureTypes(status));
     }
-    
+
     /**
      * Creates list of featuretypes for this FeatureSource.
      *
@@ -166,7 +166,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
                         }else if(binding.equals("java.math.BigDecimal")){
                             type = AttributeDescriptor.TYPE_DOUBLE;
                         }
-                        
+
                         if(sft.getGeometryAttribute() == null && gtType instanceof GeometryType) {
                             sft.setGeometryAttribute(att.getName());
                         }
@@ -174,7 +174,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
                         att.setType(type);
                     }
                     createdFeatureTypes.add(sft);
-                    
+
                     progress += progressPerTypeName;
                     status.setProgress((int)progress);
                 }
@@ -189,7 +189,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         }
         return createdFeatureTypes;
     }
-        
+
     public DataStore createDataStore() throws Exception {
         Map params = new HashMap();
         JSONObject urlObj = new JSONObject(getUrl());
@@ -197,7 +197,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put("host", urlObj.get("host"));
         params.put("port", urlObj.get("port"));
         params.put("database", urlObj.get("database"));
-        
+
         params.put("schema", schema);
         params.put("user", getUsername());
         params.put(JDBCDataStoreFactory.FETCHSIZE.key,50);
@@ -205,16 +205,18 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
         log.debug("Opening datastore using parameters: " + params);
         try {
-            DataStore ds = DataStoreFinder.getDataStore(params);      
+            DataStore ds = DataStoreFinder.getDataStore(params);
             if(ds == null) {
+                params.put("passwd", "xxx");
                 throw new Exception("Cannot open datastore using parameters " + params);
             }
             return ds;
         } catch(Exception e) {
+            params.put("passwd", "xxx");
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
     }
-    
+
 
     @Override
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
@@ -222,7 +224,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
 
         return ds.getFeatureSource(sft.getTypeName());
     }
-    
+
     @Override
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception {
         return openGeoToolsFeatureSource(sft);

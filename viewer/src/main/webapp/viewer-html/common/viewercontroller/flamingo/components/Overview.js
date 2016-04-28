@@ -40,7 +40,7 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
     },
     constructor: function (conf){
         this.initConfig(conf);
-        viewer.viewercontroller.flamingo.Overview.superclass.constructor.call(this, conf);
+        viewer.viewercontroller.flamingo.Overview.superclass.constructor.call(this, this.config);
         this.events = [];
         return this;
     },

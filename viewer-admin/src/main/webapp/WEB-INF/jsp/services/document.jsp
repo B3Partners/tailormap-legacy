@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="getGridData"/>';
                 var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="edit"/>';
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="delete"/>';
-                var activelink = 'menu_documenten';
+                vieweradmin.components.Menu.setActiveLink('menu_documenten');
             </script>
             <script type="text/javascript" src="${contextPath}/resources/js/services/document.js"></script>
         </div>

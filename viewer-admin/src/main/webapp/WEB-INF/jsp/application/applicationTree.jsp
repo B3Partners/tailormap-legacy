@@ -64,7 +64,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:otherwise>
     </c:choose>
     <script type="text/javascript">
-        var activelink = 'menu_boomstructuur';
+        vieweradmin.components.Menu.setActiveLink('menu_boomstructuur');
     </script>
 </stripes:layout-component>
 

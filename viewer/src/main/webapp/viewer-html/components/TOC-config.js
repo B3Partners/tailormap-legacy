@@ -18,15 +18,12 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     form: null,
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        if(config == undefined || config == null){
-            config = new Object();
-        }
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         /* backwards compatible of the toggle layers button configuration*/
-        if (config.showToggleAllLayers!==undefined){
-            config.showAllLayersOn=config.showToggleAllLayers;
-            config.showAllLayersOff=config.showToggleAllLayers;
+        if (this.configObject.showToggleAllLayers !== undefined){
+            this.configObject.showAllLayersOn = this.configObject.showToggleAllLayers;
+            this.configObject.showAllLayersOff = this.configObject.showToggleAllLayers;
         }
         var me=this;
         this.form = new Ext.form.FormPanel({
@@ -42,14 +39,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Naam',
                 name: 'title',
-                value: config.title,
+                value: this.configObject.title,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
                 inputValue: true,
                 name: 'groupCheck',
-                checked: config.groupCheck !== undefined ? config.groupCheck : true,
+                checked: this.configObject.groupCheck !== undefined ? this.configObject.groupCheck : true,
                 // value: true,
                 labelWidth:me.labelWidth
             },{
@@ -57,7 +54,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Kaartlagen krijgen een vinkvak',
                 inputValue: true,
                 name: 'layersChecked',
-                checked: config.layersChecked !== undefined ? config.layersChecked: true,
+                checked: this.configObject.layersChecked !== undefined ? this.configObject.layersChecked: true,
                 // value: true,
                 labelWidth:me.labelWidth
             },{
@@ -65,7 +62,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Achtergrondkaarten tonen',
                 inputValue: true,
                 name: 'showBaselayers',
-                checked: config.showBaselayers !== undefined ? config.showBaselayers: true,
+                checked: this.configObject.showBaselayers !== undefined ? this.configObject.showBaselayers: true,
                 // value: true,
                 labelWidth:me.labelWidth
             },{
@@ -73,7 +70,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Algemeen icoon voor kaartlaag tonen',
                 inputValue: true,
                 name: 'showLeafIcon',
-                checked: config.showLeafIcon !== undefined ? config.showLeafIcon : true,
+                checked: this.configObject.showLeafIcon !== undefined ? this.configObject.showLeafIcon : true,
                 // value: true,
                 labelWidth:me.labelWidth
             },{
@@ -81,21 +78,21 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Algemeen icoon voor kaart(groep) tonen',
                 inputValue: true,
                 name: 'showNodeIcon',
-                checked: config.showNodeIcon !== undefined ? config.showNodeIcon : true,
+                checked: this.configObject.showNodeIcon !== undefined ? this.configObject.showNodeIcon : true,
                 // value: true,
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Zoom naar schaal tekst',
                 name: 'zoomToScaleText',
-                value: config.zoomToScaleText? config.zoomToScaleText:"Zoom to scale",
+                value: this.configObject.zoomToScaleText? this.configObject.zoomToScaleText:"Zoom to scale",
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Bij opstarten boom openklappen',
                 inputValue: true,
                 name: 'expandOnStartup',
-                checked: config.expandOnStartup !== undefined ? config.expandOnStartup : true,
+                checked: this.configObject.expandOnStartup !== undefined ? this.configObject.expandOnStartup : true,
                 // value: true,
                 labelWidth:me.labelWidth
             },{
@@ -103,7 +100,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Aangezette kaarten openklappen',
                 inputValue: false,
                 name: 'expandOnEnabledLayer',
-                checked: config.expandOnEnabledLayer !== undefined ? config.expandOnEnabledLayer : false,
+                checked: this.configObject.expandOnEnabledLayer !== undefined ? this.configObject.expandOnEnabledLayer : false,
                 // value: false,
                 labelWidth:me.labelWidth
             },{
@@ -117,7 +114,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         fieldLabel: 'Toon knop voor aan/uit zetten van alle layers',
                         name: 'showAllLayersOn',
                         inputValue: true,
-                        checked: config.showAllLayersOn!==undefined? config.showAllLayersOn:false,
+                        checked: this.configObject.showAllLayersOn!==undefined? this.configObject.showAllLayersOn:false,
                         // value: true,
                         labelWidth: me.labelWidth,
                         boxLabel: 'Toon \'alles aan\' knop'
@@ -125,7 +122,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         xtype: 'checkbox',
                         name: 'showAllLayersOff',
                         inputValue: true,
-                        checked: config.showAllLayersOff!==undefined? config.showAllLayersOff:false,
+                        checked: this.configObject.showAllLayersOff!==undefined? this.configObject.showAllLayersOff:false,
                         // value: true,
                         boxLabel: 'Toon \'alles uit\' knop',
                         style: {
@@ -138,13 +135,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Tekst voor knop om alle layers aan te zetten',
                 name: 'toggleAllLayersOnText',
-                value: config.toggleAllLayersOnText? config.toggleAllLayersOnText:"All layers on",
+                value: this.configObject.toggleAllLayersOnText? this.configObject.toggleAllLayersOnText:"All layers on",
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Tekst voor knop om alle layers uit te zetten',
                 name: 'toggleAllLayersOffText',
-                value: config.toggleAllLayersOffText? config.toggleAllLayersOffText:"All layers off",
+                value: this.configObject.toggleAllLayersOffText? this.configObject.toggleAllLayersOffText:"All layers off",
                 labelWidth:me.labelWidth
             },{                           
                 xtype: 'radiogroup',
@@ -168,11 +165,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Tabblad activeren na verandering boomstructuur (door bijv. Selectie module). Alleen geldig wanneer TOC in tabblad staat',
                 inputValue: true,
                 name: 'showAfterSelectedContentChange',
-                checked: config.showAfterSelectedContentChange !== undefined ? config.showAfterSelectedContentChange : false,
+                checked: this.configObject.showAfterSelectedContentChange !== undefined ? this.configObject.showAfterSelectedContentChange : false,
                 // value: true,
                 labelWidth:me.labelWidth
             }],
-            renderTo: parentid
+            renderTo: parentId
         });      
     }
 });

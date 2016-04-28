@@ -29,8 +29,8 @@ Ext.define ("viewer.components.Keyboard",{
         tooltip: "Keyboard navigation"
     },
     constructor: function (conf){        
-        viewer.components.Keyboard.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Keyboard.superclass.constructor.call(this, this.config);
         this.keyboardTool = new OpenLayers.Control.KeyboardDefaults();
         this.viewerController.mapComponent.getMap().getFrameworkMap().addControl(this.keyboardTool);
         return this;

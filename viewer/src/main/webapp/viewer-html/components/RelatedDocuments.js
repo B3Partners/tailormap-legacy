@@ -33,12 +33,16 @@ Ext.define ("viewer.components.RelatedDocuments",{
         title: "",
         titlebarIcon : "",
         tooltip : "",
-        label: ""
+        label: "",
+        details: {
+            minWidth: 450,
+            minHeight: 250
+        }
     },
     constructor: function (conf){   
         conf.isPopup=true;        
-        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);        
         this.initConfig(conf);
+		viewer.components.RelatedDocuments.superclass.constructor.call(this, this.config);        
         
         this.documentImg = new Object();
         this.iconPath=contextPath+"/viewer-html/components/resources/images/relatedDocuments/"

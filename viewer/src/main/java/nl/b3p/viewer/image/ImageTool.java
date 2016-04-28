@@ -31,6 +31,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -205,9 +206,9 @@ public class ImageTool {
             return bi;
         }
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
-//        BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D gbi = newBufIm.createGraphics();
         gbi.drawImage(bi, 0, 0, null);
+        Font font = gbi.getFont().deriveFont(Font.BOLD, gbi.getFont().getSize() * 4f);
         for (int i = 0; i < wktGeoms.size(); i++) {
             gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             CombineImageWkt ciw = (CombineImageWkt) wktGeoms.get(i);
@@ -224,7 +225,8 @@ public class ImageTool {
                 gbi.fill(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
                 centerPoint = calculateCenter(shape, srid, bbox, width, height);
-                gbi.fill(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 8, 8));
+                float strokeWidth = ciw.getStrokeWidth() != null ? ciw.getStrokeWidth() : 2f;
+                gbi.fill(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 8 * strokeWidth, 8 * strokeWidth));
             } else {
                 float strokeWidth = ciw.getStrokeWidth() != null ? ciw.getStrokeWidth() : 3f;
                 gbi.setStroke(new BasicStroke(strokeWidth));
@@ -234,7 +236,15 @@ public class ImageTool {
                 if (centerPoint == null) {
                     centerPoint = calculateCenter(shape, srid, bbox, width, height);
                 }
-                gbi.setColor(Color.black);
+                gbi.setFont(font);
+                // witte halo
+                gbi.setColor(Color.WHITE);
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() - 2);
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() + 2);
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 2, (float) centerPoint.getY());
+                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() + 2, (float) centerPoint.getY());
+                gbi.setColor(Color.BLACK);
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY());
             }
         }

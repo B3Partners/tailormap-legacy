@@ -40,6 +40,12 @@ public class CombineImageWkt {
         setWktGeom(wktGeomString);        
         setColor(color);
     }
+
+    public CombineImageWkt(String wktGeomString, String color, Float strokeWidth) {
+        setWktGeom(wktGeomString);
+        setColor(color);
+        setStrokeWidth(strokeWidth);
+    }
     /**
      * @return the wktGeom
      */

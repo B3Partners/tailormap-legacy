@@ -19,6 +19,7 @@ package nl.b3p.viewer.stripes;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
@@ -120,9 +121,9 @@ public class ArcQueryUtilActionBean implements ActionBean {
 
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
-
-        if (application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+        EntityManager em =Stripersist.getEntityManager();
+        if (application == null || appLayer == null || !Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em)
+                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
             unauthorized = true;
         }
     }
@@ -130,7 +131,11 @@ public class ArcQueryUtilActionBean implements ActionBean {
     @DefaultHandler
     public Resolution arcXML() throws JSONException {
         JSONObject json = new JSONObject();
-
+        if (unauthorized) {
+            json.put("success", false);
+            json.put("message", "Not authorized");
+            return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        }
         try {
             AxlSpatialQuery aq = new AxlSpatialQuery();
             FilterToArcXMLSQL visitor = new FilterToArcXMLSQL(aq);

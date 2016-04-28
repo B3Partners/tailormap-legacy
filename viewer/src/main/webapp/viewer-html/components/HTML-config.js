@@ -21,15 +21,13 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     htmlEditor: null,
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         //create html Editor
         var value="";
         var title="";
-        if (config) {
-            if(config.html) value=config.html;
-            if(config.title) title=config.title;
-        }
+        if(this.configObject.html) value=this.configObject.html;
+        if(this.configObject.title) title=this.configObject.title;
         
         Ext.tip.QuickTipManager.init();  // enable tooltips
         this.titleField = Ext.create('Ext.form.field.Text', {
@@ -38,28 +36,28 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: title,
             labelWidth: 275,
             width: 500,
-            renderTo: Ext.get(parentid)
+            renderTo: Ext.get(parentId)
         });
         this.loadScriptsField = Ext.create('Ext.form.field.Checkbox', {
             fieldLabel: 'JavaScript in HTML bron uitvoeren',
             name: 'loadScripts',
-            checked: config && config.loadScripts != undefined ? config.loadScripts : false,
+            checked: this.configObject && this.configObject.loadScripts != undefined ? this.configObject.loadScripts : false,
             inputValue: true,
             labelWidth: 275,
             width: 500,
-            renderTo: Ext.get(parentid)
+            renderTo: Ext.get(parentId)
         });        
         this.htmlEditor=Ext.create('Ext.form.HtmlEditor', {
             width: 750,
             height: 460,
             value: value,
-            renderTo: Ext.get(parentid) ,
+            renderTo: Ext.get(parentId) ,
             plugins: [
-                new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                    submitUrl: actionBeans['imageupload'],
-                    managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                    submitUrl: this.getActionBeanUrl('imageupload'),
+                    managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
                 })),
-                new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
             ]
         });
         this.htmlEditor.focus(false, true);

@@ -62,7 +62,7 @@ Ext.onReady(function(){
         }
     });
 
-    var grid = Ext.create('Ext.grid.Panel', Ext.merge(defaultGridConfig, {
+    var grid = Ext.create('Ext.grid.Panel', Ext.merge(vieweradmin.components.DefaultConfgurations.getDefaultGridConfig(), {
         id: 'editGrid',
         store: store,
         columns: [

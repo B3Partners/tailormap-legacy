@@ -115,7 +115,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var moveupicon = '${contextPath}/resources/images/move-up.gif';
             var movedownicon = '${contextPath}/resources/images/move-down.gif';
 
-            var activelink = 'menu_boomstructuur';
+            vieweradmin.components.Menu.setActiveLink('menu_boomstructuur');
             
             var actionBeans = { 
                 "appTreeLevel": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean"/></js:quote>,

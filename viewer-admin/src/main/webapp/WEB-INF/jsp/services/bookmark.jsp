@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript">
                 var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="getGridData"/>';
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="deleteBookmark"/>';
-                var activelink = 'menu_bookmarks';
+                vieweradmin.components.Menu.setActiveLink('menu_bookmarks');
 
                 function removeActiveAppMenu() {
                     var a = document.getElementById("activeAppMenu");

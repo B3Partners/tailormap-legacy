@@ -26,14 +26,14 @@ Ext.define("viewer.components.CustomConfiguration", {
     graphConfigs:null,
     graphTypeStore:null,
     panel:null,
-    constructor: function(parentId, configObject) {
+    constructor: function (parentId, configObject, configPage) {
         if (configObject && configObject.layers) {
             graph_layersArrayIndexesToAppLayerIds(configObject);
         }
         this.configObject = configObject || {};
         this.graphConfigs = [];
         this.nextId = 1;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.graphTypeStore = Ext.create('Ext.data.Store', {
             fields: ['naam',"type"],
             data: [
@@ -230,9 +230,9 @@ Ext.define("viewer.components.CustomConfiguration", {
         var me = this;
         me.layers = null;
         Ext.Ajax.request({
-            url: contextPath+"/action/componentConfigLayerList",
+            url: this.getContextpath() + "/action/componentConfigLayerList",
             params:{
-                appId:applicationId,
+                appId: this.getApplicationId(),
                 attribute:true
             },
             success: function ( result, request ) {
@@ -258,7 +258,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         var currentCategoryValue = category.getValue();
         var currentSerieValue = serie.getValue();
         Ext.Ajax.request({
-            url: contextPath+"/action/applicationtreelayer",
+            url: this.getContextpath() + "/action/applicationtreelayer",
             params:{
                 applicationLayer: appLayerId,
                 attributes:true

@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="edit"/>';
             var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="delete"/>';
             var editattributesurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="view"/>';
-            var activelink = 'menu_attribuutbronnen';
+            vieweradmin.components.Menu.setActiveLink('menu_attribuutbronnen');
         </script>   
         <script type="text/javascript" src="${contextPath}/resources/js/services/attributesource.js"></script>
     </stripes:layout-component>

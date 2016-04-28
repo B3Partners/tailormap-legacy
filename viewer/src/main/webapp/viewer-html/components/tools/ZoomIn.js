@@ -27,8 +27,8 @@ Ext.define ("viewer.components.tools.ZoomIn",{
         tooltip: "Zoom In"
     },
     constructor: function (conf){        
-        viewer.components.tools.ZoomIn.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.tools.ZoomIn.superclass.constructor.call(this, this.config);
         conf.type = viewer.viewercontroller.controller.Tool.ZOOMIN_BOX;        
         this.initTool(conf);
         return this;

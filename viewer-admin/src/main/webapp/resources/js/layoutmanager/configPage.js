@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,31 +14,181 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-var propertyGrid;
-var customConfiguration;
-var layoutForm;
-Ext.onReady(function(){
-    createLayoutTab();
-    if(showHelp()){
-        createHelpTab();
-    }
-    if(showConfigureHeight()) {
-        createHeightLayoutTab();
-    }
-    if(metadata.configSource != undefined) {
-        customConfiguration= new Ext.create("viewer.components.CustomConfiguration","config", configObject);
-    } else {
-        var source = configObject;
-        if(source == null && metadata.extPropertyGridConfigs) {
+
+Ext.define("vieweradmin.components.ConfigPage", {
+
+    propertyGrid: null,
+    customConfiguration: null,
+    layoutForm: null,
+
+    config: {
+        applicationId: "",
+        className: "",
+        name: "",
+        currentRegion: "",
+        contextPath: "",
+        metadata: {},
+        configObject: {},
+        details: {
+            changeablePosition: true,
+            changeableSize: true
+        },
+        appConfig: {},
+        actionBeans: {}
+    },
+
+    constructor: function(config) {
+        this.initConfig(config);
+        // Create the form for the main tab
+        this.createMainTab();
+        // Create the form for the Layout tab
+        this.createLayoutTab();
+        // Create the form for the Help tab
+        if(this.showHelp()) {
+            this.createHelpTab();
+        }
+        // Create the form for Layout tab (in case of left/right region)
+        if(this.showConfigureHeight()) {
+            this.createHeightLayoutTab();
+        }
+        // Initialize DOM as tabpanel
+        this.initTabpanel();
+
+        Ext.get('compHelpLink').set({
+            href: '#' + this.config.className.replace(/\./g, '_') + '_Help'
+        });
+    },
+
+    initTabpanel: function() {
+        // Select all tabs and set to invisible first
+        Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
+
+        var tabs = [{
+            contentEl:'config',
+            title: 'Configuratie',
+            autoScroll: true
+        },{
+            contentEl:'rights',
+            title: 'Rechten'
+        }];
+        if((this.config.metadata.hasOwnProperty("type") && this.config.metadata.type == "popup") || this.showConfigureHeight()) {
+            tabs.push({
+                contentEl:'layout',
+                title: 'Layout'
+            });
+        }
+        if(this.showHelp()){
+            tabs.push({
+                contentEl:'help',
+                title: 'Help'
+            });
+        }
+
+        var htmlEditorRendered = false;
+        Ext.widget('tabpanel', {
+            renderTo: 'tabs',
+            width: '100%',
+            height: '100%',
+            activeTab: 0,
+            defaults :{
+                bodyPadding: 10
+            },
+            layoutOnTabChange: true,
+            items: tabs,
+            listeners: {
+                tabchange: {
+                    scope: this,
+                    fn: function(panel, activetab, previoustab) {
+                        if(activetab.contentEl && activetab.contentEl === 'help' && !htmlEditorRendered) {
+                            // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
+                            Ext.create('Ext.form.field.HtmlEditor', {
+                                id: 'helpText',
+                                name: 'helpText',
+                                width: 600,
+                                maxWidth: 600,
+                                height: 400,
+                                maxHeight: 400,
+                                value: this.config.configObject.helpText ? this.config.configObject.helpText : '',
+                                fieldLabel: 'Help Tekst',
+                                labelWidth: 100,
+                                plugins: [
+                                    new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                                        submitUrl: this.getActionBeanUrl('imageupload'),
+                                        managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
+                                    })),
+                                    new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
+                                ],
+                                renderTo: 'helpHtmlEditorContainer'
+                            });
+                            htmlEditorRendered = true;
+                        }
+                    }
+                }
+            },
+            bbar: ["->", {
+                xtype: 'button',
+                text: 'Annuleren',
+                id: 'cancalConfigButton',
+                iconCls: 'cancelbutton-icon',
+                listeners: {
+                    click: {
+                        fn: function() {
+                            window.location.reload();
+                        },
+                        scope: this
+                    }
+                }
+            }, {
+                xtype: 'button',
+                text: 'Opslaan',
+                id: 'saveConfigButton',
+                iconCls: 'savebutton-icon',
+                listeners: {
+                    click: {
+                        fn: this.save,
+                        scope: this
+                    }
+                }
+            }]
+        });
+    },
+
+    createMainTab: function() {
+        if(this.config.metadata.hasOwnProperty("configSource")) {
+            this.customConfiguration = new Ext.create("viewer.components.CustomConfiguration", "config", this.config.configObject, this);
+        } else {
+            this.createPropertyGrid();
+        }
+    },
+
+    getApplicationId: function() {
+        return this.config.applicationId;
+    },
+
+    getActionBeanUrl: function(name) {
+        return this.config.actionBeans[name] || "";
+    },
+
+    getContextpath: function() {
+        return this.config.contextPath;
+    },
+
+    getAppConfig: function() {
+        return this.config.appConfig;
+    },
+
+    createPropertyGrid: function() {
+        var source = this.config.configObject;
+        if(source == null && this.hasPropertyGridConfig()) {
             /* set source to from component metadata  (default config) */
-            source = metadata.extPropertyGridConfigs.source;
+            source = this.config.metadata.extPropertyGridConfigs.source;
         }
         if(source != null) {
             var propertyNames = {};
-            if(metadata.extPropertyGridConfigs && metadata.extPropertyGridConfigs.propertyNames) {
-                propertyNames = metadata.extPropertyGridConfigs.propertyNames;
+            if(this.hasPropertyGridConfig() && this.config.metadata.extPropertyGridConfigs.hasOwnProperty("propertyNames")) {
+                propertyNames = this.config.metadata.extPropertyGridConfigs.propertyNames;
             }
-            /* 
+            /*
              * Check if all source config items exist in the metadata source items,
              * sometimes other items like isPopup would show up in the property grid,
              * because they are added to the configuration automatically, while these
@@ -46,17 +196,17 @@ Ext.onReady(function(){
              * metadata source items
              */
             var extConfigSource = {};
-            if(metadata.extPropertyGridConfigs && metadata.extPropertyGridConfigs.source) {
-                Ext.applyIf(source, metadata.extPropertyGridConfigs.source);
-                Ext.Object.each(source, function(key, value) {
-                    if(metadata.extPropertyGridConfigs.source.hasOwnProperty(key)) {
+            if(this.hasPropertyGridConfig() && this.config.metadata.extPropertyGridConfigs.hasOwnProperty("source")) {
+                Ext.applyIf(source, this.config.metadata.extPropertyGridConfigs.source);
+                Ext.Object.each(source, (function(key, value) {
+                    if(this.config.metadata.extPropertyGridConfigs.source.hasOwnProperty(key)) {
                         extConfigSource[key] = value;
                     }
-                });
+                }).bind(this));
             } else {
                 extConfigSource = source;
             }
-            propertyGrid = Ext.create('Ext.grid.property.Grid', {
+            this.propertyGrid = Ext.create('Ext.grid.property.Grid', {
                 title: 'Pas de instellingen aan',
                 renderTo: "config",
                 hideHeaders:true,
@@ -68,424 +218,398 @@ Ext.onReady(function(){
                 width: 740
             });
         }
-        if(metadata.hasOwnProperty('helpText') && metadata.helpText) {
+        if(this.config.metadata.hasOwnProperty('helpText') && this.config.metadata.helpText) {
             var helpDiv = document.createElement('div');
             helpDiv.className = 'extra-help-text';
-            helpDiv.innerHTML = metadata.helpText;
+            helpDiv.innerHTML = this.config.metadata.helpText;
             document.getElementById('config').appendChild(helpDiv);
         }
-    }
-});
-function createHelpTab() {
-    var showHelpButton = "false"; // Default is to show help button
-    if(configObject && configObject.showHelpButton) {
-        showHelpButton = configObject.showHelpButton;
-    }
-    var helpForm = new Ext.form.FormPanel({
-        frame: false,
-        border: 0,
-        items: [{
-            xtype:'fieldset',
-            columnWidth: 0.5,
-            title: 'Help',
-            collapsible: false,
-            defaultType: 'textfield',
-            layout: 'anchor',
-            defaults: {
-                width: 400
-            },  
-            items:[
-            {
-                xtype: 'checkbox',
-                fieldLabel: 'Help knop tonen',
-                id: "showHelpButton",
-                name: 'showHelpButton',
-                value: "true" == showHelpButton,
-                checked: "true" == showHelpButton,
-                labelWidth:100
-            },
-            {
-                xtype: 'textfield',
-                fieldLabel: 'Help URL',
-                id: "helpUrl",
-                name: 'helpUrl',
-                value: configObject && configObject.helpUrl ? configObject.helpUrl : '',
-                labelWidth:100
-            },
-            {
-                xtype: 'container',
-                html: '<div id="helpHtmlEditorContainer" style="width: 700px; height: 500px;"></div>'
-            }]
-        }],
-        renderTo: "help"
-    }); 
-}
-function createLayoutTab(){
-    if(!metadata.hasOwnProperty('type') || metadata.type !== "popup") {
-        return;
-    }
-    if(currentRegion && Ext.Array.indexOf(['header', 'leftmargin_top', 'leftmargin_bottom', 'rightmargin_top', 'rightmargin_bottom', 'footer'], currentRegion) !== -1) {
-        return;
-    }
-    if(typeof details === "undefined" || details === null){
-        details = {
-            changeablePosition: "true",
-            changeableSize: "true"
-        };
-    }
-    var labelWidth = 300;
-    var centerChecked = details.position == "center";
-    var fixedChecked = details.position == "fixed";
+    },
     
-    var alignStore = Ext.create('Ext.data.ArrayStore', {
-        autoDestroy: true,
-        idIndex: 0,
-        fields: [{
-            name: 'name',
-            type: 'string'
-        }, {
-            name: 'value',
-            type: 'string'
-        }],
-        data: [
-            ['Links-boven', 'tl'],
-            ['Rechts-boven', 'tr'],
-            ['Links-onder', 'bl'],
-            ['Rechts-onder', 'br']
-        ]
-    });
-    
-    layoutForm = new Ext.form.FormPanel({
-        frame: false,
-        width: 480,
-        border: 0,
-        items: [{
-            xtype:'fieldset',
-            columnWidth: 0.5,
-            title: 'Vensterpositie',
-            collapsible: false,
-            defaultType: 'textfield',
-            layout: 'anchor',
-            items:[
-            {
-                xtype: 'radiogroup',
-                name: 'position', 
-                columns: 1,
-                vertical: true,
-                value: details.position,
-                labelWidth:350,
-                items: [
-                {
-                    boxLabel: 'Gecentreerd', 
-                    name: 'position', 
-                    inputValue: 'center' , 
-                    checked: centerChecked
+    hasPropertyGridConfig: function() {
+        return this.config.metadata.hasOwnProperty("extPropertyGridConfigs");
+    },
+
+    createHelpTab: function () {
+        var showHelpButton = false; // Default is to show help button
+        var helpForm = new Ext.form.FormPanel({
+            frame: false,
+            border: 0,
+            items: [{
+                xtype:'fieldset',
+                columnWidth: 0.5,
+                title: 'Help',
+                collapsible: false,
+                defaultType: 'textfield',
+                layout: 'anchor',
+                defaults: {
+                    width: 400
                 },
-                {
-                    boxLabel: 'Vaste Positie', 
-                    name: 'position', 
-                    checked: fixedChecked,
-                    inputValue: 'fixed',
-                    listeners:{
-                        change:function(el) {
-                            toggleXY(this.getValue());
-                        }
-                    }
-                }
-                ]
-            },
-            {
-                xtype: 'textfield',
-                fieldLabel: 'x',
-                id: "x",
-                name: 'x',
-                value: details.x,
-                hidden : true,
-                labelWidth:100
-            },
-            { 
-                xtype: 'textfield',
-                fieldLabel: 'y',
-                id: "y",
-                name: 'y',
-                value: details.y,
-                hidden : true,
-                labelWidth:100
-            },
-            { 
-                xtype: 'combobox',
-                fieldLabel: 'Uitlijning',
-                id: "alignposition",
-                name: 'alignposition',
-                value: details.alignposition,
-                hidden : true,
-                labelWidth:100,
-                store: alignStore,
-                displayField: 'name',
-                valueField: 'value',
-                queryMode: 'local'
-            },
-            {
-                xtype: 'checkbox',
-                fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
-                inputValue: true,
-                name: 'changeablePosition',
-                checked: "true" == details.changeablePosition,
-                value: "true" == details.changeablePosition,
-                labelWidth:labelWidth
-            }]
-        },
-        { 
-            xtype:'fieldset',
-            columnWidth: 0.5,
-            title: 'Venstergrootte',
-            collapsible: false,
-            defaultType: 'textfield',
-            layout: 'anchor',
-            items:[{
-                xtype: 'textfield',
-                fieldLabel: 'Breedte',
-                name: 'width',
-                value: details.width,
-                labelWidth:100
-            },
-            { 
-                xtype: 'textfield',
-                fieldLabel: 'Hoogte',
-                name: 'height',
-                value: details.height,
-                labelWidth:100
-            },{
-                xtype: 'checkbox',
-                fieldLabel: 'Gebruiker kan de grootte van de popup aanpassen',
-                inputValue: true,
-                name: 'changeableSize',
-                value: "true" == details.changeableSize,
-                checked: "true" == details.changeableSize,
-                labelWidth:labelWidth
-            }]
-        }],
-        
-        renderTo: "layout"//(2)
-    });      
-    if(fixedChecked){
-        toggleXY(true);
-    }
-}
+                items:[
+                    {
+                        xtype: 'checkbox',
+                        fieldLabel: 'Help knop tonen',
+                        id: "showHelpButton",
+                        name: 'showHelpButton',
+                        checked: this.parseBooleanValue(this.config.configObject.showHelpButton),
+                        labelWidth:100
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'Help URL',
+                        id: "helpUrl",
+                        name: 'helpUrl',
+                        value: this.config.configObject.helpUrl ? this.config.configObject.helpUrl : '',
+                        labelWidth:100
+                    },
+                    {
+                        xtype: 'container',
+                        html: '<div id="helpHtmlEditorContainer" style="width: 700px; height: 500px;"></div>'
+                    }]
+            }],
+            renderTo: "help"
+        });
+    },
 
-function createHeightLayoutTab() {
-    var compHeight = '';
-    if(configObject && configObject.hasOwnProperty('componentHeight')) {
-        compHeight = configObject.componentHeight;
-    }
-    var componentLayoutForm = new Ext.form.FormPanel({
-        frame: false,
-        width: 480,
-        border: 0,
-        items: [{
-            xtype:'fieldset',
-            columnWidth: 0.5,
-            title: 'Component afmetingen',
-            collapsible: false,
-            defaultType: 'textfield',
-            layout: 'anchor',
-            items:[{
-                xtype: 'numberfield',
-                fieldLabel: 'Hoogte (px)',
-                id: "componentHeight",
-                name: 'componentHeight',
-                value: compHeight,
-                labelWidth:100
-            }]
-        }],
-        renderTo: "layout"
-    }); 
-}
-
-function toggleXY(show){
-    if(show){
-        Ext.getCmp('x').show();
-        Ext.getCmp('y').show();
-        Ext.getCmp('alignposition').show();
-    }else{
-        Ext.getCmp('x').hide();
-        Ext.getCmp('y').hide();
-        Ext.getCmp('alignposition').hide();
-    }
-}
-
-function save(){ 
-    if(metadata.configSource != undefined){
-        var config = customConfiguration.getConfiguration();
-        continueSave(config);
-    }else{
-        // Hackhackhack
-        if(Ext.isIE8){
-            propertyGrid.addListener("propertychange",getPropertyGridConfig,this);
-            var btn = Ext.get('saveConfigButton');
-            btn.focus();
-        }else{
-            getPropertyGridConfig();            
+    createLayoutTab: function () {
+        if(!this.config.metadata.hasOwnProperty('type') || this.config.metadata.type !== "popup") {
+            return;
         }
-    }
-}
+        if(this.config.currentRegion && Ext.Array.indexOf(['header', 'leftmargin_top', 'leftmargin_bottom', 'rightmargin_top', 'rightmargin_bottom', 'footer'], this.config.currentRegion) !== -1) {
+            return;
+        }
 
-function getPropertyGridConfig(){
-    var config = propertyGrid.getSource();
-    continueSave(config);
-}
+        var labelWidth = 300;
+        var alignStore = Ext.create('Ext.data.ArrayStore', {
+            autoDestroy: true,
+            idIndex: 0,
+            fields: [{
+                name: 'name',
+                type: 'string'
+            }, {
+                name: 'value',
+                type: 'string'
+            }],
+            data: [
+                ['Links-boven', 'tl'],
+                ['Rechts-boven', 'tr'],
+                ['Links-onder', 'bl'],
+                ['Rechts-onder', 'br']
+            ]
+        });
 
-function continueSave(config){
-    if(metadata.type != undefined && metadata.type == "popup"){
-        config.isPopup = true;
-        var layout = new Object();
-        if(layoutForm) {
-            for( var i = 0 ; i < layoutForm.items.length ; i++){
-                var fieldSetItems = layoutForm.items.get(i);
-                for ( var j = 0 ; j < fieldSetItems.items.length ; j ++){
-                    var item = fieldSetItems.items.get(j);
-                    if(item.name != undefined){
-                        if(Ext.isObject(item.getValue())){
-                            layout[item.name] = item.getValue().position;  
-                        }else{
-                            if (item.getValue()!=""){
-                                layout[item.name] = item.getValue();
+        var defaults = {};
+        if(this.customConfiguration) {
+            defaults = this.customConfiguration.getDefaultValues().details || {};
+        }
+
+        this.layoutForm = new Ext.form.FormPanel({
+            frame: false,
+            width: 480,
+            border: 0,
+            items: [{
+                xtype:'fieldset',
+                columnWidth: 0.5,
+                title: 'Vensterpositie',
+                collapsible: false,
+                defaultType: 'textfield',
+                layout: 'anchor',
+                items:[
+                    {
+                        xtype: 'radiogroup',
+                        name: 'position',
+                        columns: 1,
+                        vertical: true,
+                        value: this.config.details.position,
+                        labelWidth:350,
+                        items: [
+                            {
+                                boxLabel: 'Gecentreerd',
+                                name: 'position',
+                                inputValue: 'center' ,
+                                checked: this.config.details.position === "center"
+                            },
+                            {
+                                boxLabel: 'Vaste Positie',
+                                name: 'position',
+                                checked: this.config.details.position === "fixed",
+                                inputValue: 'fixed',
+                                listeners: {
+                                    change: {
+                                        fn: function (el) {
+                                            this.toggleXY(el.getValue());
+                                        },
+                                        scope: this
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'x',
+                        id: "x",
+                        name: 'x',
+                        value: this.config.details.x,
+                        hidden : true,
+                        labelWidth:100
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'y',
+                        id: "y",
+                        name: 'y',
+                        value: this.config.details.y,
+                        hidden : true,
+                        labelWidth:100
+                    },
+                    {
+                        xtype: 'combobox',
+                        fieldLabel: 'Uitlijning',
+                        id: "alignposition",
+                        name: 'alignposition',
+                        value: this.config.details.alignposition,
+                        hidden : true,
+                        labelWidth:100,
+                        store: alignStore,
+                        displayField: 'name',
+                        valueField: 'value',
+                        queryMode: 'local'
+                    },
+                    {
+                        xtype: 'checkbox',
+                        fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
+                        inputValue: true,
+                        name: 'changeablePosition',
+                        checked: this.parseBooleanValue(this.config.details.changeablePosition),
+                        labelWidth:labelWidth
+                    }]
+            },
+                {
+                    xtype:'fieldset',
+                    columnWidth: 0.5,
+                    title: 'Venstergrootte',
+                    collapsible: false,
+                    defaultType: 'textfield',
+                    layout: 'anchor',
+                    items:[{
+                            xtype: 'textfield',
+                            fieldLabel: 'Breedte',
+                            name: 'width',
+                            value: this.config.details.width || defaults.minWidth || defaults.width,
+                            labelWidth:100,
+                            validator: function(value) {
+                                // Always allow percentages and ignore if where is no minHeight
+                                if(value.indexOf("%") !== -1 || !defaults.minWidth) {
+                                    return true;
+                                }
+                                if(parseInt(value) < defaults.minWidth) {
+                                    return "Minimale breedte is " + defaults.minWidth;
+                                }
+                                return true;
+                            }
+                        },
+                        {
+                            xtype: 'container',
+                            html: defaults.minWidth ? 'Minimale breedte is ' + defaults.minWidth : '',
+                            padding: defaults.minWidth ? '2 0 5 0' : 0,
+                            style: {
+                                color: '#666666'
+                            }
+                        },
+                        {
+                            xtype: 'textfield',
+                            fieldLabel: 'Hoogte',
+                            name: 'height',
+                            value: this.config.details.height || defaults.minHeight || defaults.height,
+                            labelWidth:100,
+                            validator: function(value) {
+                                // Always allow percentages and ignore if where is no minHeight
+                                if(value.indexOf("%") !== -1 || !defaults.minHeight) {
+                                    return true;
+                                }
+                                if(parseInt(value) < defaults.minHeight) {
+                                    return "Minimale hoogte is " + defaults.minHeight;
+                                }
+                                return true;
+                            }
+                        },
+                        {
+                            xtype: 'container',
+                            html: defaults.minHeight ? 'Minimale hoogte is ' + defaults.minHeight : '',
+                            padding: defaults.minWidth ? '2 0 5 0' : 0,
+                            style: {
+                                color: '#666666'
+                            }
+                        },
+                        {
+                            xtype: 'checkbox',
+                            fieldLabel: 'Gebruiker kan de grootte van de popup aanpassen',
+                            inputValue: true,
+                            name: 'changeableSize',
+                            checked: this.parseBooleanValue(this.config.details.changeableSize),
+                            labelWidth:labelWidth
+                        }]
+                }],
+
+            renderTo: "layout"//(2)
+        });
+        if(this.config.details.position === "fixed"){
+            this.toggleXY(true);
+        }
+    },
+
+    createHeightLayoutTab: function () {
+        var compHeight = '';
+        if(this.config.configObject.hasOwnProperty('componentHeight')) {
+            compHeight = this.config.configObject.componentHeight;
+        }
+        var componentLayoutForm = new Ext.form.FormPanel({
+            frame: false,
+            width: 480,
+            border: 0,
+            items: [{
+                xtype:'fieldset',
+                columnWidth: 0.5,
+                title: 'Component afmetingen',
+                collapsible: false,
+                defaultType: 'textfield',
+                layout: 'anchor',
+                items:[{
+                    xtype: 'numberfield',
+                    fieldLabel: 'Hoogte (px)',
+                    id: "componentHeight",
+                    name: 'componentHeight',
+                    value: compHeight,
+                    labelWidth:100
+                }]
+            }],
+            renderTo: "layout"
+        });
+    },
+
+    parseBooleanValue: function (val) {
+        if (val === true || val === false) {
+            return val;
+        }
+        if(typeof val === "undefined") {
+            return false;
+        }
+        return ("true" === val);
+    },
+
+    toggleXY: function (show) {
+        if(show){
+            Ext.getCmp('x').show();
+            Ext.getCmp('y').show();
+            Ext.getCmp('alignposition').show();
+        }else{
+            Ext.getCmp('x').hide();
+            Ext.getCmp('y').hide();
+            Ext.getCmp('alignposition').hide();
+        }
+    },
+
+    save: function () {
+        if(this.config.metadata.configSource != undefined){
+            var config = this.customConfiguration.getConfiguration();
+            this.continueSave(config);
+        }else{
+            // Hackhackhack
+            if(Ext.isIE8){
+                this.propertyGrid.addListener("propertychange",getPropertyGridConfig,this);
+                var btn = Ext.get('saveConfigButton');
+                btn.focus();
+            }else{
+                this.getPropertyGridConfig();
+            }
+        }
+    },
+
+    getPropertyGridConfig: function () {
+        var config = this.propertyGrid.getSource();
+        this.continueSave(config);
+    },
+
+    continueSave: function (config) {
+        if(this.config.metadata.hasOwnProperty("type") && this.config.metadata.type == "popup") {
+            config.isPopup = true;
+            var layout = {};
+            var defaults = {};
+            if(this.customConfiguration) {
+                defaults = this.customConfiguration.getDefaultValues().details || {};
+            }
+            if(this.layoutForm) {
+                var formFields = this.layoutForm.query("field");
+                var radiogroups = this.layoutForm.query("radiogroup");
+                // Iterate over all the fields to add the value to the layout object
+                Ext.Array.each(formFields, function(field) {
+                    var value = field.getValue();
+                    var name = field.getName();
+                    if(value !== "" && value !== "null") {
+                        if(name === "width" || name === "height") {
+                            var minKey = "min" + this.capitalizeFirstLetter(name);
+                            if(defaults[minKey] && value.indexOf("%") === -1 && value < defaults[minKey]) {
+                                value = defaults[minKey];
                             }
                         }
+                        layout[name] = value;
                     }
-                }
+                }, this);
+                // Iterate over the radiogroups (position) and apply the value of the group to the layout object
+                Ext.Array.each(radiogroups, function(group) {
+                    Ext.apply(layout, group.getValue());
+                });
+            }
+            var layoutFormObject = Ext.get("componentLayout");
+            layoutFormObject.dom.value =  JSON.stringify(layout);
+        }else{
+            config.isPopup = false;
+        }
+        if(this.showHelp()) {
+            var helpUrl = Ext.getCmp('helpUrl'), helpText = Ext.getCmp('helpText'), showHelpButton = Ext.getCmp('showHelpButton');
+            if(helpUrl && helpUrl.getValue() !== '') {
+                config['helpUrl'] = helpUrl.getValue();
+            }
+            if(helpText && helpText.getValue() !== '') {
+                config['helpText'] = helpText.getValue();
+            }
+            if(showHelpButton) {
+                config['showHelpButton'] = showHelpButton.getValue() ? "true" : "false";
             }
         }
-        var layoutFormObject = Ext.get("componentLayout");
-        layoutFormObject.dom.value =  JSON.stringify(layout);
-    }else{
-        config.isPopup = false;
-    }
-    if(showHelp()) {
-        var helpUrl = Ext.getCmp('helpUrl'), helpText = Ext.getCmp('helpText'), showHelpButton = Ext.getCmp('showHelpButton');
-        if(helpUrl && helpUrl.getValue() !== '') {
-            config['helpUrl'] = helpUrl.getValue();
+        if(this.showConfigureHeight()) {
+            var heightConfig = Ext.getCmp('componentHeight');
+            if(heightConfig && heightConfig.getValue() !== '') {
+                config['componentHeight'] = parseInt(heightConfig.getValue(), 10);
+            }
         }
-        if(helpText && helpText.getValue() !== '') {
-            config['helpText'] = helpText.getValue();
-        }
-        if(showHelpButton) {
-            config['showHelpButton'] = showHelpButton.getValue() ? "true" : "false";
-        }
-    }
-    if(showConfigureHeight()) {
-        var heightConfig = Ext.getCmp('componentHeight');
-        if(heightConfig && heightConfig.getValue() !== '') {
-            config['componentHeight'] = parseInt(heightConfig.getValue(), 10);
-        }
-    }
-    var configFormObject = Ext.get("configObject");
-    configFormObject.dom.value = JSON.stringify(config);
-    document.getElementById('configForm').submit();
-}
+        var configFormObject = Ext.get("configObject");
+        configFormObject.dom.value = JSON.stringify(config);
+        document.getElementById('configForm').submit();
+    },
 
-function showHelp() {
-    if(typeof metadata.showHelp !== 'undefined' && metadata.showHelp) {
-        return true;
-    }
-    return false;
-}
+    capitalizeFirstLetter: function(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    },
 
-function showConfigureHeight() {
-    var showComponentHeight = false,
-        heightRegions = ["leftmargin_top", "leftmargin_bottom", "rightmargin_top", "rightmargin_bottom"];
-    if(metadata.hasOwnProperty('restrictions')) {
-        for(x in metadata.restrictions) {
-            for(y in heightRegions) {
-                if(metadata.restrictions[x] === heightRegions[y]) {
-                    showComponentHeight = true;
+    showHelp: function () {
+        return this.config.metadata.hasOwnProperty("showHelp") && this.config.metadata.showHelp;
+    },
+
+    showConfigureHeight: function () {
+        var heightRegions = ["leftmargin_top", "leftmargin_bottom", "rightmargin_top", "rightmargin_bottom"];
+        if(!this.config.metadata.hasOwnProperty('restrictions')) {
+            return false;
+        }
+        for(var i = 0; i < this.config.metadata.restrictions.length; i++) {
+            for(var j = 0; j < heightRegions.length; j++) {
+                if(this.config.metadata.restrictions[i] === heightRegions[j]) {
+                    return true;
                 }
             }
         }
+        return false;
     }
-    return showComponentHeight;
-}
 
-Ext.onReady(function() {
-    Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
-    var tabs = [], htmlEditorRendered = false;
-    tabs = [{
-        contentEl:'config', 
-        title: 'Configuratie',
-        autoScroll: true
-    },{
-        contentEl:'rights', 
-        title: 'Rechten'
-    }];
-    if((metadata.type != undefined && metadata.type == "popup") || showConfigureHeight()) {
-        tabs.push({
-            contentEl:'layout', 
-            title: 'Layout'
-        });
-    }
-    if(showHelp()){
-        tabs.push({
-            contentEl:'help', 
-            title: 'Help'
-        });
-    }
-    Ext.widget('tabpanel', {
-        renderTo: 'tabs',
-        width: '100%',
-        height: '100%',
-        activeTab: 0,
-        defaults :{
-            bodyPadding: 10
-        },
-        layoutOnTabChange: true,
-        items: tabs,
-        listeners: {
-            tabchange: function(panel, activetab, previoustab) {
-                if(activetab.contentEl && activetab.contentEl === 'help' && !htmlEditorRendered) {
-                    // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
-                    Ext.create('Ext.form.field.HtmlEditor', {
-                        id: 'helpText',
-                        name: 'helpText',
-                        width: 600,
-                        maxWidth: 600,
-                        height: 400,
-                        maxHeight: 400,
-                        value: configObject && configObject.helpText ? configObject.helpText : '',
-                        fieldLabel: 'Help Tekst',
-                        labelWidth: 100,
-                        plugins: [
-                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                                submitUrl: actionBeans['imageupload'],
-                                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
-                            })),
-                            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
-                        ],
-                        renderTo: 'helpHtmlEditorContainer'
-                    });
-                    htmlEditorRendered = true;
-                }
-            }
-        },
-        bbar: ["->", {
-            xtype: 'button',
-            text: 'Annuleren',
-            id: 'cancalConfigButton',
-            iconCls: 'cancelbutton-icon',
-            listeners: {
-                click: function() {
-                    window.location.reload();
-                }
-            }
-        }, {
-            xtype: 'button',
-            text: 'Opslaan',
-            id: 'saveConfigButton',
-            iconCls: 'savebutton-icon',
-            listeners: {
-                click: function() {
-                    save();
-                }
-            }
-        }]
-    });
 });

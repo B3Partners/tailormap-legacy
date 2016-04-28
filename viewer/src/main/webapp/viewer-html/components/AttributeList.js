@@ -37,7 +37,11 @@ Ext.define ("viewer.components.AttributeList",{
         downloadParams: "",
         addZoomTo: false,
         zoomToBuffer: 10,
-        showLayerSelectorTabs: false
+        showLayerSelectorTabs: false,
+        details: {
+            minWidth: 600,
+            minHeight: 300
+        }
     },
     appLayer: null,
     featureService: null,
@@ -46,10 +50,8 @@ Ext.define ("viewer.components.AttributeList",{
     schema: null,
     featureExtentService: null,
     constructor: function (conf){
-        var minwidth = 600;
-        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
-        viewer.components.AttributeList.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.AttributeList.superclass.constructor.call(this, this.config);
         var me = this;
         this.grids={};
         this.pagers={};
@@ -127,12 +129,9 @@ Ext.define ("viewer.components.AttributeList",{
             },{
                 id: this.name + 'mainGridPanel',
                 xtype: "container",
-                autoScroll: true,
+                // autoScroll: true,
                 flex: 1,
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                }
+                layout: 'fit'
             },{
                 id: this.name + 'mainPagerPanel',
                 xtype: "container",
@@ -404,10 +403,11 @@ Ext.define ("viewer.components.AttributeList",{
         if (Ext.get(name + 'GridPanel')==null){
             Ext.create('Ext.container.Container', {
                 id: name + 'GridPanel',
-                autoScroll: true,
+                // autoScroll: true,
                 width: '100%',
                 flex: 1,
-                renderTo: renderToEl.id
+                renderTo: renderToEl.id,
+                layout: 'fit'
             });
             if(addPager){
                 Ext.create('Ext.container.Container', {

@@ -29,6 +29,7 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -83,7 +84,10 @@ public class CSSActionBean implements ActionBean {
     @DefaultHandler
     public Resolution style() {
         HttpServletRequest request = getContext().getRequest();
-
+        Resolution r = ApplicationActionBean.checkRestriction(context, app, Stripersist.getEntityManager());
+        if (r != null) {
+            return r;
+        }
         // Session must exist
         HttpSession sess = request.getSession(false);
         if (sess == null) {

@@ -28,8 +28,8 @@ Ext.define ("viewer.components.Coordinates",{
         }if (!conf.decimals){
             conf.decimals=2;
         }
-        viewer.components.Coordinates.superclass.constructor.call(this, conf);        
         this.initConfig(conf);
+		viewer.components.Coordinates.superclass.constructor.call(this, this.config);        
         
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.COORDINATES;

@@ -47,11 +47,15 @@ Ext.define("viewer.components.Edit", {
         allowNew: true,
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor',
-        showEditLinkInFeatureInfo: true
+        showEditLinkInFeatureInfo: true,
+        details: {
+            minWidth: 400,
+            minHeight: 250
+        }
     },
     constructor: function (conf) {
-        viewer.components.Edit.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Edit.superclass.constructor.call(this, this.config);
         var me = this;
 
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
@@ -329,6 +333,13 @@ Ext.define("viewer.components.Edit", {
             this.mode = "edit";
             this.getFeaturesForCoords(coords);
         };
+        // Check if the appLayer is selected already
+        // If the layer is already selected, fire layerChanged ourself
+        var selectedAppLayer = this.layerSelector.getValue();
+        if(selectedAppLayer && selectedAppLayer.id === parseInt(appLayer.id, 10)) {
+            this.layerChanged(appLayer);
+            return;
+        }
         // Find and select layerselector record
         this.layerSelector.getStore().each(function(record) {
             if(parseInt(record.get('layerId'), 10) === parseInt(appLayer.id, 10)) {

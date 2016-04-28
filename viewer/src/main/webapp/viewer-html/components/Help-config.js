@@ -21,12 +21,12 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     htmlEditor: null,
-    constructor: function (parentId,configObject){        
+    constructor: function (parentId, configObject, configPage) {        
         if (configObject === null){
             configObject = {};
         }
         configObject.showLabelconfig = false;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         
         var defaultText="";
         if (configObject && configObject.defaultText) {
@@ -41,11 +41,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             fieldLabel: 'Standaard tekst',
             labelWidth: 100,
             plugins: [
-                new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                    submitUrl: actionBeans['imageupload'],
-                    managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                    submitUrl: this.getActionBeanUrl('imageupload'),
+                    managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
                 })),
-                new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
             ]
         });
         this.form.add(this.htmlEditor);
@@ -55,6 +55,14 @@ Ext.define("viewer.components.CustomConfiguration",{
     windowHide: function() {
         // IE8 still showed HTML editor iframe after closing window so we manually hide the HTML editor
         this.htmlEditor.hide();
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 400,
+                minHeight: 250
+            }
+        }
     }
 });
 

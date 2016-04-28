@@ -174,8 +174,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <tr>
                                             <td valign="top">Omschrijving:</td>
                                             <td>
+                                                <div>
+                                                    <stripes:checkbox class="use-plain-text-editor" name="details['summary.texteditor']" value="plain-text-editor" /> Standaard tekst veld gebruiken in plaats van HTML editor
+                                                </div>
                                                 <div id="details_summary_description_container" style="width: 475px; height: 150px;"></div>
-                                                <stripes:textarea name="details['summary.description']" rows="5" cols="27" style="display: none;" id="details_summary_description" />
+                                                <stripes:textarea name="details['summary.description']" rows="5" cols="27" style="display: none; width: 475px; height: 150px;" id="details_summary_description" />
+                                                <a href="#" class="inlinehelp-toggle" data-target="related-features-help">Related features gebruiken?</a>
+                                                <div class="inline-help related-features-help" style="display: none;">
+                                                    Het is ook mogelijk gebruik te maken van related features. Gebruik hiervoor de "standaard tekst veld" weergave.<br />
+                                                    Blokken waarin de related features moeten komen beginnen met een [begin.FEATURETYPE] en eindigen met [end.FEATURETYPE].<br />
+                                                    Om de related features weer te geven moet worden begonnen met [begin.repeat.FEATURETYPE] en eindigen met [end.repeat.FEATURETYPE].<br />
+                                                    Daarbinnen het is mogelijk om attributen uit de releated featuretype te gebruiken.
+                                                    (Waar hierboven FEATURETYPE staat moet de naam van de related featuretype staan.)<br /><br />
+                                                    Voorbeeld:
+                                                    <pre>Gemeente: [gm_code] - [gm_naam]&lt;br /&gt;
+Wijken: &lt;br /&gt;
+[begin.wijk_2014]
+    &lt;table&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;Wijk code&lt;/th&gt;
+                &lt;th&gt;Wijk naam&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            &lt;tr&gt;
+                [begin.repeat.wijk_2014]
+                &lt;td&gt;[wk_code]&lt;/td&gt;
+                &lt;td&gt;[wk_naam]&lt;/td&gt;
+                [end.repeat.wijk_2014]
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+[end.wijk_2014]</pre>
+                                                </div>
                                             </td>
                                         </tr>
                                         <tr>

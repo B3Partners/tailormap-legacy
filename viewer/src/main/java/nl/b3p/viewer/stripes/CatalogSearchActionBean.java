@@ -157,30 +157,34 @@ public class CatalogSearchActionBean implements ActionBean {
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
         String error = null;
-    
-        try {
-            CswServable server = new GeoNetworkCswServer(null,
-                    url,
-                    null, 
-                    null
-            );        
-            
-            CswClient client = new CswClient(server);
-            InputBySearch input = new InputBySearch(q);
-            OutputBySearch output = client.search(input);            
+        Resolution r = ApplicationActionBean.checkRestriction(context, application, Stripersist.getEntityManager());
+        if (r != null) {
+            error = "Unauthorized";
+        } else {
+            try {
+                CswServable server = new GeoNetworkCswServer(null,
+                        url,
+                        null,
+                        null
+                );
 
-            List<OnlineResource> map = output.getResourcesFlattened();
-            JSONArray results = getResults(map, output);
+                CswClient client = new CswClient(server);
+                InputBySearch input = new InputBySearch(q);
+                OutputBySearch output = client.search(input);
 
-            json.put("results", results);                
+                List<OnlineResource> map = output.getResourcesFlattened();
+                JSONArray results = getResults(map, output);
 
-            json.put("success", Boolean.TRUE);
-        } catch(Exception e) {
+                json.put("results", results);
 
-            error = "Fout bij zoeken in CSW: " + e.toString();
-            log.error("Fout bij zoeken in csw:",e);
-            if(e.getCause() != null) {
-                error += "; oorzaak: " + e.getCause().toString();
+                json.put("success", Boolean.TRUE);
+            } catch (Exception e) {
+
+                error = "Fout bij zoeken in CSW: " + e.toString();
+                log.error("Fout bij zoeken in csw:", e);
+                if (e.getCause() != null) {
+                    error += "; oorzaak: " + e.getCause().toString();
+                }
             }
         }
                 
@@ -196,6 +200,11 @@ public class CatalogSearchActionBean implements ActionBean {
         
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
+         Resolution r = ApplicationActionBean.checkRestriction(context, application, Stripersist.getEntityManager());
+        if (r != null) {
+            json.put("message","Unauthorized");
+            return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        }
         CswServable server = new GeoNetworkCswServer(null, url, null, null);
         CswClient client = new CswClient(server);
         try {

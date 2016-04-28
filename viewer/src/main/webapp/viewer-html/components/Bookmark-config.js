@@ -20,12 +20,12 @@
  */
 Ext.define("viewer.components.CustomConfiguration", {
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function(parentId, configObject) {
+    constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {};
         }
         configObject.showLabelconfig = true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         var checkboxLabelWidth= 55;
         this.form.add([
             {
@@ -170,6 +170,14 @@ Ext.define("viewer.components.CustomConfiguration", {
                 width: 700
             }
         ]);
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 450,
+                minHeight: 250
+            }
+        }
     }
 });
 

@@ -26,8 +26,8 @@ Ext.define ("viewer.components.tools.Measure",{
     extend: "viewer.components.tools.Tool",
     config: {},
     constructor: function (conf) {
-        viewer.components.tools.Measure.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        viewer.components.tools.Measure.superclass.constructor.call(this, this.config);
         conf.frameworkOptions = {
             persist: true,
             callbacks: {
@@ -186,11 +186,11 @@ Ext.define ("viewer.components.tools.Measure.Line",{
         name: "measureline",
         tooltip: "Measure"
     },
-    constructor: function (conf){        
-        viewer.components.tools.Measure.Line.superclass.constructor.call(this, conf);
+    constructor: function (conf){
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.MEASURELINE;        
-        this.initTool(conf);
+        viewer.components.tools.Measure.Line.superclass.constructor.call(this, this.config);
+        this.config.type = viewer.viewercontroller.controller.Tool.MEASURELINE;
+        this.initTool(this.config);
         this.initEvents();
         return this;
     }
@@ -201,11 +201,11 @@ Ext.define ("viewer.components.tools.Measure.Area",{
         name: "measurearea",
         tooltip: "Measure area"
     },
-    constructor: function (conf){        
-        viewer.components.tools.Measure.Area.superclass.constructor.call(this, conf);
+    constructor: function (conf){
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.MEASUREAREA;        
-        this.initTool(conf);
+        viewer.components.tools.Measure.Area.superclass.constructor.call(this, this.config);
+        this.config.type = viewer.viewercontroller.controller.Tool.MEASUREAREA;
+        this.initTool(this.config);
         this.initEvents();
         return this;
     }
