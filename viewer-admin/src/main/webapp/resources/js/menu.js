@@ -29,6 +29,7 @@ Ext.define("vieweradmin.components.Menu", {
         if(menu) {
             menu.on('click', function(e, el, o) {
                 Ext.select('.menu-level1').removeCls('menuclicked');
+                Ext.select('.dropdownmenulink').removeCls('active');
                 Ext.get(this).addCls('menuclicked');
             });
         }
@@ -51,7 +52,7 @@ Ext.define("vieweradmin.components.Menu", {
             menuItem.findParent('.menu-level1', 10, true).addCls('menuclicked');
             var parent = menuItem.parent().parent();
             if(parent && parent.hasCls('dropdownmenu')) {
-                Ext.get('dropdownmenulink').addCls('active');
+                parent.parent().select('.dropdownmenulink').addCls('active');
             }
         }
     }
