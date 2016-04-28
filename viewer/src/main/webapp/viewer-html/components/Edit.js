@@ -872,7 +872,7 @@ Ext.define("viewer.components.Edit", {
         }
         Ext.getCmp(this.name + "saveButton").setText("Opslaan");
         this.mode = null;
-        this.layerSelector.getLayerSelector().clearSelection();
+        this.layerSelector.clearSelection();
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");

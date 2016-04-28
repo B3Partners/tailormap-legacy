@@ -236,7 +236,7 @@ Ext.define("viewer.components.Merge", {
         Ext.getCmp(this.name + "selectBButton").setDisabled(true);
         Ext.getCmp(this.name + "selectAButton").setDisabled(true);
         this.mode = null;
-        this.layerSelector.getLayerSelector().clearSelection();
+        this.layerSelector.clearSelection();
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         if (this.vectorLayer) {

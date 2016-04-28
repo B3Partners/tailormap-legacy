@@ -617,7 +617,7 @@ Ext.define("viewer.components.Split", {
         Ext.getCmp(this.name + "drawButton").setDisabled(true);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
         this.mode = null;
-        this.layerSelector.getLayerSelector().clearSelection();
+        this.layerSelector.clearSelection();
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
