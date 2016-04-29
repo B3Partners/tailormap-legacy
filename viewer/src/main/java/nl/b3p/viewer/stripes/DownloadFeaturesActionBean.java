@@ -55,6 +55,7 @@ import nl.b3p.viewer.features.FeatureDownloader;
 import nl.b3p.viewer.features.ShapeDownloader;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -295,7 +296,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
                 output.delete();
             }
         }else{
-            return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+            return new ErrorMessageResolution (json.getString("message"));
         }
     }
 

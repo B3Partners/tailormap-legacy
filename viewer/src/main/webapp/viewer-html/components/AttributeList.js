@@ -721,14 +721,28 @@ Ext.define ("viewer.components.AttributeList",{
         if(appLayer.filter){
             filter=appLayer.filter.getCQL();
         }
-        this.downloadForm.getComponent('appLayer').setValue(appLayer.id);
-        this.downloadForm.getComponent('application').setValue(appId);
-        this.downloadForm.getComponent('filter').setValue(filter);
-        this.downloadForm.getComponent('type').setValue(Ext.getCmp("downloadType").getValue());
-        this.downloadForm.getComponent('params').setValue(this.config.downloadParams);
-        this.downloadForm.submit({
-            target: '_blank'
-        });
+        var url =  actionBeans["download"];
+
+        url += '?appLayer=' + appLayer.id;
+        url += '&application=' + appId;
+        url += '&filter=' + filter;
+        url += '&type=' + Ext.getCmp("downloadType").getValue();
+        url += '&params=' + this.config.downloadParams;
+
+        new Ext.Window({
+            title: "Download",
+            width: 400,
+            height: 150,
+            layout: 'fit',
+            items: [{
+                    xtype: "component",
+                    border: false,
+                    autoEl: {
+                        tag: "iframe",
+                        src: url
+                    }
+                }]
+        }).show();
     }
 });
 
