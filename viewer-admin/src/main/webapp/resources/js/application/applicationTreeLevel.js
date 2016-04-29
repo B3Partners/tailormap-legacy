@@ -61,7 +61,7 @@ Ext.onReady(function() {
         movelefticon: movelefticon,
         moveupicon: moveupicon,
         movedownicon: movedownicon
-    }
+    };
     
     // Creation of TreeSelection component
     var kaartSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
@@ -128,11 +128,17 @@ Ext.onReady(function() {
             title: 'Kaarten'
         });
     }
-    
+
+    var headerdiv = document.getElementById("headertext");
+    var headercontent = headerdiv.innerText || headerdiv.textContent;
+    headerdiv.style.display = 'none';
+
     var htmlEditorRendered = false;
     Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
     Ext.createWidget('tabpanel', {
+        title: headercontent,
         renderTo: 'tabs',
+        height: '100%',
         width: '100%',
         activeTab: 0,
         hideMode: 'offsets',
@@ -165,19 +171,55 @@ Ext.onReady(function() {
                     htmlEditorRendered = true;
                 }
             }
-        }
+        },
+        bbar: [
+            '->',
+            {
+                xtype: 'button',
+                text: 'Opslaan',
+                listeners: {
+                    click: {
+                        fn: saveFunction
+                    }
+                }
+            }, {
+                xtype: 'button',
+                text: 'Annuleren',
+                listeners: {
+                    click: {
+                        fn: cancelFunction
+                    }
+                }
+            }, {
+                xtype: 'button',
+                text: 'Verwijderen',
+                listeners: {
+                    click: {
+                        fn: removeFunction
+                    }
+                }
+            }
+        ]
     });
-    
-    Ext.get('levelform').on('submit', function() {
+
+    function saveFunction() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('selecteddocsinput').set({value:docsSelectie.getSelection()});
         var htmlEditor = Ext.getCmp('extContextHtmlEditor');
         if(htmlEditor) Ext.get('context_textarea').dom.value = htmlEditor.getValue();
-    });
+        var frm = document.forms[0];
+        frm.action = "?save=t";
+        frm.submit();
+    }
+
+    function cancelFunction() {
+        document.location.href = actionBeans.appTreeLevel + '?edit=t&level=' + levelid;
+    }
+
+    function removeFunction() {
+        var frm = document.forms[0];
+        frm.action = "?delete=t";
+        frm.submit();
+    }
+
 });
-
-
-function cancelFunction(){
-    var url = actionBeans.appTreeLevel + '?edit=t&level=' + levelid;
-    document.location.href = url;
-}
