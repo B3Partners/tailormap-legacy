@@ -38,6 +38,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         this.initConfig(config);
         vieweradmin.components.Menu.setActiveLink('menu_kiesapplicatie');
         this.grid = this.createGrid();
+        this.convertDefaultApplicationSelect();
     },
 
     createGrid: function() {
@@ -207,22 +208,67 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             Ext.removeNode(a);
         }
     },
+
+    convertDefaultApplicationSelect: function() {
+        var values = [];
+        var defaultAppSelect = document.getElementById("defaultAppSelector");
+        defaultAppSelect.style.display = 'none';
+        for(var i = 0; i < defaultAppSelect.options.length; i++) {
+            values.push({
+                value: defaultAppSelect.options[i].value,
+                label: defaultAppSelect.options[i].innerHTML
+            });
+        }
+        var applications = Ext.create('Ext.data.Store', {
+            fields: ['value', 'label'],
+            data : values
+        });
+        Ext.create('Ext.container.Container',{
+            renderTo: defaultAppSelect.parentNode,
+            padding: '20 0 10 0',
+            html: 'Kies hieronder de standaard applicatie. Deze applicatie wordt geladen wanneer er bij de viewer geen applicatie wordt meegegeven.'
+        });
+        Ext.create('Ext.form.ComboBox', {
+            fieldLabel: 'Standaard applicatie',
+            store: applications,
+            queryMode: 'local',
+            displayField: 'label',
+            valueField: 'value',
+            value: defaultAppSelect.value,
+            renderTo: defaultAppSelect.parentNode,
+            labelWidth: 150,
+            width: 375,
+            listeners: {
+                change: {
+                    fn: function(combo, newvalue) {
+                        combo.setLoading("Standaard applicatie opslaan");
+                        this.defaultApplicationChanged(combo, applications.findRecord("value", newvalue));
+                    },
+                    scope: this
+                }
+            }
+        });
+    },
     
-    defaultApplicationChanged : function(form){
-        var id = form.value;
-        // call to backendsetDefaultApplication
+    defaultApplicationChanged : function(combobox, application){
          Ext.Ajax.request({
             url: this.config.setDefaultApplication,
             params: {
-                application: id
+                application: application.get('value')
             },
             scope: this,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                // handle success (check for response.success === true
+                combobox.setLoading(false);
+                if(!response.success) {
+                    Ext.Msg.alert('Fout bij opslaan', 'Er is iets fout gegaan bij het opslaan van de standaard applicatie. Probeer opnieuw.');
+                } else {
+                    Ext.Msg.alert('Standaard applicatie opgeslagen', 'De standaard applicatie is opgeslagen. De nieuwe standaard applicatie is ' + application.get('label'));
+                }
             },
             failure: function(result) {
-               // Handle errors
+                combobox.setLoading(false);
+                Ext.Msg.alert('Fout bij opslaan', 'Er is iets fout gegaan bij het opslaan van de standaard applicatie. Probeer opnieuw.');
             }
         });
     }
