@@ -166,7 +166,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 inputValue: true,
                 name: 'showAfterSelectedContentChange',
                 checked: this.configObject.showAfterSelectedContentChange !== undefined ? this.configObject.showAfterSelectedContentChange : false,
-                // value: true,
+                labelWidth:me.labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Aangevinkte kaartlagen onthouden<br />(werkt alleen voor applicatie lagen)',
+                inputValue: true,
+                name: 'persistCheckedLayers',
+                checked: this.configObject.persistCheckedLayers !== undefined ? this.configObject.persistCheckedLayers : false,
                 labelWidth:me.labelWidth
             }],
             renderTo: parentId
