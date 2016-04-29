@@ -28,7 +28,15 @@ Ext.define("viewer.components.CustomConfiguration", {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.createCheckBoxes(this.configObject.layers, {editable: true});
 
-        this.form.add([{
+        this.form.add([
+            {
+                xtype: 'checkbox',
+                fieldLabel: 'Bewerken toestaan',
+                name: 'allowEdit',
+                value: this.configObject.allowEdit !== undefined ? this.configObject.allowEdit : true,
+                labelWidth: this.labelWidth
+            },
+            {
                 xtype: 'checkbox',
                 fieldLabel: 'Verwijderen toestaan',
                 name: 'allowDelete',
