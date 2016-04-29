@@ -40,6 +40,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="applicationWorkversion"/>
                     <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
                 </stripes:form>
+                
+            <div class="applicaties">
+                pietje
+                
+                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean">
+                    <stripes:select name="defaultAppId" value="${actionBean.defaultAppId}" onchange="window.vieweradmin_components_ChooseApplication.defaultApplicationChanged(this);">
+                        <stripes:option label="- Kies een applicatie - "/>
+                        <stripes:options-collection collection="${actionBean.apps}" label="nameWithVersion"></stripes:options-collection>
+                    </stripes:select>
+                </stripes:form>
+            </div>
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
             </div>
             <script type="text/javascript" src="${contextPath}/resources/js/application/chooseApplication.js"></script>

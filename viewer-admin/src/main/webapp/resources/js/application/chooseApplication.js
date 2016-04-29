@@ -205,6 +205,10 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         if(a) {
             Ext.removeNode(a);
         }
+    },
+    
+    defaultApplicationChanged : function(){
+        // call to backend
     }
 
 });

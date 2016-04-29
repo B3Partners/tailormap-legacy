@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
@@ -69,6 +70,10 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private Application applicationWorkversion;
     @Validate
     private Application applicationToDelete;
+    
+    private List<Application> apps;
+    
+    private String defaultAppId;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public String getDir() {
@@ -151,7 +156,23 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         this.applicationWorkversion = applicationWorkversion;
     }
 
+    public List<Application> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<Application> apps) {
+        this.apps = apps;
+    }
+
+    public String getDefaultAppId() {
+        return defaultAppId;
+    }
+
+    public void setDefaultAppId(String defaultAppId) {
+        this.defaultAppId = defaultAppId;
+    }
     //</editor-fold>
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -373,7 +394,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         EntityManager em = Stripersist.getEntityManager();
         Metadata md = null;
         try {
-            md = em.createQuery("from Metadata configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
         } catch (NoResultException e) {
             md = new Metadata();
             md.setConfigKey(Metadata.DEFAULT_APPLICATION);
@@ -383,8 +404,21 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         } else {
             md.setConfigValue(null);
         }
+        defaultAppId = md.getConfigValue();
         em.persist(md);
         em.getTransaction().commit();
         return view();
+    }
+    
+    @After(stages = {LifecycleStage.BindingAndValidation})
+    public void createLists() {
+        EntityManager em = Stripersist.getEntityManager();
+        apps = em.createQuery("from Application").getResultList();
+        try {
+            Metadata md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            defaultAppId = md.getConfigValue();
+        } catch (NoResultException e) {
+        }
+
     }
 }
