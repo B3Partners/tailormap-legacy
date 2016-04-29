@@ -226,6 +226,9 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         Ext.create('Ext.container.Container',{
             renderTo: defaultAppSelect.parentNode,
             padding: '20 0 10 0',
+            style: {
+                color: '#666666'
+            },
             html: 'Kies hieronder de standaard applicatie. Deze applicatie wordt geladen wanneer er bij de viewer geen applicatie wordt meegegeven.'
         });
         Ext.create('Ext.form.ComboBox', {
