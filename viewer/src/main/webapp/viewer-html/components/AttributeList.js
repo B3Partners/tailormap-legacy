@@ -729,7 +729,7 @@ Ext.define ("viewer.components.AttributeList",{
         url += '&type=' + Ext.getCmp("downloadType").getValue();
         url += '&params=' + this.config.downloadParams;
 
-        new Ext.Window({
+        var w =new Ext.Window({
             title: "Download",
             width: 400,
             height: 150,
@@ -742,7 +742,9 @@ Ext.define ("viewer.components.AttributeList",{
                         src: url
                     }
                 }]
-        }).show();
+        });
+        w.show();
+        setTimeout(function(){w.hide();}, 10000);
     }
 });
 
