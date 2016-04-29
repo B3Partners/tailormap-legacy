@@ -77,7 +77,8 @@ public class ShapeDownloader extends FeatureDownloader {
             newShapefileDataStore.createSchema(sft);
 
             // grab the feature source from the new shapefile data store
-            FeatureSource newFeatureSource = newShapefileDataStore.getFeatureSource(sft.getName());
+            String typeName = newShapefileDataStore.getTypeNames()[0];
+            FeatureSource newFeatureSource = newShapefileDataStore.getFeatureSource(typeName);
 
             // downcast FeatureSource to specific implementation of FeatureStore
             newFeatureStore = (FeatureStore) newFeatureSource;
