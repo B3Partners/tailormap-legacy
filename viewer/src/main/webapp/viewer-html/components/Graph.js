@@ -100,7 +100,7 @@ Ext.define("viewer.components.Graph", {
             },
             renderTo: this.getContentDiv(),
             items: [
-                this.layerSelector.combobox,
+                this.layerSelector.getLayerSelector(),
                 {
                     xtype: "container",
                     items: [{
