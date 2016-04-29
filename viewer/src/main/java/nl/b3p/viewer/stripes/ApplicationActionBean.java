@@ -32,6 +32,7 @@ import nl.b3p.viewer.config.ClobElement;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
+import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.JSONException;
@@ -49,6 +50,9 @@ public class ApplicationActionBean implements ActionBean {
 
     @Validate
     private String name;
+    
+    @Validate
+    private boolean unknown;
 
     @Validate
     private String version;
@@ -156,6 +160,14 @@ public class ApplicationActionBean implements ActionBean {
     public void setGlobalLayout(HashMap globalLayout) {
         this.globalLayout = globalLayout;
     }
+
+    public boolean isUnknown() {
+        return unknown;
+    }
+
+    public void setUnknown(boolean unknown) {
+        this.unknown = unknown;
+    }
     //</editor-fold>
 
     static Application findApplication(String name, String version) {
@@ -207,6 +219,9 @@ public class ApplicationActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution view() throws JSONException, IOException {
+        if(unknown){
+            getDefaultViewer();
+        }
         application = findApplication(name, version);
 
         if(application == null) {
@@ -397,5 +412,20 @@ public class ApplicationActionBean implements ActionBean {
             }
         }
         return type;
+    }
+    
+    private void getDefaultViewer(){
+        EntityManager em = Stripersist.getEntityManager();
+        try {
+            Metadata md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            String appId = md.getConfigValue();
+            Long id = Long.parseLong(appId);
+            Application app = em.find(Application.class, id);
+            name = app.getName();
+            version = app.getVersion();
+        } catch (NoResultException e) {
+            name = "default";
+            version = null;
+        }
     }
 }
