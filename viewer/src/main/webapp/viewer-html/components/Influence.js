@@ -81,7 +81,7 @@ Ext.define ("viewer.components.Influence",{
             layers: this.config.layers
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        Ext.ComponentQuery.query('#' + this.name + 'LayerSelectorPanel')[0].add(this.layerSelector.combobox);
+        Ext.ComponentQuery.query('#' + this.name + 'LayerSelectorPanel')[0].add(this.layerSelector.getLayerSelector());
         return this;
     },
     /**
