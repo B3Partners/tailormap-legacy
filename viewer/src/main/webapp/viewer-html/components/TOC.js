@@ -62,7 +62,8 @@ Ext.define ("viewer.components.TOC",{
         initToggleAllLayers: true,
         showAllLayersOff: false,
         showAllLayersOn: false,
-        expandOnEnabledLayer:false
+        expandOnEnabledLayer:false,
+        persistCheckedLayers: false
     },
     constructor: function (config){
         config.details.useExtLayout = true;
@@ -75,6 +76,10 @@ Ext.define ("viewer.components.TOC",{
             this.showAllLayersOn=config.showToggleAllLayers;
         }
         this.toggleAllLayersState = this.config.initToggleAllLayers;
+        if(!this.config.persistCheckedLayers) {
+            // If the configuration option was set in the past but is turned off, remove old saved state
+            this.config.viewerController.removeSavedCheckedState();
+        }
         this.renderButton();
         this.loadTree();
         this.loadInitLayers();
@@ -361,12 +366,16 @@ Ext.define ("viewer.components.TOC",{
 
         }
         var retChecked = false;
+        var defaultChecked = this.config.viewerController.getLayerChecked(appLayerObj);
         if(this.config.layersChecked){
-            treeNodeLayer.checked = appLayerObj.checked;
-            retChecked = appLayerObj.checked;
-        } else if(appLayerObj.checked) {
-            treeNodeLayer.hidden_check = appLayerObj.checked;
-            retChecked = appLayerObj.checked;
+            treeNodeLayer.checked = defaultChecked;
+            retChecked = defaultChecked;
+        } else if(defaultChecked) {
+            treeNodeLayer.hidden_check = defaultChecked;
+            retChecked = defaultChecked;
+        }
+        if(this.config.persistCheckedLayers) {
+            this.config.viewerController.saveCheckedState(appLayerObj, retChecked);
         }
         return {
             node: treeNodeLayer,
@@ -659,18 +668,21 @@ Ext.define ("viewer.components.TOC",{
                 node = nodeObj.data;
             }
             var layer = node.layerObj;
-
             if(checked){
                 this.config.viewerController.setLayerVisible(layer.appLayer, true);
             }else{
                 this.config.viewerController.setLayerVisible(layer.appLayer, false);
             }
+            if(this.config.persistCheckedLayers) {
+                this.config.viewerController.saveCheckedState(layer.appLayer, checked);
+            }
         }
     },
-    
+
     getTree: function() {
         return this.panel;
     },
+
     /*************************  Event handlers ***********************************************************/
 
     checkboxClicked : function(nodeObj,checked,toc){
