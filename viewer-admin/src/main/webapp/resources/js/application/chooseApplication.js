@@ -28,7 +28,8 @@ Ext.define('vieweradmin.components.ChooseApplication', {
     config: {
         gridurl: "",
         editurl: "",
-        deleteurl: ""
+        deleteurl: "",
+        setDefaultApplication: ""
     },
 
     grid: null,
@@ -207,8 +208,23 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         }
     },
     
-    defaultApplicationChanged : function(){
-        // call to backend
+    defaultApplicationChanged : function(form){
+        var id = form.value;
+        // call to backendsetDefaultApplication
+         Ext.Ajax.request({
+            url: this.config.setDefaultApplication,
+            params: {
+                application: id
+            },
+            scope: this,
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                // handle success (check for response.success === true
+            },
+            failure: function(result) {
+               // Handle errors
+            }
+        });
     }
 
 });

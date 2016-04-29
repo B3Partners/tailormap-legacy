@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
@@ -390,24 +391,32 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         return copy;
     }
     
-    public Resolution setDefaultApplication() {
-        EntityManager em = Stripersist.getEntityManager();
-        Metadata md = null;
-        try {
-            md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
-        } catch (NoResultException e) {
-            md = new Metadata();
-            md.setConfigKey(Metadata.DEFAULT_APPLICATION);
+    public Resolution setDefaultApplication() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        try{
+            EntityManager em = Stripersist.getEntityManager();
+            Metadata md = null;
+            try {
+                md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            } catch (NoResultException e) {
+                md = new Metadata();
+                md.setConfigKey(Metadata.DEFAULT_APPLICATION);
+            }
+            if (application != null) {
+                md.setConfigValue(application.getId().toString());
+            } else {
+                md.setConfigValue(null);
+            }
+            defaultAppId = md.getConfigValue();
+            em.persist(md);
+            em.getTransaction().commit();
+            json.put("success", Boolean.TRUE);
+        }catch(Exception ex){
+            log.error("Error during setting the default application: ", ex);
         }
-        if (application != null) {
-            md.setConfigValue(application.getId().toString());
-        } else {
-            md.setConfigValue(null);
-        }
-        defaultAppId = md.getConfigValue();
-        em.persist(md);
-        em.getTransaction().commit();
-        return view();
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
     
     @After(stages = {LifecycleStage.BindingAndValidation})
