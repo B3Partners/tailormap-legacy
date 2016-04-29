@@ -26,6 +26,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
@@ -366,5 +367,24 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
         em.getTransaction().commit();
         return copy;
+    }
+    
+    public Resolution setDefaultApplication() {
+        EntityManager em = Stripersist.getEntityManager();
+        Metadata md = null;
+        try {
+            md = em.createQuery("from Metadata configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+        } catch (NoResultException e) {
+            md = new Metadata();
+            md.setConfigKey(Metadata.DEFAULT_APPLICATION);
+        }
+        if (application != null) {
+            md.setConfigValue(application.getId().toString());
+        } else {
+            md.setConfigValue(null);
+        }
+        em.persist(md);
+        em.getTransaction().commit();
+        return view();
     }
 }
