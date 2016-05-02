@@ -257,7 +257,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
          Ext.Ajax.request({
             url: this.config.setDefaultApplication,
             params: {
-                application: application.get('value')
+                defaultApplication: application.get('value')
             },
             scope: this,
             success: function(result) {

@@ -76,6 +76,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     
     private String defaultAppId;
 
+    @Validate
+    private Application defaultApplication;
+
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public String getDir() {
         return dir;
@@ -171,6 +174,14 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
 
     public void setDefaultAppId(String defaultAppId) {
         this.defaultAppId = defaultAppId;
+    }
+
+    public Application getDefaultApplication() {
+        return defaultApplication;
+    }
+
+    public void setDefaultApplication(Application defaultApplication) {
+        this.defaultApplication = defaultApplication;
     }
     //</editor-fold>
     
@@ -391,7 +402,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         return copy;
     }
     
-    public Resolution setDefaultApplication() throws JSONException {
+    public Resolution saveDefaultApplication() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
@@ -404,8 +415,8 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                 md = new Metadata();
                 md.setConfigKey(Metadata.DEFAULT_APPLICATION);
             }
-            if (application != null) {
-                md.setConfigValue(application.getId().toString());
+            if (defaultApplication != null) {
+                md.setConfigValue(defaultApplication.getId().toString());
             } else {
                 md.setConfigValue(null);
             }

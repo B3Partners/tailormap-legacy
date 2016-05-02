@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="getGridData"/>',
                         editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" event="view"/>',
                         deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>',
-                        setDefaultApplication :  '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="setDefaultApplication"/>'
+                        setDefaultApplication :  '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="saveDefaultApplication"/>'
                     });
                 });
             </script>
