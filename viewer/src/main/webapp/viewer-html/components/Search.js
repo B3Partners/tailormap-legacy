@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -592,6 +592,9 @@ Ext.define ("viewer.components.Search",{
                     for(var i = 0 ; i <switchOnLayers.length ;i++){
                         var appLayerId = switchOnLayers[i];
                         var appLayer = this.config.viewerController.app.appLayers[appLayerId];
+                        if(appLayer === undefined){
+                            continue;
+                        }
                         // Suppress logmessages for non-existing layers
                         var logLevel = this.config.viewerController.logger.logLevel;
                         this.config.viewerController.logger.logLevel = viewer.components.Logger.LEVEL_ERROR;
