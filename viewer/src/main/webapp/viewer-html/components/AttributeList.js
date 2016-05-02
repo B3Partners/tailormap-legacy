@@ -746,7 +746,7 @@ Ext.define ("viewer.components.AttributeList",{
                 }]
         });
         w.show();
-        setTimeout(function(){w.hide();}, 10000);
+        setTimeout(function(){w.hide();}, 8000);
     }
 });
 
