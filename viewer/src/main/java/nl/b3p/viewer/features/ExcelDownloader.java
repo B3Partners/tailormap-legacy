@@ -132,7 +132,7 @@ public class ExcelDownloader extends FeatureDownloader{
 
         int colNum = 0;
         for (ConfiguredAttribute configuredAttribute : attributes) {
-            if(configuredAttribute.isVisible()){
+            if(configuredAttribute.isVisible() && attributeAliases.get(configuredAttribute.getAttributeName()) != null){
                 Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
                 String value = null;
                 if(attribute != null){
