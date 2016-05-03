@@ -95,18 +95,20 @@ public class ExcelDownloader extends FeatureDownloader{
         ClientAnchor anchor = factory.createClientAnchor();
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
-                Cell cell = headerRow.createCell(colNum);
                 String alias = attributeAliases.get(configuredAttribute.getAttributeName());
-                cell.setCellValue(alias);
-                if(!alias.equals(configuredAttribute.getAttributeName())){
-                    Comment comment = drawing.createCellComment(anchor);
-                    RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
-                    comment.setString(str);
-                    cell.setCellComment(comment);
+                if(alias != null){
+                    Cell cell = headerRow.createCell(colNum);
+                    cell.setCellValue(alias);
+                    if(!alias.equals(configuredAttribute.getAttributeName())){
+                        Comment comment = drawing.createCellComment(anchor);
+                        RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
+                        comment.setString(str);
+                        cell.setCellComment(comment);
+                    }
+                    cell.setCellStyle(styles.get("header"));
+                    sheet.autoSizeColumn(colNum);
+                    colNum++;
                 }
-                cell.setCellStyle(styles.get("header"));
-                sheet.autoSizeColumn(colNum);
-                colNum++;
             }
         }
 
