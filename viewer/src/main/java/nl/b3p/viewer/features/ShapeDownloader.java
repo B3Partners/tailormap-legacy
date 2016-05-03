@@ -97,7 +97,7 @@ public class ShapeDownloader extends FeatureDownloader {
     @Override
     public void processFeature(SimpleFeature oldFeature) {
         for (ConfiguredAttribute configuredAttribute : attributes) {
-            if (configuredAttribute.isVisible()) {
+            if (configuredAttribute.isVisible()&& attributeAliases.get(configuredAttribute.getAttributeName()) != null) {
                 featureBuilder.add(oldFeature.getAttribute(configuredAttribute.getAttributeName()));
             }
         }
@@ -126,7 +126,7 @@ public class ShapeDownloader extends FeatureDownloader {
 
         b.setName(sfs.getName());
         for (ConfiguredAttribute configuredAttribute : configuredAttributes) {
-            if (configuredAttribute.isVisible()) {
+            if (configuredAttribute.isVisible()&& attributeAliases.get(configuredAttribute.getAttributeName()) != null) {
                 AttributeDescriptor ad = featureTypeAttributes.get(configuredAttribute.getFullName());
                 String alias = attributeAliases.get(configuredAttribute.getAttributeName());
                 b.add(alias, ad.getType().getClass());
@@ -134,7 +134,7 @@ public class ShapeDownloader extends FeatureDownloader {
         }
 
         b.setCRS(oldSft.getGeometryDescriptor().getCoordinateReferenceSystem());
-        b.add(oldSft.getGeometryDescriptor().getLocalName(), oldSft.getGeometryDescriptor().getType().getBinding()); // then add geometry
+        b.add("the_geom", oldSft.getGeometryDescriptor().getType().getBinding()); // then add geometry
 
         org.opengis.feature.simple.SimpleFeatureType newFeatureType = b.buildFeatureType();
 
