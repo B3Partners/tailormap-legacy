@@ -138,8 +138,12 @@ Ext.define("viewer.components.Graph", {
             padding: 4
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        if(this.layers.length === 1){
-            this.layerSelector.setValue(this.layers[0]);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.selectFirstLayer, this);
+    },
+    selectFirstLayer: function() {
+        if (this.layers.length === 1) {
+            this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.selectFirstLayer, this);
+            this.layerSelector.selectFirstLayer();
         }
     },
     mapClicked : function(tool, comp){
