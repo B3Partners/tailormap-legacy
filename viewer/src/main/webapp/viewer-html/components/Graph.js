@@ -274,7 +274,7 @@ Ext.define("viewer.components.Graph", {
                     axis: 'left',
                     xField: me.getAttributeTitle(appLayer, gco.categoryAttribute),
                     yField: me.getAttributeTitle(appLayer, serieAttribute),
-                    markerConfig: {
+                    marker: {
                         type: 'circle',
                         size: 4,
                         radius: 4,
