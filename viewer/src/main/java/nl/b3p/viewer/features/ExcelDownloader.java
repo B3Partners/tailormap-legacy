@@ -95,18 +95,20 @@ public class ExcelDownloader extends FeatureDownloader{
         ClientAnchor anchor = factory.createClientAnchor();
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
-                Cell cell = headerRow.createCell(colNum);
                 String alias = attributeAliases.get(configuredAttribute.getAttributeName());
-                cell.setCellValue(alias);
-                if(!alias.equals(configuredAttribute.getAttributeName())){
-                    Comment comment = drawing.createCellComment(anchor);
-                    RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
-                    comment.setString(str);
-                    cell.setCellComment(comment);
+                if(alias != null){
+                    Cell cell = headerRow.createCell(colNum);
+                    cell.setCellValue(alias);
+                    if(!alias.equals(configuredAttribute.getAttributeName())){
+                        Comment comment = drawing.createCellComment(anchor);
+                        RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
+                        comment.setString(str);
+                        cell.setCellComment(comment);
+                    }
+                    cell.setCellStyle(styles.get("header"));
+                    sheet.autoSizeColumn(colNum);
+                    colNum++;
                 }
-                cell.setCellStyle(styles.get("header"));
-                sheet.autoSizeColumn(colNum);
-                colNum++;
             }
         }
 
@@ -130,7 +132,7 @@ public class ExcelDownloader extends FeatureDownloader{
 
         int colNum = 0;
         for (ConfiguredAttribute configuredAttribute : attributes) {
-            if(configuredAttribute.isVisible()){
+            if(configuredAttribute.isVisible() && attributeAliases.get(configuredAttribute.getAttributeName()) != null){
                 Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
                 String value = null;
                 if(attribute != null){
