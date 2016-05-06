@@ -430,6 +430,9 @@ Ext.define ("viewer.components.AttributeList",{
             if(attribute.visible){
 
                 var attIndex = index++;
+                if(appLayer.geometryAttributeIndex === i){
+                    continue;
+                }
 
                 var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
                 attributeList.push({
