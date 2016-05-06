@@ -77,9 +77,13 @@ Ext.define("viewer.components.Graph", {
         if(!this.config.graphs){
             this.config.graphs = [];
         }
-        for (var i = 0 ; i < this.config.graphs.length ;i ++){
-            var graph = this.config.graphs[i];
-            this.layers.push(graph.layer);
+        if(this.config.graphs){
+            for (var i = 0 ; i < this.config.graphs.length ;i ++){
+                var graph = this.config.graphs[i];
+                this.layers.push(graph.layer);
+            }
+        }else{
+            this.viewerController.logger.warning("Geen grafieken geconfigureerd.");
         }
         this.loadWindow();
     },
