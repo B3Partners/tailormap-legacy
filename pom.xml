@@ -55,7 +55,7 @@
         <!--
             To check for plugin updates use the following command:
             mvn -U org.codehaus.mojo:versions-maven-plugin:2.2:display-dependency-updates
-            and check the output for anay available updates
+            and check the output for any available updates
         -->
         <dependencies>
             <!-- viewer-->
@@ -453,7 +453,7 @@
                 <!--
                     To check for plugin updates use the following command:
                     mvn -U org.codehaus.mojo:versions-maven-plugin:2.2:display-plugin-updates
-                    and check the output for anay available updates
+                    and check the output for any available updates
                 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
