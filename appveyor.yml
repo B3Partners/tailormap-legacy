@@ -1,7 +1,7 @@
 version: '{build}-({branch})'
 
 skip_tags: true
-
+clone_folder: C:\projects\flamingo
 shallow_clone: true
 
 environment:
