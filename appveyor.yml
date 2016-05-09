@@ -2,7 +2,7 @@ version: '{build}-({branch})'
 
 skip_tags: true
 clone_folder: C:\projects\flamingo
-shallow_clone: true
+clone_depth: 50
 
 environment:
   fast_finish: true
