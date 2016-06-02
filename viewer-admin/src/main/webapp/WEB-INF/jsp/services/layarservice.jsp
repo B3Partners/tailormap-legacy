@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean" event="getGridData"/>';
                 var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean" event="edit"/>';
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean" event="delete"/>';
-                var activelink = 'menu_layarservices';
+                vieweradmin.components.Menu.setActiveLink('menu_layarservices');
             </script>
             <script type="text/javascript" src="${contextPath}/resources/js/services/layarservice.js"></script>
         </div>

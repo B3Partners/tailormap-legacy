@@ -28,95 +28,115 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="content">
-            <div id="formcontent">
-                <stripes:errors/>
-                <stripes:messages/>
-                <h1 id="headertext">Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
-                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm">
-                    <stripes:hidden name="application" value="${actionBean.application}"/>
-                    <stripes:hidden name="mashupName"/>
-                    <stripes:hidden name="mustUpdateComponents"/>
-                    <table class="formtable" style="float: left; width: 580px;">
-                        <tr>
-                            <td>Naam:</td>
-                            <td><stripes:text name="name" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td>Versie:</td>
-                            <td><stripes:text name="version" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td>Steunkleur 1 (achtergrond):</td>
-                            <td>
-                                <stripes:text name="details['steunkleur1']" maxlength="255" size="15" style="float: left;" id="steunkleur1" />
-                                <div id="steunkleur_colorpicker1" style="float: left;"></div>
-                                <div style="clear: both;"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Steunkleur 2 (tekstkleur):</td>
-                            <td>
-                                <stripes:text name="details['steunkleur2']" maxlength="255" size="15" style="float: left;" id="steunkleur2" />
-                                <div id="steunkleur_colorpicker2" style="float: left;"></div>
-                                <div style="clear: both;"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tekst font:</td>
-                            <td><stripes:text name="details['font']" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td>Spritebestand icoontjes:</td>
-                            <td><stripes:text name="details['iconSprite']" maxlength="255" size="60"/></td>
-                        </tr>
-                        <tr>
-                            <td>Metadata link:</td>
-                            <td><stripes:text name="details['stylesheetMetadata']" maxlength="255" size="60"/></td>
-                        </tr>
-                        <tr>
-                            <td>Locatie print stylesheets</td>
-                            <td><stripes:text name="details['stylesheetPrint']" maxlength="255" size="60"/></td>
-                        </tr>
-                        <tr>
-                            <td>Eigenaar:</td>
-                            <td><stripes:text name="owner" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td>Start extensie:</td>
-                            <td>
-                                lo-x <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
-                                lo-y <stripes:text name="startExtent.miny" maxlength="255" size="8"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>
-                                rb-x <stripes:text name="startExtent.maxx" maxlength="255" size="8"/>
-                                rb-y <stripes:text name="startExtent.maxy" maxlength="255" size="8"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Maximale extensie:</td>
-                            <td>
-                                lo-x <stripes:text name="maxExtent.minx" maxlength="255" size="8"/>
-                                lo-y <stripes:text name="maxExtent.miny" maxlength="255" size="8"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>
-                                rb-x <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
-                                rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht
-                            </td>
-                        </tr>
-                    </table>
+            <h1 id="headertext">Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
+            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm" class="maximize">
 
-                    <div class="appSettingsRight">
+                <stripes:hidden name="application" value="${actionBean.application}"/>
+                <stripes:hidden name="mashupName"/>
+                <stripes:hidden name="mustUpdateComponents"/>
+                <stripes:hidden name="mustUpdateComponents"/>
+
+                <div id="tabs"  class="maximize">
+                    <div id="config" class="tabdiv">
+
+                        <stripes:errors/>
+                        <stripes:messages/>
+
+                        <table class="formtable">
+                            <tr>
+                                <td>Naam:</td>
+                                <td><stripes:text name="name" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Versie:</td>
+                                <td><stripes:text name="version" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Steunkleur 1 (achtergrond):</td>
+                                <td>
+                                    <stripes:text name="details['steunkleur1']" maxlength="255" size="15" style="float: left;" id="steunkleur1" />
+                                    <div id="steunkleur_colorpicker1" style="float: left;"></div>
+                                    <div style="clear: both;"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Steunkleur 2 (tekstkleur):</td>
+                                <td>
+                                    <stripes:text name="details['steunkleur2']" maxlength="255" size="15" style="float: left;" id="steunkleur2" />
+                                    <div id="steunkleur_colorpicker2" style="float: left;"></div>
+                                    <div style="clear: both;"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tekst font:</td>
+                                <td><stripes:text name="details['font']" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Spritebestand icoontjes:</td>
+                                <td><stripes:text name="details['iconSprite']" maxlength="255" size="60"/></td>
+                            </tr>
+                            <tr>
+                                <td>Metadata link:</td>
+                                <td><stripes:text name="details['stylesheetMetadata']" maxlength="255" size="60"/></td>
+                            </tr>
+                            <tr>
+                                <td>Locatie print stylesheets</td>
+                                <td><stripes:text name="details['stylesheetPrint']" maxlength="255" size="60"/></td>
+                            </tr>
+                            <tr>
+                                <td>Eigenaar:</td>
+                                <td><stripes:text name="owner" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Start extensie:</td>
+                                <td>
+                                    lo-x <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
+                                    lo-y <stripes:text name="startExtent.miny" maxlength="255" size="8"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    rb-x <stripes:text name="startExtent.maxx" maxlength="255" size="8"/>
+                                    rb-y <stripes:text name="startExtent.maxy" maxlength="255" size="8"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Maximale extensie:</td>
+                                <td>
+                                    lo-x <stripes:text name="maxExtent.minx" maxlength="255" size="8"/>
+                                    lo-y <stripes:text name="maxExtent.miny" maxlength="255" size="8"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>
+                                    rb-x <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
+                                    rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="security" class="tabdiv">
+                        <table class="formtable">
+                            <tr>
+                                <td colspan="2">
+                                    <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h1>Toegang:</h1>
+                                    <c:forEach var="group" items="${actionBean.allGroups}">
+                                        <stripes:checkbox name="groupsRead" value="${group.name}"/> ${group.name}<br>
+                                    </c:forEach>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="remarks" class="tabdiv">
                         <a href="#Instellingen_Per_Applicatie_Help" title="Help" class="helplink"></a>
                         Opmerkingen
                         <div id="details_opmerkingen_container" style="margin-top: 5px; width: 525px; height: 350px;">
@@ -124,125 +144,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         <div style="clear: both;"></div>
                     </div>
-                    <div style="clear: both;"></div>
+                </div>
 
-                    <div class="submitbuttons">
-                        <div style="float: left; width: 580px;">
-                            <input type="button" class="extlikebutton" value="Maak kopie" onclick="return confirmCopy();"/>
-                            <input type="button" class="extlikebutton" value="Maak mashup" onclick="return confirmMashup();"/>
-                        </div>
-                        <div style="float: left;">
-                            <input type="button" class="extlikebutton" value="Publiceren" onclick="return confirmPublish();"/>
-                            <stripes:submit name="save" value="Opslaan"/>
-                            <stripes:submit name="cancel" value="Annuleren"/>
-                            <input type="hidden" name="copy" value="1" disabled="true"/>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                </stripes:form>
-            </div>
+            </stripes:form>
         </div>
 
         <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/ColorPickerButton.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/application/applicationSettings.js"></script>
         <script type="text/javascript">
-            var activelink = 'menu_instellingen';
-            var actionBeans = { 
-                "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
-            };
-
-            function confirmCopy() {
-                Ext.MessageBox.show({
-                    title: 'Applicatie kopiëren',
-                    msg: 'Naam van kopie:',
-                    buttons: Ext.MessageBox.OKCANCEL,
-                    prompt:true,
-                    value: document.forms[0].name.value + " (kopie)",
-                    fn: function(btn, text){
-                        if(btn=='ok' && text){
-                    
-                            var frm = document.forms[0];
-                    
-                            frm.name.value = text;                    
-                            frm.copy.disabled = false;
-                            frm.submit();
-                        }
-                    }
-                });  
-            }
-            
-            function confirmMashup() {
-                Ext.MessageBox.show({
-                    title: 'Maak een mashup',
-                    width: 300,
-                    msg: 'Naam van mashup: <br/>'+
-                    '<input type="text" id="mashupNameText" width="200px"><br/>' +
-                    '<label><input type="checkbox" id="mustUpdateComponents">Moeten wijzigingen aan de componenten in de moederapplicatie ook doorwerken in de mashup?</label><br/>'  ,
-                    buttons: Ext.MessageBox.OKCANCEL,
-                    fn: function(btn, text){
-                        if(btn=='ok'){
-                            var text = Ext.get("mashupNameText").getValue();
-                            var mustUpdateComponents = Ext.get("mustUpdateComponents").getValue() === "on";
-                            if(text){
-                                var frm = document.forms[0];
-
-                                frm.mashupName.value = text;
-                                frm.mustUpdateComponents.value = mustUpdateComponents;
-                                frm.action = "?mashup=t";
-                                frm.submit();
-                            }
-                        }
-                    }
-                });  
-            }
-            
-            function confirmPublish() {
-                Ext.MessageBox.show({
-                    title: 'Neem mashups over van huidige gepubliceerde',
-                    msg: 'Als de huidige gepubliceerde versie mashups bevat, moeten de mashups dan wijzen naar de nieuwe gepubliceerde versie?',
-                    buttons: Ext.MessageBox.YESNOCANCEL,
-                    fn: function(btn, text){
-                        if(btn === 'yes' || btn === 'no'){
-                            var mashupMustPointToPublishedVersion = btn === 'yes';
-                            var frm = document.forms[0];
-                            frm.action = "?publish=t&mashupMustPointToPublishedVersion=" + mashupMustPointToPublishedVersion;
-                            frm.submit();
-                        }
-                    }
-                });
-            }
-
             Ext.onReady(function() {
-                Ext.tip.QuickTipManager.init();
-                appendPanel('headertext', 'formcontent', 'content');
-                var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
-                    width: 525,
-                    height: 350,
-                    value: Ext.get('details_opmerkingen').dom.value,
-                    renderTo: 'details_opmerkingen_container',
-                    plugins: [
-                        new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                            submitUrl: actionBeans['imageupload'],
-                            managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
-                        })),
-                        new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
-                    ]
-                });
-                Ext.get('settingsForm').on('submit', function() {
-                    Ext.get('details_opmerkingen').dom.value = htmlEditor.getValue();
-                });
-                Ext.create('Ext.ux.b3p.ColorPickerButton', {
-                    startColor: '${actionBean.application.details['steunkleur1']}',
-                    defaultColor: '#FFFFFF',
-                    renderTo: 'steunkleur_colorpicker1',
-                    textfield: 'steunkleur1'
-                });
-                Ext.create('Ext.ux.b3p.ColorPickerButton', {
-                    startColor: '${actionBean.application.details['steunkleur2']}',
-                    defaultColor: '#000000',
-                    renderTo: 'steunkleur_colorpicker2',
-                    textfield: 'steunkleur2'
+                Ext.create("vieweradmin.components.ApplicationSettings", {
+                    actionBeans: {
+                        imageupload: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+                    },
+                    steunkleur1: "${actionBean.application.details['steunkleur1']}",
+                    steunkleur2: "${actionBean.application.details['steunkleur2']}"
                 });
             });
         </script>

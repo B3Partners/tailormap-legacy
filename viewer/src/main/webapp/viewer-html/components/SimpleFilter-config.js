@@ -26,8 +26,8 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     currentEditIndex: null,
 
-    constructor: function (parentid, config) {
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid, config);
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
 
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
@@ -51,10 +51,10 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.filterConfigs = [];
 
-        if(config && config.filters) {
+        if(configObject && configObject.filters) {
             var me = this;
-            Ext.Array.each(config.filters, function(filter) {
-                me.addFilter(filter,config);
+            Ext.Array.each(configObject.filters, function(filter) {
+                me.addFilter(filter,configObject);
             });
         }
 
@@ -67,7 +67,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             height: '95%',
             border: 0,
             layout: 'vbox',
-            renderTo: Ext.get(parentid),
+            renderTo: Ext.get(parentId),
             items: [{
                 xtype: 'textfield',
                 fieldLabel: 'Titel',
@@ -139,7 +139,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                                     }
                                     var layerId = id;
 
-                                    var appLayer = appConfig.appLayers[layerId];
+                                    var appLayer = me.getAppConfig().appLayers[layerId];
 
                                     var ac = Ext.ComponentQuery.query("#attributeCombo")[0];
                                     ac.clearValue();
@@ -301,7 +301,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     addFilter : function(filter,config){
         var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
         var soort = this.filterTypes.findRecord("type", type).get("label");
-        var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
+        var appLayer = this.getAppConfig().appLayers[config.layers[filter.appLayerId]];
         if(appLayer){
             filter.appLayerId = appLayer.id;
             var description = this.createDescription(type, appLayer, filter);
@@ -341,7 +341,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             this.removeConfig( filterControl.config.id );
 
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
-            var appLayer = appConfig.appLayers[filterControl.appLayerId];
+            var appLayer = this.getAppConfig().appLayers[filterControl.appLayerId];
             var description = this.createDescription(soort, appLayer, filterControl);
             Ext.Array.insert(this.filterConfigs, oldIndex, [filterControl]);
             var soortString = this.filterTypes.findRecord("type", soort).get("label");
@@ -418,7 +418,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: [{name: "id", type: 'int'}, "serviceId", "layerName", "alias"]
         });
 
-        Ext.Object.each(appConfig.appLayers, function(id, appLayer) {
+        Ext.Object.each(this.getAppConfig().appLayers, function(id, appLayer) {
             if(appLayer.attributes.length > 0) {
                 store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }

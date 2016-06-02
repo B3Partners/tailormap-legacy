@@ -33,13 +33,13 @@
                 <table class="formtable">
                     <tr>
                         <td>Gebruikersnaam</td>
-                        <td><stripes:text name="account.username"/></td>
-                    </tr>
-                    <tr>
+                        <td><stripes-dynattr:text name="account.username">${account.username}</stripes-dynattr:text></td>
+                </tr>
+                <tr>
                         <td>Wachtwoord</td>
-                        <td><stripes:text name="account.password"/></td>
-                    </tr>
-                    <tr>
+                        <td><stripes-dynattr:text autocomplete="new-password" name="account.password"/></td>
+                </tr>
+                <tr>
                         <td>PFX-bestand</td>
                         <td><stripes:file name="key"/></td>
                     </tr>
@@ -53,7 +53,7 @@
             </stripes:form>
         </div>
         <script type="text/javascript">
-            var activelink = 'menu_cyclorama';
+            vieweradmin.components.Menu.setActiveLink('menu_cyclorama');
 
             function changeSelection(obj){
                 var url = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean"/>';

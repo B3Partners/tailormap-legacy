@@ -112,6 +112,33 @@ Ext.define("viewer.FeatureInfo", {
             return this.featureInfoInternal(params, successFunction, failureFunction,scope);
         }
     },
+    relatedFeatureInfo: function(appLayer, relatedFeature, successCallback, failureCallback, extraOptions) {
+        var filter = "&filter="+encodeURIComponent(relatedFeature.filter);
+        var featureType="&featureType="+relatedFeature.id;
+        var options = {
+            application: this.config.viewerController.app.id,
+            appLayer: appLayer.id,
+            limit: 1000,
+            filter: filter
+        };
+        Ext.Object.merge(options, extraOptions || {});
+        Ext.Ajax.request({
+            url: appLayer.featureService.getStoreUrl() + featureType + filter,
+            params: options,
+            scope: this,
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                successCallback(response);
+            },
+            failure: function(result) {
+                if(typeof failureCallback !== 'undefined') {
+                    failureCallback("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                } else {
+                    this.config.viewerController.logger.error(result);
+                }
+            }
+        });
+    },
     editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams) {
         var query = [{appLayer: appLayer.id}];
         var params ={application: this.config.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};

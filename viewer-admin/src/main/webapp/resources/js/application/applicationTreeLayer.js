@@ -355,7 +355,8 @@ hier niet op gecontroleerd.'
         width: '100%',
         activeTab: 0,
         defaults :{
-            bodyPadding: 10
+            bodyPadding: 10,
+            autoScroll: true
         },
         layoutOnTabChange: false,
         items: tabconfig,
@@ -371,11 +372,11 @@ hier niet op gecontroleerd.'
                         maxHeight: 400,
                         value: Ext.get('context_textarea').dom.value,
                         plugins: [
-                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
                                 submitUrl: actionBeans['imageupload'],
                                 managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
                             })),
-                            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                            new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
                         ],
                         renderTo: 'contextHtmlEditorContainer'
                     });
@@ -385,22 +386,7 @@ hier niet op gecontroleerd.'
         }
     });
 
-    Ext.create('Ext.form.field.HtmlEditor', {
-        itemId: 'extSettingsHtmlEditor',
-        width: 475,
-        maxWidth: 475,
-        height: 150,
-        maxHeight: 150,
-        value: Ext.get('details_summary_description').dom.value,
-        plugins: [
-            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                submitUrl: actionBeans['imageupload'],
-                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
-            })),
-            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
-        ],
-        renderTo: 'details_summary_description_container'
-    });
+    initToggleHtmlPlaintextEditor();
     Ext.create('Ext.slider.Single', {
         width: 200,
         value: Ext.get('details_transparency').dom.value || 0,
@@ -417,20 +403,63 @@ hier niet op gecontroleerd.'
     });
 
     Ext.get('apptreelayerform').on('submit', function(e) {
-        Ext.get('attributesJSON').dom.value = getJson();
-        if( getComponentByItemId('#extSettingsHtmlEditor')){
-            Ext.get('details_summary_description').dom.value = getComponentByItemId('#extSettingsHtmlEditor').getValue();
+        document.getElementById('attributesJSON').value = getJson();
+        var settingsHtmlEditor = getComponentByItemId('#extSettingsHtmlEditor');
+        if(settingsHtmlEditor) {
+            document.getElementById('details_summary_description').value = settingsHtmlEditor.getValue();
         }
         var htmlEditor = getComponentByItemId('#extContextHtmlEditor');
         if(htmlEditor) {
-            Ext.get('context_textarea').dom.value = htmlEditor.getValue();
+            document.getElementById('context_textarea').value = htmlEditor.getValue();
         }
-        if (Ext.get('details_editfeature_usernameAttribute') && getComponentByItemId('#ext_editfeature_usernameAttribute')){
-            Ext.get('details_editfeature_usernameAttribute').dom.value= getComponentByItemId('#ext_editfeature_usernameAttribute').getValue();
+        if (document.getElementById('details_editfeature_usernameAttribute') && getComponentByItemId('#ext_editfeature_usernameAttribute')){
+            document.getElementById('details_editfeature_usernameAttribute').value = getComponentByItemId('#ext_editfeature_usernameAttribute').getValue();
         }
     });
 
 });
+
+function initToggleHtmlPlaintextEditor()
+{
+    var toggle = document.querySelector('.use-plain-text-editor');
+    var textarea = document.getElementById('details_summary_description');
+    var editorcontainer = document.getElementById('details_summary_description_container');
+    var htmlEditorCreated = false;
+    function doToggle() {
+        if(!toggle.checked) {
+            textarea.style.display = 'none';
+            editorcontainer.style.display = 'block';
+            if(!htmlEditorCreated) {
+                initHtmlEditor();
+                htmlEditorCreated = true;
+            }
+        } else {
+            editorcontainer.style.display = 'none';
+            textarea.style.display = 'block';
+        }
+    }
+    toggle.addEventListener('change', doToggle);
+    doToggle();
+}
+
+function initHtmlEditor() {
+    Ext.create('Ext.form.field.HtmlEditor', {
+        itemId: 'extSettingsHtmlEditor',
+        width: 475,
+        maxWidth: 475,
+        height: 150,
+        maxHeight: 150,
+        value: Ext.get('details_summary_description').dom.value,
+        plugins: [
+            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                submitUrl: actionBeans['imageupload'],
+                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+            })),
+            new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
+        ],
+        renderTo: 'details_summary_description_container'
+    });
+}
 
 function getAttributeEditSettings(attribute, name) {
     
@@ -562,12 +591,12 @@ function getAttributeEditSettings(attribute, name) {
             fieldLabel: 'Alias', name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
         },
         {
-            hidden: isGeometry,
             xtype: 'container',
             items: [
                 {
                     xtype: 'container',
                     layout: 'hbox',
+                    hidden: isGeometry,
                     items: [
                         {xtype: 'displayfield', fieldLabel: 'Waardelijst', labelWidth: '190px'},
                         {
@@ -608,14 +637,14 @@ function getAttributeEditSettings(attribute, name) {
                     xtype: 'container',
                     itemId: 'staticListValues' + attribute.id,
                     layout: 'hbox',
-                    hidden: attribute.valueList === "dynamic",
+                    hidden: !isGeometry && attribute.valueList === "dynamic",
                     items: possibleValuesFormItems
                 },
                 {
                     xtype: 'container',
                     layout: 'vbox',
                     itemId: 'dynamicListValues' + attribute.id,
-                    hidden: attribute.valueList !== "dynamic",
+                    hidden: !isGeometry && attribute.valueList !== "dynamic",
                     defaults: {
                         xtype: 'combo',
                         width: 400,

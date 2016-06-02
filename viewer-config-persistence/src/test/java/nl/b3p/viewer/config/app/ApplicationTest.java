@@ -63,6 +63,18 @@ public class ApplicationTest extends TestUtil {
     }
 
     @Test
+    public void testDeepCopyReaders() throws Exception{
+       initData(false);
+       Application copy = app.deepCopy();
+       assertEquals(2, copy.getReaders().size());
+        for (String reader : app.getReaders()) {
+            assertTrue(copy.getReaders().contains(reader));
+        }
+       objectsToRemove.add(app);
+       objectsToRemove.add(copy);
+    }
+    
+    @Test
     public void testDeleteApplications() throws Exception {
         initData(false);
         Application application = entityManager.find(Application.class, app.getId());

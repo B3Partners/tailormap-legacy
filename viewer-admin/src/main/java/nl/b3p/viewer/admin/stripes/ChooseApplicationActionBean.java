@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
@@ -23,9 +24,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
@@ -47,6 +50,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ChooseApplicationActionBean.class);
     private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/application/chooseApplicationEdit.jsp";
+    private static final String VIEWER_URL_PARAM = "viewer.url";
     @Validate
     private int page;
     @Validate
@@ -67,6 +71,13 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private Application applicationWorkversion;
     @Validate
     private Application applicationToDelete;
+    
+    private List<Application> apps;
+    
+    private String defaultAppId;
+
+    @Validate
+    private Application defaultApplication;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public String getDir() {
@@ -149,7 +160,31 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         this.applicationWorkversion = applicationWorkversion;
     }
 
+    public List<Application> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<Application> apps) {
+        this.apps = apps;
+    }
+
+    public String getDefaultAppId() {
+        return defaultAppId;
+    }
+
+    public void setDefaultAppId(String defaultAppId) {
+        this.defaultAppId = defaultAppId;
+    }
+
+    public Application getDefaultApplication() {
+        return defaultApplication;
+    }
+
+    public void setDefaultApplication(Application defaultApplication) {
+        this.defaultApplication = defaultApplication;
+    }
     //</editor-fold>
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -274,7 +309,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         c.setFirstResult(start);
 
         List applications = c.list();
-
+        String baseUrl = getContext().getServletContext().getInitParameter(VIEWER_URL_PARAM);
         for (Iterator it = applications.iterator(); it.hasNext();) {
             Application app = (Application) it.next();
             String appName = app.getName();
@@ -289,7 +324,14 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             if (app.getVersion() == null) {
                 published = "Ja";
             }
-            JSONObject j = this.getGridRow(app.getId().intValue(), appName, published, ownername);
+            JSONObject j = new JSONObject();
+            j.put("id", app.getId().intValue());
+            j.put("name", appName);
+            j.put("published", published);
+            j.put("owner", ownername);
+            j.put("baseName", app.getName());
+            j.put("version", app.getVersion());
+            j.put("baseUrl", baseUrl);
             jsonData.put(j);
         }
 
@@ -359,13 +401,44 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         em.getTransaction().commit();
         return copy;
     }
+    
+    public Resolution saveDefaultApplication() throws JSONException {
+        JSONObject json = new JSONObject();
 
-    private JSONObject getGridRow(int i, String name, String published, String owner) throws JSONException {
-        JSONObject j = new JSONObject();
-        j.put("id", i);
-        j.put("name", name);
-        j.put("published", published);
-        j.put("owner", owner);
-        return j;
+        json.put("success", Boolean.FALSE);
+        try{
+            EntityManager em = Stripersist.getEntityManager();
+            Metadata md = null;
+            try {
+                md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            } catch (NoResultException e) {
+                md = new Metadata();
+                md.setConfigKey(Metadata.DEFAULT_APPLICATION);
+            }
+            if (defaultApplication != null) {
+                md.setConfigValue(defaultApplication.getId().toString());
+            } else {
+                md.setConfigValue(null);
+            }
+            defaultAppId = md.getConfigValue();
+            em.persist(md);
+            em.getTransaction().commit();
+            json.put("success", Boolean.TRUE);
+        }catch(Exception ex){
+            log.error("Error during setting the default application: ", ex);
+        }
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+    
+    @After(stages = {LifecycleStage.BindingAndValidation})
+    public void createLists() {
+        EntityManager em = Stripersist.getEntityManager();
+        apps = em.createQuery("from Application").getResultList();
+        try {
+            Metadata md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            defaultAppId = md.getConfigValue();
+        } catch (NoResultException e) {
+        }
+
     }
 }

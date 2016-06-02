@@ -137,9 +137,6 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         }
         this.config.viewerController.removeFilter(this.config.name, layer);
     },
-    getWidth : function(){
-        return this.config.simpleFilter.getDiv().getWidth() - 15;
-    },
     mustEscapeAttribute : function(){
         var appLayer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
         var attributes = this.config.viewerController.getAttributesFromAppLayer(appLayer, null, false);
@@ -228,8 +225,8 @@ Ext.define("viewer.components.sf.Checkbox", {
         simpleFilter:null
     },
     constructor: function(config){
-        viewer.components.sf.Checkbox.superclass.constructor.call(this, config);
         this.initConfig(config);
+		viewer.components.sf.Checkbox.superclass.constructor.call(this, this.config);
 
         var filterConfig = this.config.filterConfig;
         this.options = filterConfig.options;
@@ -443,7 +440,7 @@ Ext.define("viewer.components.sf.Combo", {
         this.combo = Ext.create("Ext.form.field.ComboBox", {
             store: this.store,
             queryMode: 'local',
-            width: this.getWidth(),
+            width: "100%",
             displayField: 'value',
             valueField: 'value',
             renderTo: this.config.name + "_combo",
@@ -532,8 +529,8 @@ Ext.define("viewer.components.sf.Number", {
     },
     numberField: null,
     constructor: function(conf) {
-        viewer.components.sf.Number.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.sf.Number.superclass.constructor.call(this, this.config);
         var templatecontents = [
             "<tr>",
                 "<td width=\"100\"><div id=\"{name}_field\">{value}</div></td>",
@@ -610,8 +607,8 @@ Ext.define("viewer.components.sf.Slider", {
     },
 
     constructor: function(conf) {
-        viewer.components.sf.Slider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.sf.Slider.superclass.constructor.call(this, this.config);
 
         var filterChangeDelay = 500;
 
@@ -669,7 +666,7 @@ Ext.define("viewer.components.sf.Slider", {
             "</tr>"
         ];
         if(!Ext.isEmpty(c.valueFormatString)) {
-            if(c.sliderType === "range") {
+            if (c.sliderType === "range") {
                 templatecontents.push(
                     "<tr>",
                         "<td><span id=\"{name}_min\"></span></td>",
@@ -699,7 +696,7 @@ Ext.define("viewer.components.sf.Slider", {
         if(c.sliderType === "range") {
             this.slider = Ext.create('Ext.slider.Multi', {
                 id: n + "_extSlider",
-                width: this.getWidth(),
+                width: "100%",
                 values: [c.start[0], c.start[1]],
                 increment: c.step,
                 minValue: c.min,
@@ -714,10 +711,11 @@ Ext.define("viewer.components.sf.Slider", {
                     }
                 }
             });
+            this.updateValueString(this.slider);
         } else if(c.sliderType === "eq" || c.sliderType === "gt" || c.sliderType === "lt" )  {
             this.slider = Ext.create('Ext.slider.Single', {
                 id: n + "_extSlider",
-                width: this.getWidth(),
+                width: "100%",
                 value: c.start,
                 increment: c.step,
                 minValue: c.min,

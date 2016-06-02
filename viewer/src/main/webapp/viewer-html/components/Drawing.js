@@ -42,11 +42,15 @@ Ext.define ("viewer.components.Drawing",{
         iconUrl: "",
         tooltip: "",
         color: "",
-        label: ""
+        label: "",
+        details: {
+            minWidth: 340,
+            minHeight: 415
+        }
     },
     constructor: function (conf){
-        viewer.components.Drawing.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Drawing.superclass.constructor.call(this, this.config);
         if(this.config.color === ""){
             this.config.color = "ff0000";
         }

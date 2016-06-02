@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2011-2013 B3Partners B.V.
+Copyright (C) 2011-2016 B3Partners B.V.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,24 +40,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="applicationWorkversion"/>
                     <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
                 </stripes:form>
+                <div class="applicaties">
+                    <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean">
+                        <stripes:select id="defaultAppSelector" name="defaultAppId" value="${actionBean.defaultAppId}" style="display: none;">
+                            <stripes:option label="- Kies een applicatie - "/>
+                            <stripes:options-collection collection="${actionBean.apps}" label="nameWithVersion"></stripes:options-collection>
+                        </stripes:select>
+                    </stripes:form>
+                </div>
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
             </div>
-        
-            <script type="text/javascript">
-                var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="getGridData"/>';
-                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" event="view"/>';
-                var workversionurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="makeWorkVersion"/>';
-                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>';
-                var activelink = 'menu_kiesapplicatie';
-                
-                function removeActiveAppMenu() {
-                    var a = document.getElementById("activeAppMenu");
-                    if(a) {
-                        Ext.removeNode(a);
-                    }
-                }
-            </script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/chooseApplication.js"></script>
+            <script type="text/javascript">
+                Ext.onReady(function() {
+                    // Expose vieweradmin_components_ChooseApplication to global scope to be able to access the component from the iframe
+                    window.vieweradmin_components_ChooseApplication = Ext.create('vieweradmin.components.ChooseApplication', {
+                        gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" event="view"/>',
+                        deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>',
+                        setDefaultApplication :  '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="saveDefaultApplication"/>'
+                    });
+                });
+            </script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>

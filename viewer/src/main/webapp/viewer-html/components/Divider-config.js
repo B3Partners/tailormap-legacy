@@ -20,9 +20,8 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        if(config === null) config = {};
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         var me = this;
         this.form = new Ext.form.FormPanel({
             frame: false,
@@ -32,49 +31,49 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [{                  
                 fieldLabel: 'Titel',
                 name: 'title',
-                value: config.title !== null && config.title !== undefined ? config.title : "Titel",
+                value: this.configObject.title !== null && this.configObject.title !== undefined ? this.configObject.title : "Titel",
                 labelWidth: me.labelWidth,
                 width: 500
             },{                        
                 fieldLabel: 'Marge',
                 name: 'margin',
-                value: config.margin || "3px 0 3px 0",
+                value: this.configObject.margin || "3px 0 3px 0",
                 labelWidth: me.labelWidth,
                 width: 400                   
             },{
                 fieldLabel: 'Padding',
                 name: 'padding',
-                value: config.padding || "5px",
+                value: this.configObject.padding || "5px",
                 labelWidth: me.labelWidth,
                 width: 400
             },{
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur',
                 name: 'backgroundColor',
-                value: config.backgroundColor || "transparent",
+                value: this.configObject.backgroundColor || "transparent",
                 labelWidth: me.labelWidth
             },{
                 fieldLabel: 'Dikte van rand',
                 name: 'border',
-                value: config.border || "1px 0 1px 0",
+                value: this.configObject.border || "1px 0 1px 0",
                 labelWidth: me.labelWidth,
                 width: 400
             },{
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur van rand',
                 name: 'borderColor',
-                value: config.borderColor || "D0D0D0",
+                value: this.configObject.borderColor || "D0D0D0",
                 labelWidth: me.labelWidth
             },{
                 xtype: 'colorfield',
                 fieldLabel: 'Tekstkleur',
                 name: 'textColor',
-                value: config.textColor || "000000",
+                value: this.configObject.textColor || "000000",
                 labelWidth: me.labelWidth
             },{
                 xtype: "combo",
                 fields: ['value', 'text'],
-                value: config.fontWeight || "bold",
+                value: this.configObject.fontWeight || "bold",
                 name: "fontWeight",
                 fieldLabel: "Tekst opmaak",
                 labelWidth: me.labelWidth,
@@ -84,7 +83,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 ],
                 width : 400
             }],
-            renderTo: this.parentId
+            renderTo: parentId
         });
         
         return this;

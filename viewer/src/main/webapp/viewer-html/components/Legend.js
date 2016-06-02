@@ -52,21 +52,37 @@ Ext.define("viewer.components.Legend", {
      * the appLayer by order.
      */
     orderedElements: null,
-    
+    treenodes: null,
     config: {
         title: "Legenda",
         titlebarIcon: "",
         tooltip: "",
         margin: "0px",
         showBackground: false,
-        infoText: ""
+        infoText: "",
+        showInlineLegend: false
     },
     constructor: function (conf){
         conf.details.useExtLayout = true;
-        viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.Legend.superclass.constructor.call(this, this.config);
         var me = this;
         
+        this.config.renderLegend = this.config.regionName !== "content";
+        
+        if(this.config.renderLegend) {
+            this.renderLegendContainer();
+        }
+        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChange,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_ZOOM_END,this.onZoomEnd,this);
+          
+        return this;
+    },
+
+    renderLegendContainer: function() {
         // Styling for legends, see for example:  http://jsfiddle.net/ZVUBv/1/
         var css = ".legend {padding: {0}; width: 100%; height: 100%;}" +
                 ".legend .layer { clear: left; }" +
@@ -127,15 +143,8 @@ Ext.define("viewer.components.Legend", {
 
         var parent = this.getContentContainer();
         parent.add(this.panel);
-        
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChange,this);
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_ZOOM_END,this.onZoomEnd,this);
-          
-        return this;
     },
-    
+
     renderButton: function() {
         var me = this;
         if(!this.config.isPopup) {
@@ -153,6 +162,9 @@ Ext.define("viewer.components.Legend", {
     },
     
     getExtComponents: function() {
+        if(!this.config.renderLegend) {
+            return [];
+        }
         return [ this.panel.getId() ];
     },
     
@@ -190,13 +202,16 @@ Ext.define("viewer.components.Legend", {
         }
                 
         if(legend.element != null) {
-            Ext.fly(legend.element).setVisible(vis);
+            if(this.config.renderLegend) Ext.fly(legend.element).setVisible(vis);
         } else if(legend.waitingForInfo) {
             // do nothing - visibility is checked again when info is received
         } else {
             this.createLegendForAppLayer(appLayer);
         }
         
+        if(this.config.showInlineLegend) {
+            this.appendLegendToToc(appLayer, legend);
+        }
     },
     
     onZoomEnd: function (map) {
@@ -211,11 +226,14 @@ Ext.define("viewer.components.Legend", {
     },
     
     resetLegend: function() {
-        while(this.legendContainer.firstChild) {
-            Ext.removeNode(this.legendContainer.firstChild);
+        if(this.config.renderLegend) {
+            while(this.legendContainer.firstChild) {
+                Ext.removeNode(this.legendContainer.firstChild);
+            }
         }
         this.legends = null;
         this.orderedElements = null;
+        this.resetInlineLegend();
     },
     
     initLegend: function() {
@@ -250,11 +268,10 @@ Ext.define("viewer.components.Legend", {
     createLegendForAppLayer: function(appLayer) {
         var me = this;
 
-        if(!this.config.showBackground && appLayer.background 
-        || !appLayer.checked) {
+        if(!this.config.showBackground && appLayer.background || !this.config.showInlineLegend && !appLayer.checked) {
             return;
         }
-
+        
         //console.log("get legend info for appLayer " + appLayer.alias);
 
         var legend = this.legends[appLayer.id];
@@ -297,7 +314,7 @@ Ext.define("viewer.components.Legend", {
         //console.log("legend info received for appLayer " + appLayer.alias + ", order " + legend.order, legendInfo);
 
         legend.waitingForInfo = false;
-        
+
         // if layer was turned off since we requested the legend info, do not
         // create an element (the info should be from cache next time the layer
         // is turned on, so do not create an invisible legend element)
@@ -305,7 +322,7 @@ Ext.define("viewer.components.Legend", {
         // Test this by calling this function with setTimeout() in 
         // createLegendForAppLayer and turn the layer off before this function
         // is called
-        if(!appLayer.checked) {
+        if(!this.config.showInlineLegend && !appLayer.checked) {
             //console.log("appLayer " + appLayer.alias + " was unchecked since requesting legend info! not creating legend");
             return;
         }
@@ -317,14 +334,97 @@ Ext.define("viewer.components.Legend", {
             appLayer: appLayer,
             element: legendElement
         };
-
-        var indexAfter = this.findElementAfter(this.orderedElements, legend.order);
-        var legendAfter = indexAfter == null ? null : this.orderedElements[indexAfter].element;
         //console.log("for appLayer " + appLayer.alias + " with order " + legend.order + ", insert before order " + indexAfter +
         //    (legendAfter == null ? " (append at end)" : " (before " + this.orderedElements[indexAfter].appLayer.alias + ")")
         //);
         
-        this.legendContainer.insertBefore(legendElement, legendAfter);
+        if(appLayer.checked && this.config.renderLegend) {
+            var indexAfter = this.findElementAfter(this.orderedElements, legend.order);
+            var legendAfter = indexAfter == null ? null : this.orderedElements[indexAfter].element;
+            this.legendContainer.insertBefore(legendElement, legendAfter);
+        }
+        
+        if(this.config.showInlineLegend) {
+            this.appendLegendToToc(appLayer, legend);
+        }
+    },
+
+    resetInlineLegend: function() {
+        this.treenodes = null;
+        var tree = this.getTocTree();
+        if(tree === null) {
+            return;
+        }
+        tree.getEl().dom.removeEventListener("click", this.toggleLegendImage);
+    },
+
+    getTocTree: function() {
+        var tocs = this.config.viewerController.getComponentsByClassName("viewer.components.TOC");
+        if(tocs.length === 0) {
+            return null;
+        }
+        return tocs[0].getTree();
+    },
+
+    loadTreeNodes: function() {
+        this.treenodes = [];
+        var tree = this.getTocTree();
+        if(tree === null) {
+            return;
+        }
+        var nodes = tree.getStore().query("leaf", "true").items;
+        for(var i = 0; i < nodes.length; i++) {
+            this.treenodes.push(nodes[i].getData());
+        }
+        tree.getEl().dom.addEventListener("click", this.toggleLegendImage);
+    },
+    
+    appendLegendToToc: function(appLayer, legend) {
+        if(this.treenodes === null) {
+            this.loadTreeNodes();
+        }
+        for(var i = 0; i < this.treenodes.length; i++) {
+            if(this.treenodes[i].layerObj.appLayer.id === appLayer.id && legend.element) {
+                this.createLegendInToc(this.treenodes[i], legend);
+            }
+        }
+    },
+    
+    createLegendInToc: function(treenode, legend) {
+        var el = document.getElementById("span_" + treenode.layerObj.nodeId);
+        if(el) {
+            if(el.parentNode.querySelector('.legend-toggle') !== null) {
+                return;
+            }
+            var image = legend.element.querySelector(".image");
+            if(image) {
+                var clonedImage = image.cloneNode(true);
+                clonedImage.style.display = 'none';
+                var link = document.createElement('a');
+                link.href = "#";
+                link.className = 'legend-toggle';
+                el.style.display = 'inline-block';
+                el.parentNode.insertBefore(link, el);
+                el.appendChild(clonedImage);
+            }
+        }
+    },
+
+    toggleLegendImage: function(e) {
+        if(!e.target.className || e.target.className.indexOf("legend-toggle") === -1) {
+            return true;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        var clonedImage = e.target.parentNode.querySelector(".image");
+        if(!clonedImage) {
+            return;
+        }
+        if(clonedImage.style.display === 'none') {
+            clonedImage.style.display = 'block';
+        } else {
+            clonedImage.style.display = 'none';
+        }
     },
     
     createLegendElement: function(al, legendInfo, legendScale) {

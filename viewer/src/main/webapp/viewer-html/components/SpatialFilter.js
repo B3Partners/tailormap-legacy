@@ -34,15 +34,13 @@ Ext.define ("viewer.components.SpatialFilter",{
         layers:null,
         applyDirect:null,
         multiGeometries:null,
-        label: ""
+        label: "",
+        details: {
+            minWidth: 330,
+            minHeight: 270
+        }
     },
-    constructor: function (conf){        
-        if(conf.details.width === undefined){
-            conf.details.width = 330;
-        }
-        if(conf.details.height === undefined){
-            conf.details.height = 270;
-        }
+    constructor: function (conf){
         if(conf.applyDirect === undefined){
             conf.applyDirect = true;
         }
@@ -50,8 +48,8 @@ Ext.define ("viewer.components.SpatialFilter",{
         if(conf.multiGeometries === undefined){
             conf.multiGeometries = true;
         }
-        viewer.components.SpatialFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
+		viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
         var me = this;
         this.features = new Array();
         this.renderButton({
@@ -110,7 +108,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
             multi += ")";
         }
-        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var appLayer = this.layerSelector.getValue();
         this.setFilter(multi, appLayer);
     },
     setFilter: function(geometry, appLayer){
@@ -367,7 +365,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             padding: 4,
             renderTo: this.getContentDiv(),
             items: [
-            this.layerSelector.combobox,
+            this.layerSelector.getLayerSelector(),
             {
                 id: this.config.name + 'filterButtons',
                 xtype: "container",
@@ -451,7 +449,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     resetForm : function () {
-        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var appLayer = this.layerSelector.getValue();
         if(!appLayer) {
             return;
         }

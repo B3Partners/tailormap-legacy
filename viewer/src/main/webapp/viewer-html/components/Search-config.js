@@ -30,11 +30,11 @@ Ext.define("viewer.components.SearchConfiguration",{
     layerSelectionWindow: null,
     requiredLayersOn: null,
     switchLayersOn: null,
-    constructor: function (parentId,configObject){
+    constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {};
         }
-        viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.form.add({
             xtype: 'checkbox',
             boxLabel: 'Toon knop voor het verwijderen van marker',
@@ -384,7 +384,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
             // Show the filterableCheckboxes component with all Solr configs
             this.solrSearchconfigs[searchconfigId] = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
-                requestUrl: contextPath+"/action/configuresolr?getSearchconfigData=true",
+                requestUrl: this.getContextpath() + "/action/configuresolr?getSearchconfigData=true",
                 parentContainer: solrConfigContainer,
                 titleField: 'name',
                 checked: checked,
@@ -463,16 +463,16 @@ Ext.define("viewer.components.SearchConfiguration",{
                 ]
             });
             me.requiredLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
-                requestUrl: contextPath+"/action/componentConfigLayerList",
+                requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
                 requestParams: {
-                    appId:applicationId
+                    appId: this.getApplicationId()
                 },
                 parentContainer: Ext.ComponentQuery.query('#requiredLayersOn')[0]
             });
             me.switchLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
-                requestUrl: contextPath+"/action/componentConfigLayerList",
+                requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
                 requestParams: {
-                    appId:applicationId
+                    appId: this.getApplicationId()
                 },
                 parentContainer: Ext.ComponentQuery.query('#switchLayersOn')[0],
                 checked: (searchConfig && searchConfig.hasOwnProperty('switchOnLayers')) ? searchConfig.switchOnLayers : []
@@ -571,5 +571,13 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
         }
         return null;
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 400,
+                minHeight: 400
+            }
+        };
     }
 });

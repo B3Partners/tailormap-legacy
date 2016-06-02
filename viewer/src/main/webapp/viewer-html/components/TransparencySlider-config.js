@@ -19,20 +19,15 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     filterableCheckboxes:null,
-    constructor: function (parentid,config){
+    constructor: function (parentId, configObject, configPage) {
         var sliders = [];
         var title = "";
-        if(config != null) {
-            if(config.sliders != null) sliders = config.sliders;
-            if(config.title != null) title = config.title;
-            
-            if(config.layers != null) {
-                transparencySlider_layersArrayIndexesToAppLayerIds(config);
-            }
-        }else{
-            config={};
+        if(configObject.sliders != null) sliders = configObject.sliders;
+        if(configObject.title != null) title = configObject.title;
+        if(configObject.layers != null) {
+            transparencySlider_layersArrayIndexesToAppLayerIds(configObject);
         }
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.container = Ext.create('Ext.container.Container', {
             width: 765,
             height: 490,
@@ -57,7 +52,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     xtype: 'checkbox',
                     name: 'sliderForUserAdded',
                     id: 'sliderForUserAdded',
-                    checked: config.sliderForUserAdded,
+                    checked: this.configObject.sliderForUserAdded,
                     inputValue: true,
                     boxLabel: 'Voeg slider toe voor door gebruiker toegevoegde kaarten',                    
                     listeners:{
@@ -85,31 +80,31 @@ Ext.define("viewer.components.CustomConfiguration",{
                     style:{
                         marginLeft: "100px"
                     },
-                    disabled: config.sliderForUserAdded ? !config.sliderForUserAdded : true,
+                    disabled: this.configObject.sliderForUserAdded ? !this.configObject.sliderForUserAdded : true,
                     fieldLabel: 'Slidernaam',
                     name: 'sliderForUserAddedText',
                     labelWidth: 70,
-                    value: config.sliderForUserAddedText ? config.sliderForUserAddedText: "Overige"
+                    value: this.configObject.sliderForUserAddedText ? this.configObject.sliderForUserAddedText: "Overige"
                 },{
                     xtype: 'textfield',
                     id: 'sliderForUserAddedInitTransparency',
                     style:{
                         marginLeft: "10px"
                     },
-                    disabled: config.sliderForUserAdded ? !config.sliderForUserAdded : true,
+                    disabled: this.configObject.sliderForUserAdded ? !this.configObject.sliderForUserAdded : true,
                     fieldLabel: 'Initiele transparantie (%)',
                     name: 'sliderForUserAddedInitTransparency',
                     labelWidth: 150,
-                    value: config.sliderForUserAddedInitTransparency ? config.sliderForUserAddedInitTransparency: 0
+                    value: this.configObject.sliderForUserAddedInitTransparency ? this.configObject.sliderForUserAddedInitTransparency: 0
                 }]
             }
             ],
-            renderTo: 'config'
+            renderTo: parentId
         });
         filterableCheckboxes = Ext.create('Ext.ux.b3p.SelectionGrid', {
-            requestUrl: contextPath+"/action/componentConfigLayerList",
+            requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
             requestParams: {
-                appId:applicationId
+                appId: this.getApplicationId()
             },
             renderTo: 'selectionGridContainer',
             sliders: sliders

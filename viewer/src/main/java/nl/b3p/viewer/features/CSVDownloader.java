@@ -50,7 +50,9 @@ public class CSVDownloader extends FeatureDownloader{
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
                 String alias = attributeAliases.get(configuredAttribute.getAttributeName());
-                header.add(alias);
+                if(alias != null){
+                    header.add(alias);
+                }
             }
         }
         writeRow(header);
@@ -60,7 +62,7 @@ public class CSVDownloader extends FeatureDownloader{
     public void processFeature(SimpleFeature oldFeature) {
         List<String> row = new ArrayList<String>();
         for (ConfiguredAttribute configuredAttribute : attributes) {
-            if(configuredAttribute.isVisible()){
+            if(configuredAttribute.isVisible() && attributeAliases.get(configuredAttribute.getAttributeName()) != null){
                 Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
                 String value = null;
                 if(attribute != null){
@@ -81,7 +83,9 @@ public class CSVDownloader extends FeatureDownloader{
     private void writeRow(List<String> row){
         String completeString = "";
         for (String col : row) {
-            completeString += col;
+            if(col != null){
+                completeString += col;
+            }
             completeString +=  separator;
         }
         completeString = completeString.substring(0, completeString.length() - 1);

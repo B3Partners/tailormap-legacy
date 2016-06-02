@@ -52,6 +52,9 @@ Ext.define("viewer.DirectFeatureService", {
                 }
             }
         });
+    },
+    getCount : function(appLayer, successFunction, failureFunction,filter,scope){
+        successFunction(16);
     }
 });
 
@@ -146,5 +149,8 @@ Ext.define("viewer.AppLayerService", {
                 failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
             }
         }
+    },
+    getCount : function(appLayer, successFunction, failureFunction,filter,scope){
+        successFunction(16);
     }
 });

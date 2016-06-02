@@ -29,6 +29,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             y: 100,
             width : 400,
             height: 600,
+            minWidth: null,
+            minHeight: null,
             changeablePosition:true,
             changeableSize:true,
             items:null,
@@ -39,7 +41,6 @@ Ext.define ("viewer.components.ScreenPopup",{
     component: null,
     currentOrientation: null,
     constructor: function (conf){
-        var me = this;
         this.initConfig(conf);
 
         var config = {
@@ -49,12 +50,13 @@ Ext.define ("viewer.components.ScreenPopup",{
             hideMode: 'offsets',
             width: ("" + this.config.details.width).indexOf('%') !== -1 ? this.config.details.width : parseInt(this.config.details.width),
             height: ("" + this.config.details.height).indexOf('%') !== -1 ? this.config.details.height : parseInt(this.config.details.height),
-            resizable: "true" === ""+this.config.details.changeableSize,
-            draggable: "true" === ""+this.config.details.changeablePosition,
+            resizable: this.parseBooleanValue(this.config.details.changeableSize),
+            draggable: this.parseBooleanValue(this.config.details.changeablePosition),
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
-            autoScroll: true
+            autoScroll: true,
+            constrainHeader: true
         };
         
         if(MobileManager.isMobile()) {
@@ -65,12 +67,26 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.resizable = false;
             this.currentOrientation = MobileManager.getOrientation();
         }
-		
+
+        if(this.config.details.minWidth) {
+            config.minWidth = this.config.details.minWidth;
+            if(!conf.details.width) {
+                config.width = this.config.details.minWidth;
+            }
+        }
+        if(this.config.details.minHeight) {
+            config.minHeight = this.config.details.minHeight;
+            if(!conf.details.height) {
+                config.height = this.config.details.minHeight;
+            }
+        }
+
+        config.bodyStyle = {};
         if(this.config.details && this.config.details.items){
             config.items = this.config.details.items;
-            config.bodyStyle= { background: '#fff'};
+            config.bodyStyle.background = '#fff';
         }else if(this.config.details && this.config.details.useExtLayout) {
-            config.bodyStyle= { background: '#fff'};
+            config.bodyStyle.background = '#fff';
         } else {
             var con = document.createElement('div');
             con.style.height = "100%";
@@ -92,11 +108,17 @@ Ext.define ("viewer.components.ScreenPopup",{
         if(config.resizable) {
             config.resizable = {
                 listeners: {
-                    'beforeresize': function() {
-                        me.disableBody();
+                    'beforeresize': {
+                        fn: function() {
+                            this.disableBody();
+                        },
+                        scope: this
                     },
-                    'resize': function() {
-                        me.enableBody();
+                    'resize': {
+                        fn: function() {
+                            this.enableBody();
+                        },
+                        scope: this
                     }
                 }
             };
@@ -110,40 +132,40 @@ Ext.define ("viewer.components.ScreenPopup",{
         var positionChanged = false;
         if(config.draggable){
             this.popupWin.addListener("dragstart", function() {
-                me.disableBody();
-            });
+                this.disableBody();
+            }, this);
             this.popupWin.addListener("dragend", function() {
-                me.enableBody();
+                this.enableBody();
                 positionChanged = true;
-            });
+            }, this);
         }
         this.popupWin.addListener('hide', function() {
-            if(me.component) {
-                me.component.setButtonState('normal', true);
+            if(this.component) {
+                this.component.setButtonState('normal', true);
             }
-            me.enableBody();
-        });
+            this.enableBody();
+        }, this);
         this.popupWin.addListener('show', function() {
             if (conf.viewerController) {
-                conf.viewerController.registerPopupShow(me.popupWin);
+                conf.viewerController.registerPopupShow(this.popupWin);
             }
-            if(me.component) {
-                me.component.setButtonState('click', true);
+            if(this.component) {
+                this.component.setButtonState('click', true);
             }
             if(MobileManager.isMobile()) {
-                if(MobileManager.getOrientation() !== me.currentOrientation) {
-                    me.currentOrientation = MobileManager.getOrientation();
-                    setTimeout(function() { me.component.resizeScreenComponent() }, 0);
+                if(MobileManager.getOrientation() !== this.currentOrientation) {
+                    this.currentOrientation = MobileManager.getOrientation();
+                    setTimeout(function() { this.component.resizeScreenComponent() }, 0);
                 }
-                me.popupWin.mon(Ext.getBody(), 'click', function(el, e){
-                    me.popupWin.close();
-                }, me, { delegate: '.x-mask' });
-            } else if(me.config.details.position === 'fixed' && !positionChanged) {
+                this.popupWin.mon(Ext.getBody(), 'click', function(el, e){
+                    this.popupWin.close();
+                }, this, { delegate: '.x-mask' });
+            } else if(this.config.details.position === 'fixed' && !positionChanged) {
                 // Align popupWindow
-                var pos = [parseInt(me.config.details.x), parseInt(me.config.details.y)];
+                var pos = [parseInt(this.config.details.x), parseInt(this.config.details.y)];
                 var alignment = 'tl';
-                if(me.config.details.alignposition) {
-                    alignment = me.config.details.alignposition;
+                if(this.config.details.alignposition) {
+                    alignment = this.config.details.alignposition;
                 }
                 if(alignment.substr(0, 1) === 'b') {
                     pos[1] = pos[1] * -1;
@@ -151,10 +173,16 @@ Ext.define ("viewer.components.ScreenPopup",{
                 if(alignment.substr(1) === 'r') {
                     pos[0] = pos[0] * -1;
                 }
-                me.popupWin.alignTo(Ext.get('wrapper'), [alignment, alignment].join('-'), pos);
+                this.popupWin.alignTo(Ext.get('wrapper'), [alignment, alignment].join('-'), pos);
             }
-        });
+        }, this);
         return this;
+    },
+    parseBooleanValue: function(val) {
+        if (val === true || val === false) {
+            return val;
+        }
+        return ("true" === val);
     },
     setComponent: function(component) {
         this.component = component;

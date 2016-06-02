@@ -154,11 +154,11 @@ Ext.onReady(function() {
                         maxHeight: 400,
                         value: Ext.get('context_textarea').dom.value,
                         plugins: [
-                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
                                 submitUrl: actionBeans['imageupload'],
                                 managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
                             })),
-                            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                            new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
                         ],
                         renderTo: 'contextHtmlEditorContainer'
                     });

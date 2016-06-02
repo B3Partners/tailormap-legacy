@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
 
 
-    <stripes:layout-component name="body">
+    <stripes:layout-component name="body"><%--@elvariable id="actionBean" type="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean"--%>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="configForm" style="width: 100%; height: 100%;">
             <input type="hidden" name="component" value="${actionBean.component.id}"/>
             <stripes:hidden name="className" value="${actionBean.className}"/>
@@ -58,39 +58,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
             </div>
         </stripes:form>
-        <script>
-            var applicationId= ${actionBean.application.id};
-            var className = "${actionBean.className}";
-            var name = "${actionBean.name}";
-            var currentRegion = "${param.currentRegion}";
-            var metadata = new Object();
-            <c:if test="${!empty actionBean.metadata}">
-                metadata = ${actionBean.metadata};
-                var className = metadata.className;
-            </c:if>
-            Ext.get('compHelpLink').set({
-               href: '#' + className.replace(/\./g, '_') + '_Help'
-            });
-            var contextPath = "${contextPath}";
-            var configObject = null;
-            var details = null;
-            var appConfig = {};
-			<c:if test="${!empty actionBean.appConfigJSON}">
-				appConfig = ${actionBean.appConfigJSON};
-			</c:if>
-            <c:if test="${!empty actionBean.component.config}">
-                configObject= Ext.JSON.decode(<js:quote>${actionBean.component.config}</js:quote>);
-                details = Ext.JSON.decode(<js:quote>${actionBean.details}</js:quote>);
-            </c:if>
-                
-            var actionBeans = { 
-                "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
-            };        
-        </script>          
         <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">
             <stripes:param name="className" value="${actionBean.className}"/> 
         </stripes:url>
-        
         <c:if test="${actionBean.loadCustomConfig}">
             <script type="text/javascript" src="${configSource}"></script>
         </c:if>
@@ -100,5 +70,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/SelectionGrid.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/ColorField.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                var metadata = {};
+                var className = "${actionBean.className}";
+                <c:if test="${!empty actionBean.metadata}">
+                    metadata = ${actionBean.metadata};
+                    className = metadata.className;
+                </c:if>
+
+                var appConfig = {};
+                <c:if test="${!empty actionBean.appConfigJSON}">
+                    appConfig = ${actionBean.appConfigJSON};
+                </c:if>
+
+                var configObject = {};
+                var details = {};
+                <c:if test="${!empty actionBean.component.config}">
+                    configObject= Ext.JSON.decode(<js:quote>${actionBean.component.config}</js:quote>);
+                    details = Ext.JSON.decode(<js:quote>${actionBean.details}</js:quote>);
+                </c:if>
+
+                Ext.create("vieweradmin.components.ConfigPage", {
+                    applicationId: ${actionBean.application.id},
+                    className : className,
+                    name : "${actionBean.name}",
+                    currentRegion : "${param.currentRegion}",
+                    metadata : metadata,
+                    contextPath: "${contextPath}",
+                    configObject: configObject,
+                    details: details,
+                    appConfig: appConfig,
+                    actionBeans: {
+                        "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+                    }
+                });
+            });
+        </script>
     </stripes:layout-component>
 </stripes:layout-render>

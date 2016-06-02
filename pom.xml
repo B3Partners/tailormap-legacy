@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.6.2-SNAPSHOT</version>
+    <version>4.7.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -37,12 +37,12 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>4.6.2-SNAPSHOT</flamingo.version>
+        <flamingo.version>4.7.1-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.7</project.build.sourceVersion>
         <project.build.targetVersion>1.7</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>14.2</geotools.version>
+        <geotools.version>14.3</geotools.version>
         <powermock.version>1.5.5</powermock.version>
         <hsqldb.version>2.3.3</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -55,7 +55,7 @@
         <!--
             To check for plugin updates use the following command:
             mvn -U org.codehaus.mojo:versions-maven-plugin:2.2:display-dependency-updates
-            and check the output for anay available updates
+            and check the output for any available updates
         -->
         <dependencies>
             <!-- viewer-->
@@ -68,11 +68,6 @@
                 <groupId>jdom</groupId>
                 <artifactId>jdom</artifactId>
                 <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.vividsolutions</groupId>
-                <artifactId>jts</artifactId>
-                <version>1.13</version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -338,6 +333,16 @@
                 <artifactId>gt-metadata</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-referencing</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-api</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
 
             <!-- viewer-admin-->
 
@@ -448,7 +453,7 @@
                 <!--
                     To check for plugin updates use the following command:
                     mvn -U org.codehaus.mojo:versions-maven-plugin:2.2:display-plugin-updates
-                    and check the output for anay available updates
+                    and check the output for any available updates
                 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -463,7 +468,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -478,7 +483,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5</version>
+                    <version>3.5.1</version>
                     <configuration>
                         <source>${project.build.sourceVersion}</source>
                         <target>${project.build.targetVersion}</target>
@@ -517,7 +522,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.0</version>
+                    <version>2.2.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -527,7 +532,7 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <version>2.0</version>
+                    <version>2.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -542,7 +547,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.4</version>
+                    <version>3.5.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>

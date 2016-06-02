@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2011-2013 B3Partners B.V.
+Copyright (C) 2011-2016 B3Partners B.V.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,17 +26,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
             <script type="text/javascript">
+                (function() {
                     var frameParent = getParent();
-                <c:if test="${actionBean.context.eventName == 'deleteApplication'}">
-                    if(frameParent && frameParent.reloadGrid) {
-                        frameParent.reloadGrid();
-                    }   
-                </c:if>
-                <c:if test="${empty sessionScope['applicationId']}">
-                    if(frameParent && frameParent.removeActiveAppMenu) {
-                        frameParent.removeActiveAppMenu();
+                    <c:if test="${actionBean.context.eventName == 'deleteApplication'}">
+                    if(frameParent && frameParent.vieweradmin_components_ChooseApplication) {
+                        frameParent.vieweradmin_components_ChooseApplication.reloadGrid();
                     }
-                </c:if>
+                    </c:if>
+                    <c:if test="${empty sessionScope['applicationId']}">
+                    if(frameParent && frameParent.vieweradmin_components_ChooseApplication) {
+                        frameParent.vieweradmin_components_ChooseApplication.removeActiveAppMenu();
+                    }
+                    </c:if>
+                })();
             </script>
 
     </stripes:layout-component>

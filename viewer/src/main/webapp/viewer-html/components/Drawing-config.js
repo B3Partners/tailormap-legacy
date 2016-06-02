@@ -21,12 +21,12 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
-    constructor: function (parentId,configObject){
+    constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {};
         }
         configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.form.add({ 
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur',
@@ -34,6 +34,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.color,
                 labelWidth:this.labelWidth
             });
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 340,
+                minHeight: 415
+            }
+        };
     }
 });
 

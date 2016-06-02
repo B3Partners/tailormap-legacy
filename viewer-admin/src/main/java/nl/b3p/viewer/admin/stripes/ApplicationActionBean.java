@@ -16,11 +16,13 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
@@ -48,6 +50,11 @@ public abstract class ApplicationActionBean implements ActionBean {
     @Session(key = "applicationName")
     private String applicationName;
 
+
+    protected List<Group> allGroups;
+
+
+    // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public void setContext(ActionBeanContext abc) {
         this.context = abc;
     }
@@ -67,6 +74,15 @@ public abstract class ApplicationActionBean implements ActionBean {
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
     }
+
+    public List<Group> getAllGroups() {
+        return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
+    }
+    // </editor-fold>
     
     public void setApplication(Application application) {
         this.application = application;
@@ -84,10 +100,11 @@ public abstract class ApplicationActionBean implements ActionBean {
 
     @After(stages = {LifecycleStage.BindingAndValidation})
     public void initApplication() {
-        if(applicationId != null && applicationId != -1L ){
             EntityManager em = Stripersist.getEntityManager();
+        if(applicationId != null && applicationId != -1L ){
             application = em.find(Application.class, applicationId);
             setApplication(application);
         }
+        allGroups = em.createQuery("from Group").getResultList();
     }
 }

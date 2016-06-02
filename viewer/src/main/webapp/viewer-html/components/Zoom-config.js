@@ -20,8 +20,8 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+    constructor: function (parentId, configObject, configPage) {
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         var me = this;
         
         var alignmentStore = Ext.create('Ext.data.ArrayStore', {
@@ -55,28 +55,28 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Top/bottom positie',
                 name: 'top',
-                value: (config != null && config.top != undefined) ? config.top : '10',
+                value: (this.configObject != null && this.configObject.top != undefined) ? this.configObject.top : '10',
                 labelWidth:me.labelWidth
             },
             {
                 xtype: 'textfield',
                 fieldLabel: 'Linker/rechter positie',
                 name: 'left',
-                value: (config != null && config.left != undefined) ? config.left : '10',
+                value: (this.configObject != null && this.configObject.left != undefined) ? this.configObject.left : '10',
                 labelWidth:me.labelWidth
             },
             { 
                 xtype: 'combobox',
                 fieldLabel: 'Uitlijning',
                 name: 'alignposition',
-                value: (config != null && config.alignposition != undefined) ? config.alignposition : 'tl',
+                value: (this.configObject != null && this.configObject.alignposition != undefined) ? this.configObject.alignposition : 'tl',
                 labelWidth: me.labelWidth,
                 store: alignmentStore,
                 displayField: 'name',
                 valueField: 'value',
                 queryMode: 'local'
             }],
-            renderTo: parentid
+            renderTo: parentId
         });
         return this;
     },

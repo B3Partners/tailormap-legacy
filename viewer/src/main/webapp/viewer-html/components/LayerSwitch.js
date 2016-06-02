@@ -25,7 +25,6 @@
  */
 Ext.define ("viewer.components.LayerSwitch",{
     extend: "viewer.components.Component",
-    container: null,
     
     items: null,
     selectedBackgroundLevels: null,
@@ -40,8 +39,8 @@ Ext.define ("viewer.components.LayerSwitch",{
     constructor: function (conf){
         conf.top = conf.top === undefined ? 5 : conf.top;
         conf.left = conf.left === undefined ? 5 : conf.left;
-        viewer.components.LayerSwitch.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.LayerSwitch.superclass.constructor.call(this, this.config);
         this.loadComponent();
         
         this.config.viewerController.on(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function() {

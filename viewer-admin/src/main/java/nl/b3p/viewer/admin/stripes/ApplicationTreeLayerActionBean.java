@@ -45,7 +45,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLayer.jsp";
     @Validate
     private ApplicationLayer applicationLayer;
-    private List<Group> allGroups;
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
     @Validate
@@ -122,7 +121,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 style.put("id", "wms:" + wmsStyle.getString("name"));
                 style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : "") );
                 JSONObject styleTitleJson = new JSONObject();
-                styleTitleJson.put("styleTitle", wmsStyle.getString("title"));
+                styleTitleJson.put("styleTitle", wmsStyle.has("title") ? wmsStyle.getString("title") :wmsStyle.getString("name") );
                 styles.add(style);
                 stylesTitleJson.put((String)style.get("id"), styleTitleJson);
             }
@@ -362,12 +361,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
-    @Before(stages = LifecycleStage.BindingAndValidation)
-    @SuppressWarnings("unchecked")
-    public void load() {
-        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
-    }
-
     public Resolution save() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
         // Only remove details which are editable and re-added layer if not empty,
@@ -380,6 +373,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "influenceradius",
                 "summary.title",
                 "summary.image",
+                "summary.texteditor",
                 "summary.description",
                 "summary.link",
                 "editfunction.title",
@@ -508,14 +502,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setApplicationLayer(ApplicationLayer applicationLayer) {
         this.applicationLayer = applicationLayer;
-    }
-
-    public List<Group> getAllGroups() {
-        return allGroups;
-    }
-
-    public void setAllGroups(List<Group> allGroups) {
-        this.allGroups = allGroups;
     }
 
     public Map<String, String> getDetails() {

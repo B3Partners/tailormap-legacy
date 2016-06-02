@@ -20,12 +20,9 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        if (configObject === null){
-            configObject = {};
-        }
+    constructor: function (parentId, configObject, configPage) {
         configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
 
         this.form.add({
             xtype: 'combobox',
@@ -79,7 +76,24 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth
         });
 
+        this.form.add({
+            xtype: 'checkbox',
+            fieldLabel: 'Lagen als tabbladen tonen',
+            inputValue: 'true',
+            name: 'showLayerSelectorTabs',
+            checked: this.configObject.showLayerSelectorTabs || false,
+            labelWidth: this.labelWidth
+        });
+
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 600,
+                minHeight: 300
+            }
+        }
     }
 });
 

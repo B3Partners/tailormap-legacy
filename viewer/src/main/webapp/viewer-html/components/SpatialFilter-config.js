@@ -20,12 +20,9 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,config){
-        if (config === null){
-            config = {};
-        }
-        config.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,config);        
+    constructor: function (parentId, configObject, configPage) {
+        configObject.showLabelconfig =true;
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
         this.createCheckBoxes(this.configObject.layers,{filterable: true});
         var me = this;
         this.form.add([{
@@ -33,7 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Filter direct na tekenen aanzetten',
                 inputValue: true,
                 name: 'applyDirect',
-                checked: config.applyDirect!==undefined? config.applyDirect : true,
+                checked: this.configObject.applyDirect!==undefined? this.configObject.applyDirect : true,
                 //value: true,
                 labelWidth:me.labelWidth
             },
@@ -42,11 +39,19 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Meerdere geometrieën in één filter',
                 inputValue: true,
                 name: 'multiGeometries',
-                checked: config.multiGeometries!==undefined? config.multiGeometries : false,
+                checked: this.configObject.multiGeometries!==undefined? this.configObject.multiGeometries : false,
                 //value: false,
                 labelWidth:me.labelWidth
             }
             ]);
+    },
+    getDefaultValues: function() {
+        return {
+            details: {
+                minWidth: 330,
+                minHeight: 270
+            }
+        };
     }
 });
 

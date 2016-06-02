@@ -26,11 +26,13 @@ import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
+import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.JSONException;
@@ -48,6 +50,9 @@ public class ApplicationActionBean implements ActionBean {
 
     @Validate
     private String name;
+    
+    @Validate
+    private boolean unknown;
 
     @Validate
     private String version;
@@ -155,6 +160,14 @@ public class ApplicationActionBean implements ActionBean {
     public void setGlobalLayout(HashMap globalLayout) {
         this.globalLayout = globalLayout;
     }
+
+    public boolean isUnknown() {
+        return unknown;
+    }
+
+    public void setUnknown(boolean unknown) {
+        this.unknown = unknown;
+    }
     //</editor-fold>
 
     static Application findApplication(String name, String version) {
@@ -180,6 +193,10 @@ public class ApplicationActionBean implements ActionBean {
         Resolution view = view();
 
         EntityManager em = Stripersist.getEntityManager();
+        Resolution r = checkRestriction(context, application, em);
+        if (r != null) {
+            return r;
+        }
         SelectedContentCache cache = new SelectedContentCache();
         JSONObject sc = cache.createSelectedContent(application, false,false, false,em);
         application.getDetails().put("selected_content_cache", new ClobElement(sc.toString()));
@@ -189,6 +206,12 @@ public class ApplicationActionBean implements ActionBean {
 
      public Resolution retrieveCache() throws JSONException, IOException{
         Resolution view = view();
+
+        EntityManager em = Stripersist.getEntityManager();
+        Resolution r = checkRestriction(context, application, em);
+        if (r != null) {
+            return r;
+        }
         ClobElement el = application.getDetails().get("selected_content_cache");
         appConfigJSON = el.getValue();
         return view;
@@ -196,6 +219,9 @@ public class ApplicationActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution view() throws JSONException, IOException {
+        if(unknown){
+            getDefaultViewer();
+        }
         application = findApplication(name, version);
 
         if(application == null) {
@@ -216,6 +242,12 @@ public class ApplicationActionBean implements ActionBean {
             return login;
         }
 
+        EntityManager em = Stripersist.getEntityManager();
+        Resolution r = checkRestriction(context, application, em);
+        if(r != null){
+            return r;
+        }
+
         if(username != null) {
             user = new JSONObject();
             user.put("name", username);
@@ -228,7 +260,6 @@ public class ApplicationActionBean implements ActionBean {
 
         buildComponentSourceHTML();
 
-        EntityManager em = Stripersist.getEntityManager();
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
 
@@ -242,6 +273,23 @@ public class ApplicationActionBean implements ActionBean {
         }
         context.getResponse().addHeader("X-UA-Compatible", "IE=edge");
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
+    }
+
+    public static Resolution checkRestriction(ActionBeanContext context, Application application, EntityManager em){
+
+        String username = context.getRequest().getRemoteUser();
+        if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username == null) {
+            RedirectResolution login = new RedirectResolution(LoginActionBean.class)
+                    .addParameter("name", application.getName()) // binded parameters not included ?
+                    .addParameter("version", application.getVersion())
+                    .includeRequestParameters(true);
+            return login;
+        } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
+            context.getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
+            context.getRequest().getSession().invalidate();
+            return new ForwardResolution("/WEB-INF/jsp/error_retry.jsp");
+        }
+        return null;
     }
 
     /**
@@ -364,5 +412,20 @@ public class ApplicationActionBean implements ActionBean {
             }
         }
         return type;
+    }
+    
+    private void getDefaultViewer(){
+        EntityManager em = Stripersist.getEntityManager();
+        try {
+            Metadata md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            String appId = md.getConfigValue();
+            Long id = Long.parseLong(appId);
+            Application app = em.find(Application.class, id);
+            name = app.getName();
+            version = app.getVersion();
+        } catch (NoResultException e) {
+            name = "default";
+            version = null;
+        }
     }
 }

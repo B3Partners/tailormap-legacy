@@ -27,10 +27,10 @@ Ext.define("viewer.components.BrowserCheck", {
         title: "Browser controle"
     },
     constructor: function (conf){
-        viewer.components.BrowserCheck.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+		viewer.components.BrowserCheck.superclass.constructor.call(this, this.config);
         
-        this.unsupported = (Ext.isIE && Ext.ieVersion < 8)
+        this.unsupported = (Ext.isIE && Ext.ieVersion < 9)
             || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari));
         this.unsupported = MobileManager.isMobile() ? false : this.unsupported;
         

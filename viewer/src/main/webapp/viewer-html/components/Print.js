@@ -28,7 +28,6 @@ Ext.define ("viewer.components.Print",{
     printForm: null,
     vl:null,
     minQuality: 128,
-    minWidth: 550,
     combineImageService: null,
     legends:null,
     extraInfoCallbacks:null,
@@ -47,19 +46,20 @@ Ext.define ("viewer.components.Print",{
         overview:null,
         mailprint:null,
         fromAddress:null,
-        fromName:null
+        fromName:null,
+        details: {
+            minWidth: 550,
+            minHeight: 515
+        }
     },
     /**
      * @constructor
      * creating a print module.
      */
     constructor: function (conf){
-        //set minwidth:
-        if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth;
-        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true;
-
-        viewer.components.Print.superclass.constructor.call(this, conf);
+        if(!Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf = true;
         this.initConfig(conf);
+        viewer.components.Print.superclass.constructor.call(this, this.config);
         this.legends=[];
 
         this.combineImageService = Ext.create("viewer.CombineImage",{});

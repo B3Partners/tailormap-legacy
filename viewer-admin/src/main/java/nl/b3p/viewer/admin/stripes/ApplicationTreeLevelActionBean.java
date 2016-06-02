@@ -55,9 +55,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 @Validate(field="url", label="url")
     })
     private Level level;
-    
-    private List<Group> allGroups;
-    
+        
     private boolean layersAllowed;
     
     @Validate
@@ -114,13 +112,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         
         return new ForwardResolution(JSP);
     }
-    
-    @Before(stages=LifecycleStage.BindingAndValidation)
-    @SuppressWarnings("unchecked")
-    public void load() {
-        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
-    }
-    
+
     @DontValidate
     public Resolution saveName() throws JSONException {
         JSONObject json = new JSONObject();
@@ -183,7 +175,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             error = "Bovenste niveau kan niet worden verwijderd";
         } else if(level.getChildren().size() > 0) {
             error = "Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft.";
-        } else if(sl.getSelectedIndex() != null) {
+        } else if(sl != null && sl.getSelectedIndex() != null) {
             error = "Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen";
         } else if(level.getLayers().size() > 0) {
             error = "Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat.";
@@ -269,14 +261,6 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
-    public List<Group> getAllGroups() {
-        return allGroups;
-    }
-
-    public void setAllGroups(List<Group> allGroups) {
-        this.allGroups = allGroups;
-    }
-
     public List<String> getGroupsRead() {
         return groupsRead;
     }
