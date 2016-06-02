@@ -144,13 +144,16 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             contentEl:'context-tab',
             title: 'Context'
         });
-        tabconfig.push({
-            xtype: 'container',
-            width: '100%',
-            title: 'Volgorde Attributen',
-            layout: 'auto',
-            items: this.getAttributeOrderItems()
-        });
+
+        if(this.config.attributes.length !== 0) {
+            tabconfig.push({
+                xtype: 'container',
+                width: '100%',
+                title: 'Volgorde Attributen',
+                layout: 'auto',
+                items: this.getAttributeOrderItems()
+            });
+        }
 
         var tabpanel = Ext.create('Ext.tab.Panel', {
             title: "Bewerken kaartlaag",
@@ -1034,6 +1037,7 @@ hier niet op gecontroleerd.'
             data: [rootNode],
             defaultRootProperty: 'children'
         });
+        console.log(orderStore);
         var orderTree = Ext.create('Ext.tree.Panel', {
             store: orderStore,
             rootVisible: false,
@@ -1042,7 +1046,8 @@ hier niet op gecontroleerd.'
             frame: true,
             width: 325,
             height: 600,
-            autoScroll: true
+            autoScroll: true,
+            margin: 10
         });
         return [orderTree];
     },
