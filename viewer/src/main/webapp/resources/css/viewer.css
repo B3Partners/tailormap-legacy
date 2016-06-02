@@ -109,7 +109,11 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     border: 2px solid red;
 }
 
-.tristatenode .x-tree-checkbox:before {
+.tristatenode .x-tree-checkbox {
+    background-position: 0 -30px;
+}
+
+.theme-triton .tristatenode .x-tree-checkbox:before {
     content: "\f0c8";
 }
 
@@ -222,14 +226,14 @@ body > .legend {
     background-image: none;
     background-color: #f5f5f5;
 }
-/*
-.x-tree-checkbox {
+
+.theme-crisp .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/crisp/checkbox.png);
 }
-.x-btn-wrap-default-small.x-btn-split-right:after {
+.theme-crisp .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
-*/
+
 /*/ makes (editable) field labels overflow into ellipsis*/
 .x-form-item-label-inner {
     overflow: hidden;
@@ -253,18 +257,17 @@ body > .legend {
 .mobile-mode, .mobile-mode * {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-/*
-.mobile-mode .tristatenode .x-tree-checkbox {
+
+.theme-crisp-touch .tristatenode .x-tree-checkbox {
     background-position: 0 -44px;
-}*/
-/* ExtJS override images
-.mobile-mode .x-tree-checkbox {
+}
+/* ExtJS override images */
+.theme-crisp-touch .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/touch-crisp/checkbox.png);
 }
-.mobile-mode .x-btn-wrap-default-small.x-btn-split-right:after {
+.theme-crisp-touch .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
 }
-*/
 .x-grid-item-container {
     overflow: visible;
 }

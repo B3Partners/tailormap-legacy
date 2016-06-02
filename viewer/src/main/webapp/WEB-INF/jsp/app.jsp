@@ -47,21 +47,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     getOrientation: function() { return (ios ? ( window.orientation == 90 || window.orientation == -90 ) : ( screen.width > screen.height )) ? 'landscape' : 'portrait'; }
                 };
             }();
-                    if(!MobileManager.isMobile()) {
-                            document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/' + FLAMINGO_EXT_THEME + '/theme-' + FLAMINGO_EXT_THEME + '-all.css">');
-                    } else {
-                            // IOS7 on iPad has an issue with height of the html/body
-                            // http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
-                            // To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
-                            if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i) && !window.navigator.standalone) {
-                                document.documentElement.className += ' ipad ios7';
-                                document.ontouchmove = function(event){
-                                    event.preventDefault();
-                                };
-                            }
-                            document.documentElement.className += ' mobile-mode';
-                            document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/' + FLAMINGO_EXT_MOBILE_THEME + '/theme-' + FLAMINGO_EXT_MOBILE_THEME + '-all.css">');
-                    }
+            if(!MobileManager.isMobile()) {
+                document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/' + FLAMINGO_EXT_THEME + '/theme-' + FLAMINGO_EXT_THEME + '-all.css">');
+                document.documentElement.className += " theme-" + FLAMINGO_EXT_THEME;
+            } else {
+                // IOS7 on iPad has an issue with height of the html/body
+                // http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
+                // To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
+                if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i) && !window.navigator.standalone) {
+                    document.documentElement.className += ' ipad ios7';
+                    document.ontouchmove = function(event){
+                        event.preventDefault();
+                    };
+                }
+                document.documentElement.className += ' mobile-mode theme-' + FLAMINGO_EXT_MOBILE_THEME;
+                document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/' + FLAMINGO_EXT_MOBILE_THEME + '/theme-' + FLAMINGO_EXT_MOBILE_THEME + '-all.css">');
+            }
 		</script>
 
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
@@ -75,7 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="${contextPath}/viewer-html/components/resources/css/attributeList.css" rel="stylesheet">
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
-        <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>
+        <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
 
         <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
 
