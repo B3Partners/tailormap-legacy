@@ -114,125 +114,87 @@ Ext.define("viewer.components.sf.TextlabelConfig", {
 
 Ext.define("viewer.components.sf.CheckboxConfig", {
     extend: "viewer.components.sf.Config",
-    constructor: function(config) {
+    constructor: function(config, setDefaultValue) {
+        this.setDefaultValue = typeof setDefaultValue !== "undefined" ? setDefaultValue : true;
+        this.createStore(config);
         viewer.components.sf.CheckboxConfig.superclass.constructor.call(this, config);
+    },
+    createStore: function(config) {
+        var fields = [
+            { name: 'id', type: 'string' },
+            { name: 'label', type: 'string' },
+            { name: 'value', type: 'string' }
+        ];
+        if(this.setDefaultValue) {
+            fields.push({ name: 'defaultVal', type: 'boolean', defaultValue: false });
+        }
+        this.store = Ext.create('Ext.data.Store', {
+            fields: fields,
+            data: []
+        });
         if(config.configObject.options){
             for (var i = 0 ; i < config.configObject.options.length ; i++){
-                var option = config.configObject.options[i];
-                this.addOption(option);
+                this.addOption(config.configObject.options[i]);
             }
         }
+    },
+    addOption: function(option) {
+        if(!option) {
+            option = { id: Ext.id() };
+        }
+        this.store.add(option);
     },
     getFormItems : function(){
         var items = this.callParent();
-        items = items.concat([
-        {
-            name: "addOption",
-            xtype: "button",
-            id: "addOption",
-            text: "Voeg optie toe",
-            listeners: {
-                click: {
-                    fn: function () {
-                        this.addOption();
-                    },
-                    scope: this
+        var columns = [
+            { text: 'Label', dataIndex: 'label', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
+            { text: 'Waarde', dataIndex: 'value', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
+            { xtype: 'actioncolumn', menuDisabled: true, sortable: false, width: 30, items: [{
+                icon: false,
+                iconCls: 'removebutton-icon',
+                tooltip: 'Verwijder',
+                handler: function (grid, rowIndex, colIndex) {
+                    grid.getStore().removeAt(rowIndex);
                 }
-            }
-        },
-        {
-            xtype: "panel",
-            border: 0,
-            id: "optionsPanel",
-            items : []
+            }]}
+        ];
+        if(this.setDefaultValue) {
+            columns.splice(2, 0, { text: 'Standaard', dataIndex: 'defaultVal', xtype: 'checkcolumn', tooltip: 'Standaard aan/uit', width: 80, menuDisabled: true, sortable: false });
         }
-        ]);
-        return items;
-    },
-    addOption: function(entry){
-        if (!entry){
-            entry = {
-                id : Ext.id()
-            };
-        }
-        var panel = Ext.getCmp("optionsPanel");
-        var items = [{
-            name: "label" + entry.id,
-            flex:1,
-            id: "label" + entry.id,
-            value: entry.label
-        },
-        {
-            name: "value" + entry.id,
-            id: "value"+ entry.id,
-            flex:1,
-            value: entry.value
-        },
-        {
-            xtype: "button",
-            id: "remove" + entry.id,
-            name: "remove" + entry.id,
-            text: "X",
-            width: 25,
-            flex:0,
-            listeners:{
-                click:{
-                    scope:this,
-                    fn:function (button) {
-                        var id = button.getId().substring("remove".length);
-                        this.removeOption(id);
-                    }
-                }
-            }
-        }];
-        if (panel.items.length=== 0) {
-            var header = Ext.create("Ext.container.Container", {
-                layout: {
-                    type: 'hbox'
-                },
-                border: 0,
-                defaults: {
-                    flex: 1
-                },
-                defaultType: "textfield",
-                items:  [
-                    {
-                        xtype: 'label',
-                        forId: 'label' + entry.id,
-                        text: 'Label'
-                    },
-                    {
-                        xtype: 'label',
-                        forId: 'value' + entry.id,
-                        text: 'Waarde'
-                    },
-                    {
-                        xtype: 'label',
-                        forId: 'remove' + entry.id,
-                        text: 'Verwijder'
-                    }
-                ]
-            });
-            panel.add(header);
-        }
-        var item = Ext.create("Ext.container.Container", {
-            id: "optionContainer" + entry.id,
-            layout: {
-                type: 'hbox'
+        var grid = Ext.create("Ext.grid.Panel", {
+            store: this.store,
+            selModel: 'cellmodel',
+            plugins: {
+                ptype: 'cellediting',
+                clicksToEdit: 1,
+                pluginId: 'celleditor'
             },
-            border: 0,
-            defaults: {
-                flex: 1
-            },
-            defaultType: "textfield",
-            items: items
+            columns: columns,
+            height: 130,
+            width: 315
         });
-        panel.add(item);
-    },
-    removeOption : function(id){
-        var panel = Ext.getCmp("optionsPanel");
-        var container = Ext.getCmp("optionContainer" + id);
-        panel.remove(container);
+        items.push(
+            {
+                name: "addOption",
+                xtype: "button",
+                id: "addOption",
+                text: "Voeg optie toe",
+                listeners: {
+                    click: {
+                        fn: function () {
+                            this.addOption(null);
+                            grid.getPlugin('celleditor').startEditByPosition({
+                                row: this.store.count() - 1,
+                                column: 0
+                            });
+                        },
+                        scope: this
+                    }
+                }
+            },
+            grid
+        );
+        return items;
     },
     getTitle : function (){
         return "Vinkvak";
@@ -248,18 +210,17 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             start: parentConfig.start
         };
         var options = [];
-        var panel = Ext.getCmp("optionsPanel");
-        for(var i = 1 ; i < panel.items.items.length ; i++){
-            var item = panel.items.items[i];
-            var data =item.items.items;
-            var id = data[0].getId().substring(5);
+        this.store.each(function(record) {
             var option = {
-                label: data[0].getValue(),
-                value: data[1].getValue(),
-                id: id
+                label: record.get("label"),
+                value: record.get("value"),
+                id: record.get("id")
             };
+            if(this.setDefaultValue) {
+                option.defaultVal = record.get("defaultVal");
+            }
             options.push(option);
-        }
+        }, this);
         config.options = options;
         return config;
     }
@@ -267,9 +228,8 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
 
 Ext.define("viewer.components.sf.RadioConfig", {
     extend: "viewer.components.sf.CheckboxConfig",
-    constructor : function (config){
-        viewer.components.sf.RadioConfig.superclass.constructor.call(this, config);
-
+    constructor : function (config) {
+        viewer.components.sf.RadioConfig.superclass.constructor.call(this, config, /*setDefaultValue=*/false);
     },
     getTitle : function(){
         return "Keuzerondje";
@@ -551,6 +511,77 @@ Ext.define("viewer.components.sf.SliderConfig", {
     },
     getTitle : function(){
         return "Slider";
+    }
+
+});
+
+Ext.define("viewer.components.sf.NumberrangeConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor: function(config) {
+        viewer.components.sf.NumberrangeConfig.superclass.constructor.call(this, config);
+    },
+    getFormItems : function(){
+        var items = this.callParent();
+        items = items.concat([{
+            fieldLabel: "Minimale waarde",
+            name: "min",
+            qtip: "Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt",
+            value: this.configObject.min ? this.configObject.min : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        }, {
+            fieldLabel: "Maximale waarde",
+            name: "max",
+            value: this.configObject.max ? this.configObject.max : "",
+            qtip: "Indien geen waarde ingevuld wordt grootste attribuutwaarde uit de attribuutlijst gebruikt",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        },{
+            fieldLabel: "Label min. waarde",
+            name: "fieldLabelMin",
+            qtip: "Label dat achter het minimale waarde veld komt",
+            value: this.configObject.fieldLabelMin ? this.configObject.fieldLabelMin : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        },{
+            fieldLabel: "Label max. waarde",
+            name: "fieldLabelMax",
+            qtip: "Label dat achter het maximale waarde veld komt",
+            value: this.configObject.fieldLabelMax ? this.configObject.fieldLabelMax : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        }]);
+        return items;
+    },
+    getDefaultStartValue : function (){
+        return "";
+    },
+    getTitle : function(){
+        return "Getalrange";
     }
 
 });

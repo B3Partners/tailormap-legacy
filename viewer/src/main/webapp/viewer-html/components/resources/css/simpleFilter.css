@@ -26,3 +26,18 @@
 .simple-filter-inner > table {
     width: 100%;
 }
+
+.simple-filter-field-label {
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.simple-filter-field-label > div {
+    display: inline-block;
+}
+
+.simple-filter-field-label .label {
+    padding: 5px 0 0 5px;
+    vertical-align: top;
+    line-height: 1em;
+}
