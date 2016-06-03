@@ -59,13 +59,13 @@ Ext.define ("viewer.components.ScreenPopup",{
             constrainHeader: true
         };
         
-        if(MobileManager.isMobile()) {
+        if(viewer.components.MobileManager.isMobile()) {
             config.modal = true;
             config.width = '90%';
             config.height = '90%';
             config.draggable = false;
             config.resizable = false;
-            this.currentOrientation = MobileManager.getOrientation();
+            this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
 
         if(this.config.details.minWidth) {
@@ -152,9 +152,9 @@ Ext.define ("viewer.components.ScreenPopup",{
             if(this.component) {
                 this.component.setButtonState('click', true);
             }
-            if(MobileManager.isMobile()) {
-                if(MobileManager.getOrientation() !== this.currentOrientation) {
-                    this.currentOrientation = MobileManager.getOrientation();
+            if(viewer.components.MobileManager.isMobile()) {
+                if(viewer.components.MobileManager.getOrientation() !== this.currentOrientation) {
+                    this.currentOrientation = viewer.components.MobileManager.getOrientation();
                     setTimeout(function() { this.component.resizeScreenComponent() }, 0);
                 }
                 this.popupWin.mon(Ext.getBody(), 'click', function(el, e){
@@ -212,7 +212,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         return this.popupWin.isVisible();
     },
     resizePopup: function() {
-        if(MobileManager.isMobile() && this.isVisible()) {
+        if(viewer.components.MobileManager.isMobile() && this.isVisible()) {
     		// Set size in pixels to 90%/90% of the viewportwidth / height
     		this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
 			// Reset position so popup remains centered
@@ -220,7 +220,7 @@ Ext.define ("viewer.components.ScreenPopup",{
     		// doLayout on the window
             this.popupWin.updateLayout();
 			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
-			this.currentOrientation = MobileManager.getOrientation();
+			this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
     },
     setWindowTitle : function(title){

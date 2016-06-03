@@ -565,7 +565,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                         marginRight: '5px'
                                     }
                                 },
-                                height: MobileManager.isMobile() ? 35 : 25,
+                                height: /*MobileManager.isMobile() ? 35 : */25,
                                 width: '100%',
                                 defaultType: 'textfield',
                                 items: [
@@ -594,7 +594,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 },
                                 collapsible: true,
                                 collapsed: !this.config.alwaysShow,
-                                height: MobileManager.isMobile() ? 85 : 65,
+                                height: /*MobileManager.isMobile() ? 85 : */65,
                                 width: '100%',
                                 bodyPadding: 5,
                                 hidden: true,
@@ -605,7 +605,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                         me.handleSourceChange('radioCSW', true);
                                     },
                                     beforeexpand: function() {
-                                        me.handleSourceChange('radioCSW', true, MobileManager.isMobile() ? 140 : 120);
+                                        me.handleSourceChange('radioCSW', true, /*MobileManager.isMobile() ? 140 : */120);
                                     }
                                 }
                             }
@@ -629,7 +629,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         defaultType: 'radio',
                         items: radioControls
                     }],
-                    height: radioControls.length === 0 ? 0 : MobileManager.isMobile() ? 40 : 30,
+                    height: radioControls.length === 0 ? 0 : /*MobileManager.isMobile() ? 40 : */30,
                     padding: '0 5px 5px 5px',
                     border: 0,
                     id: this.name + 'selectionModuleFormContainer',
@@ -714,23 +714,23 @@ Ext.define ("viewer.components.SelectionModule",{
     createMoveButtons: function(config) {
         return {
             xtype: 'container',
-            width: MobileManager.isMobile() ? undefined : 30,
-            padding: MobileManager.isMobile() ? '0 2px' : undefined,
+            // width: MobileManager.isMobile() ? undefined : 30,
+            // padding: MobileManager.isMobile() ? '0 2px' : undefined,
             layout: { type: 'vbox', align: 'center' },
             items: [
                 { xtype: 'container', html: '<div></div>', flex: 1 },
                 {
                     xtype: 'button',
                     icon: config.iconTop,
-                    width: MobileManager.isMobile() ? undefined : 23,
-                    height: MobileManager.isMobile() ? undefined : 22,
+                    // width: MobileManager.isMobile() ? undefined : 23,
+                    // height: MobileManager.isMobile() ? undefined : 22,
                     handler: config.handlerTop
                 },
                 {
                     xtype: 'button',
                     icon: config.iconBottom,
-                    width: MobileManager.isMobile() ? undefined : 23,
-                    height: MobileManager.isMobile() ? undefined : 22,
+                    // width: MobileManager.isMobile() ? undefined : 23,
+                    // height: MobileManager.isMobile() ? undefined : 22,
                     handler: config.handlerBottom
                 },
                 { xtype: 'container', html: '<div></div>', flex: 1 }
@@ -1313,7 +1313,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 customServiceUrlTextfield.setVisible(true);
                 customServiceUrlSelect.setVisible(true);
                 customServiceUrlButton.setVisible(true);
-                this.setTopHeight(MobileManager.isMobile() ? 70 : 60);
+                this.setTopHeight(/*MobileManager.isMobile() ? 70 : */60);
             }
             if(field == 'radioCSW') {
                 me.customServiceType = 'csw';
@@ -1324,9 +1324,9 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswServiceUrlButton.setVisible(true);
                 cswAdvancedSearchField.setVisible(this.config.advancedFilter);
                 if(this.config.advancedFilter){
-                    height = height || this.config.alwaysShow ? MobileManager.isMobile() ? 140 : 120 : MobileManager.isMobile() ? 90 : 80;
+                    height = height || this.config.alwaysShow ? /*MobileManager.isMobile() ? 140 : */120 : /*MobileManager.isMobile() ? 90 : */80;
                 }else{
-                    height = height || MobileManager.isMobile() ? 50 : 40;
+                    height = height || /*MobileManager.isMobile() ? 50 : */40;
                 }
                 this.setTopHeight(height);
             }

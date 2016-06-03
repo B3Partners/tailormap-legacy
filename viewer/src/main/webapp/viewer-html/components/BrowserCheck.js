@@ -32,7 +32,7 @@ Ext.define("viewer.components.BrowserCheck", {
         
         this.unsupported = (Ext.isIE && Ext.ieVersion < 9)
             || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari));
-        this.unsupported = MobileManager.isMobile() ? false : this.unsupported;
+        // this.unsupported = viewer.components.MobileManager.isMobile() ? false : this.unsupported;
         
         if((this.config.test || this.unsupported) && this.config.showPopup) {
             Ext.MessageBox.show({

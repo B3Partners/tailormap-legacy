@@ -47,7 +47,7 @@ Ext.define ("viewer.components.Search",{
     searchField:null,
     searchName:null,
     resultPanelId: '',
-    defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
+    defaultFormHeight: /*MobileManager.isMobile() ? 100 : */90,
     searchRequestId: 0,
     onlyUrlConfig:null,
     currentSeachId:null,
@@ -137,7 +137,6 @@ Ext.define ("viewer.components.Search",{
                 itemId: this.name + 'ContentPanel',
                 xtype: "container",
                 autoScroll: true,
-                // width: '100%',
                 flex: 1,
                 html: '<div id="' + me.resultPanelId + '" style="width: 100%; height: 100%; padding: 0px 10px 0px 10px;"></div>'
             }]
@@ -150,10 +149,8 @@ Ext.define ("viewer.components.Search",{
             options.items.push({
                 itemId: this.name + 'ClosingPanel',
                 xtype: "container",
-                width: '100%',
-                height: MobileManager.isMobile() ? 45 : 25,
                 style: {
-                    marginTop: '10px',
+                    marginTop: '5px',
                     marginRight: '5px'
                 },
                 layout: {
@@ -161,7 +158,7 @@ Ext.define ("viewer.components.Search",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                    {xtype: 'button', text: 'Sluiten', handler: function() {
                         me.popup.hide();
                     }}
                 ]
@@ -298,9 +295,8 @@ Ext.define ("viewer.components.Search",{
                     items: [this.searchField,{
                             xtype: 'button',
                             text: 'Zoeken',
-                            componentCls: 'mobileLarge',
-                            margin: this.margin,
-                            width: 60,
+                                        margin: this.margin,
+                            width: 90,
                             hidden: !this.showSearchButtons,
                             listeners: {
                                 click: {
@@ -317,7 +313,6 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             text: 'Zoekactie afbreken',
             margin: this.margin,
-            componentCls: 'mobileLarge',
             name: 'cancel',
             itemId: 'cancel'+ this.name,
             hidden: !this.showSearchButtons,
@@ -333,7 +328,6 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             text: 'Verwijder marker',
             margin: this.margin,
-            componentCls: 'mobileLarge',
             name: 'removePin',
             itemId: 'removePin'+ this.name,
             hidden: true,

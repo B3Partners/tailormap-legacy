@@ -39,7 +39,7 @@ Ext.define("viewer.components.Slider",{
         this.currentSliderValue = this.config.initialTransparency;
 
         var sliderConfig = {
-            width: MobileManager.isMobile() ? '100%' : 200,
+            width: 200,//MobileManager.isMobile() ? '100%' : 200,
             value: this.config.initialTransparency,
             increment: 10,
             fieldLabel: this.config.name,

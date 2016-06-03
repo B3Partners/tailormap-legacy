@@ -388,7 +388,7 @@ Ext.define("viewer.components.Component",{
         if(!this.isTool() && !this.config.isPopup) {
             this.doResize();
         }
-		if(MobileManager.isMobile() && this.config.isPopup) {
+		if(viewer.components.MobileManager.isMobile() && this.config.isPopup) {
 			this.popup.resizePopup();
 			this.doResize();
 		}

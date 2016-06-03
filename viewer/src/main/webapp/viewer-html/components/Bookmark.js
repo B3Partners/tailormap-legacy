@@ -43,7 +43,7 @@ Ext.define ("viewer.components.Bookmark",{
         showLabels: true,
         details: {
             minWidth: 450,
-            minHeight: 250
+            minHeight: 330
         }
     },
     constructor: function (conf){
@@ -183,14 +183,14 @@ Ext.define ("viewer.components.Bookmark",{
         formItems.push({
             xtype: 'container',
             layout: {
-                type: 'hbox'
+                type: 'hbox',
+                pack: "end"
             },
             items: socialButtons
         });
         if(Ext.browser.is.IE){
             formItems.push({ 
                 xtype: 'button',
-                componentCls: 'mobileLarge',
                 margin: '10px 0px 0px 0px',
                 text: 'Toevoegen aan favorieten',
                 listeners: {
@@ -203,7 +203,6 @@ Ext.define ("viewer.components.Bookmark",{
         }
         formItems.push({ 
             xtype: 'button',
-            componentCls: 'mobileLarge',
             margin: '10px 0px 0px 10px',
             text: 'Sluiten',
             listeners: {
@@ -216,8 +215,11 @@ Ext.define ("viewer.components.Bookmark",{
         this.form = new Ext.form.FormPanel({
             frame: false,
             border: 0,
-            width: '95%',
-            margin: '0px 0px 0px 10px',
+            width: '100%',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             padding: '5px',
             items: formItems,
             renderTo: this.getContentDiv()

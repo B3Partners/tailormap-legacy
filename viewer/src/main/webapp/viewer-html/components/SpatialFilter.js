@@ -224,7 +224,6 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
             icon: this.iconPath+"shape_polygon_red.png",
-            componentCls: 'mobileLarge',
             tooltip: "Teken een polygoon",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -242,7 +241,6 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: 'button',
             id: this.drawingButtonIds.box,
             icon: this.iconPath+"shape_square_red.png",
-            componentCls: 'mobileLarge',
             tooltip: "Teken een vierkant",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -260,7 +258,6 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: 'button',
             id: this.drawingButtonIds.freehand,
             icon: this.iconPath+"freehand.png",
-            componentCls: 'mobileLarge',
             tooltip: "Teken een vrije vorm",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -274,12 +271,11 @@ Ext.define ("viewer.components.SpatialFilter",{
                 }
             }
         }];
-        if(!MobileManager.isMobile()) {
+        if(!viewer.components.MobileManager.isMobile()) {
             formButtons.push({
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
-                componentCls: 'mobileLarge',
                 tooltip: "Teken een cirkel",
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
@@ -296,7 +292,6 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
         formItems.push({
             xtype: 'container',
-            width: "100%",
             layout: {
                 type: 'hbox'
             },
@@ -308,8 +303,6 @@ Ext.define ("viewer.components.SpatialFilter",{
             id: this.config.name + "BufferContainer",
             name: this.config.name + "BufferContainer",
             xtype: "container",
-            width: "100%",
-            height: 30,
             layout: {
                 type: 'hbox'
             },
@@ -371,17 +364,15 @@ Ext.define ("viewer.components.SpatialFilter",{
                 xtype: "container",
                 disabled:true,
                 autoScroll: true,
-                width: '100%',
                 layout:{
-                    type: "vbox"
+                    type: "vbox",
+                    align: "stretch"
                 },
                 flex: 1,
                 items: formItems
             },{
                 id: this.config.name + 'ClosingPanel',
                 xtype: "container",
-                width: '100%',
-                height: MobileManager.isMobile() ? 45 : 25,
                 style: {
                     marginTop: '10px'
                 },
@@ -390,13 +381,13 @@ Ext.define ("viewer.components.SpatialFilter",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Reset', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
+                    {xtype: 'button', text: 'Reset', margin: '0 1 0 0', handler: function(){
                         me.resetForm();
                     }},
-                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
+                    {xtype: 'button', text: 'Toepassen', margin: '0 1 0 0', handler: function(){
                         me.applyFilter();
                     }},
-                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                    {xtype: 'button', text: 'Sluiten', handler: function() {
                         me.resetForm();
                         me.popup.hide();
                     }}

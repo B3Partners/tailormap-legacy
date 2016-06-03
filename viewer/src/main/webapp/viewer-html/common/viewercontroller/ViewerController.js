@@ -45,6 +45,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * List of layers for this application and whether the user has them checked/unchecked
      */
     savedCheckedState: {},
+    // Debouce resize events
+    resizeDebounce: null,
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -143,6 +145,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(viewerType == "openlayers") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
+
+        // Listen for orientation changes
+        if(window.onorientationchange && window.addEventListener) {
+            window.addEventListener("orientationchange", (function() {
+                this.resizeComponents(true);
+            }).bind(this), false);
+        }
+        Ext.on('resize', function () {
+            this.resizeComponents(true);
+        }, this);
     },
 
     showLoading: function(msg) {
@@ -1844,19 +1856,24 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
       /**
        * Entrypoint for updating the components.
-       * @param Boolean informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will
+       * @param {boolean} informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will
        * not be updated). Used to prevent endless calling of functions
        *  @returns {boolean} Always true
        */
     resizeComponents: function(informLayoutmanager) {
         var me = this;
-        if(informLayoutmanager){
-            me.layoutManager.resizeLayout(function(){
-                return me.resizeComponentsImpl();
-            });
-        }else{
-            return this.resizeComponentsImpl();
+        if(this.resizeDebounce !== null) {
+            window.clearTimeout(this.resizeDebounce);
         }
+        this.resizeDebounce = window.setTimeout(function() {
+            if(informLayoutmanager){
+                me.layoutManager.resizeLayout(function(){
+                    return me.resizeComponentsImpl();
+                });
+            }else{
+                return this.resizeComponentsImpl();
+            }
+        }, 50);
     },
     /**
      * Actual calling the resize functions of all the components
@@ -1868,6 +1885,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(me.mapComponent.doResize) {
             me.mapComponent.doResize();
         }
+        me.mapComponent.getMap().updateSize();
         // We are execturing the doResize function manually on all components, instead of
         // firing an event, because all components are required execute this function
         for(var name in me.components) {

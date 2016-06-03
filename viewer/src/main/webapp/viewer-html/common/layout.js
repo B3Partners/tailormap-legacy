@@ -771,11 +771,11 @@ Ext.define('viewer.LayoutManager', {
             me.alignFloatingPanel(panel);
         });
         setTimeout(function(){
-            if(continueFunction != undefined){
+            if(continueFunction){
                 continueFunction();
+                return;
             }
             viewerController.resizeComponents(false);
-            viewerController.mapComponent.getMap().updateSize();
         },200);
     }
 });

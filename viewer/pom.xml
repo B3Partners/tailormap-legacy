@@ -253,6 +253,7 @@
                             </compilerOptions>
                             <externFiles />
                             <sourceFiles>
+                                <param>${viewerhtml.path}/common/MobileManager.js</param>
                                 <!-- ViewerController -->
                                 <param>${viewerhtml.path}/common/viewercontroller/ViewerController.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/MapComponent.js</param>

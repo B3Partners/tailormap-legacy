@@ -58,7 +58,7 @@ Ext.define("viewer.components.Graph", {
         var fileref = document.createElement("link");
             fileref.setAttribute("rel", "stylesheet");
             fileref.setAttribute("type", "text/css");
-            fileref.setAttribute("href", contextPath + "/extjs/packages/charts/" + FLAMINGO_EXT_THEME + "/charts-all.css");
+            fileref.setAttribute("href", contextPath + "/extjs/packages/charts/triton/charts-all.css");
         head.insertBefore( fileref, head.firstChild );
     },
     initialize: function() {

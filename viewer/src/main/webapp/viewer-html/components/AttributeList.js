@@ -122,7 +122,7 @@ Ext.define ("viewer.components.AttributeList",{
                 id: this.name + 'LayerSelectorPanel',
                 xtype: "container",
                 padding: this.config.showLayerSelectorTabs ? 0 : "4px",
-                height: this.config.showLayerSelectorTabs ? 38 : 36,
+                height: this.config.showLayerSelectorTabs ? 44 : 40,
                 items: [
                     this.layerSelector.getLayerSelector()
                 ]
@@ -139,10 +139,9 @@ Ext.define ("viewer.components.AttributeList",{
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
-                height: MobileManager.isMobile() ? 45 : 32,
+                // height: /*MobileManager.isMobile() ? 45 : */32,
                 style: {
-                    marginTop: '10px',
-                    marginRight: '10px'
+                    margin: '5px'
                 },
                 layout: {
                     type:'hbox'
@@ -150,7 +149,6 @@ Ext.define ("viewer.components.AttributeList",{
                 items: [
                     {
                         xtype: 'button',
-                        style: { marginLeft: '5px' },
                         itemId: 'zoomToAll',
                             text: 'Zoom naar alle features',
                         disabled: true,
@@ -159,7 +157,7 @@ Ext.define ("viewer.components.AttributeList",{
                         hidden: !this.config.addZoomTo
                     },
                     { xtype: 'container', flex: 1 },
-                    {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
+                    {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, scope:this, handler:function(){
                              this.download();
                     }},
                     {
@@ -176,7 +174,7 @@ Ext.define ("viewer.components.AttributeList",{
                                 fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
                             })
                     },
-                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                    {xtype: 'button', text: 'Sluiten', handler: function() {
                         me.popup.hide();
                     }}
                 ]

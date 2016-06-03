@@ -74,7 +74,7 @@ Ext.define ("viewer.components.Filter",{
         attributeFilterUI.add({ 
 			xtype: 'button',
 			text : '+',
-			width: 20,
+			width: 40,
 			listeners: {
 				click:{
 					scope: this,
@@ -101,7 +101,7 @@ Ext.define ("viewer.components.Filter",{
         return this;
     },
     getRowHeight: function() {
-        return MobileManager.isMobile() ? 35 : 25;
+        return 35;
     },
     // Called when a new layer is chosen from the upper combobox
     setNewAttributeList : function (list){
@@ -214,7 +214,7 @@ Ext.define ("viewer.components.Filter",{
 			},
 			items:  [
 				// left = leftwidth - 50 (or/and combobox of attributefilter)
-				{ xtype: 'container', width: (this.leftWidth - (MobileManager.isMobile() ? 70 : 50)) }
+				{ xtype: 'container', width: this.leftWidth - 50 }
 			]
 		});
 		var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
@@ -226,7 +226,7 @@ Ext.define ("viewer.components.Filter",{
         attributeFilterUI.add({ 
             xtype: 'button',
 			text : '-',
-			width: 20,
+			width: 40,
 			listeners: {
 				click: function() {
 					me.removeAttributeFilter(attributeFilter, filterContainer)

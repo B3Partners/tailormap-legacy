@@ -109,8 +109,20 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     border: 2px solid red;
 }
 
-.tristatenode .x-tree-checkbox {
+.theme-crisp .tristatenode .x-tree-checkbox {
     background-position: 0 -30px;
+}
+
+.theme-triton .x-tree-checkbox, .theme-triton .x-tree-checkbox-checked {
+    font-family: FontAwesome;
+}
+
+.theme-triton .x-tree-checkbox:before {
+    content: "\f096";
+}
+
+.theme-triton .x-tree-checkbox-checked:before {
+    content: "\f046";
 }
 
 .theme-triton .tristatenode .x-tree-checkbox:before {
@@ -234,6 +246,11 @@ body > .legend {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
 
+.x-fieldset {
+    border-top: 0 none !important;
+    background: #FFFFFF;
+}
+
 /*/ makes (editable) field labels overflow into ellipsis*/
 .x-form-item-label-inner {
     overflow: hidden;
@@ -254,7 +271,7 @@ body > .legend {
     }
 }
 
-.mobile-mode, .mobile-mode * {
+html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
