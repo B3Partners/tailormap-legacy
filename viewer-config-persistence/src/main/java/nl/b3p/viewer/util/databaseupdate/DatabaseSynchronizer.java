@@ -129,6 +129,8 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("15", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
 
         updates.put("16", new UpdateElement(Collections.singletonList("add_application_rights.sql"), String.class));
+
+        updates.put("17", new UpdateElement(Collections.singletonList("solrconf_reference_to_value.sql"), String.class));
         // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }
 

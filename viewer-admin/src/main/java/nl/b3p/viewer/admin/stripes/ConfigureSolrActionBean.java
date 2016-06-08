@@ -282,13 +282,13 @@ public class ConfigureSolrActionBean implements ActionBean {
         for (int i = 0; i < indexAttributes.length; i++) {
             Long attributeId = indexAttributes[i];
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
-            solrConfiguration.getIndexAttributes().add(attribute);
+            solrConfiguration.getIndexAttributes().add(attribute.getName());
         }
 
         for (int i = 0; i < resultAttributes.length; i++) {
             Long attributeId = resultAttributes[i];
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
-            solrConfiguration.getResultAttributes().add(attribute);
+            solrConfiguration.getResultAttributes().add(attribute.getName());
         }
         em.persist(solrConfiguration);
         em.getTransaction().commit();
@@ -426,14 +426,14 @@ public class ConfigureSolrActionBean implements ActionBean {
             boolean indexChecked = false;
             boolean resultChecked = false;
             if(solrConfiguration != null){
-                for (AttributeDescriptor configAttribute : solrConfiguration.getIndexAttributes()) {
-                    if(configAttribute.getId() == attr.getId()){
+                for (String configAttribute : solrConfiguration.getIndexAttributes()) {
+                    if(configAttribute.equals(attr.getName())){
                         indexChecked=  true;
                         break;
                     }
                 }
-                for (AttributeDescriptor resultAttribute : solrConfiguration.getResultAttributes()) {
-                    if(resultAttribute.getId() == attr.getId()){
+                for (String resultAttribute : solrConfiguration.getResultAttributes()) {
+                    if(resultAttribute.equals(attr.getName())){
                         resultChecked =  true;
                         break;
                     }

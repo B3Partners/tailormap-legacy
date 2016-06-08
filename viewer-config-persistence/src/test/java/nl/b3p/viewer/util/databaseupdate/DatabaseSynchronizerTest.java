@@ -80,13 +80,19 @@ public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
 
     @Test
     public void testConvertSolrConfigReferenceToValues(){
-        SolrConf conf = entityManager.find(SolrConf.class, 1L);
-        List<AttributeDescriptor> indexAttrs = conf.getIndexAttributes();
-        assertEquals("ident", indexAttrs.get(0).getName());
-        assertEquals("status", indexAttrs.get(1).getName());
+        DatabaseSynchronizer ds = new DatabaseSynchronizer();
+        LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
 
-        List<AttributeDescriptor> resultAttrs = conf.getResultAttributes();
-        assertEquals("ident", resultAttrs.get(0).getName());
-        assertEquals("status", resultAttrs.get(1).getName());
+        updates.put("" + TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("hqsqldb-solrconf_reference_to_value.sql"), String.class));
+        ds.doInit(entityManager);
+
+        SolrConf conf = entityManager.find(SolrConf.class, 1L);
+        List<String> indexAttrs = conf.getIndexAttributes();
+        assertEquals("ident", indexAttrs.get(0));
+        assertEquals("status", indexAttrs.get(1));
+
+        List<String> resultAttrs = conf.getResultAttributes();
+        assertEquals("ident", resultAttrs.get(0));
+        assertEquals("status", resultAttrs.get(1));
     }
 }

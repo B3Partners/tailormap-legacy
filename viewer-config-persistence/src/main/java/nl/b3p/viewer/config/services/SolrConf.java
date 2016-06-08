@@ -20,13 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -46,13 +46,21 @@ public class SolrConf {
     @ManyToOne(fetch = FetchType.LAZY)
     private SimpleFeatureType simpleFeatureType;
     
-    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
-    private List<AttributeDescriptor> indexAttributes = new ArrayList();
+    @ElementCollection
+    @CollectionTable(
+          name="solr_conf_index_attributes",
+          joinColumns=@JoinColumn(name="solr_conf")
+    )
+    @Column(name="attribute_")
+    private List<String> indexAttributes = new ArrayList();
     
-    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
-    private List<AttributeDescriptor> resultAttributes = new ArrayList();
+    @ElementCollection
+    @CollectionTable(
+          name="solr_conf_result_attributes",
+          joinColumns=@JoinColumn(name="solr_conf")
+    )
+    @Column(name="attribute_")
+    private List<String> resultAttributes = new ArrayList();
     
     private String name;
     
@@ -84,19 +92,19 @@ public class SolrConf {
         this.name = name;
     }
 
-    public List<AttributeDescriptor> getIndexAttributes() {
+    public List<String> getIndexAttributes() {
         return indexAttributes;
     }
 
-    public void setIndexAttributes(List<AttributeDescriptor> indexAttributes) {
+    public void setIndexAttributes(List<String> indexAttributes) {
         this.indexAttributes = indexAttributes;
     }
 
-    public List<AttributeDescriptor> getResultAttributes() {
+    public List<String> getResultAttributes() {
         return resultAttributes;
     }
 
-    public void setResultAttributes(List<AttributeDescriptor> resultAttributes) {
+    public void setResultAttributes(List<String> resultAttributes) {
         this.resultAttributes = resultAttributes;
     }
 
