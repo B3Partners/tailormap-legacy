@@ -19,7 +19,10 @@ package nl.b3p.viewer.util.databaseupdate;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import nl.b3p.viewer.config.metadata.Metadata;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.SolrConf;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -73,5 +76,17 @@ public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
         ds.doInit(entityManager);
         Metadata newMetadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         assertEquals(oldVersion, newMetadata.getConfigValue());
+    }
+
+    @Test
+    public void testConvertSolrConfigReferenceToValues(){
+        SolrConf conf = entityManager.find(SolrConf.class, 1L);
+        List<AttributeDescriptor> indexAttrs = conf.getIndexAttributes();
+        assertEquals("ident", indexAttrs.get(0).getName());
+        assertEquals("status", indexAttrs.get(1).getName());
+
+        List<AttributeDescriptor> resultAttrs = conf.getResultAttributes();
+        assertEquals("ident", resultAttrs.get(0).getName());
+        assertEquals("status", resultAttrs.get(1).getName());
     }
 }

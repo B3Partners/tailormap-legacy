@@ -322,7 +322,13 @@ INSERT INTO level_layers (level_, layer, list_index) VALUES (5, 3, 1);
 INSERT INTO level_layers (level_, layer, list_index) VALUES (5, 4, 2);
 INSERT INTO level_layers (level_, layer, list_index) VALUES (6, 5, 0);
 
+insert into solr_conf (id, name, simple_feature_type) values (1, 'pietje', 5);
 
+insert into SOLR_CONF_INDEX_ATTRIBUTES (solr_conf, attribute_) values(1, 43); 
+insert into SOLR_CONF_INDEX_ATTRIBUTES (solr_conf, attribute_) values(1, 45); 
+
+insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_) values(1, 43); 
+insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_)	values(1, 45); 
 
 INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '16');
 
