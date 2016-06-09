@@ -211,6 +211,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
+                    <skipTests>${test.skip.integrationtests}</skipTests>
                     <systemPropertyVariables>
                         <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>
