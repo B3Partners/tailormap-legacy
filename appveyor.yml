@@ -18,7 +18,7 @@ install:
   - IF NOT exist "C:\tools\apache-maven-%MVN_VERSION%\bin\*.*" (echo Maven %MVN_VERSION% not installed, so install it & cinst maven -Version %MVN_VERSION%) ELSE (echo Maven %MVN_VERSION% already installed)
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
   - ps: .\.appveyor\set-maven-proxy.ps1
-  - mvn install -U -DskipTests -pl "viewer-config-persistence" -B -V -fae -q
+  - mvn install -U -DskipTests -pl "web-commons,viewer-commons,viewer-config-persistence" -B -V -fae -q
   
 cache:
   - C:\tools\apache-maven-3.3.3 -> appveyor.yml
