@@ -264,11 +264,14 @@ public class ConfigureSolrActionBean implements ActionBean {
     public Resolution removeFromIndex(){
         EntityManager em = Stripersist.getEntityManager();
         SolrServer server = SolrInitializer.getServerInstance();
-        solrConfiguration = em.find(SolrConf.class, solrConfiguration.getId());
-        SolrUpdateJob.removeSolrConfigurationFromIndex(solrConfiguration, em, server);
+        removeConfigurationFromIndex(em, solrConfiguration, server);
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
+    }
 
+    public static void removeConfigurationFromIndex(EntityManager em, SolrConf conf, SolrServer server){
+        conf = em.find(SolrConf.class, conf.getId());
+        SolrUpdateJob.removeSolrConfigurationFromIndex(conf, em, server);
     }
 
     public Resolution cancel() {
@@ -311,13 +314,15 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution delete() {
-        removeFromIndex();
         EntityManager em = Stripersist.getEntityManager();
-        solrConfiguration.getIndexAttributes().clear();
-        solrConfiguration.getResultAttributes().clear();
-        em.remove(solrConfiguration);
+        deleteSolrConfiguration(em, solrConfiguration, SolrInitializer.getServerInstance());
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
+    }
+
+    public static void deleteSolrConfiguration(EntityManager em, SolrConf conf, SolrServer server){
+        removeConfigurationFromIndex(em, conf, server);
+        em.remove(conf);
     }
 
     public Resolution getGridData() throws JSONException {

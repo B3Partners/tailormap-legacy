@@ -25,9 +25,11 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.solr.SolrInitializer;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.solr.update.SolrIndexConfig;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -124,6 +126,11 @@ public class AttributeSourceActionBean implements ActionBean {
             em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", featureSource.getFeatureTypes()).executeUpdate();
             em.createQuery("update ConfiguredAttribute set featureType=null where featureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
             em.createQuery("update ConfiguredAttribute set valueListFeatureType=null where valueListFeatureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
+
+            List<SolrConf> confs = em.createQuery("FROM SolrConf where simpleFeatureType in :fts", SolrConf.class).setParameter("fts",featureSource.getFeatureTypes()).getResultList();
+            for (SolrConf conf : confs) {
+                ConfigureSolrActionBean.deleteSolrConfiguration(em, conf, SolrInitializer.getServerInstance());
+            }
         }
 
         em.createQuery("update ConfiguredAttribute set valueListFeatureSource=null, valueListLabelName=null,valueListValueName=null where valueListFeatureSource in :fs").setParameter("fs",featureSource).executeUpdate();
