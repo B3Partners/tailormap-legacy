@@ -12,7 +12,7 @@ before_install:
 
 install:
   # install without testing
-  - mvn install -U -DskipTests -B -V -fae -q
+  - mvn install -U -DskipTests -pl viewer-config-persistence -B -V -fae -q
 
 script:
   # execute unit and integration tests
