@@ -29,7 +29,7 @@ public class AttributeSourceActionBeanTest extends TestUtil {
         FeatureSource fs = entityManager.find(FeatureSource.class, 1L);
 
         List<FeatureSource> sources = entityManager.createQuery("FROM FeatureSource").getResultList();
-        assertEquals(2,sources.size());
+        int numSources = sources.size();
 
         List<SolrConf> confs = entityManager.createQuery("FROM SolrConf").getResultList();
         assertEquals(1,confs.size());
@@ -45,7 +45,7 @@ public class AttributeSourceActionBeanTest extends TestUtil {
 
         Mockito.verify(server).deleteByQuery("searchConfig:1");
         sources = entityManager.createQuery("FROM FeatureSource").getResultList();
-        assertEquals(1,sources.size());
+        assertEquals(numSources - 1,sources.size());
 
         confs = entityManager.createQuery("FROM SolrConf").getResultList();
         assertEquals(0,confs.size());
