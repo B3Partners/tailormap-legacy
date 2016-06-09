@@ -29,7 +29,7 @@ import nl.b3p.viewer.solr.SolrInitializer;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.solr.update.SolrIndexConfig;
+import org.apache.solr.client.solrj.SolrServer;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -122,6 +122,12 @@ public class AttributeSourceActionBean implements ActionBean {
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
 
+        deleteFeatureSource(em, SolrInitializer.getServerInstance());
+        getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
+        return new ForwardResolution(EDITJSP);
+    }
+
+    protected void deleteFeatureSource(EntityManager em, SolrServer server){
         if (!featureSource.getFeatureTypes().isEmpty()) {
             em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", featureSource.getFeatureTypes()).executeUpdate();
             em.createQuery("update ConfiguredAttribute set featureType=null where featureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
@@ -129,7 +135,7 @@ public class AttributeSourceActionBean implements ActionBean {
 
             List<SolrConf> confs = em.createQuery("FROM SolrConf where simpleFeatureType in :fts", SolrConf.class).setParameter("fts",featureSource.getFeatureTypes()).getResultList();
             for (SolrConf conf : confs) {
-                ConfigureSolrActionBean.deleteSolrConfiguration(em, conf, SolrInitializer.getServerInstance());
+                ConfigureSolrActionBean.deleteSolrConfiguration(em, conf, server);
             }
         }
 
@@ -137,10 +143,7 @@ public class AttributeSourceActionBean implements ActionBean {
 
         em.remove(featureSource);
 
-        Stripersist.getEntityManager().getTransaction().commit();
-
-        getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
-        return new ForwardResolution(EDITJSP);
+        em.getTransaction().commit();
     }
 
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
