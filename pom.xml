@@ -49,7 +49,7 @@
         <postgresql.version>9.4.1207</postgresql.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
-        <test.skip.integrationtests>true</test.skip.integrationtests>
+        <test.skip.integrationtests>false</test.skip.integrationtests>
     </properties>
     <dependencyManagement>
         <!--
@@ -574,6 +574,7 @@
                     <excludes>
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
+                    <skipTests>${test.skip.integrationtests}</skipTests>
                 </configuration>
             </plugin>
             <plugin>
@@ -583,8 +584,8 @@
                         <include>**/*IntegrationTest.java</include>
                     </includes>
                     <trimStackTrace>false</trimStackTrace>
-                    <testFailureIgnore>${test.skip.integrationtests}</testFailureIgnore>
-                    <skipTests>${test.skip.integrationtests}</skipTests>
+                    <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
+                    <skipTests>!${test.skip.integrationtests}</skipTests>
                 </configuration>
                 <executions>
                     <execution>
@@ -597,6 +598,23 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>travis-ci</id>
+            <properties>
+                <!-- om unit tests met postgres te draaien gebruik je
+                -Dtest.persistence.unit=viewer-config-postgresql
+                voor oracle:
+                -Dtest.persistence.unit=viewer-config-oracle
+                voor hsqldb
+                -Dtest.persistence.unit=viewer-config-hsqldb
+                de schema's de test worden niet automatisch aangemaakt.
+                -->
+                <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
+        </profile>
+    </profiles>
     <modules>
         <module>solr-commons</module>
         <module>web-commons</module>

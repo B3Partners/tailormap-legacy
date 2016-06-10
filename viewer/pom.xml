@@ -399,18 +399,6 @@
     <profiles>
         <profile>
             <id>travis-ci</id>
-            <properties>
-                <!-- om unit tests met postgres te draaien gebruik je
-                -Dtest.persistence.unit=viewer-config-postgresql
-                voor oracle:
-                -Dtest.persistence.unit=viewer-config-oracle
-                voor hsqldb
-                -Dtest.persistence.unit=viewer-config-hsqldb
-                de schema's de test worden niet automatisch aangemaakt.
-                -->
-                <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
-                <test.skip.integrationtests>false</test.skip.integrationtests>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>

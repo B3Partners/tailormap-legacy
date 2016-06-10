@@ -7,12 +7,15 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.io.IOException;
 import java.util.List;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConf;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -27,9 +30,17 @@ public class AttributeSourceActionBeanTest extends TestUtil {
     @Test
     public void testDeleteAttributeSource() throws SolrServerException, IOException{
         FeatureSource fs = entityManager.find(FeatureSource.class, 1L);
-
+        assertNotNull(fs);
         List<FeatureSource> sources = entityManager.createQuery("FROM FeatureSource").getResultList();
         int numSources = sources.size();
+        int numAttributesFromSource = 0;
+        List<SimpleFeatureType> types =  fs.getFeatureTypes();
+        for (SimpleFeatureType type : types) {
+            numAttributesFromSource += type.getAttributes().size();
+        }
+
+        List<AttributeDescriptor> attributes = entityManager.createQuery("FROM AttributeDescriptor").getResultList();
+        int totalAttributes = attributes.size();
 
         List<SolrConf> confs = entityManager.createQuery("FROM SolrConf").getResultList();
         assertEquals(1,confs.size());
@@ -50,11 +61,10 @@ public class AttributeSourceActionBeanTest extends TestUtil {
         confs = entityManager.createQuery("FROM SolrConf").getResultList();
         assertEquals(0,confs.size());
 
-
-        List attrs = entityManager.createNativeQuery("select b.attribute_ from solr_conf_index_attributes b").getResultList();
+        List attrs = entityManager.createNativeQuery("select b.attribute_ from solr_conf_result_attributes b").getResultList();
         assertEquals(0, attrs.size());
 
-        attrs = entityManager.createNativeQuery("select b.attribute_ from solr_conf_result_attributes b").getResultList();
-        assertEquals(0, attrs.size());
+        attributes = entityManager.createQuery("FROM AttributeDescriptor").getResultList();
+        assertEquals(totalAttributes - numAttributesFromSource, attributes.size());
     }
 }
