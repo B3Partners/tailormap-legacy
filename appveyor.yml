@@ -28,4 +28,4 @@ build: off
 
 test_script:
   - mvn -e test -B
-  - mvn -e clean verify -B -Ptravis-ci
+  - mvn -e clean verify -B
