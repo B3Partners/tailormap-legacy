@@ -5,4 +5,17 @@
     width: 24px;
     height: 24px;
     display: block;
+    text-align: center;
+    text-decoration: none;
+    padding-top: 4px;
+}
+
+.zoom-to-feature a:before {
+    color: #919191;
+    font: 16px/1 FontAwesome;
+    content: "\f002";
+}
+
+.x-grid-row-expander {
+    margin-left: -4px;
 }

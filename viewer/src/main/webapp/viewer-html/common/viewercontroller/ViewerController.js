@@ -45,7 +45,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * List of layers for this application and whether the user has them checked/unchecked
      */
     savedCheckedState: {},
-    // Debouce resize events
+        // Debouce resize events
     resizeDebounce: null,
     // Debounce applyFilter calls
     filterDebounce: {},
@@ -1373,7 +1373,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
     applyFilter : function(appLayer){
         var mapLayer = this.getLayer(appLayer);
-
+        if(!mapLayer) {
+            return;
+        }
         if (appLayer.relations && appLayer.relations.length > 0 && appLayer.filter && appLayer.filter.getCQL()){
             if(this.filterDebounce[appLayer.id]) {
                 window.clearTimeout(this.filterDebounce[appLayer.id]);

@@ -63,7 +63,6 @@ Ext.define ("viewer.components.DirectSearch",{
         this.mainContainer = Ext.create('Ext.container.Container', {
             itemId: this.name + 'Container',
             width: 300,
-            height: 30,
             padding: 0,
             border: 0,
             margin: 0,
@@ -81,10 +80,6 @@ Ext.define ("viewer.components.DirectSearch",{
 
         this.alignContainer();
         this.loadingContainer = this.mainContainer;
-        this.searchField && this.searchField.inputEl && this.searchField.inputEl.set({
-            placeholder: this.config.title,
-			style: 'height: 28px;'
-        });
     },
     
     alignContainer: function() {

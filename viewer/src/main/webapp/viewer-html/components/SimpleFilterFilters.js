@@ -256,7 +256,7 @@ Ext.define("viewer.components.sf.Checkbox", {
             },
             layout: {
                 type: 'vbox',
-                align: "left"
+                align: "stretch"
             },
             renderTo: this.config.name + "_checkbox",
             items: items

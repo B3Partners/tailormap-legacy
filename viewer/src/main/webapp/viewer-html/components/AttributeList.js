@@ -135,11 +135,9 @@ Ext.define ("viewer.components.AttributeList",{
             },{
                 id: this.name + 'mainPagerPanel',
                 xtype: "container",
-                height: 43
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
-                // height: /*MobileManager.isMobile() ? 45 : */32,
                 style: {
                     margin: '5px'
                 },
@@ -412,7 +410,6 @@ Ext.define ("viewer.components.AttributeList",{
                     id: name +'PagerPanel',
                     xtype: "container",
                     width: '100%',
-                    height: 38,
                     renderTo: renderToEl.id
                 });
             }
@@ -654,7 +651,7 @@ Ext.define ("viewer.components.AttributeList",{
                 displayInfo: true,
                 displayMsg: 'Feature {0} - {1} van {2}',
                 emptyMsg: "Geen features om weer te geven",
-                height: 38,
+                // height: 38,
                 listeners: {
                     afterlayout: function() {
                         if(this.hideLastButton) {
