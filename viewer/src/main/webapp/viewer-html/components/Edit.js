@@ -501,7 +501,7 @@ Ext.define("viewer.components.Edit", {
             fieldLabel: attribute.editAlias || attribute.name,
             value: fieldText,
             disabled: !this.allowedEditable(attribute),
-            labelClsExtra: editLblClass
+            labelClsExtra: this.editLblClass
         };
         var input;
         if (attribute.editHeight) {
@@ -612,7 +612,7 @@ Ext.define("viewer.components.Edit", {
             valueField: 'id',
             disabled: !this.allowedEditable(attribute),
             editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
-            labelClsExtra: editLblClass
+            labelClsExtra: this.editLblClass
         });
 
         if (attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue) {
