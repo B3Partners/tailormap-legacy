@@ -414,7 +414,7 @@ Ext.define ("viewer.components.Search",{
                     if (response.error) {
                         Ext.MessageBox.alert("Foutmelding", response.error);
                     }
-                    if (me.searchRequestId === parseInt(response.request.searchRequestId)) {
+                    if (me.searchRequestId === parseInt(response.request.searchRequestId)&& response.results) {
                         me.searchResult = me.searchResult.concat(response.results);
                         me.showSearchResults();
                         if (response.limitReached) {

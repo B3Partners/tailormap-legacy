@@ -56,6 +56,7 @@ Ext.define("viewer.components.Edit", {
             minHeight: 250
         }
     },
+    editLblClass: 'editCmpLbl',
     constructor: function (conf) {
         this.initConfig(conf);
 		viewer.components.Edit.superclass.constructor.call(this, this.config);
@@ -499,7 +500,8 @@ Ext.define("viewer.components.Edit", {
             name: attribute.name,
             fieldLabel: attribute.editAlias || attribute.name,
             value: fieldText,
-            disabled: !this.allowedEditable(attribute)
+            disabled: !this.allowedEditable(attribute),
+            labelClsExtra: editLblClass
         };
         var input;
         if (attribute.editHeight) {
@@ -513,7 +515,7 @@ Ext.define("viewer.components.Edit", {
             // FeatureToJson#formatValue eg. 14-11-2013 00:00:00
             // Ext uses PHP conventions! see:
             // https://docs.sencha.com/extjs/5.1/5.1.0-apidocs/#!/api/Ext.Date
-            options.format = 'd-m-Y H:i:s';
+            options.format = 'd-m-Y';
             options.altFormats = 'd-m-y|d-M-Y';
             // ISO 8601 (local time + UTC offset)
             options.submitFormat = 'c';
@@ -609,7 +611,8 @@ Ext.define("viewer.components.Edit", {
             id: attribute.name,
             valueField: 'id',
             disabled: !this.allowedEditable(attribute),
-            editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly)
+            editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
+            labelClsExtra: editLblClass
         });
 
         if (attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue) {

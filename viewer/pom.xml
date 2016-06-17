@@ -400,18 +400,6 @@
     <profiles>
         <profile>
             <id>travis-ci</id>
-            <properties>
-                <!-- om unit tests met postgres te draaien gebruik je
-                -Dtest.persistence.unit=viewer-config-postgresql
-                voor oracle:
-                -Dtest.persistence.unit=viewer-config-oracle
-                voor hsqldb
-                -Dtest.persistence.unit=viewer-config-hsqldb
-                de schema's de test worden niet automatisch aangemaakt.
-                -->
-                <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
-                <test.skip.integrationtests>false</test.skip.integrationtests>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
@@ -442,12 +430,28 @@
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
+                            <includes>
+                                <include>**/*IntegrationTest.java</include>
+                            </includes>
+                            <trimStackTrace>false</trimStackTrace>
+                            <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
+                            <skipTests>!${test.skip.integrationtests}</skipTests>
+
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                         </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>

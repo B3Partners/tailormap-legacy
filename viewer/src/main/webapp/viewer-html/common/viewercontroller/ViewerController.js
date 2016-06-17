@@ -47,6 +47,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     savedCheckedState: {},
     // Debouce resize events
     resizeDebounce: null,
+    // Debounce applyFilter calls
+    filterDebounce: {},
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -1373,31 +1375,42 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var mapLayer = this.getLayer(appLayer);
 
         if (appLayer.relations && appLayer.relations.length > 0 && appLayer.filter && appLayer.filter.getCQL()){
-            var me = this;
-            var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
-            //alert("do reformat filter!!!");
-            Ext.create("viewer.SLD",{
-                actionbeanUrl : url
-            }).transformFilter(appLayer.filter.getCQL(),appLayer.id,
-                function(newFilter, hash, sessionId){
-                    //success
-                    var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper",{
-                        id: "",
-                        cql: newFilter,
-                        operator : ""
-                    });
-                    //cqlBandage.addOrReplace(newFilter);
-                    mapLayer.setQuery(cqlBandage, hash, sessionId);
-                    me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,null,appLayer);
-                },function(message){
-                    //failure
-                    me.logger.error("Error while transforming SLD for joined/related featuretypes: "+ message);
-                });
+            if(this.filterDebounce[appLayer.id]) {
+                window.clearTimeout(this.filterDebounce[appLayer.id]);
+            }
+            // Small timeout to prevent multiple calls to backend
+            this.filterDebounce[appLayer.id] = window.setTimeout((function() { this._doApplyFilter(appLayer, mapLayer); }).bind(this), 250);
+
         }else{
             mapLayer.setQuery(appLayer.filter);
             this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
         }
     },
+
+    _doApplyFilter: function(appLayer, mapLayer) {
+        var me = this;
+        var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
+        Ext.create("viewer.SLD",{
+            actionbeanUrl : url
+        })
+        .transformFilter(appLayer.filter.getCQL(),appLayer.id,
+            function(newFilter, hash, sessionId){
+                //success
+                var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper",{
+                    id: "",
+                    cql: newFilter,
+                    operator : ""
+                });
+                //cqlBandage.addOrReplace(newFilter);
+                mapLayer.setQuery(cqlBandage, hash, sessionId);
+                me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,null,appLayer);
+            },function(message){
+                //failure
+                me.logger.error("Error while transforming SLD for joined/related featuretypes: "+ message);
+            }
+        );
+    },
+
     /**
      * Remove a filter from the given applayer
      * @param filterId the id of the filter
