@@ -74,6 +74,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private Boolean loadCustomConfig = false;
     private JSONObject details;
     private String appConfigJSON;
+    private String defaultAppId;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
@@ -178,6 +179,14 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public void setAppConfigJSON(String appConfigJSON) {
         this.appConfigJSON = appConfigJSON;
+    }
+
+    public String getDefaultAppId() {
+        return defaultAppId;
+    }
+
+    public void setDefaultAppId(String defaultAppId) {
+        this.defaultAppId = defaultAppId;
     }
     //</editor-fold>
     
