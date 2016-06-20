@@ -253,11 +253,19 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         });
     },
     
-    defaultApplicationChanged : function(combobox, application){
-         Ext.Ajax.request({
+    defaultApplicationChanged: function (combobox, application) {
+        var defaultApp, appLabel;
+        if (application === null) {
+            defaultApp = null;
+            appLabel = 'uitgezet'
+        } else {
+            defaultApp = application.get('value');
+            appLabel = ': "' + application.get('label') + '"';
+        }
+        Ext.Ajax.request({
             url: this.config.setDefaultApplication,
             params: {
-                defaultApplication: application.get('value')
+                defaultApplication: defaultApp
             },
             scope: this,
             success: function(result) {
@@ -266,7 +274,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 if(!response.success) {
                     Ext.Msg.alert('Fout bij opslaan', 'Er is iets fout gegaan bij het opslaan van de standaard applicatie. Probeer opnieuw.');
                 } else {
-                    Ext.Msg.alert('Standaard applicatie opgeslagen', 'De standaard applicatie is opgeslagen. De nieuwe standaard applicatie is ' + application.get('label'));
+                    Ext.Msg.alert('Standaard applicatie opgeslagen', 'De standaard applicatie is opgeslagen. De standaard applicatie is nu' + appLabel);
                 }
             },
             failure: function(result) {
