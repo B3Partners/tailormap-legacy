@@ -239,7 +239,7 @@ public class CombineImageActionBean implements ActionBean {
             public void stream(HttpServletResponse response) throws Exception {
                 OutputStream out = response.getOutputStream();
                 response.setDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
-                CombineImagesHandler.combineImage(out, settings,settings.getMimeType(),maxResponseTime);
+                CombineImagesHandler.combineImage(out, settings,settings.getMimeType(),maxResponseTime, context.getRequest());
             }
         };
         return res;

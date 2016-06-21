@@ -24,15 +24,14 @@ package nl.b3p.viewer.image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Stack;
 import java.util.concurrent.Callable;
 import javax.imageio.ImageIO;
-import org.apache.commons.httpclient.Credentials;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,22 +55,23 @@ public class ImageCollector implements Callable<ImageCollector> {
     private String password = null;
     private CombineImageUrl combinedImageUrl = null;
     protected HttpClient client =null;
- 
+    private HttpServletRequest req;
     /*public ImageCollector(String url, int maxResponseTime) {
         this.url = url;
         this.maxResponseTime = maxResponseTime;
         this.setMessage("Still downloading...");
     }*/
 
-    public ImageCollector(CombineImageUrl ciu, int maxResponseTime,HttpClient client) {
+    public ImageCollector(CombineImageUrl ciu, int maxResponseTime,HttpClient client, HttpServletRequest req) {
         this.combinedImageUrl=ciu;
         this.maxResponseTime = maxResponseTime;
         this.client = client;
         this.setMessage("Still downloading...");
+        this.req = req;
     }
 
-    public ImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client, String uname, String pw) {
-        this(ciu, maxResponseTime, client);
+    public ImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client, String uname, String pw, HttpServletRequest req) {
+        this(ciu, maxResponseTime, client,req);
         this.username = uname;
         this.password = pw;
     }
@@ -109,6 +109,20 @@ public class ImageCollector implements Callable<ImageCollector> {
         HttpMethod method = null;
         try {            
             method = new GetMethod(url);
+            if (req != null) {
+                Cookie[] cookies = req.getCookies();
+                String jsessionid = null;
+                String key = "JSESSIONID";
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equalsIgnoreCase(key)) {
+                        jsessionid = cookie.getValue();
+                        Header cookieHeader = new Header("Cookie", null);
+                        cookieHeader.setValue(key + "=" + jsessionid);
+                        method.setRequestHeader(cookieHeader);
+                        break;
+                    }
+                }
+            }
 
             int statusCode = client.executeMethod(method);
             if (statusCode != HttpStatus.SC_OK) {

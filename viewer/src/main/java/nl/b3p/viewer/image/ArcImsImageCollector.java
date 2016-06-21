@@ -18,6 +18,7 @@ package nl.b3p.viewer.image;
 
 import java.io.IOException;
 import java.io.StringReader;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -47,8 +48,8 @@ public class ArcImsImageCollector extends PrePostImageCollector{
         }
     }
     
-    public ArcImsImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client){
-        super(ciu,maxResponseTime,client);
+    public ArcImsImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client, HttpServletRequest req){
+        super(ciu,maxResponseTime,client, req);
     }
     
     @Override
