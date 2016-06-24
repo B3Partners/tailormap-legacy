@@ -88,6 +88,6 @@ public class Tiling {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
         File f = new File(DEST_DIR + "/WMSc.png");
         FileOutputStream fos = new FileOutputStream(DEST_DIR + "/WMSc.png");
-        CombineImagesHandler.combineImage(fos, settings);        
+        CombineImagesHandler.combineImage(fos, settings, null);
     }
 }
