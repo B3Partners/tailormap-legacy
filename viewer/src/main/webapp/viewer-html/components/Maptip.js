@@ -868,7 +868,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.maptipId=0;
     this.closeOnMouseOut=true;
     this.showCloseButton=false;
-    this.zIndex=13000;
+    this.zIndex = 30000;
     //because click events still needs to be handled by the map, move the balloon a bit
     this.offsetX=1;
     this.offsetY=0;
