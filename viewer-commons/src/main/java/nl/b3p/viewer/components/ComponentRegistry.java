@@ -16,8 +16,11 @@
  */
 package nl.b3p.viewer.components;
 
+import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.*;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.JSError;
+import com.google.javascript.jscomp.SourceFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -69,9 +72,9 @@ public class ComponentRegistry {
                 Compiler compiler = new Compiler();
                 CompilerOptions options = new CompilerOptions();
                 CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
-                options.setOutputCharset("UTF-8");
+                options.setOutputCharset(Charset.forName("UTF-8"));
 
-                compiler.compile(JSSourceFile.fromCode("dummy.js",""), JSSourceFile.fromFile(filename, Charset.forName("UTF-8")), options);
+                compiler.compile(SourceFile.fromCode("dummy.js", ""), SourceFile.fromFile(filename, Charset.forName("UTF-8")), options);
 
                 if(compiler.hasErrors()) {
                     log.warn(compiler.getErrorCount() + " error(s) minifying source file " + filename + "; using original source");
@@ -83,7 +86,7 @@ public class ComponentRegistry {
                                 i+1,
                                 error.lineNumber,
                                 error.getCharno(),
-                                error.level.toString(),
+                                error.getDefaultLevel(),
                                 error.description);
                         log.warn(er);
                     }
@@ -101,9 +104,9 @@ public class ComponentRegistry {
                         /* NOTE: org.json version in Maven repo's don't ignore
                          * comments before '['! Patched version is in local repo.
                          */
-                        JSONArray components = new JSONArray(contents);
-                        for(int i = 0; i < components.length(); i++) {
-                            loadComponentMetadata(path, components.getJSONObject(i));
+                        JSONArray cpms = new JSONArray(contents);
+                        for (int i = 0; i < cpms.length(); i++) {
+                            loadComponentMetadata(path, cpms.getJSONObject(i));
                         }
                     } catch(JSONException e2) {
                         log.error("Exception parsing file " + file, e2);
