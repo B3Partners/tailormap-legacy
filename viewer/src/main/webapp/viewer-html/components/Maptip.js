@@ -492,7 +492,7 @@ Ext.define ("viewer.components.Maptip",{
                     if (!feature.hasOwnProperty(key) || key === "related_featuretypes" || key === "__fid") {
                         continue;
                     }
-                    if (!this.detailHideGeomAttr) {
+                    if (this.detailHideGeomAttr) {
                         if (key === appLayer.geometryAttribute) {
                             continue;
                         }
