@@ -114,7 +114,8 @@ public class ImageCollector implements Callable<ImageCollector> {
                 String jsessionid = null;
                 String key = "JSESSIONID";
                 if (cookies != null) {
-                    for (Cookie cookie : cookies) {
+                    for (int i = 0; i < cookies.length; i++) {
+                        Cookie cookie = cookies[i];
                         if (cookie.getName().equalsIgnoreCase(key)) {
                             jsessionid = cookie.getValue();
                             Header cookieHeader = new Header("Cookie", null);
