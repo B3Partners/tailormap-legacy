@@ -558,7 +558,7 @@ public class GeoServiceActionBean implements ActionBean {
         if (applicationLayers.size() > 0) {
             serviceDeleted = false;
 
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het verwijderen van de service. De service heeft kaartlagen geconfigureerd in {2} applicaties.", applicationLayers.size()));
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het verwijderen van de service. De service heeft {2} kaartlagen geconfigureerd in één of meer applicaties.", applicationLayers.size()));
 
             return edit();
         } else {
