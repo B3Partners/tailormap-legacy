@@ -92,9 +92,9 @@ Ext.onReady(function(){
                 menuDisabled: true,
                 renderer: function(value, obj, rec) {
                     if(rec.get('editable')) {
-                        return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
+                        return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', Ext.String.escape(value)) +
                                ' | ' +
-                               Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                                Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', Ext.String.escape(value));
                     }
                     return 'Deze groep mag niet worden bewerkt of verwijderd';
                 }
