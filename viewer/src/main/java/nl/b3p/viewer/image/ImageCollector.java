@@ -114,16 +114,19 @@ public class ImageCollector implements Callable<ImageCollector> {
                 String jsessionid = null;
                 String key = "JSESSIONID";
                 if (cookies != null) {
-                    for (int i = 0; i < cookies.length; i++) {
-                        Cookie cookie = cookies[i];
-                        if (cookie.getName().equalsIgnoreCase(key)) {
+                    for (Cookie cookie : cookies) {
+                        if (cookie != null && cookie.getName().equalsIgnoreCase(key)) {
                             jsessionid = cookie.getValue();
-                            Header cookieHeader = new Header("Cookie", null);
-                            cookieHeader.setValue(key + "=" + jsessionid);
-                            method.setRequestHeader(cookieHeader);
                             break;
                         }
                     }
+                }else if(req.getParameterValues(key).length  == 1){
+                    jsessionid = req.getParameterValues(key)[0];
+                }
+                if(jsessionid != null){
+                    Header cookieHeader = new Header("Cookie", null);
+                    cookieHeader.setValue(key + "=" + jsessionid);
+                    method.setRequestHeader(cookieHeader);
                 }
             }
 
