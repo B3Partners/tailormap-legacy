@@ -772,6 +772,7 @@ Ext.define ("viewer.components.Search",{
             url: null,
             urlOnly: false
         });
+        this.currentSeachId = component.name;
         this.loadWindow();
     },
     /**
@@ -783,6 +784,12 @@ Ext.define ("viewer.components.Search",{
         for (var i = this.dynamicSearchEntries.length -1 ; i >= 0 ; i--){
             if(this.dynamicSearchEntries[i].component.name === component.name ){
                 this.dynamicSearchEntries.splice(i, 1);
+            }
+        }
+        
+        for (var i = this.searchconfigs.length -1 ; i >= 0 ; i--){
+            if(this.searchconfigs[i].id === component.name ){
+                this.searchconfigs.splice(i, 1);
             }
         }
     }
