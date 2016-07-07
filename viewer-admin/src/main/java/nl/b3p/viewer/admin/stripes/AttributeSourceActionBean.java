@@ -211,6 +211,10 @@ public class AttributeSourceActionBean implements ActionBean {
         if (password != null) {
             featureSource.setPassword(password);
         }
+        // When an user updates the service which formerly had a user/pass, but now it doesn't anymore -> remove the password (username already removed in L210
+        if(username == null && password == null){ 
+            featureSource.setPassword(password);
+        }
 
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
