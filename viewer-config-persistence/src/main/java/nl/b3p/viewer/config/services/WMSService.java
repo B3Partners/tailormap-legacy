@@ -67,16 +67,7 @@ public class WMSService extends GeoService implements Updatable {
      */
     public static final String PARAM_OVERRIDE_URL = "overrideUrl";
     
-    /**
-     * HTTP Basic authentication username to use with pre-emptive authentication.
-     */
-    public static final String PARAM_USERNAME = "username";
-    
-    /**
-     * HTTP Basic authentication password to use with pre-emptive authentication.
-     */
-    public static final String PARAM_PASSWORD = "password";
-    
+   
     /* Detail key under which "true" is saved in details if in the WMS capabilities 
      * the <UserDefinedSymbolization> element has a positive SupportSLD attribute.
      */ 
