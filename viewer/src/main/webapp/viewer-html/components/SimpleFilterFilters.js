@@ -286,11 +286,7 @@ Ext.define("viewer.components.sf.Checkbox", {
             // This function will be called via eventlistener
             return;
         }
-
-        var cql = this.getCQL();
-        if(cql.length > 0){
-            this.setFilter(cql);
-        }
+        this.setFilter(this.getCQL());
     },
     getCQL : function(){
         var cql = "";
@@ -899,7 +895,7 @@ Ext.define("viewer.components.sf.Numberrange", {
         var filterChangeDelay = 500;
         return Ext.create("Ext.form.field.Number", {
             renderTo: this.config.name + "_" + "field" + type,
-            value: this.config.filterConfig.start ? this.config.filterConfig.start : "",
+            value: this.config.defaultValues[type],
             maxValue: (type === "Max" && this.config.filterConfig.max) ?  this.config.filterConfig.max : Number.MAX_VALUE,
             minValue: (type === "Min" && this.config.filterConfig.min) ?  this.config.filterConfig.min : 0,
             width: 75,
