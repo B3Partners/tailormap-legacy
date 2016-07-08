@@ -83,7 +83,7 @@
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20090211</version>
+                <version>20160212</version>
             </dependency>
             <!-- Stripes -->
             <dependency>
