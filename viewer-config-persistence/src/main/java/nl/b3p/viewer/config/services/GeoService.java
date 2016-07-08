@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
@@ -37,7 +38,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @Entity
 @DiscriminatorColumn(name="protocol")
-public abstract class GeoService {
+public abstract class GeoService implements Serializable {
     public static final String PARAM_ONLINE_CHECK_ONLY = "onlineCheckOnly";
     public static final String PARAM_MUST_LOGIN = "mustLogin";
     
@@ -46,7 +47,19 @@ public abstract class GeoService {
     
     public static final String DETAIL_USE_INTERSECT = "useIntersect";
     public static final String DETAIL_USE_PROXY = "useProxy";
-    
+
+    /**
+     * HTTP Basic authentication username to use with pre-emptive
+     * authentication.
+     */
+    public static final String PARAM_USERNAME = "username";
+
+    /**
+     * HTTP Basic authentication password to use with pre-emptive
+     * authentication.
+     */
+    public static final String PARAM_PASSWORD = "password";
+
     @Id
     private Long id;
 
@@ -71,7 +84,7 @@ public abstract class GeoService {
 
     @ElementCollection
     @Column(name="keyword")
-    private Set<String> keywords = new HashSet<String>();
+    private Set<String> keywords = new HashSet<>();
     
     @Transient
     private List<Layer> layers;
@@ -86,7 +99,7 @@ public abstract class GeoService {
     @ElementCollection    
     @JoinTable(joinColumns=@JoinColumn(name="geoservice"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
-    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
+    private Map<String,ClobElement> details = new HashMap<>();
    
     @OneToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="style_library"))
@@ -263,6 +276,8 @@ public abstract class GeoService {
     public void checkOnline(EntityManager em) throws Exception {
         Map params = new HashMap();
         params.put(PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);
+        params.put(PARAM_USERNAME, this.getUsername());
+        params.put(PARAM_PASSWORD, this.getPassword());
         loadFromUrl(getUrl(), params, new WaitPageStatus() {
             @Override
             public void setCurrentAction(String currentAction) {

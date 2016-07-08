@@ -49,8 +49,6 @@ public class ArcIMSService extends GeoService implements Updatable {
     public static final String PROTOCOL = "arcims";
       
     public static final String PARAM_SERVICENAME = "ServiceName";
-    public static final String PARAM_USERNAME = "username";
-    public static final String PARAM_PASSWORD = "password";    
     
     private static final String TOPLAYER_ID = "-1";
     
