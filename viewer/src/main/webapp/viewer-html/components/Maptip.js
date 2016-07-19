@@ -408,6 +408,10 @@ Ext.define ("viewer.components.Maptip",{
                     components.push(featureDiv);
 
                 }
+                
+                    var moreFeatures = new Ext.Element(document.createElement("div"));
+                    moreFeatures.insertHtml("beforeEnd","pietje");
+                components.push(moreFeatures);
             }
         }
         return components;
