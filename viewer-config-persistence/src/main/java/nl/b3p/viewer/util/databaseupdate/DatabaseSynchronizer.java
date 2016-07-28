@@ -116,20 +116,24 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("7", new UpdateElement (Collections.singletonList("add_application_to_bookmark.sql"), String.class));
 
         updates.put("8", new UpdateElement (Collections.singletonList("add_layer_prevent_geom_editors.sql"), String.class));
-        
+
         updates.put("9", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
 
 
         updates.put("10", new UpdateElement(Collections.singletonList("add_allowValueListOnly.sql"), String.class));
         updates.put("11", new UpdateElement (Collections.singletonList("add_valueListFeatureSource.sql"), String.class));
-        
+
         updates.put("12", new UpdateElement(Collections.singletonList("add_start_map.sql"), String.class));
         updates.put("13", new UpdateElement(Collections.singletonList("add_linked_components.sql"), String.class));
         updates.put("14", new UpdateElement(Collections.singletonList("add_disableEditing.sql"), String.class));
         updates.put("15", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
 
         updates.put("16", new UpdateElement(Collections.singletonList("add_application_rights.sql"), String.class));
-        // NB when adding an update also update the metadata version in the testdata.sql file around line 326
+
+        updates.put("17", new UpdateElement(Collections.singletonList("solrconf_reference_to_value.sql"), String.class));
+
+        updates.put("18", new UpdateElement(Collections.singletonList("idx_layer_crs_list.sql"), String.class));
+        // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }
 
     /**
@@ -158,7 +162,7 @@ public class DatabaseSynchronizer implements Servlet {
         try {
             checkScriptDir();
             log.info("Try to update the database");
-            
+
             this.databaseProductName = DynamicStripersistInitializer.databaseProductName;
             if (em!=null){
                 Session session = em.unwrap(Session.class);
@@ -319,7 +323,7 @@ public class DatabaseSynchronizer implements Servlet {
         }
         @Override
         public void execute(Connection cnctn) throws SQLException {
-            
+
             ScriptRunner runner = new ScriptRunner(cnctn, true, true);
             for (Entry<String, UpdateElement> entry : this.updateScripts.entrySet()) {
                 UpdateElement element = entry.getValue();

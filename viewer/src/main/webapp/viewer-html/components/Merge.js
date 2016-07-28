@@ -172,7 +172,7 @@ Ext.define("viewer.components.Merge", {
             fidB: this.fidB,
             strategy: this.config.strategy,
             mergeGapDist: this.config.mergeGapDist,
-            appLayer: this.layerSelector.getSelectedAppLayer().id,
+            appLayer: this.layerSelector.getValue().id,
             application: this.config.viewerController.app.id
         };
         var extraData = this.getExtraData();
@@ -236,7 +236,7 @@ Ext.define("viewer.components.Merge", {
         Ext.getCmp(this.name + "selectBButton").setDisabled(true);
         Ext.getCmp(this.name + "selectAButton").setDisabled(true);
         this.mode = null;
-        this.layerSelector.combobox.select(null);
+        this.layerSelector.clearSelection();
         Ext.getCmp(this.name + "geomLabel").setText("");
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         if (this.vectorLayer) {
@@ -259,7 +259,7 @@ Ext.define("viewer.components.Merge", {
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
-            items: [this.layerSelector.combobox,
+            items: [this.layerSelector.getLayerSelector(),
                 {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
@@ -449,7 +449,7 @@ Ext.define("viewer.components.Merge", {
         return newFeature;
     },
     makeConversionMap: function () {
-        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var appLayer = this.layerSelector.getValue();
         var attributes = appLayer.attributes;
         var map = {};
         var index = 0;

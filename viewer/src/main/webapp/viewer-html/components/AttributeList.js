@@ -37,6 +37,7 @@ Ext.define ("viewer.components.AttributeList",{
         downloadParams: "",
         addZoomTo: false,
         zoomToBuffer: 10,
+        showLayerSelectorTabs: false,
         details: {
             minWidth: 600,
             minHeight: 300
@@ -99,7 +100,8 @@ Ext.define ("viewer.components.AttributeList",{
         var config = {
             viewerController : this.config.viewerController,
             restriction: "attribute",
-            layers: this.config.layers
+            layers: this.config.layers,
+            useTabs: this.config.showLayerSelectorTabs
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
@@ -120,10 +122,10 @@ Ext.define ("viewer.components.AttributeList",{
             items: [{
                 id: this.name + 'LayerSelectorPanel',
                 xtype: "container",
-                padding: "4px",
-                height: 36,
+                padding: this.config.showLayerSelectorTabs ? 0 : "4px",
+                height: this.config.showLayerSelectorTabs ? 38 : 36,
                 items: [
-                    this.layerSelector.combobox
+                    this.layerSelector.getLayerSelector()
                 ]
             },{
                 id: this.name + 'mainGridPanel',
@@ -469,6 +471,9 @@ Ext.define ("viewer.components.AttributeList",{
             if(attribute.visible){
 
                 var attIndex = index++;
+                if(appLayer.geometryAttributeIndex === i){
+                    continue;
+                }
 
                 var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
                 attributeList.push({
@@ -767,14 +772,30 @@ Ext.define ("viewer.components.AttributeList",{
         if(appLayer.filter){
             filter=appLayer.filter.getCQL();
         }
-        this.downloadForm.getComponent('appLayer').setValue(appLayer.id);
-        this.downloadForm.getComponent('application').setValue(appId);
-        this.downloadForm.getComponent('filter').setValue(filter);
-        this.downloadForm.getComponent('type').setValue(Ext.getCmp("downloadType").getValue());
-        this.downloadForm.getComponent('params').setValue(this.config.downloadParams);
-        this.downloadForm.submit({
-            target: '_blank'
+        var url =  actionBeans["download"];
+
+        url += '?appLayer=' + appLayer.id;
+        url += '&application=' + appId;
+        url += '&filter=' + filter;
+        url += '&type=' + Ext.getCmp("downloadType").getValue();
+        url += '&params=' + this.config.downloadParams;
+
+        var w =new Ext.Window({
+            title: "Download",
+            width: 400,
+            height: 150,
+            layout: 'fit',
+            items: [{
+                    xtype: "component",
+                    border: false,
+                    autoEl: {
+                        tag: "iframe",
+                        src: url
+                    }
+                }]
         });
+        w.show();
+        setTimeout(function(){w.hide();}, 8000);
     }
 });
 

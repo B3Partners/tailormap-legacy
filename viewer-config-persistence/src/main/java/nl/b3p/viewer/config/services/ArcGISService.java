@@ -45,9 +45,6 @@ public class ArcGISService extends GeoService implements Updatable {
 
     public static final String PROTOCOL = "arcgis";
 
-    public static final String PARAM_USERNAME = "username";
-    public static final String PARAM_PASSWORD = "password";
-
     /** Parameter to avoid the call to /ArcGIS/rest/services?f=json to determine
      * the version (10 or 9). Some sites have this URL hidden but the service
      * itself is available. String with "9" or "10", null or any other value

@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -54,11 +55,11 @@ public class ImageManager {
     protected static final String host = AuthScope.ANY_HOST;
     protected static final int port = AuthScope.ANY_PORT;
 
-    public ImageManager(List urls, int maxResponseTime) {
-        this(urls, maxResponseTime, null, null);
+    public ImageManager(List urls, int maxResponseTime,HttpServletRequest req) {
+        this(urls, maxResponseTime, null, null,req);
     }
 
-    public ImageManager(List<CombineImageUrl> urls, int maxResponseTime, String uname, String pw) {
+    public ImageManager(List<CombineImageUrl> urls, int maxResponseTime, String uname, String pw,HttpServletRequest req) {
         
         threadPool = Executors.newFixedThreadPool(MAX_TREADS);
         pool = new ExecutorCompletionService<ImageCollector>(threadPool);
@@ -82,13 +83,13 @@ public class ImageManager {
         for (CombineImageUrl ciu : urls) {
             ImageCollector ic = null;
             if (ciu instanceof CombineWmsUrl){
-                ic = new ImageCollector(ciu, maxResponseTime, client,uname, pw);
+                ic = new ImageCollector(ciu, maxResponseTime, client,uname, pw,req);
             }else if (ciu instanceof CombineArcIMSUrl){
-                ic = new ArcImsImageCollector(ciu, maxResponseTime,client);
+                ic = new ArcImsImageCollector(ciu, maxResponseTime,client, req);
             }else if (ciu instanceof CombineArcServerUrl){
-                ic = new ArcServerImageCollector(ciu, maxResponseTime,client);
+                ic = new ArcServerImageCollector(ciu, maxResponseTime,client,req);
             }else {
-                ic= new ImageCollector(ciu,maxResponseTime,client,uname,pw);
+                ic= new ImageCollector(ciu,maxResponseTime,client,uname,pw,req);
             }
             ics.add(ic);
         }

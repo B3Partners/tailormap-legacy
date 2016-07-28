@@ -59,7 +59,7 @@ public class Layer implements Cloneable, Serializable {
 
     public static final String DETAIL_ALTERNATE_LEGEND_IMAGE_URL = "alternateLegendImageUrl";
 
-    private static Set<String> interestingDetails = new HashSet<String>(Arrays.asList(new String[] {
+    private static Set<String> interestingDetails = new HashSet<>(Arrays.asList(new String[] {
         EXTRA_KEY_METADATA_URL,
         EXTRA_KEY_METADATA_STYLESHEET_URL,
         EXTRA_KEY_DOWNLOAD_URL,
@@ -70,7 +70,7 @@ public class Layer implements Cloneable, Serializable {
         DETAIL_ALTERNATE_LEGEND_IMAGE_URL
     }));
 
-    private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] {
+    private static Set<String> updatableDetails = new HashSet<>(Arrays.asList(new String[] {
         EXTRA_KEY_METADATA_URL,
         DETAIL_ALL_CHILDREN,
         DETAIL_WMS_STYLES
@@ -102,10 +102,10 @@ public class Layer implements Cloneable, Serializable {
     private Double maxScale;
 
     @ElementCollection
-    private Set<CoordinateReferenceSystem> crsList = new HashSet<CoordinateReferenceSystem>();
+    private Set<CoordinateReferenceSystem> crsList = new HashSet<>();
 
     @ElementCollection
-    private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<CoordinateReferenceSystem,BoundingBox>();
+    private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<>();
 
     @ManyToOne(fetch=FetchType.LAZY)
     private TileSet tileset;
@@ -125,29 +125,29 @@ public class Layer implements Cloneable, Serializable {
 
     @ElementCollection
     @Column(name="keyword")
-    private Set<String> keywords = new HashSet<String>();
+    private Set<String> keywords = new HashSet<>();
 
     @ElementCollection
     @Column(name="role_name")
-    private Set<String> readers = new HashSet<String>();
+    private Set<String> readers = new HashSet<>();
 
     @ElementCollection
     @Column(name="role_name")
-    private Set<String> writers = new HashSet<String>();
+    public Set<String> writers = new HashSet<>();
 
     @ElementCollection
     @Column(name = "role_name")
-    private Set<String> preventGeomEditors = new HashSet<String>();
+    public Set<String> preventGeomEditors = new HashSet<>();
 
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="child", unique=true))
     @OrderColumn(name="list_index")
-    private List<Layer> children = new ArrayList<Layer>();
+    private List<Layer> children = new ArrayList<>();
 
     @ElementCollection
     @JoinTable(joinColumns=@JoinColumn(name="layer"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
-    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
+    private Map<String,ClobElement> details = new HashMap<>();
 
     public Layer() {
     }
@@ -172,8 +172,8 @@ public class Layer implements Cloneable, Serializable {
          * the scale use Pythagorean theorem
          */
         if (minScale==null && maxScale ==null){
-            minScale = l.getScaleHintMin();
-            maxScale = l.getScaleHintMax();
+            minScale = l.getScaleDenominatorMin();
+            maxScale = l.getScaleDenominatorMax();
             if (Double.isNaN(minScale)){
                 minScale=null;
             }
@@ -229,7 +229,11 @@ public class Layer implements Cloneable, Serializable {
                     }
                     JSONArray legendUrls = new JSONArray();
                     jstyle.put("legendURLs", legendUrls);
-                    for(String url: (List<String>)style.getLegendURLs()) {
+                    for (String url : (List<String>) style.getLegendURLs()) {
+                        // HACK append &SERVICE=WMS if not present, see #628
+                        if (!StringUtils.containsIgnoreCase(url, "SERVICE=WMS")) {
+                            url = url.concat("&SERVICE=WMS");
+                        }
                         legendUrls.put(url);
                     }
                 }
@@ -242,7 +246,11 @@ public class Layer implements Cloneable, Serializable {
         }
 
         if(l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0) {
-            String legendUrl = (String)l.getStyles().get(0).getLegendURLs().get(0);
+            String legendUrl = (String) l.getStyles().get(0).getLegendURLs().get(0);
+            // HACK append &SERVICE=WMS if not present, see #628
+            if (!StringUtils.containsIgnoreCase(legendUrl, "SERVICE=WMS")) {
+                legendUrl = legendUrl.concat("&SERVICE=WMS");
+            }
             legendImageUrl = legendUrl;
         }
 

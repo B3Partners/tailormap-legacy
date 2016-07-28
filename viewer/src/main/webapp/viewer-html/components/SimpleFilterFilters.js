@@ -67,10 +67,6 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         this.config.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.layersInitialized, this);
         this.isReady();
     },
-    attributesInitialized : function(){
-        this.attributesLoaded = true;
-        this.isReady();
-    },
     isReady : function(){
         if(this.attributesLoaded && this.layersLoaded){
             this.ready = true;
@@ -271,7 +267,7 @@ Ext.define("viewer.components.sf.Checkbox", {
         var item = {
             boxLabel  : option.label,
             name      : option.value,
-            checked: this.config.filterConfig.start ? this.config.filterConfig.start === option.value : false,
+            checked: option.defaultVal || (this.config.filterConfig.start ? this.config.filterConfig.start === option.value : false),
             inputValue: true,
             xtype: "checkbox",
             id        : this.config.name + option.id,
@@ -290,13 +286,7 @@ Ext.define("viewer.components.sf.Checkbox", {
             // This function will be called via eventlistener
             return;
         }
-
-        var cql = this.getCQL();
-        if(cql.length > 0){
-            this.setFilter(cql);
-        }else{
-            this.reset();
-        }
+        this.setFilter(this.getCQL());
     },
     getCQL : function(){
         var cql = "";
@@ -828,6 +818,123 @@ Ext.define("viewer.components.sf.Slider", {
         }else{
             this.slider.setValue(this.config.filterConfig.start);
         }
+        this.callParent();
+    }
+});
+
+Ext.define("viewer.components.sf.Numberrange", {
+    extend: "viewer.components.sf.SimpleFilter",
+    minField: null,
+    maxField: null,
+    config: {
+        simpleFilter: null,
+        name: "",
+        label: "",
+        attributeName: "",
+        defaultValues: {
+            Min: "",
+            Max: ""
+        }
+    },
+    constructor: function(conf) {
+        this.initConfig(conf);
+        viewer.components.sf.Numberrange.superclass.constructor.call(this, this.config);
+        this.setDefaultValues();
+        var templatecontents = [
+            "<tr>",
+                "<td colspan=\"3\">",
+                    "<div class=\"simple-filter-field-label\">",
+                        "<div id=\"{name}_fieldMin\"></div>",
+                        "<div class=\"label\">{fieldLabelMin}</div>",
+                    "</div>",
+                    "<div class=\"simple-filter-field-label\">",
+                        "<div id=\"{name}_fieldMax\"></div>",
+                        "<div class=\"label\">{fieldLabelMax}</div>",
+                    "</div>",
+                "</td>",
+            "</tr>"
+        ];
+        var t = this.wrapSimpleFilter(this.config.filterConfig.label, templatecontents);
+        new Ext.Template(t).append(this.config.container, {
+            label: this.config.filterConfig.label,
+            name: this.config.name,
+            fieldLabelMin: this.config.filterConfig.fieldLabelMin || "",
+            fieldLabelMax: this.config.filterConfig.fieldLabelMax || ""
+        });
+        this.minField = this.createElement("Min");
+        this.maxField = this.createElement("Max");
+    },
+    setDefaultValues: function() {
+        if(!this.config.filterConfig.start) {
+            this.config.filterConfig.start = "";
+        }
+        if(this.config.filterConfig.start === "min,max") {
+            this.getValues("#MIN#");
+            this.getValues("#MAX#");
+            return;
+        }
+        var defaultValues = this.config.filterConfig.start.split(",");
+        if(defaultValues.length === 1) {
+            this.config.defaultValues.Min = defaultValues[0];
+        } else if(defaultValues.length === 2) {
+            this.config.defaultValues.Min = defaultValues[0];
+            this.config.defaultValues.Max = defaultValues[1];
+        }
+    },
+    updateValues: function(operator, response) {
+        if(operator === "#MIN#") {
+            this.config.defaultValues.Min = response.value;
+            this.minField.setValue(response.value);
+        }
+        if(operator === "#MAX#") {
+            this.config.defaultValues.Max = response.value;
+            this.maxField.setValue(response.value);
+        }
+    },
+    createElement : function (type) {
+        var filterChangeDelay = 500;
+        return Ext.create("Ext.form.field.Number", {
+            renderTo: this.config.name + "_" + "field" + type,
+            value: this.config.defaultValues[type],
+            maxValue: (type === "Max" && this.config.filterConfig.max) ?  this.config.filterConfig.max : Number.MAX_VALUE,
+            minValue: (type === "Min" && this.config.filterConfig.min) ?  this.config.filterConfig.min : 0,
+            width: 75,
+            listeners: {
+                change: {
+                    scope: this,
+                    fn: function(){
+                        this.applyFilter();
+                    },
+                    buffer: filterChangeDelay
+                }
+            }
+        });
+    },
+    applyFilter : function(){
+        var cql = this.getCQL();
+        this.setFilter(cql);
+    },
+    getCQL : function(){
+        var cql = [];
+        var mustEscape = this.mustEscapeAttribute();
+        var minVal = this.minField.getRawValue();
+        var maxVal = this.maxField.getRawValue();
+        if(minVal !== "" && Ext.isNumeric(minVal)) {
+            minVal = (mustEscape ? "'" : "") + minVal + (mustEscape ? "'" : "");
+            cql.push([this.config.attributeName, minVal].join(" >= "));
+        }
+        if(maxVal !== "" && Ext.isNumeric(maxVal)) {
+            maxVal = (mustEscape ? "'" : "") + maxVal + (mustEscape ? "'" : "");
+            cql.push([this.config.attributeName, maxVal].join(" <= "));
+        }
+        if(cql.length === 0) {
+            return "";
+        }
+        return cql.join(" AND ");
+    },
+    reset : function(){
+        this.minField.setValue(this.config.defaultValues.Min);
+        this.maxField.setValue(this.config.defaultValues.Max);
         this.callParent();
     }
 });

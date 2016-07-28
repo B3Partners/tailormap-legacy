@@ -133,8 +133,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <c:set var="alId" value="${e.key}"/>
                             <c:set var="readers" value="${e.value.readers}"/>
                             <c:set var="writers" value="${e.value.writers}"/>
-                            <% ApplicationLayer applicationLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, pageContext.getAttribute("alId"));
-                                Layer alLayer = applicationLayer.getService().getLayer(applicationLayer.getLayerName());
+                            <% 
+                                ApplicationLayer applicationLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, pageContext.getAttribute("alId"));
+                                Layer alLayer = applicationLayer.getService().getLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
                             %>
 
                             <tr>

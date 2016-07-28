@@ -101,9 +101,9 @@ Ext.onReady(function(){
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
+                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', Ext.String.escape(value)) +
                            ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                            Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', Ext.String.escape(value));
                 },
                 sortable: false
             }

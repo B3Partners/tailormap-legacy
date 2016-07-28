@@ -12,6 +12,7 @@ public class Metadata {
     @Id
     private Long id;    
     public static final String DATABASE_VERSION_KEY = "database_version";
+    public static final String DEFAULT_APPLICATION = "default_application";
     private String configKey;
     private String configValue;
 

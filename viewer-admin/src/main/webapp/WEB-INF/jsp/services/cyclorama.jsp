@@ -4,12 +4,10 @@
     Author     : meine
 --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="stripes" uri="http://stripes.sourceforge.net/stripes.tld" %>
+<%@include file="/WEB-INF/jsp/taglibs.jsp"%>
+
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
-
-
     <stripes:layout-component name="head">
         <title>Cyclorama</title>
     </stripes:layout-component>

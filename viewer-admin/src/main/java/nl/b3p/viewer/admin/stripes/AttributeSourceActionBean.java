@@ -25,9 +25,11 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.solr.SolrInitializer;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.SolrServer;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -120,20 +122,28 @@ public class AttributeSourceActionBean implements ActionBean {
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
 
+        deleteFeatureSource(em, SolrInitializer.getServerInstance());
+        getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
+        return new ForwardResolution(EDITJSP);
+    }
+
+    protected void deleteFeatureSource(EntityManager em, SolrServer server){
         if (!featureSource.getFeatureTypes().isEmpty()) {
             em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", featureSource.getFeatureTypes()).executeUpdate();
             em.createQuery("update ConfiguredAttribute set featureType=null where featureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
             em.createQuery("update ConfiguredAttribute set valueListFeatureType=null where valueListFeatureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
+
+            List<SolrConf> confs = em.createQuery("FROM SolrConf where simpleFeatureType in :fts", SolrConf.class).setParameter("fts",featureSource.getFeatureTypes()).getResultList();
+            for (SolrConf conf : confs) {
+                ConfigureSolrActionBean.deleteSolrConfiguration(em, conf, server);
+            }
         }
 
         em.createQuery("update ConfiguredAttribute set valueListFeatureSource=null, valueListLabelName=null,valueListValueName=null where valueListFeatureSource in :fs").setParameter("fs",featureSource).executeUpdate();
 
         em.remove(featureSource);
 
-        Stripersist.getEntityManager().getTransaction().commit();
-
-        getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
-        return new ForwardResolution(EDITJSP);
+        em.getTransaction().commit();
     }
 
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
@@ -199,6 +209,10 @@ public class AttributeSourceActionBean implements ActionBean {
         featureSource.setName(name);
         featureSource.setUsername(username);
         if (password != null) {
+            featureSource.setPassword(password);
+        }
+        // When an user updates the service which formerly had a user/pass, but now it doesn't anymore -> remove the password (username already removed in L210
+        if(username == null && password == null){ 
             featureSource.setPassword(password);
         }
 

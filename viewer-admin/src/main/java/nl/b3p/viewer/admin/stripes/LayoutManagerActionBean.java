@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private Boolean loadCustomConfig = false;
     private JSONObject details;
     private String appConfigJSON;
+    private String defaultAppId;
+    private List<Application> apps;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
@@ -178,6 +180,22 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public void setAppConfigJSON(String appConfigJSON) {
         this.appConfigJSON = appConfigJSON;
+    }
+
+    public String getDefaultAppId() {
+        return defaultAppId;
+    }
+
+    public void setDefaultAppId(String defaultAppId) {
+        this.defaultAppId = defaultAppId;
+    }
+
+    public List<Application> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<Application> apps) {
+        this.apps = apps;
     }
     //</editor-fold>
     

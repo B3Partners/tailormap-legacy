@@ -36,6 +36,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             data: [
                 {type: "slider", label: "Slider"},
                 {type: "number", label: "Getalfilter"},
+                {type: "numberrange", label: "Getalrange"},
                 {type: "combo", label: "Selectielijst"},
                 {type: "checkbox", label: "Vinkvak"},
                 {type: "radio", label: "Keuzerondje"},

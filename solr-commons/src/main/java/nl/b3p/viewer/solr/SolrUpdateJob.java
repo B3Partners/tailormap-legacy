@@ -131,8 +131,8 @@ public class SolrUpdateJob implements Job {
 
             status.setProgress(10);
             
-            List<AttributeDescriptor> indexAttributesConfig = config.getIndexAttributes();
-            List<AttributeDescriptor> resultAttributesConfig = config.getResultAttributes();
+            List<String> indexAttributesConfig = config.getIndexAttributes();
+            List<String> resultAttributesConfig = config.getResultAttributes();
             
             SimpleFeatureType sft = config.getSimpleFeatureType();
             fs = sft.openGeoToolsFeatureSource();
@@ -199,8 +199,8 @@ public class SolrUpdateJob implements Job {
     }
     
 
-    private static void processFeatures( FeatureIterator<SimpleFeature> iterator,List<AttributeDescriptor> indexAttributesConfig,
-            List<AttributeDescriptor> resultAttributesConfig, Long id, SolrServer solrServer, WaitPageStatus status, double percentage ) {
+    private static void processFeatures( FeatureIterator<SimpleFeature> iterator,List<String> indexAttributesConfig,
+            List<String> resultAttributesConfig, Long id, SolrServer solrServer, WaitPageStatus status, double percentage ) {
         try {
             
             List<SolrInputDocument> docs = new ArrayList();
@@ -209,8 +209,8 @@ public class SolrUpdateJob implements Job {
                     SimpleFeature feature = iterator.next();
                     SolrInputDocument doc = new SolrInputDocument();
                     boolean hasAllRequiredFields = true;
-                    for (AttributeDescriptor attr : indexAttributesConfig) {
-                        String attributeName = attr.getName();
+                    for (String attr : indexAttributesConfig) {
+                        String attributeName = attr;
                         Object col = feature.getAttribute(attributeName);
                         String field = "values";
                         if (col != null) {
@@ -223,8 +223,8 @@ public class SolrUpdateJob implements Job {
                     if (!hasAllRequiredFields) {
                         continue;
                     }
-                    for (AttributeDescriptor attributeDescriptor : resultAttributesConfig) {
-                        String attributeName = attributeDescriptor.getName();
+                    for (String attributeDescriptor : resultAttributesConfig) {
+                        String attributeName = attributeDescriptor;
                         Object col = feature.getAttribute(attributeName);
                         String field = "resultValues";
                         if (col != null) {

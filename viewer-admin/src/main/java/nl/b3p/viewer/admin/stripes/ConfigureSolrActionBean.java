@@ -264,11 +264,14 @@ public class ConfigureSolrActionBean implements ActionBean {
     public Resolution removeFromIndex(){
         EntityManager em = Stripersist.getEntityManager();
         SolrServer server = SolrInitializer.getServerInstance();
-        solrConfiguration = em.find(SolrConf.class, solrConfiguration.getId());
-        SolrUpdateJob.removeSolrConfigurationFromIndex(solrConfiguration, em, server);
+        removeConfigurationFromIndex(em, solrConfiguration, server);
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
+    }
 
+    public static void removeConfigurationFromIndex(EntityManager em, SolrConf conf, SolrServer server){
+        conf = em.find(SolrConf.class, conf.getId());
+        SolrUpdateJob.removeSolrConfigurationFromIndex(conf, em, server);
     }
 
     public Resolution cancel() {
@@ -282,13 +285,13 @@ public class ConfigureSolrActionBean implements ActionBean {
         for (int i = 0; i < indexAttributes.length; i++) {
             Long attributeId = indexAttributes[i];
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
-            solrConfiguration.getIndexAttributes().add(attribute);
+            solrConfiguration.getIndexAttributes().add(attribute.getName());
         }
 
         for (int i = 0; i < resultAttributes.length; i++) {
             Long attributeId = resultAttributes[i];
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
-            solrConfiguration.getResultAttributes().add(attribute);
+            solrConfiguration.getResultAttributes().add(attribute.getName());
         }
         em.persist(solrConfiguration);
         em.getTransaction().commit();
@@ -311,13 +314,15 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution delete() {
-        removeFromIndex();
         EntityManager em = Stripersist.getEntityManager();
-        solrConfiguration.getIndexAttributes().clear();
-        solrConfiguration.getResultAttributes().clear();
-        em.remove(solrConfiguration);
+        deleteSolrConfiguration(em, solrConfiguration, SolrInitializer.getServerInstance());
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
+    }
+
+    public static void deleteSolrConfiguration(EntityManager em, SolrConf conf, SolrServer server){
+        removeConfigurationFromIndex(em, conf, server);
+        em.remove(conf);
     }
 
     public Resolution getGridData() throws JSONException {
@@ -426,14 +431,14 @@ public class ConfigureSolrActionBean implements ActionBean {
             boolean indexChecked = false;
             boolean resultChecked = false;
             if(solrConfiguration != null){
-                for (AttributeDescriptor configAttribute : solrConfiguration.getIndexAttributes()) {
-                    if(configAttribute.getId() == attr.getId()){
+                for (String configAttribute : solrConfiguration.getIndexAttributes()) {
+                    if(configAttribute.equals(attr.getName())){
                         indexChecked=  true;
                         break;
                     }
                 }
-                for (AttributeDescriptor resultAttribute : solrConfiguration.getResultAttributes()) {
-                    if(resultAttribute.getId() == attr.getId()){
+                for (String resultAttribute : solrConfiguration.getResultAttributes()) {
+                    if(resultAttribute.equals(attr.getName())){
                         resultChecked =  true;
                         break;
                     }
