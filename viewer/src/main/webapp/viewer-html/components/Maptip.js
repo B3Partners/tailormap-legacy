@@ -492,7 +492,7 @@ Ext.define ("viewer.components.Maptip",{
                     if (!feature.hasOwnProperty(key) || key === "related_featuretypes" || key === "__fid") {
                         continue;
                     }
-                    if (!this.detailHideGeomAttr) {
+                    if (this.detailHideGeomAttr) {
                         if (key === appLayer.geometryAttribute) {
                             continue;
                         }
@@ -868,7 +868,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.maptipId=0;
     this.closeOnMouseOut=true;
     this.showCloseButton=false;
-    this.zIndex=13000;
+    this.zIndex = 13000;
     //because click events still needs to be handled by the map, move the balloon a bit
     this.offsetX=1;
     this.offsetY=0;

@@ -16,13 +16,17 @@
  */
 package nl.b3p.viewer.stripes;
 
+import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.*;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.JSError;
+import com.google.javascript.jscomp.SourceFile;
 import java.util.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
@@ -258,8 +262,8 @@ public class ComponentActionBean implements ActionBean {
             Compiler compiler = new Compiler();
             CompilerOptions options = new CompilerOptions();
             CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
-            options.setOutputCharset("UTF-8");
-            compiler.compile(JSSourceFile.fromCode("dummy.js",""), JSSourceFile.fromFile(f), options);
+            options.setOutputCharset(Charset.forName("UTF-8"));
+            compiler.compile(SourceFile.fromCode("dummy.js", ""), SourceFile.fromFile(f), options);
 
             if(compiler.hasErrors()) {
                 log.warn(compiler.getErrorCount() + " error(s) minifying source file " + f.getCanonicalPath() + "; using original source");
@@ -271,7 +275,7 @@ public class ComponentActionBean implements ActionBean {
                             i+1,
                             error.lineNumber,
                             error.getCharno(),
-                            error.level.toString(),
+                            error.getDefaultLevel(),
                             error.description));
                 }
                 

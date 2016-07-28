@@ -293,6 +293,7 @@ public class PrintActionBean implements ActionBean {
         try {
             method = new PostMethod(url);
             method.addParameter("params", param);
+            method.addParameter("JSESSIONID", context.getRequest().getSession().getId());
             int statusCode=client.executeMethod(method);            
             if (statusCode != HttpStatus.SC_OK) {
                 throw new Exception("Error connecting to server. HTTP status code: " + statusCode);

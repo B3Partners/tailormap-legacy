@@ -337,6 +337,7 @@ Ext.define("viewer.components.Edit", {
             this.afterLoadAttributes = null;
             this.filterFeature = feature;
             this.mode = "edit";
+            this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
             this.getFeaturesForCoords(coords);
         };
         // Check if the appLayer is selected already
@@ -695,6 +696,8 @@ Ext.define("viewer.components.Edit", {
                     id: "T_0"
                 });
                 this.vectorLayer.addFeature(feat);
+            } else {
+                this.showAndFocusForm();
             }
         }
         Ext.get(this.getContentDiv()).unmask();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -269,7 +269,8 @@ public class ProxyActionBean implements ActionBean {
         
         String paramString = paramsFromUrl.substring(index);
 
-        theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+paramString);
+        theUrl = new URL(theUrl.getProtocol(), theUrl.getHost(), theUrl.getPort(),
+                theUrl.getPath() + "?" + paramString);
 
         String username = null;
         String password = null;
