@@ -65,14 +65,14 @@ Ext.define('LayoutManager', {
     objectBeingConfigured: null,
     layoutRegions: [
         {id:'header', htmlId:'layout_header', configure: ['height', 'tabs', 'backgroundcolor']},
-        {id:'leftmargin_top', htmlId:'layout_left_top', configure: ['width', 'tabs', 'collapse', 'floating', 'backgroundcolor']},
+        {id:'leftmargin_top', htmlId:'layout_left_top', configure: ['width', 'tabs', 'collapse', 'floating', 'paneltitle', 'backgroundcolor']},
         {id:'leftmargin_bottom', htmlId:'layout_left_bottom', configure: ['height', 'tabs', 'backgroundcolor']},
         {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, configure: ['width', 'floating', 'floatingposition', 'backgroundcolor']},
         {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configure: ['height', 'backgroundcolor'] },
         {id:'content', htmlId:'layout_content', titleOverride: 'Map' },
         {id:'content_bottom', htmlId:'layout_content_bottom', configure: ['height', 'backgroundcolor'], titleOverride: 'Map bottom'},
         {id:'popupwindow', htmlId:'layout_popupwindow', configure: ['height', 'width', 'tabs', 'title', 'position', 'backgroundcolor']},
-        {id:'rightmargin_top', htmlId:'layout_right_top', configure: ['width', 'tabs', 'collapse', 'floating', 'backgroundcolor']},
+        {id:'rightmargin_top', htmlId:'layout_right_top', configure: ['width', 'tabs', 'collapse', 'floating','paneltitle', 'backgroundcolor']},
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', configure: ['height', 'tabs', 'backgroundcolor']},
         {id:'footer', htmlId:'layout_footer', configure: ['height', 'tabs', 'backgroundcolor']}
     ],

@@ -1,24 +1,32 @@
+dist: trusty
+sudo: required
 language: java
-
-sudo: false
 
 addons:
   postgresql: "9.4"
+  hostname: travis-fla4
 
 before_install:
+  # install up-2-date Maven version
+  - wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
+  - unzip -qq apache-maven-3.3.9-bin.zip
+  - export M2_HOME=$PWD/apache-maven-3.3.9
+  - export PATH=$M2_HOME/bin:$PATH
+  # create Flamingo database
   - psql -U postgres -a -c "CREATE ROLE flamingo4 LOGIN PASSWORD 'flamingo4' SUPERUSER CREATEDB;"
   - psql -U postgres -a -c 'create database flamingo4;'
   - psql -U postgres -a -c 'ALTER DATABASE flamingo4 OWNER TO flamingo4;'
 
 install:
   # install without testing
-  - mvn install -U -DskipTests -B -V -fae -q
+  #- mvn install -U -DskipTests -Dtest.skip.integrationtests=true -pl viewer-config-persistence,viewer-commons,web-commons -B -V -fae -q
+  - mvn install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -q
 
 script:
   # execute unit and integration tests
-  - mvn -e test -B
-  - mvn -e verify -B -Ptravis-ci
-  # on java 8 run a javadoc build to check for errors
+  - mvn -e clean test -B
+  - mvn -e clean verify -B -Ptravis-ci
+  # on oracle java 8 run a javadoc build to check for errors
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
          mvn javadoc:javadoc;
     fi
@@ -27,15 +35,18 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+  - openjdk8
 
 os:
   - linux
-  # - osx
 
 matrix:
   fast_finish: true
 
+  #allow_failures:
+  #  - jdk: openjdk8
+
 cache:
   directories:
   - $HOME/.m2
-  
+

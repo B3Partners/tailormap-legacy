@@ -126,12 +126,20 @@ Wijken: &lt;br /&gt;
             &lt;/tr&gt;
         &lt;/thead&gt;
         &lt;tbody&gt;
+            &lt;!-- LET OP: tr en td tags om begin-
+            veld is nodig ivm HTML editor. --&gt;
+            &lt;tr&gt;&lt;td colspan="2"&gt;
+              [begin.repeat.wijk_2014]
+            &lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;
-                [begin.repeat.wijk_2014]
                 &lt;td&gt;[wk_code]&lt;/td&gt;
                 &lt;td&gt;[wk_naam]&lt;/td&gt;
-                [end.repeat.wijk_2014]
             &lt;/tr&gt;
+            &lt;!-- LET OP: tr en td tags om end-
+            veld is nodig ivm HTML editor. --&gt;
+            &lt;tr&gt;&lt;td colspan="2"&gt;
+            	[end.repeat.wijk_2014]
+            &lt;/td&gt;&lt;/tr&gt;
         &lt;/tbody&gt;
     &lt;/table&gt;
 [end.wijk_2014]</pre>

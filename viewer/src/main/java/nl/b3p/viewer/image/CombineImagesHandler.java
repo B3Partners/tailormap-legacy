@@ -4,10 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,16 +19,16 @@ public class CombineImagesHandler {
     private static String defaultReturnMime = "image/png";
     private static int defaultMaxResponseTime = 30000;
 
-    public static void combineImage(OutputStream out, CombineImageSettings settings) throws Exception {
-        combineImage(out, settings, defaultReturnMime, defaultMaxResponseTime);
+    public static void combineImage(OutputStream out, CombineImageSettings settings,HttpServletRequest req) throws Exception {
+        combineImage(out, settings, defaultReturnMime, defaultMaxResponseTime,req);
     }
 
-    public static void combineImage(OutputStream out, CombineImageSettings settings, String returnMime, int maxResponseTime) throws Exception {
-        combineImage(out, settings, returnMime, maxResponseTime, null, null);
+    public static void combineImage(OutputStream out, CombineImageSettings settings, String returnMime, int maxResponseTime,HttpServletRequest req) throws Exception {
+        combineImage(out, settings, returnMime, maxResponseTime, null, null,req);
     }
     
     public static void combineImage(OutputStream out, CombineImageSettings settings, 
-            String returnMime, int maxResponseTime, String uname, String pw) throws Exception {
+            String returnMime, int maxResponseTime, String uname, String pw,HttpServletRequest req) throws Exception {
         
         /* Calc urls for tiles */
         /*List<TileImage> tilingImages = new ArrayList();
@@ -46,7 +45,7 @@ public class CombineImagesHandler {
         
         if (urls!=null && urls.size() >0 ) {
             //Get the images by the urls
-            ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);        
+            ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw,req);
             try {
                 im.process();
                 im.shutdown();

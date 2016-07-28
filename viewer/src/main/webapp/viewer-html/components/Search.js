@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,6 +111,9 @@ Ext.define ("viewer.components.Search",{
     },
     loadWindow : function(){
         var me = this;
+        if(this.form){
+            this.form.destroy();
+        }
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
             height: this.config.formHeight || this.defaultFormHeight,
@@ -382,25 +385,31 @@ Ext.define ("viewer.components.Search",{
     executeSearch: function(searchText, searchName) {
         var requestPath=  contextPath+"/action/search";
         this.searchResult = new Array();
-        for(var i = 0 ; i < this.dynamicSearchEntries.length; i++){
-            var entry = this.dynamicSearchEntries[i];
-            var returnValue = entry.callback(searchText, this.searchRequestId);
-            if(returnValue.success){
-                var results = returnValue.results;
-                for(var j = 0 ; j < results.length ; j++){
-                    var result = results[j];
-                    if(result){
-                        result.searchType = "Dynamic";
-                        this.searchResult.push(result);
-                    }
-                }
-            }else{
-                this.config.viewerController.logger.warning("Search component yielded error: " + returnValue.errorMessage);
-            }
-        }
         if (this.getCurrentSearchType() === "simplelist") {
             this.simpleListSearch(searchText);
-        } else {
+        } else if (this.getCurrentSearchType() === "dynamic") {
+            
+            var config = this.getCurrentSearchconfig();
+            for (var i = 0; i < this.dynamicSearchEntries.length; i++) {
+                var entry = this.dynamicSearchEntries[i];
+                if(entry.id === config.id){
+                    var returnValue = entry.callback(searchText, this.searchRequestId);
+                    if (returnValue.success) {
+                        var results = returnValue.results;
+                        for (var j = 0; j < results.length; j++) {
+                            var result = results[j];
+                            if (result) {
+                                result.searchType = "Dynamic";
+                                this.searchResult.push(result);
+                            }
+                        }
+                        this.showSearchResults();
+                    } else {
+                        this.config.viewerController.logger.warning("Search component yielded error: " + returnValue.errorMessage);
+                    }
+                }
+            }
+        }else{
             var requestParams = {};
             requestParams["searchText"]= searchText;
             requestParams["searchName"]= searchName;
@@ -420,7 +429,7 @@ Ext.define ("viewer.components.Search",{
                     if (response.error) {
                         Ext.MessageBox.alert("Foutmelding", response.error);
                     }
-                    if (me.searchRequestId === parseInt(response.request.searchRequestId)) {
+                    if (me.searchRequestId === parseInt(response.request.searchRequestId)&& response.results) {
                         me.searchResult = me.searchResult.concat(response.results);
                         me.showSearchResults();
                         if (response.limitReached) {
@@ -592,6 +601,9 @@ Ext.define ("viewer.components.Search",{
                     for(var i = 0 ; i <switchOnLayers.length ;i++){
                         var appLayerId = switchOnLayers[i];
                         var appLayer = this.config.viewerController.app.appLayers[appLayerId];
+                        if(appLayer === undefined){
+                            continue;
+                        }
                         // Suppress logmessages for non-existing layers
                         var logLevel = this.config.viewerController.logger.logLevel;
                         this.config.viewerController.logger.logLevel = viewer.components.Logger.LEVEL_ERROR;
@@ -742,15 +754,26 @@ Ext.define ("viewer.components.Search",{
     },
     /**
      * Register the calling component for providing extra searchentries.
-     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} obj An object containing the instance (available with .instance) of the caller ("this" at the calling method), and the title of the searchconfiguration (available with .title). 
      * @param {type} callback The callbackfunction which must be called by the search component
      */
-    addDynamicSearchEntry : function(component, callback){
+    addDynamicSearchEntry : function(obj, callback){
+        var component = obj.instance;
         var entry = {
             component:component,
-            callback: callback
+            callback: callback,
+            id: component.name
         };
         this.dynamicSearchEntries.push(entry);
+        this.searchconfigs.push({
+            id: component.name,
+            name: obj.title,
+            type: "dynamic",
+            url: null,
+            urlOnly: false
+        });
+        this.currentSeachId = component.name;
+        this.loadWindow();
     },
     /**
      * Remove the given component for providing dynamic search sentries
@@ -761,6 +784,12 @@ Ext.define ("viewer.components.Search",{
         for (var i = this.dynamicSearchEntries.length -1 ; i >= 0 ; i--){
             if(this.dynamicSearchEntries[i].component.name === component.name ){
                 this.dynamicSearchEntries.splice(i, 1);
+            }
+        }
+        
+        for (var i = this.searchconfigs.length -1 ; i >= 0 ; i--){
+            if(this.searchconfigs[i].id === component.name ){
+                this.searchconfigs.splice(i, 1);
             }
         }
     }

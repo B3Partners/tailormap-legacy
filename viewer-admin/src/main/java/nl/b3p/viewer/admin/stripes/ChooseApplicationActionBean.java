@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
@@ -23,9 +24,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
@@ -68,6 +71,13 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private Application applicationWorkversion;
     @Validate
     private Application applicationToDelete;
+    
+    private List<Application> apps;
+    
+    private String defaultAppId;
+
+    @Validate
+    private Application defaultApplication;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public String getDir() {
@@ -150,7 +160,31 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         this.applicationWorkversion = applicationWorkversion;
     }
 
+    public List<Application> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<Application> apps) {
+        this.apps = apps;
+    }
+
+    public String getDefaultAppId() {
+        return defaultAppId;
+    }
+
+    public void setDefaultAppId(String defaultAppId) {
+        this.defaultAppId = defaultAppId;
+    }
+
+    public Application getDefaultApplication() {
+        return defaultApplication;
+    }
+
+    public void setDefaultApplication(Application defaultApplication) {
+        this.defaultApplication = defaultApplication;
+    }
     //</editor-fold>
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -366,5 +400,45 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
         em.getTransaction().commit();
         return copy;
+    }
+    
+    public Resolution saveDefaultApplication() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        try{
+            EntityManager em = Stripersist.getEntityManager();
+            Metadata md = null;
+            try {
+                md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            } catch (NoResultException e) {
+                md = new Metadata();
+                md.setConfigKey(Metadata.DEFAULT_APPLICATION);
+            }
+            if (defaultApplication != null) {
+                md.setConfigValue(defaultApplication.getId().toString());
+            } else {
+                md.setConfigValue(null);
+            }
+            defaultAppId = md.getConfigValue();
+            em.persist(md);
+            em.getTransaction().commit();
+            json.put("success", Boolean.TRUE);
+        }catch(Exception ex){
+            log.error("Error during setting the default application: ", ex);
+        }
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+    
+    @After(stages = {LifecycleStage.BindingAndValidation})
+    public void createLists() {
+        EntityManager em = Stripersist.getEntityManager();
+        apps = em.createQuery("from Application").getResultList();
+        try {
+            Metadata md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_APPLICATION).getSingleResult();
+            defaultAppId = md.getConfigValue();
+        } catch (NoResultException e) {
+        }
+
     }
 }

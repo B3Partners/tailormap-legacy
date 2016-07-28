@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.7.0-SNAPSHOT</version>
+        <version>4.7.5-SNAPSHOT</version>
     </parent>
     <name>viewer-admin</name>
 
@@ -139,6 +139,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
+                    <filters>
+                        <filter>${basedir}/src/main/resources/git.properties</filter>
+                    </filters>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <webResources>
                         <resource>
@@ -208,6 +211,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
+                    <skipTests>${test.skip.integrationtests}</skipTests>
                     <systemPropertyVariables>
                         <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>

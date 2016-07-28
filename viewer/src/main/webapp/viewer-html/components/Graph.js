@@ -77,9 +77,13 @@ Ext.define("viewer.components.Graph", {
         if(!this.config.graphs){
             this.config.graphs = [];
         }
-        for (var i = 0 ; i < this.config.graphs.length ;i ++){
-            var graph = this.config.graphs[i];
-            this.layers.push(graph.layer);
+        if(this.config.graphs){
+            for (var i = 0 ; i < this.config.graphs.length ;i ++){
+                var graph = this.config.graphs[i];
+                this.layers.push(graph.layer);
+            }
+        }else{
+            this.viewerController.logger.warning("Geen grafieken geconfigureerd.");
         }
         this.loadWindow();
     },
@@ -134,8 +138,12 @@ Ext.define("viewer.components.Graph", {
             padding: 4
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        if(this.layers.length === 1){
-            this.layerSelector.setValue(this.layers[0]);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.selectFirstLayer, this);
+    },
+    selectFirstLayer: function() {
+        if (this.layers.length === 1) {
+            this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.selectFirstLayer, this);
+            this.layerSelector.selectFirstLayer();
         }
     },
     mapClicked : function(tool, comp){
@@ -270,7 +278,7 @@ Ext.define("viewer.components.Graph", {
                     axis: 'left',
                     xField: me.getAttributeTitle(appLayer, gco.categoryAttribute),
                     yField: me.getAttributeTitle(appLayer, serieAttribute),
-                    markerConfig: {
+                    marker: {
                         type: 'circle',
                         size: 4,
                         radius: 4,

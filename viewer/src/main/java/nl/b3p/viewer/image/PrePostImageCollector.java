@@ -18,6 +18,7 @@ package nl.b3p.viewer.image;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -39,8 +40,8 @@ public abstract class PrePostImageCollector extends ImageCollector{
     private static final Log log = LogFactory.getLog(PrePostImageCollector.class);
     private String body;
     
-    public PrePostImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client){
-        super(ciu,maxResponseTime,client);
+    public PrePostImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client, HttpServletRequest req){
+        super(ciu,maxResponseTime,client, req);
         this.body=ciu.getBody();
     }
     

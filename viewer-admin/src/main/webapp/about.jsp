@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             ${project.version}
                         </c:otherwise>
                     </c:choose>
+                    <span id="actuele-versie"><!-- jsonp request to GH api --></span>
                 </td>
             </tr>
             <tr>
@@ -75,6 +76,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <td><b>Git commit time:</b></td>
                 <td>${builddetails.commit.time}</td>
             </tr>
-        </table>
+</table>
+<h2>Runtime information</h2>
+<table>
+    <tr>
+        <td><b>OS info:</b></td>
+        <td>
+            <jsp:expression>System.getProperty("os.name")</jsp:expression>
+            <jsp:expression>System.getProperty("os.version")</jsp:expression>
+            <jsp:expression>System.getProperty("os.arch")</jsp:expression>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Java version:</b></td>
+            <td>
+            <jsp:expression>System.getProperty("java.vendor")</jsp:expression>
+            <jsp:expression>System.getProperty("java.version")</jsp:expression>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Servlet container info:</b></td>
+            <td><jsp:expression>getServletContext().getServerInfo()</jsp:expression></td>
+    </tr>
+</table>
+<script>
+     // use jsonp to retrieve latest release info
+     function v(json){
+         var versie=json.data.name;
+         var datum = new Date( json.data.published_at).toDateString();
+         document.getElementById('actuele-versie').innerHTML = '(latest release: '+versie+', dd. '+datum+')';
+     }
+
+     var scriptTag = document.createElement("script");
+     scriptTag.src = "https://api.github.com/repos/flamingo-geocms/flamingo/releases/latest?callback=v";
+     document.getElementsByTagName('head')[0].appendChild(scriptTag);
+</script>
     </body>
 </html>

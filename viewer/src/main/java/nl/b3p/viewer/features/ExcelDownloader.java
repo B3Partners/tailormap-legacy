@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 B3Partners B.V.
+ * Copyright (C) 2014-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +53,7 @@ import org.opengis.feature.simple.SimpleFeature;
 /**
  * An implementation to export the features as an excel file
  * @author Meine Toonen
+ * @author mprins
  */
 public class ExcelDownloader extends FeatureDownloader{
 
@@ -95,18 +98,20 @@ public class ExcelDownloader extends FeatureDownloader{
         ClientAnchor anchor = factory.createClientAnchor();
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
-                Cell cell = headerRow.createCell(colNum);
                 String alias = attributeAliases.get(configuredAttribute.getAttributeName());
-                cell.setCellValue(alias);
-                if(!alias.equals(configuredAttribute.getAttributeName())){
-                    Comment comment = drawing.createCellComment(anchor);
-                    RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
-                    comment.setString(str);
-                    cell.setCellComment(comment);
+                if(alias != null){
+                    Cell cell = headerRow.createCell(colNum);
+                    cell.setCellValue(alias);
+                    if(!alias.equals(configuredAttribute.getAttributeName())){
+                        Comment comment = drawing.createCellComment(anchor);
+                        RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
+                        comment.setString(str);
+                        cell.setCellComment(comment);
+                    }
+                    cell.setCellStyle(styles.get("header"));
+                    sheet.autoSizeColumn(colNum);
+                    colNum++;
                 }
-                cell.setCellStyle(styles.get("header"));
-                sheet.autoSizeColumn(colNum);
-                colNum++;
             }
         }
 
@@ -130,16 +135,32 @@ public class ExcelDownloader extends FeatureDownloader{
 
         int colNum = 0;
         for (ConfiguredAttribute configuredAttribute : attributes) {
-            if(configuredAttribute.isVisible()){
+            if(configuredAttribute.isVisible() && attributeAliases.get(configuredAttribute.getAttributeName()) != null){
                 Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
                 String value = null;
-                if(attribute != null){
-                    value = attribute.toString();
-                }
                 cell = row.createCell(colNum);
-                String styleName = "cell_normal";
-                cell.setCellValue(value);
-                cell.setCellStyle(styles.get(styleName));
+                cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+                cell.setCellStyle(styles.get("cell_normal"));
+
+                if (attribute == null) {
+                    cell.setCellValue(value);
+                    cell.setCellType(Cell.CELL_TYPE_BLANK);
+                } else if (attribute instanceof Boolean) {
+                    cell.setCellValue((Boolean) attribute);
+                    cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
+                } else if (attribute instanceof Number) {
+                    cell.setCellValue(((Number) attribute).doubleValue());
+                } else if (attribute instanceof Date) {
+                    cell.setCellValue((Date) attribute);
+                    cell.setCellStyle(styles.get("cell_normal_date"));
+                } else if (attribute instanceof Calendar) {
+                    cell.setCellValue((Calendar) attribute);
+                    cell.setCellStyle(styles.get("cell_normal_date"));
+                } else {
+                    value = attribute.toString();
+                    cell.setCellValue(value);                    
+                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                }
                 colNum++;
             }
         }
@@ -192,7 +213,7 @@ public class ExcelDownloader extends FeatureDownloader{
      * create a library of cell styles
      */
     private static Map<String, CellStyle> createStyles(Workbook wb){
-        Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
+        Map<String, CellStyle> styles = new HashMap<>();
         DataFormat df = wb.createDataFormat();
 
         CellStyle style;
@@ -206,10 +227,13 @@ public class ExcelDownloader extends FeatureDownloader{
         styles.put("header", style);
 
         style = createBorderedStyle(wb);
-        style.setAlignment(CellStyle.ALIGN_LEFT);
-        style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
         style.setWrapText(true);
         styles.put("cell_normal", style);
+
+        style = createBorderedStyle(wb);
+        style.setWrapText(true);
+        style.setDataFormat(df.getFormat("d-mmm-yyyy"));
+        styles.put("cell_normal_date", style);
 
         return styles;
     }

@@ -85,6 +85,9 @@ public class SolrInitializer implements ServletContextListener {
 
     private void inializeSolr(File solrDir) {
         log.debug("Initialize the Solr Server instance");
+        if(solrUrl.charAt(solrUrl.length() -1 ) != '/'){
+            solrUrl += "/";
+        }
         server = new HttpSolrServer(solrUrl +SOLR_CORE_NAME);
     }
 
