@@ -233,6 +233,7 @@ Wijken: &lt;br /&gt;
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/application/layer/attributes.js"></script>
             <script type="text/javascript">
                 Ext.onReady(function() {
                     Ext.create('vieweradmin.components.ApplicationTreeLayer', {

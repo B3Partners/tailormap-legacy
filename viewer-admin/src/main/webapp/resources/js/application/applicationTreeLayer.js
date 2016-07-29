@@ -41,6 +41,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         }
     },
 
+    tabComponents: [],
     namedLayerTitle: "",
     styleTitle: "",
     htmlEditorRendered: false,
@@ -146,12 +147,16 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         });
 
         if(this.config.attributes.length !== 0) {
+            var attributeOrder = Ext.create("vieweradmin.components.ApplicationTreeLayerAttributes", {
+                attributes: this.config.attributes
+            });
+            this.tabComponents.push({ config: "attributeOrder", component: attributeOrder });
             tabconfig.push({
                 xtype: 'container',
                 width: '100%',
                 title: 'Volgorde Attributen',
-                layout: 'auto',
-                items: this.getAttributeOrderItems()
+                layout: { type: 'hbox', align: "stretch" },
+                items: attributeOrder.getItems()
             });
         }
 
@@ -970,6 +975,13 @@ hier niet op gecontroleerd.'
             }
             currentAttributes.push(newAttribute);
         }, this);
+        /** TODO: Use jsonConf to save instead of attributes list */
+        var jsonConf = {
+            attributeConfig: currentAttributes
+        };
+        for(var i = 0; i < this.tabComponents.length; i++) {
+            jsonConf[this.tabComponents[i].config] = this.tabComponents[i].component.getJson();
+        }
         return Ext.JSON.encode(currentAttributes);
     },
 
@@ -1024,32 +1036,6 @@ hier niet op gecontroleerd.'
         }
         var textField = this.getComponentByItemId('#editvalues' + id);
         textField.setValue(vals);
-    },
-
-    getAttributeOrderItems: function() {
-        var rootNode = Ext.create('Ext.data.TreeModel', {
-            text: "Root node",
-            expanded: true,
-            children: this.config.attributes
-        });
-        var orderStore = Ext.create('Ext.data.TreeStore', {
-            model: 'AttributeModel',
-            data: [rootNode],
-            defaultRootProperty: 'children'
-        });
-        console.log(orderStore);
-        var orderTree = Ext.create('Ext.tree.Panel', {
-            store: orderStore,
-            rootVisible: false,
-            selModel: { mode: "MULTI" },
-            useArrows: true,
-            frame: true,
-            width: 325,
-            height: 600,
-            autoScroll: true,
-            margin: 10
-        });
-        return [orderTree];
     },
 
     initAttributeGroupClick: function(){
