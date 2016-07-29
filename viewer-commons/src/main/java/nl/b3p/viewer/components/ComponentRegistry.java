@@ -116,7 +116,7 @@ public class ComponentRegistry {
                 log.error("Exception reading file " + file, e);
             }
         }
-
+        componentPaths.add(path);
         return true;
     }
 
