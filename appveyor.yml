@@ -6,6 +6,9 @@ clone_depth: 50
 
 environment:
   fast_finish: true
+  
+  MVN_VERSION: 3.3.9
+  
   matrix:
   - JDK: JDK7
     JAVA_HOME: C:\Program Files\Java\jdk1.7.0
@@ -13,15 +16,23 @@ environment:
     JAVA_HOME: C:\Program Files\Java\jdk1.8.0
 
 install:
-  - set MVN_VERSION=3.3.3
-  - set PATH=%PATH%;C:\tools\apache-maven-%MVN_VERSION%\bin
-  - IF NOT exist "C:\tools\apache-maven-%MVN_VERSION%\bin\*.*" (echo Maven %MVN_VERSION% not installed, so install it & cinst maven -Version %MVN_VERSION%) ELSE (echo Maven %MVN_VERSION% already installed)
+  - ps: >-
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+          if (!(Test-Path -Path "C:\maven" )) {
+            (new-object System.Net.WebClient).DownloadFile(
+              "https://www-eu.apache.org/dist/maven/maven-3/$env:MVN_VERSION/binaries/apache-maven-$env:MVN_VERSION-bin.zip",
+              'C:\maven-bin.zip'
+            )
+            [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\maven-bin.zip", "C:\maven")
+          }
+  - cmd: SET PATH=C:\maven\apache-maven-%MVN_VERSION%\bin;%JAVA_HOME%\bin;%PATH%
+  - cmd: echo %PATH%
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
   - ps: .\.appveyor\set-maven-proxy.ps1
   - mvn install -U -DskipTests -pl "web-commons,viewer-commons,viewer-config-persistence" -B -V -fae -q
   
 cache:
-  - C:\tools\apache-maven-3.3.3 -> appveyor.yml
+  - C:\maven\apache-maven-%MVN_VERSION% -> appveyor.yml
   - C:\Users\appveyor\.m2\repository -> pom.xml
 
 build: off
