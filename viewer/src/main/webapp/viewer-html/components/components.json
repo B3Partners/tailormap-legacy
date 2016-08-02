@@ -1,38 +1,3 @@
-/* JSON metadata describing components for viewer and viewer-admin webapps
- *
- * Parameters:
- *
- * className: The component's classname
- *
- * name: The name as used in the layoutmanager
- *
- * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
- *
- * restrictions: Array with region-ids to which the component can be dragged
- *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,content_bottom
- *   popupwindow,rightmargin_top,rightmargin_bottom,footer
- *
- * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
- *
- * notInCombinationWith: Array with the classNames of other components. If a component from that array has
- *                   already been added to a region, this component cannot be added to that region
- *
- * showHelp: boolean value to show help configuration tab for component (default false)
- * group: string, indicates to which group this component belongs: used to indicate in which closable panel it should be rendered.
- * Possible values: Map, Tools, Functionality. Defaults to "Rest"
- *
- * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
- *
- * extPropertyGridConfigs.source: Set the object that must be configurable with defaults
- * For example:
- *   {name: "a name", tooltip: "a tool tip", happy: true}
- *
- * extPropertyGridConfigs.propertyNames: here you can set the labels for the object configured
- * in extPropertyGridConfigs.source *   l
- * For example:
- *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
- *
- */
 [
     {
         "className": "viewer.mapcomponents.FlamingoMap",
@@ -239,7 +204,7 @@
                 "addUnit": false
             }
         },
-        "helpText": "Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen. U kunt uw eigen gedefinieerde eenheid ook achter de standaard m/km tonen door 'Eigen eenheid toevoegen' op true te zetten."
+        "helpText": "Om een eigen eenheid te gebruiken dient u zowel 'Eenheid' and 'Delen door' in te vullen. U kunt uw eigen gedefinieerde eenheid ook achter de standaard m/km tonen door 'Eigen eenheid toevoegen' op true te zetten."
     },
     {
         "className": "viewer.components.tools.Measure.Area",
@@ -256,7 +221,7 @@
             "propertyNames": {
                 "tooltip": "Tooltip",
                 "units": "Eenheid",
-                "magicnumber": "Delen door (berekend vanaf km<sup>2</sup>)",
+                "magicnumber": "Delen door (berekend vanaf km²)",
                 "decimals": "Decimalen",
                 "nonSticky": "Ga na gebruik naar de eerste tool",
                 "decimalSeparator": "Scheidingsteken decimalen",
@@ -272,7 +237,7 @@
                 "addUnit": false
             }
         },
-        "helpText": "Indien u handmatig een eenheid opgeeft kunt u een superscript 2 krijgen (bijv. m<sup>2</sup>) door m&lt;sup&gt;2&lt;/sup&gt; op te geven bij eenheid. Bij \"Delen door\" wordt uitgegegaan van km<sup>2</sup>, dus om bijv. ha te krijgen moet er worden gedeeld door 100. Om een eigen eenheid te gebruiken dient u zowel \"Eenheid\" and \"Delen door\" in te vullen. U kunt uw eigen gedefinieerde eenheid ook achter de standaard m<sup>2</sup>/km<sup>2</sup> tonen door 'Eigen eenheid toevoegen' op true te zetten."
+        "helpText": "Indien u handmatig een eenheid opgeeft kunt u een superscript 2 krijgen (bijv. m²) door m&lt;sup&gt;2&lt;/sup&gt; op te geven bij eenheid. Bij 'Delen door' wordt uitgegegaan van km², dus om bijv. ha te krijgen moet er worden gedeeld door 100. Om een eigen eenheid te gebruiken dient u zowel 'Eenheid' and 'Delen door' in te vullen. U kunt uw eigen gedefinieerde eenheid ook achter de standaard m²/km² tonen door 'Eigen eenheid toevoegen' op true te zetten."
     },
     {
         "className": "viewer.components.tools.FullExtent",
@@ -423,7 +388,6 @@
             "propertyNames": {
                 "navigationPanel": "Navigatiepaneel",
                 "tooltip": "Tooltip tool",
-                //for navigation panel
                 "width": "Width",
                 "height": "Height",
                 "tooltip_pan_right": "Tooltip pan rechts",
@@ -439,7 +403,6 @@
             "source": {
                 "navigationPanel": true,
                 "tooltip": "Pan(slepen), zoom(dubbel klikken) en identify(enkele klik)",
-                //for navigation panel
                 "width": "",
                 "height": "",
                 "tooltip_pan_right": "Pan naar rechts",
@@ -727,23 +690,6 @@
         "restrictions": ["content"],
         "showHelp": false
      },
-   /*  {
-        className: "viewer.components.fmc.Window",
-        name: "FMC-Window 3rd Party",
-        shortName: "Wi",
-        sources: ["FlamingoComponent.js"],
-        configXML: "<fmc:Window id=\"[id]\" left=\"[left]\" top=\"[top]\" width=\"[width]\" height=\"[height]\"/>",
-        restrictions: ["content"]
-    },
-    {
-        className: "viewer.components.Influence",
-        name: "Invloedsgebied met geometry",
-        shortName: "Igg",
-        sources: ["Search.js","Influence.js"],
-        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
-        restrictions: ["left_menu"],
-        type: "popup"
-    },*/
     {
         "className": "viewer.components.InfluenceImage",
         "name": "Invloedsgebied plaatje",
@@ -833,18 +779,6 @@
                      "iconUrl_dis": "http://localhost:8084/viewer/resources/images/buffer.png"}
         }
     },
-    /**
-    Needs more work... Not reusable
-    {
-        className: "viewer.components.Presentation",
-        name: "Presentation",
-        shortName: "Pres",
-        singleton: true,
-        sources: ["Presentation.js"],
-        configSource: ["ConfigObject.js","Presentation_config.js"],
-        restrictions: ["footer"],
-        type: "popup"
-    },*/
     {
         "className": "viewer.components.Divider",
         "name": "Divider",
