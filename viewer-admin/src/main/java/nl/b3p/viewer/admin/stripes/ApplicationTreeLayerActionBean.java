@@ -79,7 +79,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     @Before
     public void loadInfo() throws JSONException{
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         if(layer == null) {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Laag niet gevonden bij originele service - verwijder deze laag uit niveau"));
             return;
@@ -149,8 +149,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     @Before
     public void synchronizeFeatureType() throws JSONException {
-
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        EntityManager em = Stripersist.getEntityManager();
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
         // Synchronize configured attributes with layer feature type
 
         if(layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
@@ -185,7 +185,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
             for(ConfiguredAttribute ca: attributesToRemove) {
                 applicationLayer.getAttributes().remove(ca);
-                Stripersist.getEntityManager().remove(ca);
+                em.remove(ca);
             }
             
             // JSON info about attributed required for editing
@@ -216,7 +216,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
     
     private List<String> rebuildAttributes(SimpleFeatureType sft) {
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        EntityManager em = Stripersist.getEntityManager();
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
         List<String> attributesToRetain = new ArrayList<String>();
         for(AttributeDescriptor ad: sft.getAttributes()) {
             String name = ad.getName();
@@ -245,7 +246,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 ca.setAttributeName(name);
                 ca.setFeatureType(sft);
                 applicationLayer.getAttributes().add(ca);                        
-                Stripersist.getEntityManager().persist(ca);
+                em.persist(ca);
                 
                 if(!"save".equals(getContext().getEventName())) {
                     String message ="Nieuw attribuut \"{0}\" gevonden in ";
@@ -276,7 +277,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
              sortPerFeatureType(foreign, cas);
         }
         // Sort the attributes of the given SimpleFeatureType (layerSft), ordering by attributename
-        Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
+      /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
                 if (o1.getFeatureType() == null) {
@@ -291,12 +292,12 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     return 0;
                 }
             }
-        });
+        });*/
     }
     
     public Resolution attributes() throws JSONException{
         attributesJSON = new JSONArray();
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         makeAttributeJSONArray(layer.getFeatureType());
         return new StreamingResolution("application/json", new StringReader(attributesJSON.toString()));
     }
@@ -304,7 +305,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
         //Sort the attributes, by featuretype: neccessary for related featuretypes
-        Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
+      /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
                 if (o1.getFeatureType() == null) {
@@ -321,7 +322,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 }
                 return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
             }
-        });
+        });*/
         if(layerSft != null){
             // Sort the attributes by name (per featuretype)
             sortPerFeatureType(layerSft, cas);
@@ -348,7 +349,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         json.put("success", Boolean.FALSE);
 
         try {
-            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
             if(layer != null && layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
                 List<String> beh = sft.calculateUniqueValues(attribute);
@@ -488,7 +489,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
         attributesJSON = new JSONArray();
         
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
         makeAttributeJSONArray(layer.getFeatureType());
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));

@@ -249,7 +249,7 @@ public class ApplicationLayer {
         }
         
         if(includeAttributes) {
-            addAttributesJSON(o, includeRelations);
+            addAttributesJSON(o, includeRelations, em);
         }
 
         StartLayer sl = getStartLayers().get(app);
@@ -258,8 +258,8 @@ public class ApplicationLayer {
         return o;
     }
     
-    public void addAttributesJSON(JSONObject json, boolean includeRelations) throws JSONException {
-        Layer layer = getService().getSingleLayer(getLayerName());
+    public void addAttributesJSON(JSONObject json, boolean includeRelations, EntityManager em) throws JSONException {
+        Layer layer = getService().getSingleLayer(getLayerName(),em);
         Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();        
         SimpleFeatureType ft = null;
         if(layer != null) {
@@ -290,7 +290,7 @@ public class ApplicationLayer {
         if(ft != null) {
             json.put("geometryAttribute", ft.getGeometryAttribute());
             if(includeRelations) {
-                json.put("relations", getRelationsJSON());
+                json.put("relations", getRelationsJSON(em));
             }
         }
         if(geometryAttributeIndex != null) {
@@ -298,9 +298,9 @@ public class ApplicationLayer {
         }        
     }
     
-    public JSONArray getRelationsJSON() throws JSONException {
+    public JSONArray getRelationsJSON(EntityManager em) throws JSONException {
         JSONArray j = new JSONArray();
-        Layer layer = getService().getSingleLayer(getLayerName());
+        Layer layer = getService().getSingleLayer(getLayerName(),em);
         if(layer != null && layer.getFeatureType() != null) {
             for(FeatureTypeRelation rel: layer.getFeatureType().getRelations()){
                 JSONObject jRel = rel.toJSONObject();

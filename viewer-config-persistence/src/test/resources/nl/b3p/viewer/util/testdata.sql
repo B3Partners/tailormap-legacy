@@ -330,7 +330,7 @@ insert into SOLR_CONF_INDEX_ATTRIBUTES (solr_conf, attribute_) values(1, 45);
 insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_) values(1, 43); 
 insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_)	values(1, 45); 
 
-INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '18');
+INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '19');
 
 
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');

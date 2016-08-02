@@ -75,6 +75,7 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         ds = new DatabaseSynchronizer();
         LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
         updates.put("" + TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
+        updates.put("" + (TEST_VERSION_NUMBER + 1), new UpdateElement(Collections.singletonList("updateApplicationLayersAttributesOrder"), DatabaseSynchronizerEM.class));
         ds.doInit(entityManager);
     }
 
