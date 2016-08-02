@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import javax.persistence.NoResultException;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Application.TreeCache;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
@@ -35,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -170,5 +172,20 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         JSONAssert.assertEquals(expected.getJSONObject("services"), actual.getJSONObject("services"), JSONCompareMode.LENIENT);
         JSONAssert.assertEquals(expected.getJSONObject("levels"), actual.getJSONObject("levels"), JSONCompareMode.LENIENT);
         assertEquals(6, entityManager.createQuery("FROM Level").getResultList().size());
+    }
+    
+    @Test
+    public void testUpdateApplicationLayerAttributesOrder(){
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
+        List<ConfiguredAttribute> attrs = appLayer.getAttributes();
+        String prevNaam = null;
+        for (ConfiguredAttribute attr : attrs) {
+            if(prevNaam != null && attr.getAttributeName().compareTo(prevNaam) < 1 ){
+                fail("Attributes not in correct order (should be alphabetically");
+            }else{
+                prevNaam = attr.getAttributeName();
+            }
+        }
+        
     }
 }
