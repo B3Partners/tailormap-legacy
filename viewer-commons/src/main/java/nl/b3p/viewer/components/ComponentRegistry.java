@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,17 @@
  */
 package nl.b3p.viewer.components;
 
-import com.google.javascript.jscomp.CompilationLevel;
-import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.JSError;
-import com.google.javascript.jscomp.SourceFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -40,11 +39,12 @@ import org.json.JSONObject;
  * Registry of available JavaScript viewer components.
  *
  * @author Matthijs Laan
+ * @author mprins
  */
 public class ComponentRegistry {
     private static final Log log = LogFactory.getLog(ComponentRegistry.class);
 
-    private final Map<String,ViewerComponent> components = new HashMap<String,ViewerComponent>();
+    private final Map<String,ViewerComponent> components = new HashMap<>();
 
     private final List<File> componentPaths = new ArrayList();
 
@@ -67,33 +67,8 @@ public class ComponentRegistry {
         for(String file: files) {
             String filename = path + File.separator + file;
             try {
-                String contents = "";
+                String contents = IOUtils.toString(new FileInputStream(filename), "UTF-8");
 
-                Compiler compiler = new Compiler();
-                CompilerOptions options = new CompilerOptions();
-                CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
-                options.setOutputCharset(Charset.forName("UTF-8"));
-
-                compiler.compile(SourceFile.fromCode("dummy.js", ""), SourceFile.fromFile(filename, Charset.forName("UTF-8")), options);
-
-                if(compiler.hasErrors()) {
-                    log.warn(compiler.getErrorCount() + " error(s) minifying source file " + filename + "; using original source");
-                    contents = IOUtils.toString(new FileInputStream(filename), "UTF-8");
-
-                    for(int i = 0; i < compiler.getErrorCount(); i++) {
-                        JSError error = compiler.getErrors()[i];
-                        String er = String.format("#%d line %d,%d: %s: %s",
-                                i+1,
-                                error.lineNumber,
-                                error.getCharno(),
-                                error.getDefaultLevel(),
-                                error.description);
-                        log.warn(er);
-                    }
-
-                } else {
-                    contents = compiler.toSource();
-                }
                 try {
                     JSONObject componentMetadata = new JSONObject(contents);
 
@@ -101,9 +76,6 @@ public class ComponentRegistry {
                 } catch(JSONException e) {
                     /* See if it is an array of components */
                     try {
-                        /* NOTE: org.json version in Maven repo's don't ignore
-                         * comments before '['! Patched version is in local repo.
-                         */
                         JSONArray cpms = new JSONArray(contents);
                         for (int i = 0; i < cpms.length(); i++) {
                             loadComponentMetadata(path, cpms.getJSONObject(i));
@@ -121,7 +93,7 @@ public class ComponentRegistry {
     }
 
     private void loadComponentMetadata(File path, JSONObject metadata) throws IOException {
-        log.debug("Load component: " + metadata);
+        log.debug("Loading component: " + metadata + " from file " + path);
 
         try {
             String className = metadata.getString("className");
@@ -162,13 +134,13 @@ public class ComponentRegistry {
     }
 
     public List<String> getSortedComponentClassNameList() {
-        List<String> names = new ArrayList<String>(components.keySet());
+        List<String> names = new ArrayList<>(components.keySet());
         Collections.sort(names);
         return names;
     }
 
     public List<String> getClassNameListSortedByDisplayName() {
-        List<String> names = new ArrayList<String>(components.keySet());
+        List<String> names = new ArrayList<>(components.keySet());
         Collections.sort(names, new Comparator<String>() {
             @Override
             public int compare(String lhs, String rhs) {
