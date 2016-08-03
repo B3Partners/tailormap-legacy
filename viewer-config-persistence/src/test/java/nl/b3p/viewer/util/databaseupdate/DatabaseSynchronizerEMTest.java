@@ -194,7 +194,7 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         }
     }
     
-    //@Test
+    @Test
     public void testUpdateAttributeOrder(){
         DatabaseSynchronizerEM instance = new DatabaseSynchronizerEM();
         
