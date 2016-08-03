@@ -31,6 +31,7 @@ import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -177,16 +178,46 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
     
     @Test
     public void testUpdateApplicationLayerAttributesOrder(){
-        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
-        List<ConfiguredAttribute> attrs = appLayer.getAttributes();
-        String prevNaam = null;
-        for (ConfiguredAttribute attr : attrs) {
-            if(prevNaam != null && attr.getAttributeName().compareTo(prevNaam) < 1 ){
-                fail("Attributes not in correct order (should be alphabetically");
-            }else{
-                prevNaam = attr.getAttributeName();
+        List<ApplicationLayer> appLayers = entityManager.createQuery("From ApplicationLayer").getResultList();
+        for (ApplicationLayer appLayer : appLayers) {
+            System.out.println("Checking layer " + appLayer.getLayerName());
+            List<ConfiguredAttribute> attrs = appLayer.getAttributes();
+            if (!areInCorrectOrder(attrs)) {
+                fail("Attributes of "  + appLayer.getLayerName() + " not in correct order (should be alphabetically");
             }
         }
         
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
+        entityManager.refresh(appLayer);
+        if(!areInCorrectOrder(appLayer.getAttributes())){
+            fail("Attributes not in correct order (should be alphabetically");            
+        }
+    }
+    
+    //@Test
+    public void testUpdateAttributeOrder(){
+        DatabaseSynchronizerEM instance = new DatabaseSynchronizerEM();
+        
+        ApplicationLayer applicationLayer = entityManager.find(ApplicationLayer.class, 2L);
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), entityManager);
+        instance.updateAttributeOrder(applicationLayer, layer.getFeatureType(), entityManager);
+
+        List<ConfiguredAttribute> attrs = applicationLayer.getAttributes();
+        if (!areInCorrectOrder(attrs)) {
+            fail("Attributes not in correct order (should be alphabetically");
+        }
+    }
+    
+    private boolean areInCorrectOrder(List<ConfiguredAttribute> attrs ){
+         String prevNaam = null;
+        for (ConfiguredAttribute attr : attrs) {
+            System.out.println("Attribute:" + attr.getAttributeName());
+            if (prevNaam != null && attr.getAttributeName().compareTo(prevNaam) < 1) {
+                return false;
+            } else {
+                prevNaam = attr.getAttributeName();
+            }
+        }
+        return true;
     }
 }
