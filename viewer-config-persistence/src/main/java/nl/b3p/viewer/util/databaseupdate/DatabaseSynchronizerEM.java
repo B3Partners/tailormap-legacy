@@ -30,6 +30,8 @@ import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This class will update the database to its newest version. Here methods will
@@ -38,6 +40,7 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class DatabaseSynchronizerEM {
+    private static final Log log = LogFactory.getLog(DatabaseSynchronizerEM.class);
 
     /**
      * convert Applications To start level Layer.
@@ -90,8 +93,9 @@ public class DatabaseSynchronizerEM {
         }
     }
    
-    private void updateAttributeOrder(ApplicationLayer applicationLayer, final SimpleFeatureType layerSft, EntityManager em) {
+    void updateAttributeOrder(ApplicationLayer applicationLayer, final SimpleFeatureType layerSft, EntityManager em) {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
+        log.info("Sorting layer " + applicationLayer.getLayerName());
         //Sort the attributes, by featuretype: neccessary for related featuretypes
         Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
@@ -146,6 +150,9 @@ public class DatabaseSynchronizerEM {
                 }
             }
         });
+        for (ConfiguredAttribute ca : cas) {
+            log.info(ca.getAttributeName());
+        }
     }
     
 
