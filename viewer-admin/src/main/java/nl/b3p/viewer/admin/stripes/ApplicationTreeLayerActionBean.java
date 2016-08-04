@@ -451,7 +451,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 //save visible
                 appAttribute.setVisible(attrOrder.getBoolean("checked"));
                 
-                if(attrOrder.has("folder_label")){
+                if(attrOrder.has("folder_label") && !attrOrder.getString("folder_label").isEmpty()){
                     appAttribute.setLabel(attrOrder.getString("folder_label"));
                 }
                
