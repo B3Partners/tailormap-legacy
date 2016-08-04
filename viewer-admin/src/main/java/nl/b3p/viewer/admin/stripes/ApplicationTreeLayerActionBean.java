@@ -51,9 +51,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     @Validate
     private Map<String, String> details = new HashMap<String, String>();
 
-    @Validate
-    private List<String> selectedAttributes = new ArrayList<String>();
-
     private Map<String,String> attributeAliases = new HashMap();
     
     private List<Map> styles = new ArrayList();
@@ -208,12 +205,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
             
-            // Fill visible checkboxes
-            for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
-                if(ca.isVisible()) {
-                    selectedAttributes.add(ca.getFullName());
-                }
-            }            
         }
 
         return new ForwardResolution(JSP);
@@ -533,14 +524,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setDetails(Map<String, String> details) {
         this.details = details;
-    }
-
-    public List<String> getSelectedAttributes() {
-        return selectedAttributes;
-    }
-
-    public void setSelectedAttributes(List<String> selectedAttributes) {
-        this.selectedAttributes = selectedAttributes;
     }
 
     public JSONObject getAttributesJSON() {

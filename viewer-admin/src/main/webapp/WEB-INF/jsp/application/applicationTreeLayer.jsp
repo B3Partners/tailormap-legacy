@@ -179,34 +179,6 @@ Wijken: &lt;br /&gt;
                         ${group.name}<br/>
                     </c:forEach>
                 </div>
-                <div id="attributes-tab" class="tabdiv"><div>
-                    <a href="#Attributen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
-                    <c:choose>
-                        <c:when test="${!empty actionBean.applicationLayer.attributes}">                                                               
-                            <c:forEach var="attribute" items="${actionBean.applicationLayer.attributes}" varStatus="count">   
-                                <c:if test="${count.index==0 ||(count.index > 0 && actionBean.applicationLayer.attributes[count.index-1].featureType.id != actionBean.applicationLayer.attributes[count.index].featureType.id)}">
-                                    <div style="margin-left: -5px;">
-                                        <input type="checkbox" class="attribute-group-toggle" id="featureType_${attribute.featureType.id}" value="featureType_${attribute.featureType.id}" />
-                                        <b><c:out value="${attribute.featureType.featureSource.name}"/> - <c:out value="${attribute.featureType.typeName}"/> (alles selecteer/deselecteer)</b>
-                                    </div>
-                                </c:if>
-                                <stripes:checkbox class="featureType_${attribute.featureType.id}" name="selectedAttributes" value="${attribute.fullName}"/>
-                                <c:set var="name" value="${attribute.attributeName}"/>
-                                <c:set var="alias" value="${actionBean.attributeAliases[attribute.fullName]}"/>
-                                
-                                <c:choose>
-                                    <c:when test="${alias == null || alias == name}"><c:out value="${name}"/></c:when>
-                                    <c:otherwise><c:out value="${alias} (${name})"/></c:otherwise>
-                                </c:choose>
-                                <br>
-                            </c:forEach>
-                        </c:when> 
-                        <c:otherwise>
-                            Er zijn geen attributen voor deze kaartlaag geconfigureerd.
-                        </c:otherwise>
-                    </c:choose>
-                    </div>
-                </div>
                 <div id="edit-tab" class="tabdiv">
                     <stripes:hidden name="details['editfeature.usernameAttribute']" id="details_editfeature_usernameAttribute"/>
                     <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>

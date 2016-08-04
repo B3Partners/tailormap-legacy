@@ -105,10 +105,21 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         },{
             contentEl:'rights-tab',
             title: 'Rechten'
-        },{
-            contentEl:'attributes-tab',
-            title: 'Attributen'
         }];
+     if(this.config.attributes.length !== 0) {
+            var attributeOrder = Ext.create("vieweradmin.components.ApplicationTreeLayerAttributes", {
+                attributes: this.config.attributes
+            });
+            this.tabComponents.push({ config: "attributeOrder", component: attributeOrder });
+            tabconfig.push({
+                xtype: 'container',
+                width: '100%',
+                title: 'Attributen',
+                layout: { type: 'hbox', align: "stretch" },
+                items: attributeOrder.getItems()
+            });
+        }
+
         if(editItems.length !== 0) {
             tabconfig.push({
                 xtype: 'container',
@@ -145,20 +156,6 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             contentEl:'context-tab',
             title: 'Context'
         });
-
-        if(this.config.attributes.length !== 0) {
-            var attributeOrder = Ext.create("vieweradmin.components.ApplicationTreeLayerAttributes", {
-                attributes: this.config.attributes
-            });
-            this.tabComponents.push({ config: "attributeOrder", component: attributeOrder });
-            tabconfig.push({
-                xtype: 'container',
-                width: '100%',
-                title: 'Volgorde Attributen',
-                layout: { type: 'hbox', align: "stretch" },
-                items: attributeOrder.getItems()
-            });
-        }
 
         var tabpanel = Ext.create('Ext.tab.Panel', {
             title: "Bewerken kaartlaag",
