@@ -424,83 +424,97 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     
     private void saveConfiguredAttributes(EntityManager em) {
         if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
-            List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
-            int i = 0;
-
-            for (Iterator it = appAttributes.iterator(); it.hasNext();) {
-                ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
-                //save visible
-                if (selectedAttributes.contains(appAttribute.getFullName())) {
-                    appAttribute.setVisible(true);
-                } else {
-                    appAttribute.setVisible(false);
-                }
-
-                //save editable
-                if (attributesConfig.length() > i) {
-                    JSONObject attr = attributesConfig.getJSONObject(i);
-
-                    if (attr.has("editable")) {
-                        appAttribute.setEditable(attr.getBoolean("editable"));
-                    }
-                    if (attr.has("editAlias")) {
-                        appAttribute.setEditAlias(attr.getString("editAlias"));
-                    }
-                    if (attr.has("editvalues")) {
-                        appAttribute.setEditValues(attr.getString("editvalues"));
-                    }
-                    if (attr.has("editHeight")) {
-                        appAttribute.setEditHeight(attr.getString("editHeight"));
-                    }
-
-                    //save selectable
-                    if (attr.has("selectable")) {
-                        appAttribute.setSelectable(attr.getBoolean("selectable"));
-                    }
-                    if (attr.has("filterable")) {
-                        appAttribute.setFilterable(attr.getBoolean("filterable"));
-                    }
-
-                    if (attr.has("defaultValue")) {
-                        appAttribute.setDefaultValue(attr.getString("defaultValue"));
-                    }
-
-                    if (attr.has("valueListFeatureSource") && !attr.isNull("valueListFeatureSource")) {
-                        Long id = attr.getLong("valueListFeatureSource");
-                        FeatureSource fs = em.find(FeatureSource.class, id);
-                        appAttribute.setValueListFeatureSource(fs);
-                    }
-
-                    if (attr.has("valueListFeatureType") && !attr.isNull("valueListFeatureType")) {
-                        Long id = attr.getLong("valueListFeatureType");
-                        SimpleFeatureType ft = em.find(SimpleFeatureType.class, id);
-                        appAttribute.setValueListFeatureType(ft);
-                    }
-
-                    if (attr.has("valueListValueAttribute") && !attr.isNull("valueListValueAttribute")) {
-                        appAttribute.setValueListValueName(attr.getString("valueListValueAttribute"));
-                    }
-
-                    if (attr.has("valueListLabelAttribute") && !attr.isNull("valueListLabelAttribute")) {
-                        appAttribute.setValueListLabelName(attr.getString("valueListLabelAttribute"));
-                    }
-
-                    if (attr.has("valueList") && !attr.isNull("valueList")) {
-                        appAttribute.setValueList(attr.getString("valueList"));
-                    }
-
-                    if (attr.has("allowValueListOnly")) {
-                        appAttribute.setAllowValueListOnly(attr.getBoolean("allowValueListOnly"));
-                    }
-                    if (attr.has("disallowNullValue")) {
-                        appAttribute.setDisallowNullValue(attr.getBoolean("disallowNullValue"));
-                    }
-                    if (attr.has("disableUserEdit")) {
-                        appAttribute.setDisableUserEdit(attr.getBoolean("disableUserEdit"));
-                    }
-                }
-                i++;
+            
+            Map<Long, JSONObject> attributeConfigsById = new HashMap<Long, JSONObject>();
+            for (int i = 0; i < attributesConfig.length(); i++) {
+                JSONObject object = attributesConfig.getJSONObject(i);
+                attributeConfigsById.put(object.getLong("id"), object);
             }
+            
+            List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
+            
+            Map<Long, ConfiguredAttribute> attrsById = new HashMap<Long,ConfiguredAttribute>();
+            for (ConfiguredAttribute appAttribute : appAttributes) {
+                attrsById.put(appAttribute.getId(), appAttribute);
+            }
+            
+            List<ConfiguredAttribute> newAttributeOrder = new ArrayList<ConfiguredAttribute>();
+            for (int i = 0; i < attributesOrder.length(); i++) {
+                JSONObject attrOrder = attributesOrder.getJSONObject(i);
+                
+                Long id = attrOrder.getLong("attribute_id");
+                JSONObject attr = attributeConfigsById.get(id);
+                
+                ConfiguredAttribute appAttribute = attrsById.get(id);
+                newAttributeOrder.add(appAttribute);
+                
+                //save visible
+                appAttribute.setVisible(attrOrder.getBoolean("checked"));
+                
+                if(attrOrder.has("folder_label")){
+                    appAttribute.setLabel(attrOrder.getString("folder_label"));
+                }
+               
+                if (attr.has("editable")) {
+                    appAttribute.setEditable(attr.getBoolean("editable"));
+                }
+                if (attr.has("editAlias")) {
+                    appAttribute.setEditAlias(attr.getString("editAlias"));
+                }
+                if (attr.has("editvalues")) {
+                    appAttribute.setEditValues(attr.getString("editvalues"));
+                }
+                if (attr.has("editHeight")) {
+                    appAttribute.setEditHeight(attr.getString("editHeight"));
+                }
+
+                //save selectable
+                if (attr.has("selectable")) {
+                    appAttribute.setSelectable(attr.getBoolean("selectable"));
+                }
+                if (attr.has("filterable")) {
+                    appAttribute.setFilterable(attr.getBoolean("filterable"));
+                }
+
+                if (attr.has("defaultValue")) {
+                    appAttribute.setDefaultValue(attr.getString("defaultValue"));
+                }
+
+                if (attr.has("valueListFeatureSource") && !attr.isNull("valueListFeatureSource")) {
+                    Long valueListFeatureSourceId = attr.getLong("valueListFeatureSource");
+                    FeatureSource fs = em.find(FeatureSource.class, valueListFeatureSourceId);
+                    appAttribute.setValueListFeatureSource(fs);
+                }
+
+                if (attr.has("valueListFeatureType") && !attr.isNull("valueListFeatureType")) {
+                    Long valueListFeatureTypeId = attr.getLong("valueListFeatureType");
+                    SimpleFeatureType ft = em.find(SimpleFeatureType.class, valueListFeatureTypeId);
+                    appAttribute.setValueListFeatureType(ft);
+                }
+
+                if (attr.has("valueListValueAttribute") && !attr.isNull("valueListValueAttribute")) {
+                    appAttribute.setValueListValueName(attr.getString("valueListValueAttribute"));
+                }
+
+                if (attr.has("valueListLabelAttribute") && !attr.isNull("valueListLabelAttribute")) {
+                    appAttribute.setValueListLabelName(attr.getString("valueListLabelAttribute"));
+                }
+
+                if (attr.has("valueList") && !attr.isNull("valueList")) {
+                    appAttribute.setValueList(attr.getString("valueList"));
+                }
+
+                if (attr.has("allowValueListOnly")) {
+                    appAttribute.setAllowValueListOnly(attr.getBoolean("allowValueListOnly"));
+                }
+                if (attr.has("disallowNullValue")) {
+                    appAttribute.setDisallowNullValue(attr.getBoolean("disallowNullValue"));
+                }
+                if (attr.has("disableUserEdit")) {
+                    appAttribute.setDisableUserEdit(attr.getBoolean("disableUserEdit"));
+                }
+            }
+            applicationLayer.setAttributes(newAttributeOrder);
         }
     }
 
