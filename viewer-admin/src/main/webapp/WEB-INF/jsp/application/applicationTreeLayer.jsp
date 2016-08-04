@@ -237,7 +237,7 @@ Wijken: &lt;br /&gt;
             <script type="text/javascript">
                 Ext.onReady(function() {
                     Ext.create('vieweradmin.components.ApplicationTreeLayer', {
-                        attributes: ${actionBean.attributesJSON},
+                        attributes: ${actionBean.attributesConfig},
                         editable: ${actionBean.editable},
                         applicationLayer: "${actionBean.applicationLayer.id}",
                         applicationLayerFeatureType: ${actionBean.appLayerFeatureType != null ? actionBean.appLayerFeatureType : -1},

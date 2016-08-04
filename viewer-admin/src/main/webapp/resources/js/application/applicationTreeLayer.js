@@ -982,7 +982,7 @@ hier niet op gecontroleerd.'
         for(var i = 0; i < this.tabComponents.length; i++) {
             jsonConf[this.tabComponents[i].config] = this.tabComponents[i].component.getJson();
         }
-        return Ext.JSON.encode(currentAttributes);
+        return Ext.JSON.encode(jsonConf);
     },
 
     getDBValues: function(attribute,id, tab) {

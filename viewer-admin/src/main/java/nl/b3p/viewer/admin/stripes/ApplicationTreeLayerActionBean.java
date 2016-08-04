@@ -65,7 +65,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private Long appLayerFeatureType;
     
     @Validate
-    private JSONArray attributesJSON = new JSONArray();
+    private JSONObject attributesJSON = new JSONObject();
+    
+    private JSONArray attributesConfig = new JSONArray();
+    private JSONArray attributesOrder = new JSONArray();
     
     @Validate(on="getUniqueValues")
     private String attribute;
@@ -151,7 +154,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void synchronizeFeatureType() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
-        // Synchronize configured attributes with layer feature type
+        // Synchronize configured attributesJSON with layer feature type
 
         if(layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
             applicationLayer.getAttributes().clear();
@@ -159,10 +162,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             List<String> attributesToRetain = new ArrayList();
             
             SimpleFeatureType sft = layer.getFeatureType(); 
-            // Rebuild ApplicationLayer.attributes according to Layer FeatureType
-            // New attributes are added at the end of the list; the original
-            // order is only used when the Application.attributes list is empty
-            // So a feature for reordering attributes per applicationLayer is
+            // Rebuild ApplicationLayer.attributesJSON according to Layer FeatureType
+            // New attributesJSON are added at the end of the list; the original
+            // order is only used when the Application.attributesJSON list is empty
+            // So a feature for reordering attributesJSON per applicationLayer is
             // possible.
             // New Attributes from a join or related featureType are added at the 
             //end of the list.                                  
@@ -189,6 +192,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
             
             // JSON info about attributed required for editing
+            attributesConfig = attributesJSON.has("attributeConfig") ? attributesJSON.getJSONArray("attributeConfig") : new JSONArray();
+            attributesOrder =attributesJSON.has("attributeOrder") ? attributesJSON.getJSONArray("attributeOrder") : new JSONArray(); 
             makeAttributeJSONArray(layer.getFeatureType()); 
         }        
     }
@@ -273,10 +278,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         List<FeatureTypeRelation> relations = layerSft.getRelations();
         for (FeatureTypeRelation relation : relations) {
              SimpleFeatureType foreign = relation.getForeignFeatureType();
-             // Sort the attributes of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
+             // Sort the attributesJSON of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
              sortPerFeatureType(foreign, cas);
         }
-        // Sort the attributes of the given SimpleFeatureType (layerSft), ordering by attributename
+        // Sort the attributesJSON of the given SimpleFeatureType (layerSft), ordering by attributename
       /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
@@ -296,15 +301,15 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
     
     public Resolution attributes() throws JSONException{
-        attributesJSON = new JSONArray();
+        attributesConfig = new JSONArray();
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         makeAttributeJSONArray(layer.getFeatureType());
-        return new StreamingResolution("application/json", new StringReader(attributesJSON.toString()));
+        return new StreamingResolution("application/json", new StringReader(attributesConfig.toString()));
     }
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
-        //Sort the attributes, by featuretype: neccessary for related featuretypes
+        //Sort the attributesJSON, by featuretype: neccessary for related featuretypes
       /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
@@ -324,7 +329,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
         });*/
         if(layerSft != null){
-            // Sort the attributes by name (per featuretype)
+            // Sort the attributesJSON by name (per featuretype)
             sortPerFeatureType(layerSft, cas);
         }
 
@@ -340,7 +345,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             j.put("alias", ad.getAlias());
             j.put("featureTypeAttribute", ad.toJSONObject());
             
-            attributesJSON.put(j);
+            attributesConfig.put(j);
         }
     }    
     
@@ -413,8 +418,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 }
 
                 //save editable
-                if (attributesJSON.length() > i) {
-                    JSONObject attribute = attributesJSON.getJSONObject(i);
+                if (attributesConfig.length() > i) {
+                    JSONObject attribute = attributesConfig.getJSONObject(i);
 
                     if (attribute.has("editable")) {
                         appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
@@ -487,7 +492,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         
         em.getTransaction().commit();
 
-        attributesJSON = new JSONArray();
+        attributesConfig = new JSONArray();
         
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
         makeAttributeJSONArray(layer.getFeatureType());
@@ -521,11 +526,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         this.selectedAttributes = selectedAttributes;
     }
 
-    public JSONArray getAttributesJSON() {
+    public JSONObject getAttributesJSON() {
         return attributesJSON;
     }
 
-    public void setAttributesJSON(JSONArray attributesJSON) {
+    public void setAttributesJSON(JSONObject attributesJSON) {
         this.attributesJSON = attributesJSON;
     }
 
@@ -600,6 +605,15 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setAppLayerFeatureType(Long appLayerFeatureType) {
         this.appLayerFeatureType = appLayerFeatureType;
     }
+
+    public JSONArray getAttributesConfig() {
+        return attributesConfig;
+    }
+
+    public void setAttributesConfig(JSONArray attributesConfig) {
+        this.attributesConfig = attributesConfig;
+    }
+
     //</editor-fold>    
     
 }

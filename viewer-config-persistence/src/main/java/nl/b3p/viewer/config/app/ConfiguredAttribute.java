@@ -77,6 +77,8 @@ public class ConfiguredAttribute {
     private boolean disallowNullValue;
 
     private boolean disableUserEdit;
+    
+    private String label;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
@@ -229,6 +231,14 @@ public class ConfiguredAttribute {
 
     public void setDisableUserEdit(boolean disableUserEdit) {
         this.disableUserEdit = disableUserEdit;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
     //</editor-fold>
     
