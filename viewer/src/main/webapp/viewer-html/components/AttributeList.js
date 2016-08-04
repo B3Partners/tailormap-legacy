@@ -173,7 +173,7 @@ Ext.define ("viewer.components.AttributeList",{
                         valueField: 'type',
                         style: { marginRight: '5px' },
                         store:  Ext.create('Ext.data.Store', {
-                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
+                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"GEOJSON", label:"GeoJSON" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
                             })
                     },
                     {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {

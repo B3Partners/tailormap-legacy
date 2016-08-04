@@ -52,6 +52,7 @@ import nl.b3p.viewer.config.services.WFSFeatureSource;
 import nl.b3p.viewer.features.CSVDownloader;
 import nl.b3p.viewer.features.ExcelDownloader;
 import nl.b3p.viewer.features.FeatureDownloader;
+import nl.b3p.viewer.features.GeoJSONDownloader;
 import nl.b3p.viewer.features.ShapeDownloader;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
@@ -330,6 +331,8 @@ public class DownloadFeaturesActionBean implements ActionBean {
             downloader = new ExcelDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes,attributeAliases, params);
         } else if (type.equals("CSV")){
             downloader = new CSVDownloader(attributes, (SimpleFeatureSource)fs, featureTypeAttributes,attributeAliases, params);
+        }else if (type.equals("GEOJSON")){
+            downloader = new GeoJSONDownloader(attributes, (SimpleFeatureSource)fs, featureTypeAttributes,attributeAliases, params);
         }else {
             throw new IllegalArgumentException("No suitable type given: " + type);
         }
