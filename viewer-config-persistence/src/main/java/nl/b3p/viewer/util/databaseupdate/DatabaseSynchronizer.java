@@ -135,6 +135,7 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("18", new UpdateElement(Collections.singletonList("idx_layer_crs_list.sql"), String.class));
         
         updates.put("19", new UpdateElement(Collections.singletonList("updateApplicationLayersAttributesOrder"), DatabaseSynchronizerEM.class));
+        updates.put("20", new UpdateElement(Collections.singletonList("add_label_configured_attribute.sql"), String.class));
         // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }
 
