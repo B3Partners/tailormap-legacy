@@ -1,0 +1,1 @@
+alter table configured_attribute add  (url VARCHAR2(255));
