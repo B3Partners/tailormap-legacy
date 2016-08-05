@@ -38,6 +38,7 @@ Ext.define ("viewer.components.AttributeList",{
         addZoomTo: false,
         zoomToBuffer: 10,
         showLayerSelectorTabs: false,
+        showAttributelistLinkInFeatureInfo: false,
         details: {
             minWidth: 600,
             minHeight: 300
@@ -222,7 +223,9 @@ Ext.define ("viewer.components.AttributeList",{
         this.layerSelector.clearSelection();
         // Select first layer
         this.layerSelector.selectFirstLayer();
-        this.createFeatureInfoLink(store);
+        if(this.config.showAttributelistLinkInFeatureInfo) {
+            this.createFeatureInfoLink(store);
+        }
     },
     createFeatureInfoLink: function(store) {
         if(this.editLinkInFeatureInfoCreated) {

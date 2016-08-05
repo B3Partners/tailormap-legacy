@@ -85,6 +85,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth
         });
 
+        this.form.add({
+            xtype: 'checkbox',
+            fieldLabel: 'Link toevoegen in Feature Info',
+            name: 'showAttributelistLinkInFeatureInfo',
+            value: this.configObject.showAttributelistLinkInFeatureInfo !== undefined ? this.configObject.showAttributelistLinkInFeatureInfo : false,
+            labelWidth: this.labelWidth
+        });
+
         this.createCheckBoxes(this.configObject.layers,{attribute:true});
     },
     getDefaultValues: function() {
