@@ -199,8 +199,11 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          */
         ON_LAYERSELECTOR_CHANGE                 : "ON_LAYERSELECTOR_CHANGE",
         /**
-         * Thrown when a layerSelector had loaded the layers
-         * param1: the store with layers
+         * Fired when a layerSelector has loaded the layers
+         * param1: an object with {
+         *          store: the store with (only the visible) layers,
+         *          layers: the full layer list as an array, matching any applied filters
+         *       }
          * param2: the layerselector itself
          */
         ON_LAYERSELECTOR_INITLAYERS             : "ON_LAYERSELECTOR_INITLAYERS",

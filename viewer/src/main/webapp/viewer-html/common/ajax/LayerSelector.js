@@ -55,7 +55,7 @@ Ext.define ("viewer.components.LayerSelector",{
         var requestParams = {};
         requestParams[this.config.restriction]= true;
         requestParams["appId"]= appId;
-            var me = this;
+        var me = this;
         if(this.config.layers != null && this.config.layers.length > 0){
             requestParams["layers"]= this.config.layers;
             requestParams["hasConfiguredLayers"]= true;    
@@ -187,7 +187,8 @@ Ext.define ("viewer.components.LayerSelector",{
                 this.initTabs();
             }
         }
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS,this.layerstore,this);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS,
+                {store: this.layerstore, layers: this.layerList}, this);
     },
 
     initTabs: function() {
