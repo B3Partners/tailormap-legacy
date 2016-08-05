@@ -367,6 +367,17 @@
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
                         </compilation>
+                        <compilation>
+                            <compilationLevel>WHITESPACE_ONLY</compilationLevel>
+                            <compilerOptions>
+                                <prettyPrint>true</prettyPrint>
+                            </compilerOptions>
+                            <externFiles />
+                            <sourceFiles>
+                                <param>${viewerhtml.path}/components/components.json</param>
+                            </sourceFiles>
+                            <outputFile>${minify.outputdir}/components.json</outputFile>
+                        </compilation>
                     </compilations>
                 </configuration>
             </plugin>
