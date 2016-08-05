@@ -264,32 +264,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return attributesToRetain;
     }
     
-    private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas) {
-        List<FeatureTypeRelation> relations = layerSft.getRelations();
-        for (FeatureTypeRelation relation : relations) {
-             SimpleFeatureType foreign = relation.getForeignFeatureType();
-             // Sort the attributesJSON of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
-             sortPerFeatureType(foreign, cas);
-        }
-        // Sort the attributesJSON of the given SimpleFeatureType (layerSft), ordering by attributename
-      /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
-            @Override
-            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
-                if (o1.getFeatureType() == null) {
-                    return 0;
-                }
-                if (o2.getFeatureType() == null) {
-                    return 0;
-                }
-                if (o1.getFeatureType().getId().equals(layerSft.getId()) && o2.getFeatureType().getId().equals(layerSft.getId())) {
-                    return o1.getAttributeName().compareTo(o2.getAttributeName());
-                }else{
-                    return 0;
-                }
-            }
-        });*/
-    }
-    
     public Resolution attributes() throws JSONException{
         attributesConfig = new JSONArray();
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
@@ -299,30 +273,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
-        //Sort the attributesJSON, by featuretype: neccessary for related featuretypes
-      /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
-            @Override
-            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
-                if (o1.getFeatureType() == null) {
-                    return -1;
-                }
-                if (o2.getFeatureType() == null) {
-                    return 1;
-                }
-                if (o1.getFeatureType().getId().equals(layerSft.getId())) {
-                    return -1;
-                }
-                if (o2.getFeatureType().getId().equals(layerSft.getId())) {
-                    return 1;
-                }
-                return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
-            }
-        });*/
-        if(layerSft != null){
-            // Sort the attributesJSON by name (per featuretype)
-            sortPerFeatureType(layerSft, cas);
-        }
-
+    
         for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
             

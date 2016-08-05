@@ -255,7 +255,7 @@ public class ConfiguredAttribute {
         o.put("editHeight", editHeight);
         o.put("allowValueListOnly", allowValueListOnly);
         o.put("disallowNullValue", disallowNullValue);
-        
+        o.put("label", label);
         if(editValues != null) {
             try {
                 o.put("editValues", new JSONArray(editValues));
