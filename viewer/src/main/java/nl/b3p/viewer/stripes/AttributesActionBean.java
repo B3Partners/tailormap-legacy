@@ -251,7 +251,7 @@ public class AttributesActionBean implements ActionBean {
 
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
-        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
+        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
     }
 
     @Before(stages=LifecycleStage.EventHandling)
@@ -277,7 +277,7 @@ public class AttributesActionBean implements ActionBean {
             error = "Not authorized";
         } else {
 
-            appLayer.addAttributesJSON(json, true);
+            appLayer.addAttributesJSON(json, true, Stripersist.getEntityManager());
             if (!userAllowedToEditGeom) {
                 // set editable to false on geometry attribute when editing of the
                 //  geometry has been disabled on the layer fot the current user

@@ -507,9 +507,9 @@ public abstract class GeoService implements Serializable {
      * @param layerName the name of the layer to find
      * @return the named layer
      */
-    public Layer getSingleLayer(final String layerName) {
+    public Layer getSingleLayer(final String layerName, EntityManager em) {
         try {
-            return (Layer)Stripersist.getEntityManager().createQuery(
+            return (Layer)em.createQuery(
                       "from Layer where service = :service "
                     + "and name = :n order by virtual desc")
                     .setParameter("service", this)

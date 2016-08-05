@@ -146,7 +146,7 @@ public class DataStoreSpinupActionBean implements ActionBean {
                     
                     try {
                         GeoService gs = al.getService();
-                        Layer l = gs.getSingleLayer(al.getLayerName());
+                        Layer l = gs.getSingleLayer(al.getLayerName(), em);
 
                         // Can't check feature source detail only layer, but 
                         // usually 1:1...

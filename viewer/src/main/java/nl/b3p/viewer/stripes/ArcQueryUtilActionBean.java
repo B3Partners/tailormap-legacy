@@ -116,7 +116,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
    
     @After(stages = LifecycleStage.BindingAndValidation, on="!arcXML")
     public void loadLayer() {
-        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
+        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
     }
 
     @Before(stages = LifecycleStage.EventHandling)

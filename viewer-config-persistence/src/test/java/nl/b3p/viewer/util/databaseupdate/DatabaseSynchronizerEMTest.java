@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 B3Partners B.V.
+ * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,17 @@ import javax.persistence.NoResultException;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Application.TreeCache;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.JSONException;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -73,6 +76,7 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         ds = new DatabaseSynchronizer();
         LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
         updates.put("" + TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
+        updates.put("" + (TEST_VERSION_NUMBER + 1), new UpdateElement(Collections.singletonList("updateApplicationLayersAttributesOrder"), DatabaseSynchronizerEM.class));
         ds.doInit(entityManager);
     }
 
@@ -170,5 +174,50 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         JSONAssert.assertEquals(expected.getJSONObject("services"), actual.getJSONObject("services"), JSONCompareMode.LENIENT);
         JSONAssert.assertEquals(expected.getJSONObject("levels"), actual.getJSONObject("levels"), JSONCompareMode.LENIENT);
         assertEquals(6, entityManager.createQuery("FROM Level").getResultList().size());
+    }
+    
+    @Test
+    public void testUpdateApplicationLayerAttributesOrder(){
+        List<ApplicationLayer> appLayers = entityManager.createQuery("From ApplicationLayer").getResultList();
+        for (ApplicationLayer appLayer : appLayers) {
+            System.out.println("Checking layer " + appLayer.getLayerName());
+            List<ConfiguredAttribute> attrs = appLayer.getAttributes();
+            if (!areInCorrectOrder(attrs)) {
+                fail("Attributes of "  + appLayer.getLayerName() + " not in correct order (should be alphabetically");
+            }
+        }
+        
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
+        entityManager.refresh(appLayer);
+        if(!areInCorrectOrder(appLayer.getAttributes())){
+            fail("Attributes not in correct order (should be alphabetically");            
+        }
+    }
+    
+    @Test
+    public void testUpdateAttributeOrder(){
+        DatabaseSynchronizerEM instance = new DatabaseSynchronizerEM();
+        
+        ApplicationLayer applicationLayer = entityManager.find(ApplicationLayer.class, 2L);
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), entityManager);
+        instance.updateAttributeOrder(applicationLayer, layer.getFeatureType(), entityManager);
+
+        List<ConfiguredAttribute> attrs = applicationLayer.getAttributes();
+        if (!areInCorrectOrder(attrs)) {
+            fail("Attributes not in correct order (should be alphabetically");
+        }
+    }
+    
+    private boolean areInCorrectOrder(List<ConfiguredAttribute> attrs ){
+         String prevNaam = null;
+        for (ConfiguredAttribute attr : attrs) {
+            System.out.println("Attribute:" + attr.getAttributeName());
+            if (prevNaam != null && attr.getAttributeName().compareTo(prevNaam) < 1) {
+                return false;
+            } else {
+                prevNaam = attr.getAttributeName();
+            }
+        }
+        return true;
     }
 }
