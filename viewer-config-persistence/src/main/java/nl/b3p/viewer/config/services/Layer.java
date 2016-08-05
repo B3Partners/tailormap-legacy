@@ -159,11 +159,19 @@ public class Layer implements Cloneable, Serializable {
         minScale = l.getScaleDenominatorMin();
         this.service = service;
         if(Double.isNaN(minScale)) {
-            minScale = null;
+            if(!Double.isNaN( l.getScaleHintMin())){
+                minScale = l.getScaleHintMin();
+            }else{
+                minScale = null;
+            }
         }
         maxScale = l.getScaleDenominatorMax();
         if(Double.isNaN(maxScale)) {
-            maxScale = null;
+            if(!Double.isNaN(l.getScaleHintMax())){
+                maxScale = l.getScaleHintMax();
+            }else{
+                maxScale = null;
+            }
         }
         /* if min and max -scale are null, get them from the ScaleHint
          * Not quite as save as Scale Denominator, because the implementation
