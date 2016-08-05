@@ -34,7 +34,6 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
     constructor: function(config) {
         this.initConfig(config);
         this.createTree();
-        window.testlayer = this;
     },
 
     createTree: function() {
