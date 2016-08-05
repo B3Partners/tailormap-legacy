@@ -215,6 +215,7 @@ Wijken: &lt;br /&gt;
                         applicationLayerFeatureType: ${actionBean.appLayerFeatureType != null ? actionBean.appLayerFeatureType : -1},
                         displayName: <js:quote value="${actionBean.displayName}"/>,
                         stylesTitleJson: ${actionBean.stylesTitleJson},
+                        imagePath: "${contextPath}/resources/images/",
                         actionBeans: {
                             imageupload: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
                             appTreeLayer: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>,

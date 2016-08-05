@@ -31,6 +31,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         applicationLayerFeatureType: "",
         displayName: "",
         stylesTitleJson: {},
+        imagePath: "",
         actionBeans: {
             imageupload: "",
             appTreeLayer: "",
@@ -108,7 +109,8 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         }];
      if(this.config.attributes.length !== 0) {
             var attributeOrder = Ext.create("vieweradmin.components.ApplicationTreeLayerAttributes", {
-                attributes: this.config.attributes
+                attributes: this.config.attributes,
+                imagePath: this.config.imagePath
             });
             this.tabComponents.push({ config: "attributeOrder", component: attributeOrder });
             tabconfig.push({

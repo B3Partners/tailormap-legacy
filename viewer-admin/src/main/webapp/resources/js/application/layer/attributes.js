@@ -28,7 +28,8 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
     toggleState: true,
 
     config: {
-        attributes: []
+        attributes: [],
+        imagePath: ""
     },
 
     constructor: function(config) {
@@ -182,6 +183,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                 {
                     itemId: "createFolder",
                     text: 'Nieuwe map aanmaken',
+                    icon: this.config.imagePath + "add.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
@@ -202,6 +204,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                 {
                     itemId: "removeFolder",
                     text: 'Map verwijderen',
+                    icon: this.config.imagePath + "delete.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
@@ -215,6 +218,12 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
                                         if (btn === 'yes') {
+                                            var children = this.attributeOrderSelectedRecord.get("children");
+                                            var folderIndex = this.attributeOrderTree.getStore().indexOf(this.attributeOrderSelectedRecord);
+                                            var root = this.attributeOrderTree.getStore().getRoot();
+                                            for(var i = 0; i < children.length; i++) {
+                                                root.insertChild(folderIndex + i, children[i]);
+                                            }
                                             this.attributeOrderTree.getStore().remove(this.attributeOrderSelectedRecord);
                                         }
                                     },
@@ -228,6 +237,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                 {
                     itemId: "changeName",
                     text: 'Naam wijzigen',
+                    icon: this.config.imagePath + "wrench.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
