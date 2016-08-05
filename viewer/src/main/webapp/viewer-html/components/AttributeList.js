@@ -730,7 +730,7 @@ Ext.define ("viewer.components.AttributeList",{
 
         url += '?appLayer=' + appLayer.id;
         url += '&application=' + appId;
-        url += '&filter=' + filter;
+        url += '&filter=' + encodeURIComponent(filter);
         url += '&type=' + Ext.getCmp("downloadType").getValue();
         url += '&params=' + this.config.downloadParams;
 
