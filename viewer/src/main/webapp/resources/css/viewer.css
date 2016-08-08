@@ -229,7 +229,7 @@ body > .legend {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
 
-// makes (editable) field labels overflow into ellipsis
+/* makes (editable) field labels overflow into ellipsis*/
 .x-form-item-label-inner {
     overflow: hidden;
     white-space: nowrap;
