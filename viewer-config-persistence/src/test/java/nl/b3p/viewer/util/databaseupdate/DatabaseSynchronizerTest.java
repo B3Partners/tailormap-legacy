@@ -48,22 +48,6 @@ public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
         assertNotEquals(oldVersion, newMetadata.getConfigValue());
         assertEquals(TEST_VERSION_NUMBER, Integer.parseInt(newMetadata.getConfigValue()));
     }
-
-
-    @Test
-    public void testCodeUpdate() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-        Metadata metadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
-        String oldVersion = metadata.getConfigValue();
-
-        DatabaseSynchronizer ds = new DatabaseSynchronizer();
-        LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
-        updates.put("" + TEST_VERSION_NUMBER, new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
-        ds.doInit(entityManager);
-        Metadata newMetadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
-
-        assertEquals(TEST_VERSION_NUMBER, Integer.parseInt(newMetadata.getConfigValue()));
-        assertNotEquals(oldVersion, newMetadata.getConfigValue());
-    }
     
     @Test
     public void testCodeUpdateWrongMethodname() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
