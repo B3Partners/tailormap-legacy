@@ -126,7 +126,6 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("12", new UpdateElement(Collections.singletonList("add_start_map.sql"), String.class));
         updates.put("13", new UpdateElement(Collections.singletonList("add_linked_components.sql"), String.class));
         updates.put("14", new UpdateElement(Collections.singletonList("add_disableEditing.sql"), String.class));
-        updates.put("15", new UpdateElement(Collections.singletonList("convertApplicationsToStartLevelLayer"), DatabaseSynchronizerEM.class));
 
         updates.put("16", new UpdateElement(Collections.singletonList("add_application_rights.sql"), String.class));
 
@@ -136,6 +135,10 @@ public class DatabaseSynchronizer implements Servlet {
         
         updates.put("19", new UpdateElement(Collections.singletonList("add_label_configured_attribute.sql"), String.class));
         updates.put("20", new UpdateElement(Collections.singletonList("updateApplicationLayersAttributesOrder"), DatabaseSynchronizerEM.class));
+
+        
+        updates.put("21", new UpdateElement(Collections.singletonList("remove_selectedIndexChecked.sql"), String.class));
+
         // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }
 

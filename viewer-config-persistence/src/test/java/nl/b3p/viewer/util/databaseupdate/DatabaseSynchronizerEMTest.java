@@ -104,7 +104,7 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         } catch (NoResultException ex) {
         }
         assertNotNull("StartLevel not found: conversion not correct", sl);
-        assertEquals(level.getSelectedIndex(), sl.getSelectedIndex());
+        assertEquals(new Integer(1), sl.getSelectedIndex());
         assertEquals(level, sl.getLevel());
         assertEquals(app, sl.getApplication());
     }
