@@ -9,14 +9,11 @@ INSERT INTO application_details (application, value, details_key) VALUES (1, '#F
 INSERT INTO application_details (application, value, details_key) VALUES (1, 'true', 'cachedSelectedContentDirty');
 INSERT INTO application_details (application, value, details_key) VALUES (1, 'true', 'cachedExpandedSelectedContentDirty');
 
-
-
-INSERT INTO application_layer (id, checked, layer_name, selected_index, service) VALUES (2, false, 'begroeid_terreinvakonderdeel_bestaand', NULL, 2);
-INSERT INTO application_layer (id, checked, layer_name, selected_index, service) VALUES (3, false, 'begroeid_terreindeel', NULL, 2);
-INSERT INTO application_layer (id, checked, layer_name, selected_index, service) VALUES (4, false, 'begroeid_terreinvakonderdeel', NULL, 2);
-INSERT INTO application_layer (id, checked, layer_name, selected_index, service) VALUES (5, false, 'woonplaats', NULL, 3);
-INSERT INTO application_layer (id, checked, layer_name, selected_index, service) VALUES (1, true, 'Openbasiskaart', NULL, 1);
-
+INSERT INTO application_layer (id, layer_name, service) VALUES (2, 'begroeid_terreinvakonderdeel_bestaand', 2);
+INSERT INTO application_layer (id, layer_name, service) VALUES (3, 'begroeid_terreindeel', 2);
+INSERT INTO application_layer (id, layer_name, service) VALUES (4, 'begroeid_terreinvakonderdeel', 2);
+INSERT INTO application_layer (id, layer_name, service) VALUES (5, 'woonplaats', 3);
+INSERT INTO application_layer (id, layer_name, service) VALUES (1, 'Openbasiskaart', 1);
 
 INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 1, 0);
 INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 2, 1);
@@ -300,15 +297,12 @@ INSERT INTO layer_details (layer, value, details_key) VALUES (7, '[{"name":"defa
 INSERT INTO layer_details (layer, value, details_key) VALUES (8, '[{"name":"default","legendURLs":["http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&version=1.1.1&service=WMS&request=GetLegendGraphic&layer=begroeid_terreinvakonderdeel_plan&format=image/png&STYLE=default"],"title":"default"}]', 'wms.styles');
 INSERT INTO layer_details (layer, value, details_key) VALUES (10, '[{"name":"default","legendURLs":["http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map&version=1.1.1&service=WMS&request=GetLegendGraphic&layer=woonplaats&format=image/png&STYLE=default"],"title":"default"}]', 'wms.styles');
 
-
-INSERT INTO level_ (id, background, info, name, selected_index, url, parent) VALUES (2, false, NULL, 'Applicatie', NULL, NULL, NULL);
-INSERT INTO level_ (id, background, info, name, selected_index, url, parent) VALUES (1, true, NULL, 'Achtergrond', NULL, NULL, 2);
-INSERT INTO level_ (id, background, info, name, selected_index, url, parent) VALUES (4, false, NULL, 'Thema', NULL, NULL, 2);
-INSERT INTO level_ (id, background, info, name, selected_index, url, parent) VALUES (3, false, NULL, 'OSM', 0, NULL, 1);
-INSERT INTO level_ (id, background, info, name, selected_index, url, parent) VALUES (5, false, NULL, 'Groen', 1, NULL, 4);
-INSERT INTO level_ (id, background, info, name, selected_index, url, parent) VALUES (6, false, NULL, 'Woonplaatsen', 2, NULL, 4);
-
-
+INSERT INTO level_ (id, background, info, name, url, parent) VALUES (2, false, NULL, 'Applicatie', NULL, NULL);
+INSERT INTO level_ (id, background, info, name, url, parent) VALUES (1, true, NULL, 'Achtergrond', NULL, 2);
+INSERT INTO level_ (id, background, info, name, url, parent) VALUES (4, false, NULL, 'Thema', NULL, 2);
+INSERT INTO level_ (id, background, info, name, url, parent) VALUES (3, false, NULL, 'OSM', NULL, 1);
+INSERT INTO level_ (id, background, info, name, url, parent) VALUES (5, false, NULL, 'Groen', NULL, 4);
+INSERT INTO level_ (id, background, info, name, url, parent) VALUES (6, false, NULL, 'Woonplaatsen', NULL, 4);
 
 INSERT INTO level_children (level_, child, list_index) VALUES (2, 1, 0);
 INSERT INTO level_children (level_, child, list_index) VALUES (1, 3, 0);
@@ -332,7 +326,21 @@ insert into SOLR_CONF_INDEX_ATTRIBUTES (solr_conf, attribute_) values(1, 45);
 insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_) values(1, 43); 
 insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_)	values(1, 45); 
 
-INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '20');
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (42, null, 1, 1);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (43, null, 1, 2);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (44, 0, 1, 3);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (45, null, 1, 4);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (46, 1, 1, 5);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (47, 2, 1, 6);
+
+
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (24, true, null, 1, 1);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (25, false, null, 1, 2);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (26, false, null, 1, 3);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (27, false, null, 1, 4);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (28, false, null, 1, 5);
+
+INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '21');
 
 
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');

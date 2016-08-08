@@ -38,13 +38,6 @@ public class ApplicationLayer {
     @Id
     private Long id;
 
-    /**
-     * Should this app layer be visible in the application by default
-     */    
-    private boolean checked;
-    
-    private Integer selectedIndex;   
-
     @ManyToOne
     private GeoService service;
 
@@ -88,23 +81,7 @@ public class ApplicationLayer {
     public void setAttributes(List<ConfiguredAttribute> attributes) {
         this.attributes = attributes;
     }
-    
-   public boolean isChecked() {
-        return checked;
-    }
-    
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
 
-    public Integer getSelectedIndex() {
-        return selectedIndex;
-    }
-
-    public void setSelectedIndex(Integer selectedIndex) {
-        this.selectedIndex = selectedIndex;
-    }
-    
     public Map<String, ClobElement> getDetails() {
         return details;
     }

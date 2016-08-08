@@ -43,45 +43,6 @@ public class DatabaseSynchronizerEM {
     private static final Log log = LogFactory.getLog(DatabaseSynchronizerEM.class);
 
     /**
-     * convert Applications To start level Layer.
-     *
-     * @param em the entity manager to use
-     */
-    public void convertApplicationsToStartLevelLayer(EntityManager em){
-        List<Application> apps = em.createQuery("FROM Application", Application.class).getResultList();
-        for (Application app : apps) {
-            TreeCache tc = app.loadTreeCache(em);
-            List<Level> levels = tc.getLevels();
-            for (Level level : levels) {
-                convertStartLevels(level, app, em);
-            }
-        }
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-    }
-
-    private void convertStartLevels(Level level, Application app, EntityManager em){
-        StartLevel sl = new StartLevel();
-        sl.setApplication(app);
-        sl.setLevel(level);
-        sl.setSelectedIndex(level.getSelectedIndex());
-        em.persist(sl);
-        List<ApplicationLayer> appLayers = level.getLayers();
-        for (ApplicationLayer appLayer : appLayers) {
-            convertStartLayer(appLayer, app, em);
-        }
-    }
-
-    private void convertStartLayer(ApplicationLayer appLayer, Application app, EntityManager em){
-        StartLayer sl = new StartLayer();
-        sl.setApplication(app);
-        sl.setApplicationLayer(appLayer);
-        sl.setChecked(appLayer.isChecked());
-        sl.setSelectedIndex(appLayer.getSelectedIndex());
-        em.persist(sl);
-    }
-    
-    /**
      *
      * @param em Entitymanager on which the update must happen.
      */
