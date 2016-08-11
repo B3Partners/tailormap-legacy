@@ -50,7 +50,9 @@ public class DatabaseSynchronizerEM {
         List<ApplicationLayer> appLayers = em.createQuery("From ApplicationLayer").getResultList();
         for (ApplicationLayer applicationLayer : appLayers) {
             Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
-            updateAttributeOrder(applicationLayer, layer.getFeatureType(), em);
+            if (layer != null) {
+                updateAttributeOrder(applicationLayer, layer.getFeatureType(), em);
+            }
         }
     }
    
