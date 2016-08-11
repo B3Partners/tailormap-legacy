@@ -335,5 +335,12 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     layerVisibilityChanged : function (map,object){
         this.initLayers();
+    },
+    redraw: function() {
+        if(!this.config.useTabs) {
+            return;
+        }
+        this.layerselector.removeAll();
+        this.initTabs();
     }
 });
