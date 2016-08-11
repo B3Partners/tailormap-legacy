@@ -218,13 +218,13 @@ Ext.define ("viewer.components.AttributeList",{
             ]
         });
     },
-    layerSelectorInit: function(store) {
+    layerSelectorInit: function(args) {
         // First clear selection so we are sure to get an 'changed' event
         this.layerSelector.clearSelection();
         // Select first layer
         this.layerSelector.selectFirstLayer();
         if(this.config.showAttributelistLinkInFeatureInfo) {
-            this.createFeatureInfoLink(store);
+            this.createFeatureInfoLink(args.store);
         }
     },
     createFeatureInfoLink: function(store) {
