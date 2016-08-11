@@ -63,6 +63,9 @@ public class DatabaseSynchronizerEM {
         Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
+                if(layerSft == null){
+                    return -1;
+                }
                 if (o1.getFeatureType() == null) {
                     return -1;
                 }
