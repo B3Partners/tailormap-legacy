@@ -1749,8 +1749,13 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         }
         if(level.children) {
+            var sublevel;
             for(var j = 0; j < level.children.length; j++) {
-                this.checkAllChildren(level.children[j], checked);
+                sublevel = this.levels[level.children[j]];
+                if(!sublevel) {
+                    continue;
+                }
+                this.checkAllChildren(sublevel, checked);
             }
         }
     },
