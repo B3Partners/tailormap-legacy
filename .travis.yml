@@ -4,6 +4,7 @@ language: java
 
 addons:
   postgresql: "9.4"
+  hosts: travis-fla4
   hostname: travis-fla4
 
 before_install:
@@ -13,6 +14,8 @@ before_install:
   - export M2_HOME=$PWD/apache-maven-3.3.9
   - export PATH=$M2_HOME/bin:$PATH
   # create Flamingo database
+  - psql --version
+  - psql -U postgres -d postgres -c 'SELECT Version();'
   - psql -U postgres -a -c "CREATE ROLE flamingo4 LOGIN PASSWORD 'flamingo4' SUPERUSER CREATEDB;"
   - psql -U postgres -a -c 'create database flamingo4;'
   - psql -U postgres -a -c 'ALTER DATABASE flamingo4 OWNER TO flamingo4;'
