@@ -13,6 +13,7 @@ before_install:
   - unzip -qq apache-maven-3.3.9-bin.zip
   - export M2_HOME=$PWD/apache-maven-3.3.9
   - export PATH=$M2_HOME/bin:$PATH
+  - export PAGER=cat
   # create Flamingo database
   - psql --version
   - psql -U postgres -d postgres -c 'SELECT Version();'
