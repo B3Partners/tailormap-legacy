@@ -200,6 +200,13 @@ body > .legend {
     background-color: #E5E5E5 !important;
     border-color: #C8C8C8 !important;
 }
+/* Fixes style of Cycle buttons, because of background-color override above */
+.x-btn-wrap-default-small.x-btn-split-right::after {
+    color: #444444;
+}
+.x-btn-wrap-default-small.x-btn-split-right > .x-btn-button::after {
+    border-right-color: #C8C8C8;
+}
 /* Add border in IE */
 .x-nlg .x-btn-default, .x-nlg .x-btn-default-large, .x-nlg .x-btn-default-small, .x-nlg .x-tab-default {
     border: 1px solid #d8d8d8 !important;

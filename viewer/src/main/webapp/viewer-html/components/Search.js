@@ -433,8 +433,12 @@ Ext.define ("viewer.components.Search",{
                     me.loadingContainer.setLoading(false);
                 },
                 failure: function(result, request) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    Ext.MessageBox.alert("Foutmelding", response.error);
+                    var message = "Er is een onbekend fout opgetreden.";
+                    try {
+                        response = Ext.JSON.decode(result.responseText);
+                        message = response.error;
+                    } catch(e) {}
+                    Ext.MessageBox.alert("Foutmelding", message);
                     me.loadingContainer.setLoading(false);
                 }
             });
