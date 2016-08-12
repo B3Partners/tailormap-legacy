@@ -34,14 +34,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="form-container" class="documenten">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
-        
-            <script type="text/javascript">
-                var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="getGridData"/>';
-                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="edit"/>';
-                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="delete"/>';
-                vieweradmin.components.Menu.setActiveLink('menu_documenten');
-            </script>
             <script type="text/javascript" src="${contextPath}/resources/js/services/document.js"></script>
+            <script type="text/javascript">
+                Ext.onReady(function() {
+                    // Expose vieweradmin_components_Document to global scope to be able to access the component from the iframe
+                    window.vieweradmin_components_Document = Ext.create('vieweradmin.components.Document', {
+                        gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="edit"/>',
+                        deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="delete"/>'
+                    });
+                });
+            </script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>

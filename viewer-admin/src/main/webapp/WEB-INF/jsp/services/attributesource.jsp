@@ -39,15 +39,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
-        
-        <script type="text/javascript">
-            var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
-            var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="edit"/>';
-            var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="delete"/>';
-            var editattributesurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="view"/>';
-            vieweradmin.components.Menu.setActiveLink('menu_attribuutbronnen');
-        </script>   
+
         <script type="text/javascript" src="${contextPath}/resources/js/services/attributesource.js"></script>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                // Expose vieweradmin_components_ChooseApplication to global scope to be able to access the component from the iframe
+                window.vieweradmin_components_AttributeSource = Ext.create('vieweradmin.components.AttributeSource', {
+                    gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>',
+                    editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="edit"/>',
+                    deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="delete"/>',
+                    editattributesurl : '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="view"/>'
+                });
+            });
+        </script>
     </stripes:layout-component>
         
 </stripes:layout-render>

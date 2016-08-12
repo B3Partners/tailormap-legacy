@@ -68,6 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/SelectionGrid.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/CrudGrid.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/ColorField.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
         <script type="text/javascript">

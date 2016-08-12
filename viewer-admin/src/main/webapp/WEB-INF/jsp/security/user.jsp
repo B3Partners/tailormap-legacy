@@ -36,14 +36,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="form-container" class="user">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
-        
-            <script type="text/javascript">
-                var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="getGridData"/>';
-                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="edit"/>';
-                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="delete"/>';
-                vieweradmin.components.Menu.setActiveLink('menu_gebruikers');
-            </script>
+
             <script type="text/javascript" src="${contextPath}/resources/js/security/user.js"></script>
+            <script type="text/javascript">
+                Ext.onReady(function() {
+                    // Expose vieweradmin_components_User to global scope to be able to access the component from the iframe
+                    window.vieweradmin_components_User = Ext.create('vieweradmin.components.User', {
+                        gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="edit"/>',
+                        deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="delete"/>'
+                    });
+                });
+            </script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>

@@ -255,6 +255,18 @@ input[type="submit"]:hover,
   height: 395px;
   padding-top: 40px;
 }
+#grid-container + #form-container {
+    position: absolute;
+    bottom: 20px;
+    height: auto;
+    top: 445px;
+    min-height: 250px;
+    left: 10px;
+    right: 10px;
+}
+.errors ~ #grid-container + #form-container {
+    top: 495px;
+}
 #layoutManagerTitle {
   width: 250px;
   float: left;

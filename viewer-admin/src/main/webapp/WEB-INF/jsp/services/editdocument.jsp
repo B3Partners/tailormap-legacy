@@ -53,8 +53,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:otherwise>
                     <script type="text/javascript">
                         var frameParent = getParent();
-                        if(frameParent && frameParent.reloadGrid) {
-                            frameParent.reloadGrid();
+                        if(frameParent && frameParent.vieweradmin_components_Document) {
+                            frameParent.vieweradmin_components_Document.reloadGrid();
                         }
                     </script>        
                     <stripes:submit name="edit" value="Nieuw document"/>

@@ -36,14 +36,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="form-container" class="groups">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
-        
-            <script type="text/javascript">
-                var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="getGridData"/>';
-                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="edit"/>';
-                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="delete"/>';
-                vieweradmin.components.Menu.setActiveLink('menu_gebruikersgroepen');
-            </script>
+
             <script type="text/javascript" src="${contextPath}/resources/js/security/group.js"></script>
+            <script type="text/javascript">
+                Ext.onReady(function() {
+                    // Expose vieweradmin_components_Group to global scope to be able to access the component from the iframe
+                    window.vieweradmin_components_Group = Ext.create('vieweradmin.components.Group', {
+                        gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="edit"/>',
+                        deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="delete"/>'
+                    });
+                });
+            </script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>

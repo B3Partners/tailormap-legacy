@@ -91,8 +91,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <c:if test="${actionBean.context.eventName == 'saveEdit'}">
                             <script type="text/javascript">
                                 var frameParent = getParent();
-                                if(frameParent && frameParent.reloadGrid) {
-                                    frameParent.reloadGrid();
+                                if(frameParent && frameParent.vieweradmin_components_AttributeSource) {
+                                    frameParent.vieweradmin_components_AttributeSource.reloadGrid();
                                 }
                             </script>
                         </c:if>
@@ -200,8 +200,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:otherwise>
                     <script type="text/javascript">
                         var frameParent = getParent();
-                        if(frameParent && frameParent.reloadGrid) {
-                            frameParent.reloadGrid();
+                        if(frameParent && frameParent.vieweradmin_components_AttributeSource) {
+                            frameParent.vieweradmin_components_AttributeSource.reloadGrid();
                         }
                     </script>
                     <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
