@@ -48,21 +48,7 @@ function appendPanel(header, content, container) {
     }
 }
 
-var helpController = null,
-    iFramePopupController = null;
 Ext.onReady(function() {
-    iFramePopupController = Ext.create('Ext.b3p.iFramePopupController');
-    helpController = Ext.create('Ext.b3p.HelpController', {
-        helppath: helppath
-    });
-    var helpLinks = Ext.select('.helplink', true);
-    if(helpLinks.getCount() > 0) {
-        helpLinks.on('click', function(evt, htmlel, eOpts) {
-            helpController.showHelp(htmlel);
-        }, '', {
-            stopEvent: true
-        });
-    }
     document.body.addEventListener('click', function(e) {
         if(e.target && e.target.className && e.target.className.indexOf('inlinehelp-toggle') !== -1) {
             var target = e.target.getAttribute('data-target');
@@ -73,16 +59,23 @@ Ext.onReady(function() {
                 }
             }
         }
+        if(e.target && e.target.className && e.target.className.indexOf('helplink') !== -1) {
+            e.preventDefault();
+            e.stopPropagation();
+            vieweradmin.components.HelpController.showHelp(e.target);
+        }
     });
 });
 
-Ext.define('Ext.b3p.iFramePopupController', {
+Ext.define('vieweradmin.components.iFramePopupController', {
     iframe: null,
+    singleton: true,
     constructor: function(conf) {
-        var me = this;
-        me.initConfig(conf);
-        me.iframeid = Ext.id();
-        me.popupWindow = Ext.create('Ext.window.Window', {
+        Ext.onReady(this.initPopup.bind(this));
+    },
+    initPopup: function() {
+        this.iframeid = Ext.id();
+        this.popupWindow = Ext.create('Ext.window.Window', {
             closeAction: 'hide',
             hideMode: 'offsets',
             width: 600,
@@ -93,7 +86,7 @@ Ext.define('Ext.b3p.iFramePopupController', {
                 background: '#FFFFFF'
             },
             items : [{
-                id: me.iframeid,
+                id: this.iframeid,
                 xtype : "component",
                 autoEl : {
                     tag : "iframe",
@@ -104,36 +97,30 @@ Ext.define('Ext.b3p.iFramePopupController', {
         });
     },
     getIframe: function() {
-        var me = this;
-        if(me.iframe === null) me.iframe = Ext.get(me.iframeid);
-        return me.iframe;
+        if(this.iframe === null) this.iframe = Ext.get(this.iframeid);
+        return this.iframe;
     },
     loadPage: function(url, frametitle) {
-        var me = this;
-        var iframe = me.getIframe();
+        var iframe = this.getIframe();
         if(!frametitle) frametitle = '';
         if(iframe) {              
             iframe.set({ src: url });
-            me.popupWindow.setTitle(frametitle);
-            me.popupWindow.show();
+            this.popupWindow.setTitle(frametitle);
+            this.popupWindow.show();
         }
     }
 });
 
-Ext.define('Ext.b3p.HelpController', {
-    extend: "Ext.b3p.iFramePopupController",
+Ext.define('vieweradmin.components.HelpController', {
+    singleton: true,
     helppath: helppath,
-    constructor: function(conf) {
-        Ext.b3p.HelpController.superclass.constructor.call(this, conf);
-    },
     showHelp: function(htmlel) {
-        var me = this;
         var extel = Ext.fly(htmlel);
         var hash = extel.getAttribute('href');
         // IE fix, href in IE8 and lower is the complete URL + hash, not just the hash
         hash = hash.substring(hash.lastIndexOf('#'));
-        var iframeurl = me.helppath + hash;
-        me.loadPage(iframeurl, 'Help');
+        var iframeurl = this.helppath + hash;
+        vieweradmin.components.iFramePopupController.loadPage(iframeurl, 'Help');
     }
 });
 

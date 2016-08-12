@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:hidden name="mustUpdateComponents"/>
                 <stripes:hidden name="mustUpdateComponents"/>
 
-                <div id="tabs"  class="maximize">
+                <div id="tabs" class="maximize">
                     <div id="config" class="tabdiv">
 
                         <stripes:errors/>

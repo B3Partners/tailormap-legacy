@@ -42,11 +42,11 @@
         <project.build.targetVersion>1.7</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>14.4</geotools.version>
+        <geotools.version>14.5</geotools.version>
         <powermock.version>1.5.5</powermock.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>9.4.1207</postgresql.version>
+        <postgresql.version>9.4.1209.jre7</postgresql.version>
         <apache.poi.version>3.14</apache.poi.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
@@ -55,7 +55,7 @@
     <dependencyManagement>
         <!--
             To check for plugin updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.2:display-dependency-updates
+            mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-dependency-updates
             and check the output for any available updates
         -->
         <dependencies>
@@ -83,7 +83,7 @@
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20090211</version>
+                <version>20160807</version>
             </dependency>
             <!-- Stripes -->
             <dependency>
@@ -147,13 +147,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20160619</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>guava</artifactId>
-                        <groupId>com.google.guava</groupId>
-                    </exclusion>
-                </exclusions>
+                <version>v20160713</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -345,6 +339,11 @@
                 <version>${geotools.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-geojson</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
             <!-- viewer-admin-->
 
             <dependency>
@@ -469,7 +468,7 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.2:display-plugin-updates
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-plugin-updates
                     and check the output for any available updates
                 -->
                 <plugin>
@@ -549,7 +548,7 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <version>2.3</version>
+                    <version>2.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

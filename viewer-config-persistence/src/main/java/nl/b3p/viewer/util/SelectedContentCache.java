@@ -89,7 +89,12 @@ public class SelectedContentCache {
         JSONArray selectedContent = cached.getJSONArray("selectedContent");
         JSONObject services = cached.has("services") ? cached.getJSONObject("services") : new JSONObject();
 
-        for (Iterator<String> it = appLayers.sortedKeys(); it.hasNext();) {
+        // sortedKeys() was removed form the api in https://github.com/stleary/JSON-java/commit/9a0471d5a100f6cfb253db52353a2595f5866582
+        // not sure if sorting is relevant here, but it was doing 
+        // TreeSet keySet = new TreeSet(appLayers.keySet());
+        // so if sorting is required we can do
+        // for (Iterator<String> it = new TreeSet(appLayers.keySet()).iterator(); it.hasNext();) {
+        for (Iterator<String> it = appLayers.keys(); it.hasNext();) {
             String key = it.next();
             JSONObject appLayer = appLayers.getJSONObject(key);
             boolean allowed = isAppLayerAllowed(appLayer, roles);
@@ -98,7 +103,7 @@ public class SelectedContentCache {
             }
         }
 
-        for (Iterator it = levels.sortedKeys(); it.hasNext();) {
+        for (Iterator it = levels.keys(); it.hasNext();) {
             String key = (String) it.next();
             JSONObject level = levels.getJSONObject(key);
             boolean allowed = isLevelAllowed(level, roles);
@@ -132,7 +137,7 @@ public class SelectedContentCache {
 
         url.append(contextPath).append(servletPath);
         final String proxyUrl = url.toString();
-        for (Iterator<String> it = services.sortedKeys(); it.hasNext();) {
+        for (Iterator<String> it = services.keys(); it.hasNext();) {
 
             String key = it.next();
             JSONObject service = services.getJSONObject(key);

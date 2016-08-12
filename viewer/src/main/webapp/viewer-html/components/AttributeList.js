@@ -38,6 +38,7 @@ Ext.define ("viewer.components.AttributeList",{
         addZoomTo: false,
         zoomToBuffer: 10,
         showLayerSelectorTabs: false,
+        showAttributelistLinkInFeatureInfo: false,
         details: {
             minWidth: 600,
             minHeight: 300
@@ -67,6 +68,7 @@ Ext.define ("viewer.components.AttributeList",{
         });
         this.schema = new Ext.data.schema.Schema();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
+        this.loadWindow();
         return this;
     },
     getExtComponents: function() {
@@ -104,7 +106,7 @@ Ext.define ("viewer.components.AttributeList",{
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.selectFirstLayer, this);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
 
         this.topContainer=Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
@@ -169,7 +171,7 @@ Ext.define ("viewer.components.AttributeList",{
                         valueField: 'type',
                         style: { marginRight: '5px' },
                         store:  Ext.create('Ext.data.Store', {
-                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
+                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"GEOJSON", label:"GeoJSON" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
                             })
                     },
                     {xtype: 'button', text: 'Sluiten', handler: function() {
@@ -212,11 +214,53 @@ Ext.define ("viewer.components.AttributeList",{
             ]
         });
     },
-    selectFirstLayer: function() {
+    layerSelectorInit: function(args) {
         // First clear selection so we are sure to get an 'changed' event
         this.layerSelector.clearSelection();
         // Select first layer
         this.layerSelector.selectFirstLayer();
+        if(this.config.showAttributelistLinkInFeatureInfo) {
+            this.createFeatureInfoLink(args.store);
+        }
+    },
+    createFeatureInfoLink: function(store) {
+        if(this.editLinkInFeatureInfoCreated) {
+            return;
+        }
+        var infoComponents = this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
+        var appLayers = [];
+        store.each(function(record) {
+            appLayers.push(this.viewerController.getAppLayerById(record.get('layerId')));
+        }, this);
+        for (var i = 0; i < infoComponents.length; i++) {
+            infoComponents[i].registerExtraLink(
+                this,
+                function (feature, appLayer, coords) {
+                    this.handleFeatureInfoLink(feature, appLayer, coords);
+                }.bind(this),
+                this.config.title || 'Attributenlijst',
+                appLayers
+            );
+        }
+        this.editLinkInFeatureInfoCreated = true;
+    },
+    handleFeatureInfoLink: function(feature, appLayer, coords) {
+        // Show the window
+        this.showWindow();
+        this.filterFeature = feature.__fid;
+        // Check if the appLayer is selected already
+        // If the layer is already selected, fire layerChanged ourself
+        var selectedAppLayer = this.layerSelector.getValue();
+        if(selectedAppLayer && selectedAppLayer.id === parseInt(appLayer.id, 10)) {
+            this.layerChanged(appLayer);
+            return;
+        }
+        // Find and select layerselector record
+        this.layerSelector.getStore().each(function(record) {
+            if(parseInt(record.get('layerId'), 10) === parseInt(appLayer.id, 10)) {
+                this.layerSelector.setValue(record);
+            }
+        }, this);
     },
     showWindow : function (){
         if (this.topContainer==null){
@@ -482,6 +526,11 @@ Ext.define ("viewer.components.AttributeList",{
             featureType="&featureType="+featureTypeId;
         }
 
+        if(this.filterFeature) {
+            filter += ["IN ('", this.filterFeature, "')"].join("");
+            this.filterFeature = null;
+        }
+
         var maxResults = -1;
         var movingBack = 0;
         var pageSize = 10;
@@ -726,7 +775,7 @@ Ext.define ("viewer.components.AttributeList",{
 
         url += '?appLayer=' + appLayer.id;
         url += '&application=' + appId;
-        url += '&filter=' + filter;
+        url += '&filter=' + encodeURIComponent(filter);
         url += '&type=' + Ext.getCmp("downloadType").getValue();
         url += '&params=' + this.config.downloadParams;
 

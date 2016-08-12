@@ -167,7 +167,7 @@ public class ArcGISService extends GeoService implements Updatable {
             int i = getUrl().indexOf("/rest/services");
             String servicesUrl = getUrl().substring(0, i) + "/rest/services";
             serviceInfo = issueRequest(servicesUrl + "?f=json", client);
-            currentVersion = serviceInfo.getString("currentVersion");
+            currentVersion = serviceInfo.get("currentVersion").toString();
             currentVersionMajor = Integer.parseInt(currentVersion.split("\\.")[0]);
         }
 
@@ -282,7 +282,7 @@ public class ArcGISService extends GeoService implements Updatable {
         Layer l = new Layer();
         // parent set later in 2nd pass
         l.setService(service);
-        l.setName(agsl.getString("id"));
+        l.setName(agsl.get("id").toString());
         l.setTitle(agsl.getString("name"));
 
         JSONArray subLayerIds = agsl.optJSONArray("subLayers");

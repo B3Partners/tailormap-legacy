@@ -50,16 +50,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
                     </div>
                 </c:when>
-                <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
+                <c:otherwise>
                     <script type="text/javascript">
                         var frameParent = getParent();
                         if(frameParent && frameParent.reloadGrid) {
                             frameParent.reloadGrid();
                         }
-                    </script>
-                    <stripes:submit name="edit" value="Nieuw document"/>
-                </c:when>
-                <c:otherwise>
+                    </script>        
                     <stripes:submit name="edit" value="Nieuw document"/>
                 </c:otherwise>
             </c:choose>

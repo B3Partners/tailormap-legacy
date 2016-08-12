@@ -40,6 +40,10 @@
             <artifactId>gt-render</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geojson</artifactId>
+        </dependency>
+        <dependency>
             <groupId>eu.medsea.mimeutil</groupId>
             <artifactId>mime-util</artifactId>
         </dependency>
@@ -363,6 +367,17 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
+                        </compilation>
+                        <compilation>
+                            <compilationLevel>WHITESPACE_ONLY</compilationLevel>
+                            <compilerOptions>
+                                <prettyPrint>true</prettyPrint>
+                            </compilerOptions>
+                            <externFiles />
+                            <sourceFiles>
+                                <param>${viewerhtml.path}/components/components.json</param>
+                            </sourceFiles>
+                            <outputFile>${minify.outputdir}/components.json</outputFile>
                         </compilation>
                     </compilations>
                 </configuration>
