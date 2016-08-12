@@ -42,11 +42,11 @@
         <project.build.targetVersion>1.7</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>14.4</geotools.version>
+        <geotools.version>14.5</geotools.version>
         <powermock.version>1.5.5</powermock.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>9.4.1207</postgresql.version>
+        <postgresql.version>9.4.1209.jre7</postgresql.version>
         <apache.poi.version>3.14</apache.poi.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
