@@ -136,9 +136,15 @@ public class PrintActionBean implements ActionBean {
                     jarray = new JSONArray();
                     jarray.put(o);
                 }
-                for (int i=0; i < jarray.length();i++){
-                    JSONObject legendJson = new JSONObject(jarray.getString(i));
-                    Legend legend = new Legend(legendJson);   
+                for (int i = 0; i < jarray.length(); i++) {
+                    JSONObject legendJson;
+                    try {
+                        legendJson = jarray.getJSONObject(i);
+                    } catch (JSONException jse) {
+                        // for some historic reason the print component sends double encoded json for legend url
+                        legendJson = new JSONObject(jarray.getString(i));
+                    }
+                    Legend legend = new Legend(legendJson);
                     info.getLegendUrls().add(legend);
                 }
             }
