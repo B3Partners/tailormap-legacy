@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fop version="1.0">
+    <image-loading>
+        <penalty value="-1000" class="org.apache.xmlgraphics.image.loader.impl.PreloaderRawPNG"/>
+        <penalty value="-1000" class="org.apache.xmlgraphics.image.loader.impl.ImageLoaderRawPNG"/>
+        <penalty value="1000" class="org.apache.xmlgraphics.image.loader.impl.ImageLoaderPNG"/>
+        <penalty value="1000" class="org.apache.xmlgraphics.image.loader.impl.imageio.ImageLoaderImageIO"/>
+    </image-loading>
+</fop>
