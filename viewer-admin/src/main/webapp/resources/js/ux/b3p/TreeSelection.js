@@ -201,8 +201,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         Ext.create('Ext.Button', {
             renderTo: me.layerSelectionButtons,
             icon: me.moveRightIcon,
-            width: 23,
-            height: 22,
             cls: 'plain-button',
             listeners: {
                 click: function() {
@@ -214,8 +212,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         Ext.create('Ext.Button', {
             renderTo: me.layerSelectionButtons,
             icon: me.moveLeftIcon,
-            width: 23,
-            height: 22,
             cls: 'plain-button',
             listeners: {
                 click: function() {
@@ -226,8 +222,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
         me.moveUpButton = Ext.create('Ext.Button', {
             icon: me.moveUpIcon,
-            width: 23,
-            height: 22,
             renderTo: me.layerMoveButtons,
             cls: 'plain-button',
             listeners: {
@@ -239,8 +233,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
         me.moveDownButton = Ext.create('Ext.Button', {
             icon: me.moveDownIcon,
-            width: 23,
-            height: 22,
             renderTo: me.layerMoveButtons,
             cls: 'plain-button',
             listeners: {

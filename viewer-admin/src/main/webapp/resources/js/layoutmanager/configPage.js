@@ -64,21 +64,25 @@ Ext.define("vieweradmin.components.ConfigPage", {
         Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
 
         var tabs = [{
+            itemId: 'config-tab',
             contentEl:'config',
             title: 'Configuratie',
             autoScroll: true
         },{
+            itemId: 'rights-tab',
             contentEl:'rights',
             title: 'Rechten'
         }];
         if((this.config.metadata.hasOwnProperty("type") && this.config.metadata.type == "popup") || this.showConfigureHeight()) {
             tabs.push({
+                itemId: 'layout-tab',
                 contentEl:'layout',
                 title: 'Layout'
             });
         }
         if(this.showHelp()){
             tabs.push({
+                itemId: 'help-tab',
                 contentEl:'help',
                 title: 'Help'
             });
@@ -99,7 +103,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 tabchange: {
                     scope: this,
                     fn: function(panel, activetab, previoustab) {
-                        if(activetab.contentEl && activetab.contentEl === 'help' && !htmlEditorRendered) {
+                        if(activetab.getItemId() === 'help-tab' && !htmlEditorRendered) {
                             // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
                             Ext.create('Ext.form.field.HtmlEditor', {
                                 id: 'helpText',

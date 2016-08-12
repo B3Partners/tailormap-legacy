@@ -50,12 +50,15 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
             },
             layoutOnTabChange: true,
             items: [{
+                itemId: "config-tab",
                 contentEl:'config',
                 title: 'Configuratie'
             },{
+                itemId: "security-tab",
                 contentEl:'security',
                 title: 'Beveiliging'
             },{
+                itemId: "remarks-tab",
                 contentEl:'remarks',
                 title: 'Opmerkingen'
             }],
@@ -63,7 +66,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
                 tabchange: {
                     scope: this,
                     fn: function(panel, activetab, previoustab) {
-                        if(activetab.contentEl && activetab.contentEl === 'remarks' && this.htmlEditor === null) {
+                        if(activetab.getItemId() === 'remarks-tab' && this.htmlEditor === null) {
                             this.initHtmlEditor();
                         }
                     }
