@@ -733,6 +733,7 @@ Ext.define ("viewer.components.Print",{
     */
     submitSettings: function(action){
         var properties = this.getAllProperties(action);
+        // console.debug("submitting print values:", properties);
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
         this.printForm.submit({
