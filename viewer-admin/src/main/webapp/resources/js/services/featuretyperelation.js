@@ -73,7 +73,7 @@ Ext.onReady(function(){
         listeners: {
             load: function() {
                 // Fix to apply filters
-                Ext.getCmp('editGrid').doLayout();
+                Ext.getCmp('editGrid').updateLayout();
             }
         }
     });

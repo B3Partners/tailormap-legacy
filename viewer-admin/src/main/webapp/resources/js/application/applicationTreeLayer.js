@@ -298,7 +298,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                             if (newval) {
                                                 comp.setVisible(true);
                                             }
-                                            this.getComponentByItemId('#filter' + attribute.id).doLayout();
+                                            this.getComponentByItemId('#filter' + attribute.id).updateLayout();
                                         }
                                     },
                                     scope: this
@@ -321,7 +321,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                             if (newval) {
                                                 comp.setVisible(true);
                                             }
-                                            this.getComponentByItemId('#filter' + attribute.id).doLayout();
+                                            this.getComponentByItemId('#filter' + attribute.id).updateLayout();
                                         },
                                         scope: this
                                     }
@@ -396,7 +396,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                                     if (newval) {
                                                         comp.setVisible(true);
                                                     }
-                                                    this.getComponentByItemId('#filter' + attribute.id).doLayout();
+                                                    this.getComponentByItemId('#filter' + attribute.id).updateLayout();
                                                 },
                                                 scope: this
                                             }
