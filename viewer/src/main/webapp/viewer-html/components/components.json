@@ -901,5 +901,14 @@
         "restrictions": ["content"],
         "singleton": true,
         "showHelp": true
+    },
+    {
+        "className": "viewer.components.Disclaimer",
+        "name": "Disclaimer",
+        "group": "Component",
+        "shortName": "Disclaimer",
+        "sources": ["Disclaimer.js"],
+        "configSource": ["ConfigObject.js","Disclaimer-config.js"],
+        "restrictions": ["content"]
     }
 ]
