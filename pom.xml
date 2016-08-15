@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <geotools.version>14.5</geotools.version>
-        <powermock.version>1.5.5</powermock.version>
+        <powermock.version>1.6.5</powermock.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>9.4.1209.jre7</postgresql.version>
@@ -208,6 +208,12 @@
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.10.19</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -368,11 +374,6 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>${apache.poi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.8.4</version>
             </dependency>
             <dependency>
                 <groupId>eu.medsea.mimeutil</groupId>
