@@ -412,6 +412,12 @@ Ext.define ("viewer.components.Maptip",{
                     components.push(featureDiv);
 
                 }
+                if(layer.moreFeaturesAvailable){
+                    var moreFeatures = new Ext.Element(document.createElement("div"));
+                    moreFeatures.addCls("feature_summary_feature");
+                    moreFeatures.insertHtml("beforeEnd","Maximum aantal resultaten bereikt. Alleen de eerste 10 worden getoond.");
+                    components.push(moreFeatures);
+                }
             }
         }
         return components;

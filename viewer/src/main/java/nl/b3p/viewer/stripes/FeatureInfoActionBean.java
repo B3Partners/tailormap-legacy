@@ -316,10 +316,19 @@ public class FeatureInfoActionBean implements ActionBean {
                     f = FeatureToJson.reformatFilter(f, layer.getFeatureType());
 
                     q.setFilter(f);
-                    q.setMaxFeatures(limit);
+                    q.setMaxFeatures(limit +1);
 
                     JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
-
+                    if(features.length() > limit){
+                        JSONArray newArray = new JSONArray();
+                        for (int j = 0; j < features.length(); j++) {
+                            if(j < limit){
+                                newArray.put(features.get(j));
+                            }                            
+                        }
+                        features = newArray;
+                        response.put("moreFeaturesAvailable", true);
+                    }
                     response.put("features", features);
                 } while(false);
             } catch(Exception e) {
