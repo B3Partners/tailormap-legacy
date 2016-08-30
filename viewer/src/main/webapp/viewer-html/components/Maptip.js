@@ -307,8 +307,8 @@ Ext.define ("viewer.components.Maptip",{
                     details = this.config.viewerController.mapComponent.getMap().getLayer(layer.request.appLayer).getDetails();
                 }
 
-                var noHtmlEncode = "true" == details['summary.noHtmlEncode'];
-                var nl2br = "true" == details['summary.nl2br'];
+                var noHtmlEncode = "true" === details['summary.noHtmlEncode'];
+                var nl2br = "true" === details['summary.nl2br'];
                 //has a details for this layer
                 if (details[layer.request.serviceLayer]){
                     details=details[layer.request.serviceLayer];
@@ -378,7 +378,7 @@ Ext.define ("viewer.components.Maptip",{
                         var detailDiv = new Ext.Element(document.createElement("div"));
                         detailDiv.addCls("feature_summary_detail");
                         //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                        if (this.getMoreLink()!=null){
+                        if (this.getMoreLink() !== null){
                             var detailElem=document.createElement("a");
                             detailElem.href='javascript: void(0)';
                             detailElem.feature= feature;
@@ -435,8 +435,8 @@ Ext.define ("viewer.components.Maptip",{
         featureDiv.setStyle("background-color", "white");
         featureDiv.id="f_details_"+appLayer.serviceId+"_"+appLayer.layerName;
 
-        var noHtmlEncode = "true" == appLayer.details['summary.noHtmlEncode'];
-        var nl2br = "true" == appLayer.details['summary.nl2br'];
+        var noHtmlEncode = "true" === appLayer.details['summary.noHtmlEncode'];
+        var nl2br = "true" === appLayer.details['summary.nl2br'];
 
         if (appLayer.details){
             //title
@@ -504,7 +504,7 @@ Ext.define ("viewer.components.Maptip",{
                         }
                     }
 
-                    html+="<tr>"
+                    html+="<tr>";
                     html+="<td class='feature_detail_attr_key'>"+key+"</td>";
                     var value = String(feature[key]);
                     if(!noHtmlEncode) {
@@ -517,7 +517,7 @@ Ext.define ("viewer.components.Maptip",{
                         value = "";
                     }
                     html+="<td class='feature_detail_attr_value'>"+value+"</td>";
-                    html+="</tr>"
+                    html+="</tr>";
                 }
                 html+="</table>";
                 var attributesDiv = new Ext.Element(document.createElement("div"));
@@ -684,6 +684,7 @@ Ext.define ("viewer.components.Maptip",{
         placeholder.parentNode.insertBefore(parsedHtmlContainer, placeholder);
         placeholder.style.display = 'none';
     },
+    
     splitByTag: function(text, begintag, endtag) {
         if(text.indexOf(begintag) === -1 || text.indexOf(endtag) === -1) {
             return { blockText: '', textBefore: '', textAfter: '' };
@@ -708,7 +709,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param details the details for a layer
      */
     isSummaryDetails: function (details){
-        if (details !=undefined &&
+        if (details &&
             (!Ext.isEmpty(details["summary.description"]) ||
                 !Ext.isEmpty(details["summary.image"]) ||
                 !Ext.isEmpty(details["summary.link"]) ||
@@ -730,7 +731,7 @@ Ext.define ("viewer.components.Maptip",{
                 if(!this.config.layers.hasOwnProperty(i)) {
                     continue;
                 }
-                if (this.config.layers[i] == mapLayer.appLayerId){
+                if (this.config.layers[i] === mapLayer.appLayerId){
                     return true;
                 }
             }
@@ -760,8 +761,8 @@ Ext.define ("viewer.components.Maptip",{
             if(!appLayers.hasOwnProperty(id)) {
                 continue;
             }
-            if (appLayers[id].serviceId==serviceId &&
-                appLayers[id].layerName==layerName){
+            if (appLayers[id].serviceId === serviceId &&
+                appLayers[id].layerName === layerName){
                 return appLayers[id];
             }
         }
@@ -778,7 +779,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param vis true or false
      */
     setVisible: function(vis){
-        if(this.balloon==null){
+        if(this.balloon === null){
             return;
         }
         if(!vis){
@@ -789,10 +790,10 @@ Ext.define ("viewer.components.Maptip",{
     },
     /**
      * set enabled
-     * @param true/false
+     * @param enabled true/false
      */
-    setEnabled: function(ena){
-        this.enabled=ena;
+    setEnabled: function(enabled){
+        this.enabled = enabled;
         if (!this.enabled){
             this.setVisible(false);
         }
@@ -815,10 +816,10 @@ Ext.define ("viewer.components.Maptip",{
     },
     /**
      * Register the calling component for doing something extra called by a link.
-     * @param {type} component The object of the component ("this" at the calling method)
-     * @param {type} callback The callbackfunction which must be called from the click
-     * @param {type} The label for the hyperlink
-     * @param {Array} The appLayers this should apply to, when null the callback will apply to any appLayer
+     * @param component The object of the component ("this" at the calling method)
+     * @param callback The callbackfunction which must be called from the click
+     * @param label The label for the hyperlink
+     * @param appLayers The appLayers this should apply to, when null the callback will apply to any appLayer
      */
     registerExtraLink: function (component, callback, label, appLayers) {
         var entry = {
@@ -875,8 +876,6 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.offsetY=0;
     this.roundImgPath=contextPath+"/viewer-html/components/resources/images/maptip/round.png";
     this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";
-    //this.leftOfPoint;
-    //this.topOfPoint;
 
     //the balloon jquery dom element.
     this.balloon=null;
@@ -951,7 +950,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
 
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
-    }
+    };
 
     /**
      * Adds the close and minimize buttons to the balloon
@@ -1024,14 +1023,14 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             //pop up is top right of the point
             this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"}).addCls('arrowVisible');
         }
-    }
+    };
     /**
      *called by internal elements if the mouse is moved in 1 of the maptip element
      *@param the id of the element.
      */
     this.onMouseOver= function(elementId){
         this.mouseIsOverElement[elementId]=1;
-    }
+    };
     /**
      *called by internal elements when the mouse is out 1 of the maptip element
      *@param the id of the element.
@@ -1047,15 +1046,16 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             },50);
         }
 
-    }
+    };
+    
     this.isMouseOver = function(){
         for (var elementid in this.mouseIsOverElement){
-            if(this.mouseIsOverElement[elementid]==1){
+            if(this.mouseIsOverElement[elementid] === 1){
                 return true;
             }
         }
         return false;
-    }
+    };
 
     /**
      *Set the position of this balloon. Create it if not exists
@@ -1069,22 +1069,22 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //new maptip position so update the maptipId
         this.maptipId++;
 
-        if (this.balloon==undefined){
+        if (this.balloon === undefined){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){
             this._resetPositionOfBalloon(x,y);
         }
         this._appendButtons();
         this.maximize();
-        if (x!=undefined && y != undefined){
+        if (x !== undefined && y !== undefined){
 
             this.x=x;
             this.y=y;
-            if (browserZoomRatio!=undefined && browserZoomRatio!=null && browserZoomRatio!=1){
+            if (browserZoomRatio !== undefined && browserZoomRatio !== null && browserZoomRatio !== 1){
                 this.x = this.x*browserZoomRatio;
                 this.y = this.y*browserZoomRatio;
             }
-        }else if (this.x ==undefined || this.y == undefined){
+        }else if (this.x === undefined || this.y === undefined){
             throw "No coords found for this balloon";
         }else{
             x=this.x;
@@ -1094,15 +1094,10 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
 
 
         //calculate position
-        //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);
 
         //determine the left and top.
         var correctedOffsetX=this.offsetX;
         var correctedOffsetY=this.offsetY;
-        //if (browserZoomRatio!=undefined && browserZoomRatio!=null && browserZoomRatio!=1){
-            //correctedOffsetX=Math.round(correctedOffsetX*browserZoomRatio);
-            //correctedOffsetY=Math.round(correctedOffsetY*browserZoomRatio);
-        //}
         var left=x+correctedOffsetX;
         var top =y+correctedOffsetY;
         if (this.leftOfPoint){
@@ -1114,7 +1109,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
        //set position of balloon
         this.balloon.setLeft(""+left+"px");
         this.balloon.setTop(""+top+"px");
-    }
+    };
+    
     /**
      *Set the position of this balloon. Create it if not exists
      *@param xcoord The world x coord
@@ -1126,7 +1122,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.setPositionWorldCoords = function (xcoord,ycoord,resetPositionOfBalloon, browserZoomRatio){
         var pixel= this.viewerController.getMap().coordinateToPixel(xcoord,ycoord);
         this.setPosition(pixel.x, pixel.y, resetPositionOfBalloon,browserZoomRatio);
-    }
+    };
+    
     /**
      * xxx not working! Make it work!
      * Remove the balloon
@@ -1135,46 +1132,57 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloon.remove();
         this.viewerController.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,viewerController.getMap(), this.setPosition,this);
         delete this.balloon;
-    }
+    };
+    
     /*Get the DOM element where the content can be placed.*/
     this.getContentElement = function () {
-        if (this.balloon == undefined || this.balloonContent == undefined || this.balloonContentWrapper === null)
+        if (this.balloon === undefined || this.balloonContent === undefined || this.balloonContentWrapper === null)
             return null;
         return this.balloonContentWrapper;
-    }
+    };
+    
     this.setContent = function (value){
         var element=this.getContentElement();
-        if (element==null)
+        if (element){
             return;
+        }
         element.update(value);
-    }
+    };
+
     this.addContent = function (value){
         var element=this.getContentElement();
-        if (element==null)
+        if (element){
             return;
+        }
         element.insertHtml("beforeEnd", value);
-    }
+    };
+    
     this.addElements = function (elements){
         var element=this.getContentElement();
-        if (element==null)
+        if (element){
             return;
+        }
         for (var i=0; i < elements.length; i++){
             element.appendChild(elements[i]);
         }
-    }
+    };
+    
     this.hide = function(){
         this.mouseIsOverElement = {};
-        if (this.balloon!=undefined)
+        if (this.balloon)
             this.balloon.setVisible(false);
-    }
+    };
+    
     this.show = function(){
-        if (this.balloon!=undefined) {
+        if (this.balloon) {
             this.balloon.setVisible(true);
         }
-    }
+    };
+    
     this.maximize = function() {
         this.balloon.removeCls('minimized');
-    }
+    };
+    
     this.minMaximize = function() {
         var minimize = true;
         if(this.balloon.hasCls('minimized')) {
@@ -1185,16 +1193,18 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             
         }
     };
+    
     this.close = function(){
         this.setContent("");
         this.hide();
-    }
+    };
+    
     this.hideAfterMouseOut= function(){
         var thisObj = this;
         //store the number to check later if it's still the same maptip position
         var newId= new Number(this.maptipId);
         setTimeout(function(){
-            if (newId==thisObj.maptipId){
+            if (newId === thisObj.maptipId){
                 if (!thisObj.isMouseOver()){
                     thisObj.setContent("");
                     thisObj.hide();
@@ -1202,6 +1212,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             }else{
             }
         },1000);
-    }
+    };
+    
 }
 
