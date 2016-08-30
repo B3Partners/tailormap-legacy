@@ -327,7 +327,7 @@ public class FeatureInfoActionBean implements ActionBean {
                             }                            
                         }
                         features = newArray;
-                        response.put("moreFeatureAvailable", true);
+                        response.put("moreFeaturesAvailable", true);
                     }
                     response.put("features", features);
                 } while(false);
