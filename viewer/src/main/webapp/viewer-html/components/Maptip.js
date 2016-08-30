@@ -270,7 +270,7 @@ Ext.define ("viewer.components.Maptip",{
             var me = this;
             var data=options.data;
             var components=[];
-            if (data === null || data === "null" || data === undefined){
+            if (!data){
                 return;
             }
             components = this.createInfoHtmlElements(data, options);
@@ -281,8 +281,11 @@ Ext.define ("viewer.components.Maptip",{
                 this.balloon.addElements(components);
                 this.balloon.show();
             } else {
-                this.balloon.setContent("");
-                this.balloon.hide();
+                var finished = this.requestManager.requestsFinished(this.currentRequestId);
+                if(finished && !this.balloon.hasContent()){
+                    this.balloon.setContent("");
+                    this.balloon.hide();
+                }
             }
         }catch(e){
             this.config.viewerController.logger.error(e);
@@ -1213,6 +1216,10 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             }
         },1000);
     };
-    
+
+    this.hasContent = function(){
+        var content = this.getContentElement();
+        return content && content.el.dom.childNodes.length > 0;
+    };
 }
 
