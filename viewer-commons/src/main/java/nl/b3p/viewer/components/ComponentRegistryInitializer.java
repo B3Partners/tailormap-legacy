@@ -95,7 +95,6 @@ public class ComponentRegistryInitializer implements ServletContextListener {
                 pathContext=crossContext;
             }
         }
-        registry.setComponentPaths(pathContext,componentPath.split(","));
         
         tryComponentLoading();
     }

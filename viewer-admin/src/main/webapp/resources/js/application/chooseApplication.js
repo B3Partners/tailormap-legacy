@@ -59,7 +59,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                     id: 'published',
                     text: "Gepubliceerd",
                     dataIndex: 'published',
-                    flex: 1,
+                    width: 120,
                     filter: {
                         xtype: 'textfield'
                     }
@@ -75,7 +75,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                     id: 'edit',
                     header: '',
                     dataIndex: 'id',
-                    flex: 1,
+                    width: 350,
                     sortable: false,
                     hideable: false,
                     menuDisabled: true,

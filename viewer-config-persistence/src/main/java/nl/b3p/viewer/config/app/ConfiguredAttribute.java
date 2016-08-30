@@ -77,6 +77,8 @@ public class ConfiguredAttribute {
     private boolean disallowNullValue;
 
     private boolean disableUserEdit;
+    
+    private String label;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
@@ -230,6 +232,14 @@ public class ConfiguredAttribute {
     public void setDisableUserEdit(boolean disableUserEdit) {
         this.disableUserEdit = disableUserEdit;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -245,7 +255,7 @@ public class ConfiguredAttribute {
         o.put("editHeight", editHeight);
         o.put("allowValueListOnly", allowValueListOnly);
         o.put("disallowNullValue", disallowNullValue);
-        
+        o.put("folder_label", label);
         if(editValues != null) {
             try {
                 o.put("editValues", new JSONArray(editValues));

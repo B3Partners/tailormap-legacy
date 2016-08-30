@@ -41,7 +41,7 @@ Ext.define ("viewer.components.Print",{
         orientation: null,
         legend: null,
         max_imagesize: "2048",
-        showPrintRtf:null,
+//        showPrintRtf:null,
         label: "",
         overview:null,
         mailprint:null,
@@ -57,7 +57,7 @@ Ext.define ("viewer.components.Print",{
      * creating a print module.
      */
     constructor: function (conf){
-        if(!Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf = true;
+//        if(!Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf = true;
         this.initConfig(conf);
         viewer.components.Print.superclass.constructor.call(this, this.config);
         this.legends=[];
@@ -467,23 +467,23 @@ Ext.define ("viewer.components.Print",{
                         }
                     }
                 },{
-                    xtype: 'button',
-                    text: 'Opslaan als RTF'  ,
-                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
-                    componentCls: 'mobileLarge',
-                    style: {
-                        "float": "right",
-                        marginLeft: '5px'
-                    },
-                    listeners: {
-                        click:{
-                            scope: this,
-                            fn: function (){
-                                this.submitSettings("saveRTF");
-                            }
-                        }
-                    }
-                },{
+//                    xtype: 'button',
+//                    text: 'Opslaan als RTF'  ,
+//                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
+//                    componentCls: 'mobileLarge',
+//                    style: {
+//                        "float": "right",
+//                        marginLeft: '5px'
+//                    },
+//                    listeners: {
+//                        click:{
+//                            scope: this,
+//                            fn: function (){
+//                                this.submitSettings("saveRTF");
+//                            }
+//                        }
+//                    }
+//                },{
                     xtype: 'button',
                     text: 'Printen via PDF'  ,
                     hidden: this.config.mailPrint === "canOnlyMail",
@@ -733,6 +733,7 @@ Ext.define ("viewer.components.Print",{
     */
     submitSettings: function(action){
         var properties = this.getAllProperties(action);
+        // console.debug("submitting print values:", properties);
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
         this.printForm.submit({

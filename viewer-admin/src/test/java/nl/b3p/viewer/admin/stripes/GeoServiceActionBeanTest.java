@@ -93,7 +93,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
              assertEquals("The url should be the same", url, service.getUrl());
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice:", ex);
-            assert(false);
+            fail(ex.getLocalizedMessage());
         }
     }
 

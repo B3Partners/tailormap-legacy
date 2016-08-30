@@ -23,15 +23,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
@@ -39,6 +42,7 @@ import nl.b3p.mail.Mailer;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -98,13 +102,13 @@ public class PrintGenerator  implements Runnable{
     
     
     public static void createOutput(PrintInfo info, String mimeType, File xslFile,
-            boolean addJavascript, HttpServletResponse response, String filename) throws MalformedURLException, IOException {
+            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException {
 
         String path = new File(xslFile.getParent()).toURI().toString();
         createOutput(info, mimeType, new FileInputStream(xslFile), path, addJavascript, response,filename);
     }
     public static void createOutput(PrintInfo info, String mimeType, URL xslUrl,
-            boolean addJavascript, HttpServletResponse response, String filename) throws MalformedURLException, IOException {
+            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException {
 
         String path = xslUrl.toString().substring(0, xslUrl.toString().lastIndexOf("/")+1);
         createOutput(info, mimeType, xslUrl.openStream(), path, addJavascript, response,filename);
@@ -118,11 +122,11 @@ public class PrintGenerator  implements Runnable{
      * @param addJavascript addJavascript?
      * @param response the response for the outputstream
      * @param filename output filename
-     * @throws MalformedURLException if getting th eimage fails
+     * @throws URISyntaxException if getting the image fails
      * @throws IOException if saving the image fails
      */
     public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath,
-            boolean addJavascript, HttpServletResponse response, String filename) throws MalformedURLException, IOException {
+            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException {
 
   
         /* Setup output stream */
@@ -149,15 +153,12 @@ public class PrintGenerator  implements Runnable{
     
     
     public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream out, String filename)
-            throws MalformedURLException, IOException {
+            throws URISyntaxException, IOException {
         
         /* Setup fopfactory */
-        FopFactory fopFactory = FopFactory.newInstance();
+        FopFactory fopFactory = FopFactory.newInstance(new URI(basePath));
 
-        /* Set BaseUrl so that fop knows paths to images etc... */
-        fopFactory.setBaseURL(basePath);
-
-         try {
+        try {
             /* Construct fop */
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             foUserAgent.setCreator("Flamingo");
@@ -169,7 +170,6 @@ public class PrintGenerator  implements Runnable{
 
             Fop fop = fopFactory.newFop(mimeType, foUserAgent, out);
 
-            //String s=printInfoToString(info);
             /* Setup Jaxb */
             JAXBContext jc = JAXBContext.newInstance(PrintInfo.class);
             JAXBSource src = new JAXBSource(jc, info);
@@ -191,7 +191,7 @@ public class PrintGenerator  implements Runnable{
 
             transformer.transform(src, res);
           
-        } catch (Exception ex) {
+         } catch (FOPException | JAXBException | TransformerException ex) {
             log.error("Fout tijdens print output: ", ex);
         } finally {
             out.close();

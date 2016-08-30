@@ -16,14 +16,22 @@
  */
 package nl.b3p.viewer.util.databaseupdate;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Application.TreeCache;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This class will update the database to its newest version. Here methods will
@@ -32,44 +40,86 @@ import nl.b3p.viewer.config.app.StartLevel;
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class DatabaseSynchronizerEM {
+    private static final Log log = LogFactory.getLog(DatabaseSynchronizerEM.class);
 
     /**
-     * convert Applications To start level Layer.
      *
-     * @param em the entity manager to use
+     * @param em Entitymanager on which the update must happen.
      */
-    public void convertApplicationsToStartLevelLayer(EntityManager em){
-        List<Application> apps = em.createQuery("FROM Application", Application.class).getResultList();
-        for (Application app : apps) {
-            TreeCache tc = app.loadTreeCache(em);
-            List<Level> levels = tc.getLevels();
-            for (Level level : levels) {
-                convertStartLevels(level, app, em);
+    public void updateApplicationLayersAttributesOrder(EntityManager em){
+        List<ApplicationLayer> appLayers = em.createQuery("From ApplicationLayer").getResultList();
+        for (ApplicationLayer applicationLayer : appLayers) {
+            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
+            if (layer != null) {
+                updateAttributeOrder(applicationLayer, layer.getFeatureType(), em);
             }
         }
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+    }
+   
+    void updateAttributeOrder(ApplicationLayer applicationLayer, final SimpleFeatureType layerSft, EntityManager em) {
+        List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
+        log.info("Sorting layer " + applicationLayer.getLayerName());
+        //Sort the attributes, by featuretype: neccessary for related featuretypes
+        Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
+            @Override
+            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
+                if(layerSft == null){
+                    return -1;
+                }
+                if (o1.getFeatureType() == null) {
+                    return -1;
+                }
+                if (o2.getFeatureType() == null) {
+                    return 1;
+                }
+                if (o1.getFeatureType().getId().equals(layerSft.getId())) {
+                    return -1;
+                }
+                if (o2.getFeatureType().getId().equals(layerSft.getId())) {
+                    return 1;
+                }
+                return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
+            }
+        });
+
+        if (layerSft != null) {
+            // Sort the attributes by name (per featuretype)
+            sortPerFeatureType(layerSft, cas);
+        }
+        
+        applicationLayer.setAttributes(cas);
+        em.persist(applicationLayer);
+
     }
 
-    private void convertStartLevels(Level level, Application app, EntityManager em){
-        StartLevel sl = new StartLevel();
-        sl.setApplication(app);
-        sl.setLevel(level);
-        sl.setSelectedIndex(level.getSelectedIndex());
-        em.persist(sl);
-        List<ApplicationLayer> appLayers = level.getLayers();
-        for (ApplicationLayer appLayer : appLayers) {
-            convertStartLayer(appLayer, app, em);
+    private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas) {
+        List<FeatureTypeRelation> relations = layerSft.getRelations();
+        for (FeatureTypeRelation relation : relations) {
+            SimpleFeatureType foreign = relation.getForeignFeatureType();
+            // Sort the attributes of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
+            sortPerFeatureType(foreign, cas);
+        }
+        // Sort the attributes of the given SimpleFeatureType (layerSft), ordering by attributename
+        Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
+            @Override
+            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
+                if (o1.getFeatureType() == null) {
+                    return 0;
+                }
+                if (o2.getFeatureType() == null) {
+                    return 0;
+                }
+                if (o1.getFeatureType().getId().equals(layerSft.getId()) && o2.getFeatureType().getId().equals(layerSft.getId())) {
+                    return o1.getAttributeName().compareTo(o2.getAttributeName());
+                } else {
+                    return 0;
+                }
+            }
+        });
+        for (ConfiguredAttribute ca : cas) {
+            log.info(ca.getAttributeName());
         }
     }
-
-    private void convertStartLayer(ApplicationLayer appLayer, Application app, EntityManager em){
-        StartLayer sl = new StartLayer();
-        sl.setApplication(app);
-        sl.setApplicationLayer(appLayer);
-        sl.setChecked(appLayer.isChecked());
-        sl.setSelectedIndex(appLayer.getSelectedIndex());
-        em.persist(sl);
-    }
+    
 
 }

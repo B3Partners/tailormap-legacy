@@ -115,7 +115,7 @@ public class UniqueValuesActionBean implements ActionBean {
 
         try {
             if (this.featureType==null){
-                Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+                Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
                 if(layer != null && layer.getFeatureType() != null) {
                     this.featureType=layer.getFeatureType();
                 }
@@ -153,7 +153,7 @@ public class UniqueValuesActionBean implements ActionBean {
             }
 
             if (this.featureType == null) {
-                Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+                Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
                 if (layer != null && layer.getFeatureType() != null) {
                     this.featureType = layer.getFeatureType();
                 }
@@ -176,7 +176,7 @@ public class UniqueValuesActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
 
         try {
-            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
             if(layer != null && layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
                 Object value;

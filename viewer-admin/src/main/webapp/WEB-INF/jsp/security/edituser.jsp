@@ -96,7 +96,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <script type="text/javascript">
                         Ext.onReady(function() {
                             Ext.get('autorizatieoverzichtbutton').on('click', function(evt, htmlel, eOpts) {
-                                getParent().iFramePopupController.loadPage(${js:quote(url)}, 'Autorisatieoverzicht');
+                                getParent().vieweradmin.components.iFramePopupController.loadPage(${js:quote(url)}, 'Autorisatieoverzicht');
                             }, '', {
                                 stopEvent: true
                             });

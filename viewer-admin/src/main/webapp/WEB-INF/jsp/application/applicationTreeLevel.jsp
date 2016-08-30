@@ -24,19 +24,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <stripes:errors/>
-        <stripes:messages/>
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform">
+        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform" class="maximize">
             <stripes:hidden name="level" value="${actionBean.level.id}"/>
             <c:if test="${actionBean.context.eventName!='delete'}">
-                <h1>Bewerken: <c:out value="${actionBean.level.name}"/></h1>
-                <br>
-                <stripes:submit name="save" value="Opslaan" />
-                <stripes:button onclick="cancelFunction()" class="extlikebutton" name="cancel" value="Annuleren"/>
-                <stripes:submit name="delete" value="Verwijderen"/>
-                <br /><br />
-                <div id="tabs">
+                <h1 id="headertext">Bewerken: <c:out value="${actionBean.level.name}"/></h1>
+                <div id="tabs" class="maximize">
                     <div id="tree-tab" class="tabdiv">
+                        <stripes:errors/>
+                        <stripes:messages/>
                         <div id="tree" class="tree-selection-tree">
                             <div id="servicetree-container"></div>
                         </div>

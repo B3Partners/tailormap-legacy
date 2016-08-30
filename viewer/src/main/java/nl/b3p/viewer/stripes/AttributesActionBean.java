@@ -43,6 +43,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -251,7 +252,7 @@ public class AttributesActionBean implements ActionBean {
 
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
-        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
+        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
     }
 
     @Before(stages=LifecycleStage.EventHandling)
@@ -277,7 +278,7 @@ public class AttributesActionBean implements ActionBean {
             error = "Not authorized";
         } else {
 
-            appLayer.addAttributesJSON(json, true);
+            appLayer.addAttributesJSON(json, true, Stripersist.getEntityManager());
             if (!userAllowedToEditGeom) {
                 // set editable to false on geometry attribute when editing of the
                 //  geometry has been disabled on the layer fot the current user
@@ -369,7 +370,7 @@ public class AttributesActionBean implements ActionBean {
 
     private void setFilter(Query q,SimpleFeatureType ft) throws Exception {
         if(filter != null && filter.trim().length() > 0) {
-            Filter f = CQL.toFilter(filter);
+            Filter f = ECQL.toFilter(filter);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
             f = (Filter)f.accept(new ChangeMatchCase(false), null);
             f = FeatureToJson.reformatFilter(f,ft);

@@ -42,8 +42,6 @@ public class Level implements Comparable{
     @Basic(optional=false)
     private String name;
 
-    private Integer selectedIndex;
-
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(name="level_children", inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
@@ -84,14 +82,6 @@ public class Level implements Comparable{
     
     public void setId(Long id) {
         this.id = id;
-    }
-    
-    public Integer getSelectedIndex() {
-        return selectedIndex;
-    }
-    
-    public void setSelectedIndex(Integer selectedIndex) {
-        this.selectedIndex = selectedIndex;
     }
     
     public List<Level> getChildren() {
@@ -184,7 +174,6 @@ public class Level implements Comparable{
         
         o.put("id", id);
         o.put("name", name);
-        o.put("selectedIndex", selectedIndex);
         o.put("background", background);
         o.put("info", info);
         o.put("url",url);

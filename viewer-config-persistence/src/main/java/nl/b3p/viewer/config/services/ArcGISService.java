@@ -45,9 +45,6 @@ public class ArcGISService extends GeoService implements Updatable {
 
     public static final String PROTOCOL = "arcgis";
 
-    public static final String PARAM_USERNAME = "username";
-    public static final String PARAM_PASSWORD = "password";
-
     /** Parameter to avoid the call to /ArcGIS/rest/services?f=json to determine
      * the version (10 or 9). Some sites have this URL hidden but the service
      * itself is available. String with "9" or "10", null or any other value
@@ -170,7 +167,7 @@ public class ArcGISService extends GeoService implements Updatable {
             int i = getUrl().indexOf("/rest/services");
             String servicesUrl = getUrl().substring(0, i) + "/rest/services";
             serviceInfo = issueRequest(servicesUrl + "?f=json", client);
-            currentVersion = serviceInfo.getString("currentVersion");
+            currentVersion = serviceInfo.get("currentVersion").toString();
             currentVersionMajor = Integer.parseInt(currentVersion.split("\\.")[0]);
         }
 
@@ -285,7 +282,7 @@ public class ArcGISService extends GeoService implements Updatable {
         Layer l = new Layer();
         // parent set later in 2nd pass
         l.setService(service);
-        l.setName(agsl.getString("id"));
+        l.setName(agsl.get("id").toString());
         l.setTitle(agsl.getString("name"));
 
         JSONArray subLayerIds = agsl.optJSONArray("subLayers");

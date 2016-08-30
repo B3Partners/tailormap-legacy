@@ -24,59 +24,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <stripes:errors/>
-        <stripes:messages/>
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform">
+        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform" class="maximize">
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
-            <h1>Bewerken kaartlaag</h1>
-            <br>
-            <stripes:submit name="save" value="Opslaan" />
-            <stripes:button onclick="cancelFunction()" name="cancel" class="extlikebutton" value="Annuleren"/>
-            <br /><br />
-            <div id="tabs">
-                <div id="rights-tab" class="tabdiv">
-                    <h1>
-                        Rechten:
-                        <a href="#Rechten_Op_Kaartlaag_Help" title="Help" class="helplink"></a>
-                    </h1>
-                    L &nbsp; B <br/>
-                    <c:forEach var="group" items="${actionBean.allGroups}">
-                        <stripes:checkbox name="groupsRead" value="${group.name}"/>
-                        <stripes:checkbox name="groupsWrite" value="${group.name}"/>
-                        ${group.name}<br/>
-                    </c:forEach>
-                </div>
-                <div id="attributes-tab" class="tabdiv"><div>
-                    <a href="#Attributen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
-                    <c:choose>
-                        <c:when test="${!empty actionBean.applicationLayer.attributes}">                                                               
-                            <c:forEach var="attribute" items="${actionBean.applicationLayer.attributes}" varStatus="count">   
-                                <c:if test="${count.index==0 ||(count.index > 0 && actionBean.applicationLayer.attributes[count.index-1].featureType.id != actionBean.applicationLayer.attributes[count.index].featureType.id)}">
-                                    <div style="margin-left: -5px;">
-                                        <input type="checkbox" id="featureType_${attribute.featureType.id}" value="featureType_${attribute.featureType.id}" onchange="attributeGroupClick(this)"/>
-                                        <b><c:out value="${attribute.featureType.featureSource.name}"/> - <c:out value="${attribute.featureType.typeName}"/> (alles selecteer/deselecteer)</b>
-                                    </div>
-                                </c:if>
-                                <stripes:checkbox class="featureType_${attribute.featureType.id}" name="selectedAttributes" value="${attribute.fullName}"/>
-                                <c:set var="name" value="${attribute.attributeName}"/>
-                                <c:set var="alias" value="${actionBean.attributeAliases[attribute.fullName]}"/>
-                                
-                                <c:choose>
-                                    <c:when test="${alias == null || alias == name}"><c:out value="${name}"/></c:when>
-                                    <c:otherwise><c:out value="${alias} (${name})"/></c:otherwise>
-                                </c:choose>
-                                <br>
-                            </c:forEach>
-                        </c:when> 
-                        <c:otherwise>
-                            Er zijn geen attributen voor deze kaartlaag geconfigureerd.
-                        </c:otherwise>
-                    </c:choose>
-                    </div>
-                </div>
+            <div id="tabs" class="maximize">
                 <div id="settings-tab" class="tabdiv">
                     <a href="#Instellingen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
+                    <stripes:errors/>
+                    <stripes:messages/>
                     <table class="formtable">
                         <tr>
                             <td>Weergavenaam:</td>
@@ -84,48 +39,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <stripes:text id="titleAlias" name="details['titleAlias']" maxlength="255" size="30"/>
                                 Laat leeg om de naam uit het gegevensregister te gebruiken.
                             </td>
-                        </tr>                        
+                        </tr>
                         <c:choose>
                             <c:when test="${!empty actionBean.styles}">
-                                <script type="text/javascript">
-                                    
-                                    var stylesTitleJson = ${actionBean.stylesTitleJson};
-                                    
-                                    var namedLayerTitle = "";
-                                    var styleTitle = "";
-                                    
-                                    function updateStyleTitles() {
-                                        var styleId = Ext.get("styleSelect").dom.options[Ext.get("styleSelect").dom.selectedIndex].value
-                                    
-                                        var titles = stylesTitleJson[styleId];
-                                        if(!titles) {
-                                            titles = {};
-                                        }
-                                        namedLayerTitle = titles.namedLayerTitle || "";
-                                        styleTitle = titles.styleTitle || "";
-                                        
-                                        Ext.get("layerTitle").dom.innerHTML = Ext.String.htmlEncode(namedLayerTitle == "" ? "-" : namedLayerTitle);
-                                        Ext.get("styleTitle").dom.innerHTML = Ext.String.htmlEncode(styleTitle == "" ? "-" : styleTitle);
-                                    }
-                                    
-                                    Ext.onReady(updateStyleTitles);
-                                    
-                                    function setTitleAlias(which) {
-                                        Ext.get("titleAlias").dom.value = which == "layer" ? namedLayerTitle : styleTitle;
-                                    }
-                                </script>
                                 <tr>
                                     <td style="vertical-align: top">Style/SLD:</td>
                                     <td>
-                                        <stripes:select id="styleSelect" name="details['style']" onchange="updateStyleTitles()">
+                                        <stripes:select id="styleSelect" name="details['style']">
                                             <stripes:options-collection collection="${actionBean.styles}" value="id" label="title"/>
                                         </stripes:select><br>
-                                        Titel van laag uit SLD: <a href="#" onclick="setTitleAlias('layer');" id="layerTitle">-</a><br>
-                                        Titel van stijl uit SLD: <a href="#"  onclick="setTitleAlias('style');" id="styleTitle">-</a><br>
+                                        Titel van laag uit SLD: <a href="#" id="layerTitle">-</a><br>
+                                        Titel van stijl uit SLD: <a href="#"  id="styleTitle">-</a><br>
                                         <i>Klik op een titel om deze in te vullen bij weergavenaam.</i>
                                     </td>
-                                </tr>                        
-                            </c:when>                        
+                                </tr>
+                            </c:when>
                             <c:otherwise>
                                 <tr>
                                     <td>Style/SLD:</td>
@@ -140,7 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 Laat leeg om de standaardafbeelding uit het gegevensregister of de afbeelding
                                 zoals deze door de service wordt gegenereerd te gebruiken.
                             </td>
-                        </tr>                                
+                        </tr>
                         <tr>
                             <td>Transparantie beginwaarde:</td>
                             <td>
@@ -198,12 +126,20 @@ Wijken: &lt;br /&gt;
             &lt;/tr&gt;
         &lt;/thead&gt;
         &lt;tbody&gt;
+            &lt;!-- LET OP: tr en td tags om begin-
+            veld is nodig ivm HTML editor. --&gt;
+            &lt;tr&gt;&lt;td colspan="2"&gt;
+              [begin.repeat.wijk_2014]
+            &lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;
-                [begin.repeat.wijk_2014]
                 &lt;td&gt;[wk_code]&lt;/td&gt;
                 &lt;td&gt;[wk_naam]&lt;/td&gt;
-                [end.repeat.wijk_2014]
             &lt;/tr&gt;
+            &lt;!-- LET OP: tr en td tags om end-
+            veld is nodig ivm HTML editor. --&gt;
+            &lt;tr&gt;&lt;td colspan="2"&gt;
+            	[end.repeat.wijk_2014]
+            &lt;/td&gt;&lt;/tr&gt;
         &lt;/tbody&gt;
     &lt;/table&gt;
 [end.wijk_2014]</pre>
@@ -231,6 +167,18 @@ Wijken: &lt;br /&gt;
                         </tr>
                     </table>
                 </div>
+                <div id="rights-tab" class="tabdiv">
+                    <h1>
+                        Rechten:
+                        <a href="#Rechten_Op_Kaartlaag_Help" title="Help" class="helplink"></a>
+                    </h1>
+                    L &nbsp; B <br/>
+                    <c:forEach var="group" items="${actionBean.allGroups}">
+                        <stripes:checkbox name="groupsRead" value="${group.name}"/>
+                        <stripes:checkbox name="groupsWrite" value="${group.name}"/>
+                        ${group.name}<br/>
+                    </c:forEach>
+                </div>
                 <div id="edit-tab" class="tabdiv">
                     <stripes:hidden name="details['editfeature.usernameAttribute']" id="details_editfeature_usernameAttribute"/>
                     <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
@@ -254,33 +202,31 @@ Wijken: &lt;br /&gt;
                     (Metadata)url: <stripes:text name="details['metadataurl']" style="width: 390px;"/>
                 </div>
             </div>
-            <script type="text/javascript">
-                var featureSourceURL = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
-                var featureTypesURL = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>';
-                var attributesURL = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
-                var attributes = ${actionBean.attributesJSON};
-                var getDBValuesUrl = <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" event="getUniqueValues"/></js:quote>;
-                var editable = ${actionBean.editable};
-                var imagesPath = "${contextPath}/resources/images/";
-                var applicationLayer = "${actionBean.applicationLayer.id}";
-                var applicationLayerFeatureType = ${actionBean.appLayerFeatureType != null ? actionBean.appLayerFeatureType : -1};
-                var actionBeans = { 
-                    "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
-                    "appTreeLayer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>
-                };
-                
-                <c:if test="${!empty actionBean.displayName}">
-                    // If layer was renamed, rename node in tree
-                    var frameParent = getParent();
-                    if(frameParent && frameParent.renameNode) {
-                        frameParent.renameNode('s${actionBean.applicationLayer.id}', <js:quote value="${actionBean.displayName}"/>);
-                    }
-                </c:if>
-                
-            </script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/application/layer/attributes.js"></script>
+            <script type="text/javascript">
+                Ext.onReady(function() {
+                    Ext.create('vieweradmin.components.ApplicationTreeLayer', {
+                        attributes: ${actionBean.attributesConfig},
+                        editable: ${actionBean.editable},
+                        applicationLayer: "${actionBean.applicationLayer.id}",
+                        applicationLayerFeatureType: ${actionBean.appLayerFeatureType != null ? actionBean.appLayerFeatureType : -1},
+                        displayName: <js:quote value="${actionBean.displayName}"/>,
+                        stylesTitleJson: ${actionBean.stylesTitleJson},
+                        imagePath: "${contextPath}/resources/images/",
+                        actionBeans: {
+                            imageupload: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
+                            appTreeLayer: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>,
+                            featureSourceURL: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/></js:quote>,
+                            featureTypesURL: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/></js:quote>,
+                            attributesURL: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/></js:quote>,
+                            getDBValuesUrl: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" event="getUniqueValues"/></js:quote>
+                        }
+                    })
+                });
+            </script>
         </stripes:form>
     </stripes:layout-component>
 </stripes:layout-render>

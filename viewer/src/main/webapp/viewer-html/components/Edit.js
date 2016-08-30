@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2015 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ Ext.define("viewer.components.Edit", {
     currentFID: null,
     geometryEditable: null,
     deActivatedTools: [],
-    schema:null,
+    schema: null,
     editLinkInFeatureInfoCreated: false,
     afterLoadAttributes: null,
     filterFeature: null,
@@ -59,7 +59,7 @@ Ext.define("viewer.components.Edit", {
     editLblClass: 'editCmpLbl',
     constructor: function (conf) {
         this.initConfig(conf);
-		viewer.components.Edit.superclass.constructor.call(this, this.config);
+        viewer.components.Edit.superclass.constructor.call(this, this.config);
         var me = this;
 
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
@@ -124,7 +124,7 @@ Ext.define("viewer.components.Edit", {
                 strokeopacity: 50
             }
         });
-        this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, function() {
+        this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, function () {
             this.showAndFocusForm();
         }, this);
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
@@ -140,11 +140,11 @@ Ext.define("viewer.components.Edit", {
         this.setFormVisible(false);
         this.untoggleButtons();
         var buttons = this.maincontainer.down("#buttonPanel").query("button");
-        if(buttons.length === 1 && !buttons[0].isDisabled()) {
+        if (buttons.length === 1 && !buttons[0].isDisabled()) {
             buttons[0].fireEvent("click", buttons[0]);
         }
         this.popup.show();
-        this.popup.popupWin.addListener('hide', function() {
+        this.popup.popupWin.addListener('hide', function () {
             this.cancel();
         }.bind(this));
     },
@@ -232,23 +232,23 @@ Ext.define("viewer.components.Edit", {
         this.savebutton = this.maincontainer.down("#saveButton");
 
     },
-    createActionButtons: function() {
+    createActionButtons: function () {
         var buttons = [];
-        if(this.config.allowNew) {
+        if (this.config.allowNew) {
             buttons.push(this.createButton("newButton", "Nieuw", this.createNew));
         }
-        if(this.config.allowCopy) {
+        if (this.config.allowCopy) {
             buttons.push(this.createButton("copyButton", "Kopie", this.copy, "Kopie bewerken"));
         }
-        if(this.config.allowEdit) {
+        if (this.config.allowEdit) {
             buttons.push(this.createButton("editButton", "Bewerken", this.edit));
         }
-        if(this.config.allowDelete) {
+        if (this.config.allowDelete) {
             buttons.push(this.createButton("deleteButton", "Verwijder", this.deleteFeature));
         }
         return buttons;
     },
-    createButton: function(itemid, label, fn, tooltip) {
+    createButton: function (itemid, label, fn, tooltip) {
         return {
             xtype: 'button',
             itemId: itemid,
@@ -259,7 +259,7 @@ Ext.define("viewer.components.Edit", {
             listeners: {
                 click: {
                     scope: this,
-                    fn: function(btn) {
+                    fn: function (btn) {
                         btn.addCls("active-state");
                         fn.call(this);
                     }
@@ -267,7 +267,7 @@ Ext.define("viewer.components.Edit", {
             }
         };
     },
-    getButtonAllowed: function(itemid) {
+    getButtonAllowed: function (itemid) {
         var configKey = {
             "newButton": this.config.allowNew,
             "copyButton": this.config.allowCopy,
@@ -276,20 +276,21 @@ Ext.define("viewer.components.Edit", {
         };
         return configKey[itemid];
     },
-    setButtonDisabled: function(itemid, disabled) {
-        if(!this.getButtonAllowed(itemid)) {
+    setButtonDisabled: function (itemid, disabled) {
+        if (!this.getButtonAllowed(itemid)) {
             return;
         }
         var button = this.maincontainer.down("#" + itemid);
-        if(button) button.setDisabled(disabled);
+        if (button)
+            button.setDisabled(disabled);
     },
-    showAndFocusForm: function() {
+    showAndFocusForm: function () {
         this.setFormVisible(true);
         this.inputContainer.down("field").focus();
         this.geomlabel.setText("");
         this.untoggleButtons();
     },
-    setFormVisible: function(visible) {
+    setFormVisible: function (visible) {
         this.inputContainer.setVisible(visible);
         this.maincontainer.down("#savePanel").setVisible(visible);
     },
@@ -305,55 +306,56 @@ Ext.define("viewer.components.Edit", {
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
     },
-    layerSelectorInit: function(store) {
-        if(this.layerSelector.getVisibleLayerCount() === 1) {
+    layerSelectorInit: function (evt) {
+        if (this.layerSelector.getVisibleLayerCount() === 1) {
             this.layerSelector.selectFirstLayer();
         }
-        if(this.config.showEditLinkInFeatureInfo) {
-            this.createFeatureInfoLink(store);
+        if (this.config.showEditLinkInFeatureInfo) {
+            this.createFeatureInfoLink(evt.layers);
         }
     },
-    createFeatureInfoLink: function(store) {
-        if(this.editLinkInFeatureInfoCreated) {
+    createFeatureInfoLink: function (editableLayers) {
+        if (this.editLinkInFeatureInfoCreated) {
             return;
         }
         var infoComponents = this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
         var appLayers = [];
-        store.each(function(record) {
-            appLayers.push(this.viewerController.getAppLayerById(record.get('layerId')));
+        Ext.each(editableLayers, function (record) {
+            appLayers.push(this.viewerController.getAppLayerById(record.id));
         }, this);
         for (var i = 0; i < infoComponents.length; i++) {
             infoComponents[i].registerExtraLink(
-                this,
-                function (feature, appLayer, coords) {
-                    this.handleFeatureInfoLink(feature, appLayer, coords);
-                }.bind(this),
-                this.config.title || 'Edit',
-                appLayers
-            );
+                    this,
+                    function (feature, appLayer, coords) {
+                        this.handleFeatureInfoLink(feature, appLayer, coords);
+                    }.bind(this),
+                    this.config.title || 'Edit',
+                    appLayers
+                    );
         }
         this.editLinkInFeatureInfoCreated = true;
     },
-    handleFeatureInfoLink: function(feature, appLayer, coords) {
+    handleFeatureInfoLink: function (feature, appLayer, coords) {
         // Show the window
         this.showWindow();
         // Add event handler to get features for coordinates
-        this.afterLoadAttributes = function() {
+        this.afterLoadAttributes = function () {
             this.afterLoadAttributes = null;
             this.filterFeature = feature;
             this.mode = "edit";
+            this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
             this.getFeaturesForCoords(coords);
         };
         // Check if the appLayer is selected already
         // If the layer is already selected, fire layerChanged ourself
         var selectedAppLayer = this.layerSelector.getValue();
-        if(selectedAppLayer && selectedAppLayer.id === parseInt(appLayer.id, 10)) {
+        if (selectedAppLayer && selectedAppLayer.id === parseInt(appLayer.id, 10)) {
             this.layerChanged(appLayer);
             return;
         }
         // Find and select layerselector record
-        this.layerSelector.getStore().each(function(record) {
-            if(parseInt(record.get('layerId'), 10) === parseInt(appLayer.id, 10)) {
+        this.layerSelector.getStore().each(function (record) {
+            if (parseInt(record.get('layerId'), 10) === parseInt(appLayer.id, 10)) {
                 this.layerSelector.setValue(record);
             }
         }, this);
@@ -390,7 +392,7 @@ Ext.define("viewer.components.Edit", {
                 this.initAttributeInputs(me.appLayer);
             }
         }
-        if(this.afterLoadAttributes !== null) {
+        if (this.afterLoadAttributes !== null) {
             this.afterLoadAttributes.call(this);
         }
     },
@@ -496,7 +498,7 @@ Ext.define("viewer.components.Edit", {
             this.setButtonDisabled("copyButton", true);
         }
     },
-    createStaticInput: function(attribute, values) {
+    createStaticInput: function (attribute, values) {
         var fieldText = "";
         if (typeof values !== 'undefined') {
             fieldText = values[0];
@@ -529,7 +531,7 @@ Ext.define("viewer.components.Edit", {
         this.inputContainer.add(input);
         return input;
     },
-    createDynamicInput: function(attribute, values) {
+    createDynamicInput: function (attribute, values) {
         var valueStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label']
         });
@@ -622,18 +624,19 @@ Ext.define("viewer.components.Edit", {
 
         if (attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue) {
             try {
-                if(valueStore.loadCount !== 0) { // if store is loaded already load event is not fired anymore
+                if (valueStore.loadCount !== 0) { // if store is loaded already load event is not fired anymore
                     input.select(valueStore.getAt(0));
                 } else {
-                    valueStore.on('load', function() {
+                    valueStore.on('load', function () {
                         input.select(valueStore.getAt(0));
                     });
                 }
-            } catch(e) {}
+            } catch (e) {
+            }
         }
 
         this.inputContainer.add(input);
-        
+
         return input;
     },
     setInputPanel: function (feature) {
@@ -641,7 +644,7 @@ Ext.define("viewer.components.Edit", {
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
-        if(this.mode === "new") {
+        if (this.mode === "new") {
             return;
         }
         Ext.get(this.getContentDiv()).mask("Haalt features op...");
@@ -649,7 +652,7 @@ Ext.define("viewer.components.Edit", {
         this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
         this.getFeaturesForCoords(coords);
     },
-    getFeaturesForCoords: function(coords) {
+    getFeaturesForCoords: function (coords) {
         var layer = this.layerSelector.getValue();
         var featureInfo = Ext.create("viewer.FeatureInfo", {
             viewerController: this.config.viewerController
@@ -667,9 +670,9 @@ Ext.define("viewer.components.Edit", {
             return;
         }
         // A feature filter has been set, filter the right feature from the result set
-        if(this.filterFeature !== null) {
-            for(var i = 0; i < features.length; i++) {
-                if(features[i].__fid === this.filterFeature.__fid) {
+        if (this.filterFeature !== null) {
+            for (var i = 0; i < features.length; i++) {
+                if (features[i].__fid === this.filterFeature.__fid) {
                     this.handleFeature(this.indexFeatureToNamedFeature(features[i]));
                     this.filterFeature = null; // Remove filter after first use
                     return;
@@ -700,6 +703,8 @@ Ext.define("viewer.components.Edit", {
                     id: "T_0"
                 });
                 this.vectorLayer.addFeature(feat);
+            } else {
+                this.showAndFocusForm();
             }
         }
         Ext.get(this.getContentDiv()).unmask();
@@ -756,17 +761,18 @@ Ext.define("viewer.components.Edit", {
         this.savebutton.setText("Verwijderen");
         this.untoggleButtons("deleteButton");
     },
-    untoggleButtons: function(filter) {
+    untoggleButtons: function (filter) {
         var buttons = ["newButton", "editButton", "copyButton", "deleteButton"];
         var itemid;
         var button;
-        for(var i = 0; i < buttons.length; i++) {
+        for (var i = 0; i < buttons.length; i++) {
             itemid = buttons[i];
-            if(filter === itemid || !this.getButtonAllowed(itemid)) {
+            if (filter === itemid || !this.getButtonAllowed(itemid)) {
                 continue;
             }
             button = this.maincontainer.down("#" + itemid);
-            if(button) button.removeCls("active-state");
+            if (button)
+                button.removeCls("active-state");
         }
     },
     activateMapClick: function () {
@@ -946,7 +952,7 @@ Ext.define("viewer.components.Edit", {
 
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
-            model:modelName,
+            model: modelName,
             data: features
         });
 

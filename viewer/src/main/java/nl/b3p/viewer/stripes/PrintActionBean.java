@@ -136,9 +136,15 @@ public class PrintActionBean implements ActionBean {
                     jarray = new JSONArray();
                     jarray.put(o);
                 }
-                for (int i=0; i < jarray.length();i++){
-                    JSONObject legendJson = new JSONObject(jarray.getString(i));
-                    Legend legend = new Legend(legendJson);   
+                for (int i = 0; i < jarray.length(); i++) {
+                    JSONObject legendJson;
+                    try {
+                        legendJson = jarray.getJSONObject(i);
+                    } catch (JSONException jse) {
+                        // for some historic reason the print component sends double encoded json for legend url
+                        legendJson = new JSONObject(jarray.getString(i));
+                    }
+                    Legend legend = new Legend(legendJson);
                     info.getLegendUrls().add(legend);
                 }
             }
@@ -154,9 +160,10 @@ public class PrintActionBean implements ActionBean {
         }
         
         final String mimeType;
-        if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
-            mimeType=MimeConstants.MIME_RTF;
-        }else if(jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("savePDF")){
+//        if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
+//            mimeType=MimeConstants.MIME_RTF;
+//        }else
+        if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("savePDF")) {
             mimeType=MimeConstants.MIME_PDF;
         }else if(jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("mailPDF")){
             mimeType=MimeConstants.MIME_PDF;
@@ -217,10 +224,13 @@ public class PrintActionBean implements ActionBean {
                 /* Set filename and extension */
                 String filename = "Kaart_" + info.getDate();
 
-                if (mimeType.equals(MimeConstants.MIME_PDF)) {
-                    filename += ".pdf";
-                } else if (mimeType.equals(MimeConstants.MIME_RTF)) {
-                    filename += ".rtf";
+                switch (mimeType) {
+                    case MimeConstants.MIME_PDF:
+                        filename += ".pdf";
+                        break;
+//                    case MimeConstants.MIME_RTF:
+//                        filename += ".rtf";
+//                        break;
                 }
                 if (templateUrl.toLowerCase().startsWith("http://") || templateUrl.toLowerCase().startsWith("ftp://")){
                     PrintGenerator.createOutput(info,mimeType, new URL(templateUrl),true,response,filename);
