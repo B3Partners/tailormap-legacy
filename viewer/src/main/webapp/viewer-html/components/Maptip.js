@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * Maptip component
  * Creates a maptip component
@@ -53,6 +55,7 @@ Ext.define ("viewer.components.Maptip",{
     requestManager: null,
     extraLinkCallbacks: [],
     relatedFeatureBlocks: {},
+    currentRequestId:null,
     /**
      * @constructor
      */
@@ -68,7 +71,7 @@ Ext.define ("viewer.components.Maptip",{
         var me = this;        
         //if topmenu height is in % then recalc on every resize.        
         var topMenuLayout=this.config.viewerController.getLayout('top_menu');
-        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
+        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure === "%"){
             Ext.on('resize', function(){
                 me.onResize();
             }, this);
@@ -98,7 +101,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     onAddLayer: function(map,options){
         var mapLayer = options.layer;
-        if (mapLayer==null)
+        if (mapLayer === null)
             return;
         if (!this.isLayerConfigured(mapLayer)){
             return;
@@ -131,7 +134,7 @@ Ext.define ("viewer.components.Maptip",{
 
     onLayerRemoved: function(map,options) {
         var mapLayer = options.layer;
-        if (mapLayer==null)
+        if (mapLayer === null)
             return;
         if(this.isSummaryLayer(mapLayer)){
             if (mapLayer.appLayerId){
@@ -165,8 +168,8 @@ Ext.define ("viewer.components.Maptip",{
             this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.config.viewerController}), this.config.viewerController);
             this.serverRequestEnabled = true;
         }
-        if (this.serverRequestLayers ==null){
-            this.serverRequestLayers=new Array();
+        if (this.serverRequestLayers === null){
+            this.serverRequestLayers = new Array();
         }
         Ext.Array.include(this.serverRequestLayers, appLayer);
     },
@@ -197,10 +200,10 @@ Ext.define ("viewer.components.Maptip",{
         }else{
             options.useCursorForWaiting = true;
         }
-        var requestId = Ext.id();
+        this.currentRequestId = Ext.id();
 
-        this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
-            if(me.config.spinnerWhileIdentify && me.requestManager.requestsFinished(requestId)){
+        this.requestManager.request(this.currentRequestId, options, radius, inScaleLayers,  function(data) {
+            if(me.config.spinnerWhileIdentify && me.requestManager.requestsFinished(me.currentRequestId)){
                 me.viewerController.mapComponent.getMap().removeMarker("edit");
             }
             options.data = data;
@@ -240,8 +243,8 @@ Ext.define ("viewer.components.Maptip",{
             var browserZoomRatio = this.getBrowserZoomRatio();
 
             if (browserZoomRatio!=1){
-                options.y= Math.round(browserZoomRatio * (options.y));
-                options.x= Math.round(browserZoomRatio * options.x);
+                options.y = Math.round(browserZoomRatio * (options.y));
+                options.x = Math.round(browserZoomRatio * options.x);
             }
 
             //if not enabled: stop
@@ -254,8 +257,7 @@ Ext.define ("viewer.components.Maptip",{
             }
             //if position is not the last position remove content
             if (this.lastPosition){
-                if (this.lastPosition.x != options.x ||
-                    this.lastPosition.y != options.y){
+                if (this.lastPosition.x !== options.x || this.lastPosition.y !== options.y) {
                     this.balloon.setContent("");
                 }
             }else{
@@ -268,8 +270,7 @@ Ext.define ("viewer.components.Maptip",{
             var me = this;
             var data=options.data;
             var components=[];
-            //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
-            if (data==null || data =="null" || data==undefined){
+            if (data === null || data === "null" || data === undefined){
                 return;
             }
             components = this.createInfoHtmlElements(data, options);
