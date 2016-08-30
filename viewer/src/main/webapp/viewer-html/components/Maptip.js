@@ -1069,14 +1069,14 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //new maptip position so update the maptipId
         this.maptipId++;
 
-        if (this.balloon === undefined){
+        if (!this.balloon){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){
             this._resetPositionOfBalloon(x,y);
         }
         this._appendButtons();
         this.maximize();
-        if (x !== undefined && y !== undefined){
+        if (x && y ){
 
             this.x=x;
             this.y=y;
@@ -1084,7 +1084,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
                 this.x = this.x*browserZoomRatio;
                 this.y = this.y*browserZoomRatio;
             }
-        }else if (this.x === undefined || this.y === undefined){
+        }else if (!this.x|| !this.y){
             throw "No coords found for this balloon";
         }else{
             x=this.x;
@@ -1143,7 +1143,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     
     this.setContent = function (value){
         var element=this.getContentElement();
-        if (element){
+        if (!element){
             return;
         }
         element.update(value);
@@ -1151,7 +1151,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
 
     this.addContent = function (value){
         var element=this.getContentElement();
-        if (element){
+        if (!element){
             return;
         }
         element.insertHtml("beforeEnd", value);
@@ -1159,7 +1159,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     
     this.addElements = function (elements){
         var element=this.getContentElement();
-        if (element){
+        if (!element){
             return;
         }
         for (var i=0; i < elements.length; i++){
