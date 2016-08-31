@@ -1,1 +1,1 @@
-alter table configured_attribute add  (url VARCHAR2(255));
+alter table configured_attribute add  (label VARCHAR2(255));
