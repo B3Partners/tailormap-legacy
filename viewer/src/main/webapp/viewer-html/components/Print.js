@@ -585,7 +585,7 @@ Ext.define ("viewer.components.Print",{
                         name: 'legendUrl',
                         inputValue: Ext.JSON.encode(this.legends[key]),
                         id: 'legendCheckBox'+key,
-                        checked: true
+                        checked: !appLayer.background
                     });
                 }
             };
