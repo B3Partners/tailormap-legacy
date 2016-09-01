@@ -21,6 +21,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
+import nl.b3p.viewer.config.app.ApplicationLayer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -476,6 +477,12 @@ public class Layer implements Cloneable, Serializable {
 
     public List<Layer> getCachedChildren(EntityManager em) {
         return service.getLayerChildrenCache(this, em);
+    }
+    
+    public List<ApplicationLayer> getApplicationLayers(EntityManager em){
+        List<ApplicationLayer> appLayers = em.createQuery("from ApplicationLayer where service = :service"
+                + " and layerName = :layerName").setParameter("service", service).setParameter("layerName", this.getName()).getResultList();
+        return appLayers;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">

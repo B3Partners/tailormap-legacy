@@ -44,6 +44,7 @@ import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.ArcIMSService;
@@ -392,8 +393,17 @@ public class GeoServiceActionBean implements ActionBean {
         this.useProxy = useProxy;
     }
 
+    public Map<Layer, Map<Application, List<Level>>> getLayersInApplications() {
+        return layersInApplications;
+    }
+
+    public void setLayersInApplications(Map<Layer, Map<Application, List<Level>>> layersInApplications) {
+        this.layersInApplications = layersInApplications;
+    }
+
     //</editor-fold>
 
+    private Map<Layer,Map<Application,List<Level>>> layersInApplications = new HashMap<Layer,Map<Application,List<Level>>>();
 
     @DefaultHandler
     public Resolution edit() {
@@ -463,6 +473,37 @@ public class GeoServiceActionBean implements ActionBean {
             name = service.getName();
             username = service.getUsername();
             password = service.getPassword();
+            EntityManager em = Stripersist.getEntityManager();
+            // haal alle lagen op
+                // haal van elke laag de applayer op
+                    // haal van elke appLayer het level op
+                        // haal van het level de parents op
+            
+            List<Layer> layers = service.loadLayerTree(em);
+            
+            List<Application> applications = em.createQuery("from Application").getResultList();
+            
+            for (Layer layer : layers) {
+                Map<Application, List<Level>> applicationsMap = new HashMap<Application,List<Level>>();
+                List<ApplicationLayer> appLayers = layer.getApplicationLayers(em);
+                for (ApplicationLayer appLayer : appLayers) {
+                    for (Application application : applications) {
+                        List<Level> levelsInApplication = new ArrayList<Level>();
+                        applicationsMap.put(application, levelsInApplication);
+                        Level l = application.getRoot().getParentInSubtree(appLayer);
+                        if(l != null){
+                            Level cur = l;
+                            while(cur.getParent() != null){
+                                levelsInApplication.add(0, cur);
+                                cur = cur.getParent();
+                            }
+                        }
+                    }
+                }
+                if(applicationsMap.size() > 0){
+                    layersInApplications.put(layer, applicationsMap);
+                }
+            }
         }
         return new ForwardResolution(JSP);
     }
