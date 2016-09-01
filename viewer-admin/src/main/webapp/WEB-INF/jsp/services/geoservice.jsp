@@ -88,7 +88,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <table class="formtable">
         <tr>
             <td>URL van de service *:</td>
-            <td><c:choose><c:when test="${edit && !isTiling}">${actionBean.service.url}</c:when><c:otherwise><stripes:text name="url" maxlength="255" size="80"/></c:otherwise></c:choose></td>
+            <td><stripes:text name="url" onchange="urlChanged();" maxlength="255" size="80"/></td>
         </tr>
         <tr><td>Protocol *:</td>
             <td>
@@ -229,7 +229,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="Annuleren"/>
             </c:when>
             <c:otherwise>
-                <stripes:submit name="save" value="Opslaan"/>
+                <stripes:submit name="save" value="Opslaan" onclick="return saveConfirm();"/>
                 <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
                 <stripes:submit name="update" onclick="return updateConfirm();" value="Update"/>
                 <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
@@ -245,6 +245,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <c:if test="${actionBean.updatable}">
                             return confirm('Weet u zeker dat u deze service wilt updaten? Lagen die de server niet meer aanbiedt worden verwijderd.');
                         </c:if>
+                    }
+                    var isUrlChanged = false;
+                    function urlChanged(){
+                        isUrlChanged = true;
+                    }
+                    
+                    function saveConfirm(){
+                        if(isUrlChanged){
+                            return confirm('U heeft de url naar de service aangepast. Dit kan onvoorziene consequenties hebben. Weet u zeker dat u deze service wilt opslaan?');
+                        }
                     }
                 </script>
             </c:otherwise>
