@@ -433,7 +433,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             oldPublished.setVersion(uniqueVersion);
             em.persist(oldPublished);
             if(mashupMustPointToPublishedVersion){
-                for (Application mashup: oldPublished.getMashups()) {
+                for (Application mashup: oldPublished.getMashups(em)) {
                     mashup.setRoot(application.getRoot());//nog iets doen met veranderde layerids uit cofniguratie
                     SelectedContentCache.setApplicationCacheDirty(mashup,true, false,em);
                     mashup.transferMashup(oldPublished,em);
