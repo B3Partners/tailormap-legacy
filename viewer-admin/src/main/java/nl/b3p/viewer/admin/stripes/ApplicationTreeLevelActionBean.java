@@ -207,17 +207,40 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             level.getReaders().add(groupName);
         }
         
+        updateApplayersInLevel(selectedlayers, level, Stripersist.getEntityManager());
+        
+        level.getDocuments().clear();
+        if(selecteddocs != null && selecteddocs.length() > 0){
+            String[] docIds = selecteddocs.split(",");
+             for(int i = 0; i < docIds.length; i++){
+                Long id = new Long(docIds[i].substring(1));
+                Document doc = Stripersist.getEntityManager().find(Document.class, id);
+                level.getDocuments().add(doc);
+             }
+        }
+        
+        EntityManager em = Stripersist.getEntityManager();
+        em.persist(level);
+        application.authorizationsModified();
+        SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
+        em.getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
+        return edit();
+    }
+    
+     protected void updateApplayersInLevel(String selectedLayers, Level level, EntityManager em){
         level.getLayers().clear();
-        if(selectedlayers != null && selectedlayers.length() > 0){
-            String[] layerIds = selectedlayers.split(",");
+        if(selectedLayers != null && selectedLayers.length() > 0){
+            String[] layerIds = selectedLayers.split(",");
             for(int i = 0; i < layerIds.length; i++){
                 ApplicationLayer appLayer = null;
                 if(layerIds[i].startsWith("al")){
                     Long id = new Long(layerIds[i].substring(2));
-                    appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
+                    appLayer = em.find(ApplicationLayer.class, id);
                 }else if(layerIds[i].startsWith("l")){
                     Long id = new Long(layerIds[i].substring(1));
-                    Layer layer = Stripersist.getEntityManager().find(Layer.class, id);
+                    Layer layer = em.find(Layer.class, id);
                     if(layer != null && !layer.isVirtual()){
                         appLayer = new ApplicationLayer();
                         appLayer.setService(layer.getService());
@@ -239,25 +262,6 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 level.getLayers().add(appLayer);
             }
         }
-        
-        level.getDocuments().clear();
-        if(selecteddocs != null && selecteddocs.length() > 0){
-            String[] docIds = selecteddocs.split(",");
-             for(int i = 0; i < docIds.length; i++){
-                Long id = new Long(docIds[i].substring(1));
-                Document doc = Stripersist.getEntityManager().find(Document.class, id);
-                level.getDocuments().add(doc);
-             }
-        }
-        
-        EntityManager em = Stripersist.getEntityManager();
-        em.persist(level);
-        application.authorizationsModified();
-        SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
-        em.getTransaction().commit();
-        
-        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
-        return edit();
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
