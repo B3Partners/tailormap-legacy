@@ -843,6 +843,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     transparent: true,
                     noCache: true
                 };
+                
+                var correction = this.calculateScaleCorrection(service,layer.minScale, layer.maxScale);
+                if(Ext.isDefined(layer.minScale)){
+                    var minRes = layer.minScale / correction;
+                    ogcOptions.minResulution = minRes;
+                }
+                
+                if(Ext.isDefined(layer.maxScale)){
+                    var maxRes = layer.maxScale / correction;
+                    ogcOptions.maxResolution = maxRes;
+                }
+                
                 if (layer.queryable){
                     ogcOptions.query_layers= layer.name;
                 }
