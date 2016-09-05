@@ -231,6 +231,10 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     
      protected void updateApplayersInLevel(String selectedLayers, Level level, EntityManager em){
         List<ApplicationLayer> layersToBeRemoved = new ArrayList(level.getLayers());
+        
+        List<Application> apps = application.getMashups(em);
+        apps.add(application);
+        
         level.getLayers().clear();
         if(selectedLayers != null && selectedLayers.length() > 0){
             String[] layerIds = selectedLayers.split(",");
@@ -264,15 +268,17 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 level.getLayers().add(appLayer);
             }
         }
-        List<StartLayer> startlayers = application.getStartLayers();
-         for (Iterator<StartLayer> iterator = startlayers.iterator(); iterator.hasNext();) {
-             StartLayer next = iterator.next();
+        for (Application app : apps) {
+            List<StartLayer> startlayers = app.getStartLayers();
+            for (Iterator<StartLayer> iterator = startlayers.iterator(); iterator.hasNext();) {
+                StartLayer next = iterator.next();
 
-             for (ApplicationLayer applicationLayer : layersToBeRemoved) {
-                 if (Objects.equals(next.getApplicationLayer().getId(), applicationLayer.getId())) {
-                     iterator.remove();
-                 }
-             }
+                for (ApplicationLayer applicationLayer : layersToBeRemoved) {
+                    if (Objects.equals(next.getApplicationLayer().getId(), applicationLayer.getId())) {
+                        iterator.remove();
+                    }
+                }
+            }
         }
     }
 
