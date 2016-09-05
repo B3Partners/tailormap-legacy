@@ -31,6 +31,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.*;
@@ -71,9 +72,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private Application applicationWorkversion;
     @Validate
     private Application applicationToDelete;
-    
+
     private List<Application> apps;
-    
+
     private String defaultAppId;
 
     @Validate
@@ -184,7 +185,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         this.defaultApplication = defaultApplication;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -211,10 +212,21 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                 applicationToDelete.setVersion(uniqueVersion);
                 Stripersist.getEntityManager().getTransaction().commit();
             } else {
-                Stripersist.getEntityManager().remove(applicationToDelete);
-                Stripersist.getEntityManager().getTransaction().commit();
+                List<Application> mashups = applicationToDelete.getMashups();
+                if(!mashups.isEmpty()) {
+                    List<String> list = new ArrayList();
+                    for(Application mashup: mashups) {
+                        list.add(mashup.getNameWithVersion());
+                    }
+                    String mashupList = StringUtils.join(list, ", ");
+                    getContext().getValidationErrors().addGlobalError(new SimpleError("Deze applicatie kan niet verwijderd worden, omdat de boomstructuur wordt gebruikt in de mashups " + mashupList));
+                } else {
 
-                getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+                    Stripersist.getEntityManager().remove(applicationToDelete);
+                    Stripersist.getEntityManager().getTransaction().commit();
+
+                    getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+                }
             }
             if (applicationToDelete.equals(application)) {
                 setApplication(null);
@@ -401,7 +413,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         em.getTransaction().commit();
         return copy;
     }
-    
+
     public Resolution saveDefaultApplication() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -429,7 +441,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-    
+
     @After(stages = {LifecycleStage.BindingAndValidation})
     public void createLists() {
         EntityManager em = Stripersist.getEntityManager();
