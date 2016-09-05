@@ -29,13 +29,14 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
     @Before
     public void setup(){
         instance = new ApplicationTreeLevelActionBean();
-        instance.setContext(new ActionBeanContext());
     }
     
     @Test
     public void testDeleteAppLayer(){
         
         initData(true);
+        instance.setContext(new ActionBeanContext());
+        instance.setApplication(app);
         assertNotNull(testAppLayer);
         assertNotNull(testStartLayer);
         
