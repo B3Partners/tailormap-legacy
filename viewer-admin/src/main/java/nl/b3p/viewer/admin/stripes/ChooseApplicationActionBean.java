@@ -31,6 +31,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.*;
@@ -217,7 +218,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                     for(Application mashup: mashups) {
                         list.add(mashup.getNameWithVersion());
                     }
-                    String mashupList = String.join(", ", list);
+                    String mashupList = StringUtils.join(list, ", ");
                     getContext().getValidationErrors().addGlobalError(new SimpleError("Deze applicatie kan niet verwijderd worden, omdat de boomstructuur wordt gebruikt in de mashups " + mashupList));
                 } else {
 
