@@ -196,11 +196,12 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     }
 
     public Resolution deleteApplication() {
+        EntityManager em = Stripersist.getEntityManager();
         try {
             if (applicationToDelete.isMashup()) {
                 applicationToDelete.setRoot(null);
-                Stripersist.getEntityManager().remove(applicationToDelete);
-                Stripersist.getEntityManager().getTransaction().commit();
+                em.remove(applicationToDelete);
+                em.getTransaction().commit();
 
                 getContext().getMessages().add(new SimpleMessage("Mashup is verwijderd"));
             } else if (applicationToDelete.getVersion() == null) {
@@ -210,9 +211,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                 String now = sdf.format(nowDate);
                 String uniqueVersion = ApplicationSettingsActionBean.findUniqueVersion(applicationToDelete.getName(), "B_" + now);
                 applicationToDelete.setVersion(uniqueVersion);
-                Stripersist.getEntityManager().getTransaction().commit();
+                em.getTransaction().commit();
             } else {
-                List<Application> mashups = applicationToDelete.getMashups();
+                List<Application> mashups = applicationToDelete.getMashups(em);
                 if(!mashups.isEmpty()) {
                     List<String> list = new ArrayList();
                     for(Application mashup: mashups) {
@@ -222,8 +223,8 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                     getContext().getValidationErrors().addGlobalError(new SimpleError("Deze applicatie kan niet verwijderd worden, omdat de boomstructuur wordt gebruikt in de mashups " + mashupList));
                 } else {
 
-                    Stripersist.getEntityManager().remove(applicationToDelete);
-                    Stripersist.getEntityManager().getTransaction().commit();
+                    em.remove(applicationToDelete);
+                    em.getTransaction().commit();
 
                     getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
                 }

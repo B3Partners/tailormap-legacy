@@ -547,8 +547,8 @@ public class Application {
         return mashup;
     }
 
-    public List<Application> getMashups() {
-        return Stripersist.getEntityManager().createQuery(
+    public List<Application> getMashups(EntityManager em) {
+        return em.createQuery(
             "from Application where root = :level and id <> :oldId")
             .setParameter("level", getRoot()).setParameter("oldId", getId()).getResultList();
     }

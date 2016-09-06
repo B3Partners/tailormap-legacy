@@ -189,8 +189,12 @@ public abstract class TestUtil {
             }
         }
     }
+    
+    public void initData(boolean deleteAfterwards){
+        initData(deleteAfterwards,true);
+    }
 
-    public void initData(boolean deleteAfterwards) {
+    public void initData(boolean deleteAfterwards, boolean addToStartmap) {
         app = new Application();
         app.setName("testapp");
         app.setVersion("154");
@@ -198,38 +202,48 @@ public abstract class TestUtil {
         app.getReaders().add("puk");
         
         persistEntityTest(app, Application.class, deleteAfterwards);
+        
+        Level root = new Level();
+        root.setName("root");
+        app.setRoot(root);
+        entityManager.persist(app);
+        persistEntityTest(root, Level.class, false);
 
         testLevel = new Level();
         testLevel.setName("testLevel");
-        app.setRoot(testLevel);
-        entityManager.persist(app);
+        testLevel.setParent(root);
+        root.getChildren().add(testLevel);
         persistEntityTest(testLevel, Level.class, false);
-
-        testAppLayer = new ApplicationLayer();
-        testAppLayer.setLayerName("testApplayer");
-        testLevel.getLayers().add(testAppLayer);
-        persistEntityTest(testAppLayer, ApplicationLayer.class, false);
-
-        testStartLayer = new StartLayer();
-        testStartLayer.setApplicationLayer(testAppLayer);
-        testStartLayer.setApplication(app);
-        testStartLayer.setSelectedIndex(16);
-        app.getStartLayers().add(testStartLayer);
-
-        testAppLayer.getStartLayers().put(app,testStartLayer);
 
         testStartLevel = new StartLevel();
         testStartLevel.setApplication(app);
         testStartLevel.setLevel(testLevel);
-        testStartLevel.setSelectedIndex(9);
         testLevel.getStartLevels().put(app, testStartLevel);
         app.getStartLevels().add(testStartLevel);
         persistEntityTest(testStartLevel, StartLevel.class, false);
 
-        entityManager.persist(testAppLayer);
-        entityManager.persist(app);
+        if (addToStartmap) {
+            testAppLayer = new ApplicationLayer();
+            testAppLayer.setLayerName("testApplayer");
+            testLevel.getLayers().add(testAppLayer);
+            persistEntityTest(testAppLayer, ApplicationLayer.class, false);
 
-        persistEntityTest(testStartLayer, StartLayer.class, false);
+            testStartLayer = new StartLayer();
+            testStartLayer.setApplicationLayer(testAppLayer);
+            testStartLayer.setApplication(app);
+            testStartLayer.setSelectedIndex(16);
+            app.getStartLayers().add(testStartLayer);
+
+            testAppLayer.getStartLayers().put(app, testStartLayer);
+
+            testStartLevel.setSelectedIndex(9);
+            entityManager.persist(testStartLevel);
+            
+            entityManager.persist(testAppLayer);
+            entityManager.persist(app);
+
+            persistEntityTest(testStartLayer, StartLayer.class, false);
+        }
 
         testComponent = new ConfiguredComponent();
         testComponent.setApplication(app);
