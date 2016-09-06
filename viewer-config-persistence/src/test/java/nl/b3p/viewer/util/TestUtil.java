@@ -198,11 +198,17 @@ public abstract class TestUtil {
         app.getReaders().add("puk");
         
         persistEntityTest(app, Application.class, deleteAfterwards);
+        
+        Level root = new Level();
+        root.setName("root");
+        app.setRoot(root);
+        entityManager.persist(app);
+        persistEntityTest(root, Level.class, false);
 
         testLevel = new Level();
         testLevel.setName("testLevel");
-        app.setRoot(testLevel);
-        entityManager.persist(app);
+        testLevel.setParent(root);
+        root.getChildren().add(testLevel);
         persistEntityTest(testLevel, Level.class, false);
 
         testAppLayer = new ApplicationLayer();

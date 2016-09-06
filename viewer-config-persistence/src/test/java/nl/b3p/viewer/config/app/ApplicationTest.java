@@ -129,7 +129,9 @@ public class ApplicationTest extends TestUtil {
             }
 
             for (Level level : levels) {
-                assertTrue(level.getStartLevels().containsKey(mashup));
+                if(level.getParent() != null){
+                    assertTrue(level.getStartLevels().containsKey(mashup));
+                }
             }
         } catch (Exception e) {
             log.error("Fout", e);
@@ -177,7 +179,9 @@ public class ApplicationTest extends TestUtil {
             }
 
             for (Level level : levels) {
-                assertTrue(level.getStartLevels().containsKey(mashup));
+                if(level.getParent() != null){
+                    assertTrue(level.getStartLevels().containsKey(mashup));
+                }
             }
         } catch (Exception e) {
             log.error("Fout", e);
@@ -235,7 +239,9 @@ public class ApplicationTest extends TestUtil {
             }
 
             for (Level level : levels) {
-                assertTrue(level.getStartLevels().containsKey(mashup));
+                if(level.getParent() != null){
+                    assertTrue(level.getStartLevels().containsKey(mashup));
+                }
             }
         } catch (Exception e) {
             log.error("Fout", e);
