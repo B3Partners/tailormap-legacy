@@ -30,14 +30,13 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
 
     @Before
     public void setup() {
-        initData(true);
         instance = new ApplicationTreeLevelActionBean();
-        instance.setContext(new ActionBeanContext());
-        instance.setApplication(app);
     }
 
     @Test
     public void testDeleteAppLayer() {
+        initData(true);
+        instance.setApplication(app);
 
         assertNotNull(testAppLayer);
         assertNotNull(testStartLayer);
@@ -62,6 +61,8 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
 
     @Test
     public void testRemoveAppLayerUsedInMashup() throws Exception {
+        initData(true);
+        instance.setApplication(app);
         Application mashup = app.createMashup("mashup", entityManager, false);
         entityManager.persist(mashup);
         objectsToRemove.add(mashup);
@@ -78,6 +79,8 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
     
     @Test
     public void testRemoveLevelUsedInMashup() throws Exception{
+        initData(true, false);
+        instance.setApplication(app);
         Long id = testLevel.getId();
         Application mashup = app.createMashup("mashup", entityManager, false);
         entityManager.persist(mashup);
