@@ -8,6 +8,7 @@ package nl.b3p.viewer.admin.stripes;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
@@ -73,5 +74,18 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
             log.error("Fout bij verwijderen", e);
             assert (false);
         }
+    }
+    
+    @Test
+    public void testRemoveLevelUsedInMashup() throws Exception{
+        Long id = testLevel.getId();
+        Application mashup = app.createMashup("mashup", entityManager, false);
+        entityManager.persist(mashup);
+        objectsToRemove.add(mashup);
+        
+        String error = instance.deleteLevel(entityManager, testLevel);
+        assertNull(error);
+        Level test = entityManager.find(Level.class, id);
+        assertNull(test);        
     }
 }

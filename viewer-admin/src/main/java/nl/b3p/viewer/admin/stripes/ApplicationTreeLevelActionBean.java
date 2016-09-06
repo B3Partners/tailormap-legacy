@@ -165,7 +165,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
-    private String deleteLevel(EntityManager em, Level level){
+    protected String deleteLevel(EntityManager em, Level level){
         String error = null;
 
         StartLevel sl = level.getStartLevels().get(application);
