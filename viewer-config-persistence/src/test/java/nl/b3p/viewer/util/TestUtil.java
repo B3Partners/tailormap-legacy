@@ -194,7 +194,7 @@ public abstract class TestUtil {
         initData(deleteAfterwards,true);
     }
 
-    public void initData(boolean deleteAfterwards, boolean addLevelsToStartmap) {
+    public void initData(boolean deleteAfterwards, boolean addToStartmap) {
         app = new Application();
         app.setName("testapp");
         app.setVersion("154");
@@ -222,7 +222,7 @@ public abstract class TestUtil {
         app.getStartLevels().add(testStartLevel);
         persistEntityTest(testStartLevel, StartLevel.class, false);
 
-        if (addLevelsToStartmap) {
+        if (addToStartmap) {
             testAppLayer = new ApplicationLayer();
             testAppLayer.setLayerName("testApplayer");
             testLevel.getLayers().add(testAppLayer);
