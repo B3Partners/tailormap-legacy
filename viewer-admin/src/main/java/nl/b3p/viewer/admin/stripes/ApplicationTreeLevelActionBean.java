@@ -183,6 +183,18 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             try {
                 Level parent = level.getParent();
                 parent.getChildren().remove(level);
+                List<Application> mashups = application.getMashups(em);
+                mashups.add(application);
+                for (Application mashup : mashups) {
+                    List<StartLevel> startlevels = mashup.getStartLevels();
+                    for (Iterator<StartLevel> iterator = startlevels.iterator(); iterator.hasNext();) {
+                        StartLevel next = iterator.next();
+                        if( sl != null && next.getLevel().getId().equals(sl.getLevel().getId())){
+                            iterator.remove();
+                        }
+                    }
+                }
+                
                 em.remove(level);
                 application.authorizationsModified();
                 SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
