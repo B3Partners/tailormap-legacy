@@ -1064,6 +1064,29 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return layerArray;
     },
     /**
+     * Gets the layers that have a maptip configured
+     * @param layer a mapComponent layer.
+     * @return a string of layer names in the given layer that have a maptip configured.
+     */
+    isSummaryLayer: function(layer){
+        var details = layer.getDetails();
+        return this.isSummaryDetails(details);
+    },
+    /**
+     * Check if the given details has data to show configured
+     * @param details the details for a layer
+     */
+    isSummaryDetails: function (details){
+        if (details &&
+            (!Ext.isEmpty(details["summary.description"]) ||
+                !Ext.isEmpty(details["summary.image"]) ||
+                !Ext.isEmpty(details["summary.link"]) ||
+                !Ext.isEmpty(details["summary.title"]))){
+            return true;
+        }
+        return false;
+    },
+    /**
      *Set a list of layers visible
      *@param layers a array of application layers
      *@param vis true/false -- visible/invisible
