@@ -106,7 +106,7 @@ Ext.define ("viewer.components.Maptip",{
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.isSummaryLayer(mapLayer)){
+        if(this.viewerController.isSummaryLayer(mapLayer)){
             if (mapLayer.appLayerId){
                 var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
                 var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
@@ -136,7 +136,7 @@ Ext.define ("viewer.components.Maptip",{
         var mapLayer = options.layer;
         if (mapLayer === null)
             return;
-        if(this.isSummaryLayer(mapLayer)){
+        if(this.viewerController.isSummaryLayer(mapLayer)){
             if (mapLayer.appLayerId){
                 var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
                 var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
@@ -703,29 +703,6 @@ Ext.define ("viewer.components.Maptip",{
             textBefore: text.substring(0, text.indexOf(begintag)),
             textAfter: text.substring(text.indexOf(endtag) + endtag.length)
         };
-    },
-    /**
-     * Gets the layers that have a maptip configured
-     * @param layer a mapComponent layer.
-     * @return a string of layer names in the given layer that have a maptip configured.
-     */
-    isSummaryLayer: function(layer){
-        var details = layer.getDetails();
-        return this.isSummaryDetails(details);
-    },
-    /**
-     * Check if the given details has data to show configured
-     * @param details the details for a layer
-     */
-    isSummaryDetails: function (details){
-        if (details &&
-            (!Ext.isEmpty(details["summary.description"]) ||
-                !Ext.isEmpty(details["summary.image"]) ||
-                !Ext.isEmpty(details["summary.link"]) ||
-                !Ext.isEmpty(details["summary.title"]))){
-            return true;
-        }
-        return false;
     },
     /**
      * Checks if a layer is enabled for this component.
