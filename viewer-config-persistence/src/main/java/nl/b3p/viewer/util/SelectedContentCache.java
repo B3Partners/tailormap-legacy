@@ -99,7 +99,7 @@ public class SelectedContentCache {
             JSONObject appLayer = appLayers.getJSONObject(key);
             boolean allowed = isAppLayerAllowed(appLayer, roles);
             if (!allowed) {
-                appLayers.remove(key);
+                it.remove();
             }
         }
 
@@ -108,7 +108,7 @@ public class SelectedContentCache {
             JSONObject level = levels.getJSONObject(key);
             boolean allowed = isLevelAllowed(level, roles);
             if (!allowed) {
-                levels.remove(key);
+                it.remove();
             }
             JSONArray newLayers = new JSONArray();
             if (level.has("layers")) {
