@@ -33,6 +33,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'color',
                 value: this.configObject.color,
                 labelWidth:this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: 'Heractiveer de vorige tools',
+                name: 'reactivateTools',
+                value: this.configObject.reactivateTools !== undefined ? this.configObject.reactivateTools : false,
+                labelWidth: this.labelWidth
             });
     },
     getDefaultValues: function() {
