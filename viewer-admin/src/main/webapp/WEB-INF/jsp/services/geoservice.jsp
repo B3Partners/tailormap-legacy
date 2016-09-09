@@ -220,33 +220,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </td>
             </tr>
         </c:if>
-        <c:if test="${not empty actionBean.layersInApplications}">
-            <tr>
-                <td>
-                    <h1>Service wordt gebruikt in de volgende applicaties:</h1>
-                    <ul>
-                    <c:forEach var="layer" items="${actionBean.layersInApplications}">
-                        <li>Laag: <c:out value="${layer.key.name}"/></li>
-                        <ul>
-                        <c:forEach var="application" items="${layer.value}">
-                            <li>Applicatie: <c:out value="${application.key.nameWithVersion}"/></li>
-                            <ul>
-                                <li>In niveaus: 
-                            <c:forEach var="level" items="${application.value}" varStatus="loop">
-                                <c:if test="${loop.index > 0}">
-                                    <c:out value="/"/>
-                                </c:if>
-                                <c:out value="${level.name}"/>
-                            </c:forEach>
-                                </li>
-                            </ul>
-                        </c:forEach>
-                        </ul>
-                    </c:forEach>
-                    </ul>
-                </td>
-            </tr>
-        </c:if>
+        ${actionBean.layersInApplications}
     </table>
     
     <div class="submitbuttons">

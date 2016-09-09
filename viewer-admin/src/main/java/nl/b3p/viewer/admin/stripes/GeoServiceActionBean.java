@@ -393,17 +393,19 @@ public class GeoServiceActionBean implements ActionBean {
         this.useProxy = useProxy;
     }
 
-    public Map<Layer, Map<Application, List<Level>>> getLayersInApplications() {
+    public JSONObject getLayersInApplications() {
         return layersInApplications;
     }
 
-    public void setLayersInApplications(Map<Layer, Map<Application, List<Level>>> layersInApplications) {
+    public void setLayersInApplications(JSONObject layersInApplications) {
         this.layersInApplications = layersInApplications;
     }
 
     //</editor-fold>
 
-    private Map<Layer,Map<Application,List<Level>>> layersInApplications = new HashMap<Layer,Map<Application,List<Level>>>();
+    private Map<Layer,Map<Application,List<Level>>> layersInApplications2 = new HashMap<Layer,Map<Application,List<Level>>>();
+    
+    private JSONObject layersInApplications = new JSONObject();
 
     @DefaultHandler
     public Resolution edit() {
@@ -484,24 +486,41 @@ public class GeoServiceActionBean implements ActionBean {
             List<Application> applications = em.createQuery("from Application").getResultList();
             
             for (Layer layer : layers) {
-                Map<Application, List<Level>> applicationsMap = new HashMap<Application,List<Level>>();
+                //Map<Application, List<Level>> applicationsMap = new HashMap<Application,List<Level>>();
+                JSONArray applicationsArray = new JSONArray();
                 List<ApplicationLayer> appLayers = layer.getApplicationLayers(em);
                 for (ApplicationLayer appLayer : appLayers) {
                     for (Application application : applications) {
-                        List<Level> levelsInApplication = new ArrayList<Level>();
-                        applicationsMap.put(application, levelsInApplication);
+                        //List<Level> levelsInApplication = new ArrayList<Level>();
+                        JSONArray levelsInApplication = new JSONArray();
+                        JSONObject applicationObject = new JSONObject();
+                        applicationObject.put("name", application.getNameWithVersion());
+                        applicationObject.put("id", application.getId());
+                        applicationObject.put("type", "application");
+                        applicationObject.put("levels", levelsInApplication);
+                        applicationsArray.put(applicationObject);
                         Level l = application.getRoot().getParentInSubtree(appLayer);
                         if(l != null){
                             Level cur = l;
                             while(cur.getParent() != null){
-                                levelsInApplication.add(0, cur);
+                                JSONObject level = new JSONObject();
+                                level.put("name", cur.getName());
+                                level.put("type", "level");
+                                level.put("id",cur.getId());
+                                levelsInApplication.put(0, level);
                                 cur = cur.getParent();
                             }
                         }
                     }
                 }
-                if(applicationsMap.size() > 0){
-                    layersInApplications.put(layer, applicationsMap);
+                if(applicationsArray.length() > 0){
+                    JSONObject layerObject = new JSONObject();
+                    layerObject.put("title", layer.getDisplayName());
+                    layerObject.put("name", layer.getName());
+                    layerObject.put("id", layer.getId());
+                    layerObject.put("type", "layer");
+                    layerObject.put("applications", applicationsArray);
+                    layersInApplications.put(layer.getName(), layerObject);
                 }
             }
         }
