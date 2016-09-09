@@ -403,8 +403,6 @@ public class GeoServiceActionBean implements ActionBean {
 
     //</editor-fold>
 
-    private Map<Layer,Map<Application,List<Level>>> layersInApplications2 = new HashMap<Layer,Map<Application,List<Level>>>();
-    
     private JSONObject layersInApplications = new JSONObject();
 
     @DefaultHandler
