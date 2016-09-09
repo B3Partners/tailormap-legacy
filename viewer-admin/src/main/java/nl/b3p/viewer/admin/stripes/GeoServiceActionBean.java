@@ -500,15 +500,22 @@ public class GeoServiceActionBean implements ActionBean {
                         Level l = application.getRoot().getParentInSubtree(appLayer);
                         if(l != null){
                             Level cur = l;
+                            JSONObject prev = null;
                             while(cur.getParent() != null){
                                 JSONObject level = new JSONObject();
                                 level.put("text", cur.getName());
                                 level.put("type", "level");
                                 level.put("itemid", "v" + cur.getId());
-                                level.put("leaf", true);
-                                levelsInApplication.put(level);
+                                level.put("leaf", prev == null);
+                                if(prev != null){
+                                    level.put("children", prev);
+                                }
                                 cur = cur.getParent();
+                                prev = level;
                             }
+                            levelsInApplication.put(prev);
+                            
+                            
                         }
                     }
                 }
