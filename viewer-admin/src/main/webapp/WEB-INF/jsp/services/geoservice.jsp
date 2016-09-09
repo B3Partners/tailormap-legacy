@@ -220,8 +220,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </td>
             </tr>
         </c:if>
-        ${actionBean.layersInApplications}
+        <c:if test="${not empty actionBean.layersInApplications}">
+            <tr>
+                <td colspan="2">
+                    <h1>Service wordt gebruikt in de volgende applicaties:</h1>
+                    <div class="geoservice-tree-container"></div>
+                </td>
+            </tr>
+        </c:if>
     </table>
+
+    <c:if test="${not empty actionBean.layersInApplications}">
+        <script type="text/javascript" src="${contextPath}/resources/js/services/geoservice.js"></script>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                Ext.create('vieweradmin.components.Geoservice', {
+                    imagesPath: "${contextPath}/resources/images/",
+                    layers: ${actionBean.layersInApplications}
+                });
+            });
+        </script>
+    </c:if>
     
     <div class="submitbuttons">
         <c:choose>

@@ -393,17 +393,17 @@ public class GeoServiceActionBean implements ActionBean {
         this.useProxy = useProxy;
     }
 
-    public JSONObject getLayersInApplications() {
+    public JSONArray getLayersInApplications() {
         return layersInApplications;
     }
 
-    public void setLayersInApplications(JSONObject layersInApplications) {
+    public void setLayersInApplications(JSONArray layersInApplications) {
         this.layersInApplications = layersInApplications;
     }
 
     //</editor-fold>
 
-    private JSONObject layersInApplications = new JSONObject();
+    private JSONArray layersInApplications = new JSONArray();
 
     @DefaultHandler
     public Resolution edit() {
@@ -492,20 +492,21 @@ public class GeoServiceActionBean implements ActionBean {
                         //List<Level> levelsInApplication = new ArrayList<Level>();
                         JSONArray levelsInApplication = new JSONArray();
                         JSONObject applicationObject = new JSONObject();
-                        applicationObject.put("name", application.getNameWithVersion());
-                        applicationObject.put("id", application.getId());
+                        applicationObject.put("text", application.getNameWithVersion());
+                        applicationObject.put("itemid", "a" + application.getId());
                         applicationObject.put("type", "application");
-                        applicationObject.put("levels", levelsInApplication);
+                        applicationObject.put("children", levelsInApplication);
                         applicationsArray.put(applicationObject);
                         Level l = application.getRoot().getParentInSubtree(appLayer);
                         if(l != null){
                             Level cur = l;
                             while(cur.getParent() != null){
                                 JSONObject level = new JSONObject();
-                                level.put("name", cur.getName());
+                                level.put("text", cur.getName());
                                 level.put("type", "level");
-                                level.put("id",cur.getId());
-                                levelsInApplication.put(0, level);
+                                level.put("itemid", "v" + cur.getId());
+                                level.put("leaf", true);
+                                levelsInApplication.put(level);
                                 cur = cur.getParent();
                             }
                         }
@@ -513,12 +514,12 @@ public class GeoServiceActionBean implements ActionBean {
                 }
                 if(applicationsArray.length() > 0){
                     JSONObject layerObject = new JSONObject();
-                    layerObject.put("title", layer.getDisplayName());
-                    layerObject.put("name", layer.getName());
-                    layerObject.put("id", layer.getId());
+                    layerObject.put("text", layer.getDisplayName());
+                    layerObject.put("layername", layer.getName());
+                    layerObject.put("itemid", "l" + layer.getId());
                     layerObject.put("type", "layer");
-                    layerObject.put("applications", applicationsArray);
-                    layersInApplications.put(layer.getName(), layerObject);
+                    layerObject.put("children", applicationsArray);
+                    layersInApplications.put(layerObject);
                 }
             }
         }
