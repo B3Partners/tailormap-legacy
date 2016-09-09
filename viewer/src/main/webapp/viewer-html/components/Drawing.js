@@ -42,6 +42,7 @@ Ext.define ("viewer.components.Drawing",{
     features:null,
     config:{
         title: "",
+        reactivateTools:null,
         iconUrl: "",
         tooltip: "",
         color: "",
@@ -81,14 +82,16 @@ Ext.define ("viewer.components.Drawing",{
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
-        this.popup.addListener("hide", this.hideWindow, this);
+        if(this.config.reactivateTools){
+            this.popup.addListener("hide", this.hideWindow, this);
+        }
         return this;
     },
     showWindow : function (){
-        if(this.vectorLayer == null){
+        if(this.vectorLayer === null){
             this.createVectorLayer();
         }
-        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools()
+        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.popup.show();
     },
     hideWindow: function () {
@@ -446,6 +449,8 @@ Ext.define ("viewer.components.Drawing",{
     },
 
     /**
+     * @param vectorLayer The vectorlayer from which the feature comes
+     * @param feature the feature which has been activated
      * Event handlers
      **/
     activeFeatureChanged : function (vectorLayer,feature){
