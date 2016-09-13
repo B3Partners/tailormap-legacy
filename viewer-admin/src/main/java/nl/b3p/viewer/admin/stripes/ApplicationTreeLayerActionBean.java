@@ -405,8 +405,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         for (Iterator it = appAttributes.iterator(); it.hasNext();) {
             ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
             //save visible
-            if (selectedAttributes.contains(appAttribute.getFullName())) {
-                appAttribute.setVisible(true);
+            if (attributeOrderMap.containsKey(appAttribute.getId()) ) {
+                appAttribute.setVisible(attributeOrderMap.get(appAttribute.getId()).getBoolean("checked"));
             } else {
                 appAttribute.setVisible(false);
             }
