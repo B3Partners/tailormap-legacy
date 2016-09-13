@@ -371,8 +371,12 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             applicationLayer.getWriters().add(groupName);
         }
 
-        processAttributes(em);
-
+        if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
+            JSONArray attributeOrder = attributesJSON.getJSONArray(ATTRIBUTES_ORDER_KEY);
+            List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
+            processAttributes(em, attributeOrder, attributesConfig, appAttributes);
+        }
+        
         em.persist(applicationLayer);
         application.authorizationsModified();
 
@@ -390,86 +394,88 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return edit();
     }
     
-    private void processAttributes(EntityManager em) {
-        if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
-            List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
-            int i = 0;
-
-            for (Iterator it = appAttributes.iterator(); it.hasNext();) {
-                ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
-                //save visible
-                if (selectedAttributes.contains(appAttribute.getFullName())) {
-                    appAttribute.setVisible(true);
-                } else {
-                    appAttribute.setVisible(false);
-                }
-
-                //save editable
-                if (attributesConfig.length() > i) {
-                    JSONObject attribute = attributesConfig.getJSONObject(i);
-
-                    if (attribute.has("editable")) {
-                        appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
-                    }
-                    if (attribute.has("editAlias")) {
-                        appAttribute.setEditAlias(attribute.get("editAlias").toString());
-                    }
-                    if (attribute.has("editvalues")) {
-                        appAttribute.setEditValues(attribute.get("editvalues").toString());
-                    }
-                    if (attribute.has("editHeight")) {
-                        appAttribute.setEditHeight(attribute.get("editHeight").toString());
-                    }
-
-                    //save selectable
-                    if (attribute.has("selectable")) {
-                        appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
-                    }
-                    if (attribute.has("filterable")) {
-                        appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
-                    }
-
-                    if (attribute.has("defaultValue")) {
-                        appAttribute.setDefaultValue(attribute.get("defaultValue").toString());
-                    }
-
-                    if (attribute.has("valueListFeatureSource") && !attribute.isNull("valueListFeatureSource")) {
-                        Long id = attribute.getLong("valueListFeatureSource");
-                        FeatureSource fs = em.find(FeatureSource.class, id);
-                        appAttribute.setValueListFeatureSource(fs);
-                    }
-
-                    if (attribute.has("valueListFeatureType") && !attribute.isNull("valueListFeatureType")) {
-                        Long id = attribute.getLong("valueListFeatureType");
-                        SimpleFeatureType ft = em.find(SimpleFeatureType.class, id);
-                        appAttribute.setValueListFeatureType(ft);
-                    }
-
-                    if (attribute.has("valueListValueAttribute") && !attribute.isNull("valueListValueAttribute")) {
-                        appAttribute.setValueListValueName(attribute.getString("valueListValueAttribute"));
-                    }
-
-                    if (attribute.has("valueListLabelAttribute") && !attribute.isNull("valueListLabelAttribute")) {
-                        appAttribute.setValueListLabelName(attribute.getString("valueListLabelAttribute"));
-                    }
-
-                    if (attribute.has("valueList") && !attribute.isNull("valueList")) {
-                        appAttribute.setValueList(attribute.getString("valueList"));
-                    }
-
-                    if (attribute.has("allowValueListOnly")) {
-                        appAttribute.setAllowValueListOnly(new Boolean(attribute.get("allowValueListOnly").toString()));
-                    }
-                    if (attribute.has("disallowNullValue")) {
-                        appAttribute.setDisallowNullValue(new Boolean(attribute.get("disallowNullValue").toString()));
-                    }
-                    if (attribute.has("disableUserEdit")) {
-                        appAttribute.setDisableUserEdit(new Boolean(attribute.get("disableUserEdit").toString()));
-                    }
-                }
-                i++;
-            }
+    private void processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
+        int i = 0;
+        Map<Long, JSONObject> attributeOrderMap = new HashMap<Long, JSONObject>();
+        for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
+            JSONObject order = (JSONObject)iterator.next();
+            attributeOrderMap.put(order.getLong("attribute_id"), order);
         }
+        for (Iterator it = appAttributes.iterator(); it.hasNext();) {
+            ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
+            //save visible
+            if (selectedAttributes.contains(appAttribute.getFullName())) {
+                appAttribute.setVisible(true);
+            } else {
+                appAttribute.setVisible(false);
+            }
+
+            //save editable
+            if (attributesConfig.length() > i) {
+                JSONObject attribute = attributesConfig.getJSONObject(i);
+
+                if (attribute.has("editable")) {
+                    appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
+                }
+                if (attribute.has("editAlias")) {
+                    appAttribute.setEditAlias(attribute.get("editAlias").toString());
+                }
+                if (attribute.has("editvalues")) {
+                    appAttribute.setEditValues(attribute.get("editvalues").toString());
+                }
+                if (attribute.has("editHeight")) {
+                    appAttribute.setEditHeight(attribute.get("editHeight").toString());
+                }
+
+                //save selectable
+                if (attribute.has("selectable")) {
+                    appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
+                }
+                if (attribute.has("filterable")) {
+                    appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
+                }
+
+                if (attribute.has("defaultValue")) {
+                    appAttribute.setDefaultValue(attribute.get("defaultValue").toString());
+                }
+
+                if (attribute.has("valueListFeatureSource") && !attribute.isNull("valueListFeatureSource")) {
+                    Long id = attribute.getLong("valueListFeatureSource");
+                    FeatureSource fs = em.find(FeatureSource.class, id);
+                    appAttribute.setValueListFeatureSource(fs);
+                }
+
+                if (attribute.has("valueListFeatureType") && !attribute.isNull("valueListFeatureType")) {
+                    Long id = attribute.getLong("valueListFeatureType");
+                    SimpleFeatureType ft = em.find(SimpleFeatureType.class, id);
+                    appAttribute.setValueListFeatureType(ft);
+                }
+
+                if (attribute.has("valueListValueAttribute") && !attribute.isNull("valueListValueAttribute")) {
+                    appAttribute.setValueListValueName(attribute.getString("valueListValueAttribute"));
+                }
+
+                if (attribute.has("valueListLabelAttribute") && !attribute.isNull("valueListLabelAttribute")) {
+                    appAttribute.setValueListLabelName(attribute.getString("valueListLabelAttribute"));
+                }
+
+                if (attribute.has("valueList") && !attribute.isNull("valueList")) {
+                    appAttribute.setValueList(attribute.getString("valueList"));
+                }
+
+                if (attribute.has("allowValueListOnly")) {
+                    appAttribute.setAllowValueListOnly(new Boolean(attribute.get("allowValueListOnly").toString()));
+                }
+                if (attribute.has("disallowNullValue")) {
+                    appAttribute.setDisallowNullValue(new Boolean(attribute.get("disallowNullValue").toString()));
+                }
+                if (attribute.has("disableUserEdit")) {
+                    appAttribute.setDisableUserEdit(new Boolean(attribute.get("disableUserEdit").toString()));
+                }
+            }
+            i++;
+        }
+        
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
