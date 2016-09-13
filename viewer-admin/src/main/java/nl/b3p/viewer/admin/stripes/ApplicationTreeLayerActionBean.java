@@ -394,9 +394,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return edit();
     }
     
-    private void processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
+    protected void processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
         int i = 0;
         Map<Long, JSONObject> attributeOrderMap = new HashMap<Long, JSONObject>();
+        
         for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
             JSONObject order = (JSONObject)iterator.next();
             attributeOrderMap.put(order.getLong("attribute_id"), order);
