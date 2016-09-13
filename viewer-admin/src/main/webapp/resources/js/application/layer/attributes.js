@@ -144,6 +144,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
             }
             parent.push({
                 attributeid: this.config.attributes[i].id,
+                longname: this.config.attributes[i].longname,
                 text: this.config.attributes[i].name,
                 leaf: true,
                 checked: this.config.attributes[i].visible
@@ -286,6 +287,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                 attributes.push({
                     attribute_id: record.get("attributeid"),
                     checked: record.get("checked"),
+                    longname: record.get("longname"),
                     // if record has only 1 parent ( = root ) do not set folder_label, otherwise parent = custom folder
                     folder_label: record.parentNode && !record.parentNode.parentNode ? "" : record.parentNode.get("text"),
                     order: orderindex++

@@ -63,38 +63,47 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         order2.put("attribute_id", 2);
         order2.put("checked", true);
         order2.put("order", 0);
+        order2.put("longname", "begroeid_terreinvakonderdeel_bestaand.fid");
         JSONObject order3 = new JSONObject();
         order3.put("attribute_id", 3);
         order3.put("checked", true);
         order3.put("order", 1);
+        order3.put("longname", "begroeid_terreinvakonderdeel_bestaand.id");
         JSONObject order4 = new JSONObject();
         order4.put("attribute_id", 4);
         order4.put("checked", true);
         order4.put("order", 2);
+        order4.put("longname", "begroeid_terreinvakonderdeel_bestaand.dat_bgn");
         JSONObject order5 = new JSONObject();
         order5.put("attribute_id", 5);
         order5.put("checked", true);
         order5.put("order", 3);
+        order5.put("longname", "begroeid_terreinvakonderdeel_bestaand.dat_end");
         JSONObject order6 = new JSONObject();
         order6.put("attribute_id", 6);
         order6.put("checked", true);
         order6.put("order", 4);
+        order6.put("longname", "begroeid_terreinvakonderdeel_bestaand.fysiek_voork");
         JSONObject order9 = new JSONObject();
         order9.put("attribute_id", 9);
         order9.put("checked", true);
         order9.put("order", 5);
+        order9.put("longname", "begroeid_terreinvakonderdeel_bestaand.status");
         JSONObject order8 = new JSONObject();
         order8.put("attribute_id", 8);
         order8.put("checked", true);
         order8.put("order", 6);
+        order8.put("longname", "begroeid_terreinvakonderdeel_bestaand.rel_hoogte");
         JSONObject order1 = new JSONObject();
         order1.put("attribute_id", 1);
         order1.put("checked", true);
         order1.put("order", 7);
+        order1.put("longname", "begroeid_terreinvakonderdeel_bestaand.msGeometry");
         JSONObject order7 = new JSONObject();
         order7.put("attribute_id", 7);
         order7.put("checked", true);
         order7.put("order", 8);
+        order7.put("longname", "begroeid_terreinvakonderdeel_bestaand.ident");
         
         attributeOrder.put(order2);
         attributeOrder.put(order3);
@@ -130,6 +139,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         JSONObject order = new JSONObject();
         order.put("attribute_id", 9);
         order.put("checked", true);
+        order.put("longname", "begroeid_terreinvakonderdeel_bestaand.status");
         
         attributeOrder.put(order);
         
@@ -165,7 +175,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("featureType", 14);
         config.put("filterable", false);
         config.put("id", 9);
-        config.put("longname", "begroeid_terreindeel.status");
+        config.put("longname", "begroeid_terreinvakonderdeel_bestaand.status");
         config.put("name", "id");
         config.put("selectable", false);
         config.put("valueList", "static");

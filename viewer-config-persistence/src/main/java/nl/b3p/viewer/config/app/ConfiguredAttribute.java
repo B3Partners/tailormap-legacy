@@ -300,4 +300,12 @@ public class ConfiguredAttribute {
         return uniqueName;
     }
 
+    public String getLongName(){
+         String longName= "";
+        if (this.getFeatureType()!=null){
+            longName = this.getFeatureType().getTypeName()+"."; 
+        }
+        longName+=this.attributeName;
+        return longName;
+    }
 }

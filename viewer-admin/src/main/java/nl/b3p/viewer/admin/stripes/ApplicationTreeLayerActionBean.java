@@ -395,30 +395,30 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
     
     protected List<ConfiguredAttribute> processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
-        Map<Long, JSONObject> attributeOrderMap = new HashMap<Long, JSONObject>();
-        Map<Long, JSONObject> attributeConfigMap = new HashMap<Long, JSONObject>();
+        Map<String, JSONObject> attributeOrderMap = new HashMap<String, JSONObject>();
+        Map<String, JSONObject> attributeConfigMap = new HashMap<String, JSONObject>();
         for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
             JSONObject order = (JSONObject)iterator.next();
-            attributeOrderMap.put(order.getLong("attribute_id"), order);
+            attributeOrderMap.put(order.getString("longname"), order);
         }
         
         for (Iterator iterator = attributesConfig.iterator(); iterator.hasNext();) {
             JSONObject config = (JSONObject)iterator.next();
-            attributeConfigMap.put(config.getLong("id"), config);
+            attributeConfigMap.put(config.getString("longname"), config);
         }
         
         for (Iterator it = appAttributes.iterator(); it.hasNext();) {
             ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
             //save visible
-            if (attributeOrderMap.containsKey(appAttribute.getId()) ) {
-                appAttribute.setVisible(attributeOrderMap.get(appAttribute.getId()).getBoolean("checked"));
+            if (attributeOrderMap.containsKey(appAttribute.getLongName()) ) {
+                appAttribute.setVisible(attributeOrderMap.get(appAttribute.getLongName()).getBoolean("checked"));
             } else {
                 appAttribute.setVisible(false);
             }
 
             //save editable
             
-            JSONObject configObject = attributeConfigMap.get(appAttribute.getId());
+            JSONObject configObject = attributeConfigMap.get(appAttribute.getLongName());
             if(configObject != null){
 
                 if (configObject.has("editable")) {
@@ -485,13 +485,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         List<ConfiguredAttribute> newOrder = new ArrayList<ConfiguredAttribute>();
         for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
             JSONObject orderObject = (JSONObject)iterator.next();
-            long id = orderObject.getLong("attribute_id");
+            String longname = orderObject.getString("longname");
             for (ConfiguredAttribute appAttribute : appAttributes) {
-                if(appAttribute.getId() == id){
+                if(appAttribute.getLongName().equals(longname)){
                     newOrder.add(appAttribute);
                     break;
                 }
-            }    
+            }
         }
         return newOrder;  
     }
