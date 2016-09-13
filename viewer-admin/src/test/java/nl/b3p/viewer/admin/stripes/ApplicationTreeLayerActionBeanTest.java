@@ -55,17 +55,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
         List<ConfiguredAttribute> attributes = appLayer.getAttributes();
         assertEquals(9, attributes.size());
-        /*
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 1, 0);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 2, 1);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 3, 2);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 4, 3);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 5, 4);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 6, 5);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 7, 6);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 8, 7);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 9, 8);
-         */
+
         JSONArray attributeOrder = new JSONArray();
         JSONArray attributesConfig = new JSONArray();
         instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
@@ -85,22 +75,19 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
         List<ConfiguredAttribute> attributes = appLayer.getAttributes();
         assertEquals(9, attributes.size());
-        /*
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 1, 0);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 2, 1);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 3, 2);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 4, 3);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 5, 4);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 6, 5);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 7, 6);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 8, 7);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 9, 8);
-         */
+
         JSONArray attributeOrder = new JSONArray();
         JSONArray attributesConfig = new JSONArray();
+        
+        JSONObject order = new JSONObject();
+        order.put("attribute_id", 9);
+        order.put("checked", true);
+        
+        attributeOrder.put(order);
+        
         instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
 
-        boolean[] attrVisible = {false, false, false, false, false, false, false, false, false};
+        boolean[] attrVisible = {false, false, false, false, false, false, false, false, true};
 
         for (int i = 0; i < attributes.size(); i++) {
             ConfiguredAttribute attr = attributes.get(i);
@@ -116,17 +103,6 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
         List<ConfiguredAttribute> attributes = appLayer.getAttributes();
         assertEquals(9, attributes.size());
-        /*
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 1, 0);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 2, 1);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 3, 2);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 4, 3);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 5, 4);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 6, 5);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 7, 6);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 8, 7);
-        INSERT INTO application_layer_attributes (application_layer, attribute_, list_index) VALUES (2, 9, 8);
-         */
         JSONArray attributeOrder = new JSONArray();
         JSONArray attributesConfig = new JSONArray();
         JSONObject config = new JSONObject();
@@ -145,6 +121,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("name", "id");
         config.put("selectable", false);
         config.put("valueList", "static");
+        attributesConfig.put(config);
         
         instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
         ConfiguredAttribute toCheck = null;
