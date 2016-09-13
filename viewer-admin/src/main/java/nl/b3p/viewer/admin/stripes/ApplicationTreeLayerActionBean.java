@@ -43,6 +43,9 @@ import org.stripesstuff.stripersist.Stripersist;
 public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLayer.jsp";
+    private static final String ATTRIBUTES_CONFIG_KEY = "attributeConfig";
+    private static final String ATTRIBUTES_ORDER_KEY = "attributeOrder";
+    
     @Validate
     private ApplicationLayer applicationLayer;
     @Validate
@@ -65,7 +68,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private Long appLayerFeatureType;
     
     @Validate
-    private JSONArray attributesJSON = new JSONArray();
+    private JSONObject attributesJSON = new JSONObject();
+    
+    private JSONArray attributesConfig = new JSONArray();
     
     @Validate(on="getUniqueValues")
     private String attribute;
@@ -187,7 +192,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 applicationLayer.getAttributes().remove(ca);
                 em.remove(ca);
             }
+            attributesConfig = attributesJSON.has(ATTRIBUTES_CONFIG_KEY) ? attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY) : new JSONArray();
             
+
             // JSON info about attributed required for editing
             makeAttributeJSONArray(layer.getFeatureType()); 
         }        
@@ -276,53 +283,18 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
              // Sort the attributes of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
              sortPerFeatureType(foreign, cas);
         }
-        // Sort the attributes of the given SimpleFeatureType (layerSft), ordering by attributename
-      /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
-            @Override
-            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
-                if (o1.getFeatureType() == null) {
-                    return 0;
-                }
-                if (o2.getFeatureType() == null) {
-                    return 0;
-                }
-                if (o1.getFeatureType().getId().equals(layerSft.getId()) && o2.getFeatureType().getId().equals(layerSft.getId())) {
-                    return o1.getAttributeName().compareTo(o2.getAttributeName());
-                }else{
-                    return 0;
-                }
-            }
-        });*/
     }
     
     public Resolution attributes() throws JSONException{
-        attributesJSON = new JSONArray();
+        attributesConfig = new JSONArray();
+        
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         makeAttributeJSONArray(layer.getFeatureType());
-        return new StreamingResolution("application/json", new StringReader(attributesJSON.toString()));
+        return new StreamingResolution("application/json", new StringReader(attributesConfig.toString()));
     }
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
-        //Sort the attributes, by featuretype: neccessary for related featuretypes
-      /*  Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
-            @Override
-            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
-                if (o1.getFeatureType() == null) {
-                    return -1;
-                }
-                if (o2.getFeatureType() == null) {
-                    return 1;
-                }
-                if (o1.getFeatureType().getId().equals(layerSft.getId())) {
-                    return -1;
-                }
-                if (o2.getFeatureType().getId().equals(layerSft.getId())) {
-                    return 1;
-                }
-                return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
-            }
-        });*/
         if(layerSft != null){
             // Sort the attributes by name (per featuretype)
             sortPerFeatureType(layerSft, cas);
@@ -340,7 +312,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             j.put("alias", ad.getAlias());
             j.put("featureTypeAttribute", ad.toJSONObject());
             
-            attributesJSON.put(j);
+            attributesConfig.put(j);
         }
     }    
     
@@ -399,6 +371,26 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             applicationLayer.getWriters().add(groupName);
         }
 
+        processAttributes(em);
+
+        em.persist(applicationLayer);
+        application.authorizationsModified();
+
+        displayName = applicationLayer.getDisplayName(em);
+        SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
+        
+        em.getTransaction().commit();
+
+        attributesConfig = new JSONArray();
+        
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
+        makeAttributeJSONArray(layer.getFeatureType());
+
+        getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
+        return edit();
+    }
+    
+    private void processAttributes(EntityManager em) {
         if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
             List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
             int i = 0;
@@ -413,8 +405,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 }
 
                 //save editable
-                if (attributesJSON.length() > i) {
-                    JSONObject attribute = attributesJSON.getJSONObject(i);
+                if (attributesConfig.length() > i) {
+                    JSONObject attribute = attributesConfig.getJSONObject(i);
 
                     if (attribute.has("editable")) {
                         appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
@@ -447,21 +439,21 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                         appAttribute.setValueListFeatureSource(fs);
                     }
 
-                    if (attribute.has("valueListFeatureType") && !attribute.isNull("valueListFeatureType") ) {
+                    if (attribute.has("valueListFeatureType") && !attribute.isNull("valueListFeatureType")) {
                         Long id = attribute.getLong("valueListFeatureType");
                         SimpleFeatureType ft = em.find(SimpleFeatureType.class, id);
                         appAttribute.setValueListFeatureType(ft);
                     }
 
-                    if (attribute.has("valueListValueAttribute") && ! attribute.isNull("valueListValueAttribute")) {
+                    if (attribute.has("valueListValueAttribute") && !attribute.isNull("valueListValueAttribute")) {
                         appAttribute.setValueListValueName(attribute.getString("valueListValueAttribute"));
                     }
 
-                    if (attribute.has("valueListLabelAttribute") && ! attribute.isNull("valueListLabelAttribute")) {
+                    if (attribute.has("valueListLabelAttribute") && !attribute.isNull("valueListLabelAttribute")) {
                         appAttribute.setValueListLabelName(attribute.getString("valueListLabelAttribute"));
                     }
 
-                    if (attribute.has("valueList") && ! attribute.isNull("valueList")) {
+                    if (attribute.has("valueList") && !attribute.isNull("valueList")) {
                         appAttribute.setValueList(attribute.getString("valueList"));
                     }
 
@@ -478,22 +470,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 i++;
             }
         }
-
-        em.persist(applicationLayer);
-        application.authorizationsModified();
-
-        displayName = applicationLayer.getDisplayName(em);
-        SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
-        
-        em.getTransaction().commit();
-
-        attributesJSON = new JSONArray();
-        
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
-        makeAttributeJSONArray(layer.getFeatureType());
-
-        getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
-        return edit();
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
@@ -521,13 +497,14 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         this.selectedAttributes = selectedAttributes;
     }
 
-    public JSONArray getAttributesJSON() {
+    public JSONObject getAttributesJSON() {
         return attributesJSON;
     }
 
-    public void setAttributesJSON(JSONArray attributesJSON) {
+    public void setAttributesJSON(JSONObject attributesJSON) {
         this.attributesJSON = attributesJSON;
     }
+
 
     public boolean isEditable() {
         return editable;
@@ -599,7 +576,18 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setAppLayerFeatureType(Long appLayerFeatureType) {
         this.appLayerFeatureType = appLayerFeatureType;
-    }
-    //</editor-fold>    
+    }    
     
+    public JSONArray getAttributesConfig() {
+        return attributesConfig;
+    }
+
+    public void setAttributesConfig(JSONArray attributesConfig) {
+        this.attributesConfig = attributesConfig;
+    }
+    
+
+    //</editor-fold>    
+
+
 }
