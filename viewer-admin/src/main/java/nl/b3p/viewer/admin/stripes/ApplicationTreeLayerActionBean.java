@@ -395,12 +395,18 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
     
     protected List<ConfiguredAttribute> processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
-        int i = 0;
         Map<Long, JSONObject> attributeOrderMap = new HashMap<Long, JSONObject>();
+        Map<Long, JSONObject> attributeConfigMap = new HashMap<Long, JSONObject>();
         for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
             JSONObject order = (JSONObject)iterator.next();
             attributeOrderMap.put(order.getLong("attribute_id"), order);
         }
+        
+        for (Iterator iterator = attributesConfig.iterator(); iterator.hasNext();) {
+            JSONObject config = (JSONObject)iterator.next();
+            attributeConfigMap.put(config.getLong("id"), config);
+        }
+        
         for (Iterator it = appAttributes.iterator(); it.hasNext();) {
             ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
             //save visible
@@ -411,70 +417,71 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
 
             //save editable
-            if (attributesConfig.length() > i) {
-                JSONObject attribute = attributesConfig.getJSONObject(i);
+            
+            JSONObject configObject = attributeConfigMap.get(appAttribute.getId());
+            if(configObject != null){
 
-                if (attribute.has("editable")) {
-                    appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
+                if (configObject.has("editable")) {
+                    appAttribute.setEditable(new Boolean(configObject.get("editable").toString()));
                 }
-                if (attribute.has("editAlias")) {
-                    appAttribute.setEditAlias(attribute.get("editAlias").toString());
+                if (configObject.has("editAlias")) {
+                    appAttribute.setEditAlias(configObject.get("editAlias").toString());
                 }
-                if (attribute.has("editvalues")) {
-                    appAttribute.setEditValues(attribute.get("editvalues").toString());
+                if (configObject.has("editvalues")) {
+                    appAttribute.setEditValues(configObject.get("editvalues").toString());
                 }
-                if (attribute.has("editHeight")) {
-                    appAttribute.setEditHeight(attribute.get("editHeight").toString());
+                if (configObject.has("editHeight")) {
+                    appAttribute.setEditHeight(configObject.get("editHeight").toString());
                 }
 
                 //save selectable
-                if (attribute.has("selectable")) {
-                    appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
+                if (configObject.has("selectable")) {
+                    appAttribute.setSelectable(new Boolean(configObject.get("selectable").toString()));
                 }
-                if (attribute.has("filterable")) {
-                    appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
-                }
-
-                if (attribute.has("defaultValue")) {
-                    appAttribute.setDefaultValue(attribute.get("defaultValue").toString());
+                if (configObject.has("filterable")) {
+                    appAttribute.setFilterable(new Boolean(configObject.get("filterable").toString()));
                 }
 
-                if (attribute.has("valueListFeatureSource") && !attribute.isNull("valueListFeatureSource")) {
-                    Long id = attribute.getLong("valueListFeatureSource");
+                if (configObject.has("defaultValue")) {
+                    appAttribute.setDefaultValue(configObject.get("defaultValue").toString());
+                }
+
+                if (configObject.has("valueListFeatureSource") && !configObject.isNull("valueListFeatureSource")) {
+                    Long id = configObject.getLong("valueListFeatureSource");
                     FeatureSource fs = em.find(FeatureSource.class, id);
                     appAttribute.setValueListFeatureSource(fs);
                 }
 
-                if (attribute.has("valueListFeatureType") && !attribute.isNull("valueListFeatureType")) {
-                    Long id = attribute.getLong("valueListFeatureType");
+                if (configObject.has("valueListFeatureType") && !configObject.isNull("valueListFeatureType")) {
+                    Long id = configObject.getLong("valueListFeatureType");
                     SimpleFeatureType ft = em.find(SimpleFeatureType.class, id);
                     appAttribute.setValueListFeatureType(ft);
                 }
 
-                if (attribute.has("valueListValueAttribute") && !attribute.isNull("valueListValueAttribute")) {
-                    appAttribute.setValueListValueName(attribute.getString("valueListValueAttribute"));
+                if (configObject.has("valueListValueAttribute") && !configObject.isNull("valueListValueAttribute")) {
+                    appAttribute.setValueListValueName(configObject.getString("valueListValueAttribute"));
                 }
 
-                if (attribute.has("valueListLabelAttribute") && !attribute.isNull("valueListLabelAttribute")) {
-                    appAttribute.setValueListLabelName(attribute.getString("valueListLabelAttribute"));
+                if (configObject.has("valueListLabelAttribute") && !configObject.isNull("valueListLabelAttribute")) {
+                    appAttribute.setValueListLabelName(configObject.getString("valueListLabelAttribute"));
                 }
 
-                if (attribute.has("valueList") && !attribute.isNull("valueList")) {
-                    appAttribute.setValueList(attribute.getString("valueList"));
+                if (configObject.has("valueList") && !configObject.isNull("valueList")) {
+                    appAttribute.setValueList(configObject.getString("valueList"));
                 }
 
-                if (attribute.has("allowValueListOnly")) {
-                    appAttribute.setAllowValueListOnly(new Boolean(attribute.get("allowValueListOnly").toString()));
+                if (configObject.has("allowValueListOnly")) {
+                    appAttribute.setAllowValueListOnly(new Boolean(configObject.get("allowValueListOnly").toString()));
                 }
-                if (attribute.has("disallowNullValue")) {
-                    appAttribute.setDisallowNullValue(new Boolean(attribute.get("disallowNullValue").toString()));
+                if (configObject.has("disallowNullValue")) {
+                    appAttribute.setDisallowNullValue(new Boolean(configObject.get("disallowNullValue").toString()));
                 }
-                if (attribute.has("disableUserEdit")) {
-                    appAttribute.setDisableUserEdit(new Boolean(attribute.get("disableUserEdit").toString()));
+                if (configObject.has("disableUserEdit")) {
+                    appAttribute.setDisableUserEdit(new Boolean(configObject.get("disableUserEdit").toString()));
                 }
             }
-            i++;
         }
+        
         List<ConfiguredAttribute> newOrder = new ArrayList<ConfiguredAttribute>();
         for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
             JSONObject orderObject = (JSONObject)iterator.next();

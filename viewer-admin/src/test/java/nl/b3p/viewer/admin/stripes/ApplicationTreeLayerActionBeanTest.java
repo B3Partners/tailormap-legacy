@@ -145,7 +145,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         }
     }
 
-   // @Test
+    @Test
     public void testProcessAttributesPopulate() {
         assertNotNull(app);
         ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
