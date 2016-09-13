@@ -374,7 +374,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
             JSONArray attributeOrder = attributesJSON.getJSONArray(ATTRIBUTES_ORDER_KEY);
             List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
-            processAttributes(em, attributeOrder, attributesConfig, appAttributes);
+            applicationLayer.setAttributes(processAttributes(em, attributeOrder, attributesConfig, appAttributes));
         }
         
         em.persist(applicationLayer);
@@ -394,10 +394,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return edit();
     }
     
-    protected void processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
+    protected List<ConfiguredAttribute> processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
         int i = 0;
         Map<Long, JSONObject> attributeOrderMap = new HashMap<Long, JSONObject>();
-        
         for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
             JSONObject order = (JSONObject)iterator.next();
             attributeOrderMap.put(order.getLong("attribute_id"), order);
@@ -476,7 +475,18 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
             i++;
         }
-        
+        List<ConfiguredAttribute> newOrder = new ArrayList<ConfiguredAttribute>();
+        for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
+            JSONObject orderObject = (JSONObject)iterator.next();
+            long id = orderObject.getLong("attribute_id");
+            for (ConfiguredAttribute appAttribute : appAttributes) {
+                if(appAttribute.getId() == id){
+                    newOrder.add(appAttribute);
+                    break;
+                }
+            }    
+        }
+        return newOrder;  
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
