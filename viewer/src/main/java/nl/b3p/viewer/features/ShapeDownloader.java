@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 B3Partners B.V.
+ * Copyright (C) 2014-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,23 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureStore;
-import org.geotools.data.Transaction;
-import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.xml.sax.SAXException;
 
 /**
  * Download the features in shape format. Actually, a zip file with all the
@@ -51,12 +49,11 @@ import org.opengis.feature.simple.SimpleFeature;
  */
 public class ShapeDownloader extends FeatureDownloader {
     private static final Log log = LogFactory.getLog(ShapeDownloader.class);
+    private StreamingShapeWriter ssw;
 
     private SimpleFeatureBuilder featureBuilder;
-    private List<SimpleFeature> featureList;
-    private Transaction t;
+    
     private File dir;
-    private FeatureStore newFeatureStore;
 
     public ShapeDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases, String params) {
         super(attributes, fs, featureTypeAttributes,attributeAliases, params);
@@ -68,25 +65,11 @@ public class ShapeDownloader extends FeatureDownloader {
             String uniqueName = RandomStringUtils.randomAlphanumeric(8);
             dir = new File(System.getProperty("java.io.tmpdir"), uniqueName);
             dir.mkdir();
-            File shape = File.createTempFile("shp", ".shp", dir);
-            // create a new shapefile data store
-            DataStore newShapefileDataStore = new ShapefileDataStore(shape.toURI().toURL());
-
+            ssw = new StreamingShapeWriter(dir.getAbsolutePath() + File.separator);
+             
             // create the schema based on the original shapefile
             org.opengis.feature.simple.SimpleFeatureType sft = createNewFeatureType(fs, attributes, featureTypeAttributes);
-            newShapefileDataStore.createSchema(sft);
-
-            // grab the feature source from the new shapefile data store
-            String typeName = newShapefileDataStore.getTypeNames()[0];
-            FeatureSource newFeatureSource = newShapefileDataStore.getFeatureSource(typeName);
-
-            // downcast FeatureSource to specific implementation of FeatureStore
-            newFeatureStore = (FeatureStore) newFeatureSource;
-
-            // accquire a transaction to create the shapefile from FeatureStore
-            t = newFeatureStore.getTransaction();
-            featureList = new ArrayList<SimpleFeature>();
-
+         
             featureBuilder = new SimpleFeatureBuilder(sft);
         } catch (IOException ex) {
             log.error("Cannot initialize new download", ex);
@@ -96,24 +79,27 @@ public class ShapeDownloader extends FeatureDownloader {
 
     @Override
     public void processFeature(SimpleFeature oldFeature) {
-        for (ConfiguredAttribute configuredAttribute : attributes) {
-            if (configuredAttribute.isVisible()&& attributeAliases.get(configuredAttribute.getAttributeName()) != null) {
-                featureBuilder.add(oldFeature.getAttribute(configuredAttribute.getAttributeName()));
+        try {
+            for (ConfiguredAttribute configuredAttribute : attributes) {
+                if (configuredAttribute.isVisible() && attributeAliases.get(configuredAttribute.getAttributeName()) != null) {
+                    featureBuilder.add(oldFeature.getAttribute(configuredAttribute.getAttributeName()));
+                }
             }
+            featureBuilder.add(oldFeature.getDefaultGeometry());
+            SimpleFeature feature = featureBuilder.buildFeature(null);
+
+            ssw.write(feature);
+        } catch (IOException ex) {
+            log.error("Cannot write feature",ex);
+        } catch (TransformerException | ParserConfigurationException | SAXException | TransformException | FactoryException ex) {
+            log.error("Cannot parse features");
         }
-        featureBuilder.add(oldFeature.getDefaultGeometry());
-        SimpleFeature feature = featureBuilder.buildFeature(null);
-        featureList.add(feature);
     }
 
     @Override
     public File write() throws IOException{
-        SimpleFeatureCollection newFc = DataUtilities.collection(featureList);
-
-        newFeatureStore.addFeatures(newFc);
-
-        t.commit();
-        t.close();
+        ssw.close();
+        
         File zip = File.createTempFile("downloadshp", ".zip");
         zipDirectory(dir, zip);
         FileUtils.deleteDirectory(dir);
