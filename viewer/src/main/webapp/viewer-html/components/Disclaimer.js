@@ -75,8 +75,6 @@ Ext.define ("viewer.components.Disclaimer",{
     },
     onClose : function(){
         var dontShow = Ext.getCmp("dontshow").getValue();
-        
         viewer.components.LocalStorage.setItem(this.localStorageKey, dontShow);
-        console.log("onclose", dontShow);
     }
 });
