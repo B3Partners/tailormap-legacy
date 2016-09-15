@@ -36,6 +36,7 @@ import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -86,7 +87,8 @@ public abstract class TestUtil {
         final String persistenceUnit = System.getProperty("test.persistence.unit");
         Map config = new HashMap();
         String testname = testName.getMethodName();
-        config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "/db;shutdown=true");
+        String randomizer = RandomStringUtils.randomAlphabetic(8);
+        config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
         entityManager = Persistence.createEntityManagerFactory(persistenceUnit,config).createEntityManager();
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
