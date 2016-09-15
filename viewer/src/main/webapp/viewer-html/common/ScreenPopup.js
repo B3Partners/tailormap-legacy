@@ -19,6 +19,21 @@
  * A generic component to which can render itself
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
+
+Ext.define ("viewer.components.SvgHeader", {
+    extend: "Ext.panel.Header",
+    xtype: 'svgpanelheader',
+    constructor: function (conf) {
+        conf.iconCls = 'svg-icon-header';
+        viewer.components.SvgHeader.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        this.addListener('afterrender', function(cmp, eOpts) {
+            var icon = cmp.el.dom.querySelector('.svg-icon-header');
+            icon.innerHTML = conf.svgIcon;
+        });
+    }
+});
+
 Ext.define ("viewer.components.ScreenPopup",{
     extend: "Ext.util.Observable",
     popupWin:null,
@@ -59,8 +74,16 @@ Ext.define ("viewer.components.ScreenPopup",{
             modal: false,
             renderTo: Ext.getBody(),
             autoScroll: true,
-            constrainHeader: true
+            constrainHeader: true,
+            iconCls: this.config.iconCls || ""
         };
+        
+        if(this.config.popupIcon) {
+            config.header = {
+                xtype: 'svgpanelheader',
+                svgIcon: this.config.popupIcon
+            };
+        }
         
         if(viewer.components.MobileManager.isMobile()) {
             config.modal = true;

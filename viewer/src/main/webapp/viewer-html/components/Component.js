@@ -61,12 +61,16 @@ Ext.define("viewer.components.Component",{
             me.config.isPopup = false;
         }
         if(me.config.isPopup) {
-            me.popup = Ext.create("viewer.components.ScreenPopup",config);
+            if(this.viewerController.hasSvgSprite()) {
+                config.popupIcon = this.getSvgIcon();
+            } else {
+                config.iconCls = this.getPopupIcon();
+            }
+            me.popup = Ext.create("viewer.components.ScreenPopup", config);
             me.popup.setComponent(me);
             me.popup.popupWin.addListener("resize", function() {
                 me.doResize();
             });
-            me.popup.setIconClass(me.getPopupIcon());
         }
         if(me.config.name && me.title) {
             me.config.viewerController.layoutManager.setTabTitle(me.config.name, me.title);
@@ -121,16 +125,22 @@ Ext.define("viewer.components.Component",{
             buttonCls = '',
             buttonWidth = me.defaultButtonWidth,
             baseClass = this.getBaseClass(),
-            showLabel = false;
+            showLabel = false
+            buttonHtml = "";
 
         if(!me.config.isPopup) return;
 
+        var hasDefinedSpriteIcon = options.icon && options.icon.charAt(0) === "#";
         me.options = options;
-        if(options.icon) {
+        if(options.icon && !hasDefinedSpriteIcon) {
             buttonIcon = options.icon;
             buttonCls = "customIconButton";
         } else if(me.haveSprite) {
             buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
+            if(this.config.viewerController.hasSvgSprite()) {
+                buttonHtml = this.getSvgIcon(hasDefinedSpriteIcon ? options.icon : null);
+                buttonCls += ' svg-button';
+            }
         } else {
             buttonText = (options.text || (me.config.name || ""));
             buttonWidth = 'autoWidth';
@@ -142,6 +152,7 @@ Ext.define("viewer.components.Component",{
         me.button = Ext.create('Ext.button.Button', {
             text: buttonText,
             cls: buttonCls,
+            html: buttonHtml,
             renderTo: (showLabel ? null : me.config.div),
             scale: "large",
             icon: buttonIcon,
@@ -204,6 +215,16 @@ Ext.define("viewer.components.Component",{
                 ]
             });
         }
+    },
+
+    getSvgIcon: function(iconCls) {
+        var appSprite = this.config.viewerController.getApplicationSprite();
+        var baseClass = this.getBaseClass().replace("viewercomponents", "").toLowerCase();
+        var spriteCls = '#icon-' + baseClass;
+        if(iconCls) {
+            spriteCls = iconCls;
+        }
+        return ['<svg role="img" title=""><use xlink:href="', appSprite, spriteCls,'"/></svg>'].join('');
     },
 
     setButtonState: function(state, forceState) {
@@ -278,6 +299,11 @@ Ext.define("viewer.components.Component",{
      */
     createIconStylesheet: function() {
         var me = this;
+
+        if(this.viewerController.hasSvgSprite()) {
+            me.haveSprite = true;
+            return;
+        }
 
         var SPRITE_STYLE = "appSpriteStyle";
 

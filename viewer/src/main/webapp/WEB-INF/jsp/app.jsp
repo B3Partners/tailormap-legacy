@@ -69,6 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </c:if>
+        <link href="${contextPath}/viewer-html/svg/svgsprite.css" rel="stylesheet">
 
         <c:choose>
             <c:when test="${!(param.debug == true)}">

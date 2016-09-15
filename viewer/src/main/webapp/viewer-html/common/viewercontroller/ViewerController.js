@@ -41,6 +41,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * layers that have been registered by controls that wish to benefit from snapping.
      */
     registeredSnappingLayers: [],
+    spriteUrl: null,
     /**
      * List of layers for this application and whether the user has them checked/unchecked
      */
@@ -1817,9 +1818,59 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // uses - replace by generic app config details access function
         // or if sprite is used more widely provide it outside Component.js
         if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
+            if(this.hasSvgSprite()) {
+                return this.checkSvgSupport(this.app.details.iconSprite);
+            }
             return this.app.details.iconSprite;
         }
         return null;
+    },
+    /**
+     * Checks is the sprite URL is using a SVG sprite
+     * @param {String} sprite
+     * @returns {Boolean}
+     */
+    hasSvgSprite: function() {
+        // Check if extension is SVG
+        var sprite = this.app.details.iconSprite || "";
+        return sprite.substring(sprite.length - 4, sprite.length) === ".svg";
+    },
+    /**
+     * Check support for External Content for SVG
+     * If not supported, get SVG using Ajax and add to body
+     * @param {String} sprite
+     * @returns {String}
+     */
+    checkSvgSupport: function(sprite) {
+        // Check already executed, return spriteUrl
+        if(this.spriteUrl !== null) {
+            return this.spriteUrl;
+        }
+        // Unfortunately it is not easy to detect support for external content
+        // This check is borrowed from https://github.com/jonathantneal/svg4everybody
+        var noExternalContentSupport = /\bEdge\/12\b|\bTrident\/[567]\b|\bVersion\/7.0 Safari\b/.test(navigator.userAgent) || (navigator.userAgent.match(/AppleWebKit\/(\d+)/) || [])[1] < 537;
+        if(!noExternalContentSupport) {
+            // External content is supported, return full sprite URL
+            this.spriteUrl = sprite;
+            return this.spriteUrl;
+        }
+        // Versions of IE/Edge and Safari do not support external content in xlink:href
+        // This can be solved by adding the SVG document to the body
+        // The SVG is fetched using Ajax and then appended to the body
+        Ext.Ajax.request({
+            url: sprite,
+            success: function(result) {
+                var svgsprite = result.responseText;
+                var body = document.querySelector('body');
+                var svgcontainer = document.createElement('div');
+                svgcontainer.style.display = 'none';
+                svgcontainer.innerHTML = svgsprite;
+                body.insertBefore(svgcontainer, body.firstChild);
+            }
+        });
+        // Return empty sprite url so the SVG inside the body is used
+        this.spriteUrl = "";
+        return this.spriteUrl;
     },
     /**
      * Gets the layout height for a layout container
