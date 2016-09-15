@@ -170,6 +170,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         assertEquals(9, attributes.size());
         
         List<ConfiguredAttribute> newAttrs = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
+        assertEquals("Number of returned attributes incorrect",9, newAttrs.size());
         ConfiguredAttribute toCheck = null;
         for (ConfiguredAttribute next : newAttrs) {
             if(next.getId()== 9){
@@ -177,7 +178,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
                 break;
             }
         }
-        assertNotNull(toCheck);
+        assertNotNull("Attribute not present in processed list",toCheck);
         assertEquals(true, toCheck.isEditable());
         assertEquals(true, toCheck.getDisAllowNullValue());
         assertEquals("pietje", toCheck.getEditAlias());
