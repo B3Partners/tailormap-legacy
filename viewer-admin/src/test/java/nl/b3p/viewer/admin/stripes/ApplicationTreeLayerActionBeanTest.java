@@ -92,6 +92,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         order7.put("order", 8);
         order7.put("longname", "begroeid_terreinvakonderdeel_bestaand.ident");
         
+        attributeOrder = new JSONArray();
         attributeOrder.put(order2);
         attributeOrder.put(order3);
         attributeOrder.put(order4);
@@ -118,6 +119,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("name", "id");
         config.put("selectable", false);
         config.put("valueList", "static");
+        attributesConfig = new JSONArray();
         attributesConfig.put(config);
     }
 
