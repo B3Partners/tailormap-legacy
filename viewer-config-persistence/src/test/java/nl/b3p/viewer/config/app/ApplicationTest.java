@@ -36,7 +36,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testDeepCopy() throws Exception {
-        initData(false);
+        initData(true);
 
         int expectedStartLayerSize = app.getStartLayers().size();
         int expectedStartLevelSize = app.getStartLevels().size();
@@ -62,7 +62,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testDeepCopyReaders() throws Exception{
-       initData(false);
+       initData(true);
        Application copy = app.deepCopy();
        assertEquals(2, copy.getReaders().size());
         for (String reader : app.getReaders()) {
@@ -72,7 +72,7 @@ public class ApplicationTest extends TestUtil {
     
     @Test
     public void testDeleteApplications() throws Exception {
-        initData(false);
+        initData(true);
         Application application = entityManager.find(Application.class, app.getId());
         Application copy = application.deepCopy();
         entityManager.detach(application);
@@ -84,7 +84,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testMakeMashupLinkComponents() throws Exception {
-        initData(false);
+        initData(true);
         try {
             int expectedStartLayerSize = app.getStartLayers().size();
             int expectedStartLevelSize = app.getStartLevels().size();
@@ -131,7 +131,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testMakeMashupDontLinkComponents() throws Exception {
-        initData(false);
+        initData(true);
         try {
             int expectedStartLayerSize = app.getStartLayers().size();
             int expectedStartLevelSize = app.getStartLevels().size();
@@ -178,7 +178,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testMakeMashupOfApplicationWithExistingMashup() throws Exception {
-        initData(false);
+        initData(true);
         try {
             int expectedStartLayerSize = app.getStartLayers().size() * 2;
             int expectedStartLevelSize = app.getStartLevels().size() * 2;

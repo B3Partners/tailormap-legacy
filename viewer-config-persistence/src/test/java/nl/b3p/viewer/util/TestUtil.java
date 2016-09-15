@@ -146,11 +146,7 @@ public abstract class TestUtil {
         }
     }
     
-    public void initData(boolean deleteAfterwards){
-        initData(deleteAfterwards,true);
-    }
-
-    public void initData(boolean deleteAfterwards, boolean addToStartmap) {
+    public void initData( boolean addToStartmap) {
         app = new Application();
         app.setName("testapp");
         app.setVersion("154");

@@ -104,7 +104,7 @@ public class StartLayerTest extends TestUtil{
     
     @Test
     public void deleteApplication() throws URISyntaxException, SQLException, IOException{
-        initData(false);
+        initData(true);
         assertNotNull(testAppLayer);
         assertNotNull(app);
         assertNotNull(testStartLayer);

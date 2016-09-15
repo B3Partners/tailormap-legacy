@@ -24,7 +24,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
     @Test
     public void testMakeWorkVersion() throws Exception {
         try {
-            initData(false);
+            initData(true);
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();
             caab.setContext(context);
@@ -43,7 +43,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
 
     @Test
     public void testMakeWorkVersionFromAppWithMashup() {
-        initData(false);
+        initData(true);
         try {
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();
@@ -73,7 +73,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
     
     @Test
     public void testMakeMashupFromAppWithWorkversion() {
-         initData(false);
+         initData(true);
         try {
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();

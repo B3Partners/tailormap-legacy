@@ -78,7 +78,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
     
     @Test
     public void testRemoveLevelUsedInMashup() throws Exception{
-        initData(true, false);
+        initData(false);
         instance.setApplication(app);
         Long id = testLevel.getId();
         Application mashup = app.createMashup("mashup", entityManager, false);
