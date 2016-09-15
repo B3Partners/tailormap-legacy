@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, contextPath, MobileManager, actionBeans */
+
 /**
  * Drawing component
  * Creates a Drawing component
@@ -33,12 +35,14 @@ Ext.define ("viewer.components.Drawing",{
     label:null,
     title:null,
     comment:null,
+    deActivatedTools: null,
     file:null,
     // Current active feature
     activeFeature:null,
     features:null,
     config:{
         title: "",
+        reactivateTools:null,
         iconUrl: "",
         tooltip: "",
         color: "",
@@ -50,7 +54,7 @@ Ext.define ("viewer.components.Drawing",{
     },
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.Drawing.superclass.constructor.call(this, this.config);
+	viewer.components.Drawing.superclass.constructor.call(this, this.config);
         if(this.config.color === ""){
             this.config.color = "ff0000";
         }
@@ -78,17 +82,26 @@ Ext.define ("viewer.components.Drawing",{
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
+        if(this.config.reactivateTools){
+            this.popup.addListener("hide", this.hideWindow, this);
+        }
         return this;
     },
     showWindow : function (){
-        if(this.vectorLayer == null){
+        if(this.vectorLayer === null){
             this.createVectorLayer();
         }
-        this.config.viewerController.mapComponent.deactivateTools()
+        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.popup.show();
     },
+    hideWindow: function () {
+        for (var i = 0; i < this.deActivatedTools.length; i++) {
+            this.deActivatedTools[i].activate();
+        }
+        this.deActivatedTools = [];  
+    },
     selectedContentChanged : function (){
-        if(this.vectorLayer == null){
+        if(this.vectorLayer === null){
             this.createVectorLayer();
         }else{
             this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
@@ -424,6 +437,8 @@ Ext.define ("viewer.components.Drawing",{
     },
 
     /**
+     * @param vectorLayer The vectorlayer from which the feature comes
+     * @param feature the feature which has been activated
      * Event handlers
      **/
     activeFeatureChanged : function (vectorLayer,feature){
@@ -453,7 +468,7 @@ Ext.define ("viewer.components.Drawing",{
         this.vectorLayer.style.fillcolor = this.config.color;
         this.vectorLayer.style.strokecolor = this.config.color;
         this.vectorLayer.adjustStyle();
-        if(this.activeFeature != null){
+        if(this.activeFeature !== null){
             this.activeFeature.color = this.config.color;
             var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
             this.activeFeature.config.wktgeom = feature.config.wktgeom;
@@ -463,7 +478,7 @@ Ext.define ("viewer.components.Drawing",{
         }
     },
     labelChanged : function (field,newValue){
-        if(this.activeFeature != null){
+        if(this.activeFeature !== null){
             this.vectorLayer.setLabel(this.activeFeature.getId(),newValue);
             this.activeFeature.label=newValue;
         }
@@ -495,7 +510,7 @@ Ext.define ("viewer.components.Drawing",{
                     this.labelField.setValue("");
                     this.titleField.setValue("");
                     this.description.setValue("");
-                    if (this.activeFeature != null) {
+                    if (this.activeFeature !== null) {
                         this.activeFeature = null;
                     }
                 }
@@ -513,7 +528,7 @@ Ext.define ("viewer.components.Drawing",{
         delete this.features[this.activeFeature.id];
         this.vectorLayer.removeFeature(this.activeFeature);
         this.toggleSelectForm(false);
-        if(this.activeFeature != null){
+        if(this.activeFeature !== null){
             this.activeFeature=null;
         }
         this.labelField.setValue("");
@@ -565,7 +580,7 @@ Ext.define ("viewer.components.Drawing",{
     loadFeatures: function(features){
         //make the vectorLayer if not created yet.
         if (features.length > 0){
-            if(this.vectorLayer == null){
+            if(this.vectorLayer === null){
               this.createVectorLayer();
             }
         }

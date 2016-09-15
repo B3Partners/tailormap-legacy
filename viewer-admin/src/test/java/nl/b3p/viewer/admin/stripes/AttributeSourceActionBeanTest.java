@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 
 /**
  *
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Meine Toonen
  */
 public class AttributeSourceActionBeanTest extends TestUtil {
 

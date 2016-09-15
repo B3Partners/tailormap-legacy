@@ -44,6 +44,7 @@ import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.ArcIMSService;
@@ -392,8 +393,17 @@ public class GeoServiceActionBean implements ActionBean {
         this.useProxy = useProxy;
     }
 
+    public JSONArray getLayersInApplications() {
+        return layersInApplications;
+    }
+
+    public void setLayersInApplications(JSONArray layersInApplications) {
+        this.layersInApplications = layersInApplications;
+    }
+
     //</editor-fold>
 
+    private JSONArray layersInApplications = new JSONArray();
 
     @DefaultHandler
     public Resolution edit() {
@@ -463,6 +473,62 @@ public class GeoServiceActionBean implements ActionBean {
             name = service.getName();
             username = service.getUsername();
             password = service.getPassword();
+            EntityManager em = Stripersist.getEntityManager();
+            // haal alle lagen op
+                // haal van elke laag de applayer op
+                    // haal van elke appLayer het level op
+                        // haal van het level de parents op
+            
+            List<Layer> layers = service.loadLayerTree(em);
+            
+            List<Application> applications = em.createQuery("from Application").getResultList();
+            
+            for (Layer layer : layers) {
+                //Map<Application, List<Level>> applicationsMap = new HashMap<Application,List<Level>>();
+                JSONArray applicationsArray = new JSONArray();
+                List<ApplicationLayer> appLayers = layer.getApplicationLayers(em);
+                for (ApplicationLayer appLayer : appLayers) {
+                    for (Application application : applications) {
+                        //List<Level> levelsInApplication = new ArrayList<Level>();
+                        JSONArray levelsInApplication = new JSONArray();
+                        JSONObject applicationObject = new JSONObject();
+                        applicationObject.put("text", application.getNameWithVersion());
+                        applicationObject.put("itemid", "a" + application.getId());
+                        applicationObject.put("type", "application");
+                        applicationObject.put("children", levelsInApplication);
+                        applicationsArray.put(applicationObject);
+                        Level l = application.getRoot().getParentInSubtree(appLayer);
+                        if(l != null){
+                            Level cur = l;
+                            JSONObject prev = null;
+                            while(cur.getParent() != null){
+                                JSONObject level = new JSONObject();
+                                level.put("text", cur.getName());
+                                level.put("type", "level");
+                                level.put("itemid", "v" + cur.getId());
+                                level.put("leaf", prev == null);
+                                if(prev != null){
+                                    level.put("children", prev);
+                                }
+                                cur = cur.getParent();
+                                prev = level;
+                            }
+                            levelsInApplication.put(prev);
+                            
+                            
+                        }
+                    }
+                }
+                if(applicationsArray.length() > 0){
+                    JSONObject layerObject = new JSONObject();
+                    layerObject.put("text", layer.getDisplayName());
+                    layerObject.put("layername", layer.getName());
+                    layerObject.put("itemid", "l" + layer.getId());
+                    layerObject.put("type", "layer");
+                    layerObject.put("children", applicationsArray);
+                    layersInApplications.put(layerObject);
+                }
+            }
         }
         return new ForwardResolution(JSP);
     }
@@ -471,13 +537,13 @@ public class GeoServiceActionBean implements ActionBean {
         if (name != null) {
             service.setName(name);
         }
+        if (url != null) {
+            service.setUrl(url);
+        }
         if (service instanceof TileService) {
             TileService ser = (TileService) service;
             if (tilingProtocol != null) {
                 ((TileService) service).setTilingProtocol(tilingProtocol);
-            }
-            if (url!=null){
-                ((TileService) service).setUrl(url);
             }
             Layer l = ser.getTilingLayer();
             if (tileSize != null) {

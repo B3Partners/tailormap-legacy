@@ -24,6 +24,7 @@ Ext.define ("viewer.components.Cyclorama",{
     deActivatedTools:null,
     window:null,
     optionWindow:null,
+    imageIdName:null,
     config:{
     },
     constructor: function (conf){
@@ -31,6 +32,7 @@ Ext.define ("viewer.components.Cyclorama",{
 		viewer.components.Cyclorama.superclass.constructor.call(this, this.config);
         // Registreer voor layerinitialized
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initComp, this);
+       
         return this;
     },
     initComp : function(){
@@ -43,7 +45,26 @@ Ext.define ("viewer.components.Cyclorama",{
             },
             viewerController: this.config.viewerController
         });
-        this.toolMapClick.activateTool();
+        var appLayer = this.viewerController.getAppLayerById(this.config.layers);
+
+        var attributes = appLayer.attributes;
+        var me = this;
+        function processAttributes(attributes) {
+            for (var i = 0; i < attributes.length; i++) {
+                if (attributes[i].id === me.config.imageIdAttribute) {
+                    me.imageIdName = attributes[i].name;
+                    break;
+                }
+            }
+            me.toolMapClick.activateTool();
+        }
+        if(!attributes){
+            this.viewerController.app.appLayers[this.layers].featureService.loadAttributes(appLayer, processAttributes);
+        }else{
+            processAttributes(appLayer.attributes);
+        }
+/*
+       */
     },
     processResponse: function (response){
         if(response.features.length >1 ){
@@ -68,7 +89,7 @@ Ext.define ("viewer.components.Cyclorama",{
         var grid = Ext.create('Ext.grid.Panel', {
             store: store,
             columns: [
-                { header: 'Image id',  dataIndex: this.config.imageIdAttribute,flex:1 }
+                { header: 'Image id',  dataIndex: this.imageIdName,flex:1 }
             ],
             listeners:{
                 itemdblclick:{
@@ -93,7 +114,7 @@ Ext.define ("viewer.components.Cyclorama",{
     },
     openGlobespotter : function(feature){
         var params = {
-            imageId: feature[this.config.imageIdAttribute] ,
+            imageId: feature[this.imageIdName],
             appId: appId,
             accountId: this.config.keyCombo
         };
@@ -129,7 +150,7 @@ Ext.define ("viewer.components.Cyclorama",{
                     ' <object id="Globespotter" name="TID">' +
                         ' <param name="allowScriptAccess" value="always" />' +
                         ' <param name="allowFullScreen" value="true" />' +
-                        ' <embed src="https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf"' +
+                    '<embed src="https://globespotter.cyclomedia.com/v2/api/bapi/viewer_bapi.swf"' +
                             ' quality="high" bgcolor="#888888"' +
                             ' width="' + (width - 12) + '" height="' + (height - 33)+
                             ' type="application/x-shockwave-flash"' +

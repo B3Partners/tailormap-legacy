@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.7.5-SNAPSHOT</version>
+    <version>4.7.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -37,13 +37,13 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>4.7.5-SNAPSHOT</flamingo.version>
+        <flamingo.version>4.7.6-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.7</project.build.sourceVersion>
         <project.build.targetVersion>1.7</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <geotools.version>14.5</geotools.version>
-        <powermock.version>1.5.5</powermock.version>
+        <powermock.version>1.6.5</powermock.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>9.4.1209.jre7</postgresql.version>
@@ -83,13 +83,13 @@
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20160807</version>
+                <version>20160810</version>
             </dependency>
             <!-- Stripes -->
             <dependency>
                 <groupId>net.sourceforge.stripes</groupId>
                 <artifactId>stripes</artifactId>
-                <version>1.5.6</version>
+                <version>1.6.0</version>
             </dependency>
             <dependency>
                 <groupId>org.stripesstuff</groupId>
@@ -115,7 +115,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.1</version>
+                <version>2.5</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
@@ -142,7 +142,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.1</version>
+                <version>3.4</version>
             </dependency>
             <dependency>
                 <groupId>com.google.javascript</groupId>
@@ -189,7 +189,7 @@
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.1.1</version>
+                <version>1.2</version>
             </dependency>
             <dependency>
                 <groupId>com.googlecode.json-simple</groupId>
@@ -206,6 +206,12 @@
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito</artifactId>
                 <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.10.19</version>
                 <scope>test</scope>
             </dependency>
 
@@ -283,7 +289,7 @@
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils-core</artifactId>
-                <version>1.8.0</version>
+                <version>1.8.3</version>
             </dependency>
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
@@ -349,12 +355,12 @@
             <dependency>
                 <groupId>org.stripesstuff</groupId>
                 <artifactId>stripesstuff</artifactId>
-                <version>0.4.1</version>
+                <version>0.5.0</version>
             </dependency>
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>javax.mail-api</artifactId>
-                <version>1.5.5</version>
+                <version>1.5.6</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -368,11 +374,6 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>${apache.poi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.8.4</version>
             </dependency>
             <dependency>
                 <groupId>eu.medsea.mimeutil</groupId>
@@ -528,7 +529,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

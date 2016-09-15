@@ -292,7 +292,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                             break;
                         }                        
                     }
-                    if (allFound){
+                    var hasSummary = this.viewerController.isSummaryLayer(layer);
+                    if (allFound && hasSummary){
                         return layer;
                     }
                 }

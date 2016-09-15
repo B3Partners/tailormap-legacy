@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
@@ -42,6 +43,9 @@ import org.stripesstuff.stripersist.Stripersist;
 public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLayer.jsp";
+    private static final String ATTRIBUTES_CONFIG_KEY = "attributeConfig";
+    private static final String ATTRIBUTES_ORDER_KEY = "attributeOrder";
+    
     @Validate
     private ApplicationLayer applicationLayer;
     @Validate
@@ -50,6 +54,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private List<String> groupsWrite = new ArrayList<String>();
     @Validate
     private Map<String, String> details = new HashMap<String, String>();
+
+    @Validate
+    private List<String> selectedAttributes = new ArrayList<String>();
 
     private Map<String,String> attributeAliases = new HashMap();
     
@@ -64,7 +71,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private JSONObject attributesJSON = new JSONObject();
     
     private JSONArray attributesConfig = new JSONArray();
-    private JSONArray attributesOrder = new JSONArray();
     
     @Validate(on="getUniqueValues")
     private String attribute;
@@ -150,7 +156,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void synchronizeFeatureType() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
-        // Synchronize configured attributesJSON with layer feature type
+        // Synchronize configured attributes with layer feature type
 
         if(layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
             applicationLayer.getAttributes().clear();
@@ -158,10 +164,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             List<String> attributesToRetain = new ArrayList();
             
             SimpleFeatureType sft = layer.getFeatureType(); 
-            // Rebuild ApplicationLayer.attributesJSON according to Layer FeatureType
-            // New attributesJSON are added at the end of the list; the original
-            // order is only used when the Application.attributesJSON list is empty
-            // So a feature for reordering attributesJSON per applicationLayer is
+            // Rebuild ApplicationLayer.attributes according to Layer FeatureType
+            // New attributes are added at the end of the list; the original
+            // order is only used when the Application.attributes list is empty
+            // So a feature for reordering attributes per applicationLayer is
             // possible.
             // New Attributes from a join or related featureType are added at the 
             //end of the list.                                  
@@ -186,10 +192,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 applicationLayer.getAttributes().remove(ca);
                 em.remove(ca);
             }
+            attributesConfig = attributesJSON.has(ATTRIBUTES_CONFIG_KEY) ? attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY) : new JSONArray();
             
+
             // JSON info about attributed required for editing
-            attributesConfig = attributesJSON.has("attributeConfig") ? attributesJSON.getJSONArray("attributeConfig") : new JSONArray();
-            attributesOrder =attributesJSON.has("attributeOrder") ? attributesJSON.getJSONArray("attributeOrder") : new JSONArray(); 
             makeAttributeJSONArray(layer.getFeatureType()); 
         }        
     }
@@ -205,6 +211,12 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
             
+            // Fill visible checkboxes
+            for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
+                if(ca.isVisible()) {
+                    selectedAttributes.add(ca.getFullName());
+                }
+            }            
         }
 
         return new ForwardResolution(JSP);
@@ -264,8 +276,18 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return attributesToRetain;
     }
     
+    private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas) {
+        List<FeatureTypeRelation> relations = layerSft.getRelations();
+        for (FeatureTypeRelation relation : relations) {
+             SimpleFeatureType foreign = relation.getForeignFeatureType();
+             // Sort the attributes of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
+             sortPerFeatureType(foreign, cas);
+        }
+    }
+    
     public Resolution attributes() throws JSONException{
         attributesConfig = new JSONArray();
+        
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         makeAttributeJSONArray(layer.getFeatureType());
         return new StreamingResolution("application/json", new StringReader(attributesConfig.toString()));
@@ -273,7 +295,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
-    
+        if(layerSft != null){
+            // Sort the attributes by name (per featuretype)
+            sortPerFeatureType(layerSft, cas);
+        }
+
         for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
             
@@ -345,8 +371,12 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             applicationLayer.getWriters().add(groupName);
         }
 
-        saveConfiguredAttributes(em);
-
+        if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
+            JSONArray attributeOrder = attributesJSON.getJSONArray(ATTRIBUTES_ORDER_KEY);
+            List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
+            applicationLayer.setAttributes(processAttributes(em, attributeOrder, attributesConfig, appAttributes));
+        }
+        
         em.persist(applicationLayer);
         application.authorizationsModified();
 
@@ -364,100 +394,106 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return edit();
     }
     
-    private void saveConfiguredAttributes(EntityManager em) {
-        if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
-            
-            Map<Long, JSONObject> attributeConfigsById = new HashMap<Long, JSONObject>();
-            for (int i = 0; i < attributesConfig.length(); i++) {
-                JSONObject object = attributesConfig.getJSONObject(i);
-                attributeConfigsById.put(object.getLong("id"), object);
+    protected List<ConfiguredAttribute> processAttributes(EntityManager em, JSONArray attributeOrder,JSONArray attributesConfig, List<ConfiguredAttribute> appAttributes ) {
+        Map<String, JSONObject> attributeOrderMap = new HashMap<String, JSONObject>();
+        Map<String, JSONObject> attributeConfigMap = new HashMap<String, JSONObject>();
+        for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
+            JSONObject order = (JSONObject)iterator.next();
+            attributeOrderMap.put(order.getString("longname"), order);
+        }
+        
+        for (Iterator iterator = attributesConfig.iterator(); iterator.hasNext();) {
+            JSONObject config = (JSONObject)iterator.next();
+            attributeConfigMap.put(config.getString("longname"), config);
+        }
+        
+        for (Iterator it = appAttributes.iterator(); it.hasNext();) {
+            ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
+            //save visible
+            if (attributeOrderMap.containsKey(appAttribute.getLongName()) ) {
+                appAttribute.setVisible(attributeOrderMap.get(appAttribute.getLongName()).getBoolean("checked"));
+            } else {
+                appAttribute.setVisible(false);
             }
-            
-            List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
-            
-            Map<Long, ConfiguredAttribute> attrsById = new HashMap<Long,ConfiguredAttribute>();
-            for (ConfiguredAttribute appAttribute : appAttributes) {
-                attrsById.put(appAttribute.getId(), appAttribute);
-            }
-            
-            List<ConfiguredAttribute> newAttributeOrder = new ArrayList<ConfiguredAttribute>();
-            for (int i = 0; i < attributesOrder.length(); i++) {
-                JSONObject attrOrder = attributesOrder.getJSONObject(i);
-                
-                Long id = attrOrder.getLong("attribute_id");
-                JSONObject attr = attributeConfigsById.get(id);
-                
-                ConfiguredAttribute appAttribute = attrsById.get(id);
-                newAttributeOrder.add(appAttribute);
-                
-                //save visible
-                appAttribute.setVisible(attrOrder.getBoolean("checked"));
 
-                // save folder label
-                String folderLabel = attrOrder.optString("folder_label");
-                appAttribute.setLabel(folderLabel.isEmpty() ? null : folderLabel);
-               
-                if (attr.has("editable")) {
-                    appAttribute.setEditable(attr.getBoolean("editable"));
+            //save editable
+            
+            JSONObject configObject = attributeConfigMap.get(appAttribute.getLongName());
+            if(configObject != null){
+
+                if (configObject.has("editable")) {
+                    appAttribute.setEditable(configObject.getBoolean("editable"));
                 }
-                if (attr.has("editAlias")) {
-                    appAttribute.setEditAlias(attr.getString("editAlias"));
+                if (configObject.has("editAlias")) {
+                    appAttribute.setEditAlias(configObject.getString("editAlias"));
                 }
-                if (attr.has("editvalues")) {
-                    appAttribute.setEditValues(attr.getString("editvalues"));
+                if (configObject.has("editvalues")) {
+                    appAttribute.setEditValues(configObject.getString("editvalues"));
                 }
-                if (attr.has("editHeight")) {
-                    appAttribute.setEditHeight(attr.getString("editHeight"));
+                if (configObject.has("editHeight")) {
+                    appAttribute.setEditHeight(configObject.getString("editHeight"));
                 }
 
                 //save selectable
-                if (attr.has("selectable")) {
-                    appAttribute.setSelectable(attr.getBoolean("selectable"));
+                if (configObject.has("selectable")) {
+                    appAttribute.setSelectable(configObject.getBoolean("selectable"));
                 }
-                if (attr.has("filterable")) {
-                    appAttribute.setFilterable(attr.getBoolean("filterable"));
-                }
-
-                if (attr.has("defaultValue")) {
-                    appAttribute.setDefaultValue(attr.getString("defaultValue"));
+                if (configObject.has("filterable")) {
+                    appAttribute.setFilterable(configObject.getBoolean("filterable"));
                 }
 
-                if (attr.has("valueListFeatureSource") && !attr.isNull("valueListFeatureSource")) {
-                    Long valueListFeatureSourceId = attr.getLong("valueListFeatureSource");
-                    FeatureSource fs = em.find(FeatureSource.class, valueListFeatureSourceId);
+                if (configObject.has("defaultValue")) {
+                    appAttribute.setDefaultValue(configObject.getString("defaultValue"));
+                }
+
+                if (configObject.has("valueListFeatureSource") && !configObject.isNull("valueListFeatureSource")) {
+                    Long id = configObject.getLong("valueListFeatureSource");
+                    FeatureSource fs = em.find(FeatureSource.class, id);
                     appAttribute.setValueListFeatureSource(fs);
                 }
 
-                if (attr.has("valueListFeatureType") && !attr.isNull("valueListFeatureType")) {
-                    Long valueListFeatureTypeId = attr.getLong("valueListFeatureType");
-                    SimpleFeatureType ft = em.find(SimpleFeatureType.class, valueListFeatureTypeId);
+                if (configObject.has("valueListFeatureType") && !configObject.isNull("valueListFeatureType")) {
+                    Long id = configObject.getLong("valueListFeatureType");
+                    SimpleFeatureType ft = em.find(SimpleFeatureType.class, id);
                     appAttribute.setValueListFeatureType(ft);
                 }
 
-                if (attr.has("valueListValueAttribute") && !attr.isNull("valueListValueAttribute")) {
-                    appAttribute.setValueListValueName(attr.getString("valueListValueAttribute"));
+                if (configObject.has("valueListValueAttribute") && !configObject.isNull("valueListValueAttribute")) {
+                    appAttribute.setValueListValueName(configObject.getString("valueListValueAttribute"));
                 }
 
-                if (attr.has("valueListLabelAttribute") && !attr.isNull("valueListLabelAttribute")) {
-                    appAttribute.setValueListLabelName(attr.getString("valueListLabelAttribute"));
+                if (configObject.has("valueListLabelAttribute") && !configObject.isNull("valueListLabelAttribute")) {
+                    appAttribute.setValueListLabelName(configObject.getString("valueListLabelAttribute"));
                 }
 
-                if (attr.has("valueList") && !attr.isNull("valueList")) {
-                    appAttribute.setValueList(attr.getString("valueList"));
+                if (configObject.has("valueList") && !configObject.isNull("valueList")) {
+                    appAttribute.setValueList(configObject.getString("valueList"));
                 }
 
-                if (attr.has("allowValueListOnly")) {
-                    appAttribute.setAllowValueListOnly(attr.getBoolean("allowValueListOnly"));
+                if (configObject.has("allowValueListOnly")) {
+                    appAttribute.setAllowValueListOnly(configObject.getBoolean("allowValueListOnly"));
                 }
-                if (attr.has("disallowNullValue")) {
-                    appAttribute.setDisallowNullValue(attr.getBoolean("disallowNullValue"));
+                if (configObject.has("disallowNullValue")) {
+                    appAttribute.setDisallowNullValue(configObject.getBoolean("disallowNullValue"));
                 }
-                if (attr.has("disableUserEdit")) {
-                    appAttribute.setDisableUserEdit(attr.getBoolean("disableUserEdit"));
+                if (configObject.has("disableUserEdit")) {
+                    appAttribute.setDisableUserEdit(configObject.getBoolean("disableUserEdit"));
                 }
             }
-            applicationLayer.setAttributes(newAttributeOrder);
         }
+        
+        List<ConfiguredAttribute> newOrder = new ArrayList<ConfiguredAttribute>();
+        for (Iterator<Object> iterator = attributeOrder.iterator(); iterator.hasNext();) {
+            JSONObject orderObject = (JSONObject)iterator.next();
+            String longname = orderObject.getString("longname");
+            for (ConfiguredAttribute appAttribute : appAttributes) {
+                if(appAttribute.getLongName().equals(longname)){
+                    newOrder.add(appAttribute);
+                    break;
+                }
+            }
+        }
+        return newOrder;  
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
@@ -477,6 +513,14 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         this.details = details;
     }
 
+    public List<String> getSelectedAttributes() {
+        return selectedAttributes;
+    }
+
+    public void setSelectedAttributes(List<String> selectedAttributes) {
+        this.selectedAttributes = selectedAttributes;
+    }
+
     public JSONObject getAttributesJSON() {
         return attributesJSON;
     }
@@ -484,6 +528,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setAttributesJSON(JSONObject attributesJSON) {
         this.attributesJSON = attributesJSON;
     }
+
 
     public boolean isEditable() {
         return editable;
@@ -555,8 +600,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setAppLayerFeatureType(Long appLayerFeatureType) {
         this.appLayerFeatureType = appLayerFeatureType;
-    }
-
+    }    
+    
     public JSONArray getAttributesConfig() {
         return attributesConfig;
     }
@@ -564,7 +609,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setAttributesConfig(JSONArray attributesConfig) {
         this.attributesConfig = attributesConfig;
     }
+    
 
     //</editor-fold>    
-    
+
+
 }

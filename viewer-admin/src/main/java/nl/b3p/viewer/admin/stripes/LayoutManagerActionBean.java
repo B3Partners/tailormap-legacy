@@ -312,7 +312,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     
     
     private void pushChangesToLinkedComponents(ConfiguredComponent comp){
-        log.error("pushChangesToLinkedComponents");
         for (ConfiguredComponent linkedComponent : comp.getLinkedComponents()) {
             if(!ConfiguredComponent.classesExcludedFromPushing.contains(linkedComponent.getClassName())){
                 linkedComponent.setConfig(comp.getConfig());

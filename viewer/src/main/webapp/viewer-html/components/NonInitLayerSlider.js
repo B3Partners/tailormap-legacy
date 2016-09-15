@@ -26,7 +26,8 @@
 Ext.define("viewer.components.NonInitLayerSlider",{
     extend: "viewer.components.Slider",
     config:{
-        initSelectedContent: null
+        initSelectedContent: null,
+        layersInExistingSliders:null
     },
     /*constructor : function (conf){
         this.initConfig(conf);  
@@ -35,19 +36,21 @@ Ext.define("viewer.components.NonInitLayerSlider",{
     },*/
     onAddLayer: function(map,options){
         var mapLayer=options.layer;
-        //only if configured with a applayer
-        if (mapLayer.appLayerId){
-            //check if this slider needs to change values for the layer
-            if(!this.isInitSelectedContent(mapLayer.appLayerId)){
+        if(!Ext.Array.contains(this.config.layersInExistingSliders, mapLayer.appLayerId)){
+            //only if configured with a applayer
+            if (mapLayer.appLayerId){
+                //check if this slider needs to change values for the layer
+                if(!this.isInitSelectedContent(mapLayer.appLayerId)){
+                    this.layers.push(mapLayer);
+                    if(this.currentSliderValue) {
+                        this.applySlider(mapLayer,this.currentSliderValue);
+                    }
+                }
+            }else{
                 this.layers.push(mapLayer);
                 if(this.currentSliderValue) {
                     this.applySlider(mapLayer,this.currentSliderValue);
                 }
-            }
-        }else{
-            this.layers.push(mapLayer);
-            if(this.currentSliderValue) {
-                this.applySlider(mapLayer,this.currentSliderValue);
             }
         }
     },

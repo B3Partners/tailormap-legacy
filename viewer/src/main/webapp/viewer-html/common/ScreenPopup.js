@@ -20,6 +20,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.ScreenPopup",{
+    extend: "Ext.util.Observable",
     popupWin:null,
     config:{
         title: "",
@@ -41,6 +42,8 @@ Ext.define ("viewer.components.ScreenPopup",{
     component: null,
     currentOrientation: null,
     constructor: function (conf){
+        var me = this;
+        viewer.components.ScreenPopup.superclass.constructor.call(this, conf);
         this.initConfig(conf);
 
         var config = {
@@ -144,6 +147,7 @@ Ext.define ("viewer.components.ScreenPopup",{
                 this.component.setButtonState('normal', true);
             }
             this.enableBody();
+            this.fireEvent("hide",this);
         }, this);
         this.popupWin.addListener('show', function() {
             if (conf.viewerController) {

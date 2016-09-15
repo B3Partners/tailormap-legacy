@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * Maptip component
  * Creates a maptip component
@@ -53,6 +55,7 @@ Ext.define ("viewer.components.Maptip",{
     requestManager: null,
     extraLinkCallbacks: [],
     relatedFeatureBlocks: {},
+    currentRequestId:null,
     /**
      * @constructor
      */
@@ -68,7 +71,7 @@ Ext.define ("viewer.components.Maptip",{
         var me = this;        
         //if topmenu height is in % then recalc on every resize.        
         var topMenuLayout=this.config.viewerController.getLayout('top_menu');
-        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
+        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure === "%"){
             Ext.on('resize', function(){
                 me.onResize();
             }, this);
@@ -98,12 +101,12 @@ Ext.define ("viewer.components.Maptip",{
      */
     onAddLayer: function(map,options){
         var mapLayer = options.layer;
-        if (mapLayer==null)
+        if (mapLayer === null)
             return;
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.isSummaryLayer(mapLayer)){
+        if(this.viewerController.isSummaryLayer(mapLayer)){
             if (mapLayer.appLayerId){
                 var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
                 var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
@@ -131,9 +134,9 @@ Ext.define ("viewer.components.Maptip",{
 
     onLayerRemoved: function(map,options) {
         var mapLayer = options.layer;
-        if (mapLayer==null)
+        if (mapLayer === null)
             return;
-        if(this.isSummaryLayer(mapLayer)){
+        if(this.viewerController.isSummaryLayer(mapLayer)){
             if (mapLayer.appLayerId){
                 var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
                 var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
@@ -165,8 +168,8 @@ Ext.define ("viewer.components.Maptip",{
             this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.config.viewerController}), this.config.viewerController);
             this.serverRequestEnabled = true;
         }
-        if (this.serverRequestLayers ==null){
-            this.serverRequestLayers=new Array();
+        if (this.serverRequestLayers === null){
+            this.serverRequestLayers = new Array();
         }
         Ext.Array.include(this.serverRequestLayers, appLayer);
     },
@@ -197,10 +200,10 @@ Ext.define ("viewer.components.Maptip",{
         }else{
             options.useCursorForWaiting = true;
         }
-        var requestId = Ext.id();
+        this.currentRequestId = Ext.id();
 
-        this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
-            if(me.config.spinnerWhileIdentify && me.requestManager.requestsFinished(requestId)){
+        this.requestManager.request(this.currentRequestId, options, radius, inScaleLayers,  function(data) {
+            if(me.config.spinnerWhileIdentify && me.requestManager.requestsFinished(me.currentRequestId)){
                 me.viewerController.mapComponent.getMap().removeMarker("edit");
             }
             options.data = data;
@@ -240,8 +243,8 @@ Ext.define ("viewer.components.Maptip",{
             var browserZoomRatio = this.getBrowserZoomRatio();
 
             if (browserZoomRatio!=1){
-                options.y= Math.round(browserZoomRatio * (options.y));
-                options.x= Math.round(browserZoomRatio * options.x);
+                options.y = Math.round(browserZoomRatio * (options.y));
+                options.x = Math.round(browserZoomRatio * options.x);
             }
 
             //if not enabled: stop
@@ -254,8 +257,7 @@ Ext.define ("viewer.components.Maptip",{
             }
             //if position is not the last position remove content
             if (this.lastPosition){
-                if (this.lastPosition.x != options.x ||
-                    this.lastPosition.y != options.y){
+                if (this.lastPosition.x !== options.x || this.lastPosition.y !== options.y) {
                     this.balloon.setContent("");
                 }
             }else{
@@ -268,8 +270,7 @@ Ext.define ("viewer.components.Maptip",{
             var me = this;
             var data=options.data;
             var components=[];
-            //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
-            if (data==null || data =="null" || data==undefined){
+            if (!data){
                 return;
             }
             components = this.createInfoHtmlElements(data, options);
@@ -280,8 +281,11 @@ Ext.define ("viewer.components.Maptip",{
                 this.balloon.addElements(components);
                 this.balloon.show();
             } else {
-                this.balloon.setContent("");
-                this.balloon.hide();
+                var finished = this.requestManager.requestsFinished(this.currentRequestId);
+                if(finished && !this.balloon.hasContent()){
+                    this.balloon.setContent("");
+                    this.balloon.hide();
+                }
             }
         }catch(e){
             this.config.viewerController.logger.error(e);
@@ -306,8 +310,8 @@ Ext.define ("viewer.components.Maptip",{
                     details = this.config.viewerController.mapComponent.getMap().getLayer(layer.request.appLayer).getDetails();
                 }
 
-                var noHtmlEncode = "true" == details['summary.noHtmlEncode'];
-                var nl2br = "true" == details['summary.nl2br'];
+                var noHtmlEncode = "true" === details['summary.noHtmlEncode'];
+                var nl2br = "true" === details['summary.nl2br'];
                 //has a details for this layer
                 if (details[layer.request.serviceLayer]){
                     details=details[layer.request.serviceLayer];
@@ -377,7 +381,7 @@ Ext.define ("viewer.components.Maptip",{
                         var detailDiv = new Ext.Element(document.createElement("div"));
                         detailDiv.addCls("feature_summary_detail");
                         //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                        if (this.getMoreLink()!=null){
+                        if (this.getMoreLink() !== null){
                             var detailElem=document.createElement("a");
                             detailElem.href='javascript: void(0)';
                             detailElem.feature= feature;
@@ -408,6 +412,12 @@ Ext.define ("viewer.components.Maptip",{
                     components.push(featureDiv);
 
                 }
+                if(layer.moreFeaturesAvailable){
+                    var moreFeatures = new Ext.Element(document.createElement("div"));
+                    moreFeatures.addCls("feature_summary_feature");
+                    moreFeatures.insertHtml("beforeEnd","Maximum aantal resultaten bereikt. Alleen de eerste 10 worden getoond.");
+                    components.push(moreFeatures);
+                }
             }
         }
         return components;
@@ -434,8 +444,8 @@ Ext.define ("viewer.components.Maptip",{
         featureDiv.setStyle("background-color", "white");
         featureDiv.id="f_details_"+appLayer.serviceId+"_"+appLayer.layerName;
 
-        var noHtmlEncode = "true" == appLayer.details['summary.noHtmlEncode'];
-        var nl2br = "true" == appLayer.details['summary.nl2br'];
+        var noHtmlEncode = "true" === appLayer.details['summary.noHtmlEncode'];
+        var nl2br = "true" === appLayer.details['summary.nl2br'];
 
         if (appLayer.details){
             //title
@@ -503,7 +513,7 @@ Ext.define ("viewer.components.Maptip",{
                         }
                     }
 
-                    html+="<tr>"
+                    html+="<tr>";
                     html+="<td class='feature_detail_attr_key'>"+key+"</td>";
                     var value = String(feature[key]);
                     if(!noHtmlEncode) {
@@ -516,7 +526,7 @@ Ext.define ("viewer.components.Maptip",{
                         value = "";
                     }
                     html+="<td class='feature_detail_attr_value'>"+value+"</td>";
-                    html+="</tr>"
+                    html+="</tr>";
                 }
                 html+="</table>";
                 var attributesDiv = new Ext.Element(document.createElement("div"));
@@ -683,6 +693,7 @@ Ext.define ("viewer.components.Maptip",{
         placeholder.parentNode.insertBefore(parsedHtmlContainer, placeholder);
         placeholder.style.display = 'none';
     },
+    
     splitByTag: function(text, begintag, endtag) {
         if(text.indexOf(begintag) === -1 || text.indexOf(endtag) === -1) {
             return { blockText: '', textBefore: '', textAfter: '' };
@@ -692,29 +703,6 @@ Ext.define ("viewer.components.Maptip",{
             textBefore: text.substring(0, text.indexOf(begintag)),
             textAfter: text.substring(text.indexOf(endtag) + endtag.length)
         };
-    },
-    /**
-     * Gets the layers that have a maptip configured
-     * @param layer a mapComponent layer.
-     * @return a string of layer names in the given layer that have a maptip configured.
-     */
-    isSummaryLayer: function(layer){
-        var details = layer.getDetails();
-        return this.isSummaryDetails(details);
-    },
-    /**
-     * Check if the given details has data to show configured
-     * @param details the details for a layer
-     */
-    isSummaryDetails: function (details){
-        if (details !=undefined &&
-            (!Ext.isEmpty(details["summary.description"]) ||
-                !Ext.isEmpty(details["summary.image"]) ||
-                !Ext.isEmpty(details["summary.link"]) ||
-                !Ext.isEmpty(details["summary.title"]))){
-            return true;
-        }
-        return false;
     },
     /**
      * Checks if a layer is enabled for this component.
@@ -729,7 +717,7 @@ Ext.define ("viewer.components.Maptip",{
                 if(!this.config.layers.hasOwnProperty(i)) {
                     continue;
                 }
-                if (this.config.layers[i] == mapLayer.appLayerId){
+                if (this.config.layers[i] === mapLayer.appLayerId){
                     return true;
                 }
             }
@@ -759,8 +747,8 @@ Ext.define ("viewer.components.Maptip",{
             if(!appLayers.hasOwnProperty(id)) {
                 continue;
             }
-            if (appLayers[id].serviceId==serviceId &&
-                appLayers[id].layerName==layerName){
+            if (appLayers[id].serviceId === serviceId &&
+                appLayers[id].layerName === layerName){
                 return appLayers[id];
             }
         }
@@ -777,7 +765,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param vis true or false
      */
     setVisible: function(vis){
-        if(this.balloon==null){
+        if(this.balloon === null){
             return;
         }
         if(!vis){
@@ -788,10 +776,10 @@ Ext.define ("viewer.components.Maptip",{
     },
     /**
      * set enabled
-     * @param true/false
+     * @param enabled true/false
      */
-    setEnabled: function(ena){
-        this.enabled=ena;
+    setEnabled: function(enabled){
+        this.enabled = enabled;
         if (!this.enabled){
             this.setVisible(false);
         }
@@ -814,10 +802,10 @@ Ext.define ("viewer.components.Maptip",{
     },
     /**
      * Register the calling component for doing something extra called by a link.
-     * @param {type} component The object of the component ("this" at the calling method)
-     * @param {type} callback The callbackfunction which must be called from the click
-     * @param {type} The label for the hyperlink
-     * @param {Array} The appLayers this should apply to, when null the callback will apply to any appLayer
+     * @param component The object of the component ("this" at the calling method)
+     * @param callback The callbackfunction which must be called from the click
+     * @param label The label for the hyperlink
+     * @param appLayers The appLayers this should apply to, when null the callback will apply to any appLayer
      */
     registerExtraLink: function (component, callback, label, appLayers) {
         var entry = {
@@ -874,8 +862,6 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.offsetY=0;
     this.roundImgPath=contextPath+"/viewer-html/components/resources/images/maptip/round.png";
     this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";
-    //this.leftOfPoint;
-    //this.topOfPoint;
 
     //the balloon jquery dom element.
     this.balloon=null;
@@ -950,7 +936,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
 
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
-    }
+    };
 
     /**
      * Adds the close and minimize buttons to the balloon
@@ -1023,14 +1009,14 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             //pop up is top right of the point
             this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"}).addCls('arrowVisible');
         }
-    }
+    };
     /**
      *called by internal elements if the mouse is moved in 1 of the maptip element
      *@param the id of the element.
      */
     this.onMouseOver= function(elementId){
         this.mouseIsOverElement[elementId]=1;
-    }
+    };
     /**
      *called by internal elements when the mouse is out 1 of the maptip element
      *@param the id of the element.
@@ -1046,15 +1032,16 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             },50);
         }
 
-    }
+    };
+    
     this.isMouseOver = function(){
         for (var elementid in this.mouseIsOverElement){
-            if(this.mouseIsOverElement[elementid]==1){
+            if(this.mouseIsOverElement[elementid] === 1){
                 return true;
             }
         }
         return false;
-    }
+    };
 
     /**
      *Set the position of this balloon. Create it if not exists
@@ -1068,22 +1055,22 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //new maptip position so update the maptipId
         this.maptipId++;
 
-        if (this.balloon==undefined){
+        if (!this.balloon){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){
             this._resetPositionOfBalloon(x,y);
         }
         this._appendButtons();
         this.maximize();
-        if (x!=undefined && y != undefined){
+        if (x && y ){
 
             this.x=x;
             this.y=y;
-            if (browserZoomRatio!=undefined && browserZoomRatio!=null && browserZoomRatio!=1){
+            if (browserZoomRatio !== undefined && browserZoomRatio !== null && browserZoomRatio !== 1){
                 this.x = this.x*browserZoomRatio;
                 this.y = this.y*browserZoomRatio;
             }
-        }else if (this.x ==undefined || this.y == undefined){
+        }else if (!this.x|| !this.y){
             throw "No coords found for this balloon";
         }else{
             x=this.x;
@@ -1093,15 +1080,10 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
 
 
         //calculate position
-        //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);
 
         //determine the left and top.
         var correctedOffsetX=this.offsetX;
         var correctedOffsetY=this.offsetY;
-        //if (browserZoomRatio!=undefined && browserZoomRatio!=null && browserZoomRatio!=1){
-            //correctedOffsetX=Math.round(correctedOffsetX*browserZoomRatio);
-            //correctedOffsetY=Math.round(correctedOffsetY*browserZoomRatio);
-        //}
         var left=x+correctedOffsetX;
         var top =y+correctedOffsetY;
         if (this.leftOfPoint){
@@ -1113,7 +1095,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
        //set position of balloon
         this.balloon.setLeft(""+left+"px");
         this.balloon.setTop(""+top+"px");
-    }
+    };
+    
     /**
      *Set the position of this balloon. Create it if not exists
      *@param xcoord The world x coord
@@ -1125,7 +1108,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.setPositionWorldCoords = function (xcoord,ycoord,resetPositionOfBalloon, browserZoomRatio){
         var pixel= this.viewerController.getMap().coordinateToPixel(xcoord,ycoord);
         this.setPosition(pixel.x, pixel.y, resetPositionOfBalloon,browserZoomRatio);
-    }
+    };
+    
     /**
      * xxx not working! Make it work!
      * Remove the balloon
@@ -1134,46 +1118,57 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloon.remove();
         this.viewerController.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,viewerController.getMap(), this.setPosition,this);
         delete this.balloon;
-    }
+    };
+    
     /*Get the DOM element where the content can be placed.*/
     this.getContentElement = function () {
-        if (this.balloon == undefined || this.balloonContent == undefined || this.balloonContentWrapper === null)
+        if (this.balloon === undefined || this.balloonContent === undefined || this.balloonContentWrapper === null)
             return null;
         return this.balloonContentWrapper;
-    }
+    };
+    
     this.setContent = function (value){
         var element=this.getContentElement();
-        if (element==null)
+        if (!element){
             return;
+        }
         element.update(value);
-    }
+    };
+
     this.addContent = function (value){
         var element=this.getContentElement();
-        if (element==null)
+        if (!element){
             return;
+        }
         element.insertHtml("beforeEnd", value);
-    }
+    };
+    
     this.addElements = function (elements){
         var element=this.getContentElement();
-        if (element==null)
+        if (!element){
             return;
+        }
         for (var i=0; i < elements.length; i++){
             element.appendChild(elements[i]);
         }
-    }
+    };
+    
     this.hide = function(){
         this.mouseIsOverElement = {};
-        if (this.balloon!=undefined)
+        if (this.balloon)
             this.balloon.setVisible(false);
-    }
+    };
+    
     this.show = function(){
-        if (this.balloon!=undefined) {
+        if (this.balloon) {
             this.balloon.setVisible(true);
         }
-    }
+    };
+    
     this.maximize = function() {
         this.balloon.removeCls('minimized');
-    }
+    };
+    
     this.minMaximize = function() {
         var minimize = true;
         if(this.balloon.hasCls('minimized')) {
@@ -1184,16 +1179,18 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             
         }
     };
+    
     this.close = function(){
         this.setContent("");
         this.hide();
-    }
+    };
+    
     this.hideAfterMouseOut= function(){
         var thisObj = this;
         //store the number to check later if it's still the same maptip position
         var newId= new Number(this.maptipId);
         setTimeout(function(){
-            if (newId==thisObj.maptipId){
+            if (newId === thisObj.maptipId){
                 if (!thisObj.isMouseOver()){
                     thisObj.setContent("");
                     thisObj.hide();
@@ -1201,6 +1198,11 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             }else{
             }
         },1000);
-    }
+    };
+
+    this.hasContent = function(){
+        var content = this.getContentElement();
+        return content && content.el.dom.childNodes.length > 0;
+    };
 }
 

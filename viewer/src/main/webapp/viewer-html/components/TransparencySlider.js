@@ -61,10 +61,12 @@ Ext.define ("viewer.components.TransparencySlider",{
             bodyPadding: 10
         });
         conf.parentContainer = this.panel;
+        var usedLayers = [];
         
         for(var i = 0 ; i < this.config.sliders.length ; i ++){
             
             var config = Ext.Object.merge(conf, this.config.sliders[i]);
+            usedLayers = usedLayers.concat(config.selectedLayers);
             var slider =Ext.create("viewer.components.Slider", config);
             this.sliderObjects.push(slider);
         }
@@ -75,7 +77,8 @@ Ext.define ("viewer.components.TransparencySlider",{
                 selectedLayers:[],
                 initSelectedContent: JSON.parse(JSON.stringify( this.config.viewerController.app.selectedContent)),
                 name: this.config.sliderForUserAddedText ? this.config.sliderForUserAddedText :"Overige",
-                initialTransparency: this.config.sliderForUserAddedInitTransparency
+                initialTransparency: this.config.sliderForUserAddedInitTransparency,
+                layersInExistingSliders : usedLayers
             }
             c = Ext.Object.merge(conf, c);
             var s =Ext.create("viewer.components.NonInitLayerSlider", c);                        

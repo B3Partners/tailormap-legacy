@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <!-- 2.1 API: https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf -->
                 <!-- 2.6 API: https://globespotter.cyclomedia.com/v26/api/viewer_api.swf -->
 
-                <embed src="https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf"
+                <embed src="https://globespotter.cyclomedia.com/v2/api/bapi/viewer_bapi.swf"
                        quality="high" bgcolor="#888888"
                        width="800" height="400"
                        type="application/x-shockwave-flash"

@@ -194,29 +194,29 @@ public class LayerActionBean implements ActionBean {
     }
 
     private void findApplicationsUsedIn() {
-        List<Application> applications = findApplications();
+        List<Application> applications = findApplications(layer);
         for (Application application : applications) {
             applicationsUsedIn.add(application.getNameWithVersion());
         }
     }
     
-    private List<Application> findApplications() {
+    private List<Application> findApplications(Layer layer) {
         List<Application> apps = new ArrayList();
         GeoService service = layer.getService();
         String layerName = layer.getName();
+        EntityManager em = Stripersist.getEntityManager();
 
-        List<ApplicationLayer> applicationLayers = Stripersist.getEntityManager().createQuery("from ApplicationLayer where service = :service"
-                + " and layerName = :layerName").setParameter("service", service).setParameter("layerName", layerName).getResultList();
+        List<ApplicationLayer> applicationLayers = layer.getApplicationLayers(em);
 
         for (Iterator it = applicationLayers.iterator(); it.hasNext();) {
             ApplicationLayer appLayer = (ApplicationLayer) it.next();
-
+            
             /*
              * The parent level of the applicationLayer is needed to find out in
              * which application the Layer is used. This solution is not good
              * when there are many levels.
              */
-            List<Application> applications = Stripersist.getEntityManager().createQuery("from Application").getResultList();
+            List<Application> applications = em.createQuery("from Application").getResultList();
             for (Application app : applications) {
                 if (app.getRoot().containsLayerInSubtree(appLayer)) {
                     apps.add(app);
@@ -261,7 +261,7 @@ public class LayerActionBean implements ActionBean {
 
         Stripersist.getEntityManager().persist(layer);
         layer.getService().authorizationsModified();
-        List<Application> apps = findApplications();
+        List<Application> apps = findApplications(layer);
         EntityManager em = Stripersist.getEntityManager();
         for (Application application : apps) {
             SelectedContentCache.setApplicationCacheDirty(application, true, false, em);

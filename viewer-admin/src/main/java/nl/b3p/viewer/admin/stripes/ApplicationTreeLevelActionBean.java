@@ -165,7 +165,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
-    private String deleteLevel(EntityManager em, Level level){
+    protected String deleteLevel(EntityManager em, Level level){
         String error = null;
 
         StartLevel sl = level.getStartLevels().get(application);
@@ -183,6 +183,18 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             try {
                 Level parent = level.getParent();
                 parent.getChildren().remove(level);
+                List<Application> mashups = application.getMashups(em);
+                mashups.add(application);
+                for (Application mashup : mashups) {
+                    List<StartLevel> startlevels = mashup.getStartLevels();
+                    for (Iterator<StartLevel> iterator = startlevels.iterator(); iterator.hasNext();) {
+                        StartLevel next = iterator.next();
+                        if( sl != null && next.getLevel().getId().equals(sl.getLevel().getId())){
+                            iterator.remove();
+                        }
+                    }
+                }
+                
                 em.remove(level);
                 application.authorizationsModified();
                 SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
@@ -207,17 +219,46 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             level.getReaders().add(groupName);
         }
         
+        updateApplayersInLevel(selectedlayers, level, Stripersist.getEntityManager());
+        
+        level.getDocuments().clear();
+        if(selecteddocs != null && selecteddocs.length() > 0){
+            String[] docIds = selecteddocs.split(",");
+             for(int i = 0; i < docIds.length; i++){
+                Long id = new Long(docIds[i].substring(1));
+                Document doc = Stripersist.getEntityManager().find(Document.class, id);
+                level.getDocuments().add(doc);
+             }
+        }
+        
+        EntityManager em = Stripersist.getEntityManager();
+        em.persist(level);
+        application.authorizationsModified();
+        SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
+        em.getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
+        return edit();
+    }
+    
+     protected void updateApplayersInLevel(String selectedLayers, Level level, EntityManager em){
+        List<ApplicationLayer> layersToBeRemoved = new ArrayList(level.getLayers());
+        
+        List<Application> apps = application.getMashups(em);
+        apps.add(application);
+        
         level.getLayers().clear();
-        if(selectedlayers != null && selectedlayers.length() > 0){
-            String[] layerIds = selectedlayers.split(",");
+        if(selectedLayers != null && selectedLayers.length() > 0){
+            String[] layerIds = selectedLayers.split(",");
             for(int i = 0; i < layerIds.length; i++){
                 ApplicationLayer appLayer = null;
                 if(layerIds[i].startsWith("al")){
                     Long id = new Long(layerIds[i].substring(2));
-                    appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
+                    appLayer = em.find(ApplicationLayer.class, id);
+                    layersToBeRemoved.remove(appLayer);
                 }else if(layerIds[i].startsWith("l")){
                     Long id = new Long(layerIds[i].substring(1));
-                    Layer layer = Stripersist.getEntityManager().find(Layer.class, id);
+                    Layer layer = em.find(Layer.class, id);
                     if(layer != null && !layer.isVirtual()){
                         appLayer = new ApplicationLayer();
                         appLayer.setService(layer.getService());
@@ -239,25 +280,18 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 level.getLayers().add(appLayer);
             }
         }
-        
-        level.getDocuments().clear();
-        if(selecteddocs != null && selecteddocs.length() > 0){
-            String[] docIds = selecteddocs.split(",");
-             for(int i = 0; i < docIds.length; i++){
-                Long id = new Long(docIds[i].substring(1));
-                Document doc = Stripersist.getEntityManager().find(Document.class, id);
-                level.getDocuments().add(doc);
-             }
+        for (Application app : apps) {
+            List<StartLayer> startlayers = app.getStartLayers();
+            for (Iterator<StartLayer> iterator = startlayers.iterator(); iterator.hasNext();) {
+                StartLayer next = iterator.next();
+
+                for (ApplicationLayer applicationLayer : layersToBeRemoved) {
+                    if (Objects.equals(next.getApplicationLayer().getId(), applicationLayer.getId())) {
+                        iterator.remove();
+                    }
+                }
+            }
         }
-        
-        EntityManager em = Stripersist.getEntityManager();
-        em.persist(level);
-        application.authorizationsModified();
-        SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
-        em.getTransaction().commit();
-        
-        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
-        return edit();
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
