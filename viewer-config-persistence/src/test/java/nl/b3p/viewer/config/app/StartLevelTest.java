@@ -70,29 +70,4 @@ public class StartLevelTest extends TestUtil{
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
 
-    @Test
-    public void deleteLevel() throws URISyntaxException, SQLException, IOException{
-        initData(false);
-        assertNotNull(testLevel);
-        assertNotNull(testStartLevel);
-        long lid = testLevel.getId();
-        Level l = entityManager.find(Level.class, lid);
-
-        try {
-            entityManager.remove(l);
-            entityManager.getTransaction().commit();
-        } catch (Exception e) {
-            log.error("Fout", e);
-        }
-        entityManager.getTransaction().begin();
-
-        Level shouldBeNull = entityManager.find(Level.class, lid);
-        StartLevel startLevelShouldBeNull = entityManager.find(StartLevel.class, testStartLevel.getId());
-        assertNull(shouldBeNull);
-        assertNull(startLevelShouldBeNull);
-        objectsToRemove.add(app);
-    }
-
-
-
 }
