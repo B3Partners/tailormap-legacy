@@ -143,12 +143,12 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         
         attributeOrder.put(order);
         
-        instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
+        List<ConfiguredAttribute> newOrder = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
 
         boolean[] attrVisible = {false, false, false, false, false, false, false, false, true};
 
         for (int i = 0; i < attributes.size(); i++) {
-            ConfiguredAttribute attr = attributes.get(i);
+            ConfiguredAttribute attr = newOrder.get(i);
             boolean visible = attrVisible[i];
             Assert.assertTrue("Visibility incorrect", visible == attr.isVisible());
 
@@ -181,9 +181,9 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("valueList", "static");
         attributesConfig.put(config);
         
-        instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
+        List<ConfiguredAttribute> newAttrs = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
         ConfiguredAttribute toCheck = null;
-        for (ConfiguredAttribute next : attributes) {
+        for (ConfiguredAttribute next : newAttrs) {
             if(next.getId()== 9){
                 toCheck = next;
                 break;

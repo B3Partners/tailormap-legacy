@@ -422,28 +422,28 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             if(configObject != null){
 
                 if (configObject.has("editable")) {
-                    appAttribute.setEditable(new Boolean(configObject.get("editable").toString()));
+                    appAttribute.setEditable(configObject.getBoolean("editable"));
                 }
                 if (configObject.has("editAlias")) {
-                    appAttribute.setEditAlias(configObject.get("editAlias").toString());
+                    appAttribute.setEditAlias(configObject.getString("editAlias"));
                 }
                 if (configObject.has("editvalues")) {
-                    appAttribute.setEditValues(configObject.get("editvalues").toString());
+                    appAttribute.setEditValues(configObject.getString("editvalues"));
                 }
                 if (configObject.has("editHeight")) {
-                    appAttribute.setEditHeight(configObject.get("editHeight").toString());
+                    appAttribute.setEditHeight(configObject.getString("editHeight"));
                 }
 
                 //save selectable
                 if (configObject.has("selectable")) {
-                    appAttribute.setSelectable(new Boolean(configObject.get("selectable").toString()));
+                    appAttribute.setSelectable(configObject.getBoolean("selectable"));
                 }
                 if (configObject.has("filterable")) {
-                    appAttribute.setFilterable(new Boolean(configObject.get("filterable").toString()));
+                    appAttribute.setFilterable(configObject.getBoolean("filterable"));
                 }
 
                 if (configObject.has("defaultValue")) {
-                    appAttribute.setDefaultValue(configObject.get("defaultValue").toString());
+                    appAttribute.setDefaultValue(configObject.getString("defaultValue"));
                 }
 
                 if (configObject.has("valueListFeatureSource") && !configObject.isNull("valueListFeatureSource")) {
@@ -471,13 +471,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 }
 
                 if (configObject.has("allowValueListOnly")) {
-                    appAttribute.setAllowValueListOnly(new Boolean(configObject.get("allowValueListOnly").toString()));
+                    appAttribute.setAllowValueListOnly(configObject.getBoolean("allowValueListOnly"));
                 }
                 if (configObject.has("disallowNullValue")) {
-                    appAttribute.setDisallowNullValue(new Boolean(configObject.get("disallowNullValue").toString()));
+                    appAttribute.setDisallowNullValue(configObject.getBoolean("disallowNullValue"));
                 }
                 if (configObject.has("disableUserEdit")) {
-                    appAttribute.setDisableUserEdit(new Boolean(configObject.get("disableUserEdit").toString()));
+                    appAttribute.setDisableUserEdit(configObject.getBoolean("disableUserEdit"));
                 }
             }
         }
