@@ -37,31 +37,18 @@ import org.junit.Test;
 public class ApplicationTreeLayerActionBeanTest extends TestUtil {
 
     private ApplicationTreeLayerActionBean instance = null;
+    private JSONArray attributeOrder = new JSONArray();
+    private JSONArray attributesConfig = new JSONArray();
 
     @Before
     public void setup() {
         initData(true);
         instance = new ApplicationTreeLayerActionBean();
         instance.setApplication(app);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void testProcessAttributesTestOrder() {
-        assertNotNull(app);
-        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
-        List<ConfiguredAttribute> attributes = appLayer.getAttributes();
-        assertEquals(9, attributes.size());
-
-        JSONArray attributeOrder = new JSONArray();
-        JSONArray attributesConfig = new JSONArray();
         
         JSONObject order2 = new JSONObject();
         order2.put("attribute_id", 2);
-        order2.put("checked", true);
+        order2.put("checked", false);
         order2.put("order", 0);
         order2.put("longname", "begroeid_terreinvakonderdeel_bestaand.fid");
         JSONObject order3 = new JSONObject();
@@ -115,54 +102,6 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         attributeOrder.put(order1);
         attributeOrder.put(order7);
 
-        List<ConfiguredAttribute> newOrder = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
-
-        long[] attrOrder = {2, 3, 4, 5, 6, 9, 8, 1, 7};
-
-        for (int i = 0; i < newOrder.size(); i++) {
-            ConfiguredAttribute attr = newOrder.get(i);
-            long id = attrOrder[i];
-            Assert.assertTrue("Order incorrect", id == attr.getId());
-        }
-    }
-
-    @Test
-    public void testProcessAttributesTestVisible() {
-        assertNotNull(app);
-        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
-        List<ConfiguredAttribute> attributes = appLayer.getAttributes();
-        assertEquals(9, attributes.size());
-
-        JSONArray attributeOrder = new JSONArray();
-        JSONArray attributesConfig = new JSONArray();
-        
-        JSONObject order = new JSONObject();
-        order.put("attribute_id", 9);
-        order.put("checked", true);
-        order.put("longname", "begroeid_terreinvakonderdeel_bestaand.status");
-        
-        attributeOrder.put(order);
-        
-        List<ConfiguredAttribute> newOrder = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
-
-        boolean[] attrVisible = {false, false, false, false, false, false, false, false, true};
-
-        for (int i = 0; i < attributes.size(); i++) {
-            ConfiguredAttribute attr = newOrder.get(i);
-            boolean visible = attrVisible[i];
-            Assert.assertTrue("Visibility incorrect", visible == attr.isVisible());
-
-        }
-    }
-
-    @Test
-    public void testProcessAttributesPopulate() {
-        assertNotNull(app);
-        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
-        List<ConfiguredAttribute> attributes = appLayer.getAttributes();
-        assertEquals(9, attributes.size());
-        JSONArray attributeOrder = new JSONArray();
-        JSONArray attributesConfig = new JSONArray();
         JSONObject config = new JSONObject();
         config.put("allowValueListOnly", false);
         config.put("defaultValue", "");
@@ -180,6 +119,55 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("selectable", false);
         config.put("valueList", "static");
         attributesConfig.put(config);
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void testProcessAttributesTestOrder() {
+        assertNotNull(app);
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
+        List<ConfiguredAttribute> attributes = appLayer.getAttributes();
+        assertEquals(9, attributes.size());
+
+      
+        List<ConfiguredAttribute> newOrder = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
+
+        long[] attrOrder = {2, 3, 4, 5, 6, 9, 8, 1, 7};
+
+        for (int i = 0; i < newOrder.size(); i++) {
+            ConfiguredAttribute attr = newOrder.get(i);
+            long id = attrOrder[i];
+            Assert.assertTrue("Order incorrect", id == attr.getId());
+        }
+    }
+
+    @Test
+    public void testProcessAttributesTestVisible() {
+        assertNotNull(app);
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
+        List<ConfiguredAttribute> attributes = appLayer.getAttributes();
+        assertEquals(9, attributes.size());
+        
+        List<ConfiguredAttribute> newOrder = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
+
+        boolean[] attrVisible = {false, true, true, true, true, true, true, true, true};
+
+        for (int i = 0; i < newOrder.size(); i++) {
+            ConfiguredAttribute attr = newOrder.get(i);
+            boolean visible = attrVisible[i];
+            Assert.assertTrue("Visibility incorrect", visible == attr.isVisible());
+        }
+    }
+
+    @Test
+    public void testProcessAttributesPopulate() {
+        assertNotNull(app);
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
+        List<ConfiguredAttribute> attributes = appLayer.getAttributes();
+        assertEquals(9, attributes.size());
         
         List<ConfiguredAttribute> newAttrs = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
         ConfiguredAttribute toCheck = null;
