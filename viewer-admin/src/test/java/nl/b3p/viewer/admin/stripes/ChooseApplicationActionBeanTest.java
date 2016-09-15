@@ -24,7 +24,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
     @Test
     public void testMakeWorkVersion() throws Exception {
         try {
-            initData(false);
+            initData(true);
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();
             caab.setContext(context);
@@ -33,8 +33,6 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             Application workVersion = caab.createWorkversion(app, entityManager,version);
 
             Application prev = entityManager.merge(app);
-            objectsToRemove.add(workVersion);
-            objectsToRemove.add(prev);
             entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
         } catch (Exception e) {
@@ -45,7 +43,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
 
     @Test
     public void testMakeWorkVersionFromAppWithMashup() {
-            initData(false);
+        initData(true);
         try {
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();
@@ -63,10 +61,10 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             Application prev = entityManager.merge(app);
-            objectsToRemove.add(entityManager.merge(mashup));
-            objectsToRemove.add(prev);
+           //objectsToRemove.add(entityManager.merge(mashup));
+       //     objectsToRemove.add(prev);
 
-            objectsToRemove.add(workVersion);
+          //  objectsToRemove.add(workVersion);
         } catch (Exception e) {
             log.error("Fout", e);
             assert (false);
@@ -75,7 +73,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
     
     @Test
     public void testMakeMashupFromAppWithWorkversion() {
-         initData(false);
+         initData(true);
         try {
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();
@@ -96,11 +94,8 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().begin();
 
 
-            Application prev = entityManager.merge(app);
-            objectsToRemove.add(entityManager.merge(mashup));
-            objectsToRemove.add(prev);
+           // Application prev = entityManager.merge(app);
 
-            objectsToRemove.add(workVersion);
         } catch (Exception e) {
             log.error("Fout", e);
             assert (false);

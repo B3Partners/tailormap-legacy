@@ -23,7 +23,9 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import nl.b3p.viewer.config.app.Application;
@@ -34,13 +36,14 @@ import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 /**
  * utility methoden voor unit tests.
@@ -50,9 +53,8 @@ import org.junit.BeforeClass;
  */
 public abstract class TestUtil {
 
-    protected static EntityManager entityManager;
+    protected EntityManager entityManager;
 
-    private static boolean testdataLoaded = false;
     protected static int TEST_VERSION_NUMBER = 666;
     
     public Long applicationId = 1L;
@@ -65,8 +67,6 @@ public abstract class TestUtil {
     public ConfiguredComponent testComponent;
     public Application app;
 
-    protected static List<Object> objectsToRemove = new ArrayList<Object>();
-
     private static final Log log = LogFactory.getLog(TestUtil.class);
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
@@ -77,14 +77,17 @@ public abstract class TestUtil {
      * @see #entityManager
      */
 
-    @BeforeClass
-    public static void createEntityManager(){
-        final String persistenceUnit = System.getProperty("test.persistence.unit");
-        entityManager = Persistence.createEntityManagerFactory(persistenceUnit).createEntityManager();
-    }
-
+    @Rule 
+    public TestName testName = new TestName();
+    
     @Before
     public void setUp() throws Exception {
+        final String persistenceUnit = System.getProperty("test.persistence.unit");
+        Map config = new HashMap();
+        String testname = testName.getMethodName();
+        String randomizer = RandomStringUtils.randomAlphabetic(8);
+        config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
+        entityManager = Persistence.createEntityManagerFactory(persistenceUnit,config).createEntityManager();
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
         }
@@ -95,82 +98,35 @@ public abstract class TestUtil {
         }
     }
 
-    /**
-     * sluiten van van EntityManager {@link #entityManager}.
-     *
-     * @throws Exception if any
-     * @see #entityManager
-     */
-    @AfterClass
-    public static void close() throws Exception {
-        if (entityManager.isOpen()) {
-            entityManager.close();
-        }
-    }
-
     @After
     public void closeTransaction(){
          if(entityManager.getTransaction().isActive()){
             entityManager.getTransaction().commit();
         }
-    }
-
-    @After
-    public void stuffToRemove() {
-        for (Object obj : objectsToRemove) {
-            log.debug("Removing obj" + obj.toString());
-            if (entityManager.contains(obj)) {
-                entityManager.remove(obj);
-            }
-        }
-
-        if (!entityManager.getTransaction().isActive()) {
-            entityManager.getTransaction().begin();
-        }
-        try {
-            entityManager.getTransaction().commit();
-            objectsToRemove = new ArrayList<Object>();
-        } catch (Exception e) {
-            log.error("Error committing transaction: ", e);
-            assert (false);
+  
+        if (entityManager.isOpen()) {
+            entityManager.close();
         }
     }
 
     // Helper functions for testing
-    public <T> void persistEntityTest(T entity, Class<T> clazz, boolean removeLater){
+    public <T> void persistEntityTest(T entity, Class<T> clazz){
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        if(removeLater){
-            objectsToRemove.add(entity);
-        }
     }
     
-    public <T> void persistAndDeleteEntityTest(T entity, Class<T> clazz){
-        persistEntityTest(entity, clazz, false);
-
-        entityManager.remove(entity);
-        entityManager.getTransaction().commit();
-        entityManager.getTransaction().begin();
-    }
-
     // Helper functions for initializing data
 
     public void loadTestData() throws URISyntaxException, IOException, SQLException {
-        if(testdataLoaded){
-            return;
-        }
 
         Application app = entityManager.find(Application.class, applicationId);
         if( app == null) {
             Reader f = new InputStreamReader(TestUtil.class.getResourceAsStream("testdata.sql"));
             executeScript(f);
-
-            testdataLoaded = true;
         }
         Metadata version = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         originalVersion = version.getConfigValue();
-
     }
 
     public void executeScript(Reader f) throws IOException, SQLException {
@@ -190,43 +146,39 @@ public abstract class TestUtil {
         }
     }
     
-    public void initData(boolean deleteAfterwards){
-        initData(deleteAfterwards,true);
-    }
-
-    public void initData(boolean deleteAfterwards, boolean addToStartmap) {
+    public void initData( boolean addToStartmap) {
         app = new Application();
         app.setName("testapp");
         app.setVersion("154");
         app.getReaders().add("pietje");
         app.getReaders().add("puk");
         
-        persistEntityTest(app, Application.class, deleteAfterwards);
+        persistEntityTest(app, Application.class);
         
         Level root = new Level();
         root.setName("root");
         app.setRoot(root);
         entityManager.persist(app);
-        persistEntityTest(root, Level.class, false);
+        persistEntityTest(root, Level.class);
 
         testLevel = new Level();
         testLevel.setName("testLevel");
         testLevel.setParent(root);
         root.getChildren().add(testLevel);
-        persistEntityTest(testLevel, Level.class, false);
+        persistEntityTest(testLevel, Level.class);
 
         testStartLevel = new StartLevel();
         testStartLevel.setApplication(app);
         testStartLevel.setLevel(testLevel);
         testLevel.getStartLevels().put(app, testStartLevel);
         app.getStartLevels().add(testStartLevel);
-        persistEntityTest(testStartLevel, StartLevel.class, false);
+        persistEntityTest(testStartLevel, StartLevel.class);
 
         if (addToStartmap) {
             testAppLayer = new ApplicationLayer();
             testAppLayer.setLayerName("testApplayer");
             testLevel.getLayers().add(testAppLayer);
-            persistEntityTest(testAppLayer, ApplicationLayer.class, false);
+            persistEntityTest(testAppLayer, ApplicationLayer.class);
 
             testStartLayer = new StartLayer();
             testStartLayer.setApplicationLayer(testAppLayer);
@@ -242,7 +194,7 @@ public abstract class TestUtil {
             entityManager.persist(testAppLayer);
             entityManager.persist(app);
 
-            persistEntityTest(testStartLayer, StartLayer.class, false);
+            persistEntityTest(testStartLayer, StartLayer.class);
         }
 
         testComponent = new ConfiguredComponent();
@@ -251,7 +203,7 @@ public abstract class TestUtil {
         testComponent.setConfig("{value: 'aapnootmies'}");
         testComponent.setName("testClassName1");
         app.getComponents().add(testComponent);
-        persistEntityTest(testComponent, ConfiguredComponent.class, false);
+        persistEntityTest(testComponent, ConfiguredComponent.class);
 
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();

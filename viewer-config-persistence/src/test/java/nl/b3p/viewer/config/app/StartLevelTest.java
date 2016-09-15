@@ -40,7 +40,7 @@ public class StartLevelTest extends TestUtil{
     public void persistLevel(){
         StartLevel sl = new StartLevel();
         sl.setSelectedIndex(16);
-        persistEntityTest(sl, StartLevel.class,true);
+        persistEntityTest(sl, StartLevel.class);
 
         entityManager.refresh(sl);
         StartLevel test = entityManager.find(StartLevel.class,sl.getId());
@@ -60,7 +60,7 @@ public class StartLevelTest extends TestUtil{
         sl.setLevel(level);
         sl.setApplication(app);
         sl.setSelectedIndex(16);
-        persistAndDeleteEntityTest(sl, StartLevel.class);
+        persistEntityTest(sl, StartLevel.class);
         
         Level levelExists = entityManager.find(Level.class, 5L);
         Application appExists = entityManager.find(Application.class, applicationId);
@@ -69,30 +69,5 @@ public class StartLevelTest extends TestUtil{
         Assert.assertNotNull(appExists);
         assertEquals(6,entityManager.createQuery("FROM Level").getResultList().size());
     }
-
-    @Test
-    public void deleteLevel() throws URISyntaxException, SQLException, IOException{
-        initData(false);
-        assertNotNull(testLevel);
-        assertNotNull(testStartLevel);
-        long lid = testLevel.getId();
-        Level l = entityManager.find(Level.class, lid);
-
-        try {
-            entityManager.remove(l);
-            entityManager.getTransaction().commit();
-        } catch (Exception e) {
-            log.error("Fout", e);
-        }
-        entityManager.getTransaction().begin();
-
-        Level shouldBeNull = entityManager.find(Level.class, lid);
-        StartLevel startLevelShouldBeNull = entityManager.find(StartLevel.class, testStartLevel.getId());
-        assertNull(shouldBeNull);
-        assertNull(startLevelShouldBeNull);
-        objectsToRemove.add(app);
-    }
-
-
 
 }

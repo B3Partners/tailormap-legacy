@@ -112,7 +112,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("editHeight", "10");
         config.put("editable", true);
         config.put("editvalues", "");
-        config.put("featureType", 14);
+        config.put("featureType", 2);
         config.put("filterable", false);
         config.put("id", 9);
         config.put("longname", "begroeid_terreinvakonderdeel_bestaand.status");
