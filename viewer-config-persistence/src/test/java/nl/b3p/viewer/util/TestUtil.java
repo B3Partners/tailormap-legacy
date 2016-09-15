@@ -23,7 +23,9 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import nl.b3p.viewer.config.app.Application;
@@ -38,9 +40,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 /**
  * utility methoden voor unit tests.
@@ -50,9 +52,8 @@ import org.junit.BeforeClass;
  */
 public abstract class TestUtil {
 
-    protected static EntityManager entityManager;
+    protected EntityManager entityManager;
 
-    private static boolean testdataLoaded = false;
     protected static int TEST_VERSION_NUMBER = 666;
     
     public Long applicationId = 1L;
@@ -77,14 +78,16 @@ public abstract class TestUtil {
      * @see #entityManager
      */
 
-    @BeforeClass
-    public static void createEntityManager(){
-        final String persistenceUnit = System.getProperty("test.persistence.unit");
-        entityManager = Persistence.createEntityManagerFactory(persistenceUnit).createEntityManager();
-    }
-
+    @Rule 
+    public TestName testName = new TestName();
+    
     @Before
     public void setUp() throws Exception {
+        final String persistenceUnit = System.getProperty("test.persistence.unit");
+        Map config = new HashMap();
+        String testname = testName.getMethodName();
+        config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "/db;shutdown=true");
+        entityManager = Persistence.createEntityManagerFactory(persistenceUnit,config).createEntityManager();
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
         }
@@ -95,27 +98,18 @@ public abstract class TestUtil {
         }
     }
 
-    /**
-     * sluiten van van EntityManager {@link #entityManager}.
-     *
-     * @throws Exception if any
-     * @see #entityManager
-     */
-    @AfterClass
-    public static void close() throws Exception {
-        if (entityManager.isOpen()) {
-            entityManager.close();
-        }
-    }
-
     @After
     public void closeTransaction(){
          if(entityManager.getTransaction().isActive()){
             entityManager.getTransaction().commit();
         }
+         
+         stuffToRemove();
+          if (entityManager.isOpen()) {
+            entityManager.close();
+        }
     }
 
-    @After
     public void stuffToRemove() {
         for (Object obj : objectsToRemove) {
             log.debug("Removing obj" + obj.toString());
@@ -157,20 +151,14 @@ public abstract class TestUtil {
     // Helper functions for initializing data
 
     public void loadTestData() throws URISyntaxException, IOException, SQLException {
-        if(testdataLoaded){
-            return;
-        }
 
         Application app = entityManager.find(Application.class, applicationId);
         if( app == null) {
             Reader f = new InputStreamReader(TestUtil.class.getResourceAsStream("testdata.sql"));
             executeScript(f);
-
-            testdataLoaded = true;
         }
         Metadata version = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         originalVersion = version.getConfigValue();
-
     }
 
     public void executeScript(Reader f) throws IOException, SQLException {
