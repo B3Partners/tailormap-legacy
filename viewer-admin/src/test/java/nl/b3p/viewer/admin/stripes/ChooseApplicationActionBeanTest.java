@@ -63,10 +63,10 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             Application prev = entityManager.merge(app);
-            objectsToRemove.add(entityManager.merge(mashup));
-            objectsToRemove.add(prev);
+           //objectsToRemove.add(entityManager.merge(mashup));
+       //     objectsToRemove.add(prev);
 
-            objectsToRemove.add(workVersion);
+          //  objectsToRemove.add(workVersion);
         } catch (Exception e) {
             log.error("Fout", e);
             assert (false);
@@ -96,11 +96,8 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().begin();
 
 
-            Application prev = entityManager.merge(app);
-            objectsToRemove.add(entityManager.merge(mashup));
-            objectsToRemove.add(prev);
+           // Application prev = entityManager.merge(app);
 
-            objectsToRemove.add(workVersion);
         } catch (Exception e) {
             log.error("Fout", e);
             assert (false);
