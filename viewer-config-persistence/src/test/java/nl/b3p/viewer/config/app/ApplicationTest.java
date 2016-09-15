@@ -45,7 +45,6 @@ public class ApplicationTest extends TestUtil {
         copy.setVersion("" + 666);
         entityManager.detach(app);
         entityManager.persist(copy);
-        objectsToRemove.add(copy);
 
         assertFalse(app.getId().equals(copy.getId()));
         assertEquals(expectedStartLayerSize, copy.getStartLayers().size());
@@ -59,7 +58,6 @@ public class ApplicationTest extends TestUtil {
             assertEquals(copy.getId(), startLevel.getApplication().getId());
         }
         app = entityManager.merge(app);
-        objectsToRemove.add(app);
     }
 
     @Test
@@ -70,8 +68,6 @@ public class ApplicationTest extends TestUtil {
         for (String reader : app.getReaders()) {
             assertTrue(copy.getReaders().contains(reader));
         }
-       objectsToRemove.add(app);
-       objectsToRemove.add(copy);
     }
     
     @Test
@@ -84,9 +80,6 @@ public class ApplicationTest extends TestUtil {
         entityManager.persist(copy);
 
         application = entityManager.merge(application);
-        objectsToRemove.add(application);
-        objectsToRemove.add(copy);
-
     }
 
     @Test
@@ -99,9 +92,6 @@ public class ApplicationTest extends TestUtil {
 
             Application mashup = app.createMashup("mashup", entityManager,true);
             entityManager.persist(mashup);
-
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -150,9 +140,6 @@ public class ApplicationTest extends TestUtil {
             Application mashup = app.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup);
 
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup);
-
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
 
@@ -200,18 +187,12 @@ public class ApplicationTest extends TestUtil {
             Application mashup1 = app.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup1);
 
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup1);
-
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
 
 
             Application mashup = app.createMashup("mashup2", entityManager,false);
             entityManager.persist(mashup);
-
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();

@@ -93,7 +93,6 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         copy.setVersion("" + 14);
         entityManager.detach(app);
         entityManager.persist(copy);
-        objectsToRemove.add(copy);
 
         TreeCache tcCopy = copy.loadTreeCache(entityManager);
         List<Level> levelsCopy = tcCopy.getLevels();
@@ -118,7 +117,6 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         copy.setVersion("" + 14);
         entityManager.detach(app);
         entityManager.persist(copy);
-        objectsToRemove.add(copy);
         TreeCache tcCopy = copy.loadTreeCache(entityManager);
         List<ApplicationLayer> appLayers = tcCopy.getApplicationLayers();
 

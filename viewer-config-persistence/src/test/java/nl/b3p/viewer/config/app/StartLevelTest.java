@@ -40,7 +40,7 @@ public class StartLevelTest extends TestUtil{
     public void persistLevel(){
         StartLevel sl = new StartLevel();
         sl.setSelectedIndex(16);
-        persistEntityTest(sl, StartLevel.class,true);
+        persistEntityTest(sl, StartLevel.class);
 
         entityManager.refresh(sl);
         StartLevel test = entityManager.find(StartLevel.class,sl.getId());
@@ -60,7 +60,7 @@ public class StartLevelTest extends TestUtil{
         sl.setLevel(level);
         sl.setApplication(app);
         sl.setSelectedIndex(16);
-        persistAndDeleteEntityTest(sl, StartLevel.class);
+        persistEntityTest(sl, StartLevel.class);
         
         Level levelExists = entityManager.find(Level.class, 5L);
         Application appExists = entityManager.find(Application.class, applicationId);

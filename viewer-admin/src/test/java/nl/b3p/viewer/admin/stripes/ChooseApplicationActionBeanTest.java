@@ -33,8 +33,6 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             Application workVersion = caab.createWorkversion(app, entityManager,version);
 
             Application prev = entityManager.merge(app);
-            objectsToRemove.add(workVersion);
-            objectsToRemove.add(prev);
             entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
         } catch (Exception e) {
@@ -45,7 +43,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
 
     @Test
     public void testMakeWorkVersionFromAppWithMashup() {
-            initData(false);
+        initData(false);
         try {
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();

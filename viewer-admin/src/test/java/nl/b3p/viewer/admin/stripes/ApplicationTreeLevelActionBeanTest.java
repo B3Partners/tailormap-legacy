@@ -65,7 +65,6 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         instance.setApplication(app);
         Application mashup = app.createMashup("mashup", entityManager, false);
         entityManager.persist(mashup);
-        objectsToRemove.add(mashup);
         String selectedLayer = "";
 
         instance.updateApplayersInLevel(selectedLayer, testLevel, entityManager);
@@ -84,7 +83,6 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         Long id = testLevel.getId();
         Application mashup = app.createMashup("mashup", entityManager, false);
         entityManager.persist(mashup);
-        objectsToRemove.add(mashup);
         
         String error = instance.deleteLevel(entityManager, testLevel);
         assertNull(error);
