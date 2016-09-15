@@ -1,14 +1,18 @@
 .svg-button svg {
     position: absolute;
-    left: 4px;
-    top: 4px;
-    width: 36px;
-    height: 36px;
+    left: -1px;
+    top: -1px;
+    width: 30px;
+    height: 30px;
 }
 
 .svg-tool svg {
     width: 28px;
     height: 28px;
+}
+
+.svg-tool {
+    cursor: pointer;
 }
 
 /* unfortunatyle we need a strong selector to override default behaviour.
@@ -35,8 +39,10 @@ div.olControlZoom a.svg-tool svg {
 .svg-button svg *,
 .svg-tool svg *,
 .svg-icon-header svg * {
-    fill: #6C6C6C;
-    transition: fill .3s
+    fill: #777777; /* primary color */
+    stroke: #777777; /* primary color */
+    color: #D8D8D8; /* secondary color, trick to have 2 colors in SVG using currentColor */
+    transition: fill .3s, stroke .3s, color .3s;
 }
 
 .svg-button:hover,
@@ -47,9 +53,11 @@ div.olControlZoom a.svg-tool svg {
 .svg-button:hover svg *,
 .svg-tool:hover svg * {
     fill: #4A4A4A;
+    stroke: #4A4A4A;
 }
 
 .svg-tool.svg-tool-active svg *,
 .svg-button.buttonDefaultClass_click svg * {
     fill: #333333;
+    stroke: #333333;
 }
