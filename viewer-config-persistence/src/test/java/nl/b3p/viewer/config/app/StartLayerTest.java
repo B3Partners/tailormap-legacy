@@ -41,7 +41,7 @@ public class StartLayerTest extends TestUtil{
         StartLayer sl = new StartLayer();
         sl.setChecked(true);
         sl.setSelectedIndex(16);
-        persistEntityTest(sl, StartLayer.class,true);
+        persistEntityTest(sl, StartLayer.class);
 
         entityManager.refresh(sl);
         
@@ -62,7 +62,7 @@ public class StartLayerTest extends TestUtil{
         sl.setApplicationLayer(appLayer);
         sl.setApplication(app);
         sl.setSelectedIndex(16);
-        persistAndDeleteEntityTest(sl, StartLayer.class);
+        persistEntityTest(sl, StartLayer.class);
         
         entityManager.flush();
         ApplicationLayer appLayerExists = entityManager.find(ApplicationLayer.class, 2L);
@@ -104,7 +104,7 @@ public class StartLayerTest extends TestUtil{
     
     @Test
     public void deleteApplication() throws URISyntaxException, SQLException, IOException{
-        initData(false);
+        initData(true);
         assertNotNull(testAppLayer);
         assertNotNull(app);
         assertNotNull(testStartLayer);

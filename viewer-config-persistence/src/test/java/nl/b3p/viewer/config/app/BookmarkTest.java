@@ -32,7 +32,7 @@ public class BookmarkTest extends TestUtil{
         Bookmark bm = new Bookmark();
         bm.setCode("" + 16);
         bm.setParams("parameters");
-        persistEntityTest(bm, Bookmark.class,true);
+        persistEntityTest(bm, Bookmark.class);
 
         entityManager.refresh(bm);
         Bookmark test = entityManager.find(Bookmark.class,bm.getId());
@@ -47,7 +47,7 @@ public class BookmarkTest extends TestUtil{
         bm.setCode("" + 16);
         bm.setParams("parameters");
         bm.setApplication(app);
-        persistAndDeleteEntityTest(bm, Bookmark.class);
+        persistEntityTest(bm, Bookmark.class);
         
         Application appTest = entityManager.find(Application.class, applicationId);
         assertNotNull(appTest);

@@ -36,7 +36,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testDeepCopy() throws Exception {
-        initData(false);
+        initData(true);
 
         int expectedStartLayerSize = app.getStartLayers().size();
         int expectedStartLevelSize = app.getStartLevels().size();
@@ -45,7 +45,6 @@ public class ApplicationTest extends TestUtil {
         copy.setVersion("" + 666);
         entityManager.detach(app);
         entityManager.persist(copy);
-        objectsToRemove.add(copy);
 
         assertFalse(app.getId().equals(copy.getId()));
         assertEquals(expectedStartLayerSize, copy.getStartLayers().size());
@@ -59,24 +58,21 @@ public class ApplicationTest extends TestUtil {
             assertEquals(copy.getId(), startLevel.getApplication().getId());
         }
         app = entityManager.merge(app);
-        objectsToRemove.add(app);
     }
 
     @Test
     public void testDeepCopyReaders() throws Exception{
-       initData(false);
+       initData(true);
        Application copy = app.deepCopy();
        assertEquals(2, copy.getReaders().size());
         for (String reader : app.getReaders()) {
             assertTrue(copy.getReaders().contains(reader));
         }
-       objectsToRemove.add(app);
-       objectsToRemove.add(copy);
     }
     
     @Test
     public void testDeleteApplications() throws Exception {
-        initData(false);
+        initData(true);
         Application application = entityManager.find(Application.class, app.getId());
         Application copy = application.deepCopy();
         entityManager.detach(application);
@@ -84,14 +80,11 @@ public class ApplicationTest extends TestUtil {
         entityManager.persist(copy);
 
         application = entityManager.merge(application);
-        objectsToRemove.add(application);
-        objectsToRemove.add(copy);
-
     }
 
     @Test
     public void testMakeMashupLinkComponents() throws Exception {
-        initData(false);
+        initData(true);
         try {
             int expectedStartLayerSize = app.getStartLayers().size();
             int expectedStartLevelSize = app.getStartLevels().size();
@@ -99,9 +92,6 @@ public class ApplicationTest extends TestUtil {
 
             Application mashup = app.createMashup("mashup", entityManager,true);
             entityManager.persist(mashup);
-
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -141,7 +131,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testMakeMashupDontLinkComponents() throws Exception {
-        initData(false);
+        initData(true);
         try {
             int expectedStartLayerSize = app.getStartLayers().size();
             int expectedStartLevelSize = app.getStartLevels().size();
@@ -149,9 +139,6 @@ public class ApplicationTest extends TestUtil {
 
             Application mashup = app.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup);
-
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -191,7 +178,7 @@ public class ApplicationTest extends TestUtil {
 
     @Test
     public void testMakeMashupOfApplicationWithExistingMashup() throws Exception {
-        initData(false);
+        initData(true);
         try {
             int expectedStartLayerSize = app.getStartLayers().size() * 2;
             int expectedStartLevelSize = app.getStartLevels().size() * 2;
@@ -200,18 +187,12 @@ public class ApplicationTest extends TestUtil {
             Application mashup1 = app.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup1);
 
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup1);
-
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
 
 
             Application mashup = app.createMashup("mashup2", entityManager,false);
             entityManager.persist(mashup);
-
-            objectsToRemove.add(app);
-            objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();

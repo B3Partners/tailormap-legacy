@@ -27,7 +27,6 @@ public class LayoutManagerActionBeanTest extends TestUtil{
         Application mashup = app.createMashup("mashup", entityManager, true);
         
         LayoutManagerActionBean lmab = new LayoutManagerActionBean();
-        objectsToRemove.add(mashup);
         entityManager.persist(mashup);
 
         String newConfig = "{value: 'different'}";
@@ -56,12 +55,11 @@ public class LayoutManagerActionBeanTest extends TestUtil{
             cc.setConfig(expectedConfig);
             cc.setName("htmlComponent1");
             cc.setApplication(app);
-            persistEntityTest(cc, ConfiguredComponent.class, true);
+            persistEntityTest(cc, ConfiguredComponent.class);
             
             app.getComponents().add(cc);
 
             Application mashup = app.createMashup("mashup", entityManager, true);
-            objectsToRemove.add(mashup);
             entityManager.persist(mashup);
 
             String newConfig = "{value: 'different'}";

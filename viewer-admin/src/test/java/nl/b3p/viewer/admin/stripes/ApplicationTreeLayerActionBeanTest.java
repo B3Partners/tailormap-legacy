@@ -92,6 +92,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         order7.put("order", 8);
         order7.put("longname", "begroeid_terreinvakonderdeel_bestaand.ident");
         
+        attributeOrder = new JSONArray();
         attributeOrder.put(order2);
         attributeOrder.put(order3);
         attributeOrder.put(order4);
@@ -111,13 +112,14 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("editHeight", "10");
         config.put("editable", true);
         config.put("editvalues", "");
-        config.put("featureType", 14);
+        config.put("featureType", 2);
         config.put("filterable", false);
         config.put("id", 9);
         config.put("longname", "begroeid_terreinvakonderdeel_bestaand.status");
         config.put("name", "id");
         config.put("selectable", false);
         config.put("valueList", "static");
+        attributesConfig = new JSONArray();
         attributesConfig.put(config);
     }
 
@@ -170,6 +172,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         assertEquals(9, attributes.size());
         
         List<ConfiguredAttribute> newAttrs = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
+        assertEquals("Number of returned attributes incorrect",9, newAttrs.size());
         ConfiguredAttribute toCheck = null;
         for (ConfiguredAttribute next : newAttrs) {
             if(next.getId()== 9){
@@ -177,7 +180,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
                 break;
             }
         }
-        assertNotNull(toCheck);
+        assertNotNull("Attribute not present in processed list",toCheck);
         assertEquals(true, toCheck.isEditable());
         assertEquals(true, toCheck.getDisAllowNullValue());
         assertEquals("pietje", toCheck.getEditAlias());

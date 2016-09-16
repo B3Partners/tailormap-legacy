@@ -58,7 +58,6 @@ public class ConfiguredComponentTest extends TestUtil {
             Application mashup = app.createMashup("mashup", entityManager, true);
 
             entityManager.persist(mashup);
-            objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -88,7 +87,6 @@ public class ConfiguredComponentTest extends TestUtil {
             Application mashup = app.createMashup("mashup", entityManager, true);
 
             entityManager.persist(mashup);
-            objectsToRemove.add(mashup);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
