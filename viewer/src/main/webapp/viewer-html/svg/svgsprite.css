@@ -32,8 +32,10 @@ div.olControlZoom a.svg-tool svg {
 }
 
 .svg-icon-header svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
+    margin-left: -2px;
+    margin-top: -2px;
 }
 
 .svg-button svg *,
