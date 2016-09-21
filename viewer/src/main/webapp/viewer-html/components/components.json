@@ -912,12 +912,12 @@
         "restrictions": ["content"]
     },
     {
-        "className": "viewer.components.PanoramaPhotos",
-        "name": "Panorama Photos",
+        "className": "viewer.components.CoordinateLinkWindow",
+        "name": "Coordinatelink Window",
         "group": "Tools",
-        "shortName": "PP",
-        "sources": ["tools/Tool.js","PanoramaPhotos.js"],
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","PanoramaPhotos-config.js"],
+        "shortName": "CLW",
+        "sources": ["tools/Tool.js","CoordinateLinkWindow.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","CoordinateLinkWindow-config.js"],
         "restrictions": ["top_menu"]
     }
 ]

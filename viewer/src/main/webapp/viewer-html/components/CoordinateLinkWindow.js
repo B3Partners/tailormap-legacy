@@ -16,10 +16,10 @@
  */
 
 /**
- * Panorama component
+ * CoordinateLinkWindow component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define("viewer.components.PanoramaPhotos", {
+Ext.define("viewer.components.CoordinateLinkWindow", {
     extend: "viewer.components.tools.Tool",
     toolMapClick: null,
     deActivatedTools: null,
@@ -31,7 +31,7 @@ Ext.define("viewer.components.PanoramaPhotos", {
     },
     constructor: function (conf) {
         this.initConfig(conf);
-        viewer.components.PanoramaPhotos.superclass.constructor.call(this, this.config);
+        viewer.components.CoordinateLinkWindow.superclass.constructor.call(this, this.config);
 
         this.button = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
