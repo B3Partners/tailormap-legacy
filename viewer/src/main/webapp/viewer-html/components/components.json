@@ -910,5 +910,14 @@
         "sources": ["Disclaimer.js"],
         "configSource": ["ConfigObject.js","Disclaimer-config.js"],
         "restrictions": ["content"]
+    },
+    {
+        "className": "viewer.components.PanoramaPhotos",
+        "name": "Panorama Photos",
+        "group": "Tools",
+        "shortName": "PP",
+        "sources": ["tools/Tool.js","PanoramaPhotos.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","PanoramaPhotos-config.js"],
+        "restrictions": ["top_menu"]
     }
 ]
