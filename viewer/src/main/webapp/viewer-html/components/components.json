@@ -910,5 +910,14 @@
         "sources": ["Disclaimer.js"],
         "configSource": ["ConfigObject.js","Disclaimer-config.js"],
         "restrictions": ["content"]
+    },
+    {
+        "className": "viewer.components.CoordinateLinkWindow",
+        "name": "Coordinatelink Window",
+        "group": "Tools",
+        "shortName": "CLW",
+        "sources": ["tools/Tool.js","CoordinateLinkWindow.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","CoordinateLinkWindow-config.js"],
+        "restrictions": ["top_menu"]
     }
 ]
