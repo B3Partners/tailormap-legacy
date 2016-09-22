@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.Loader.setConfig({
     enabled:true
 });
@@ -364,7 +366,7 @@ Ext.define('LayoutManager', {
 
     /**
      * Gets the config HTML for width / height
-     * @param string id
+     * @param string id id of config
      * @param string type (width | height)
      * @returns string
      */
@@ -819,6 +821,33 @@ Ext.define('LayoutManager', {
         this.resetWidthHeight(container, layoutRegion.get('floatComponents'));
     },
     
+    getComponentsByClassname : function (classname){
+        var components = [];
+        this.layoutRegionsStore.each(function(region) {
+            var regionComponents = region.data.addedComponents;
+            for (var i = 0 ; i < regionComponents.length ; i++){
+                if(regionComponents[i].componentClass === classname){
+                    components.push(regionComponents[i].name);
+                }
+            }
+        });
+        return components;
+    },
+    
+    getIndexForClassname : function (data){
+        var components = this.getComponentsByClassname(data.componentData.className);
+        var maxIndex = 0;
+        for (var i = 0 ; i < components.length; i++){
+            var className = components[i];
+            var index = parseInt(className.substring(className.length - 1));
+            if( index > maxIndex){
+                maxIndex = index;
+            }
+        }
+        data.componentData.componentsAdded = ++ maxIndex;
+        return maxIndex;
+    },
+    
     getComponentName: function(data) {
         if(Ext.isEmpty(data.componentData.componentsAdded)) {
             data.componentData.componentsAdded = 0;
@@ -828,7 +857,7 @@ Ext.define('LayoutManager', {
         if(i !== -1) {
             componentName = componentName.substring((i+1));
         }
-        componentName = this.changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);            
+        componentName = this.changeCaseFirstLetter(componentName, true) + this.getIndexForClassname(data);
         // used when loading existing conf
         if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
             componentName = data.componentName;
