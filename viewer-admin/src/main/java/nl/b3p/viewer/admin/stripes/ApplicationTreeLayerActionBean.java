@@ -192,11 +192,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 applicationLayer.getAttributes().remove(ca);
                 em.remove(ca);
             }
-            attributesConfig = attributesJSON.has(ATTRIBUTES_CONFIG_KEY) ? attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY) : new JSONArray();
-            
-
-            // JSON info about attributed required for editing
-            makeAttributeJSONArray(layer.getFeatureType()); 
+            if (attributesJSON.has(ATTRIBUTES_CONFIG_KEY)) {
+                attributesConfig = attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY);
+            } else {
+                attributesConfig = new JSONArray();
+                // JSON info about attributed required for editing
+                makeAttributeJSONArray(layer.getFeatureType());
+            }
         }        
     }
     
@@ -428,7 +430,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     appAttribute.setEditAlias(configObject.getString("editAlias"));
                 }
                 if (configObject.has("editvalues")) {
-                    appAttribute.setEditValues(configObject.getString("editvalues"));
+                    appAttribute.setEditValues(configObject.get("editvalues").toString());
                 }
                 if (configObject.has("editHeight")) {
                     appAttribute.setEditHeight(configObject.getString("editHeight"));
