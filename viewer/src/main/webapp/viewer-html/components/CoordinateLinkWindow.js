@@ -38,8 +38,9 @@ Ext.define("viewer.components.CoordinateLinkWindow", {
             id: this.getName(),
             name: this.getName(),
             tooltip: this.config.tooltip || null,
-            displayClass: "streetView",
-            viewerController: this.config.viewerController
+            displayClass: !!this.config.iconUrl ? "coordinateLinkWindow-" + Ext.id() : "streetView",
+            viewerController: this.config.viewerController,
+            iconUrl: this.config.iconUrl || null
         });
         this.config.viewerController.mapComponent.addTool(this.button);
 

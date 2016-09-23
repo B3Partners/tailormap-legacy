@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
         this.enabledEvents= new Object();
-        this.overwriteStyle();
+        this.overwriteStyle(conf);
         if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
             var me = this;
             frameworkObject.trigger= function(){
@@ -44,16 +44,30 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
      * This needs to add a style to the page because the html element is loaded after
      * the Tool is added to the panel
      */
-    overwriteStyle: function(){
+    overwriteStyle: function(conf){
+        if(conf.hasOwnProperty("iconUrl") && conf.iconUrl) {
+            this.iconUrl_up = conf.iconUrl;
+            this.iconUrl_over = conf.iconUrl;
+            this.iconUrl_sel = conf.iconUrl;
+            this.iconUrl_dis = conf.iconUrl;
+        }
         if (this.iconUrl_up!= null || this.iconUrl_sel!=null){
-            var html=""
+            var html="";
             if (this.iconUrl_up!= null){
                 html += ".olControlPanel ."+this.frameworkObject.displayClass+"ItemInactive";
-                html += "{ background-image: url(\""+this.iconUrl_up+"\")}";
+                html += "{" +
+                        "background-image: url(\""+this.iconUrl_up+"\");" +
+                        "background-repeat: no-repeat;" +
+                        "background-position: center center;" +
+                    "}";
             }
             if (this.iconUrl_sel!= null){
                 html += ".olControlPanel ."+this.frameworkObject.displayClass+"ItemActive";
-                html += "{ background-image: url(\""+this.iconUrl_sel+"\")}";
+                html += "{" +
+                        "background-image: url(\""+this.iconUrl_sel+"\");" +
+                        "background-repeat: no-repeat;" +
+                        "background-position: center center;" +
+                    "}";
             }           
             Ext.util.CSS.createStyleSheet(html);            
         }
