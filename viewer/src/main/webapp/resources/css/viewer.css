@@ -109,8 +109,24 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     border: 2px solid red;
 }
 
-.tristatenode .x-tree-checkbox {
+.theme-crisp .tristatenode .x-tree-checkbox {
     background-position: 0 -30px;
+}
+
+.theme-triton .x-tree-checkbox, .theme-triton .x-tree-checkbox-checked {
+    font-family: FontAwesome;
+}
+
+.theme-triton .x-tree-checkbox:before {
+    content: "\f096";
+}
+
+.theme-triton .x-tree-checkbox-checked:before {
+    content: "\f046";
+}
+
+.theme-triton .tristatenode .x-tree-checkbox:before {
+    content: "\f0c8";
 }
 
 .toc-outofscale {
@@ -184,6 +200,13 @@ body > .legend {
     background-color: #E5E5E5 !important;
     border-color: #C8C8C8 !important;
 }
+/* Fixes style of Cycle buttons, because of background-color override above */
+.x-btn-wrap-default-small.x-btn-split-right::after {
+    color: #444444;
+}
+.x-btn-wrap-default-small.x-btn-split-right > .x-btn-button::after {
+    border-right-color: #C8C8C8;
+}
 /* Add border in IE */
 .x-nlg .x-btn-default, .x-nlg .x-btn-default-large, .x-nlg .x-btn-default-small, .x-nlg .x-tab-default {
     border: 1px solid #d8d8d8 !important;
@@ -222,18 +245,28 @@ body > .legend {
     background-image: none;
     background-color: #f5f5f5;
 }
-.x-tree-checkbox {
+
+.theme-crisp .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/crisp/checkbox.png);
 }
-.x-btn-wrap-default-small.x-btn-split-right:after {
+.theme-crisp .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
 
-/* makes (editable) field labels overflow into ellipsis*/
+.x-fieldset {
+    border-top: 0 none !important;
+    background: #FFFFFF;
+}
+
+/*/ makes (editable) field labels overflow into ellipsis*/
 .x-form-item-label-inner {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.x-mask {
+    z-index: 19029;
 }
 
 /* End Override ExtJS style */
@@ -249,20 +282,23 @@ body > .legend {
     }
 }
 
-.mobile-mode, .mobile-mode * {
+html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-.mobile-mode .tristatenode .x-tree-checkbox {
+
+.theme-crisp-touch .tristatenode .x-tree-checkbox {
     background-position: 0 -44px;
 }
 /* ExtJS override images */
-.mobile-mode .x-tree-checkbox {
+.theme-crisp-touch .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/touch-crisp/checkbox.png);
 }
-.mobile-mode .x-btn-wrap-default-small.x-btn-split-right:after {
+.theme-crisp-touch .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
 }
-
+.x-grid-item-container {
+    overflow: visible;
+}
 /* Remove IE10/11 clear button for fields with clear trigger */
 .x-form-has-clear-trigger input::-ms-clear {
   width : 0;

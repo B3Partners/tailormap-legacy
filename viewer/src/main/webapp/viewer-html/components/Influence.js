@@ -50,7 +50,7 @@ Ext.define ("viewer.components.Influence",{
         }else{
             conf.searchconfigs=[];
         }
-        conf.formHeight = MobileManager.isMobile() ? 140 : 130;
+        conf.formHeight = 130;///*MobileManager.isMobile() ? 140 : */130;
         viewer.components.Influence.superclass.constructor.call(this, conf);
         var me = this;
         
@@ -115,7 +115,6 @@ Ext.define ("viewer.components.Influence",{
             xtype: 'button',
             text: 'Locatie aanwijzen op kaart',
             margin: this.margin,
-            componentCls: 'mobileLarge',
             listeners: {
                 click:{
                     scope: this,
@@ -128,7 +127,6 @@ Ext.define ("viewer.components.Influence",{
             xtype: 'button',
             text: 'Verwijder invloedsgebied',
             margin: this.margin,
-            componentCls: 'mobileLarge',
             listeners: {
                 click:{
                     scope: this,

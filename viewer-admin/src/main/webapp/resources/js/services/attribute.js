@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+/*
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,59 +15,105 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.Loader.setConfig({enabled: true});
-Ext.Loader.setPath('Ext.ux', uxpath);
-Ext.require([
-    'Ext.grid.*',
-    'Ext.data.*',
-    'Ext.util.*',
-    'Ext.ux.grid.GridHeaderFilters',
-    'Ext.toolbar.Paging'
-]);
+Ext.define('vieweradmin.components.Attributes', {
 
-Ext.onReady(function(){
+    extend: "Ext.ux.b3p.CrudGrid",
 
-    Ext.define('TableRow', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name: 'id', type: 'int' },
-            {name: 'alias', type: 'string'},
-            {name: 'attribute', type: 'string'},
-            {name: 'type', type: 'string'}
-        ]
-    });
+    config: {
+        gridurl: "",
+        editurl: "",
+        itemname: "attributen",
+        getfeaturetypesurl: ""
+    },
 
-    var store = Ext.create('Ext.data.Store', {
-        pageSize: 10,
-        model: 'TableRow',
-        remoteSort: true,
-        remoteFilter: true,
-        sorters: 'alias',
-        proxy: {
-            type: 'ajax',
-            url: gridurl,
-            extraParams: {
-                simpleFeatureTypeId: -1
-            },
-            reader: {
-                type: 'json',
-                root: 'gridrows',
-                totalProperty: 'totalCount'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function() {
-                // Fix to apply filters
-                Ext.getCmp('editGrid').doLayout();
+    constructor: function(config) {
+        this.initConfig(config);
+        vieweradmin.components.Attributes.superclass.constructor.call(this, this.config);
+        vieweradmin.components.Menu.setActiveLink('menu_attributen');
+        this.addListeners();
+    },
+
+    addListeners: function() {
+        var featureSourceId = Ext.get('featureSourceId');
+        var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
+        featureSourceId.on('change', function() {
+            this.featureSourceChange(featureSourceId);
+        }, this);
+        simpleFeatureTypeId.on('change', function() {
+            this.simpleFeatureTypeChange(simpleFeatureTypeId);
+        }, this);
+        // Init with change, because a certain select value can be preselected
+        this.featureSourceChange(featureSourceId);
+    },
+
+    featureSourceChange: function(featureSourceId) {
+        var selectedValue = parseInt(featureSourceId.getValue());
+
+        var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
+        this.removeChilds(simpleFeatureTypeId);
+        simpleFeatureTypeId.appendChild(this.getOption(-1, 'Kies...', true));
+
+        if(selectedValue != -1) {
+            Ext.Ajax.request({
+                url: this.config.getfeaturetypesurl,
+                scope:this,
+                params: {
+                    featureSourceId: selectedValue
+                },
+                success: function ( result, request ) {
+                    result = Ext.JSON.decode(result.responseText);
+                    Ext.Array.each(result, function(item) {
+                        simpleFeatureTypeId.appendChild(this.getOption(item.id, item.name, false));
+                    }, this);
+                },
+                failure: function() {
+                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                }
+            });
+            var gridStore = this.getStore();
+            gridStore.proxy.extraParams.featureSourceId = selectedValue;
+            // Go back to page 1 and reload store
+            gridStore.load({params: {
+                start: 0,
+                page: 1,
+                limit: 10
+            }});
+            gridStore.loadPage(1, {limit:10});
+        }
+    },
+
+    getOption: function(value, text, selected) {
+        var option = document.createElement('option');
+        option.value = value;
+        option.innerHTML = text;
+        if(selected) {
+            option.selected = true;
+        }
+        return option;
+    },
+
+    removeChilds: function(el) {
+        if (el.hasChildNodes()) {
+            while (el.childNodes.length >= 1) {
+                el.removeChild(el.firstChild);
             }
         }
-    });
+    },
 
-    var grid = Ext.create('Ext.grid.Panel', Ext.merge(vieweradmin.components.DefaultConfgurations.getDefaultGridConfig(), {
-        id: 'editGrid',
-        store: store,
-        columns: [
+    simpleFeatureTypeChange: function(simpleFeatureTypeId) {
+        var gridStore = this.getStore();
+        gridStore.proxy.extraParams.simpleFeatureTypeId = simpleFeatureTypeId.getValue();
+        // Go back to page 1 and reload store
+        gridStore.load({params: {
+            start: 0,
+            page: 1,
+            limit: 10
+        }});
+        gridStore.loadPage(1, {limit:10});
+    },
+
+    getGridColumns: function() {
+        return [
             {
                 id: 'alias',
                 text: "Alias",
@@ -96,42 +142,34 @@ Ext.onReady(function(){
                 id: 'edit',
                 header: '',
                 dataIndex: 'id',
-                flex: 1,
+                width: 100,
                 sortable: false,
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value);
+                    return Ext.String.format('<a href="#" class="editobject">Bewerken</a>');
                 }
             }
-        ],
-        bbar: Ext.create('Ext.PagingToolbar', {
-            store: store,
-            displayInfo: true,
-            displayMsg: 'Attributen {0} - {1} of {2}',
-            emptyMsg: "Geen attributen weer te geven"
-        }),
-        plugins: [ 
-            Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                enableTooltip: false
-            })
-        ],
-        renderTo: 'grid-container'
-    }));
-    
+        ];
+    },
+
+    getGridModel: function() {
+        return [
+            {name: 'id', type: 'int' },
+            {name: 'alias', type: 'string'},
+            {name: 'attribute', type: 'string'},
+            {name: 'type', type: 'string'}
+        ];
+    },
+
+    getStoreExtraParams: function() {
+        return {
+            simpleFeatureTypeId: -1
+        }
+    },
+
+    getEditUrl: function(record) {
+        return this.createUrl(this.config.editurl, { attribute: record.get('id') });
+    }
+
 });
-
-function editObject(objId) {
-    Ext.get('editFrame').dom.src = editurl + '?attribute=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
-}
-
-/*function removeObject(objId) {
-    // How are we going to remove items? In the iframe or directly trough ajax?
-    Ext.get('editFrame').dom.src = deleteurl + '?attribuut=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
-}*/

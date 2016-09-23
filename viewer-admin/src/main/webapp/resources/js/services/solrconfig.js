@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2013 B3Partners B.V.
+/*
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,58 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.Loader.setConfig({enabled: true});
-Ext.Loader.setPath('Ext.ux', uxpath);
-Ext.require([
-    //'Ext.grid.*',
-    //'Ext.data.*',
-    //'Ext.util.*',
-    'Ext.ux.grid.GridHeaderFilters'//,
-   // 'Ext.toolbar.Paging'
-]);
 
-Ext.onReady(function(){
+Ext.define('vieweradmin.components.SolrConfig', {
 
-    Ext.define('SearchConfigTableRow', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name: 'id', type: 'int' },
-            {name: 'name', type: 'string'},
-            {name: 'lastUpdated', type: 'string'},
-            {name: 'featureSourceName', type: 'string'},
-            {name: 'featureTypeName', type: 'string'}
-            
-        ]
-    });
+    extend: "Ext.ux.b3p.CrudGrid",
 
-    var searchConfigStore = Ext.create('Ext.data.Store', {
-        pageSize: 10,
-        model: 'SearchConfigTableRow',
-        remoteSort: false,
-        remoteFilter: true,
-        sorters: 'name',
-        proxy: {
-            type: 'ajax',
-            url: gridurl,
-            reader: {
-                type: 'json',
-                root: 'gridrows',
-                totalProperty: 'totalCount'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function() {
-                // Fix to apply filters
-                Ext.getCmp('editGrid').doLayout();
-            }
-        }
-    });
+    config: {
+        gridurl: "",
+        editurl: "",
+        deleteurl: "",
+        itemname: "zoekbronnen",
+        solrInitialized: false,
+        addtoindexurl: "",
+        removefromindexurl: ""
+    },
 
-    var grid = Ext.create('Ext.grid.Panel', Ext.merge(vieweradmin.components.DefaultConfgurations.getDefaultGridConfig(), {
-        id: 'editGrid',
-        store: searchConfigStore,
-        columns: [
+    constructor: function(config) {
+        this.initConfig(config);
+        vieweradmin.components.SolrConfig.superclass.constructor.call(this, this.config);
+        vieweradmin.components.Menu.setActiveLink('menu_solrconfig');
+    },
+
+    getGridColumns: function() {
+        return [
             {
                 id: 'name',
                 text: "Naam",
@@ -91,81 +62,74 @@ Ext.onReady(function(){
                 id: 'edit',
                 header: '',
                 dataIndex: 'id',
-                flex: 1,
+                width: 300,
+                sortable: false,
                 hideable: false,
                 menuDisabled: true,
-                renderer: function(value) {
-                    if(solrInitialized){
-                        return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return addToIndex(\'{0}\');">Voeg toe aan index</a>', value)+
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeFromIndex(\'{0}\');">Verwijder uit index</a>', value);
-                    }else{
-                        
-                        return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                renderer: (function(value) {
+                    var links = [
+                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                    ];
+                    if(this.config.solrInitialized) {
+                        links.push(
+                            Ext.String.format('<a href="#" class="addtoindex">Voeg toe aan index</a>', value),
+                            Ext.String.format('<a href="#" class="removefromindex">Verwijder uit index</a>', value)
+                        );
                     }
-                },
-                sortable: false
+                    return links.join(" | ");
+
+
+                }).bind(this)
             }
-        ],
-        bbar: Ext.create('Ext.PagingToolbar', {
-            store: searchConfigStore,
-            displayInfo: true,
-            displayMsg: 'Zoekbronnen {0} - {1} of {2}',
-            emptyMsg: "Geen zoekbronnen weer te geven"
-        }),
-        plugins: [ 
-            Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                enableTooltip: false
-            })
-        ],
-        renderTo: 'grid-container'
-    }));
-    
-});
+        ];
+    },
 
-function editObject(id){
-    Ext.get('editFrame').dom.src = editurl + '&solrConfiguration=' + id;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', id));
-    return false;
-}
+    cellClickListener: function(e, target, record) {
+        if (target.className.indexOf("addtoindex") !== -1) {
+            e.preventDefault();
+            this.addToIndex(record);
+        }
+        if (target.className.indexOf("removefromindex") !== -1) {
+            e.preventDefault();
+            this.removeFromIndex(record);
+        }
+    },
 
+    getGridModel: function() {
+        return [
+            {name: 'id', type: 'int' },
+            {name: 'name', type: 'string'},
+            {name: 'lastUpdated', type: 'string'},
+            {name: 'featureSourceName', type: 'string'},
+            {name: 'featureTypeName', type: 'string'}
+        ];
+    },
 
-function removeObject(objId) {
-    if(deleteConfirm()){
-        Ext.get('editFrame').dom.src = deleteurl + '&solrConfiguration=' + objId;
-        var gridCmp = Ext.getCmp('editGrid')
-        gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
+    removeConfirmMessage: function(record) {
+        return ["Weet u zeker dat u de configuratie ", record.get("name"), " wilt verwijderen?"].join("");
+    },
+
+    getEditUrl: function(record) {
+        return this.createUrl(this.config.editurl, { solrConfiguration: record.get('id') });
+    },
+
+    getRemoveUrl: function(record) {
+        return this.createUrl(this.config.deleteurl, { solrConfiguration: record.get('id') });
+    },
+
+    addToIndex: function (record){
+        Ext.get('editFrame').dom.src = this.createUrl(this.config.addtoindexurl, { solrConfiguration: record.get('id') });
+        this.grid.getSelectionModel().select(record);
         return false;
+
+    },
+
+    removeFromIndex: function (record){
+        Ext.get('editFrame').dom.src = this.createUrl(this.config.removefromindexurl, { solrConfiguration: record.get('id') });
+        this.grid.getSelectionModel().select(record);
+        return false;
+
     }
-}
 
-function deleteConfirm() {
-    return confirm('Weet u zeker dat u deze configuratie wilt verwijderen?');
-}
-
-function reloadGrid(){
-    Ext.getCmp('editGrid').getStore().load();
-}
-
-function addToIndex(objId){
-    Ext.get('editFrame').dom.src = addToIndexUrl + '&solrConfiguration=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
-    
-}
-
-function removeFromIndex(objId){
-    Ext.get('editFrame').dom.src = removeFromIndexUrl + '&solrConfiguration=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
-    
-}
+});

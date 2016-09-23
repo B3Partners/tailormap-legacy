@@ -255,6 +255,18 @@ input[type="submit"]:hover,
   height: 395px;
   padding-top: 40px;
 }
+#grid-container + #form-container {
+    position: absolute;
+    bottom: 20px;
+    height: auto;
+    top: 445px;
+    min-height: 250px;
+    left: 10px;
+    right: 10px;
+}
+.errors ~ #grid-container + #form-container {
+    top: 495px;
+}
 #layoutManagerTitle {
   width: 250px;
   float: left;
@@ -495,7 +507,7 @@ input[type="submit"]:hover,
   float: left;
   padding-top: 150px;
   padding-left: 6px;
-  width: 35px;
+  width: 45px;
 }
 .tree-selection-buttons div {
   display: block;
@@ -724,4 +736,8 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .maximize {
     width: 100%;
     height: 100%;
+}
+
+.x-gridheaderfilters-filter-container .x-anchor-form-item {
+    margin-bottom: 0;
 }

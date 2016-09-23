@@ -125,6 +125,14 @@ Ext.define('LayoutManager', {
         this.initRegions();
         this.initGlobalLayout();
         this.createToolbox();
+
+        // Use setTimeout to make sure height is calculated after all items have rendered
+        // setTimeout(0) moves execution to the end of the call stack
+        setTimeout((function() {
+            this.layoutRegionsStore.each(function(layoutRegion){
+                this.resetWidthHeight(layoutRegion.regionContainer, layoutRegion.get('floatComponents'));
+            }, this);
+        }).bind(this), 0);
         
         var me = this;
         Ext.get('savebutton').on('click', function() {

@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/crisp/ext-theme-crisp-all.css">
+        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/crisp/theme-crisp-all.css">
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>

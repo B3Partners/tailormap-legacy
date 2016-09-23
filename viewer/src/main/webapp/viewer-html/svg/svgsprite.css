@@ -1,0 +1,65 @@
+.svg-button svg {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    width: 30px;
+    height: 30px;
+}
+
+.svg-tool svg {
+    width: 28px;
+    height: 28px;
+}
+
+.svg-tool {
+    cursor: pointer;
+}
+
+/* unfortunatyle we need a strong selector to override default behaviour.
+this can be removed when we stop supporting png sprites */
+#wrapper .olControlPanel .svg-tool,
+div.olControlZoom a.svg-tool {
+    background-image: none !important;
+}
+
+div.olControlZoom a.svg-tool {
+    text-indent: 0;
+}
+
+div.olControlZoom a.svg-tool svg {
+    width: 22px;
+    height: 22px;
+}
+
+.svg-icon-header svg {
+    width: 20px;
+    height: 20px;
+    margin-left: -2px;
+    margin-top: -2px;
+}
+
+.svg-button svg *,
+.svg-tool svg *,
+.svg-icon-header svg * {
+    fill: #777777; /* primary color */
+    stroke: #777777; /* primary color */
+    color: #D8D8D8; /* secondary color, trick to have 2 colors in SVG using currentColor */
+    transition: fill .3s, stroke .3s, color .3s;
+}
+
+.svg-button:hover,
+.svg-button.buttonDefaultClass_hover {
+    background-color: #F1F1F1 !important;
+}
+
+.svg-button:hover svg *,
+.svg-tool:hover svg * {
+    fill: #4A4A4A;
+    stroke: #4A4A4A;
+}
+
+.svg-tool.svg-tool-active svg *,
+.svg-button.buttonDefaultClass_click svg * {
+    fill: #333333;
+    stroke: #333333;
+}

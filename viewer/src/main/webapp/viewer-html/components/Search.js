@@ -47,7 +47,6 @@ Ext.define ("viewer.components.Search",{
     searchField:null,
     searchName:null,
     resultPanelId: '',
-    defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
     searchRequestId: 0,
     onlyUrlConfig:null,
     currentSeachId:null,
@@ -116,14 +115,24 @@ Ext.define ("viewer.components.Search",{
         }
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
-            height: this.config.formHeight || this.defaultFormHeight,
+            height: this.config.formHeight,
+            padding: this.config.formHeight ? 0 : '0 0 5px 0',
             items: this.getFormItems(),
             border: 0,
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             style: { 
                 padding: '5px 10px 0px 10px'
             }
         });
-        this.resultPanelId = Ext.id();
+
+        this.resultPanel = Ext.create('Ext.container.Container', {
+            xtype: "container",
+            autoScroll: true,
+            flex: 1
+        });
 
         var options = {
             itemId: this.name + 'Container',
@@ -136,14 +145,7 @@ Ext.define ("viewer.components.Search",{
             style: {
                 backgroundColor: 'White'
             },
-            items: [ this.form, {
-                itemId: this.name + 'ContentPanel',
-                xtype: "container",
-                autoScroll: true,
-                // width: '100%',
-                flex: 1,
-                html: '<div id="' + me.resultPanelId + '" style="width: 100%; height: 100%; padding: 0px 10px 0px 10px;"></div>'
-            }]
+            items: [ this.form, this.resultPanel ]
         };
         if(!this.config.isPopup) {
             options.title = this.config.title;
@@ -153,10 +155,8 @@ Ext.define ("viewer.components.Search",{
             options.items.push({
                 itemId: this.name + 'ClosingPanel',
                 xtype: "container",
-                width: '100%',
-                height: MobileManager.isMobile() ? 45 : 25,
                 style: {
-                    marginTop: '10px',
+                    marginTop: '5px',
                     marginRight: '5px'
                 },
                 layout: {
@@ -164,7 +164,7 @@ Ext.define ("viewer.components.Search",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                    {xtype: 'button', text: 'Sluiten', handler: function() {
                         me.popup.hide();
                     }}
                 ]
@@ -175,7 +175,7 @@ Ext.define ("viewer.components.Search",{
             this.popup.getContentContainer().add(this.mainContainer);
         }
         this.form.query("#cancel"+ this.name)[0].setVisible(false);
-        this.loadingContainer = Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0];
+        this.loadingContainer = this.resultPanel;
     },
     getFormItems: function(){
         var me = this;
@@ -292,8 +292,6 @@ Ext.define ("viewer.components.Search",{
                 });
                 
                 var searchFieldAndButton = Ext.create('Ext.container.Container', {
-                    width: '100%',
-                    height: 30,
                     layout: {
                         type: this.showSearchButtons ? 'hbox' : 'fit'
                     },
@@ -301,9 +299,7 @@ Ext.define ("viewer.components.Search",{
                     items: [this.searchField,{
                             xtype: 'button',
                             text: 'Zoeken',
-                            componentCls: 'mobileLarge',
                             margin: this.margin,
-                            width: 60,
                             hidden: !this.showSearchButtons,
                             listeners: {
                                 click: {
@@ -320,7 +316,6 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             text: 'Zoekactie afbreken',
             margin: this.margin,
-            componentCls: 'mobileLarge',
             name: 'cancel',
             itemId: 'cancel'+ this.name,
             hidden: !this.showSearchButtons,
@@ -336,7 +331,6 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             text: 'Verwijder marker',
             margin: this.margin,
-            componentCls: 'mobileLarge',
             name: 'removePin',
             itemId: 'removePin'+ this.name,
             hidden: true,
@@ -439,8 +433,12 @@ Ext.define ("viewer.components.Search",{
                     me.loadingContainer.setLoading(false);
                 },
                 failure: function(result, request) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    Ext.MessageBox.alert("Foutmelding", response.error);
+                    var message = "Er is een onbekend fout opgetreden.";
+                    try {
+                        response = Ext.JSON.decode(result.responseText);
+                        message = response.error;
+                    } catch(e) {}
+                    Ext.MessageBox.alert("Foutmelding", message);
                     me.loadingContainer.setLoading(false);
                 }
             });
@@ -461,11 +459,7 @@ Ext.define ("viewer.components.Search",{
             me.showResultsPicker();
             return;
         }
-        var panelList = [{
-                xtype: 'panel', // << fake hidden panel
-                hidden: true,
-            collapsed: false
-        }];
+        var panelList = [];
         this.groupedResult = new Object();
         if (Ext.isDefined(this.searchResult)) {
             for (var i = 0; i < this.searchResult.length; i++) {
@@ -481,7 +475,6 @@ Ext.define ("viewer.components.Search",{
                 var subSetPanel = Ext.create('Ext.panel.Panel', {
                     title: key + " (" + list.length + ")",
                     flex: 1,
-                    height: 200,
                     autoScroll: true,
                     collapsible: true,
                     collapsed: true,
@@ -494,9 +487,9 @@ Ext.define ("viewer.components.Search",{
             }
 
         }
-        me.results = Ext.create('Ext.panel.Panel', {
+        this.resultPanel.removeAll();
+        this.resultPanel.add(Ext.create('Ext.panel.Panel', {
             title: 'Resultaten (' +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
-            renderTo: this.resultPanelId,
             html: html,
             height: '100%',
             width: '100%',
@@ -505,7 +498,6 @@ Ext.define ("viewer.components.Search",{
                 titleCollapse: true,
                 animate: true,
                 flex:1,
-                height: 300,
                 multi:true
             },
             autoScroll: false,
@@ -513,7 +505,7 @@ Ext.define ("viewer.components.Search",{
                 padding: '0px 0px 10px 0px'
             },
             items: panelList
-        });
+        }));
         if(this.searchResult && this.searchResult.length === 1){
             this.handleSearchResult(this.searchResult[0]);
         }else{
@@ -591,7 +583,7 @@ Ext.define ("viewer.components.Search",{
         
         var type = this.getCurrentSearchType(result);
         if(type === "solr"){
-            
+
             var searchconfig = this.getCurrentSearchconfig();
             if(searchconfig ){
                 var solrConfig = searchconfig.solrConfig[result.searchConfig];

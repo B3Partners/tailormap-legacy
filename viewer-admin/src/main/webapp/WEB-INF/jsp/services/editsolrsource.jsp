@@ -97,8 +97,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     Ext.onReady(function() {
                         var frameParent = getParent();
 
-                        if(frameParent && frameParent.reloadGrid) {
-                            frameParent.reloadGrid();
+                        if(frameParent && frameParent.vieweradmin_components_SolrConfig) {
+                            frameParent.vieweradmin_components_SolrConfig.reloadGrid();
                         }
                     });
                     </script>

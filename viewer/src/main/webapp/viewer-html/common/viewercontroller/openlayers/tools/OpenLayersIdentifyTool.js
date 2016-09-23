@@ -177,7 +177,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     activate: function(){
         //if mobile: disable the navigation control. To make sure the click can be handled
         //Click won't be handled if there is a navigation controller enabled (for mobile) 
-        if (MobileManager.isMobile()){
+        if (viewer.components.MobileManager.isMobile()){
             if (this.deactivatedControls==null){
                 this.deactivatedControls=[];
             }
@@ -199,7 +199,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     },
     deactivate: function(){
         //if mobile: enable the disactivated controls again
-        if (MobileManager.isMobile()){
+        if (viewer.components.MobileManager.isMobile()){
             while (!Ext.isEmpty(this.deactivatedControls)){
                 var disCont = this.deactivatedControls.pop();
                 disCont.activate();

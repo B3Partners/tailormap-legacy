@@ -43,7 +43,7 @@ function appendPanel(header, content, container) {
             autoScroll: true
         });
         Ext.on('resize', function () {
-            panel.doLayout();
+            panel.updateLayout();
         });
     }
 }

@@ -188,7 +188,8 @@ Ext.define("viewer.components.Split", {
             height: '100%',
             autoScroll: true,
             layout: {
-                type: 'vbox'
+                type: 'vbox',
+                align: "stretch"
             },
             style: {
                 backgroundColor: 'White'
@@ -199,8 +200,6 @@ Ext.define("viewer.components.Split", {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
                     padding: "4px",
-                    width: '280px',
-                    height: MobileManager.isMobile() ? 60 : 36,
                     items: [
                         {
                             xtype: 'button',
@@ -208,8 +207,7 @@ Ext.define("viewer.components.Split", {
                             disabled: true,
                             tooltip: "Te Splitsen geometrie selecteren",
                             text: "Selecteer",
-                            componentCls: 'mobileLarge',
-                            listeners: {
+                                        listeners: {
                                 click: {
                                     scope: me,
                                     fn: me.select
@@ -222,8 +220,7 @@ Ext.define("viewer.components.Split", {
                             disabled: true,
                             tooltip: "Splitslijn tekenen",
                             text: "Splitslijn",
-                            componentCls: 'mobileLarge',
-                            listeners: {
+                                        listeners: {
                                 click: {
                                     scope: me,
                                     fn: me.splitLijn
@@ -243,20 +240,16 @@ Ext.define("viewer.components.Split", {
                     border: 0,
                     xtype: "form",
                     autoScroll: true,
-                    width: '100%',
                     flex: 1
                 }, {
                     id: this.name + 'savePanel',
                     xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 30,
                     layout: {
                         type: 'hbox',
                         pack: 'end'
                     },
                     defaults: {
-                        xtype: 'button',
-                        componentCls: 'mobileLarge'
+                        xtype: 'button'
                     },
                     items: [
                         {

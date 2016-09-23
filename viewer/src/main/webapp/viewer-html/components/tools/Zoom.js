@@ -29,8 +29,28 @@ Ext.define ("viewer.components.tools.Zoom",{
         conf.type = viewer.viewercontroller.controller.Tool.ZOOM;
         this.initTool(conf);
         this.alignContainer(Ext.get(this.tool.frameworkObject.div));
+        this.initSvg(Ext.get(this.tool.frameworkObject.div));
         this.tool.blocksDefaultTool = false;
         return this;
+    },
+
+    initSvg : function (container){
+        if(!this.config.viewerController.hasSvgSprite()) {
+            return;
+        }
+        var appSprite = this.config.viewerController.getApplicationSprite();
+        function addSvgIcon(el, cls) {
+            el.setHtml([
+                '<svg role="img" title=""><use xlink:href="',
+                appSprite,
+                '#icon-',
+                cls,
+                '"/></svg>'
+            ].join(""));
+            el.addCls('svg-tool');
+        }
+        addSvgIcon(container.select('.olControlZoomIn'), "zoomin");
+        addSvgIcon(container.select('.olControlZoomOut'), "zoomout");
     },
     
     alignContainer: function(container) {

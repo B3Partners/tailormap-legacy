@@ -411,7 +411,7 @@ Ext.define ("viewer.components.DataSelection",{
         if(this.filters.length != 0) {
             logicOperator = Ext.create('Ext.form.ComboBox', {
                 store: [ ['OR', 'of'], ['AND', 'en'] ],
-                width: 50,
+                width: 75,
                 value: 'OR'
             });
             leftContainer.add(logicOperator);

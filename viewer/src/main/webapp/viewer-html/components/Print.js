@@ -49,7 +49,7 @@ Ext.define ("viewer.components.Print",{
         fromName:null,
         details: {
             minWidth: 550,
-            minHeight: 515
+            minHeight: 575
         }
     },
     /**
@@ -326,9 +326,8 @@ Ext.define ("viewer.components.Print",{
                             },{
                                 xtype: 'button',
                                 text: '<',
-                                width: MobileManager.isMobile() ? 50 : 30,
-                                componentCls: 'mobileLarge',
-                                listeners: {
+                                width: /*MobileManager.isMobile() ? 50 : */30,
+                                                listeners: {
                                     click:{
                                         scope: this,
                                         fn: function (){
@@ -353,7 +352,7 @@ Ext.define ("viewer.components.Print",{
                             },{
                                 xtype: 'radiogroup',
                                 name: "orientation",
-                                width: MobileManager.isMobile() ? 185 : 125,
+                                width: 150,
                                 items: [{
                                     boxLabel: 'Liggend',
                                     name: 'orientation',
@@ -440,7 +439,7 @@ Ext.define ("viewer.components.Print",{
             },{
                  xtype: 'label',
                  style: {
-                     marginTop: "15px"
+                     marginTop: "5px"
                  },
                  text: "* Door het draaien van de kaart kan niet de maximale kwaliteit worden opgehaald."
             },{
@@ -448,13 +447,12 @@ Ext.define ("viewer.components.Print",{
                 xtype: 'container',
                 frame: false,
                 style: {
-                    marginTop: "15px"
+                    marginTop: "5px"
                 },
                 items: [{
                     xtype: 'button',
                     text: 'Sluiten',
-                    componentCls: 'mobileLarge',
-                    style: {
+                        style: {
                         "float": "right",
                         marginLeft: '5px'
                     },
@@ -470,7 +468,6 @@ Ext.define ("viewer.components.Print",{
 //                    xtype: 'button',
 //                    text: 'Opslaan als RTF'  ,
 //                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
-//                    componentCls: 'mobileLarge',
 //                    style: {
 //                        "float": "right",
 //                        marginLeft: '5px'
@@ -487,8 +484,7 @@ Ext.define ("viewer.components.Print",{
                     xtype: 'button',
                     text: 'Printen via PDF'  ,
                     hidden: this.config.mailPrint === "canOnlyMail",
-                    componentCls: 'mobileLarge',
-                    style: {
+                        style: {
                         "float": "right",
                         marginLeft: '5px'
                     },
@@ -503,8 +499,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Verstuur per mail',
-                    componentCls: 'mobileLarge',
-                    hidden:this.config.mailPrint === "cantMail",
+                        hidden:this.config.mailPrint === "cantMail",
                     style: {
                         "float": "right",
                         marginLeft: '5px'

@@ -19,6 +19,21 @@
  * A generic component to which can render itself
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
+
+Ext.define ("viewer.components.SvgHeader", {
+    extend: "Ext.panel.Header",
+    xtype: 'svgpanelheader',
+    constructor: function (conf) {
+        conf.iconCls = 'svg-icon-header';
+        viewer.components.SvgHeader.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        this.addListener('afterrender', function(cmp, eOpts) {
+            var icon = cmp.el.dom.querySelector('.svg-icon-header');
+            icon.innerHTML = conf.svgIcon;
+        });
+    }
+});
+
 Ext.define ("viewer.components.ScreenPopup",{
     extend: "Ext.util.Observable",
     popupWin:null,
@@ -59,16 +74,24 @@ Ext.define ("viewer.components.ScreenPopup",{
             modal: false,
             renderTo: Ext.getBody(),
             autoScroll: true,
-            constrainHeader: true
+            constrainHeader: true,
+            iconCls: this.config.iconCls || ""
         };
         
-        if(MobileManager.isMobile()) {
+        if(this.config.popupIcon) {
+            config.header = {
+                xtype: 'svgpanelheader',
+                svgIcon: this.config.popupIcon
+            };
+        }
+        
+        if(viewer.components.MobileManager.isMobile()) {
             config.modal = true;
             config.width = '90%';
             config.height = '90%';
             config.draggable = false;
             config.resizable = false;
-            this.currentOrientation = MobileManager.getOrientation();
+            this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
 
         if(this.config.details.minWidth) {
@@ -156,9 +179,9 @@ Ext.define ("viewer.components.ScreenPopup",{
             if(this.component) {
                 this.component.setButtonState('click', true);
             }
-            if(MobileManager.isMobile()) {
-                if(MobileManager.getOrientation() !== this.currentOrientation) {
-                    this.currentOrientation = MobileManager.getOrientation();
+            if(viewer.components.MobileManager.isMobile()) {
+                if(viewer.components.MobileManager.getOrientation() !== this.currentOrientation) {
+                    this.currentOrientation = viewer.components.MobileManager.getOrientation();
                     setTimeout(function() { this.component.resizeScreenComponent() }, 0);
                 }
                 this.popupWin.mon(Ext.getBody(), 'click', function(el, e){
@@ -216,7 +239,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         return this.popupWin.isVisible();
     },
     resizePopup: function() {
-        if(MobileManager.isMobile() && this.isVisible()) {
+        if(viewer.components.MobileManager.isMobile() && this.isVisible()) {
     		// Set size in pixels to 90%/90% of the viewportwidth / height
     		this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
 			// Reset position so popup remains centered
@@ -224,7 +247,7 @@ Ext.define ("viewer.components.ScreenPopup",{
     		// doLayout on the window
             this.popupWin.updateLayout();
 			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
-			this.currentOrientation = MobileManager.getOrientation();
+			this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
     },
     setWindowTitle : function(title){

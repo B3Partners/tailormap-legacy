@@ -298,9 +298,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 contentEl: Ext.getDom('sldcontent')
             });
             Ext.on('resize', function () {
-                panel.doLayout();
+                panel.updateLayout();
             });                
-            panel.doLayout();
+            panel.updateLayout();
         });
     </script>
     <div id="sldcontent" class="insidePanel" style="margin: 5px">

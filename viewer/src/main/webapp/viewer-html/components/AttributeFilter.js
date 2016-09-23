@@ -87,7 +87,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 					store: logicStore,
 					queryMode: 'local',
 					displayField: 'title',
-					width: MobileManager.isMobile() ? 70 : 50,
+					// width: /*MobileManager.isMobile() ? 70 : */,
 					value:'OR',
 					valueField: 'id'
 				});
@@ -104,7 +104,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 				},
 				width: 320,
 				items:  items,
-				height: MobileManager.isMobile() ? 35 : 25
+				// height: /*MobileManager.isMobile() ? 35 : */
 			});
 		}
         return this.container;

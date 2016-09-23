@@ -1,54 +1,40 @@
-Ext.Loader.setConfig({enabled: true});
-Ext.Loader.setPath('Ext.ux', uxpath);
-Ext.require([
-    'Ext.grid.*',
-    'Ext.data.*',
-    'Ext.util.*',
-    'Ext.ux.grid.GridHeaderFilters',
-    'Ext.toolbar.Paging'
-]);
+/*
+ * Copyright (C) 2012-2016 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-Ext.onReady(function(){
+Ext.define('vieweradmin.components.AttributeSource', {
 
-    Ext.define('TableRow', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name: 'id', type: 'int' },
-            {name: 'status', type: 'string'},
-            {name: 'name', type: 'string'},
-            {name: 'url', type: 'string'},
-            {name: 'protocol', type: 'string'}
-        ]
-    });
+    extend: "Ext.ux.b3p.CrudGrid",
 
-    var store = Ext.create('Ext.data.Store', {
-        pageSize: 10,
-        model: 'TableRow',
-        remoteSort: true,
-        remoteFilter: true,
-        sorters: 'name',
-        proxy: {
-            type: 'ajax',
-            url: gridurl,
-            reader: {
-                type: 'json',
-                root: 'gridrows',
-                totalProperty: 'totalCount'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function() {
-                // Fix to apply filters
-                Ext.getCmp('editGrid').doLayout();
-            }
-        }
-    });
+    config: {
+        gridurl: "",
+        editurl: "",
+        deleteurl: "",
+        itemname: "attribuutbronnen",
+        editattributesurl: ""
+    },
 
-    var grid = Ext.create('Ext.grid.Panel', Ext.merge(vieweradmin.components.DefaultConfgurations.getDefaultGridConfig(), {
-        id: 'editGrid',
-        store: store,
-        columns: [
+    constructor: function(config) {
+        this.initConfig(config);
+        vieweradmin.components.AttributeSource.superclass.constructor.call(this, this.config);
+        vieweradmin.components.Menu.setActiveLink('menu_attribuutbronnen');
+    },
+
+    getGridColumns: function() {
+        return [
             {
                 id: 'status',
                 text: "Status",
@@ -88,56 +74,41 @@ Ext.onReady(function(){
                 id: 'edit',
                 header: '',
                 dataIndex: 'id',
-                flex: 1,
+                width: 300,
                 sortable: false,
                 hideable: false,
                 menuDisabled: true,
-                renderer: function(value) {
-                    return Ext.String.format('<a href="' + editattributesurl + '?featureSourceId={0}">Attributen bewerken</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
-                }
+                renderer: (function(value) {
+                     return [
+                         Ext.String.format('<a href="{0}?featureSourceId={1}">Attributen bewerken</a>', this.config.editattributesurl, value),
+                         Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
+                         Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                     ].join(" | ");
+                }).bind(this)
             }
-        ],
-        bbar: Ext.create('Ext.PagingToolbar', {
-            store: store,
-            displayInfo: true,
-            displayMsg: 'Attribuutbron {0} - {1} of {2}',
-            emptyMsg: "Geen attribuutbronnen weer te geven"
-        }),
-        plugins: [
-            Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                enableTooltip: false
-            })
-        ],
-        renderTo: 'grid-container'
-    }));
+        ];
+    },
+
+    getGridModel: function() {
+        return [
+            {name: 'id', type: 'int' },
+            {name: 'status', type: 'string'},
+            {name: 'name', type: 'string'},
+            {name: 'url', type: 'string'},
+            {name: 'protocol', type: 'string'}
+        ];
+    },
+
+    removeConfirmMessage: function(record) {
+        return ["Weet u zeker dat u de attribuutbron ", record.get("name"), " wilt verwijderen?"].join("");
+    },
+
+    getEditUrl: function(record) {
+        return this.createUrl(this.config.editurl, { featureSource: record.get('id') });
+    },
+
+    getRemoveUrl: function(record) {
+        return this.createUrl(this.config.deleteurl, { featureSource: record.get('id') });
+    }
 
 });
-
-function editObject(objId) {
-    Ext.get('editFrame').dom.src = editurl + '?featureSource=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
-}
-
-function removeObject(objId) {
-    if(deleteConfirm()){
-        // How are we going to remove items? In the iframe or directly trough ajax?
-        Ext.get('editFrame').dom.src = deleteurl + '?featureSource=' + objId;
-        var gridCmp = Ext.getCmp('editGrid')
-        gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-        return false;
-    }
-}
-
-function deleteConfirm() {
-    return confirm('Weet u zeker dat u deze attribuutbron wilt verwijderen?');
-}
-
-function reloadGrid(){
-    Ext.getCmp('editGrid').getStore().load();
-}

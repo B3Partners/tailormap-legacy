@@ -101,9 +101,11 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         var editItems = this.getEditTabItems();
 
         var tabconfig = [{
+            itemId:'settings-tab',
             contentEl:'settings-tab',
             title: 'Instellingen'
         },{
+            itemId:'rights-tab',
             contentEl:'rights-tab',
             title: 'Rechten'
         }];
@@ -130,10 +132,12 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 padding: 10,
                 layout: 'auto',
                 autoScroll: true,
-                items: editItems
+                items: editItems,
+                itemId: 'edit-tab'
             });
         } else {
             tabconfig.push({
+                itemId:'edit-tab',
                 contentEl:'edit-tab',
                 title: 'Edit'
             });
@@ -146,15 +150,18 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 padding: 10,
                 layout: 'auto',
                 autoScroll: true,
-                items: filterItems
+                items: filterItems,
+                itemId:'filter-tab'
             });
         } else {
             tabconfig.push({
+                itemId:'filter-tab',
                 contentEl:'filter-tab',
                 title: 'Filter / Selectie'
             });
         }
         tabconfig.push({
+            itemId:'context-tab',
             contentEl:'context-tab',
             title: 'Context'
         });
@@ -174,7 +181,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             listeners: {
                 tabchange: {
                     fn: function (panel, activetab, previoustab) {
-                        if (activetab.contentEl && activetab.contentEl === 'context-tab' && !this.htmlEditorRendered) {
+                        if (activetab.getItemId() === 'context-tab' && !this.htmlEditorRendered) {
                             // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
                             Ext.create('Ext.form.field.HtmlEditor', {
                                 itemId: 'extContextHtmlEditor',
@@ -263,7 +270,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             var defaultValueHidden = !(attribute.selectable || false);
             filterPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(this.getFilterEditDefaults(), {
                 itemId: 'filter' + attribute.id,
-                height: 180,
+                height: 240,
                 title: name + (isEnabled ? ' (&times;)' : ''),
                 iconCls: "edit-icon-bw",
                 collapsed: idx !== 0,
@@ -298,7 +305,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                             if (newval) {
                                                 comp.setVisible(true);
                                             }
-                                            this.getComponentByItemId('#filter' + attribute.id).doLayout();
+                                            this.getComponentByItemId('#filter' + attribute.id).updateLayout();
                                         }
                                     },
                                     scope: this
@@ -321,7 +328,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                             if (newval) {
                                                 comp.setVisible(true);
                                             }
-                                            this.getComponentByItemId('#filter' + attribute.id).doLayout();
+                                            this.getComponentByItemId('#filter' + attribute.id).updateLayout();
                                         },
                                         scope: this
                                     }
@@ -396,7 +403,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                                     if (newval) {
                                                         comp.setVisible(true);
                                                     }
-                                                    this.getComponentByItemId('#filter' + attribute.id).doLayout();
+                                                    this.getComponentByItemId('#filter' + attribute.id).updateLayout();
                                                 },
                                                 scope: this
                                             }
@@ -861,7 +868,9 @@ hier niet op gecontroleerd.'
     initListeners: function() {
         // Ext.get('apptreelayerform').on('submit', this.doSave, this);
         // document.querySelector(".cancel-button").addEventListener("click", this.doCancel.bind(this));
-        document.getElementById('styleSelect').addEventListener("change", this.updateStyleTitles.bind(this));
+        if(document.getElementById('styleSelect')) {
+            document.getElementById('styleSelect').addEventListener("change", this.updateStyleTitles.bind(this));
+        }
         document.getElementById('layerTitle').addEventListener("click", (function() {
             this.setTitleAlias('layer');
         }).bind(this));
@@ -900,8 +909,8 @@ hier niet op gecontroleerd.'
     },
 
     getAttributeEditHeight: function(type) {
-        var STATIC_HEIGHT = 280;
-        var DYNAMIC_HEIGHT = 370;
+        var STATIC_HEIGHT = 370;
+        var DYNAMIC_HEIGHT = 505;
         return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
     },
 
@@ -1066,6 +1075,9 @@ hier niet op gecontroleerd.'
     },
 
     updateStyleTitles: function() {
+        if(!document.getElementById('styleSelect')) {
+            return;
+        }
         var styleId = document.getElementById("styleSelect").value;
         var titles = this.config.stylesTitleJson[styleId] || {};
         this.namedLayerTitle = titles.namedLayerTitle || "";

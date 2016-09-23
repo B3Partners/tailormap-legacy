@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
+/*if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
     Ext.override(Ext.form.field.ComboBox, {
         editable: false 
     });
     Ext.override(Ext.form.field.Trigger, {
         editable: false 
     });
-}
+}*/
 
 Ext.override(Ext.form.field.HtmlEditor, 
     // Fix upside down question mark appearing

@@ -156,7 +156,8 @@ Ext.define("viewer.components.Edit", {
             height: '100%',
             autoScroll: true,
             layout: {
-                type: 'vbox'
+                type: 'vbox',
+                align: 'stretch'
             },
             style: {
                 backgroundColor: 'White'
@@ -167,8 +168,6 @@ Ext.define("viewer.components.Edit", {
                     itemId: 'buttonPanel',
                     xtype: "container",
                     padding: "4px",
-                    width: '280px',
-                    height: MobileManager.isMobile() ? 60 : 36,
                     items: this.createActionButtons()
                 },
                 {
@@ -182,22 +181,18 @@ Ext.define("viewer.components.Edit", {
                     border: 0,
                     xtype: "form",
                     autoScroll: true,
-                    width: '100%',
                     flex: 1,
                     layout: this.config.formLayout,
                     hidden: true
                 }, {
                     itemId: 'savePanel',
                     xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 30,
                     layout: {
                         type: 'hbox',
                         pack: 'end'
                     },
                     defaults: {
-                        xtype: 'button',
-                        componentCls: 'mobileLarge'
+                        xtype: 'button'
                     },
                     items: [
                         {
@@ -253,7 +248,7 @@ Ext.define("viewer.components.Edit", {
             xtype: 'button',
             itemId: itemid,
             tooltip: tooltip || label,
-            componentCls: 'mobileLarge button-toggle',
+            componentCls: 'button-toggle',
             disabled: true,
             text: label,
             listeners: {

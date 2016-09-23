@@ -112,19 +112,23 @@ Ext.onReady(function() {
     }));
     
     var tabconfig = [{
-        contentEl:'rights-tab', 
+        itemId:'rights-tab',
+        contentEl:'rights-tab',
         title: 'Rechten'
     },{
-        contentEl:'documents-tab', 
+        itemId:'documents-tab',
+        contentEl:'documents-tab',
         title: 'Documenten'
     },{
-        contentEl:'context-tab', 
+        itemId:'context-tab',
+        contentEl:'context-tab',
         title: 'Context'
     }];
 
     if(layersAllowed) {
         tabconfig.unshift({
-            contentEl:'tree-tab', 
+            itemId:'tree-tab',
+            contentEl:'tree-tab',
             title: 'Kaarten'
         });
     }
@@ -150,7 +154,7 @@ Ext.onReady(function() {
         items: tabconfig,
         listeners: {
             tabchange: function(panel, activetab, previoustab) {
-                if(activetab.contentEl && activetab.contentEl === 'context-tab' && !htmlEditorRendered) {
+                if(activetab.getItemId() === 'context-tab' && !htmlEditorRendered) {
                     // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
                     Ext.create('Ext.form.field.HtmlEditor', {
                         id: 'extContextHtmlEditor',

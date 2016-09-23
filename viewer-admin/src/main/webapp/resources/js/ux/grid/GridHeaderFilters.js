@@ -399,7 +399,7 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
         if(cnt)
         {
             cnt.setWidth(w);
-            cnt.doLayout();
+            cnt.updateLayout();
         }
     },
     
@@ -551,7 +551,7 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
     
     parseStoreFilters: function()
     {
-        var sf = this.grid.getStore().filters;
+        var sf = this.grid.getStore().getFilters();
         var res = {};
         sf.each(function(filter){
             var name = filter.property;

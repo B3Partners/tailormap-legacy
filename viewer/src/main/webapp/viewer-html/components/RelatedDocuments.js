@@ -85,16 +85,13 @@ Ext.define ("viewer.components.RelatedDocuments",{
                     id: this.config.name + 'GridPanel',
                     xtype: "container",
                     autoScroll: true,
-                    width: '100%',
                     flex: 1,
                     html: '<div id="' + me.contentId + '" style="width: 100%; height: 100%;"></div>'
                 },{
                     id: this.config.name + 'ClosingPanel',
                     xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 25,
                     style: {
-                        marginTop: '10px',
+                        marginTop: '5px',
                         marginRight: '5px'
                     },
                     layout: {
@@ -102,7 +99,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
                         pack:'end'
                     },
                     items: [
-                        {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                        {xtype: 'button', text: 'Sluiten', handler: function() {
                             me.popup.hide();
                         }}
                     ]

@@ -42,7 +42,25 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         this.north = Ext.select(".olControlPanNorthItemInactive");        
         this.south = Ext.select(".olControlPanSouthItemInactive");
         this.east = Ext.select(".olControlPanEastItemInactive");
-        this.west = Ext.select(".olControlPanWestItemInactive");     
+        this.west = Ext.select(".olControlPanWestItemInactive");  
+        
+        if(this.config.viewerController.hasSvgSprite()) {
+            var appSprite = this.config.viewerController.getApplicationSprite();
+            function addSvgIcon(el, cls) {
+                el.setHtml([
+                    '<svg role="img" title=""><use xlink:href="',
+                    appSprite,
+                    '#icon-',
+                    cls,
+                    '"/></svg>'
+                ].join(""));
+                el.addCls('svg-tool');
+            }
+            addSvgIcon(this.north, "olcontrolpannorth");
+            addSvgIcon(this.south, "olcontrolpansouth");
+            addSvgIcon(this.east, "olcontrolpaneast");
+            addSvgIcon(this.west, "olcontrolpanwest");
+        }
                 
         Ext.select(".olControlPanPanel").setStyle("left","0px");
         Ext.select(".olControlPanPanel").setStyle("top","0px");
