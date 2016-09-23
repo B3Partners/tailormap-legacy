@@ -104,20 +104,20 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         attributeOrder.put(order7);
 
         JSONObject config = new JSONObject();
-        config.put("allowValueListOnly", false);
-        config.put("defaultValue", "");
-        config.put("disableUserEdit", false);
+        config.put("allowValueListOnly", true);
+        config.put("defaultValue", "puk");
+        config.put("disableUserEdit", true);
         config.put("disallowNullValue", true);
         config.put("editAlias", "pietje");
         config.put("editHeight", "10");
         config.put("editable", true);
-        config.put("editvalues", "");
+        config.put("editvalues", "aap,nootmies");
         config.put("featureType", 2);
-        config.put("filterable", false);
+        config.put("filterable", true);
         config.put("id", 9);
         config.put("longname", "begroeid_terreinvakonderdeel_bestaand.status");
         config.put("name", "id");
-        config.put("selectable", false);
+        config.put("selectable", true);
         config.put("valueList", "static");
         attributesConfig = new JSONArray();
         attributesConfig.put(config);
@@ -186,5 +186,37 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         assertEquals("pietje", toCheck.getEditAlias());
         assertEquals("10", toCheck.getEditHeight());
 
+    }
+    
+     @Test
+    public void testProcessAttributesPopulateComplete() {
+        assertNotNull(app);
+        ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
+        List<ConfiguredAttribute> attributes = appLayer.getAttributes();
+        assertEquals(9, attributes.size());
+        
+        List<ConfiguredAttribute> newAttrs = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
+        assertEquals("Number of returned attributes incorrect",9, newAttrs.size());
+        ConfiguredAttribute toCheck = null;
+        for (ConfiguredAttribute next : newAttrs) {
+            if(next.getId()== 9){
+                toCheck = next;
+                break;
+            }
+        }
+        assertNotNull("Attribute not present in processed list",toCheck);
+        
+        
+        assertEquals(true, toCheck.getAllowValueListOnly());
+        assertEquals( "puk", toCheck.getDefaultValue());
+        assertEquals( true, toCheck.isDisableUserEdit());
+        assertEquals(true, toCheck.getDisAllowNullValue());
+        assertEquals("pietje", toCheck.getEditAlias());
+        assertEquals("10", toCheck.getEditHeight());
+        assertEquals(true, toCheck.isEditable());
+        
+        assertEquals( "aap,nootmies", toCheck.getEditValues());
+        assertEquals( true, toCheck.isSelectable());
+        assertEquals( "static", toCheck.getValueList());
     }
 }

@@ -34,12 +34,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             </div>
             <div id="form-container" class="applicaties">
+                <!-- disabled, see https://github.com/flamingo-geocms/flamingo/issues/701
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean">
                     <stripes:hidden name="version"/>
                     <stripes:hidden name="name"/>
                     <stripes:hidden name="applicationWorkversion"/>
                     <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
                 </stripes:form>
+                -->
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
             </div>
             <script type="text/javascript" src="${contextPath}/resources/js/services/bookmark.js"></script>
