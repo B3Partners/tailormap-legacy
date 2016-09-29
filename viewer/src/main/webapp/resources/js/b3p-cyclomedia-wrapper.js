@@ -50,6 +50,12 @@
     }
 
     function init(qs) {
+        if(qs["auth"]) {
+            var auth = window.atob(qs["auth"]);
+            var up = auth.split(":");
+            qs["username"] = up[0];
+            qs["password"] = up[1];
+        }
         if(!qs["username"] || !qs["password"]) {
             alert("Username & Password are required");
         }
