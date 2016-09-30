@@ -83,7 +83,7 @@ public class WFSTypeNamingTest extends TestUtil {
             // {"url","name","wfs",typecount},
             {"http://ibis.b3p.nl/geoserver/ibis/wfs?SERVICE=WFS", "geoserver-namespaced-wfsurl", "wfs", 3, 0},
             {"http://ibis.b3p.nl/geoserver/wfs?SERVICE=WFS", "geoserver-wfsurl", "wfs", 3, 0},
-            {"http://services.geodataoverijssel.nl/geoserver/B07_Adressen/wfs?SERVICE=WFS", "geoserver", "wfs", 0, 0},
+        //    {"http://services.geodataoverijssel.nl/geoserver/B07_Adressen/wfs?SERVICE=WFS", "geoserver", "wfs", 0, 0},
             // {"http://services.geodataoverijssel.nl/geoserver/wfs?SERVICE=WFS", "geoserver", "wfs", 467,0},
             {"http://ibis.b3p.nl/geoserver/wms?SERVICE=WMS&", "geoserver-wmsurl", "wms", 3, 1},
             {"http://ibis.b3p.nl/geoserver/ibis/wms?SERVICE=WMS&", "geoserver-namespaced-wmsurl", "wms", 3, 1}
