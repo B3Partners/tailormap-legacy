@@ -46,7 +46,9 @@ Ext.define ("viewer.components.Cyclorama",{
             viewerController: this.config.viewerController
         });
         var appLayer = this.viewerController.getAppLayerById(this.config.layers);
-
+        if(!appLayer) {
+            return;
+        }
         var attributes = appLayer.attributes;
         var me = this;
         function processAttributes(attributes) {

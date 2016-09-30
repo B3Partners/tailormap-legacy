@@ -355,7 +355,9 @@ Ext.define("viewer.components.Legend", {
         if(tree === null) {
             return;
         }
-        tree.getEl().dom.removeEventListener("click", this.toggleLegendImage);
+        if(tree.getEl() && tree.getEl().dom) {
+            tree.getEl().dom.removeEventListener("click", this.toggleLegendImage);
+        }
     },
 
     getTocTree: function() {
