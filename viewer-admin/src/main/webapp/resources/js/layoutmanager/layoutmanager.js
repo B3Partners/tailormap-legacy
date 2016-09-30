@@ -574,7 +574,7 @@ Ext.define('LayoutManager', {
         return Ext.create('Ext.view.View', {
             cls: 'component-view',
             tpl: '<tpl for=".">' +
-            '<div class="component-block">' +
+            '<div class="component-block x-unselectable">' +
             '<div class="icon remove"></div>' +
             '<div class="icon wrangler"></div>' +
             '<span class="title">{name}</span>' +
@@ -717,6 +717,7 @@ Ext.define('LayoutManager', {
                             var dragHandle = e.getTarget('.draghandle', 10);
                             var sourceEl;
                             if (dragHandle) {
+                                e.stopPropagation();
                                 sourceEl = dragHandle.parentNode;
                                 var d = sourceEl.cloneNode(true);
                                 d.id = Ext.id();
