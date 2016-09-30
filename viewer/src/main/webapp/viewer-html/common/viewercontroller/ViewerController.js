@@ -1658,6 +1658,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             }else if(key === "levels"){
                 this.app.levels = value;
+            }else if (key ==="forceLoadLayers") {
+                layersLoaded = true;
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
