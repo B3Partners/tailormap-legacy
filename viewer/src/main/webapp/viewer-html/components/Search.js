@@ -432,7 +432,7 @@ Ext.define ("viewer.components.Search",{
                     if (me.searchRequestId === parseInt(response.request.searchRequestId)&& response.results) {
                         me.searchResult = me.searchResult.concat(response.results);
                         me.showSearchResults();
-                        if (response.limitReached) {
+                        if (response.limitReached && me.results) {
                             me.results.setTitle(me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
                         }
                     }
