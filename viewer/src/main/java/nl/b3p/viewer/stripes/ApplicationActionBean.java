@@ -423,7 +423,7 @@ public class ApplicationActionBean implements ActionBean {
             Application app = em.find(Application.class, id);
             name = app.getName();
             version = app.getVersion();
-        } catch (NoResultException e) {
+        } catch (NoResultException | NullPointerException e) {
             name = "default";
             version = null;
         }
