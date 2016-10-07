@@ -73,7 +73,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
-            autoScroll: true,
+            scrollable: true,
             constrainHeader: true,
             iconCls: this.config.iconCls || ""
         };
@@ -84,8 +84,9 @@ Ext.define ("viewer.components.ScreenPopup",{
                 svgIcon: this.config.popupIcon
             };
         }
-        
-        if(viewer.components.MobileManager.isMobile()) {
+
+        var isMobile = viewer.components.MobileManager.isMobile();
+        if(isMobile) {
             config.modal = true;
             config.width = '90%';
             config.height = '90%';
@@ -94,13 +95,13 @@ Ext.define ("viewer.components.ScreenPopup",{
             this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
 
-        if(this.config.details.minWidth) {
+        if(this.config.details.minWidth && !isMobile) {
             config.minWidth = this.config.details.minWidth;
             if(!conf.details.width) {
                 config.width = this.config.details.minWidth;
             }
         }
-        if(this.config.details.minHeight) {
+        if(this.config.details.minHeight && !isMobile) {
             config.minHeight = this.config.details.minHeight;
             if(!conf.details.height) {
                 config.height = this.config.details.minHeight;

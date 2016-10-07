@@ -220,6 +220,7 @@ Ext.define ("viewer.components.Print",{
             height: "100%",
             border: 0,
             renderTo: me.getContentDiv(),
+            scrollable: true,
             layout: {
                 type: 'vbox',
                 align: 'stretch',
