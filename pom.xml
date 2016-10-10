@@ -54,7 +54,7 @@
     </properties>
     <dependencyManagement>
         <!--
-            To check for plugin updates use the following command:
+            To check for dependency updates use the following command:
             mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-dependency-updates
             and check the output for any available updates
         -->
