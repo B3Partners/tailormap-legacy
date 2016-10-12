@@ -24,7 +24,7 @@
     </Server>
     -->
   <!-- Tomcat resource link -->
-  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
+  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
   <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
   <!-- Optional: use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
   <Realm className="org.apache.catalina.realm.CombinedRealm">
