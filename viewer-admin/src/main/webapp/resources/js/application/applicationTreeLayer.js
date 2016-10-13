@@ -131,7 +131,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 title: 'Edit',
                 padding: 10,
                 layout: 'auto',
-                autoScroll: true,
+                scrollable: true,
                 items: editItems,
                 itemId: 'edit-tab'
             });
@@ -149,7 +149,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 title: 'Filter / Selectie',
                 padding: 10,
                 layout: 'auto',
-                autoScroll: true,
+                scrollable: true,
                 items: filterItems,
                 itemId:'filter-tab'
             });
@@ -174,7 +174,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             activeTab: 0,
             defaults :{
                 bodyPadding: 10,
-                autoScroll: true
+                scrollable: true
             },
             layoutOnTabChange: false,
             items: tabconfig,

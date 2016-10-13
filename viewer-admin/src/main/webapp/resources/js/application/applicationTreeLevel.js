@@ -148,7 +148,8 @@ Ext.onReady(function() {
         hideMode: 'offsets',
         defaults: {
             bodyPadding: 10,
-            hideMode: 'offsets'
+            hideMode: 'offsets',
+            scrollable: true
         },
         layoutOnTabChange: true,
         items: tabconfig,
