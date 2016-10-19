@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,33 +16,34 @@
  */
 
 /**
- * @class 
+ * @class
  * @constructor
- * @description Openlayers ArcServer layer class 
+ * @description Openlayers ArcServer layer class
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersArcLayer",
-    constructor: function(config){        
-        viewer.viewercontroller.openlayers.OpenLayersArcServerLayer.superclass.constructor.call(this, config);        
+    constructor: function(config){
+        viewer.viewercontroller.openlayers.OpenLayersArcServerLayer.superclass.constructor.call(this, config);
         this.frameworkLayer = new OpenLayers.Layer.ArcGIS93Rest(this.name,this.url+"/export",{
             layers: "show:"+config.layers,
             transparent: 'true'
         },{
-            visibility: this.visible,            
+            visibility: this.visible,
             singleTile : true,
             transitionEffect : "resize",
-            opacity: this.config.opacity != undefined ? this.config.opacity : 1
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1,
+            attribution: this.config.attribution
         });
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE;
     },
     /**
      *@see viewer.viewercontroller.controller.Layer#getLastMapRequest
-     * fix the size in the url to the size of the Map. Otherwise the returned 
+     * fix the size in the url to the size of the Map. Otherwise the returned
      * image is to small.
      */
     getLastMapRequest: function(){
-        var extent=this.getFrameworkLayer().map.getExtent();        
+        var extent=this.getFrameworkLayer().map.getExtent();
         var url= this.getFrameworkLayer().getURL(extent);
         //size is wrong so make the size correct.
         var newSize="SIZE="+this.getMap().getWidth()+"%2C"+this.getMap().getHeight();
@@ -51,12 +52,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
             url: url
         }];;
     },
-    
+
     setQuery : function (filter){
         var me = this;
         var cql = filter != null ? filter.getCQL() : "";
         if(cql != ""){
-            var f = function(ids,colName) { 
+            var f = function(ids,colName) {
                 // Hack: An empty query returns all the features
                 var query = "-1";
                 if(ids.length != 0) {

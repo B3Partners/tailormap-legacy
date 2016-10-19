@@ -46,6 +46,7 @@ public class Layer implements Cloneable, Serializable {
     public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
     public static final String EXTRA_KEY_FILTERABLE = "filterable";
     public static final String EXTRA_IMAGE_EXTENSION ="image_extension";
+    public static final String EXTRA_KEY_ATTRIBUTION = "attribution";
 
     /**
      * JSON representation of wms:Style elements from capabilities for this layer
@@ -68,7 +69,8 @@ public class Layer implements Cloneable, Serializable {
         EXTRA_IMAGE_EXTENSION,
         DETAIL_ALL_CHILDREN,
         DETAIL_WMS_STYLES,
-        DETAIL_ALTERNATE_LEGEND_IMAGE_URL
+        DETAIL_ALTERNATE_LEGEND_IMAGE_URL,
+        EXTRA_KEY_ATTRIBUTION
     }));
 
     private static Set<String> updatableDetails = new HashSet<>(Arrays.asList(new String[] {
@@ -358,7 +360,7 @@ public class Layer implements Cloneable, Serializable {
 
     /**
      * Checks if the layer is bufferable.
-     * 
+     *
      * @return {@code true} if service type of this layer is ArcIms or ArcGis or
      * if the layer has a featuretype, {@code false} otherwise
      */

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,26 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
  * @description
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
-    extend: "viewer.viewercontroller.controller.WMSLayer",    
+    extend: "viewer.viewercontroller.controller.WMSLayer",
     mixins: {
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
-    constructor : function (config){        
+    constructor : function (config){
         viewer.viewercontroller.openlayers.OpenLayersWMSLayer.superclass.constructor.call(this,config);
         this.mixins.openLayersLayer.constructor.call(this,config);
-        
+
         this.options.visibility = this.visible;
         this.options.singleTile=true;
         this.options.transitionEffect = "resize";
+        this.options.attribution = this.config.attribution;
         this.frameworkLayer = new OpenLayers.Layer.WMS(this.options.name,this.url,this.ogcParams,this.options);
-                
+
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
-        
+
         this.getFeatureInfoControl=null;
         this.mapTipControl=null;
     },
@@ -48,12 +49,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
             url: this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent())
         }];
         return request;
-        
+
     },
-    
+
     getLayers : function(){
-        return this.getFrameworkLayer().options.layers;   
-    },    
+        return this.getFrameworkLayer().options.layers;
+    },
     /**
      * Implementation of setUrl in Layer
      * @see viewer.viewercontroller.controller.Layer#setUrl
@@ -63,7 +64,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         if (this.getFrameworkLayer()){
             this.getFrameworkLayer().setUrl(url);
         }
-    },   
+    },
     /**
     *Set a OGC-WMS param and refresh the layer
     */
@@ -76,7 +77,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     setGetFeatureInfoControl : function(controller){
         this.getFeatureInfoControl=controller;
     },
-    
+
     getGetFeatureInfoControl : function(){
         return this.getFeatureInfoControl;
     },
@@ -86,7 +87,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     setMapTipControl : function(controller){
         this.mapTipControl=controller;
     },
-    
+
     getMapTipControl : function(){
         return this.mapTipControl;
     },
@@ -126,8 +127,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
             });
         }
     },
-    
-    /******** overwrite functions to make use of the mixin functions **********/    
+
+    /******** overwrite functions to make use of the mixin functions **********/
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
@@ -137,7 +138,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    getVisible: function(){     
+    getVisible: function(){
         return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
