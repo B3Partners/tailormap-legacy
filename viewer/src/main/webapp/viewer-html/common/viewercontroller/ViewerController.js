@@ -253,7 +253,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();
-                this.layersInitialized=true;
                 this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
             }
         } catch(e) {
@@ -570,6 +569,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *and undefined if both must be initialized (first background, then foreground)
      */
     initLayers : function (background){
+        this.layersInitialized=false;
         if (background==undefined){
             //first the background
             this.initLayers(true);
@@ -586,6 +586,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
 
         }
+        this.layersInitialized=true;
     },
 
     /**
@@ -1674,7 +1675,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.setSelectedContent(selectedContent);
             this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,function(){
 
-                this.layersInitialized = true;
                 this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
             }, this,{single:true});
         }
