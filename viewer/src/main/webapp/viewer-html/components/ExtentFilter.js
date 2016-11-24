@@ -33,12 +33,13 @@ Ext.define ("viewer.components.ExtentFilter",{
         return this;
     },
     changedExtent:function(map,obj){
-        var extent = obj.extent;
-        var polygon = extent.toWKT();
-        for(var i = 0 ; i < this.layers.length ;i++){
-            this.setFilter(polygon, this.layers[i]);
+        if(this.config.viewerController.layersInitialized){
+            var extent = obj.extent;
+            var polygon = extent.toWKT();
+            for(var i = 0 ; i < this.layers.length ;i++){
+                this.setFilter(polygon, this.layers[i]);
+            }
         }
-        var a = 0; 
     },
     initializeLayers : function(){
         this.layers = [];

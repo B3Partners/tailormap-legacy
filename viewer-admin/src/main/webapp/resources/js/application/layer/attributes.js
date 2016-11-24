@@ -145,7 +145,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
             parent.push({
                 attributeid: this.config.attributes[i].id,
                 longname: this.config.attributes[i].longname,
-                text: this.config.attributes[i].name,
+                text: this.config.attributes[i].alias || this.config.attributes[i].name,
                 leaf: true,
                 checked: this.config.attributes[i].visible
             });

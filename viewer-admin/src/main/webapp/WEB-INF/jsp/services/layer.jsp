@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <tr>     
                         <td valign="top">Alternatieve legenda afbeelding:</td> 
                         <td>
-                            <stripes:text name="details[alternateLegendImageUrl]" maxlength="255" size="80"/><br>
+                            <stripes:text name="details[alternateLegendImageUrl]" maxlength="255" size="70"/><br>
                             <c:choose>
                                 <c:when test="${!empty actionBean.layer.legendImageUrl}">
                                     Legenda afbeelding van server:<br>
@@ -66,6 +66,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <tr>     
                         <td>Downloadlink:</td> 
                         <td><stripes:text name="details['download.url']" maxlength="255" size="30"/></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Naamsvermelding:</td>
+                        <td><stripes:text name="details['attribution']" maxlength="255" size="60"/><br/>
+                            <a href="#" onclick="document.getElementById('voorbeelden').style.display = 'table-row'">Toon voorbeelden</a>
+                        </td>
+                    </tr>
+                    <tr id="voorbeelden" style="display: none;">
+                        <td colspan="2" style="border: 1px solid #43a4b1">
+                            <i>Voorbeeld OpenStreetMap of Openbasiskaart:</i><br/>
+                            <span style="font-family: monospace">&amp;copy; &lt;a href="http://www.openstreetmap.nl" target="_blank"&gt;OpenStreetMap contributors&lt;/a&gt;</span><br/>
+                            <i>Voorbeeld BGT, PDOK, etc:</i></br>
+                            <span style="font-family: monospace">&amp;copy; &lt;a href="http://www.kadaster.nl" target="_blank"&gt;Kadaster&lt;/a&gt;</span><br/>
+                        </td>
                     </tr>
                     <tr>
                         <td>Attribuutbron:</td>

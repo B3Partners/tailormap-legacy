@@ -47,14 +47,14 @@
         <hsqldb.version>2.3.4</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>9.4.1209.jre7</postgresql.version>
-        <apache.poi.version>3.14</apache.poi.version>
+        <apache.poi.version>3.15</apache.poi.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
     </properties>
     <dependencyManagement>
         <!--
-            To check for plugin updates use the following command:
+            To check for dependency updates use the following command:
             mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-dependency-updates
             and check the output for any available updates
         -->
@@ -142,12 +142,12 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.4</version>
+                <version>3.5</version>
             </dependency>
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20160713</version>
+                <version>v20161024</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -423,7 +423,7 @@
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
-                <version>1.3.0</version>
+                <version>1.4.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -500,7 +500,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.6.0</version>
                     <configuration>
                         <source>${project.build.sourceVersion}</source>
                         <target>${project.build.targetVersion}</target>

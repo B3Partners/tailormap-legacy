@@ -38,8 +38,9 @@ Ext.define("viewer.components.CoordinateLinkWindow", {
             id: this.getName(),
             name: this.getName(),
             tooltip: this.config.tooltip || null,
-            displayClass: "streetView",
-            viewerController: this.config.viewerController
+            displayClass: !!this.config.iconUrl ? "coordinateLinkWindow-" + Ext.id() : "streetView",
+            viewerController: this.config.viewerController,
+            iconUrl: this.config.iconUrl || null
         });
         this.config.viewerController.mapComponent.addTool(this.button);
 
@@ -61,19 +62,15 @@ Ext.define("viewer.components.CoordinateLinkWindow", {
             viewerController: this.config.viewerController
         });
     },
-    openPhoto: function (html) {
-        // Get link from backend
-        var width = parseInt(this.config.width);
-        var height = parseInt(this.config.height);
-
-       
-    },
     mapClicked: function (tool, event) {
         var me = this;
         var coords = event.coord;
         var x = coords.x;
         var y = coords.y;
         var newUrl = this.config.url;
+        if(newUrl.indexOf("/cyclomedia.html") !== -1){
+            newUrl = contextPath + newUrl;
+        }
         
         newUrl=newUrl.replace(/\[RDX\]/g, x);
         newUrl=newUrl.replace(/\[RDY\]/g, y);

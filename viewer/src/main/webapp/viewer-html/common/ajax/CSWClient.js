@@ -47,6 +47,7 @@ Ext.define("viewer.CSWClient", {
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: this.config, // XXX also posts actionbeanUrl, but is harmless
+            timeout: 120000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 

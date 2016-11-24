@@ -199,7 +199,7 @@ public class LayerActionBean implements ActionBean {
             applicationsUsedIn.add(application.getNameWithVersion());
         }
     }
-    
+
     private List<Application> findApplications(Layer layer) {
         List<Application> apps = new ArrayList();
         GeoService service = layer.getService();
@@ -210,7 +210,7 @@ public class LayerActionBean implements ActionBean {
 
         for (Iterator it = applicationLayers.iterator(); it.hasNext();) {
             ApplicationLayer appLayer = (ApplicationLayer) it.next();
-            
+
             /*
              * The parent level of the applicationLayer is needed to find out in
              * which application the Layer is used. This solution is not good
@@ -229,15 +229,16 @@ public class LayerActionBean implements ActionBean {
     public Resolution save() {
         // Only remove details which are editable and re-added layer if not empty,
         // retain other details (for example "wms.styles")
-        // See JSP for which keys are edited 
+        // See JSP for which keys are edited
         layer.getDetails().keySet().removeAll(Arrays.asList(
                 Layer.EXTRA_KEY_METADATA_STYLESHEET_URL,
                 Layer.EXTRA_KEY_DOWNLOAD_URL,
                 Layer.EXTRA_KEY_FILTERABLE,
-                Layer.DETAIL_ALTERNATE_LEGEND_IMAGE_URL
+                Layer.DETAIL_ALTERNATE_LEGEND_IMAGE_URL,
+                Layer.EXTRA_KEY_ATTRIBUTION
         ));
         for(Map.Entry<String,String> e: details.entrySet()) {
-            if(e.getValue() != null) { // Don't insert null value ClobElement 
+            if(e.getValue() != null) { // Don't insert null value ClobElement
                 layer.getDetails().put(e.getKey(), new ClobElement(e.getValue()));
             }
         }

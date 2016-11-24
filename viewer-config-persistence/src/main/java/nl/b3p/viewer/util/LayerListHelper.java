@@ -25,12 +25,15 @@ import nl.b3p.viewer.config.services.ArcGISFeatureSource;
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WMSService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class LayerListHelper {
+    private static final Log log = LogFactory.getLog(LayerListHelper.class);
 
     /**
      * Get a list of Layers from the level and its subLevels.
@@ -52,8 +55,11 @@ public class LayerListHelper {
         Boolean hasConfiguredLayers, List<Long> possibleLayers, EntityManager em) {
         List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
+        long startTime = System.currentTimeMillis();
         Application.TreeCache tc = application.loadTreeCache(em);
 
+        long end = System.currentTimeMillis();
+        log.error("TreeCache" + (end-startTime));
         for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
 
             Layer l = appLayer.getService().getLayer(appLayer.getLayerName(),em);

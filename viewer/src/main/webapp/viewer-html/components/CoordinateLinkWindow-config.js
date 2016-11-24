@@ -39,15 +39,21 @@ Ext.define("viewer.components.CustomConfiguration",{
                 width: 500,
                 labelWidth:this.labelWidth,
                 fieldLabel: "Hoogte popup"
-            }   ,
+            },
             {
                 xtype: "textfield",
                 name: "url",
                 value: this.configObject.url,
                 width: 700,
                 labelWidth:this.labelWidth,
-                fieldLabel: "URL naar de panoramaservice (gebruik [RDX] en [RDY])"
+                fieldLabel: "URL *"
             }         
         ]);
+          var extraText = document.createElement('div');
+        extraText.innerHTML="* Vul hier de gewenste URL in, bijvoorbeeld naar panoramafoto's. Flamingo levert standaard een pagina voor cyclorama mee.\n\
+ Vul hiervoor het volgende in: <br/> \
+                '/cyclomedia.html?username=[username]&password=[password]&x=[RDX]&y=[RDY]'. <br/> \
+            Username en wachtwoord moeten hier ingevuld worden door de beheerder, RDX en RDY is het coördinaat van het klikpunt, en wordt automatisch ingevuld.";
+        document.getElementById("config").appendChild(extraText);
     }
 });

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
  */
 
 /**
- * @class 
+ * @class
  * @constructor
- * @description Flamingo ArcIMS layer class 
+ * @description Flamingo ArcIMS layer class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  **/
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
@@ -28,20 +28,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
 
         viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
-        
+
         this.type=viewer.viewercontroller.controller.Layer.ARCIMS_TYPE;
         var options = {
             async: true,
             singleTile: false,
             // usually ArcIMS is configured with <IMAGELIMIT pixelcount="1048576" />
             // so max size is 1024 x 1024
-            tileSize: new OpenLayers.Size(1024, 1024), 
-            transparent: true,   // THIS DOES NOTHING!!!       
+            tileSize: new OpenLayers.Size(1024, 1024),
+            transparent: true,   // THIS DOES NOTHING!!!
             format: "image/png", // THIS DOES NOTHING EITHER!!! See ArcXML_transparency_hack.patch
             //transitionEffect : "resize", // Does not work, resized tiles are not removed
-            opacity: this.config.opacity != undefined ? this.config.opacity : 1
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1,
+            attribution: this.config.attribution
         };
-        
+
         options.serviceName = this.serviceName;
         options.filterCoordSys = "28992";
         options.featureCoordSys = "28992";
@@ -53,7 +54,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
 
         this.frameworkLayer = new OpenLayers.Layer.ArcIMS(
             this.name,
-            this.url, 
+            this.url,
             options);
         return this;
     },
@@ -69,12 +70,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
     setQuery : function (filter){
         if(filter){
             var me = this;
-            var f = function(query) { 
+            var f = function(query) {
                 me.frameworkLayer.layers[0].query.where = query;
                 me.reload();
             };
             var util = Ext.create("viewer.ArcQueryUtil");
-            util.cqlToArcXMLWhere(filter.getCQL(),f, this.config.viewerController.logger.error);        
+            util.cqlToArcXMLWhere(filter.getCQL(),f, this.config.viewerController.logger.error);
         }else{
             this.frameworkLayer.layers[0].query.where = "";
             this.reload();

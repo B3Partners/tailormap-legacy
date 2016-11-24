@@ -257,8 +257,8 @@ Ext.define ("viewer.components.Search",{
                         specialkey: function(field, e){
                             if (e.getKey() === e.ENTER) {
                                 var item = null;
-                                if(field.picker && field.picker.pickerField && field.picker.pickerField.listKeyNav && field.picker.pickerField.listKeyNav.boundList.highlightedItem) {
-                                    item = field.picker.pickerField.listKeyNav.boundList.highlightedItem;
+                                if(field.picker && field.picker.highlightedItem){
+                                    item = field.picker.highlightedItem;
                                 }
                                 if(!item){
                                     me.search();
@@ -426,7 +426,7 @@ Ext.define ("viewer.components.Search",{
                     if (me.searchRequestId === parseInt(response.request.searchRequestId)&& response.results) {
                         me.searchResult = me.searchResult.concat(response.results);
                         me.showSearchResults();
-                        if (response.limitReached) {
+                        if (response.limitReached && me.results) {
                             me.results.setTitle(me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
                         }
                     }

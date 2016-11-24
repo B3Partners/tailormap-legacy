@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Street Smart API</title>
+    <!--suppress JSUnresolvedLibraryURL -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react.min.js"></script>
+    <!--suppress JSUnresolvedLibraryURL -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react-dom.min.js"></script>
+    <!--suppress JSUnresolvedLibraryURL -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.17.1/ol.js"></script>
+
+    <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v16.1/Aperture.js"></script>
+    <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v16.1/StreetSmartApi.js"></script>
+    <style>
+        body {
+            margin: 10px;
+        }
+        * {
+            font-family: Georgia,serif;
+        }
+        .panoramaViewerWindow {
+            display: block;
+            width: 100%;
+            height: 500px;
+        }
+
+        .loading {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            margin-top: -6em;
+            margin-left: -6em;
+            z-index: 200;
+            background-color: rgba(30, 30, 30, .7);
+            padding: 2em;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+        .loader {
+            font-size: 10px;
+            position: relative;
+            text-indent: -9999em;
+            border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-left: 1.1em solid #ffffff;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: load8 1.1s infinite linear;
+            animation: load8 1.1s infinite linear;
+        }
+        .loader,
+        .loader:after {
+            border-radius: 50%;
+            width: 10em;
+            height: 10em;
+        }
+        @-webkit-keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading"><div class="loader"></div></div>
+    <div id="streetsmartAPI1" class="panoramaViewerWindow"></div>
+    <script type="text/javascript" src="resources/js/b3p-cyclomedia-wrapper.js"></script>
+</body>
+</html>

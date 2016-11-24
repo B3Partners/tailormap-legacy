@@ -353,6 +353,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "summary.link",
                 "editfunction.title",
                 "style",
+                "metadataurl",
                 "summary.noHtmlEncode",
                 "summary.nl2br",
                 "editfeature.usernameAttribute"

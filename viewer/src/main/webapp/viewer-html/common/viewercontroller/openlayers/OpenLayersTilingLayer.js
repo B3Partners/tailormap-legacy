@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
  * @description
  */
@@ -28,18 +28,18 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     /**
      *Constructor
      */
-    constructor : function (config){        
-        viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);   
-        
+    constructor : function (config){
+        viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);
+
         if(!Ext.Array.contains(["TMS", "ArcGisRest"], this.getProtocol())) {
             throw new Error("OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
-        
+
         this.mixins.openLayersLayer.constructor.call(this,config);
-        
+
         this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
         this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
-        
+
         var serviceEnvelopeTokens=this.serviceEnvelope.split(",");
         var x=Number(serviceEnvelopeTokens[0]);
         var y=Number(serviceEnvelopeTokens[1]);
@@ -57,8 +57,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             maxExtent: new OpenLayers.Bounds(Number(serviceEnvelopeTokens[0]),Number(serviceEnvelopeTokens[1]),Number(serviceEnvelopeTokens[2]),Number(serviceEnvelopeTokens[3])),
             maxResolution: this.resolutions[0],
             visibility: this.visible==undefined ? true : this.visible,
-            opacity: this.config.opacity != undefined ? this.config.opacity : 1
-        }
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1,
+            attribution: this.config.attribution
+        };
         if (this.getProtocol()=="TMS"){
             //fix the url: example: "http://tilecache.kaartenbalie.nl/tilecache.cgi/1.0.0/osm/"
             var version=null;
@@ -74,9 +75,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             //set TMS tiling options.
             options.serviceVersion= version;
             options.layername= layerName,
-            
+
             this.frameworkLayer = new OpenLayers.Layer.TMS(layerName,this.url,options);
-        }else if(this.getProtocol()=="ArcGisRest"){  
+        }else if(this.getProtocol()=="ArcGisRest"){
             options.resolutions = this.resolutions;
             options.projection =  'EPSG:28992';
             this.frameworkLayer = new OpenLayers.Layer.ArcGISCache(this.name,this.url,options);
@@ -89,7 +90,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     setUrl: function(url){
         this.url=url;
         /*Todo: needs to implement. CHange the url in the framework*/
-    },    
+    },
     /**
      *Gets the layer that are set in this layer
      */
@@ -107,11 +108,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
      * Return the last Map requests as object.
      * @see viewer.viewercontroller.controller.Layer#getLastMapRequest
      * @return a array of objects with
-     * .url the url to the image and 
+     * .url the url to the image and
      * .extent the extent of the image
      */
     getLastMapRequest: function(){
-        var requests=[];        
+        var requests=[];
         var grid = this.getFrameworkLayer().grid;
         for (var r=0; r < grid.length; r++){
             for (var c=0; c < grid[r].length; c++){
@@ -126,7 +127,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         }
         return requests;
     },
-    /******** overwrite functions to make use of the mixin functions **********/    
+    /******** overwrite functions to make use of the mixin functions **********/
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
@@ -136,7 +137,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    getVisible: function(){        
+    getVisible: function(){
         return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**

@@ -266,7 +266,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();
-                this.layersInitialized=true;
                 this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
             }
         } catch(e) {
@@ -583,6 +582,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *and undefined if both must be initialized (first background, then foreground)
      */
     initLayers : function (background){
+        this.layersInitialized=false;
         if (background==undefined){
             //first the background
             this.initLayers(true);
@@ -599,6 +599,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
 
         }
+        this.layersInitialized=true;
     },
 
     /**
@@ -839,6 +840,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(appLayer.details && appLayer.details.transparency != undefined) {
             options.alpha = 100-appLayer.details.transparency;
         }
+        options.attribution = layer.details && layer.details.attribution ? layer.details.attribution : null;
 
         var layerObj = null;
 
@@ -1120,11 +1122,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *         1 if appLayer.minScale > scale
      */
     compareToScale: function (appLayer,scale,doCorrection){
-    
+
         if (doCorrection === undefined){
             doCorrection = true;
         }
-        
+
         //get the serviceLayer
         var serviceLayer=this.getServiceLayer(appLayer);
 
@@ -1153,7 +1155,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
 
         var service=this.app.services[appLayer.serviceId];
-        
+
         if (doCorrection){
             //fix some things with scale and resolution differences in servers:
             var scaleCorrection = this.calculateScaleCorrection(service,minScale,maxScale);
@@ -1673,6 +1675,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             }else if(key === "levels"){
                 this.app.levels = value;
+            }else if (key ==="forceLoadLayers") {
+                layersLoaded = true;
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
@@ -1685,8 +1689,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.app.appLayers = appLayers;
             this.setSelectedContent(selectedContent);
             this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,function(){
-                
-                this.layersInitialized = true;
+
                 this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
             }, this,{single:true});
         }
@@ -1898,7 +1901,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
-    
+
     /**
      * Gets the ID of the map container
      * @returns string
@@ -1922,7 +1925,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getApplicationVersion: function() {
         return this.app.version;
     },
-    
+
     /**
      * Registers all open windows to close previous windows if needed
      * @param ScreenPopup popup
@@ -1935,7 +1938,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Register a layer as a snapping client.
-     * To be called by controls that which to benefit from snapping before they 
+     * To be called by controls that which to benefit from snapping before they
      * add the layer to the map.
      *
      * @param {type} vectorLayer the layer to add
