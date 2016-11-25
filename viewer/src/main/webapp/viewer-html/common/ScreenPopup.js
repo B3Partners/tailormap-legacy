@@ -75,7 +75,9 @@ Ext.define ("viewer.components.ScreenPopup",{
             renderTo: Ext.getBody(),
             scrollable: true,
             constrainHeader: true,
-            iconCls: this.config.iconCls || ""
+            iconCls: this.config.iconCls || "",
+            bodyStyle: {},
+            cls: "screen-popup"
         };
         
         if(this.config.popupIcon) {
@@ -92,6 +94,12 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.height = '90%';
             config.draggable = false;
             config.resizable = false;
+            if(this.config.details.minWidth) {
+                config.bodyStyle.minWidth = this.config.details.minWidth + "px";
+            }
+            if(this.config.details.minHeight) {
+                config.bodyStyle.minHeight = this.config.details.minHeight + "px";
+            }
             this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
 
@@ -108,7 +116,6 @@ Ext.define ("viewer.components.ScreenPopup",{
             }
         }
 
-        config.bodyStyle = {};
         if(this.config.details && this.config.details.items){
             config.items = this.config.details.items;
             config.bodyStyle.background = '#fff';

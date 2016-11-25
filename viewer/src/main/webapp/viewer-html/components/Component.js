@@ -149,6 +149,20 @@ Ext.define("viewer.components.Component",{
         // Only show label if there is an icon or a sprite (and a label is set)
         if((options.icon || me.haveSprite) && options.label) showLabel = true;
 
+        var buttonListeners = {
+            click: function(button) {
+                me.setButtonState('click');
+            }
+        };
+        if(!viewer.components.MobileManager.hasTouch()) {
+            buttonListeners["mouseover"] = function(button) {
+                me.setButtonState('hover');
+            };
+            buttonListeners["mouseout"] = function(button) {
+                me.setButtonState('normal');
+            };
+        }
+
         me.button = Ext.create('Ext.button.Button', {
             text: buttonText,
             cls: buttonCls,
@@ -174,17 +188,8 @@ Ext.define("viewer.components.Component",{
             style: {
                 height: me.defaultButtonHeight + 'px'
             },
-            listeners: {
-                click: function(button) {
-                    me.setButtonState('click');
-                },
-                mouseover: function(button) {
-                    me.setButtonState('hover');
-                },
-                mouseout: function(button) {
-                    me.setButtonState('normal');
-                }
-            }
+            listeners: buttonListeners,
+            preventDefault: !viewer.components.MobileManager.hasTouch()
         });
 
         if(showLabel) {

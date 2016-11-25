@@ -50,6 +50,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     resizeDebounce: null,
     // Debounce applyFilter calls
     filterDebounce: {},
+    // List of elements that are "anchored" to a container. After resizing the element is re-aligned
+    anchors: [],
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -1910,6 +1912,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return this.layoutManager.getMapId();
     },
 
+    getWrapperId: function() {
+        return this.layoutManager.getWrapperId();
+    },
+
+    /**
+     *
+     */
+    anchorTo: function(element, container, position, offsets) {
+        this.anchors.push({ element: element, container: container, position: position, offsets: offsets });
+    },
+    doAlignAnchors: function() {
+        for(var i = 0; i < this.anchors.length; i++) {
+            this.anchors[i].element.alignTo(this.anchors[i].container, this.anchors[i].position, this.anchors[i].offsets);
+        }
+    },
     /**
      * Get the application name
      * @returns string
@@ -1972,9 +1989,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.resizeDebounce = window.setTimeout(function() {
             if(informLayoutmanager){
                 me.layoutManager.resizeLayout(function(){
+                    me.doAlignAnchors();
                     return me.resizeComponentsImpl();
                 });
             }else{
+                this.doAlignAnchors();
                 return this.resizeComponentsImpl();
             }
         }, 50);

@@ -154,7 +154,7 @@ Ext.define ("viewer.components.TOC",{
         this.panel =Ext.create('Ext.tree.Panel', {
             title: title,
             height: "100%",
-            autoScroll: true,
+            scrollable: true,
             useArrows: true,
             rootVisible: false,
             floating: false,

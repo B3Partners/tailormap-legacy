@@ -73,7 +73,7 @@ Ext.define ("viewer.components.tools.Zoom",{
         }
         var map = Ext.get(this.config.viewerController.layoutManager.mapId);
         container.alignTo(map, [align, align].join('-'), pos);
-        container.anchorTo(map, [align, align].join('-'), pos);
+        this.config.viewerController.anchorTo(container, map, [align, align].join('-'), pos);
     }
 });
 

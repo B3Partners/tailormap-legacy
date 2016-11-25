@@ -166,6 +166,10 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .layout-left_menu{
     z-index: 15000;
 }
+.layout-left_menu .viewer-component-block {
+     overflow: auto;
+     -webkit-overflow-scrolling: touch;
+ }
 
 .direct-search-result {
     position: absolute;
@@ -319,4 +323,22 @@ html {
     -webkit-box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
     -moz-box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
     box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
+}
+
+/** Make clickable area of close button bigger */
+.x-window-header-default-horizontal .x-tool-after-title:after{
+    content:"";
+    padding: 25px;
+    position: absolute;
+    left: -18px;
+    top: -16px;
+}
+/**
+Make contents of popups scrollable on mobile devices
+TODO: check if we always need to do this, not only mobile, only on mobile are we setting min widths/heights on
+*/
+.flamingo-mobile .screen-popup .x-window-bodyWrap {
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }

@@ -47,13 +47,13 @@ div.olControlZoom a.svg-tool svg {
     transition: fill .3s, stroke .3s, color .3s;
 }
 
-.svg-button:hover,
-.svg-button.buttonDefaultClass_hover {
+.no-touch .svg-button:hover,
+.no-touch .svg-button.buttonDefaultClass_hover {
     background-color: #F1F1F1 !important;
 }
 
-.svg-button:hover svg *,
-.svg-tool:hover svg * {
+.no-touch .svg-button:hover svg *,
+.no-touch .svg-tool:hover svg * {
     fill: #4A4A4A;
     stroke: #4A4A4A;
 }

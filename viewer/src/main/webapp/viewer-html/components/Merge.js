@@ -144,6 +144,7 @@ Ext.define("viewer.components.Merge", {
         if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
             this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         }
+        this.hideMobilePopup();
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {
@@ -156,6 +157,16 @@ Ext.define("viewer.components.Merge", {
     cancel: function () {
         this.resetForm();
         this.popup.hide();
+    },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.show();
+        }
     },
     /**
      * Can be overridden to add some extra data before sending the split
@@ -423,6 +434,7 @@ Ext.define("viewer.components.Merge", {
                 this.vectorLayer.addFeature(feat);
             }
         }
+        this.showMobilePopup();
         Ext.get(this.getContentDiv()).unmask();
     },
     indexFeatureToNamedFeature: function (feature) {

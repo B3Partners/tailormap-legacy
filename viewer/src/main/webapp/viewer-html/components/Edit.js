@@ -38,6 +38,8 @@ Ext.define("viewer.components.Edit", {
     editLinkInFeatureInfoCreated: false,
     afterLoadAttributes: null,
     filterFeature: null,
+    // Boolean to check if window is hidden temporarily for mobile mode
+    mobileHide: false,
     config: {
         title: "",
         iconUrl: "",
@@ -134,6 +136,7 @@ Ext.define("viewer.components.Edit", {
         if (this.vectorLayer == null) {
             this.createVectorLayer();
         }
+        this.mobileHide = false;
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
         this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
@@ -280,6 +283,7 @@ Ext.define("viewer.components.Edit", {
             button.setDisabled(disabled);
     },
     showAndFocusForm: function () {
+        this.showMobilePopup();
         this.setFormVisible(true);
         this.inputContainer.down("field").focus();
         this.geomlabel.setText("");
@@ -639,6 +643,7 @@ Ext.define("viewer.components.Edit", {
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
+        this.showMobilePopup();
         if (this.mode === "new") {
             return;
         }
@@ -718,6 +723,7 @@ Ext.define("viewer.components.Edit", {
         this.setFormVisible(false);
     },
     createNew: function () {
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Voeg een nieuw " + this.tekstGeom + " toe op de kaart");
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
@@ -730,6 +736,7 @@ Ext.define("viewer.components.Edit", {
 
     },
     edit: function () {
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Selecteer een te bewerken " + this.tekstGeom + " in de kaart");
         this.mode = "edit";
@@ -738,6 +745,7 @@ Ext.define("viewer.components.Edit", {
         this.untoggleButtons("editButton");
     },
     copy: function () {
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Selecteer een te kopieren " + this.tekstGeom + " in de kaart");
         this.mode = "copy";
@@ -749,6 +757,7 @@ Ext.define("viewer.components.Edit", {
         if (!this.config.allowDelete) {
             return;
         }
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Selecteer een te verwijderen " + this.tekstGeom + " in de kaart");
         this.mode = "delete";
@@ -783,6 +792,18 @@ Ext.define("viewer.components.Edit", {
         this.deActivatedTools = [];
         this.toolMapClick.deactivateTool();
         this.showAndFocusForm();
+    },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = true;
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = false;
+            this.popup.show();
+        }
     },
     save: function () {
         if (this.mode === "delete") {
@@ -882,6 +903,9 @@ Ext.define("viewer.components.Edit", {
         Ext.Msg.alert('Mislukt', msg);
     },
     cancel: function () {
+        if(this.mobileHide) {
+            return;
+        }
         this.resetForm();
         this.popup.hide();
     },

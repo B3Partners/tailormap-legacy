@@ -112,7 +112,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         }
         var mapContainer = Ext.get(this.config.viewerController.getMapId());
         this.container.alignTo(mapContainer, [align, align].join('-'), pos);
-        this.container.anchorTo(mapContainer, [align, align].join('-'), pos);
+        this.config.viewerController.anchorTo(this.container, mapContainer, [align, align].join('-'), pos);
     },
     
     levelItemId: function(level) {

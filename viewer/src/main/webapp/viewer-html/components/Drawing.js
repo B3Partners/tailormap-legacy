@@ -40,6 +40,8 @@ Ext.define ("viewer.components.Drawing",{
     // Current active feature
     activeFeature:null,
     features:null,
+    // Boolean to check if window is hidden temporarily for mobile mode
+    mobileHide: false,
     config:{
         title: "",
         reactivateTools:null,
@@ -92,9 +94,13 @@ Ext.define ("viewer.components.Drawing",{
             this.createVectorLayer();
         }
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        this.mobileHide = false;
         this.popup.show();
     },
     hideWindow: function () {
+        if(this.mobileHide) {
+            return;
+        }
         for (var i = 0; i < this.deActivatedTools.length; i++) {
             this.deActivatedTools[i].activate();
         }
@@ -462,6 +468,7 @@ Ext.define ("viewer.components.Drawing",{
             var button = Ext.getCmp(id);
             if(button) button.toggle(false);
         });
+        this.showMobilePopup();
     },
     colorChanged : function (hexColor){
         this.config.color = hexColor;
@@ -486,16 +493,32 @@ Ext.define ("viewer.components.Drawing",{
     toggleSelectForm : function(visible){
         this.formselect.setVisible(visible);
     },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = true;
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = false;
+            this.popup.show();
+        }
+    },
     drawPoint: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("Point");
     },
     drawLine: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("LineString");
     },
     drawPolygon: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("Polygon");
     },
     drawCircle: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("Circle");
     },
     deleteAll: function() {

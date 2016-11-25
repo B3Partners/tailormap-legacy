@@ -16,8 +16,26 @@
  */
 Ext.define ("viewer.components.MobileManager", {
     singleton: true,
+    qs: Ext.Object.fromQueryString(location.search),
+    constructor: function() {
+        Ext.onReady(function() {
+            var body = Ext.getBody();
+            if(!this.hasTouch()) {
+                body.addCls("no-touch");
+            }
+            if(this.isMobile()) {
+                body.addCls("flamingo-mobile");
+            }
+        }, this);
+    },
     isMobile: function() {
+        if(this.qs.hasOwnProperty("mobile") && this.qs.mobile === "true") {
+            return true;
+        }
         return Ext.os.deviceType !== "Desktop";
+    },
+    hasTouch: function() {
+        return Ext.supports.Touch;
     },
     getOrientation: function() {
         if ((window.orientation && (window.orientation == 90 || window.orientation == -90)) || screen.width > screen.height) {

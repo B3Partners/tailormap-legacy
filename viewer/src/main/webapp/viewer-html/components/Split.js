@@ -160,12 +160,14 @@ Ext.define("viewer.components.Split", {
         Ext.getCmp(this.name + "drawButton").setDisabled(false);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
         Ext.getCmp(this.name + "geomLabel").setText("Teken een lijn om mee te splitsen");
+        this.showMobilePopup();
     },
     splitFeatureAdded: function (vecLayer, feature) {
         this.splitFeature = feature;
         Ext.getCmp(this.name + "drawButton").setDisabled(true);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
         Ext.getCmp(this.name + "geomLabel").setText("");
+        this.showMobilePopup();
     },
     showWindow: function () {
         if (this.vectorLayer == null) {
@@ -495,6 +497,7 @@ Ext.define("viewer.components.Split", {
     splitLijn: function () {
         this.drawLayer.removeAllFeatures();
         this.mode = "split";
+        this.hideMobilePopup();
         if (this.newGeomType != null && this.geometryEditable) {
             this.drawLayer.drawFeature("LineString");
         }
@@ -576,6 +579,7 @@ Ext.define("viewer.components.Split", {
                 this.toSplitFeature = feat;
             }
         }
+        this.showMobilePopup();
         Ext.get(this.getContentDiv()).unmask();
     },
     /**
@@ -592,6 +596,16 @@ Ext.define("viewer.components.Split", {
      */
     allowedEditable: function (attribute) {
         return true;
+    },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.show();
+        }
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
@@ -748,11 +762,13 @@ Ext.define("viewer.components.Split", {
         this.vectorLayer.removeAllFeatures();
         this.mode = "select";
         this.activateMapClick();
+        this.hideMobilePopup();
     },
     cancelSelectFeature: function () {
         this.resetForm();
         Ext.get(this.getContentDiv()).unmask();
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
+        this.showMobilePopup();
     },
     indexFeatureToNamedFeature: function (feature) {
         var map = this.makeConversionMap();

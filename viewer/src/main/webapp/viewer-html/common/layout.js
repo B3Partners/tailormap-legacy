@@ -693,6 +693,10 @@ Ext.define('viewer.LayoutManager', {
         return this.mapId;
     },
 
+    getWrapperId: function() {
+        return this.wrapperId;
+    },
+
     getComponentList: function() {
         return this.componentList;
     },

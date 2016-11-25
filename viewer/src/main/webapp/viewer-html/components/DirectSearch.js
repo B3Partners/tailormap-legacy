@@ -100,7 +100,9 @@ Ext.define ("viewer.components.DirectSearch",{
         if(align.substr(1) === 'r') {
             pos[0] = pos[0] * -1;
         }
-        this.mainContainer.alignTo(Ext.getBody(), [align, align].join('-'), pos);
-        this.mainContainer.anchorTo(Ext.getBody(), [align, align].join('-'), pos);
+        this.mainContainer.alignTo(this.config.viewerController.getWrapperId(), [align, align].join('-'), pos);
+        this.config.viewerController.anchorTo(
+            this.mainContainer, this.config.viewerController.getWrapperId(), [align, align].join('-'), pos
+        );
     }
 });
