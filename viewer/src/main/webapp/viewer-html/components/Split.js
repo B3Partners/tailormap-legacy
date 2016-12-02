@@ -55,7 +55,7 @@ Ext.define("viewer.components.Split", {
     constructor: function (conf) {
         this.initConfig(conf);
 		viewer.components.Split.superclass.constructor.call(this, this.config);
-        this.config.actionbeanUrl = contextPath + '/action/feature/split';
+        this.config.actionbeanUrl = FlamingoAppLoader.get('contextPath') + '/action/feature/split';
         var me = this;
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
                 function (event) {

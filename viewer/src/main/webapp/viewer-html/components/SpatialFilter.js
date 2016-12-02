@@ -69,7 +69,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             'freehand': Ext.id()
             
         };
-        this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
+        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
      
         this.loadWindow(); 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );

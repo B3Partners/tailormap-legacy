@@ -860,8 +860,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     //because click events still needs to be handled by the map, move the balloon a bit
     this.offsetX=1;
     this.offsetY=0;
-    this.roundImgPath=contextPath+"/viewer-html/components/resources/images/maptip/round.png";
-    this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";
+    this.roundImgPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/maptip/round.png";
+    this.arrowImgPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/maptip/arrow.png";
 
     //the balloon jquery dom element.
     this.balloon=null;

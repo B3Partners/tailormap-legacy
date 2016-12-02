@@ -77,6 +77,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/${actionBean.viewerType}-min.js"></script>
             </c:when>
             <c:otherwise>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/AppLoader.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/AppStyle.js"></script>
+
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/MobileManager.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/ViewerController.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
@@ -184,14 +187,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
-        <%@include file="app/style.jsp" %>
-
         ${actionBean.componentSourceHTML}
     </head>
     <body>
+
+        <div id="appLoader">
+            <div class="spinner">Loading...</div>
+        </div>
+
         <div id="loadwrapper">
             <div id="loader">Loading...</div>
         </div>
+
+        <div id="wrapper"></div>
+
         <script type="text/javascript">
 
             if(console == undefined) {
@@ -200,9 +209,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     //alert(logmsg);
                 };
             }
-
-            var contextPath = "${contextPath}";
-            var absoluteURIPrefix = "${absoluteURIPrefix}";
 
             var actionBeans = {
                 "service":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/></js:quote>,
@@ -247,91 +253,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 };
             </c:if>
 
-            var user = null;
-
-            var updateLoginInfo = function() { };
-            <c:if test="${actionBean.user != null}">
-                user = ${actionBean.user};
-
-                updateLoginInfo = function() {
-                    var link = document.getElementById("loginLink");
-                    if(link) {
-                        link.innerHTML = "Uitloggen";
-                        link.onclick = logout;
-                    }
-                    var info = document.getElementById("loginInfo");
-                    if(info) {
-                        info.innerHTML = "Ingelogd als <b>" + user.name + "</b>";
-                    }
-                }
-            </c:if>
-
-            function login() {
-                window.location.href = <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"/></js:quote>;
-            }
-
-            function logout() {
-                window.location.href =
-                    <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}">
-                        <stripes:param name="logout" value="true"/></stripes:url></js:quote>;
-            }
-
-            var appId = "${actionBean.application.id}";
-            var viewerController;
-            (function() {
-                var config = ${actionBean.appConfigJSON};
-
-                Ext.onReady(function() {
-
-                    var viewerType = <js:quote value="${actionBean.viewerType}"/>;
-
-                    var listeners = {
-                        // Cannot use viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING for property name here
-                        "ON_COMPONENTS_FINISHED_LOADING": updateLoginInfo
-                    };
-                    var mapConfig={};
-                    if (viewerType=="flamingo"){
-                        mapConfig.swfPath=contextPath+"/flamingo/flamingo.swf";
-                    }
-                    viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config, listeners,mapConfig);
-                });
-            }());
-
+            var FlamingoAppLoader = Ext.create("viewer.AppLoader", {
+                appId: "${actionBean.application.id}",
+                app: ${actionBean.appConfigJSON},
+                viewerType: <js:quote value="${actionBean.viewerType}"/>,
+                debugMode: <c:choose><c:when test="${param.debug == true}">true</c:when><c:otherwise>false</c:otherwise></c:choose>,
+                user: <c:choose><c:when test="${actionBean.user != null}">${actionBean.user}</c:when><c:otherwise>null</c:otherwise></c:choose>,
+                loginUrl: <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"/></js:quote>,
+                logoutUrl: <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"><stripes:param name="logout" value="true"/></stripes:url></js:quote>,
+                contextPath: "${contextPath}",
+                absoluteURIPrefix: "${absoluteURIPrefix}"
+            });
         </script>
-
-        <c:set var="maxWidth" value="none" />
-        <c:set var="maxHeight" value="none" />
-        <c:set var="margin" value="0" />
-        <c:set var="backgroundColor" value="transparent" />
-        <c:set var="backgroundImage" value="none" />
-        <c:set var="backgroundRepeat" value="no-repeat" />
-        <c:set var="backgroundPosition" value="0 0" />
-        <c:forEach items="${actionBean.globalLayout}" var="globalLayout">
-            <c:if test="${!empty globalLayout.value}">
-                <c:if test="${globalLayout.key=='maxWidth' && globalLayout.value != '0'}">
-                    <c:set var="maxWidth" value="${globalLayout.value}px" />
-                </c:if>
-                <c:if test="${globalLayout.key=='maxHeight' && globalLayout.value != '0'}">
-                    <c:set var="maxHeight" value="${globalLayout.value}px" />
-                </c:if>
-                <c:if test="${globalLayout.key=='margin'}">
-                    <c:set var="margin" value="${globalLayout.value}" />
-                </c:if>
-                <c:if test="${globalLayout.key=='backgroundColor'}">
-                    <c:set var="backgroundColor" value="${globalLayout.value}" />
-                </c:if>
-                <c:if test="${globalLayout.key=='backgroundImage'}">
-                    <c:set var="backgroundImage" value="url(${globalLayout.value})" />
-                </c:if>
-                <c:if test="${globalLayout.key=='backgroundRepeat'}">
-                    <c:set var="backgroundRepeat" value="${globalLayout.value}" />
-                </c:if>
-                <c:if test="${globalLayout.key=='backgroundPosition'}">
-                    <c:set var="backgroundPosition" value="${globalLayout.value}" />
-                </c:if>
-            </c:if>
-        </c:forEach>
-        <div id="wrapper" style="width: 100%; height: 100%; max-width: ${maxWidth}; max-height: ${maxHeight}; margin-left: auto; margin-right: auto; padding: ${margin}; background-color: ${backgroundColor}; background-image: ${backgroundImage}; background-repeat: ${backgroundRepeat}; background-position: ${backgroundPosition};"></div>
 
         <%@include file="/WEB-INF/jsp/app_overrides.jsp"%>
     </body>

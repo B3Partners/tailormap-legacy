@@ -40,10 +40,10 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
         viewer.components.tools.FlamingoMeasureArea.superclass.constructor.call(this, this.config);
         this.id = this.name;
         
-        conf.iconUrl_up = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square.png";
-        conf.iconUrl_over = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square_over.png";
-        conf.iconUrl_sel = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square_over.png";
-        conf.iconUrl_dis = contextPath + "/viewer-html/components/resources/images/measureArea/ruler_square.png";
+        conf.iconUrl_up = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/measureArea/ruler_square.png";
+        conf.iconUrl_over = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/measureArea/ruler_square_over.png";
+        conf.iconUrl_sel = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/measureArea/ruler_square_over.png";
+        conf.iconUrl_dis = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/measureArea/ruler_square.png";
         conf.toggle = true;
         conf.left = this.picLeft;
         conf.top = this.picTop;

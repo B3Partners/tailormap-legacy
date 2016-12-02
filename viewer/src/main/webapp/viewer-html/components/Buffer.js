@@ -155,7 +155,7 @@ Ext.define ("viewer.components.Buffer",{
             var bbox = this.config.viewerController.mapComponent.getMap().getExtent();
             var width = this.config.viewerController.mapComponent.getMap().getWidth();
             var height = this.config.viewerController.mapComponent.getMap().getHeight();
-            var url = absoluteURIPrefix + contextPath + "/action/Buffer";
+            var url = FlamingoAppLoader.get('absoluteURIPrefix') + FlamingoAppLoader.get('contextPath') + "/action/Buffer";
             var attrs ="?bbox="+ bbox.toString() + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.config.maxFeatures;
             if(this.color != null){
                     attrs += "&color="+this.color;

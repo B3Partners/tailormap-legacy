@@ -36,10 +36,10 @@ Ext.define('select.TreeNode', {
         // Added convert function to icon
         {name: 'icon', type: 'string', convert: function(fieldName, record) {
             var nodeType = record.get('type');
-            if(nodeType === "category" || nodeType === "level" || nodeType === "cswresult") return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
-            if(nodeType === "maplevel") return contextPath + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
-            if(nodeType === "layer" || nodeType === "appLayer") return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
-            if(nodeType === "service") return contextPath + '/viewer-html/components/resources/images/selectionModule/serviceok.png';    
+            if(nodeType === "category" || nodeType === "level" || nodeType === "cswresult") return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/folder.png';
+            if(nodeType === "maplevel") return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
+            if(nodeType === "layer" || nodeType === "appLayer") return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
+            if(nodeType === "service") return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/serviceok.png';
         }},
         // leaf mapped to isLeaf
         {name: 'leaf', type: 'boolean', mapping: 'isLeaf'},
@@ -206,10 +206,10 @@ Ext.define ("viewer.components.SelectionModule",{
     initComponent: function() {
         var me = this;
         // set icon urls
-        me.moveRightIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-right.gif';
-        me.moveLeftIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-left.gif';
-        me.moveUpIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-up.gif';
-        me.moveDownIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-down.gif';
+        me.moveRightIcon = FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/move-right.gif';
+        me.moveLeftIcon = FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/move-left.gif';
+        me.moveUpIcon = FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/move-up.gif';
+        me.moveDownIcon = FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/move-down.gif';
         // get data from viewer controller
         me.initViewerControllerData();
         me.originalLevels = Ext.clone(me.config.viewerController.app.levels);

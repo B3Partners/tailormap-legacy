@@ -2029,5 +2029,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         return true;
+    },
+
+    destroyComponents: function() {
+        for(var name in this.components) {
+            if(this.components.hasOwnProperty(name)) {
+                this.components[name].instance.destroy();
+            }
+        }
+        delete this.components;
     }
 });

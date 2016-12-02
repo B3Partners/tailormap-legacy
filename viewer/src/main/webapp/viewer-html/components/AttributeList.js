@@ -774,7 +774,7 @@ Ext.define ("viewer.components.AttributeList",{
         var url =  actionBeans["download"];
 
         url += '?appLayer=' + appLayer.id;
-        url += '&application=' + appId;
+        url += '&application=' + FlamingoAppLoader.get("appId");
         url += '&filter=' + encodeURIComponent(filter);
         url += '&type=' + Ext.getCmp("downloadType").getValue();
         url += '&params=' + this.config.downloadParams;

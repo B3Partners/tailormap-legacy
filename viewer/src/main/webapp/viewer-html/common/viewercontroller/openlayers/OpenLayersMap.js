@@ -78,8 +78,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.markerLayer=null;
         this.defaultIcon = {};
         this.markerIcons = {
-            "default": contextPath + '/viewer-html/common/openlayers/img/marker.png',
-            "spinner": contextPath + '/resources/images/spinner.gif'
+            "default": FlamingoAppLoader.get('contextPath') + '/viewer-html/common/openlayers/img/marker.png',
+            "spinner": FlamingoAppLoader.get('contextPath') + '/resources/images/spinner.gif'
         };
         this.markers=new Object();
         this.getFeatureInfoControl = null;

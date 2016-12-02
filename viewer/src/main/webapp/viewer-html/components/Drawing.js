@@ -82,7 +82,7 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
-        this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
+        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
             this.popup.addListener("hide", this.hideWindow, this);

@@ -69,7 +69,7 @@ Ext.define("viewer.components.CoordinateLinkWindow", {
         var y = coords.y;
         var newUrl = this.config.url;
         if(newUrl.indexOf("/cyclomedia.html") !== -1){
-            newUrl = contextPath + newUrl;
+            newUrl = FlamingoAppLoader.get('contextPath') + newUrl;
         }
         
         newUrl=newUrl.replace(/\[RDX\]/g, x);

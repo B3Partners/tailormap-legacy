@@ -337,7 +337,7 @@ Ext.define("viewer.components.Component",{
             if(!appSprite.charAt(0) == "/") {
                 appSprite = "/" + appSprite;
             }
-            appSprite = contextPath + appSprite;
+            appSprite = FlamingoAppLoader.get('contextPath') + appSprite;
         }
 
         var spriteConfig = {

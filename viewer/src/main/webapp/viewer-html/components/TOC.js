@@ -26,9 +26,9 @@ Ext.define('Maps', {
         // Added convert function to icon
         {name: 'icon', type: 'string', convert: function(fieldName, record) {
             if(record.get('leaf')) {
-                return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
+                return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
             }
-            return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
+            return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/folder.png';
         }}
     ]
 });

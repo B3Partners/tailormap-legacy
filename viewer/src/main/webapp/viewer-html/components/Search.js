@@ -214,7 +214,7 @@ Ext.define ("viewer.components.Search",{
                     queryMode = "remote";
                     
                     extraParams["searchName"]=this.searchconfigs[0].id;
-                    extraParams["appId"]=appId;
+                    extraParams["appId"]= FlamingoAppLoader.get("appId");
                     extraParams["componentName"]=this.name;
                 }
                 this.autosuggestStore = Ext.create('Ext.data.Store',  {
@@ -377,7 +377,7 @@ Ext.define ("viewer.components.Search",{
         }        
     },
     executeSearch: function(searchText, searchName) {
-        var requestPath=  contextPath+"/action/search";
+        var requestPath=  FlamingoAppLoader.get('contextPath')+"/action/search";
         this.searchResult = new Array();
         if (this.getCurrentSearchType() === "simplelist") {
             this.simpleListSearch(searchText);
@@ -407,7 +407,7 @@ Ext.define ("viewer.components.Search",{
             var requestParams = {};
             requestParams["searchText"]= searchText;
             requestParams["searchName"]= searchName;
-            requestParams["appId"]= appId;
+            requestParams["appId"]= FlamingoAppLoader.get("appId");
             requestParams["componentName"]= this.name;
             requestParams["searchRequestId"]= this.searchRequestId;
             this.getExtraRequestParams(requestParams,searchName);
@@ -646,7 +646,7 @@ Ext.define ("viewer.components.Search",{
                     var params = proxy.extraParams;
                     
                     params["searchName"]=searchConfig;
-                    params["appId"]=appId;
+                    params["appId"]= FlamingoAppLoader.get("appId");
                     params["componentName"]=this.name;
                 }else{
                     this.searchField.queryMode = "local";

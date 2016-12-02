@@ -95,7 +95,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
                 
                 //set proxy for getFeatureInfoRequests:
-                OpenLayers.ProxyHost = contextPath+"/action/proxy/wms?url=";
+                OpenLayers.ProxyHost = FlamingoAppLoader.get('contextPath')+"/action/proxy/wms?url=";
             }
             if (this.active){
                 this.wmsGetFeatureInfoControl.activate();

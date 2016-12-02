@@ -88,7 +88,7 @@ Ext.define("viewer.SLD", {
      * @param {boolean} true if the filter must be added to the rule
      */
     createURL: function(layer, style, cqlFilter, featureTypeName, sldId, commonAndFilter,colors,useRuleFilter) {
-        var url = absoluteURIPrefix + this.config.actionbeanUrl;
+        var url = FlamingoAppLoader.get('absoluteURIPrefix') + this.config.actionbeanUrl;
         if (layer instanceof Array){    
             url = Ext.String.urlAppend(url, "layer=" + layer.join(","));
         }else{
@@ -126,7 +126,7 @@ Ext.define("viewer.SLD", {
     },
 
     createURLWithHash: function(hash, sessionId, layers, styles){
-        var url = absoluteURIPrefix + this.config.actionbeanUrl;
+        var url = FlamingoAppLoader.get('absoluteURIPrefix') + this.config.actionbeanUrl;
        
         url = Ext.String.urlAppend(url, "sldId=" + hash);
         url = Ext.String.urlAppend(url, "sessId=" + sessionId);

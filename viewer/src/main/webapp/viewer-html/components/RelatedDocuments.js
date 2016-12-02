@@ -45,7 +45,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
 		viewer.components.RelatedDocuments.superclass.constructor.call(this, this.config);        
         
         this.documentImg = new Object();
-        this.iconPath=contextPath+"/viewer-html/components/resources/images/relatedDocuments/"
+        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/relatedDocuments/"
         
         this.popup.hide();
         var me = this;
