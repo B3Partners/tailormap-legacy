@@ -71,7 +71,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class MergeFeaturesActionBean implements ActionBean {
 
-    private static final Log log = LogFactory.getLog(MergeFeaturesActionBean.class);
+    private static final Log LOG = LogFactory.getLog(MergeFeaturesActionBean.class);
 
     private static final String FID = FeatureInfoActionBean.FID;
 
@@ -160,10 +160,10 @@ public class MergeFeaturesActionBean implements ActionBean {
                 json.put("fids", ids);
                 json.put("success", Boolean.TRUE);
             } catch (IllegalArgumentException e) {
-                log.warn("Merge error", e);
+                LOG.warn("Merge error", e);
                 error = e.getLocalizedMessage();
             } catch (Exception e) {
-                log.error(String.format("Exception merging feature %s to %s", this.fidB, this.fidA), e);
+                LOG.error(String.format("Exception merging feature %s to %s", this.fidB, this.fidA), e);
                 error = e.toString();
                 if (e.getCause() != null) {
                     error += "; cause: " + e.getCause().toString();
@@ -213,19 +213,27 @@ public class MergeFeaturesActionBean implements ActionBean {
     }
 
     /**
-     * Get features from store and merge them.
+     * Get features from store and merge them. The final merge resuls depend on
+     * the chosen {@link #strategy} and optional {@code afterMerge} processing.
      *
      * @return a list of feature ids that have been updated
      * @throws Exception when there is an error communication with the datastore
      * of when the arguments are invalid. In case of an exception the
      * transaction will be rolled back
+     *
+     * @see #handleStrategy(org.opengis.feature.simple.SimpleFeature,
+     * org.opengis.feature.simple.SimpleFeature,
+     * com.vividsolutions.jts.geom.Geometry, org.opengis.filter.Filter,
+     * org.opengis.filter.Filter, org.geotools.data.simple.SimpleFeatureStore,
+     * java.lang.String)
+     * @see #afterMerge(java.util.List)
      */
     private List<FeatureId> mergeFeatures() throws Exception {
         List<FeatureId> ids = new ArrayList();
         Transaction transaction = new DefaultTransaction("split");
         try {
             store.setTransaction(transaction);
-            // get the feature to split from database using the FID
+            // get the features to merge from database using the FID
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
             Filter filterA = ff.id(new FeatureIdImpl(this.fidA));
             Filter filterB = ff.id(new FeatureIdImpl(this.fidB));
@@ -252,8 +260,8 @@ public class MergeFeaturesActionBean implements ActionBean {
             Geometry geomA = (Geometry) fA.getProperty(geomAttrName).getValue();
             Geometry geomB = (Geometry) fB.getProperty(geomAttrName).getValue();
 
-            log.debug("input geomA: " + geomA);
-            log.debug("input geomB: " + geomB);
+            LOG.debug("input geomA: " + geomA);
+            LOG.debug("input geomB: " + geomB);
 
             Geometry newGeom = null;
             GeometryCollector geoms = new GeometryCollector();
@@ -261,19 +269,26 @@ public class MergeFeaturesActionBean implements ActionBean {
             geoms.add(geomA);
             geoms.add(geomB);
 
-            if (geomB.intersects(geomA)) {
-                newGeom = geoms.collect().union();
-            } else {
-                // no overlap between geometries, do smart stuff
+            if (!geomB.intersects(geomA)) {
+                // no overlap between geometries, do some smart stuff to interpolate, then use this interpolation in the union of all geoms
                 double distance = geomA.distance(geomB);
-                log.info(String.format("No intersect between merge inputs, interpolating gap. Distance is: %s", distance));
+                LOG.info(String.format("No intersect between merge inputs, interpolating gap. Distance is: %s", distance));
                 if (distance > this.mergeGapDist) {
                     throw new IllegalArgumentException(
                             String.format("Merge failed, geometries too far apart (%s)", distance));
                 }
                 newGeom = GeometrySnapper.snapToSelf(geoms.collect(), mergeGapDist, true);
+                geoms.add(newGeom);
             }
-            log.debug("new geometry: " + newGeom);
+            newGeom = geoms.collect().union();
+
+            LOG.debug("new geometry: " + newGeom);
+            LOG.debug("New Geometry is valid? " + newGeom.isValid());
+            // is invalid maybe cleanup self-intersect;
+            // see: https://stackoverflow.com/questions/31473553/is-there-a-way-to-convert-a-self-intersecting-polygon-to-a-multipolygon-in-jts
+            newGeom.normalize();
+            LOG.debug("Normalized new geometry: " + newGeom);
+            LOG.debug("Normalized new Geometry is valid? " + newGeom.isValid());
 
             // maybe simplify? needs tolerance param
             // double tolerance = 1d;
