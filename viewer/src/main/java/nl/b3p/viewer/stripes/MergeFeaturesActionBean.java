@@ -284,8 +284,10 @@ public class MergeFeaturesActionBean implements ActionBean {
 
             LOG.debug("new geometry: " + newGeom);
             LOG.debug("New Geometry is valid? " + newGeom.isValid());
-            // is invalid maybe cleanup self-intersect;
+            // if invalid maybe cleanup self-intersect;
             // see: https://stackoverflow.com/questions/31473553/is-there-a-way-to-convert-a-self-intersecting-polygon-to-a-multipolygon-in-jts
+            // clean up small self intersects and unioning artifacts, snapping distance of 0.01m  (because rijksdriehoek)
+            newGeom = GeometrySnapper.snapToSelf(newGeom, .01, true);
             newGeom.normalize();
             LOG.debug("Normalized new geometry: " + newGeom);
             LOG.debug("Normalized new Geometry is valid? " + newGeom.isValid());
