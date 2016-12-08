@@ -299,7 +299,7 @@ public class ArcGISService extends GeoService implements Updatable {
         l.getDetails().put(DETAIL_TYPE, new ClobElement(agsl.getString("type")));
         l.getDetails().put(DETAIL_CURRENT_VERSION, new ClobElement(agsl.optString("currentVersion", currentVersion)));
         l.getDetails().put(DETAIL_DESCRIPTION, new ClobElement(StringUtils.defaultIfBlank(agsl.getString("description"),null)));
-        l.getDetails().put(DETAIL_GEOMETRY_TYPE, new ClobElement(agsl.getString("geometryType")));
+        l.getDetails().put(DETAIL_GEOMETRY_TYPE, new ClobElement(StringUtils.defaultIfBlank(agsl.optString("geometryType"),null)));
         l.getDetails().put(DETAIL_CAPABILITIES, new ClobElement(agsl.optString("capabilities")));
         l.getDetails().put(DETAIL_DEFAULT_VISIBILITY, new ClobElement(agsl.optBoolean("defaultVisibility",false) ? "true" : "false"));
         l.getDetails().put(DETAIL_DEFINITION_EXPRESSION, new ClobElement(StringUtils.defaultIfBlank(agsl.optString("definitionExpression"), null)));
