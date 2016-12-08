@@ -26,7 +26,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-		<script type="text/javascript">
+        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_1.css">
+        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_2.css">
+        <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/featureinfo.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/relatedDocuments.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/simpleFilter.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/attributeList.css" rel="stylesheet">
+        <c:if test="${actionBean.viewerType == 'openlayers'}">
+            <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
+        </c:if>
+        <link href="${contextPath}/viewer-html/svg/svgsprite.css" rel="stylesheet">
+
+    </head>
+    <body>
+
+        <div id="appLoader">
+            <div class="spinner">Loading...</div>
+        </div>
+
+        <div id="loadwrapper">
+            <div id="loader">Loading...</div>
+        </div>
+
+        <div id="wrapper"></div>
+
+        <script type="text/javascript">
             // IOS7 on iPad has an issue with height of the html/body
             // http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
             // To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
@@ -36,18 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     event.preventDefault();
                 };
             }
-		</script>
-
-        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all.css">
-        <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
-
-        <%--XXX must only be loaded if component is added --%>
-        <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
-        <link href="${contextPath}/viewer-html/components/resources/css/featureinfo.css" rel="stylesheet">
-        <link href="${contextPath}/viewer-html/components/resources/css/relatedDocuments.css" rel="stylesheet">
-        <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
-        <link href="${contextPath}/viewer-html/components/resources/css/simpleFilter.css" rel="stylesheet">
-        <link href="${contextPath}/viewer-html/components/resources/css/attributeList.css" rel="stylesheet">
+        </script>
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
@@ -58,8 +74,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         </c:if>
         <c:if test="${actionBean.viewerType == 'openlayers'}">
-            <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
-
             <c:choose>
                 <c:when test="${param.ol == 'debug'}">
                     <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/lib/OpenLayers.js"></script>
@@ -69,7 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </c:if>
-        <link href="${contextPath}/viewer-html/svg/svgsprite.css" rel="stylesheet">
+
 
         <c:choose>
             <c:when test="${!(param.debug == true)}">
@@ -100,14 +114,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${scriptDir}/ServiceInfo.js"></script>
                 <script type="text/javascript" src="${scriptDir}/CSWClient.js"></script>
                 <script type="text/javascript" src="${scriptDir}/FeatureExtent.js"></script>
-       			<script type="text/javascript" src="${scriptDir}/FeatureService.js"></script>
-       			<script type="text/javascript" src="${scriptDir}/SLD.js"></script>
-       			<script type="text/javascript" src="${scriptDir}/Bookmark.js"></script>
+                <script type="text/javascript" src="${scriptDir}/FeatureService.js"></script>
+                <script type="text/javascript" src="${scriptDir}/SLD.js"></script>
+                <script type="text/javascript" src="${scriptDir}/Bookmark.js"></script>
                 <script type="text/javascript" src="${scriptDir}/LayerSelector.js"></script>
-       			<script type="text/javascript" src="${scriptDir}/CombineImage.js"></script>
-       			<script type="text/javascript" src="${scriptDir}/FeatureInfo.js"></script>
-       			<script type="text/javascript" src="${scriptDir}/EditFeature.js"></script>
-       			<script type="text/javascript" src="${scriptDir}/ArcQueryUtil.js"></script>
+                <script type="text/javascript" src="${scriptDir}/CombineImage.js"></script>
+                <script type="text/javascript" src="${scriptDir}/FeatureInfo.js"></script>
+                <script type="text/javascript" src="${scriptDir}/EditFeature.js"></script>
+                <script type="text/javascript" src="${scriptDir}/ArcQueryUtil.js"></script>
 
                 <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/controller"/>
                 <script type="text/javascript" src="${scriptDir}/Map.js"></script>
@@ -188,18 +202,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
         ${actionBean.componentSourceHTML}
-    </head>
-    <body>
-
-        <div id="appLoader">
-            <div class="spinner">Loading...</div>
-        </div>
-
-        <div id="loadwrapper">
-            <div id="loader">Loading...</div>
-        </div>
-
-        <div id="wrapper"></div>
 
         <script type="text/javascript">
 
@@ -264,7 +266,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 contextPath: "${contextPath}",
                 absoluteURIPrefix: "${absoluteURIPrefix}",
                 actionbeanUrl: actionBeans["appConfig"]
-        
+
             });
         </script>
 

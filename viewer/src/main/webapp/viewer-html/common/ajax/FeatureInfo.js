@@ -31,7 +31,7 @@ Ext.define("viewer.FeatureInfo", {
         var visibleAppLayers = {};
         for(var i = 0; i < visibleLayerIds.length; i++) {
             var id=visibleLayerIds[i];
-            var appLayer = viewerController.getAppLayerById(id);
+            var appLayer = this.config.viewerController.getAppLayerById(id);
             if(appLayer != null) {
                 visibleAppLayers[appLayer.id] = true;
             }

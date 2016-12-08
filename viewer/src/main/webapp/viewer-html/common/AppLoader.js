@@ -37,8 +37,7 @@ Ext.define("viewer.AppLoader", {
      */
     constructor: function(config) {
         this.initConfig(config);
-        this.loadApplication(config.app);
-        this.exposeGlobalVariables();
+        this.loadApplication();
     },
 
     reloadApplication: function(appConfig) {
@@ -221,6 +220,7 @@ Ext.define("viewer.AppLoader", {
             mapConfig.swfPath = this.config.contextPath + "/flamingo/flamingo.swf";
         }
         this.config.viewerController = new viewer.viewercontroller.ViewerController(this.config.viewerType, null, appConfig, listeners, mapConfig);
+        this.exposeGlobalVariables();
     },
 
     /**
