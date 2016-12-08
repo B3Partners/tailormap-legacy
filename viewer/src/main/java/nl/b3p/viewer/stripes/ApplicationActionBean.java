@@ -18,6 +18,7 @@ package nl.b3p.viewer.stripes;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -60,6 +61,7 @@ public class ApplicationActionBean implements ActionBean {
     @Validate
     private boolean debug;
 
+    @Validate(on = "retrieveAppConfigJSON")
     private Application application;
 
     private String componentSourceHTML;
@@ -217,6 +219,16 @@ public class ApplicationActionBean implements ActionBean {
         return view;
     }
 
+    public Resolution retrieveAppConfigJSON(){
+        EntityManager em = Stripersist.getEntityManager();
+        JSONObject response = new JSONObject();
+        response.put("success", false);
+        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
+        response.put("config", appConfigJSON);
+        response.put("success", true);
+        return new StreamingResolution("application/json", new StringReader(response.toString()));    
+    } 
+    
     @DefaultHandler
     public Resolution view() throws JSONException, IOException {
         if(unknown){
@@ -260,7 +272,6 @@ public class ApplicationActionBean implements ActionBean {
 
         buildComponentSourceHTML();
 
-        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
 
         //make hashmap for jsonobject.

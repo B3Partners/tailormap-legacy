@@ -27,7 +27,8 @@ Ext.define("viewer.AppLoader", {
         logoutUrl: "",
         viewerController: null,
         contextPath: "",
-        absoluteURIPrefix: ""
+        absoluteURIPrefix: "",
+        actionbeanUrl:null
     },
 
     /**
@@ -74,16 +75,48 @@ Ext.define("viewer.AppLoader", {
     },
 
     /**
+     * Retrieve the configuration for the current application and process it.
+     */
+    loadApplication: function() {
+        var failureFunction = function(){
+            alert("Cannot retrieve config");
+        };
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl,
+            scope:this,
+            params: {
+                application: this.config.appId
+            },
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                
+                if(response.success) {
+                    this.processAppConfig(Ext.JSON.decode(response.config));
+                } else {
+                    if(failureFunction !== undefined) {
+                        failureFunction(response.error);
+                    }
+                }
+            },
+            failure: function(result) {
+                if(failureFunction !== undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });
+    },
+    
+    /**
      * Load a Flamingo application (create styles, load ViewerController
      * @param {Object} appConfig
      */
-    loadApplication: function(appConfig) {
+    processAppConfig: function(appConfig){
         if(appConfig.name) {
             document.title = appConfig.name;
         }
         this.createApplicationStyle(appConfig);
         Ext.onReady(function() {
-            this.loadViewerController();
+            this.loadViewerController(appConfig);
         }, this);
     },
 
@@ -178,7 +211,7 @@ Ext.define("viewer.AppLoader", {
     /**
      * Load the ViewerController component
      */
-    loadViewerController: function() {
+    loadViewerController: function(appConfig) {
         var listeners = {
             // Cannot use viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING for property name here
             "ON_COMPONENTS_FINISHED_LOADING": this.viewerControllerLoaded.bind(this)
@@ -187,7 +220,7 @@ Ext.define("viewer.AppLoader", {
         if (this.config.viewerType === "flamingo"){
             mapConfig.swfPath = this.config.contextPath + "/flamingo/flamingo.swf";
         }
-        this.config.viewerController = new viewer.viewercontroller.ViewerController(this.config.viewerType, null, this.config.app, listeners, mapConfig);
+        this.config.viewerController = new viewer.viewercontroller.ViewerController(this.config.viewerType, null, appConfig, listeners, mapConfig);
     },
 
     /**

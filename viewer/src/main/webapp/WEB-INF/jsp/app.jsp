@@ -211,6 +211,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
 
             var actionBeans = {
+                "appConfig":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ApplicationActionBean" event="retrieveAppConfigJSON" /></js:quote>,
                 "service":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/></js:quote>,
                 "feature":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/></js:quote>,
                 "sld":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/></js:quote>,
@@ -255,14 +256,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             var FlamingoAppLoader = Ext.create("viewer.AppLoader", {
                 appId: "${actionBean.application.id}",
-                app: ${actionBean.appConfigJSON},
                 viewerType: <js:quote value="${actionBean.viewerType}"/>,
                 debugMode: <c:choose><c:when test="${param.debug == true}">true</c:when><c:otherwise>false</c:otherwise></c:choose>,
                 user: <c:choose><c:when test="${actionBean.user != null}">${actionBean.user}</c:when><c:otherwise>null</c:otherwise></c:choose>,
                 loginUrl: <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"/></js:quote>,
                 logoutUrl: <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"><stripes:param name="logout" value="true"/></stripes:url></js:quote>,
                 contextPath: "${contextPath}",
-                absoluteURIPrefix: "${absoluteURIPrefix}"
+                absoluteURIPrefix: "${absoluteURIPrefix}",
+                actionbeanUrl: actionBeans["appConfig"]
+        
             });
         </script>
 
