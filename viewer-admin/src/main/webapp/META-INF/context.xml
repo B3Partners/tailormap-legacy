@@ -59,7 +59,7 @@
   <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
   <!-- Security configuration -->
   <!-- use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
-  <Realm className="org.apache.catalina.realm.LockoutRealm">
+  <Realm className="org.apache.catalina.realm.LockOutRealm">
     <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
     <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
