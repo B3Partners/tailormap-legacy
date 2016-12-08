@@ -29,6 +29,9 @@ import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.components.ComponentRegistry;
+import nl.b3p.viewer.components.ComponentRegistryInitializer;
+import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.ClobElement;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
@@ -333,23 +336,20 @@ public class ApplicationActionBean implements ActionBean {
         StringBuilder sb = new StringBuilder();
 
         // Sort components by classNames, so order is always the same for debugging
-        List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
-        Collections.sort(comps);
+        ComponentRegistry cr = ComponentRegistryInitializer.getInstance();
+        
+        Collection<ViewerComponent> comps = cr.getComponentList();
 
         if(isDebug()) {
 
             Set<String> classNamesDone = new HashSet<String>();
-            for(ConfiguredComponent cc: comps) {
-
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
-                    continue;
-                }
+            for(ViewerComponent cc: comps) {
 
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
 
-                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
-                        for(File f: cc.getViewerComponent().getSources()) {
+                    if(cc.getSources() != null) {
+                        for(File f: cc.getSources()) {
                             String url = new ForwardResolution(ComponentActionBean.class, "source")
                                     .addParameter("app", name)
                                     .addParameter("version", version)
@@ -376,11 +376,7 @@ public class ApplicationActionBean implements ActionBean {
 
             int hash = 0;
             Set<String> classNamesDone = new HashSet<String>();
-            for(ConfiguredComponent cc: comps) {
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
-                    continue;
-                }
-
+            for(ViewerComponent cc: comps) {
                 if(!classNamesDone.contains(cc.getClassName())) {
                     hash = hash ^ cc.getClassName().hashCode();
                 } else {

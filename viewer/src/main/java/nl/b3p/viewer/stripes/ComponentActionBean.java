@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.components.ComponentRegistryInitializer;
 import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
@@ -122,18 +123,7 @@ public class ComponentActionBean implements ActionBean {
 
     @Before(stages=LifecycleStage.EventHandling)
     public void load() {
-        application = ApplicationActionBean.findApplication(app, version);
-        if(application != null && className != null) {
-            for(ConfiguredComponent cc: application.getComponents()) {
-                if(cc.getClassName().equals(className)) {
-                    
-                    if(Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
-                        component = cc.getViewerComponent();
-                        break;
-                    }
-                }
-            }
-        }
+        component = ComponentRegistryInitializer.getInstance().getViewerComponent(className);
     }
 
     @DefaultHandler
@@ -146,7 +136,8 @@ public class ComponentActionBean implements ActionBean {
         
         if(component == null) {
             // All source files for all components for this application
-
+            application = ApplicationActionBean.findApplication(app, version);
+      
             // Sort list for consistency (error line numbers, cache, etc.)
             List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
             Collections.sort(comps);

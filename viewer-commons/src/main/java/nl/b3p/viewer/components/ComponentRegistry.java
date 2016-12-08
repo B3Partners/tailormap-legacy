@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -205,6 +206,10 @@ public class ComponentRegistry {
 
     public ViewerComponent getViewerComponent(String className) {
         return components.get(className);
+    }
+    
+    public Collection<ViewerComponent> getComponentList(){
+        return components.values();
     }
 
     public void setComponentPaths(ServletContext sc,String[] componentPaths) {

@@ -23,7 +23,7 @@ import org.json.JSONObject;
  *
  * @author Matthijs Laan
  */
-public class ViewerComponent {
+public class ViewerComponent implements Comparable<ViewerComponent>{
     private String path;
     private String className;
     private File[] sources;
@@ -66,5 +66,10 @@ public class ViewerComponent {
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    @Override
+    public int compareTo(ViewerComponent o) {
+        return className.compareTo(o.getClassName());
     }
 }
