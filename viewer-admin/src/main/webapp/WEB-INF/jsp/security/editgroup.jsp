@@ -33,18 +33,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="group" value="${actionBean.group.name}"/>
                     <table class="formtable">
                         <tr>
-                            <td>Naam *:</td>
-                            <td><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
+                            <td valign="top" style="height: 30px;">Naam *:</td>
+                            <td valign="top"><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
+                            <td valign="top" rowspan="2">
+                                <div id="ip-list"></div>
+                            </td>
                         </tr>
                         <tr>
                             <td valign="top">Extra informatie:</td>
-                            <td><stripes:textarea name="description" cols="27" rows="4" class="extliketextarea" /></td>
+                            <td valign="top"><stripes:textarea name="description" cols="27" rows="4" class="extliketextarea" /></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
                         <stripes:submit name="save" value="Opslaan"/>
                         <stripes:reset class="extlikebutton" name="cancel" value="Annuleren"/>
                     </div>
+                    <script type="text/javascript" src="${contextPath}/resources/js/security/ipmanager.js"></script>
+                    <script type="text/javascript">
+                        Ext.onReady(function() {
+                            Ext.create('vieweradmin.components.IpManager', {
+                                ipList: []
+                            });
+                        });
+                    </script>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                         <script type="text/javascript">
