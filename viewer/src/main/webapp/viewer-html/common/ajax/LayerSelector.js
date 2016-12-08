@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.LayerSelector",{
     extend: "viewer.components.Component",
     popupWin:null,
+    layersInitialized: false,
     layerList : null,
     layerArray : null,
     layerselector : null,
@@ -66,6 +67,7 @@ Ext.define ("viewer.components.LayerSelector",{
             timeout: 120000,
             params: requestParams, 
             success: function ( result, request ) {
+                me.layersInitialized = true;
                 me.layerList = Ext.JSON.decode(result.responseText);
                 me.initLayers();
             },
@@ -149,7 +151,10 @@ Ext.define ("viewer.components.LayerSelector",{
             }
         }
     },
-    initLayers : function (){
+    initLayers : function () {
+        if(!this.layersInitialized) {
+            return;
+        }
         this.layerArray = [];
         var visibleLayers = this.config.viewerController.getVisibleLayers();
         for(var i = 0 ; i < this.forcedLayers.length; i++){

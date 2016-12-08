@@ -339,6 +339,7 @@
                             <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
+                                <languageIn>ECMASCRIPT3</languageIn>
                             </compilerOptions>
                             <externFiles />
                             <sourceFiles>
