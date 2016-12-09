@@ -25,56 +25,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/FlamingoErrorLogger.js"></script>
         <script type="text/javascript">
-
-            function FlamingoErrorLogger(messageOrEvent, source, lineno, colno) {
-                try {
-                    var request = null;
-                    var error = [];
-                    var basedata = [
-                        "Application ${actionBean.application.name} (${actionBean.application.id})",
-                        window.location
-                    ];
-                    if(window.navigator) {
-                        basedata.push(window.navigator.userAgent);
-                        basedata.push(window.navigator.platform);
-                    }
-                    error.push(basedata.join(" - "));
-
-                    if(typeof messageOrEvent === "string") {
-                        error.push(messageOrEvent);
-                        if(source) {
-                            error.push("Source: " + source);
-                        }
-                        if(lineno) {
-                            error.push("Line: " + lineno + "," + colno);
-                        }
-                    } else if(messageOrEvent instanceof Error) {
-                        error.push(messageOrEvent.name, messageOrEvent.message, messageOrEvent.stack, "Line: " + messageOrEvent.lineNumber + "," + messageOrEvent.columnNumber);
-                    } else {
-                        error.push(messageOrEvent);
-                    }
-
-                    if (window.XMLHttpRequest) {
-                        request = new XMLHttpRequest();
-                    } else if (window.ActiveXObject) { // IE
-                        try {
-                            request = new ActiveXObject('Msxml2.XMLHTTP');
-                        }
-                        catch (e) {
-                            try {
-                                request = new ActiveXObject('Microsoft.XMLHTTP');
-                            }
-                            catch (e) {}
-                        }
-                    }
-                    if(request !== null) {
-                        request.open('POST', <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ClientsideErrorLoggerActionBean"/></js:quote>, true);
-                        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                        request.send('msg=' + encodeURIComponent(error.join("\n\t")));
-                    }
-                } catch(e) {}
-            }
+            var FlamingoErrorLogger = createFlamingoErrorLogger(
+                "${actionBean.application.name}",
+                "${actionBean.application.id}",
+                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ClientsideErrorLoggerActionBean"/></js:quote>
+            );
             window.onerror = FlamingoErrorLogger;
 
             var MobileManager = function() {
