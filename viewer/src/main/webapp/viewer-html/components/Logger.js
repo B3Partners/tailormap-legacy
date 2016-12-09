@@ -46,8 +46,9 @@ Ext.define ("viewer.components.Logger",{
             me.onResize();            
         }, this);
     },
-    error: function(message){
+    error: function(message) {
         if (this.config.logLevel <= viewer.components.Logger.LEVEL_ERROR){
+            FlamingoErrorLogger(message);
             this.message(message, viewer.components.LogMessage.ERROR);
             console.log(message);
         }
