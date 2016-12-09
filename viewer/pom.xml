@@ -395,7 +395,6 @@
                 <configuration>
                     <prefix>builddetails</prefix>
                     <dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>
-                    <verbose>true</verbose>
                     <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
                     <skipPoms>true</skipPoms>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
