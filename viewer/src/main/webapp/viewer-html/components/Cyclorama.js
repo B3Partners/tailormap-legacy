@@ -35,7 +35,10 @@ Ext.define ("viewer.components.Cyclorama",{
        
         return this;
     },
-    initComp : function(){
+    initComp : function() {
+        if(!this.config.layers) {
+            return;
+        }
         this.toolMapClick =  this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
@@ -61,7 +64,7 @@ Ext.define ("viewer.components.Cyclorama",{
             me.toolMapClick.activateTool();
         }
         if(!attributes){
-            this.viewerController.app.appLayers[this.layers].featureService.loadAttributes(appLayer, processAttributes);
+            this.viewerController.app.appLayers[this.config.layers].featureService.loadAttributes(appLayer, processAttributes);
         }else{
             processAttributes(appLayer.attributes);
         }
