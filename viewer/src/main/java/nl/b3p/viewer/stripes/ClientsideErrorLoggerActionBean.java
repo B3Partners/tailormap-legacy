@@ -37,7 +37,7 @@ import org.json.JSONObject;
 @StrictBinding
 public class ClientsideErrorLoggerActionBean implements ActionBean {
 
-    private static final Log LOG = LogFactory.getLog(CatalogSearchActionBean.class);
+    private static final Log LOG = LogFactory.getLog(ClientsideErrorLoggerActionBean.class);
     private ActionBeanContext context;
     @Validate
     private String msg;
@@ -52,10 +52,10 @@ public class ClientsideErrorLoggerActionBean implements ActionBean {
      */
     @DefaultHandler
     public Resolution log() {
-        LOG.warn(msg);
+        LOG.debug(msg);
 
         JSONObject json = new JSONObject();
-        json.put("logged", LOG.isWarnEnabled());
+        json.put("logged", LOG.isDebugEnabled());
 
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
