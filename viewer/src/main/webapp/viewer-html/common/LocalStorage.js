@@ -52,6 +52,9 @@ Ext.define("viewer.components.LocalStorage", {
      */
     constructor: function() {
         this.localStorageSupported = this._isLocalStorageSupported();
+        if(!this.localStorageSupported) {
+            return;
+        }
         var items = this._getItem(this.itemskey);
         if(items !== null) {
             this.items = items;
@@ -181,7 +184,11 @@ Ext.define("viewer.components.LocalStorage", {
      * @private
      */
     _getStorage: function() {
-        return window.localStorage;
+        try {
+            return window.localStorage;
+        } catch(e) {
+            return {};
+        }
     },
 
     /**
