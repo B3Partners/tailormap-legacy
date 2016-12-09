@@ -25,6 +25,9 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
     <logger name="org.hibernate.SQL">
         <level value="error" />
     </logger>
+    <logger name="org.apache.http.wire">
+        <level value="debug" />
+    </logger>
     <root>
         <level value="info" />
         <appender-ref ref="consoleAppender" />

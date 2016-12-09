@@ -35,7 +35,7 @@
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
   <!-- For Tomcat: define JavaMail resource in server.xml. See:
 
-    http://tomcat.apache.org/tomcat-6.0-doc/jndi-resources-howto.html#JavaMail_Sessions
+    http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
 
     Don't forget to put mail.jar in the Tomcat lib directory.
 
@@ -58,13 +58,13 @@
     -->
   <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
   <!-- Security configuration -->
-  <!-- Optional: use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
-  <Realm className="org.apache.catalina.realm.CombinedRealm">
+  <!-- use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
+  <Realm className="org.apache.catalina.realm.LockOutRealm">
     <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
     <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
-             http://tomcat.apache.org/tomcat-6.0-doc/config/realm.html
-             http://tomcat.apache.org/tomcat-6.0-doc/realm-howto.html#JNDIRealm
+             http://tomcat.apache.org/tomcat-8.0-doc/config/realm.html
+             http://tomcat.apache.org/tomcat-8.0-doc/realm-howto.html#JNDIRealm
         -->
     <!--Realm className="org.apache.catalina.realm.JNDIRealm"
             allRolesMode="authOnly"

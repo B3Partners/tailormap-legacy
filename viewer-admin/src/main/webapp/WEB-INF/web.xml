@@ -5,7 +5,7 @@
         Note: for Tomcat, change these values in the Context in the Tomcat
         conf directory so it does not require modification of the deployment
         descriptor (this file) to customize these values.
-        http://tomcat.apache.org/tomcat-6.0-doc/config/context.html#Context_Parameters
+        http://tomcat.apache.org/tomcat-8.0-doc/config/context.html#Context_Parameters
     -->
     <context-param>
         <description>
