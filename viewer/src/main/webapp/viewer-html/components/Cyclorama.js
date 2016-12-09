@@ -35,7 +35,10 @@ Ext.define ("viewer.components.Cyclorama",{
        
         return this;
     },
-    initComp : function(){
+    initComp : function() {
+        if(!this.config.layers) {
+            return;
+        }
         this.toolMapClick =  this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
@@ -46,8 +49,10 @@ Ext.define ("viewer.components.Cyclorama",{
             viewerController: this.config.viewerController
         });
         var appLayer = this.viewerController.getAppLayerById(this.config.layers);
-
-        var attributes = appLayer.attributes;
+        var attributes;
+        if(appLayer) {
+            attributes = appLayer.attributes;
+        }
         var me = this;
         function processAttributes(attributes) {
             for (var i = 0; i < attributes.length; i++) {
@@ -59,7 +64,7 @@ Ext.define ("viewer.components.Cyclorama",{
             me.toolMapClick.activateTool();
         }
         if(!attributes){
-            this.viewerController.app.appLayers[this.layers].featureService.loadAttributes(appLayer, processAttributes);
+            this.viewerController.app.appLayers[this.config.layers].featureService.loadAttributes(appLayer, processAttributes);
         }else{
             processAttributes(appLayer.attributes);
         }
