@@ -779,7 +779,7 @@ Ext.define('viewer.LayoutManager', {
                 continueFunction();
                 return;
             }
-            viewerController.resizeComponents(false);
+            FlamingoAppLoader.get("viewerController").resizeComponents(false);
         },200);
     }
 });

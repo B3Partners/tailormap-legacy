@@ -37,6 +37,7 @@ Ext.define("viewer.AppLoader", {
      */
     constructor: function(config) {
         this.initConfig(config);
+        this.exposeGlobalVariables();
         this.loadApplication();
     },
 
@@ -139,7 +140,6 @@ Ext.define("viewer.AppLoader", {
      * Expose a couple of variables to the global scope for legacy fallback
      */
     exposeGlobalVariables: function() {
-        this.exposeVariable(this.config.viewerController, "viewerController", !this.config.debugMode);
         this.exposeVariable(this.config.appId, "appId", !this.config.debugMode);
         this.exposeVariable(this.config.user, "user", !this.config.debugMode);
         this.exposeVariable(this.config.contextPath, "contextPath", !this.config.debugMode);
@@ -220,7 +220,7 @@ Ext.define("viewer.AppLoader", {
             mapConfig.swfPath = this.config.contextPath + "/flamingo/flamingo.swf";
         }
         this.config.viewerController = new viewer.viewercontroller.ViewerController(this.config.viewerType, null, appConfig, listeners, mapConfig);
-        this.exposeGlobalVariables();
+        this.exposeVariable(this.config.viewerController, "viewerController", !this.config.debugMode);
     },
 
     /**
