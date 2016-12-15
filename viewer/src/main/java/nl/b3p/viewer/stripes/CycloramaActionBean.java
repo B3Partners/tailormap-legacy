@@ -16,7 +16,16 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -42,12 +51,22 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.CycloramaAccount;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
-
 
 /**
  *
@@ -57,11 +76,19 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class CycloramaActionBean implements ActionBean {
 
-
     private final String SIG_ALGORITHM = "SHA1withRSA";
     private final String URL_ENCODING = "utf-8";
     private static final Log log = LogFactory.getLog(LayerListActionBean.class);
     private ActionBeanContext context;
+
+    @Validate
+    private double x;
+
+    @Validate
+    private double y;
+
+    @Validate
+    private double offset;
 
     @Validate
     private Long appId;
@@ -75,7 +102,6 @@ public class CycloramaActionBean implements ActionBean {
     private String tid;
 
     private String apiKey;
-
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
@@ -126,10 +152,33 @@ public class CycloramaActionBean implements ActionBean {
         this.apiKey = apiKey;
     }
 
-    // </editor-fold>
+    public double getX() {
+        return x;
+    }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getOffset() {
+        return offset;
+    }
+
+    public void setOffset(double offset) {
+        this.offset = offset;
+    }
+
+    // </editor-fold>
     @DefaultHandler
-    public Resolution sign() throws JSONException{
+    public Resolution sign() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("success", false);
         EntityManager em = Stripersist.getEntityManager();
@@ -143,7 +192,7 @@ public class CycloramaActionBean implements ActionBean {
                 df.setTimeZone(TimeZone.getTimeZone("GMT"));
 
                 String date = df.format(new Date());
-                String token ="X" + account.getUsername() + "&" + imageId + "&" + date + "Z";
+                String token = "X" + account.getUsername() + "&" + imageId + "&" + date + "Z";
 
                 String privateBase64Key = account.getPrivateBase64Key();
 
@@ -153,21 +202,61 @@ public class CycloramaActionBean implements ActionBean {
 
                 tid = getTIDFromBase64EncodedString(privateBase64Key, token);
 
-                json.put("tid",tid);
-                json.put("imageId",imageId);
+                json.put("tid", tid);
+                json.put("imageId", imageId);
                 json.put("apiKey", apiKey);
                 json.put("success", true);
             } catch (Exception ex) {
-                json.put("message",ex.getLocalizedMessage());
+                json.put("message", ex.getLocalizedMessage());
             }
         }
 
-
-       // return new ForwardResolution("/WEB-INF/jsp/app/globespotter.jsp");
+        // return new ForwardResolution("/WEB-INF/jsp/app/globespotter.jsp");
         return new StreamingResolution("application/json", json.toString());
     }
 
-      private String getTIDFromBase64EncodedString(String base64Encoded, String token)
+    public Resolution directRequest() throws UnsupportedEncodingException, URISyntaxException, URIException, IOException {
+        JSONObject json = new JSONObject();
+        json.put("success", false);
+        Double x1 = x - offset;
+        Double y1 = y - offset;
+        Double x2 = x + offset;
+        Double y2 = y + offset;
+        final String username = "B3_develop";
+        final String password = "8ndj39";
+
+        URL url2 = new URL("https://atlas.cyclomedia.com/recordings/wfs?service=WFS&VERSION=1.1.0&maxFeatures=100&request=GetFeature&SRSNAME=EPSG:28992&typename=atlas:Recording"
+                + "&filter=<Filter><BBOX><gml:Envelope%20srsName=%27EPSG:28992%27>"
+                + "<gml:lowerCorner>" + x1.intValue() +"%20"+ y1.intValue() +"</gml:lowerCorner>"
+                + "<gml:upperCorner>"+ x2.intValue() +"%20"+ y2.intValue()+"</gml:upperCorner></gml:Envelope></BBOX></Filter>");
+        
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password.toCharArray());
+            }
+        });
+        InputStream is =url2.openStream();
+        
+        
+       // wrap the urlconnection in a bufferedreader
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+
+        String line;
+
+        StringBuilder content = new StringBuilder();
+        // read from the urlconnection via the bufferedreader
+        while ((line = bufferedReader.readLine()) != null) {
+            content.append(line + "\n");
+        }
+        bufferedReader.close();
+
+        String s = content.toString();
+        json.put("features", s);
+        return new StreamingResolution("application/json", json.toString());
+    }
+
+    private String getTIDFromBase64EncodedString(String base64Encoded, String token)
             throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException,
             SignatureException, UnsupportedEncodingException {
 
@@ -178,7 +267,7 @@ public class CycloramaActionBean implements ActionBean {
 
         KeyFactory rsaKeyFac = KeyFactory.getInstance("RSA");
         PKCS8EncodedKeySpec encodedKeySpec = new PKCS8EncodedKeySpec(tempBytes);
-        RSAPrivateKey privKey = (RSAPrivateKey)rsaKeyFac.generatePrivate(encodedKeySpec);
+        RSAPrivateKey privKey = (RSAPrivateKey) rsaKeyFac.generatePrivate(encodedKeySpec);
 
         byte[] signature = sign(privKey, token);
 
