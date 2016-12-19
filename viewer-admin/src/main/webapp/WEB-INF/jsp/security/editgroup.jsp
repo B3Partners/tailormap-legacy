@@ -35,9 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <tr>
                             <td valign="top" style="height: 30px;">Naam *:</td>
                             <td valign="top"><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
-                            <td valign="top" rowspan="2">
-                                <div id="ip-list"></div>
-                            </td>
                         </tr>
                         <tr>
                             <td valign="top">Extra informatie:</td>
@@ -48,14 +45,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <stripes:submit name="save" value="Opslaan"/>
                         <stripes:reset class="extlikebutton" name="cancel" value="Annuleren"/>
                     </div>
-                    <script type="text/javascript" src="${contextPath}/resources/js/security/ipmanager.js"></script>
-                    <script type="text/javascript">
-                        Ext.onReady(function() {
-                            Ext.create('vieweradmin.components.IpManager', {
-                                ipList: []
-                            });
-                        });
-                    </script>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                         <script type="text/javascript">
