@@ -173,6 +173,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
         });
+        store.add({id: "-666", serviceId: "-666", layerName: "Cyclomedia direct", alias: "Cyclomedia direct"});
         return store;
     },
     loadKeys : function(value){
