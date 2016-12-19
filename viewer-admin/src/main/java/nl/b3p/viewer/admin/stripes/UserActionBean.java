@@ -71,6 +71,11 @@ public class UserActionBean implements ActionBean {
     @Validate
     private List<String> groups = new ArrayList<String>();
     @Validate
+    private List<String> ips = new ArrayList<String>();
+    
+    private JSONArray ipJSON = new JSONArray();
+    
+    @Validate
     private Map<String, String> details = new HashMap<String, String>();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
@@ -177,6 +182,22 @@ public class UserActionBean implements ActionBean {
     public void setDetails(Map<String, String> details) {
         this.details = details;
     }
+
+    public List<String> getIps() {
+        return ips;
+    }
+
+    public void setIps(List<String> ips) {
+        this.ips = ips;
+    }
+
+    public JSONArray getIpJSON() {
+        return ipJSON;
+    }
+
+    public void setIpJSON(JSONArray ipJSON) {
+        this.ipJSON = ipJSON;
+    }
     //</editor-fold>
 
     @DefaultHandler
@@ -201,6 +222,10 @@ public class UserActionBean implements ActionBean {
             }
             details = user.getDetails();
             username = user.getUsername();
+            
+            for (String ip : user.getIps()) {
+                ipJSON.put(ip);
+            }
         }
 
         return new ForwardResolution(EDITJSP);
@@ -266,6 +291,9 @@ public class UserActionBean implements ActionBean {
         for (String groupName : groups) {
             user.getGroups().add(Stripersist.getEntityManager().find(Group.class, groupName));
         }
+        
+        user.getIps().clear();
+        user.getIps().addAll(ips);
 
         Stripersist.getEntityManager().persist(user);
         Stripersist.getEntityManager().getTransaction().commit();

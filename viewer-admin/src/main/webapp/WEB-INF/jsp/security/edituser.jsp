@@ -98,7 +98,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <script type="text/javascript">
                         Ext.onReady(function() {
                             Ext.create('vieweradmin.components.IpManager', {
-                                ipList: []
+                                ipList: ${actionBean.ipJSON}
                             });
                             Ext.get('autorizatieoverzichtbutton').on('click', function(evt, htmlel, eOpts) {
                                 getParent().vieweradmin.components.iFramePopupController.loadPage(${js:quote(url)}, 'Autorisatieoverzicht');

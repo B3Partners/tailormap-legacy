@@ -58,6 +58,7 @@ Ext.define('vieweradmin.components.IpManager', {
         var idx = this.formPanel.items.length - 1;
         this.formPanel.insert(idx, {
             xtype: 'textfield',
+            name: "ips",
             value: val || '0.0.0.0',
             regex: /[0-2][0-9]{0,2}\.[0-2][0-9]{0,2}\.[0-2][0-9]{0,2}\.[0-2][0-9]{0,2}/
         });

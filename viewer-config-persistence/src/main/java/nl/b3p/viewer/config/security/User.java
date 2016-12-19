@@ -49,6 +49,12 @@ public class User {
     @ElementCollection
     @JoinTable(joinColumns=@JoinColumn(name="username"))
     private Map<String,String> details = new HashMap<String,String>();
+    
+    
+    @ElementCollection
+    @Column(name="ipaddress", length = 45)
+    @CollectionTable(joinColumns = @JoinColumn(name="user_"))
+    private Set<String> ips = new HashSet<String>();
 
     public void changePassword(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
@@ -96,4 +102,13 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public Set<String> getIps() {
+        return ips;
+    }
+
+    public void setIps(Set<String> ips) {
+        this.ips = ips;
+    }
+
 }
