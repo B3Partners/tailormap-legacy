@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Cyclorama",{
     window:null,
     optionWindow:null,
     imageIdName:null,
+    isDirect:null,
     config:{
     },
     constructor: function (conf){
@@ -48,28 +49,33 @@ Ext.define ("viewer.components.Cyclorama",{
             },
             viewerController: this.config.viewerController
         });
-        var appLayer = this.viewerController.getAppLayerById(this.config.layers);
-        var attributes;
-        if(appLayer) {
-            attributes = appLayer.attributes;
-        }
-        var me = this;
-        function processAttributes(attributes) {
-            for (var i = 0; i < attributes.length; i++) {
-                if (attributes[i].id === me.config.imageIdAttribute) {
-                    me.imageIdName = attributes[i].name;
-                    break;
-                }
+        if (this.config.layers === "-666") { // Gebruik van directe cyclomediaservice
+            this.imageIdName = "imageId";
+            this.toolMapClick.activateTool();
+            this.isDirect = true;
+        } else {
+            this.isDirect = false;
+            var appLayer = this.viewerController.getAppLayerById(this.config.layers);
+            var attributes;
+            if (appLayer) {
+                attributes = appLayer.attributes;
             }
-            me.toolMapClick.activateTool();
+            var me = this;
+            function processAttributes(attributes) {
+                for (var i = 0; i < attributes.length; i++) {
+                    if (attributes[i].id === me.config.imageIdAttribute) {
+                        me.imageIdName = attributes[i].name;
+                        break;
+                    }
+                }
+                me.toolMapClick.activateTool();
+            }
+            if (!attributes) {
+                this.viewerController.app.appLayers[this.config.layers].featureService.loadAttributes(appLayer, processAttributes);
+            } else {
+                processAttributes(appLayer.attributes);
+            }
         }
-        if(!attributes){
-            this.viewerController.app.appLayers[this.config.layers].featureService.loadAttributes(appLayer, processAttributes);
-        }else{
-            processAttributes(appLayer.attributes);
-        }
-/*
-       */
     },
     processResponse: function (response){
         if(response.features.length >1 ){
@@ -80,13 +86,13 @@ Ext.define ("viewer.components.Cyclorama",{
     },
     showOptions : function(features){
         var store = Ext.create('Ext.data.Store', {
-            fields:[this.config.imageIdAttribute],
+            fields:[this.imageIdName],
             data:{'items':features},
             proxy: {
                 type: 'memory',
                 reader: {
                     type: 'json',
-                    root: 'items'
+                    rootProperty: 'items'
                 }
             }
         });
@@ -169,35 +175,58 @@ Ext.define ("viewer.components.Cyclorama",{
     },
     mapClicked: function (tool, event) {
         var me = this;
-        var appLayer = this.viewerController.getAppLayerById(this.config.layers);
         var coords = event.coord;
         var x = coords.x;
         var y = coords.y;
-
-        var attributes = [];
-        attributes.push(this.config.imageIdAttribute);
-        attributes.push(this.config.imageDescriptionAttribute);
-
-        var extraParams = {
-            attributesToInclude: attributes,
-            graph: true
-        };
-        this.viewerController.mapComponent.getMap().setMarker("edit", x, y);
-        var featureInfo = Ext.create("viewer.FeatureInfo", {
-            viewerController: me.viewerController
-        });
-        var radius = me.viewerController.mapComponent.getMap().getResolution() * 4;
-        featureInfo.layersFeatureInfo(x, y, radius, [appLayer], extraParams,function(response){
-            for ( var i = 0 ; i < response.length; i++){
-                var resp = response[i];
-                if(parseInt( resp.request.appLayer) === parseInt(me.config.layers)){
-                    me.processResponse(resp, resp.request.appLayer);
+        var radius=4*this.config.viewerController.mapComponent.getMap().getResolution();
+        
+        if(this.isDirect){
+            var params = {
+                directRequest: true,
+                x: parseInt(x),
+                y: parseInt(y),
+                offset: radius
+            };
+            Ext.Ajax.request({
+                url: actionBeans["cyclorama"],
+                params: params,
+                scope: this,
+                success: function(result) {
+                    var response = Ext.JSON.decode(result.responseText);
+                    this.processResponse(response);
+                },
+                failure: function(result) {
+                   this.viewerController.logger.error(result);
                 }
-            }
+            });
+        }else{
 
-        }, function(error){
-               this.viewerController.logger.error(error);
-        },me);
+            var appLayer = this.viewerController.getAppLayerById(this.config.layers);
+            var attributes = [];
+            attributes.push(this.config.imageIdAttribute);
+            attributes.push(this.config.imageDescriptionAttribute);
+
+            var extraParams = {
+                attributesToInclude: attributes,
+                graph: true
+            };
+            this.viewerController.mapComponent.getMap().setMarker("edit", x, y);
+            var featureInfo = Ext.create("viewer.FeatureInfo", {
+                viewerController: me.viewerController
+            });
+            var radius = me.viewerController.mapComponent.getMap().getResolution() * 4;
+            featureInfo.layersFeatureInfo(x, y, radius, [appLayer], extraParams,function(response){
+                for ( var i = 0 ; i < response.length; i++){
+                    var resp = response[i];
+                    if(parseInt( resp.request.appLayer) === parseInt(me.config.layers)){
+                        me.processResponse(resp, resp.request.appLayer);
+                    }
+                }
+
+            }, function(error){
+                   this.viewerController.logger.error(error);
+            },me);
+        }
     }
 
 });
