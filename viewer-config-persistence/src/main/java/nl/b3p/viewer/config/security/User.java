@@ -19,8 +19,10 @@ package nl.b3p.viewer.config.security;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import javax.persistence.*;
 import java.util.*;
+import javax.security.auth.Subject;
 
 /**
  *
@@ -28,7 +30,7 @@ import java.util.*;
  */
 @Entity
 @Table(name="user_")
-public class User {
+public class User implements Principal{
     // See edituser.jsp
     public static final String DETAIL_EMAIL = "email";
     
@@ -49,6 +51,12 @@ public class User {
     @ElementCollection
     @JoinTable(joinColumns=@JoinColumn(name="username"))
     private Map<String,String> details = new HashMap<String,String>();
+    
+    
+    @ElementCollection
+    @Column(name="ipaddress", length = 45)
+    @CollectionTable(joinColumns = @JoinColumn(name="user_"))
+    private Set<String> ips = new HashSet<String>();
 
     public void changePassword(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
@@ -96,4 +104,31 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public Set<String> getIps() {
+        return ips;
+    }
+
+    public void setIps(Set<String> ips) {
+        this.ips = ips;
+    }
+
+    public boolean checkRole(String role){
+        for (Group group : groups) {
+            if(group.getName().equals(role)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public String getName() {
+        return username;
+    }
+/*
+    @Override
+    public boolean implies(Subject subject) {
+        return Principal.super.implies(subject); //To change body of generated methods, choose Tools | Templates.
+    }*/
 }

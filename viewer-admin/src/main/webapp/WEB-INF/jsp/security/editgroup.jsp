@@ -33,12 +33,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="group" value="${actionBean.group.name}"/>
                     <table class="formtable">
                         <tr>
-                            <td>Naam *:</td>
-                            <td><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
+                            <td valign="top" style="height: 30px;">Naam *:</td>
+                            <td valign="top"><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
                             <td valign="top">Extra informatie:</td>
-                            <td><stripes:textarea name="description" cols="27" rows="4" class="extliketextarea" /></td>
+                            <td valign="top"><stripes:textarea name="description" cols="27" rows="4" class="extliketextarea" /></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
