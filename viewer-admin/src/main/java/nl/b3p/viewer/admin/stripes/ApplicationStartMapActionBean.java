@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import org.stripesstuff.stripersist.Stripersist;
 /**
  *
  * @author Jytte Schaeffer
+ * @author Meine Toonen
  */
 @UrlBinding("/action/applicationstartmap/{$event}")
 @StrictBinding
@@ -60,6 +61,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     @Validate
     private String levelId;
     private Level rootlevel;
+    
+    @Validate
+    private String removedRecordsString = new String();
+    
+    private Set<Long> levelsToBeRemoved = new HashSet<Long>();
+    private Set<Long> layersToBeRemoved = new HashSet<Long>();
 
     @DefaultHandler
     @DontValidate
@@ -76,21 +83,36 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     }
     
     public Resolution save() throws JSONException {
-        rootlevel = application.getRoot();
         
-        jsonContent = new JSONArray(selectedContent);
-        jsonCheckedLayers = new JSONArray(checkedLayersString);
-        
-        
-        walkAppTreeForSave(rootlevel);
         EntityManager em = Stripersist.getEntityManager();
-        SelectedContentCache.setApplicationCacheDirty(application, true,false,true,em);
-        em.getTransaction().commit();
+        saveStartMap(em);
         getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
         
         getCheckedLayerList(allCheckedLayers, rootlevel, application);
         
         return new ForwardResolution(JSP);
+    }
+    
+    protected void saveStartMap(EntityManager em){
+        rootlevel = application.getRoot();
+        
+        jsonContent = new JSONArray(selectedContent);
+        jsonCheckedLayers = new JSONArray(checkedLayersString);
+        
+        JSONArray objToRemove = new JSONArray(removedRecordsString);
+        for (Object obj : objToRemove) {
+            JSONObject o = (JSONObject)obj;
+            String type = o.getString("type");
+            if(type.equals("layer")){
+                layersToBeRemoved.add(o.getLong("id"));
+            }else if( type.equals("level")){
+                levelsToBeRemoved.add(o.getLong("id"));
+            }
+        }
+        
+        walkAppTreeForSave(rootlevel);
+        SelectedContentCache.setApplicationCacheDirty(application, true,false,true,em);
+        em.getTransaction().commit();
     }
     
     public Resolution canContentBeSelected() {
@@ -206,33 +228,55 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
     }
     
-    private void walkAppTreeForSave(Level l) throws JSONException{
+    protected void walkAppTreeForSave(Level l) throws JSONException{
         StartLevel sl = l.getStartLevels().get(application);
-        if(sl == null){
-            sl = new StartLevel();
-            sl.setApplication(application);
-            sl.setLevel(l);
-            l.getStartLevels().put(application, sl);
-        }
-
-        sl.setSelectedIndex(getSelectedContentIndex(l));
-        
-        for(ApplicationLayer al: l.getLayers()) {
-            StartLayer startLayer = al.getStartLayers().get(application);
-            if(startLayer == null){
-                startLayer = new StartLayer();
-                startLayer.setApplication(application);
-                startLayer.setApplicationLayer(al);
-                al.getStartLayers().put(application, startLayer);
+     /*   if(shouldBeRemoved(l)){
+            List<ApplicationLayer> als = l.getLayers();
+            for (ApplicationLayer al : als) {
+                al.getStartLayers().remove(application);
+            }
+            l.getStartLevels().remove(application);
+        }else{
+            */
+            if(sl == null){
+                sl = new StartLevel();
+                sl.setApplication(application);
+                sl.setLevel(l);
+                l.getStartLevels().put(application, sl);
             }
 
-            startLayer.setSelectedIndex(getSelectedContentIndex(al));
-            startLayer.setChecked(getCheckedForLayerId(al.getId()));
+            sl.setSelectedIndex(getSelectedContentIndex(l));
+
+            for(ApplicationLayer al: l.getLayers()) {
+                StartLayer startLayer = al.getStartLayers().get(application);
+                if(startLayer == null){
+                    startLayer = new StartLayer();
+                    startLayer.setApplication(application);
+                    startLayer.setApplicationLayer(al);
+                    al.getStartLayers().put(application, startLayer);
+                }
+
+                startLayer.setSelectedIndex(getSelectedContentIndex(al));
+                startLayer.setChecked(getCheckedForLayerId(al.getId()));
+            }
+
+            for(Level child: l.getChildren()) {
+                walkAppTreeForSave(child);
+            }
+     //   }
+    }
+    
+    private boolean shouldBeRemoved(Object l){
+        if(l instanceof Level){
+            Level level = (Level)l;
+            return levelsToBeRemoved.contains(level.getId());
         }
         
-        for(Level child: l.getChildren()) {
-            walkAppTreeForSave(child);
+        if(l instanceof ApplicationLayer){
+            ApplicationLayer al = (ApplicationLayer)l;
+            return layersToBeRemoved.contains(al.getId());
         }
+        return false;
     }
     
     private boolean getCheckedForLayerId(Long levelid) throws JSONException {
@@ -511,5 +555,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     public void setContentToBeSelected(String contentToBeSelected) {
         this.contentToBeSelected = contentToBeSelected;
     }
+    
+    public String getRemovedRecordsString() {
+        return removedRecordsString;
+    }
+
+    public void setRemovedRecordsString(String removedRecordsString) {
+        this.removedRecordsString = removedRecordsString;
+    }
     //</editor-fold>
+
 }
