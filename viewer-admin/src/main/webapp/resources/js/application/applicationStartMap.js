@@ -82,11 +82,13 @@ Ext.onReady(function() {
         checkBackendOnMove: true,
         backendCheckUrl: backendCheckUrl,
         checkedLayers: checkedLayers,
-        onlyMoveRootLevels: true
+        onlyMoveRootLevels: true,
+        useDeleteButton: true
     }));
 
     Ext.get('startmapform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('checkedlayersinput').set({value:kaartSelectie.getCheckedLayers()});
+        Ext.fly('removedrecordsinput').set({value:kaartSelectie.getRemovedRecords()});
     });
 });
