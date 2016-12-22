@@ -76,11 +76,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </td>
                             <td valign="top">
                                 <h1>Groepen:</h1>
-
-                                    <c:forEach var="group" items="${actionBean.allGroups}">
-                                        <stripes:checkbox name="groups" value="${group.name}"/> ${group.name}<br />
-                                    </c:forEach>
-
+                                <c:forEach var="group" items="${actionBean.allGroups}">
+                                    <stripes:checkbox name="groups" value="${group.name}"/> ${group.name}<br />
+                                </c:forEach>
+                            </td>
+                            <td valign="top">
+                                <div id="ip-list"></div>
                             </td>
                         </tr>
                     </table>
@@ -93,8 +94,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </stripes:url>
                         <stripes:button name="authorizations" class="extlikebutton" id="autorizatieoverzichtbutton" value="Autorisatieoverzicht"/>
                     </div>
+                    <script type="text/javascript" src="${contextPath}/resources/js/security/ipmanager.js"></script>
                     <script type="text/javascript">
                         Ext.onReady(function() {
+                            Ext.create('vieweradmin.components.IpManager', {
+                                ipList: ${actionBean.ipJSON}
+                            });
                             Ext.get('autorizatieoverzichtbutton').on('click', function(evt, htmlel, eOpts) {
                                 getParent().vieweradmin.components.iFramePopupController.loadPage(${js:quote(url)}, 'Autorisatieoverzicht');
                             }, '', {

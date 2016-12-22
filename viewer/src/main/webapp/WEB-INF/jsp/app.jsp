@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2011-2014 B3Partners B.V.
+Copyright (C) 2011-2016 B3Partners B.V.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,6 +28,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_1.css">
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_2.css">
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/FlamingoErrorLogger.js"></script>
+        <script type="text/javascript">
+            var FlamingoErrorLogger = createFlamingoErrorLogger(
+                "${actionBean.application.name}",
+                "${actionBean.application.id}",
+                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ClientsideErrorLoggerActionBean"/></js:quote>
+            );
+            window.onerror = FlamingoErrorLogger;
+        </script>
+
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/featureinfo.css" rel="stylesheet">
@@ -234,9 +244,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "datastorespinup":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DataStoreSpinupActionBean"/></js:quote>,
                 "autosuggest":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SearchActionBean" event="autosuggest"/></js:quote>,
                 "componentresource":  <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ComponentResourceActionBean"/></js:quote>,
-                "css":                 <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>,
-                "download":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
-                "buffergeom":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>,
+                "css":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>,
+                "download":           <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
+                "buffergeom":         <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>,
                 "cyclorama":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CycloramaActionBean"/></js:quote>,
                 "featureExtent":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureExtentActionBean"/></js:quote>
             };

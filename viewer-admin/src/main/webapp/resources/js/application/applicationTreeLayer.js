@@ -883,7 +883,8 @@ hier niet op gecontroleerd.'
     doSave: function() {
         document.getElementById('attributesJSON').value = this.getJson();
         var settingsHtmlEditor = this.getComponentByItemId('#extSettingsHtmlEditor');
-        if(settingsHtmlEditor) {
+        var toggle = document.querySelector('.use-plain-text-editor');
+        if(settingsHtmlEditor && !toggle.checked) {
             document.getElementById('details_summary_description').value = settingsHtmlEditor.getValue();
         }
         var htmlEditor = this.getComponentByItemId('#extContextHtmlEditor');
