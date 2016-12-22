@@ -1,12 +1,24 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.util;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -68,40 +80,41 @@ public class IPAuthenticationFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) r;
         HttpSession session = request.getSession();
         User u = null;
-        if(session.getAttribute(IP_CHECK) == null ||session.getAttribute(USER_CHECK) == null){
+        if(session.getAttribute(IP_CHECK) == null  && session.getAttribute(USER_CHECK) == null){
+            
             String ipAddress = request.getHeader("X-FORWARDED-FOR");
             if (ipAddress == null) {
                 ipAddress = request.getRemoteAddr();
             }
+            session.setAttribute(IP_CHECK, ipAddress);
             Stripersist.requestInit();
             
             EntityManager em = Stripersist.getEntityManager();
-           // em.createQuery("select u from user u join u.ips where p = :provincie order by r.naam").setParameter("provincie",p).getResultList();
-            List<User> obj = em.createQuery("from User where :ip in elements(ips)", User.class).setParameter("ip", ipAddress).getResultList();
-            if(obj.size() == 0){
-                
-            }else if( obj.size() == 1){
-                u = obj.get(0);
+            List<User> users = em.createQuery("from User", User.class).getResultList();
+            List<User> possibleUsers = new ArrayList<User>();
+            
+            for (User user : users) {
+                if(checkValidIpAddress(request, user)){
+                    possibleUsers.add(user);
+                }
+            }
+            
+            if(possibleUsers.isEmpty()){
+                log.debug("No possible users found for ip");
+            }else if( possibleUsers.size() == 1){
+                u = possibleUsers.get(0);
                 Hibernate.initialize(u.getGroups());
                 session.setAttribute(IP_CHECK, ipAddress);
                 session.setAttribute(USER_CHECK, u);
             }else{
-                
+                log.debug("Too much possible users found for ip.");
             }
             Stripersist.requestComplete();
-            
         }else{
             u = (User) session.getAttribute(USER_CHECK);
         }
         final User user = u;
-        // Create wrappers for the request and response objects.
-        // Using these, you can extend the capabilities of the
-        // request and response, for example, allow setting parameters
-        // on the request before sending the request to the rest of the filter chain,
-        // or keep track of the cookies that are set on the response.
-        //
-        // Caveat: some servers do not handle wrappers very well for forward or
-        // include requests.
+
         RequestWrapper wrappedRequest = new RequestWrapper((HttpServletRequest) request){
             @Override
             public Principal getUserPrincipal() {
@@ -130,36 +143,20 @@ public class IPAuthenticationFilter implements Filter {
                 }
             }
         };
-        ResponseWrapper wrappedResponse = new ResponseWrapper((HttpServletResponse) response);
-        
           
         Throwable problem = null;
         
         try {
-            chain.doFilter(wrappedRequest, wrappedResponse);
-        } catch (Throwable t) {
-            // If an exception is thrown somewhere down the filter chain,
-            // we still want to execute our after processing, and then
-            // rethrow the problem after that.
-            problem = t;
-            t.printStackTrace();
-        }
-      
-        // If there was a problem, we want to rethrow it if it is
-        // a known type, otherwise log it.
-        if (problem != null) {
-            if (problem instanceof ServletException) {
-                throw (ServletException) problem;
-            }
-            if (problem instanceof IOException) {
-                throw (IOException) problem;
-            }
+            chain.doFilter(wrappedRequest, response);
+        } catch (IOException | ServletException t) {
             log.error("Error processing chain", problem);
+            throw t;
         }
     }
 
     /**
      * Return the filter configuration object for this filter.
+     * @return 
      */
     public FilterConfig getFilterConfig() {
         return (this.filterConfig);
@@ -177,17 +174,17 @@ public class IPAuthenticationFilter implements Filter {
     /**
      * Destroy method for this filter
      */
+    @Override
     public void destroy() {        
     }
 
     /**
      * Init method for this filter
+     * @param filterConfig
      */
+    @Override
     public void init(FilterConfig filterConfig) {        
         this.filterConfig = filterConfig;
-        if (filterConfig != null) {
-            log.debug("IPAuthenticationFilter: Initializing filter");
-        }
     }
 
     /**
@@ -198,11 +195,81 @@ public class IPAuthenticationFilter implements Filter {
         if (filterConfig == null) {
             return ("IPAuthenticationFilter()");
         }
-        StringBuffer sb = new StringBuffer("IPAuthenticationFilter(");
+        StringBuilder sb = new StringBuilder("IPAuthenticationFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
         
+    }
+    
+    private boolean checkValidIpAddress(HttpServletRequest request, User user) {
+
+        String remoteAddress = request.getRemoteAddr();
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null) {
+            remoteAddress = forwardedFor;
+        }
+        String remoteAddressDesc = remoteAddress
+                + (forwardedFor == null ? "" : " (proxy: " + request.getRemoteAddr() + ")");
+
+        /* remoteaddress controleren tegen ip adressen van user.
+         * Ip ranges mogen ook via een asterisk */
+        for(String ipAddress: (Set<String>)user.getIps()) {
+
+            log.debug("Controleren ip: " + ipAddress + " tegen: " + remoteAddressDesc);
+
+            if (ipAddress.contains("*")) {
+                if (isRemoteAddressWithinIpRange(ipAddress, remoteAddress)) {
+                    return true;
+                }
+            }
+
+            if (ipAddress.equalsIgnoreCase(remoteAddress)
+                    || ipAddress.equalsIgnoreCase("0.0.0.0")
+                    || ipAddress.equalsIgnoreCase("::")) {
+                return true;
+            }
+        }
+
+        /* lokale verzoeken mogen ook */
+        String localAddress = request.getLocalAddr();
+
+        if (remoteAddress.equalsIgnoreCase(localAddress)) {
+            log.debug("Toegang vanaf lokaal adres toegestaan: lokaal adres " + localAddress + ", remote adres: " + remoteAddressDesc);
+            return true;
+        }
+
+        log.info("IP adres " + remoteAddressDesc + " niet toegestaan voor gebruiker " + user.getName());
+
+        return false;
+    }
+
+    /* This function should only be called when ip contains an asterisk. This
+     is the case when someone has given an ip to a user with an asterisk
+     eq. 10.0.0.*  */
+    protected boolean isRemoteAddressWithinIpRange(String ip, String remote) {
+        if (ip == null || remote == null) {
+            return false;
+        }
+
+        String[] arrIp = ip.split("\\.");
+        String[] arrRemote = remote.split("\\.");
+
+        if (arrIp == null || arrIp.length < 1 || arrRemote == null || arrRemote.length < 1) {
+            return false;
+        }
+
+        /* kijken of het niet asteriks gedeelte overeenkomt met
+         hetzelfde gedeelte uit remote address */
+        for (int i = 0; i < arrIp.length; i++) {
+            if (!arrIp[i].equalsIgnoreCase("*")) {
+                if (!arrIp[i].equalsIgnoreCase(arrRemote[i])) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
     
     /**
@@ -279,43 +346,4 @@ public class IPAuthenticationFilter implements Filter {
             return localParams;
         }
     }
-
-    /**
-     * This response wrapper class extends the support class
-     * HttpServletResponseWrapper, which implements all the methods in the
-     * HttpServletResponse interface, as delegations to the wrapped response.
-     * You only need to override the methods that you need to change. You can
-     * get access to the wrapped response using the method getResponse()
-     */
-    class ResponseWrapper extends HttpServletResponseWrapper {
-        
-        public ResponseWrapper(HttpServletResponse response) {
-            super(response);            
-        }
-
-        // You might, for example, wish to know what cookies were set on the response
-        // as it went throught the filter chain. Since HttpServletRequest doesn't
-        // have a get cookies method, we will need to store them locally as they
-        // are being set.
-        /*
-	protected Vector cookies = null;
-	
-	// Create a new method that doesn't exist in HttpServletResponse
-	public Enumeration getCookies() {
-		if (cookies == null)
-		    cookies = new Vector();
-		return cookies.elements();
-	}
-	
-	// Override this method from HttpServletResponse to keep track
-	// of cookies locally as well as in the wrapped response.
-	public void addCookie (Cookie cookie) {
-		if (cookies == null)
-		    cookies = new Vector();
-		cookies.add(cookie);
-		((HttpServletResponse)getResponse()).addCookie(cookie);
-	}
-         */
-    }
-    
 }
