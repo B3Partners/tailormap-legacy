@@ -80,10 +80,7 @@ public class IPAuthenticationFilter implements Filter {
         User u = null;
         if(session.getAttribute(IP_CHECK) == null  && session.getAttribute(USER_CHECK) == null){
             
-            String ipAddress = request.getHeader("X-FORWARDED-FOR");
-            if (ipAddress == null) {
-                ipAddress = request.getRemoteAddr();
-            }
+            String ipAddress = getIp(request);
             session.setAttribute(IP_CHECK, ipAddress);
             Stripersist.requestInit();
             
@@ -105,7 +102,7 @@ public class IPAuthenticationFilter implements Filter {
                 session.setAttribute(IP_CHECK, ipAddress);
                 session.setAttribute(USER_CHECK, u);
             }else{
-                log.debug("Too much possible users found for ip.");
+                log.debug("Too many possible users found for ip.");
             }
             Stripersist.requestComplete();
         }else{
@@ -202,19 +199,13 @@ public class IPAuthenticationFilter implements Filter {
     
     private boolean checkValidIpAddress(HttpServletRequest request, User user) {
 
-        String remoteAddress = request.getRemoteAddr();
-        String forwardedFor = request.getHeader("X-Forwarded-For");
-        if (forwardedFor != null) {
-            remoteAddress = forwardedFor;
-        }
-        String remoteAddressDesc = remoteAddress
-                + (forwardedFor == null ? "" : " (proxy: " + request.getRemoteAddr() + ")");
-
+        String remoteAddress = getIp(request); 
+        
         /* remoteaddress controleren tegen ip adressen van user.
          * Ip ranges mogen ook via een asterisk */
         for(String ipAddress: (Set<String>)user.getIps()) {
 
-            log.debug("Controleren ip: " + ipAddress + " tegen: " + remoteAddressDesc);
+            log.debug("Controleren ip: " + ipAddress + " tegen: " + remoteAddress);
 
             if (ipAddress.contains("*")) {
                 if (isRemoteAddressWithinIpRange(ipAddress, remoteAddress)) {
@@ -233,13 +224,23 @@ public class IPAuthenticationFilter implements Filter {
         String localAddress = request.getLocalAddr();
 
         if (remoteAddress.equalsIgnoreCase(localAddress)) {
-            log.debug("Toegang vanaf lokaal adres toegestaan: lokaal adres " + localAddress + ", remote adres: " + remoteAddressDesc);
+            log.debug("Toegang vanaf lokaal adres toegestaan: lokaal adres " + localAddress + ", remote adres: " + remoteAddress);
             return true;
         }
 
-        log.info("IP adres " + remoteAddressDesc + " niet toegestaan voor gebruiker " + user.getName());
+        log.info("IP adres " + remoteAddress + " niet toegestaan voor gebruiker " + user.getName());
 
         return false;
+    }
+    
+    private String getIp(HttpServletRequest request){
+        String remoteAddress = request.getRemoteAddr();
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null) {
+            int endIndex = forwardedFor.contains(",") ? forwardedFor.indexOf(",") : forwardedFor.length();
+            remoteAddress = forwardedFor.substring(0, endIndex);
+        }
+        return remoteAddress;
     }
 
     /* This function should only be called when ip contains an asterisk. This
