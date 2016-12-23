@@ -19,7 +19,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.Cyclorama",{
-    extend: "viewer.components.Component",
+    extend: "viewer.components.tools.Tool",
     toolMapClick:null,
     deActivatedTools:null,
     window:null,
@@ -30,7 +30,25 @@ Ext.define ("viewer.components.Cyclorama",{
     },
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.Cyclorama.superclass.constructor.call(this, this.config);
+	viewer.components.Cyclorama.superclass.constructor.call(this, this.config);
+        
+        
+        this.button = this.config.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
+            id: this.getName(),
+            name: this.getName(),
+            tooltip: this.config.tooltip || null,
+            displayClass: !!this.config.iconUrl ? "Cyclorama-" + Ext.id() : "streetView",
+            //displayClass: !!this.config.iconUrl ? "Cyclorama-" + Ext.id() : "Cyclorama",
+            viewerController: this.config.viewerController,
+            iconUrl: this.config.iconUrl || null
+        });
+        
+        this.config.viewerController.mapComponent.addTool(this.button);
+        this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN, this.buttonDown, this);
+        this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP, this.buttonUp, this);
+        // Registreer voor layerinitialized
+        
         // Registreer voor layerinitialized
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initComp, this);
        
@@ -51,7 +69,6 @@ Ext.define ("viewer.components.Cyclorama",{
         });
         if (this.config.layers === "-666") { // Gebruik van directe cyclomediaservice
             this.imageIdName = "imageId";
-            this.toolMapClick.activateTool();
             this.isDirect = true;
         } else {
             this.isDirect = false;
@@ -68,7 +85,6 @@ Ext.define ("viewer.components.Cyclorama",{
                         break;
                     }
                 }
-                me.toolMapClick.activateTool();
             }
             if (!attributes) {
                 this.viewerController.app.appLayers[this.config.layers].featureService.loadAttributes(appLayer, processAttributes);
@@ -227,6 +243,29 @@ Ext.define ("viewer.components.Cyclorama",{
                    this.viewerController.logger.error(error);
             },me);
         }
+    },
+        /**
+     *The next functions will synchronize the button and the tool.
+     */
+    /**
+     * When the button is hit and toggled true
+     * @param button the button
+     * @param object the options.        
+     */
+    buttonDown: function (button, object) {
+        this.toolMapClick.activateTool();
+
+        this.config.viewerController.mapComponent.setCursor(true, "crosshair");
+    },
+    /**
+     * When the button is hit and toggled false
+     */
+    buttonUp: function (button, object) {
+        this.config.viewerController.mapComponent.setCursor(false);
+        if (this.config.useMarker) {
+            this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
+        this.toolMapClick.deactivateTool();
     }
 
 });
