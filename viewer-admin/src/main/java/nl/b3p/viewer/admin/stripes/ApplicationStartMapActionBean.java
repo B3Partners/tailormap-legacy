@@ -229,20 +229,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     }
     
     protected void walkAppTreeForSave(Level l, EntityManager em) throws JSONException{
-        StartLevel sl = l.getStartLevels().get(application);
+        
         if(shouldBeRemoved(l)){
-            List<ApplicationLayer> als = l.getLayers();
-            for (ApplicationLayer al : als) {
-                StartLayer startLayer = al.getStartLayers().get(application);
-                al.getStartLayers().remove(application);
-                em.remove(startLayer);
-                application.getStartLayers().remove(startLayer);
-            }
-            l.getStartLevels().remove(application);
-            em.remove(sl);
-            application.getStartLevels().remove(sl);
+            removeStartLevel(l, em);
         }else{
             boolean wasNew = false;
+            StartLevel sl = l.getStartLevels().get(application);
             if(sl == null){
                 wasNew = true;
                 sl = new StartLevel();
@@ -257,8 +249,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 StartLayer startLayer = al.getStartLayers().get(application);
                 if(shouldBeRemoved(al)){
                     al.getStartLayers().remove(application);
-                    em.remove(startLayer);
                     application.getStartLayers().remove(startLayer);
+                    if(startLayer != null){
+                        em.remove(startLayer);
+                    }
                 }else{
                     if(!wasNew && startLayer == null){
                         // if the startLevel was new, there is no startLayer. So if it wasn't new, and there isn't a startLayer, it means the startLayer was removed
@@ -440,7 +434,6 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
                         j.put("parentid", "");
                         j.put("checkedlayers", checked);
-                        // j.put("checked", false);
                         children.put(j);
                     }
                 }
@@ -451,21 +444,25 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             if (type.equals("n")) {
                 Level l = em.find(Level.class, new Long(id));
                 for (Level sub : l.getChildren()) {
-                    JSONObject j = new JSONObject();
-                    j.put("id", "n" + sub.getId());
-                    j.put("name", sub.getName());
-                    j.put("type", "level");
-                    j.put("isLeaf", sub.getChildren().isEmpty() && sub.getLayers().isEmpty());
-                    if (sub.getParent() != null) {
-                        j.put("parentid", sub.getParent().getId());
+                    StartLevel sl = sub.getStartLevels().get(application);
+                    if(sl != null || !l.getStartLevels().containsKey(application)){
+                        JSONObject j = new JSONObject();
+                        j.put("id", "n" + sub.getId());
+                        j.put("name", sub.getName());
+                        j.put("type", "level");
+                        j.put("isLeaf", sub.getChildren().isEmpty() && sub.getLayers().isEmpty());
+                        if (sub.getParent() != null) {
+                            j.put("parentid", sub.getParent().getId());
+                        }
+                        children.put(j);
                     }
-                    // j.put("checked", false);
-                    children.put(j);
                 }
 
                 for (ApplicationLayer layer : l.getLayers()) {
                     StartLayer startLayer = layer.getStartLayers().get(application);
-                    if(startLayer != null){
+                    if(startLayer != null || !l.getStartLevels().containsKey(application)){ 
+                        //if the startLevel doesn't exist, it's a new startLayer (so show it)
+                        // if the startLayer doesn't exist, but the startLevel does, it's a removed startLayer, so don't show it.  
                         JSONObject j = new JSONObject();
                         j.put("id", "s" + layer.getId());
                         j.put("name", layer.getDisplayName(em));
@@ -515,6 +512,27 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
         for(Level child: l.getChildren()) {
             getCheckedLayerList(layers, child, app);
+        }
+    }
+    
+    protected void removeStartLevel(Level l, EntityManager em){
+        StartLevel sl = l.getStartLevels().get(application);
+        List<ApplicationLayer> als = l.getLayers();
+        for (ApplicationLayer al : als) {
+            StartLayer startLayer = al.getStartLayers().get(application);
+            al.getStartLayers().remove(application);
+            application.getStartLayers().remove(startLayer);
+            if (startLayer != null) {
+                em.remove(startLayer);
+            }
+        }
+        l.getStartLevels().remove(application);
+        em.remove(sl);
+        application.getStartLevels().remove(sl);
+        
+        List<Level> children = l.getChildren();
+        for (Level child : children) {
+            removeStartLevel(child, em);
         }
     }
 
