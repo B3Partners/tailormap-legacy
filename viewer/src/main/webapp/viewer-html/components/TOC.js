@@ -696,7 +696,8 @@ Ext.define ("viewer.components.TOC",{
     // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
         if(e.target.nodeName.toUpperCase() === "INPUT" ||
-            e.target.className === "toc-zoomtoscale-text"){
+            e.target.className === "toc-zoomtoscale-text" ||
+            e.target.className.indexOf("tree-checkbox") !== -1){
             return;
         }
         var node = record.raw;
