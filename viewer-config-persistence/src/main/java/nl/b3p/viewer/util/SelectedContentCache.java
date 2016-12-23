@@ -324,61 +324,65 @@ public class SelectedContentCache {
     }
 
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em) throws JSONException {
-        JSONObject o = l.toJSONObject(false, app, null, em);
-
-        Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
-        o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
-        o.put("background", l.isBackground() || parentIsBackground);
-        String levelId = l.getId().toString();
-        if (validXmlTags) {
-            levelId = "level_" + levelId;
-        }
-        levels.put(levelId, o);
-
+        
         StartLevel sl = l.getStartLevels().get(app);
-        if (sl != null && sl.getSelectedIndex() != null) {
-            selectedContent.add(sl);
-        }
+        if(sl != null){
+            JSONObject o = l.toJSONObject(false, app, null, em);
 
-        for (ApplicationLayer al : l.getLayers()) {
-
-            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, app);
-            p.put("background", l.isBackground() || parentIsBackground);
-
-            Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
-            p.put("editAuthorizations", rw != null ? rw.toJSON() : new JSONObject());
-            String alId = al.getId().toString();
+            Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
+            o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
+            o.put("background", l.isBackground() || parentIsBackground);
+            String levelId = l.getId().toString();
             if (validXmlTags) {
-                alId = "appLayer_" + alId;
+                levelId = "level_" + levelId;
+            }
+            levels.put(levelId, o);
+
+            if (sl != null && sl.getSelectedIndex() != null) {
+                selectedContent.add(sl);
             }
 
-            Authorizations.ReadWrite applayerAuths = appCache.getProtectedAppLayers().get(al.getId());
-            p.put(AUTHORIZATIONS_KEY, applayerAuths != null ? applayerAuths.toJSON() : new JSONObject());
+            for (ApplicationLayer al : l.getLayers()) {
+                StartLayer startLayer = al.getStartLayers().get(app);
+                if(startLayer != null){
+                    JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, app);
+                    p.put("background", l.isBackground() || parentIsBackground);
 
-            appLayers.put(alId, p);
+                    Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
+                    p.put("editAuthorizations", rw != null ? rw.toJSON() : new JSONObject());
+                    String alId = al.getId().toString();
+                    if (validXmlTags) {
+                        alId = "appLayer_" + alId;
+                    }
 
-            StartLayer startLayer = al.getStartLayers().get(app);
-            if (startLayer != null && startLayer.getSelectedIndex() != null) {
-                selectedContent.add(startLayer);
-            }
-        }
+                    Authorizations.ReadWrite applayerAuths = appCache.getProtectedAppLayers().get(al.getId());
+                    p.put(AUTHORIZATIONS_KEY, applayerAuths != null ? applayerAuths.toJSON() : new JSONObject());
 
-        List<Level> children = treeCache.getChildrenByParent().get(l);
-        if (children != null) {
-            Collections.sort(children);
-            JSONArray jsonChildren = new JSONArray();
-            o.put("children", jsonChildren);
-            for (Level child : children) {
-                JSONObject childObject = new JSONObject();
-                String childId = child.getId().toString();
-                if (validXmlTags) {
-                    childId = "level_" + childId;
+                    appLayers.put(alId, p);
+
+                    if (startLayer.getSelectedIndex() != null) {
+                        selectedContent.add(startLayer);
+                    }
                 }
-                childObject.put("child", childId);
-                Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
-                childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
-                jsonChildren.put(childObject);
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
+            }
+
+            List<Level> children = treeCache.getChildrenByParent().get(l);
+            if (children != null) {
+                Collections.sort(children);
+                JSONArray jsonChildren = new JSONArray();
+                o.put("children", jsonChildren);
+                for (Level child : children) {
+                    JSONObject childObject = new JSONObject();
+                    String childId = child.getId().toString();
+                    if (validXmlTags) {
+                        childId = "level_" + childId;
+                    }
+                    childObject.put("child", childId);
+                    Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
+                    childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
+                    jsonChildren.put(childObject);
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
+                }
             }
         }
     }
