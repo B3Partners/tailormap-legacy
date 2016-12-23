@@ -280,9 +280,11 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
                             <port>9091</port>
-                            <contextFile>src/test/tomcatconf/context.xml</contextFile>
+                            <contextFile>${project.basedir}/src/test/tomcatconf/context.xml</contextFile>
                             <systemProperties />
                             <useTestClasspath>true</useTestClasspath>
+                            <tomcatLoggingFile>${project.basedir}/src/test/tomcatconf/logging.properties</tomcatLoggingFile>
+                            <propertiesPortFilePath>${project.build.testOutputDirectory}/tomcatports.properties</propertiesPortFilePath>
                         </configuration>
                         <executions>
                             <execution>

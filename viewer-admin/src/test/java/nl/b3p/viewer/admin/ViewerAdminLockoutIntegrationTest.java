@@ -20,49 +20,57 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Scanner;
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
+import nl.b3p.viewer.util.LoggingTestUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeNotNull;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
- * test het tomcat lockout mechanisme.
+ * test the tomcat lockout mechanism.
+ *
+ * If you want to run this test standalone use the following command:
+ * {@code mvn -e clean verify -Ptravis-ci -Dit.test=ViewerAdminLockoutIntegrationTest > mvn.log }
+ * This will take care of spinning up a tomcat instance on a maven specified
+ * port to run the * test.
  *
  * @author Mark Prins
  */
-public class ViewerAdminLockoutIntegrationTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
 
+    private static final Log LOG = LogFactory.getLog(ViewerAdminLockoutIntegrationTest.class);
     /**
      * the viewer url. {@value}
      */
-    public static final String BASE_TEST_URL = "http://localhost:9091/viewer-admin/";
+    private static String BASE_TEST_URL = "http://localhost:XXX/viewer-admin/";
 
+    private static final Properties PROPS = new Properties();
     /**
      * our test client.
      */
     private static CloseableHttpClient client;
-
-    private static final Properties POSTGRESPROP = new Properties();
 
     /**
      * our test response.
@@ -70,21 +78,23 @@ public class ViewerAdminLockoutIntegrationTest {
     private HttpResponse response;
 
     /**
-     * initialize database props.
-     *
-     * @throws java.io.IOException if loading the property file fails
-     */
-    @BeforeClass
-    public static void loadDBprop() throws IOException {
-        POSTGRESPROP.load(ViewerAdminLockoutIntegrationTest.class.getClassLoader().getResourceAsStream("postgres.properties"));
-    }
-
-    /**
      * initialize http client.
      */
     @BeforeClass
-    public static void setUpClass() {
-        client = HttpClientBuilder.create().build();
+    public static void setupClient() {
+        //client = HttpClientBuilder.create().build();
+        client = HttpClients.custom()
+                .useSystemProperties()
+                .setUserAgent("brmo integration test")
+                .setRedirectStrategy(new LaxRedirectStrategy())
+                .setDefaultCookieStore(new BasicCookieStore())
+                .build();
+    }
+
+    @BeforeClass
+    public static void initTomcatPort() throws IOException {
+        PROPS.load(ViewerAdminLockoutIntegrationTest.class.getClassLoader().getResourceAsStream("tomcatports.properties"));
+        BASE_TEST_URL = BASE_TEST_URL.replace("XXX", PROPS.getProperty("tomcat.maven.http.port", "9091"));
     }
 
     /**
@@ -93,7 +103,7 @@ public class ViewerAdminLockoutIntegrationTest {
      * @throws IOException if any occurs closing the http connection
      */
     @AfterClass
-    public static void tearDownClass() throws IOException {
+    public static void closeClient() throws IOException {
         client.close();
     }
 
@@ -105,7 +115,7 @@ public class ViewerAdminLockoutIntegrationTest {
      * @throws IOException if any
      */
     @Test
-    public void request() throws UnsupportedEncodingException, IOException {
+    public void testARequest() throws UnsupportedEncodingException, IOException {
         response = client.execute(new HttpGet(BASE_TEST_URL));
 
         final String body = EntityUtils.toString(response.getEntity());
@@ -123,8 +133,7 @@ public class ViewerAdminLockoutIntegrationTest {
      * @throws URISyntaxException mag niet optreden
      */
     @Test
-    @Ignore("fails because there is a problem setting up the jndi authentication realm")
-    public void testLoginLogout() throws IOException, URISyntaxException {
+    public void testBLoginLogout() throws IOException, URISyntaxException {
         // login page
         response = client.execute(new HttpGet(BASE_TEST_URL));
         EntityUtils.consume(response.getEntity());
@@ -140,7 +149,7 @@ public class ViewerAdminLockoutIntegrationTest {
                 equalTo(HttpStatus.SC_OK));
 
         // index
-        response = client.execute(new HttpGet(BASE_TEST_URL + "index.jsp"));
+        response = client.execute(new HttpGet(BASE_TEST_URL + "action/index"));
         String body = EntityUtils.toString(response.getEntity());
         assertNotNull("Response body mag niet null zijn.", body);
         assertTrue("Response moet 'Beheeromgeving geo-viewers' title hebben.",
@@ -161,15 +170,21 @@ public class ViewerAdminLockoutIntegrationTest {
         assertTrue("Response moet 'Uitgelogd' heading hebben.", body.contains("<h1>Uitgelogd</h1>"));
     }
 
+    /**
+     * This test work; but will be ignored because we need to catalina.out file
+     * to check for the message and that does not seem te be generated.
+     *
+     * @throws IOException if any
+     * @throws URISyntaxException if any
+     */
     @Test
-    @Ignore("fails because there is a problem setting up the jndi authentication realm")
-    public void testLockout() throws IOException, URISyntaxException {
+    public void testCLockout() throws IOException, URISyntaxException {
         response = client.execute(new HttpGet(BASE_TEST_URL));
         EntityUtils.consume(response.getEntity());
 
         HttpUriRequest login = RequestBuilder.post()
                 .setUri(new URI(BASE_TEST_URL + "j_security_check"))
-                .addParameter("j_username", "fout")
+                .addParameter("j_username", "admin")
                 .addParameter("j_password", "fout")
                 .build();
         response = client.execute(login);
@@ -177,30 +192,46 @@ public class ViewerAdminLockoutIntegrationTest {
         assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
                 equalTo(HttpStatus.SC_OK));
 
-//        String body = EntityUtils.toString(response.getEntity());
-//        assertNotNull("Response body mag niet null zijn.", body);
-//        assertTrue("Response moet 'Ongeldige logingegevens.' in pagina hebben.",
-//                body.contains("Ongeldige logingegevens."));
-
+        // the default lockout is 5 attempt in 5 minutes
         for (int c = 1; c < 6; c++) {
             response = client.execute(login);
             EntityUtils.consume(response.getEntity());
             assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
                     equalTo(HttpStatus.SC_OK));
         }
-        // user 'fout' is now locked out, but we have no way to detect apart from looking in the cataline logfile,
+        // user 'fout' is now locked out, but we have no way to detect apart from looking at the cataline logfile,
         //   the status for a form-based login page is (and should be) 200
 
-        // the will be a message in catalina.out similar to: `WARNING .... An attempt was made to authenticate the locked user "test"`
-        Scanner s = new Scanner(ViewerAdminLockoutIntegrationTest.class.getClassLoader().getResourceAsStream("catalina.log"));
+
+        LOG.info("trying one laste time with locked-out user, but correct password");
+        login = RequestBuilder.post()
+                .setUri(new URI(BASE_TEST_URL + "j_security_check"))
+                .addParameter("j_username", "admin")
+                .addParameter("j_password", "flamingo")
+                .build();
+        response = client.execute(login);
+
+        String body = EntityUtils.toString(response.getEntity());
+        assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
+                equalTo(HttpStatus.SC_OK));
+
+        assertNotNull("Response body mag niet null zijn.", body);
+        assertTrue("Response moet 'Ongeldige logingegevens.' text hebben.", body.contains("Ongeldige logingegevens."));
+
+        // there will be a message in catalina.out similar to: `WARNING: An attempt was made to authenticate the locked user "admin"`
+        // problem is this is output to the console so logging is broken in tomcat plugin, so below assumption will fail and mark this test as ignored
+        InputStream is = ViewerAdminLockoutIntegrationTest.class.getClassLoader().getResourceAsStream("catalina.log");
+        assumeNotNull("The catalina.out should privide a valid inputstream.", is);
+
+        Scanner s = new Scanner(is);
         boolean lokkedOut = false;
         while (s.hasNextLine()) {
             final String lineFromFile = s.nextLine();
-            if (lineFromFile.contains("An attempt was made to authenticate the locked user \"test\"")) {
+            if (lineFromFile.contains("An attempt was made to authenticate the locked user \"admin\"")) {
                 lokkedOut = true;
                 break;
             }
         }
-        assertTrue("gebruiker is buitengesloten", lokkedOut);
+        assertTrue("gebruiker 'admin' is buitengesloten", lokkedOut);
     }
 }

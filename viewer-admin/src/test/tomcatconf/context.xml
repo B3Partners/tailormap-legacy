@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/viewer-admin" reloadable="true" crossContext="true" backgroundProcessorDelay="5">
+<Context path="/viewer-admin" reloadable="true" crossContext="true" backgroundProcessorDelay="5" swallowOutput="true">
     <Parameter name="componentregistry.path"
                override="false"
                value="/viewer-html/components"
@@ -31,13 +31,14 @@
     <Realm className="org.apache.catalina.realm.LockOutRealm">
         <Realm allRolesMode="authOnly"
                className="org.apache.catalina.realm.DataSourceRealm"
-               dataSourceName="jdbc/geo_viewer"
                digest="SHA-1"
                roleNameCol="group_"
                userCredCol="password"
                userNameCol="username"
                userRoleTable="user_groups"
                userTable="user_"
+               dataSourceName="jdbc/geo_viewer"
+               localDataSource="true"
         />
     </Realm>
 </Context>
