@@ -725,3 +725,8 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     width: 100%;
     height: 100%;
 }
+
+.x-grid-item-container .removed, .x-grid-item-container .removed .x-grid-item-focused {
+    color: #BBBBBB;
+    text-decoration: line-through;
+}

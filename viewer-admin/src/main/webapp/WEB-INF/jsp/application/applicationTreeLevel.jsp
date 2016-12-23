@@ -109,6 +109,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var moverighticon = '${contextPath}/resources/images/move-right.gif';
             var moveupicon = '${contextPath}/resources/images/move-up.gif';
             var movedownicon = '${contextPath}/resources/images/move-down.gif';
+            
+            var unremoveicon = '${contextPath}/resources/images/bin.png';
+            var removeicon = '${contextPath}/resources/images/bin_empty.png';
 
             vieweradmin.components.Menu.setActiveLink('menu_boomstructuur');
             

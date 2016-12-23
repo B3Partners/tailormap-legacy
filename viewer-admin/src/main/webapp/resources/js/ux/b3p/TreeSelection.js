@@ -27,6 +27,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     moveLeftIcon: movelefticon || '',
     moveUpIcon: moveupicon || '',
     moveDownIcon: movedownicon || '',
+    removeIcon: removeicon || '',
+    unremoveIcon: unremoveicon || '',
     treeContainer: 'servicetree-container',
     selectedLayersContainer: 'selected-layers',
     layerSelectionButtons: 'layerselection-buttons',
@@ -39,7 +41,9 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     checkBackendOnMove: false,
     backendCheckUrl: '',
     checkedLayers: [],
+    deletedRecords: [],
     onlyMoveRootLevels: false,
+    useDeleteButton: false,
 
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -184,6 +188,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                         disableButtons = true;
                     }
                     me.disableMoveButtons(disableButtons);
+                    me.deleteButton.setIcon(record.get("isRemoved") === true ? me.unremoveIcon : me.removeIcon);
                 }
             }
         });
@@ -249,6 +254,21 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 }
             }
         });
+
+        if(this.useDeleteButton) {
+            me.deleteButton = Ext.create('Ext.Button', {
+                icon: me.removeIcon,
+                width: 23,
+                height: 22,
+                renderTo: me.layerMoveButtons,
+                cls: 'plain-button',
+                listeners: {
+                    click: function() {
+                        me.markRemoved();
+                    }
+                }
+            });
+        }
     },
     
     getViewConfig: function(treeType) {
@@ -260,6 +280,17 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 allowContainerDrops: true,
                 allowParentInserts: true,
                 sortOnDrop: true
+            },
+            getRowClass: function(record, index, rowParams, store) {
+                var hasParentRemoved = false;
+                var parent = record.parentNode;
+                while(parent && !hasParentRemoved) {
+                    if(parent.get("isRemoved") === true) {
+                        hasParentRemoved = true;
+                    }
+                    parent = parent.parentNode;
+                }
+                return record.get('isRemoved') || hasParentRemoved ? 'removed' : '';
             },
             listeners: {
                 // beforedrop is executed when node is dropped on container (so not on another node but on 'empty' space'
@@ -344,6 +375,36 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             return node;
         } else {
             return me.findRootNode(node.parentNode.get('id'));
+        }
+    },
+
+    markRemoved: function() {
+        var selection = this.selectedlayers.getSelectionModel().getSelection();
+        var recordid;
+        var recordtype;
+        var removeIdx = -1;
+        for(var i = 0; i < selection.length; i++) {
+            recordid = parseInt(selection[i].get('id').substring(1), 10);
+            recordtype = selection[i].get('type');
+            removeIdx = -1;
+            for(var j = 0; j < this.deletedRecords.length; j++) {
+                if(this.deletedRecords[j].id === recordid && this.deletedRecords[j].type === recordtype) {
+                    removeIdx = j;
+                }
+            }
+            if(removeIdx === -1) {
+                selection[i].set("isRemoved", true);
+                this.deletedRecords.push({ id: recordid, type: recordtype })
+                this.deleteButton.setIcon(this.unremoveIcon);
+            } else {
+                selection[i].set("isRemoved", false);
+                this.deletedRecords.splice(removeIdx, 1);
+                this.deleteButton.setIcon(this.removeIcon);
+            }
+            if(!selection[i].get("leaf") && selection[i].get("expanded")) {
+                selection[i].collapse();
+                selection[i].expand();
+            }
         }
     },
 
@@ -598,6 +659,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     getCheckedLayers: function() {
         var me = this;
         return Ext.JSON.encode(me.checkedLayers);
+    },
+
+    getRemovedRecords: function() {
+        return Ext.JSON.encode(this.deletedRecords);
     }
 
 });

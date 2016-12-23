@@ -190,7 +190,7 @@ public class Level implements Comparable{
             JSONArray ls = new JSONArray();
             o.put("layers", ls);
             for(ApplicationLayer l: layers) {
-                if(request == null || Authorizations.isAppLayerReadAuthorized(app, l, request, em)) {
+                if((request == null || Authorizations.isAppLayerReadAuthorized(app, l, request, em)) && l.getStartLayers().containsKey(app)) {
                     ls.put(l.getId().toString());
                 }
             }            
