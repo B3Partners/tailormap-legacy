@@ -6,11 +6,13 @@
 package nl.b3p.viewer.admin.stripes;
 
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -60,11 +62,28 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             
             instance.saveStartMap(entityManager);
             
-            
+            // test of mashup is verandert
             assertEquals(expectedStartLayerSize - 1, mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
-
             assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
+            
+            // test of moederapplicatie NIET is verandert
+            
+            assertEquals(expectedStartLayerSize, application.getStartLayers().size());
+            assertEquals(expectedStartLevelSize, application.getStartLevels().size());
+            assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
+            
+
+            SelectedContentCache scc = new SelectedContentCache();
+            JSONObject actual = scc.createSelectedContent(mashup, false, false, false, entityManager);
+            JSONObject appLayers = actual.getJSONObject("appLayers");
+            JSONObject levels = actual.getJSONObject("levels");
+            JSONObject level = levels.getJSONObject("5");
+            JSONArray layersInLevel = level.getJSONArray("layers");
+            
+            assertEquals(2, layersInLevel.length());
+            Assert.assertFalse(appLayers.has("3"));
+            int a = 0;
         }catch(Exception e){
             log.error ("fout",e);
             assert(false);
@@ -97,10 +116,28 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             
             instance.saveStartMap(entityManager);
             
+            
+            // test of mashup is verandert
             assertEquals(expectedStartLayerSize -1, mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize- 1, mashup.getStartLevels().size());
 
             assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
+            
+            
+            
+            // test of moederapplicatie NIET is verandert
+            
+            assertEquals(expectedStartLayerSize, application.getStartLayers().size());
+            assertEquals(expectedStartLevelSize, application.getStartLevels().size());
+            assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
+            
+            
+            SelectedContentCache scc = new SelectedContentCache();
+            JSONObject actual = scc.createSelectedContent(mashup, false, false, false, entityManager);
+            JSONObject appLayers = actual.getJSONObject("appLayers");
+            JSONObject levels = actual.getJSONObject("levels");
+            
+            Assert.assertFalse(levels.has("3"));
         }catch(Exception e){
             log.error (e);
             assert(false);
