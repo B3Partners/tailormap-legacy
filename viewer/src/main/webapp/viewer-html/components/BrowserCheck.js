@@ -31,7 +31,7 @@ Ext.define("viewer.components.BrowserCheck", {
 		viewer.components.BrowserCheck.superclass.constructor.call(this, this.config);
         
         this.unsupported = (Ext.isIE && Ext.ieVersion < 9)
-            || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari));
+            || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari || Ext.isEdge));
         // this.unsupported = viewer.components.MobileManager.isMobile() ? false : this.unsupported;
         
         if((this.config.test || this.unsupported) && this.config.showPopup) {
