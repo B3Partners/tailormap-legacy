@@ -21,7 +21,7 @@ import org.junit.Test;
 public class ApplicationStartMapActionBeanTest extends TestUtil{
     private static final Log log = LogFactory.getLog(ApplicationStartMapActionBeanTest.class);
     private ApplicationStartMapActionBean instance = new ApplicationStartMapActionBean();
-    
+    private Application application;
     
     public ApplicationStartMapActionBeanTest() {
         String sc = "[{ \"id\" : \"3\", \"type\" : \"level\"}, { \"id\" : \"4\", \"type\" : \"level\"}, { \"id\" : \"5\", \"type\" : \"level\"},{ \"id\" : \"6\", \"type\" : \"level\"}]";
@@ -38,13 +38,13 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     public void testRemoveStartLayer(){
         
         initData(true);
+        application = entityManager.find(Application.class, 1L);
         try {
-            Application app = entityManager.find(Application.class, 1L);
-            int expectedStartLayerSize = app.getStartLayers().size();
-            int expectedStartLevelSize = app.getStartLevels().size();
-            int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
+            int expectedStartLayerSize = application.getStartLayers().size();
+            int expectedStartLevelSize = application.getStartLevels().size();
+            int expectedRootStartLevelSize = application.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = app.createMashup("mashup", entityManager,false);
+            Application mashup = application.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -64,7 +64,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             assertEquals(expectedStartLayerSize - 1, mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
 
-            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
         }catch(Exception e){
             log.error ("fout",e);
             assert(false);
@@ -75,12 +75,13 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     public void testRemoveStartLevel(){
         
         initData(true);
+        application = entityManager.find(Application.class, 1L);
         try {
-            int expectedStartLayerSize = app.getStartLayers().size();
-            int expectedStartLevelSize = app.getStartLevels().size();
-            int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
+            int expectedStartLayerSize = application.getStartLayers().size();
+            int expectedStartLevelSize = application.getStartLevels().size();
+            int expectedRootStartLevelSize = application.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = app.createMashup("mashup", entityManager,false);
+            Application mashup = application.createMashup("mashup", entityManager,false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -99,7 +100,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             assertEquals(expectedStartLayerSize -1, mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize- 1, mashup.getStartLevels().size());
 
-            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
         }catch(Exception e){
             log.error (e);
             assert(false);
