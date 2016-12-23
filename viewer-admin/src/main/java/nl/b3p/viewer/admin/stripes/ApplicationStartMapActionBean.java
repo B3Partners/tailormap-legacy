@@ -110,7 +110,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             }
         }
         
-        walkAppTreeForSave(rootlevel);
+        walkAppTreeForSave(rootlevel,em);
         SelectedContentCache.setApplicationCacheDirty(application, true,false,true,em);
         em.getTransaction().commit();
     }
@@ -228,16 +228,16 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
     }
     
-    protected void walkAppTreeForSave(Level l) throws JSONException{
+    protected void walkAppTreeForSave(Level l, EntityManager em) throws JSONException{
         StartLevel sl = l.getStartLevels().get(application);
-     /*   if(shouldBeRemoved(l)){
+        if(shouldBeRemoved(l)){
             List<ApplicationLayer> als = l.getLayers();
             for (ApplicationLayer al : als) {
                 al.getStartLayers().remove(application);
             }
             l.getStartLevels().remove(application);
         }else{
-            */
+            
             if(sl == null){
                 sl = new StartLevel();
                 sl.setApplication(application);
@@ -248,22 +248,26 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             sl.setSelectedIndex(getSelectedContentIndex(l));
 
             for(ApplicationLayer al: l.getLayers()) {
-                StartLayer startLayer = al.getStartLayers().get(application);
-                if(startLayer == null){
-                    startLayer = new StartLayer();
-                    startLayer.setApplication(application);
-                    startLayer.setApplicationLayer(al);
-                    al.getStartLayers().put(application, startLayer);
-                }
+                if(shouldBeRemoved(al)){
+                    al.getStartLayers().remove(application);
+                }else{
+                    StartLayer startLayer = al.getStartLayers().get(application);
+                    if(startLayer == null){
+                        startLayer = new StartLayer();
+                        startLayer.setApplication(application);
+                        startLayer.setApplicationLayer(al);
+                        al.getStartLayers().put(application, startLayer);
+                    }
 
-                startLayer.setSelectedIndex(getSelectedContentIndex(al));
-                startLayer.setChecked(getCheckedForLayerId(al.getId()));
+                    startLayer.setSelectedIndex(getSelectedContentIndex(al));
+                    startLayer.setChecked(getCheckedForLayerId(al.getId()));
+                }
             }
 
             for(Level child: l.getChildren()) {
-                walkAppTreeForSave(child);
+                walkAppTreeForSave(child,em);
             }
-     //   }
+        }
     }
     
     private boolean shouldBeRemoved(Object l){

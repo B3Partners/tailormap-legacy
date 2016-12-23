@@ -38,8 +38,8 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     public void testRemoveStartLayer(){
         
         initData(true);
-        instance.setApplication(app);
         try {
+            Application app = entityManager.find(Application.class, 1L);
             int expectedStartLayerSize = app.getStartLayers().size();
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
@@ -49,6 +49,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
+            instance.setApplication(mashup);
             
             JSONObject removeString = new JSONObject();
             removeString.put("type", "layer");
@@ -65,7 +66,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
 
             assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
         }catch(Exception e){
-            log.error (e);
+            log.error ("fout",e);
             assert(false);
         }
     }
@@ -74,7 +75,6 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     public void testRemoveStartLevel(){
         
         initData(true);
-        instance.setApplication(app);
         try {
             int expectedStartLayerSize = app.getStartLayers().size();
             int expectedStartLevelSize = app.getStartLevels().size();
@@ -85,8 +85,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
-            
-            
+            instance.setApplication(mashup);
             
             JSONObject removeString = new JSONObject();
             removeString.put("type", "level");
@@ -97,7 +96,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             
             instance.saveStartMap(entityManager);
             
-            assertEquals(expectedStartLayerSize , mashup.getStartLayers().size());
+            assertEquals(expectedStartLayerSize -1, mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize- 1, mashup.getStartLevels().size());
 
             assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
