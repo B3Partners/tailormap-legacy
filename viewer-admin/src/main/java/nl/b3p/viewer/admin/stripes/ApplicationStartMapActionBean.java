@@ -99,7 +99,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         jsonContent = new JSONArray(selectedContent);
         jsonCheckedLayers = new JSONArray(checkedLayersString);
         
-        JSONArray objToRemove = new JSONArray(removedRecordsString);
+        JSONArray objToRemove = new JSONArray();
+        if(removedRecordsString != null){
+            objToRemove = new JSONArray(removedRecordsString);
+        }
         for (Object obj : objToRemove) {
             JSONObject o = (JSONObject)obj;
             String type = o.getString("type");
