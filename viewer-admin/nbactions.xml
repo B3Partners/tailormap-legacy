@@ -14,7 +14,6 @@
             <properties>
                 <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
                 <netbeans.deploy>true</netbeans.deploy>
-                <skipTests>true</skipTests>
             </properties>
         </action>
         <action>
@@ -53,7 +52,6 @@
                 <exec.executable>java</exec.executable>
                 <exec.classpathScope>${classPathScope}</exec.classpathScope>
                 <jpda.listen>true</jpda.listen>
-                <skipTests>true</skipTests>
             </properties>
         </action>
         <action>
@@ -70,7 +68,6 @@
                 <exec.args>-classpath %classpath ${packageClassName}</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.classpathScope>${classPathScope}</exec.classpathScope>
-                <skipTests>true</skipTests>
             </properties>
         </action>
         <action>
@@ -85,7 +82,6 @@
             <properties>
                 <netbeans.deploy>true</netbeans.deploy>
                 <netbeans.deploy.clientUrlPart>${webpagePath}</netbeans.deploy.clientUrlPart>
-                <skipTests>true</skipTests>
             </properties>
         </action>
         <action>
@@ -101,22 +97,6 @@
             </goals>
             <properties>
                 <netbeans.deploy>true</netbeans.deploy>
-                <skipTests>true</skipTests>
-            </properties>
-        </action>
-        <action>
-            <actionName>debug.single.deploy</actionName>
-            <packagings>
-                <packaging>war</packaging>
-            </packagings>
-            <goals>
-                <goal>package</goal>
-            </goals>
-            <properties>
-                <netbeans.deploy.clientUrlPart>${webpagePath}</netbeans.deploy.clientUrlPart>
-                <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
-                <netbeans.deploy>true</netbeans.deploy>
-                <skipTests>true</skipTests>
             </properties>
         </action>
     </actions>
