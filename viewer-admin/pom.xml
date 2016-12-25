@@ -280,9 +280,21 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
                             <port>9091</port>
-                            <contextFile>src/test/tomcatconf/context.xml</contextFile>
+                            <contextFile>${project.basedir}/src/test/tomcatconf/context.xml</contextFile>
                             <systemProperties />
                             <useTestClasspath>true</useTestClasspath>
+                            <tomcatLoggingFile>${project.basedir}/src/test/tomcatconf/logging.properties</tomcatLoggingFile>
+                            <propertiesPortFilePath>${project.build.testOutputDirectory}/tomcatports.properties</propertiesPortFilePath>
+                            <!--webapps>
+                                <webapp>
+                                    <groupId>org.flamingo-mc</groupId>
+                                    <artifactId>viewer</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                    <contextFile>${project.basedir}/../viewer/src/test/tomcatconf/context.xml</contextFile>
+                                </webapp>
+                            </webapps-->
                         </configuration>
                         <executions>
                             <execution>

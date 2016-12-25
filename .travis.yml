@@ -3,7 +3,7 @@ sudo: required
 language: java
 
 addons:
-  postgresql: "9.4"
+  postgresql: "9.5"
   hosts: travis-fla4
   hostname: travis-fla4
 
@@ -27,9 +27,12 @@ install:
   - mvn install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -q
 
 script:
-  # execute unit and integration tests
+  # execute unit tests
   - mvn -e clean test -B
-  - mvn -e clean verify -B -Ptravis-ci
+  # run integration tests on all modules except viewer-admin
+  - mvn -e clean verify -B -Ptravis-ci -pl '!viewer-admin'
+  # run integration tests on viewer-admin module only
+  - mvn -e clean verify -B -Ptravis-ci -pl 'viewer-admin'
   # on oracle java 8 run a javadoc build to check for errors
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
          mvn javadoc:javadoc;
@@ -46,9 +49,6 @@ os:
 
 matrix:
   fast_finish: true
-
-  #allow_failures:
-  #  - jdk: openjdk8
 
 cache:
   directories:
