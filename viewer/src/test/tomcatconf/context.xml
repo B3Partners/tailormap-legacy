@@ -5,7 +5,7 @@
         override="false"
         value="/viewer-html/components"
     />
-    
+
     <!-- properties below are expanded at runtime and are available
     in ../resources/postgres.properties -->
     <Resource
@@ -39,6 +39,7 @@
                userNameCol="username"
                userRoleTable="user_groups"
                userTable="user_"
+               localDataSource="true"
         />
     </Realm>
 </Context>
