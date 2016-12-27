@@ -140,6 +140,8 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("21", new UpdateElement(Collections.singletonList("remove_selectedIndexChecked.sql"), String.class));
         
         updates.put("22", new UpdateElement(Collections.singletonList("add_user_ips.sql"), String.class));
+        
+        updates.put("23", new UpdateElement(Collections.singletonList("removeDuplicateStartLayersLevels.sql"), String.class));
 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }
