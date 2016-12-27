@@ -540,7 +540,7 @@ public class Application {
         mashup.setName(mashup.getName() + "_" + mashupName);
         em.persist(mashup);
         if(mashup.getRoot() != null){
-            mashup.getRoot().processForMashup(mashup);
+            mashup.getRoot().processForMashup(mashup, source);
         }
 
         mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
