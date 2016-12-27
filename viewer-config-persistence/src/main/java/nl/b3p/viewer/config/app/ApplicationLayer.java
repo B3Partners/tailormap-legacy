@@ -309,12 +309,17 @@ public class ApplicationLayer {
         return featureTypeAttributes;
     }
     
-    void processStartLayers(Application app, ApplicationLayer original) throws Exception{
-        List<StartLayer> al = new ArrayList(original.startLayers.values());
-        // gaat mis bij maken van mashup bij application die al mashup heeft. Dit is goed, nu ook bij procesStartLevels
-        for (int i = 0; i < al.size(); i++) {
-            StartLayer sl = al.get(i);
-            this.getStartLayers().put(app, sl.deepCopy(this,app));
+    void processStartLayers(Application app, ApplicationLayer original, Application copyFrom) throws Exception{
+        StartLayer sl = original.getStartLayers().get(copyFrom);
+       
+       if(sl != null){
+           this.getStartLayers().put(app, sl.deepCopy(this, app));
+        } else if (Objects.equals(app.getId(), copyFrom.getId())) {
+            List<StartLayer> al = new ArrayList(original.startLayers.values());
+            for (int i = 0; i < al.size(); i++) {
+                StartLayer sl2 = al.get(i);
+                this.getStartLayers().put(app, sl2.deepCopy(this, app));
+            }
         }
     }
 
@@ -334,7 +339,7 @@ public class ApplicationLayer {
             copy.getAttributes().add(a.deepCopy());
         }
         copy.setStartLayers(new HashMap<Application, StartLayer>());
-        copy.processStartLayers(app,this);
+        copy.processStartLayers(app,this, app);
         
         return copy;
     }
