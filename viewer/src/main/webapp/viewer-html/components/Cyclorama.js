@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * Cyclorama component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -194,27 +196,22 @@ Ext.define ("viewer.components.Cyclorama",{
         var coords = event.coord;
         var x = coords.x;
         var y = coords.y;
-        var radius=4*this.config.viewerController.mapComponent.getMap().getResolution();
+        var radius=4*Math.ceil(this.config.viewerController.mapComponent.getMap().getResolution());
         
         if(this.isDirect){
             var params = {
                 directRequest: true,
                 x: parseInt(x),
                 y: parseInt(y),
-                offset: radius
+                offset: radius,
+                appId: appId,
+                accountId: this.config.keyCombo
             };
-            Ext.Ajax.request({
-                url: actionBeans["cyclorama"],
-                params: params,
-                scope: this,
-                success: function(result) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    this.processResponse(response);
-                },
-                failure: function(result) {
-                   this.viewerController.logger.error(result);
-                }
-            });
+
+            var width = parseInt(this.config.width);
+            var height = parseInt(this.config.height);
+            var href = actionBeans["cyclorama"] + "?"+ Ext.urlEncode(params);
+            window.open(href, "cyclorama", 'width=' + width + ',height='+ height+',scrollbars=yes'); 
         }else{
 
             var appLayer = this.viewerController.getAppLayerById(this.config.layers);
@@ -230,7 +227,6 @@ Ext.define ("viewer.components.Cyclorama",{
             var featureInfo = Ext.create("viewer.FeatureInfo", {
                 viewerController: me.viewerController
             });
-            var radius = me.viewerController.mapComponent.getMap().getResolution() * 4;
             featureInfo.layersFeatureInfo(x, y, radius, [appLayer], extraParams,function(response){
                 for ( var i = 0 ; i < response.length; i++){
                     var resp = response[i];

@@ -34,22 +34,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
         <div style="margin-left: 10px;">
-            <object id="Globespotter" name="TID">
-                <param name="allowScriptAccess" value="always" />
-                <param name="allowFullScreen" value="true" />
-
-                <!-- Test API: https://www.globespotter.nl/api/test/viewer_bapi.swf -->
-                <!-- 2.1 API: https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf -->
-                <!-- 2.6 API: https://globespotter.cyclomedia.com/v26/api/viewer_api.swf -->
-
-                <embed src="https://globespotter.cyclomedia.com/v2/api/bapi/viewer_bapi.swf"
-                       quality="high" bgcolor="#888888"
-                       width="800" height="400"
-                       type="application/x-shockwave-flash"
-                       allowScriptAccess="always"
-                       allowfullscreen="true"
-                       FlashVars="&APIKey=${actionBean.apiKey}&imageid=${actionBean.imageId}&MapSRSName=EPSG:28992&TID=${actionBean.tid}">
-                </embed>
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="viewer_api" width="800" height=400">
+                    <param name="movie" value="viewer_api" />
+                    <param name="allowScriptAccess" value="always" />
+                    <param name="allowFullScreen" value="true" />
+                    <embed src="https://globespotter.cyclomedia.com/v28/api/viewer_api.swf"
+                        quality="high"
+                        bgcolor="#888888"
+                        width="800" height="400"
+                        name="viewer_api"
+                        align="middle"
+                        play="true"
+                        loop="false"
+                        quality="high"
+                        allowScriptAccess="always"
+                        type="application/x-shockwave-flash"
+                        pluginspage="http://www.adobe.com/go/getflashplayer"
+                        allowFullScreen="true"
+                        flashvars="APIKey=${actionBean.apiKey}&SRSNameViewer=EPSG:28992&imageId=${actionBean.imageId}&SRSNameAddress=EPSG:28992&AddressLanguageCode=nl"
+                    >
+                    </embed>
             </object>
         </div>
 

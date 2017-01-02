@@ -16,7 +16,10 @@
  */
 package nl.b3p.viewer.stripes;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -40,13 +43,18 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import javax.persistence.EntityManager;
 import javax.xml.parsers.ParserConfigurationException;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
+import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
@@ -59,9 +67,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -80,6 +88,8 @@ public class CycloramaActionBean implements ActionBean {
     private final String URL_ENCODING = "utf-8";
     private static final Log log = LogFactory.getLog(LayerListActionBean.class);
     private ActionBeanContext context;
+    
+    private static final String DISTANCE_KEY = "distance";
 
     @Validate
     private double x;
@@ -88,7 +98,7 @@ public class CycloramaActionBean implements ActionBean {
     private double y;
 
     @Validate
-    private double offset;
+    private int offset;
 
     @Validate
     private Long appId;
@@ -168,15 +178,16 @@ public class CycloramaActionBean implements ActionBean {
         this.y = y;
     }
 
-    public double getOffset() {
+    public int getOffset() {
         return offset;
     }
 
-    public void setOffset(double offset) {
+    public void setOffset(int offset) {
         this.offset = offset;
     }
 
     // </editor-fold>
+    
     @DefaultHandler
     public Resolution sign() throws JSONException {
         JSONObject json = new JSONObject();
@@ -216,19 +227,21 @@ public class CycloramaActionBean implements ActionBean {
     }
 
     public Resolution directRequest() throws UnsupportedEncodingException, URISyntaxException, URIException, IOException, SAXException, ParserConfigurationException {
-        JSONObject json = new JSONObject();
-        json.put("success", false);
         Double x1 = x - offset;
         Double y1 = y - offset;
         Double x2 = x + offset;
         Double y2 = y + offset;
         final String username = "B3_develop";
         final String password = "8ndj39";
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
-        URL url2 = new URL("https://atlas.cyclomedia.com/recordings/wfs?service=WFS&VERSION=1.1.0&maxFeatures=10&request=GetFeature&SRSNAME=EPSG:28992&typename=atlas:Recording"
-                + "&filter=<Filter><BBOX><gml:Envelope%20srsName=%27EPSG:28992%27>"
+        Coordinate coord = new Coordinate(x, y);
+        Point point = geometryFactory.createPoint(coord);
+        
+        URL url2 = new URL("https://atlas.cyclomedia.com/recordings/wfs?service=WFS&VERSION=1.1.0&maxFeatures=100&request=GetFeature&SRSNAME=EPSG:28992&typename=atlas:Recording"
+                + "&filter=<Filter><And><BBOX><gml:Envelope%20srsName=%27EPSG:28992%27>"
                 + "<gml:lowerCorner>" + x1.intValue() + "%20" + y1.intValue() + "</gml:lowerCorner>"
-                + "<gml:upperCorner>" + x2.intValue() + "%20" + y2.intValue() + "</gml:upperCorner></gml:Envelope></BBOX></Filter>");
+                + "<gml:upperCorner>" + x2.intValue() + "%20" + y2.intValue() + "</gml:upperCorner></gml:Envelope></BBOX><ogc:PropertyIsNull><ogc:PropertyName>expiredAt</ogc:PropertyName></ogc:PropertyIsNull></And></Filter>");
 
         Authenticator.setDefault(new Authenticator() {
             @Override
@@ -273,18 +286,25 @@ public class CycloramaActionBean implements ActionBean {
         SimpleFeatureCollection fc = (SimpleFeatureCollection) obj;
 
         SimpleFeatureIterator it = fc.features();
-        JSONArray features = new JSONArray();
-        json.put("features", features);
+        SimpleFeature sf = null;
+        List<SimpleFeature> fs = new ArrayList<SimpleFeature>();
         while (it.hasNext()) {
-            JSONObject feat = new JSONObject();
-            features.put(feat);
-            SimpleFeature sf = it.next();
-            Object o = sf.getAttribute("imageId");
-            feat.put("imageId", o);
-
+            sf = it.next();
+            sf.getUserData().put(DISTANCE_KEY, point.distance((Geometry)sf.getDefaultGeometry()));
+            fs.add(sf);
         }
-        json.put("success", true);
-        return new StreamingResolution("application/json", json.toString());
+        Collections.sort(fs, new Comparator<SimpleFeature>() {
+            @Override
+            public int compare(SimpleFeature o1, SimpleFeature o2) {
+                Double d1 = (Double) o1.getUserData().get(DISTANCE_KEY);
+                Double d2 = (Double) o2.getUserData().get(DISTANCE_KEY);
+                return d1.compareTo(d2);
+            }
+        });
+        SimpleFeature f = fs.get(0);
+        imageId = (String) f.getAttribute("imageId");
+        sign();
+        return new ForwardResolution("/WEB-INF/jsp/app/globespotter.jsp");
     }
 
     protected String removeDates(String content, String begintag, String endtag) {
