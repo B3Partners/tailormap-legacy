@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript">
             var uxpath = '${contextPath}/resources/js/ux';
             var csspath = '${contextPath}/resources/css/';
-            var helppath = '${contextPath}/resources/html/help.html';
+            var helppath = 'https://github.com/flamingo-geocms/flamingo/wiki/';
             var viewer_admin_debug_mode = ${param.debug == true ? 'true' : 'false'};
             Ext.Loader.setConfig({enabled: true});
             Ext.Loader.setPath('Ext.ux', uxpath);
