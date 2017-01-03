@@ -74,7 +74,6 @@ public class IPAuthenticationFilter implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
         
-        log.debug("IPAuthenticationFilter:doFilter()");
         HttpServletRequest request = (HttpServletRequest) r;
         HttpSession session = request.getSession();
         User u = null;
@@ -213,9 +212,7 @@ public class IPAuthenticationFilter implements Filter {
                 }
             }
 
-            if (ipAddress.equalsIgnoreCase(remoteAddress)
-                    || ipAddress.equalsIgnoreCase("0.0.0.0")
-                    || ipAddress.equalsIgnoreCase("::")) {
+            if (ipAddress.equalsIgnoreCase(remoteAddress)) {
                 return true;
             }
         }
