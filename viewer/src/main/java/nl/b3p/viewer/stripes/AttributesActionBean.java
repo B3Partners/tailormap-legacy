@@ -30,6 +30,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.util.ChangeMatchCase;
@@ -42,12 +43,17 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.filter.And;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -111,6 +117,9 @@ public class AttributesActionBean implements ActionBean {
 
     @Validate
     private List<Long> attributesToInclude = new ArrayList();
+
+    @Validate
+    private List<Long> attributesNotNull = new ArrayList();
 
     /**
      * To force returning geometry set this to true in the request.
@@ -248,6 +257,15 @@ public class AttributesActionBean implements ActionBean {
     public void setGraph(boolean graph) {
         this.graph = graph;
     }
+
+    public List<Long> getAttributesNotNull() {
+        return attributesNotNull;
+    }
+
+    public void setAttributesNotNull(List<Long> attributesNotNull) {
+        this.attributesNotNull = attributesNotNull;
+    }
+    
     //</editor-fold>
 
     @After(stages=LifecycleStage.BindingAndValidation)
@@ -368,7 +386,7 @@ public class AttributesActionBean implements ActionBean {
         }
     }
 
-    private void setFilter(Query q,SimpleFeatureType ft) throws Exception {
+    private void setFilter(Query q,SimpleFeatureType ft, ApplicationLayer al) throws Exception {
         if(filter != null && filter.trim().length() > 0) {
             Filter f = ECQL.toFilter(filter);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
@@ -376,6 +394,8 @@ public class AttributesActionBean implements ActionBean {
             f = FeatureToJson.reformatFilter(f,ft);
             q.setFilter(f);
         }
+
+        setAttributesNotNullFilters(q, al, ft);
     }
 
     private static final int MAX_CACHE_SIZE = 50;
@@ -452,7 +472,7 @@ public class AttributesActionBean implements ActionBean {
                 final Query q = new Query(fs.getName().toString());
                 //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
-                setFilter(q,ft);
+                setFilter(q,ft, appLayer);
 
                 final FeatureSource fs2 = fs;
                 total = lookupTotalCountCache(new Callable<Integer>() {
@@ -469,7 +489,7 @@ public class AttributesActionBean implements ActionBean {
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
 
-                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, attributesToInclude);
+                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, attributesToInclude, attributesNotNull);
 
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
 
@@ -499,5 +519,22 @@ public class AttributesActionBean implements ActionBean {
 
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
+    
+    private void setAttributesNotNullFilters(Query q, ApplicationLayer al, SimpleFeatureType ft) throws CQLException {
+        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
+        List<ConfiguredAttribute> attrs = al.getAttributes(ft);
+        List<Filter> filters = new ArrayList<Filter>();
+        for (ConfiguredAttribute attr : attrs) {
+            if (attributesNotNull.contains(attr.getId())) {
+                Filter f = ECQL.toFilter(attr.getAttributeName() + " is not null");
+                filters.add(f);
+            }
+        }
+        if (q.getFilter() != null) {
+            filters.add(q.getFilter());
+        }
+        And and = ff2.and(filters);
+        q.setFilter(and);
+    }
 }

@@ -37,11 +37,14 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.filter.visitor.SimplifyingFilterVisitor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.And;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
@@ -59,6 +62,7 @@ public class FeatureToJson {
     private boolean edit = false;
     private boolean graph = false;
     private List<Long> attributesToInclude = new ArrayList<Long>();
+    private List<Long> attributesNotNull = new ArrayList<Long>();
     private static final int TIMEOUT=5000;
 
     public FeatureToJson(boolean arrays,boolean edit){
@@ -66,11 +70,12 @@ public class FeatureToJson {
         this.edit=edit;
     }
 
-    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<Long> attributesToInclude){
+    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<Long> attributesToInclude, List<Long> attributesNotNull){
         this.arrays=arrays;
         this.edit=edit;
         this.graph = graph;
         this.attributesToInclude=attributesToInclude;
+        this.attributesNotNull=attributesNotNull;
     }
     /**
      * Get the features as JSONArray with the given params
@@ -103,6 +108,7 @@ public class FeatureToJson {
                 propertyNames.add(ad.getName());
             }
         }
+        
         if (sort!=null){
             setSortBy(q, propertyNames, sort, dir);
         }
@@ -398,4 +404,5 @@ public class FeatureToJson {
         filter=(Filter) filter.accept(new SimplifyingFilterVisitor(),null);
         return filter;
     }
+
 }
