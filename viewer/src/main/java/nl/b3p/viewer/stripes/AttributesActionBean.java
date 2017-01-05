@@ -45,7 +45,6 @@ import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
@@ -489,7 +488,7 @@ public class AttributesActionBean implements ActionBean {
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
 
-                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, attributesToInclude, attributesNotNull);
+                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, attributesToInclude);
 
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
 

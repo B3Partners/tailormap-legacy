@@ -21,7 +21,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -45,9 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
 import org.geotools.filter.text.cql2.CQL;
-import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -363,7 +360,7 @@ public class FeatureInfoActionBean implements ActionBean {
     protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
             throws IOException, JSONException, Exception {
 
-        FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, attributesToInclude,new ArrayList<Long>());
+        FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, attributesToInclude);
         JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null);
         return features;
     }
