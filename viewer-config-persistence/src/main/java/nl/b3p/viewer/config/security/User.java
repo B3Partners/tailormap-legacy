@@ -22,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import javax.persistence.*;
 import java.util.*;
-import javax.security.auth.Subject;
 
 /**
  *
@@ -126,9 +125,4 @@ public class User implements Principal{
     public String getName() {
         return username;
     }
-/*
-    @Override
-    public boolean implies(Subject subject) {
-        return Principal.super.implies(subject); //To change body of generated methods, choose Tools | Templates.
-    }*/
 }
