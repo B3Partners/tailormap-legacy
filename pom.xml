@@ -275,6 +275,12 @@
                 <version>2.2.3</version>
             </dependency>
             <dependency>
+                <!-- override the version provided by hibernate -->
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.22.0-CR1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>3.6.8.Final</version>
@@ -283,6 +289,16 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>3.6.8.Final</version>
+                <exclusions>
+                    <exclusion>
+                        <!--
+                        exclude old javassist so we can use 3.22.0-CR1, see issue #745
+                        when upgrading hibernate this should be removed
+                        -->
+                        <groupId>javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- viewer-config-persistence -->

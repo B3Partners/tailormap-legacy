@@ -36,12 +36,8 @@
         <dependency>
             <groupId>org.stripesstuff</groupId>
             <artifactId>stripersist</artifactId>
-        </dependency>   
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>org.flamingo-mc</groupId>
             <artifactId>viewer-config-persistence</artifactId>
         </dependency>
