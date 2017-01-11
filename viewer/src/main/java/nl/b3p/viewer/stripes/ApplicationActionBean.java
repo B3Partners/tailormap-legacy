@@ -18,6 +18,7 @@ package nl.b3p.viewer.stripes;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -34,6 +35,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -278,11 +280,21 @@ public class ApplicationActionBean implements ActionBean {
     public static Resolution checkRestriction(ActionBeanContext context, Application application, EntityManager em){
 
         String username = context.getRequest().getRemoteUser();
-        if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username == null) {
+        User u = null;
+        if(username != null){
+            Principal p = context.getRequest().getUserPrincipal();
+            if( p instanceof User){
+                u = (User)p;
+            }else{
+                u = em.find(User.class, p.getName());
+            }
+        }
+        if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && (username == null || u != null && u.isAuthenticatedByIp())) {
             RedirectResolution login = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName()) // binded parameters not included ?
                     .addParameter("version", application.getVersion())
                     .includeRequestParameters(true);
+            context.getRequest().getSession().invalidate();
             return login;
         } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
             context.getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));

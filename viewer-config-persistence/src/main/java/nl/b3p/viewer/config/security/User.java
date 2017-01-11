@@ -56,6 +56,9 @@ public class User implements Principal{
     @Column(name="ipaddress", length = 45)
     @CollectionTable(joinColumns = @JoinColumn(name="user_"))
     private Set<String> ips = new HashSet<String>();
+    
+    @Transient
+    private boolean authenticatedByIp = false;
 
     public void changePassword(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
@@ -120,7 +123,15 @@ public class User implements Principal{
         }
         return false;
     }
-    
+
+    public boolean isAuthenticatedByIp() {
+        return authenticatedByIp;
+    }
+
+    public void setAuthenticatedByIp(boolean authenticatedByIp) {
+        this.authenticatedByIp = authenticatedByIp;
+    }
+
     @Override
     public String getName() {
         return username;
