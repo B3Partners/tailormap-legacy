@@ -1009,6 +1009,15 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             //pop up is top right of the point
             this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"}).addCls('arrowVisible');
         }
+
+        // Update z-indexes
+        this.balloon.applyStyles({
+            'z-index': this.zIndex
+        });
+        this.balloon.select(".balloonArrowTopLeft").applyStyles({"z-index": this.zIndex+2});
+        this.balloon.select(".balloonArrowTopRight").applyStyles({"z-index": this.zIndex+2});
+        this.balloon.select(".balloonArrowBottomRight").applyStyles({"z-index": this.zIndex+2});
+        this.balloon.select(".balloonArrowBottomLeft").applyStyles({"z-index": this.zIndex+2});
     };
     /**
      *called by internal elements if the mouse is moved in 1 of the maptip element
@@ -1055,6 +1064,18 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //new maptip position so update the maptipId
         this.maptipId++;
 
+        var updatedZIndex = this.zIndex;
+        try {
+            Ext.WindowManager.eachTopDown(function(comp){
+                var zIndex = comp.getEl().getZIndex();
+                if(zIndex > updatedZIndex) {
+                    updatedZIndex = zIndex;
+                }
+            });
+        } catch(e) {}
+        if(updatedZIndex) {
+            this.zIndex = updatedZIndex + 1;
+        }
         if (!this.balloon){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){

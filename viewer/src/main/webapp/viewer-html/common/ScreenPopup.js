@@ -228,14 +228,17 @@ Ext.define ("viewer.components.ScreenPopup",{
     getContentContainer: function() {
         return this.popupWin;
     },
-    show : function(){
+    show : function() {
         this.popupWin.show();
+        this.popupWin.zIndexManager.bringToFront(this.popupWin);
     },
     hide : function(){
         this.popupWin.hide();
     },
     disableBody : function (){
-        Ext.getBody().mask();
+        var mask = Ext.getBody().mask();
+        mask.on('click', this.enableBody, this);
+        mask.setZIndex(this.popupWin.getEl().getZIndex() - 1);
     },
     enableBody : function(){
         Ext.getBody().unmask()

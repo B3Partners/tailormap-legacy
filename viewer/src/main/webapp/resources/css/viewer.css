@@ -269,10 +269,6 @@ body > .legend {
     text-overflow: ellipsis;
 }
 
-.x-mask {
-    z-index: 19019;
-}
-
 /* End Override ExtJS style */
 
 /*
