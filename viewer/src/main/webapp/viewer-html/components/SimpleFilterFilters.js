@@ -165,6 +165,12 @@ Ext.define("viewer.components.sf.SimpleFilter",{
                 this.isReady();
             }
         }
+    },
+    sanitizeValue : function (val, mustEscape){
+        if(mustEscape){
+            val = val.replace(/\'/g,'\'\'');
+        }
+        return val;
     }
 });
 
@@ -295,7 +301,7 @@ Ext.define("viewer.components.sf.Checkbox", {
             var checkbox = Ext.getCmp(this.config.name + this.options[i].id);
             if(checkbox.getValue()){
                 cql += cql !== "" ? " OR " : "";
-                cql += this.config.attributeName +  " = " +  (mustEscape ? "'" : "")  +checkbox.getName() + (mustEscape ? "'" : "");
+                cql += this.config.attributeName +  " = " +  (mustEscape ? "'" : "")  + this.sanitizeValue(checkbox.getName(),mustEscape) + (mustEscape ? "'" : "");
             }
         }
         return cql;
@@ -344,7 +350,7 @@ Ext.define("viewer.components.sf.Radio", {
         var cql = "";
         var mustEscape = this.mustEscapeAttribute();
         if (checkbox.getGroupValue()) {
-            cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + checkbox.getGroupValue() + (mustEscape ? "'" : "");
+            cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(checkbox.getGroupValue(),mustEscape) + (mustEscape ? "'" : "");
         }
         return cql;
     }
@@ -502,7 +508,7 @@ Ext.define("viewer.components.sf.Combo", {
 
     getCQL : function(){
         var mustEscape = this.mustEscapeAttribute();
-        var cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.combo.getValue() + (mustEscape ? "'" : "");
+        var cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(this.combo.getValue(),mustEscape) + (mustEscape ? "'" : "");
         return cql;
     },
     reset : function(){
@@ -794,12 +800,12 @@ Ext.define("viewer.components.sf.Slider", {
         var sliderType = this.config.filterConfig.sliderType ;
         var mustEscape = this.mustEscapeAttribute();
         if(sliderType === "range"){
-            var min = (mustEscape ? "'" : "") + this.slider.getValue(0) + (mustEscape ? "'" : "");
-            var max = (mustEscape ? "'" : "") + this.slider.getValue(1) + (mustEscape ? "'" : "");
+            var min = (mustEscape ? "'" : "") + this.sanitizeValue(this.slider.getValue(0),mustEscape) + (mustEscape ? "'" : "");
+            var max = (mustEscape ? "'" : "") + this.sanitizeValue(this.slider.getValue(1),mustEscape) + (mustEscape ? "'" : "");
 
             cql = this.config.attributeName + " >= " + min + " AND " + this.config.attributeName + " <= " + max;
         }else{
-            var value = (mustEscape ? "'" : "") + this.slider.getValue() + (mustEscape ? "'" : "");
+            var value = (mustEscape ? "'" : "") + this.sanitizeValue(this.slider.getValue(),mustEscape) + (mustEscape ? "'" : "");
             if (sliderType === "eq"){
                 cql = this.config.attributeName + " = " + value;
             }else if (sliderType === "gt"){
@@ -917,8 +923,8 @@ Ext.define("viewer.components.sf.Numberrange", {
     getCQL : function(){
         var cql = [];
         var mustEscape = this.mustEscapeAttribute();
-        var minVal = this.minField.getRawValue();
-        var maxVal = this.maxField.getRawValue();
+        var minVal = this.sanitizeValue(this.minField.getRawValue(),mustEscape);
+        var maxVal = this.sanitizeValue(this.maxField.getRawValue(),mustEscape);
         if(minVal !== "" && Ext.isNumeric(minVal)) {
             minVal = (mustEscape ? "'" : "") + minVal + (mustEscape ? "'" : "");
             cql.push([this.config.attributeName, minVal].join(" >= "));
