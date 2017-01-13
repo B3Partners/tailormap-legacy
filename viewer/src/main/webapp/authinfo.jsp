@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="refresh" content="2">
         <title>Autorisatie info</title>
     </head>
     <body>
@@ -35,17 +36,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
         Lijst met roles:
         <ol>
-            <c:catch var="e">
-                    <%
-                    if(request.getUserPrincipal() != null) {
-                        String[] roles = ((org.apache.catalina.realm.GenericPrincipal)request.getUserPrincipal()).getRoles();
-                        for(String s: roles) {
-                            pageContext.setAttribute("role", s);
-                            %><li><c:out value="${role}"/></li><%
-                        }
-                    }
-                    %>
-            </c:catch>
+            <c:if test="${pageContext.request.userPrincipal != null}" >
+                <c:forEach var="r" items="${pageContext.request.userPrincipal.groups}">
+                    <li><c:out value="${r.name}"/></li>
+                </c:forEach>
+            </c:if>
         </ol>
         <p>
         Test HttpServletRequest.isUserInRole():

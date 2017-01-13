@@ -231,10 +231,11 @@ public class ApplicationActionBean implements ActionBean {
             return new ForwardResolution("/WEB-INF/jsp/error.jsp");
         }
 
-        RedirectResolution login = new RedirectResolution(LoginActionBean.class)
+        RedirectResolution login = new RedirectResolution(ApplicationActionBean.class)
                 .addParameter("name", name) // binded parameters not included ?
                 .addParameter("version", version)
                 .addParameter("debug", debug)
+                .addParameter("uitloggen", true)
                 .includeRequestParameters(true);
 
         loginUrl = login.getUrl(context.getLocale());
@@ -327,6 +328,16 @@ public class ApplicationActionBean implements ActionBean {
             hash = hash ^ role.hashCode();
         }
         return hash;
+    }
+    
+    public Resolution uitloggen(){
+        application = findApplication(name, version);
+
+        RedirectResolution login = new RedirectResolution(LoginActionBean.class)
+                .addParameter("name", application.getName())
+                .addParameter("version", application.getVersion());
+        context.getRequest().getSession().invalidate();
+        return login;
     }
 
     private void buildComponentSourceHTML() throws IOException {
