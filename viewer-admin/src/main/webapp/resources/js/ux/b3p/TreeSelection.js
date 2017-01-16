@@ -44,6 +44,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     deletedRecords: [],
     onlyMoveRootLevels: false,
     useDeleteButton: false,
+    useArrowLeftAsDelete: false,
 
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -188,7 +189,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                         disableButtons = true;
                     }
                     me.disableMoveButtons(disableButtons);
-                    me.deleteButton.setIcon(record.get("isRemoved") === true ? me.unremoveIcon : me.removeIcon);
+                    if(me.deleteButton) me.deleteButton.setIcon(record.get("isRemoved") === true ? me.unremoveIcon : me.removeIcon);
                 }
             }
         });
@@ -255,7 +256,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         });
 
-        if(this.useDeleteButton) {
+        if(this.useDeleteButton && !this.useArrowLeftAsDelete) {
             me.deleteButton = Ext.create('Ext.Button', {
                 icon: me.removeIcon,
                 width: 23,
@@ -395,11 +396,11 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             if(removeIdx === -1) {
                 selection[i].set("isRemoved", true);
                 this.deletedRecords.push({ id: recordid, type: recordtype })
-                this.deleteButton.setIcon(this.unremoveIcon);
+                if(this.deleteButton) this.deleteButton.setIcon(this.unremoveIcon);
             } else {
                 selection[i].set("isRemoved", false);
                 this.deletedRecords.splice(removeIdx, 1);
-                this.deleteButton.setIcon(this.removeIcon);
+                if(this.deleteButton) this.deleteButton.setIcon(this.removeIcon);
             }
             if(!selection[i].get("leaf") && selection[i].get("expanded")) {
                 selection[i].collapse();
@@ -624,6 +625,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
     removeNodes: function(records) {
         var me = this;
+        if(me.useArrowLeftAsDelete) {
+            this.markRemoved();
+            return;
+        }
         var rootNode = this.selectedlayers.getRootNode();
         Ext.Array.each(records, function(record) {
             rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));

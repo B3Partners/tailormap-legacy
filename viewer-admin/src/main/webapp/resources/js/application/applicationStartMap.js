@@ -83,7 +83,8 @@ Ext.onReady(function() {
         backendCheckUrl: backendCheckUrl,
         checkedLayers: checkedLayers,
         onlyMoveRootLevels: true,
-        useDeleteButton: true
+        // useDeleteButton: true,
+        useArrowLeftAsDelete: true
     }));
 
     Ext.get('startmapform').on('submit', function() {
