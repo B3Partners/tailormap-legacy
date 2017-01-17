@@ -298,7 +298,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
                 }
             }
         } catch (JSONException ex) {
-            Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Error saving component",ex);
         }
 //        details.put("layout", componentLayout);
         component.setDetails(compDetails);
@@ -378,7 +378,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             em.persist(application);
             em.getTransaction().commit();
         } catch (JSONException ex) {
-            Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("error saving the application layout",ex);
         }
         return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
     }
