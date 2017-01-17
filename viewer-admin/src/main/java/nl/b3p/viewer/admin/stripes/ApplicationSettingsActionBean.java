@@ -387,16 +387,23 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     }
     
     protected void copyApplication(EntityManager em) throws Exception {
-        bindAppProperties();
+        Application copy = null;
+        // When the selected application is a mashup, don't use the copy routine, but make another mashup of it. This prevents some detached entity exceptions.
+        if(application.isMashup()){
+            copy = application.createMashup(name, em, false);
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, true, em);
+        }else{
+            bindAppProperties();
 
-        Application copy = application.deepCopy();
-        // don't save changes to original app
-        em.detach(application);
+            copy = application.deepCopy();
+            // don't save changes to original app
+            em.detach(application);
 
-        em.persist(copy);
-        em.persist(copy);
-        em.flush();
-        SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
+            em.persist(copy);
+            em.persist(copy);
+            em.flush();
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
+        }
         em.getTransaction().commit();
 
         setApplication(copy);
