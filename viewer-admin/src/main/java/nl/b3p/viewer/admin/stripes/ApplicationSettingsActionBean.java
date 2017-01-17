@@ -352,9 +352,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     }
 
     public Resolution copy() throws Exception {
-
+        EntityManager em = Stripersist.getEntityManager();
         try {
-            Object o = Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name")
+            Object o = em.createQuery("select 1 from Application where name = :name")
                 .setMaxResults(1)
                 .setParameter("name", name)
                 .getSingleResult();
@@ -366,22 +366,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
 
         try {
-            bindAppProperties();
-
-            Application copy = application.deepCopy();
-            EntityManager em = Stripersist.getEntityManager();
-            // don't save changes to original app
-            em.detach(application);
-
-            em.persist(copy);
-            em.persist(copy);
-            em.flush();
-            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE,false,em);
-            Stripersist.getEntityManager().getTransaction().commit();
-
+            copyApplication(em);
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
-            setApplication(copy);
-
             return new RedirectResolution(this.getClass());
         } catch(Exception e) {
             log.error(String.format("Error copying application #%d named %s %swith new name %s",
@@ -398,6 +384,22 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij kopieren applicatie: " + ex));
             return new ForwardResolution(JSP);
         }
+    }
+    
+    protected void copyApplication(EntityManager em) throws Exception {
+        bindAppProperties();
+
+        Application copy = application.deepCopy();
+        // don't save changes to original app
+        em.detach(application);
+
+        em.persist(copy);
+        em.persist(copy);
+        em.flush();
+        SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
+        Stripersist.getEntityManager().getTransaction().commit();
+
+        setApplication(copy);
     }
 
     public Resolution mashup(){
