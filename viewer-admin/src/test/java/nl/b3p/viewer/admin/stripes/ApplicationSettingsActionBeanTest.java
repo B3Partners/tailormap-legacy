@@ -48,7 +48,6 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
         try {
             initData(false);
             instance.setApplication(app);
-            Long id = testLevel.getId();
             Application mashup = app.createMashup("mashup", entityManager, false);
             entityManager.persist(mashup);
             
@@ -57,6 +56,20 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
             instance.setVersion( "13");
             instance.copyApplication(entityManager);
             
+        } catch (Exception ex) {
+            log.error("Error creating copy of mashup: ",ex);
+            fail();
+        }
+    }
+
+    @Test
+    public void testCopyOfApplication(){
+        try {
+            initData(false);
+            instance.setApplication(app);
+            instance.setName("kopie");
+            instance.setVersion( "13");
+            instance.copyApplication(entityManager);
         } catch (Exception ex) {
             log.error("Error creating copy of mashup: ",ex);
             fail();

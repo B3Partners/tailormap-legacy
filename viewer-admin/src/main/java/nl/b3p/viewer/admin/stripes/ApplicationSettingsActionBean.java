@@ -397,7 +397,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         em.persist(copy);
         em.flush();
         SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.getTransaction().commit();
 
         setApplication(copy);
     }
