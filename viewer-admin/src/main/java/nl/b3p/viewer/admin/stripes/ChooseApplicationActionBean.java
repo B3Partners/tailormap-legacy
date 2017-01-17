@@ -251,7 +251,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
 
     public Resolution getGridData() throws JSONException {
         JSONArray jsonData = new JSONArray();
-
+        EntityManager em = Stripersist.getEntityManager();
         String filterName = "";
         String filterPublished = "";
         String filterOwner = "";
@@ -277,7 +277,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             }
         }
 
-        Session sess = (Session) Stripersist.getEntityManager().getDelegate();
+        Session sess = (Session) em.getDelegate();
         Criteria c = sess.createCriteria(Application.class);
 
         /*
@@ -345,6 +345,23 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             j.put("baseName", app.getName());
             j.put("version", app.getVersion());
             j.put("baseUrl", baseUrl);
+            String mashup = "Nee";
+            if (app.getDetails().containsKey(Application.DETAIL_IS_MASHUP)) {
+                String mashupValue = app.getDetails().get(Application.DETAIL_IS_MASHUP).getValue();
+                mashup = Boolean.valueOf(mashupValue) ? "Ja" : "Nee";
+                if ( Boolean.valueOf(mashupValue)) {
+                    List<Application> linkedApps = em.createQuery(
+                            "from Application where root = :level and id <> :oldId")
+                            .setParameter("level", app.getRoot()).setParameter("oldId", app.getId()).getResultList();
+                    for (Application linkedApp : linkedApps) {
+                        if (!linkedApp.isMashup()) {
+                            j.put("motherapplication", linkedApp.getNameWithVersion());
+                            break;
+                        }
+                    }
+                }
+            } 
+            j.put("mashup",mashup);
             jsonData.put(j);
         }
 
