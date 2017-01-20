@@ -95,7 +95,6 @@ public class ExcelDownloader extends FeatureDownloader{
 
         CreationHelper factory = wb.getCreationHelper();
         // When the comment box is visible, have it show in a 1x3 space
-        ClientAnchor anchor = factory.createClientAnchor();
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
                 String alias = attributeAliases.get(configuredAttribute.getAttributeName());
@@ -103,6 +102,11 @@ public class ExcelDownloader extends FeatureDownloader{
                     Cell cell = headerRow.createCell(colNum);
                     cell.setCellValue(alias);
                     if(!alias.equals(configuredAttribute.getAttributeName())){
+                        ClientAnchor anchor = factory.createClientAnchor();
+                        anchor.setCol1(cell.getColumnIndex());
+                        anchor.setCol2(cell.getColumnIndex()+1);
+                        anchor.setRow1(headerRow.getRowNum());
+                        anchor.setRow2(headerRow.getRowNum()+3);
                         Comment comment = drawing.createCellComment(anchor);
                         RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
                         comment.setString(str);
