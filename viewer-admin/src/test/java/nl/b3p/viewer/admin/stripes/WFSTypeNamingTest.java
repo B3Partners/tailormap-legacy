@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.Message;
 import nl.b3p.viewer.config.services.Category;
@@ -33,11 +31,13 @@ import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -46,6 +46,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.opengis.feature.Feature;
 
 /**
  * testcases for
@@ -77,12 +78,14 @@ public class WFSTypeNamingTest extends TestUtil {
      * @return parameter collection that contains input and response values for
      * this test.
      */
-    @Parameters
+    @Parameters(name="naam: {1}")
     public static Collection params() {
         return Arrays.asList(new Object[][]{
             // {"url","name","wfs",typecount},
             {"http://ibis.b3p.nl/geoserver/ibis/wfs?SERVICE=WFS", "geoserver-namespaced-wfsurl", "wfs", 3, 0},
             {"http://ibis.b3p.nl/geoserver/wfs?SERVICE=WFS", "geoserver-wfsurl", "wfs", 3, 0},
+            // Disable for now, as this now fails because of a geotools bug regarding names/namespaces of featuretypes. Fixed in geotools 16.x
+          // {"http://afnemers.ruimtelijkeplannen.nl/afnemers/services?Version=1.0.0", "ro-online", "wfs", 43, 0},
         //    {"http://services.geodataoverijssel.nl/geoserver/B07_Adressen/wfs?SERVICE=WFS", "geoserver", "wfs", 0, 0},
             // {"http://services.geodataoverijssel.nl/geoserver/wfs?SERVICE=WFS", "geoserver", "wfs", 467,0},
             {"http://ibis.b3p.nl/geoserver/wms?SERVICE=WMS&", "geoserver-wmsurl", "wms", 3, 1},
@@ -205,6 +208,17 @@ public class WFSTypeNamingTest extends TestUtil {
                 try {
                     FeatureSource fs2 = type.openGeoToolsFeatureSource();
                     assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
+                    
+                    Query q = new Query(fs2.getName().toString());
+                    q.setMaxFeatures(1);
+                    FeatureCollection fc = fs2.getFeatures(q);
+                    assertThat("No exception was thrown and FeatureCollection not null", fc, not(nullValue()));
+                    FeatureIterator it = fc.features();
+                    while(it.hasNext()){
+                        Feature feat = it.next();
+                        assertThat("No exception was thrown and Feature not null", feat, not(nullValue()));
+                        
+                    }
                 } catch (Exception ex) {
                     log.error("Opening featuresource failed.", ex);
                     fail("Opening featuresource failed.");
