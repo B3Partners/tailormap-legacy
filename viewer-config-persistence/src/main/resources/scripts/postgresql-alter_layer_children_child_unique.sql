@@ -1,2 +1,2 @@
-alter table layer_children add unique (child);
+--alter table layer_children add unique (child);
 
