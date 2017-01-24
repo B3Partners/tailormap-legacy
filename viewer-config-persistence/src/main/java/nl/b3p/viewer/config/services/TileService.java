@@ -127,6 +127,11 @@ public class TileService extends GeoService {
             status.setFinished(true);
         }
     }
+    
+    protected void parseWMTSCapabilities(String url, Map params, WaitPageStatus status){
+        
+    }
+    
     /**
      * Get the layer that contains the tiling settings etc.
      * @return the layer with tiling settings

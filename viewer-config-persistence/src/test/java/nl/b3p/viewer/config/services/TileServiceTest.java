@@ -54,7 +54,6 @@ public class TileServiceTest extends TestUtil{
         assertEquals(3, tileSet.getResolutions().size());
         assertEquals(256, tileSet.getHeight());
         assertEquals("osm", tileSet.getName());
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
