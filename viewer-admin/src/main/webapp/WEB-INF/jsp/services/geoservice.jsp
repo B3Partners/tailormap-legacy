@@ -159,6 +159,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <label>
                 <stripes:select name="tilingProtocol">
                     <stripes:option value="TMS">TMS</stripes:option>
+                    <stripes:option value="WMTS">WMTS</stripes:option>
                     <stripes:option value="WMSc">WMSc</stripes:option>
                     <stripes:option value="OSM">OSM</stripes:option>
                     <stripes:option value="ArcGisRest">ArcGisRest Map Cache</stripes:option>

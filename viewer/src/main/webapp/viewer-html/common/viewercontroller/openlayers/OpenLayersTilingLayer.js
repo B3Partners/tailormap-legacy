@@ -31,7 +31,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     constructor : function (config){
         viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);
 
-        if(!Ext.Array.contains(["TMS", "ArcGisRest"], this.getProtocol())) {
+        if(!Ext.Array.contains(["TMS", "ArcGisRest", "WMTS"], this.getProtocol())) {
             throw new Error("OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
 
@@ -44,7 +44,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         var x=Number(serviceEnvelopeTokens[0]);
         var y=Number(serviceEnvelopeTokens[1]);
         //if arcgisrest the origin y is top left. (maxy)
-        if (this.getProtocol()=="ArcGisRest"){
+        if (this.getProtocol()==="ArcGisRest" || this.getProtocol() === "WMTS"){
             y=Number(serviceEnvelopeTokens[3]);
         }
         var opacity = this.config.opacity != undefined ? this.config.opacity : 1;
@@ -81,6 +81,16 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             options.resolutions = this.resolutions;
             options.projection =  'EPSG:28992';
             this.frameworkLayer = new OpenLayers.Layer.ArcGISCache(this.name,this.url,options);
+        }else if (this.getProtocol()=="WMTS"){
+            options.url = this.url;
+            options.style = "default";
+            options.layer = this.config.name;
+            options.matrixSet = "EPSG:28992";
+            options.format = "image/png";
+            options.matrixIds = ["EPSG:28992:0","EPSG:28992:1","EPSG:28992:2","EPSG:28992:3","EPSG:28992:4","EPSG:28992:5","EPSG:28992:6","EPSG:28992:7","EPSG:28992:8","EPSG:28992:9","EPSG:28992:10","EPSG:28992:11","EPSG:28992:12","EPSG:28992:13","EPSG:28992:14"];
+            
+            var wmts = new OpenLayers.Layer.WMTS(options);
+            this.frameworkLayer = wmts;
         }
     },
     /**
