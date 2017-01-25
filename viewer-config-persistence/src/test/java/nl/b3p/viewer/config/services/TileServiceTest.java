@@ -121,6 +121,22 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
+    public void testParseMultipleTileMatrixSets() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
+        
+        URL u = TileServiceTest.class.getResource("singleLayer.xml");
+        String url = u.toString();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        org.w3c.dom.Document doc = builder.parse(url);
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        
+        List<TileMatrixSet> sets = instance.parseMatrixSets(xpath, doc);
+        assertNotNull(sets);
+        assertEquals(6, sets.size());
+    }
+    
+    @Test
     public void testParseTileMatrixSet() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
         
         URL u = TileServiceTest.class.getResource("tilematrixset.xml");
