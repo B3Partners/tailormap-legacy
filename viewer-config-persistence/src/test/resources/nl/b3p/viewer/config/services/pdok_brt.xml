@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+<?xml version="1.0" encoding="utf-8"?>
+<Capabilities version="1.0.0" xmlns="http://www.opengis.net/wmts/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd">
   <ows:ServiceIdentification>
     <ows:Title>Web Map Tile Service - GeoWebCache</ows:Title>
     <ows:ServiceType>OGC WMTS</ows:ServiceType>
@@ -56,10 +57,10 @@
     <Layer>
       <ows:Title>brtachtergrondkaart</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>brtachtergrondkaart</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>brtachtergrondkaart</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -75,10 +76,10 @@
     <Layer>
       <ows:Title>brtachtergrondkaartgrijs</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>brtachtergrondkaartgrijs</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>brtachtergrondkaartgrijs</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -94,10 +95,10 @@
     <Layer>
       <ows:Title>brtachtergrondkaartpastel</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>brtachtergrondkaartpastel</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>brtachtergrondkaartpastel</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -113,10 +114,10 @@
     <Layer>
       <ows:Title>bro</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>bro</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bro</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -128,10 +129,10 @@
     <Layer>
       <ows:Title>top10nlv2</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>top10nlv2</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>top10nlv2</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -143,10 +144,10 @@
     <Layer>
       <ows:Title>kadastralekaartv2</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>kadastralekaartv2</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>kadastralekaartv2</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -158,10 +159,10 @@
     <Layer>
       <ows:Title>kadastralekaartv3</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>kadastralekaartv3</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>kadastralekaartv3</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -170,14 +171,13 @@
         <TileMatrixSet>EPSG:28992</TileMatrixSet>
       </TileMatrixSetLink>
     </Layer>
-    
     <Layer>
       <ows:Title>natura2000</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>natura2000</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>natura2000</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -189,10 +189,10 @@
     <Layer>
       <ows:Title>aan</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>aan</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>aan</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -204,10 +204,10 @@
     <Layer>
       <ows:Title>top50vector</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>top50vector</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>top50vector</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -219,10 +219,10 @@
     <Layer>
       <ows:Title>bag</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>bag</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bag</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -235,10 +235,10 @@
     <Layer>
       <ows:Title>top25raster</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>top25raster</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>top25raster</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -251,10 +251,10 @@
     <Layer>
       <ows:Title>top50raster</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>top50raster</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>top50raster</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -267,10 +267,10 @@
     <Layer>
       <ows:Title>top100raster</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>top100raster</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>top100raster</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -283,10 +283,10 @@
     <Layer>
       <ows:Title>top250raster</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>top250raster</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>top250raster</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -299,10 +299,10 @@
     <Layer>
       <ows:Title>top500raster</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>top500raster</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>top500raster</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -315,10 +315,10 @@
     <Layer>
       <ows:Title>nok2011</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>nok2011</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>nok2011</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -330,10 +330,10 @@
     <Layer>
       <ows:Title>brpgewaspercelen</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>brpgewaspercelen</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>brpgewaspercelen</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -345,10 +345,10 @@
     <Layer>
       <ows:Title>bgtstandaard</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>bgtstandaard</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bgtstandaard</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -360,10 +360,10 @@
     <Layer>
       <ows:Title>bgtlijngericht</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>bgtlijngericht</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bgtlijngericht</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -375,10 +375,10 @@
     <Layer>
       <ows:Title>bgtachtergrond</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>bgtachtergrond</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bgtachtergrond</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -390,10 +390,10 @@
     <Layer>
       <ows:Title>bgtomtrekgericht</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>bgtomtrekgericht</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>bgtomtrekgericht</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -405,10 +405,10 @@
     <Layer>
       <ows:Title>ahn1_100m</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn1_100m</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn1_100m</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -420,10 +420,10 @@
     <Layer>
       <ows:Title>ahn1_25m</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn1_25m</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn1_25m</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -435,10 +435,10 @@
     <Layer>
       <ows:Title>ahn1_5m</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn1_5m</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn1_5m</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -450,10 +450,10 @@
     <Layer>
       <ows:Title>ahn2_5m</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn2_5m</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn2_5m</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -465,10 +465,10 @@
     <Layer>
       <ows:Title>ahn2_05m_non</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn2_05m_non</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn2_05m_non</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -480,10 +480,10 @@
     <Layer>
       <ows:Title>ahn2_05m_int</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn2_05m_int</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn2_05m_int</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -495,10 +495,10 @@
     <Layer>
       <ows:Title>ahn2_05m_ruw</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn2_05m_ruw</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn2_05m_ruw</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -510,10 +510,10 @@
     <Layer>
       <ows:Title>ahn3_5m_dsm</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn3_5m_dsm</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn3_5m_dsm</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -525,10 +525,10 @@
     <Layer>
       <ows:Title>ahn3_5m_dtm</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn3_5m_dtm</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn3_5m_dtm</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -540,10 +540,10 @@
     <Layer>
       <ows:Title>ahn3_05m_dsm</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn3_05m_dsm</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn3_05m_dsm</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -555,10 +555,10 @@
     <Layer>
       <ows:Title>ahn3_05m_dtm</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>ahn3_05m_dtm</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ahn3_05m_dtm</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -570,10 +570,10 @@
     <Layer>
       <ows:Title>opentopo</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>opentopo</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>opentopo</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -586,10 +586,10 @@
     <Layer>
       <ows:Title>opentopoachtergrondkaart</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>opentopoachtergrondkaart</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>opentopoachtergrondkaart</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>
@@ -602,10 +602,10 @@
     <Layer>
       <ows:Title>lufolabels</ows:Title>
       <ows:WGS84BoundingBox>
-<ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
-<ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
-</ows:WGS84BoundingBox>
-    <ows:Identifier>lufolabels</ows:Identifier>
+        <ows:LowerCorner>-1.65729160235431 48.0405018704265</ows:LowerCorner>
+        <ows:UpperCorner>11.2902578747914 55.9136415748388</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>lufolabels</ows:Identifier>
       <Style isDefault="true">
         <ows:Identifier/>
       </Style>

@@ -204,7 +204,7 @@ public class TileService extends GeoService {
             topLayer.setVirtual(true);
             topLayer.setService(s);
             
-            List<Layer> layers = parseLayers(xpath, doc, topLayer, s);
+            List<Layer> layers = parseLayers(xpath, doc, topLayer, s, matricesByIdentifier);
               //set tiling layer as child of top layer
             topLayer.setChildren(layers);
             s.setTopLayer(topLayer);
@@ -220,20 +220,19 @@ public class TileService extends GeoService {
         return s;
     }
     
-    private List<Layer> parseLayers(XPath xpath, Document doc, Layer topLayer, GeoService s) throws XPathExpressionException{
+    private List<Layer> parseLayers(XPath xpath, Document doc, Layer topLayer, GeoService s, Map<String, TileMatrixSet> matricesByIdentifier) throws XPathExpressionException{
         List<Layer> layers = new ArrayList<Layer>();
         XPathExpression expr = xpath.compile("/Capabilities/Contents/Layer");
         NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
         
         for (int i = 0; i < nl.getLength(); i++) {
             Node l = nl.item(i);
-            layers.add(parseLayer(xpath, l, topLayer, s));
-            
+            layers.add(parseLayer(xpath, l, topLayer, s, matricesByIdentifier));
         }
         return layers;
     }
 
-    private Layer parseLayer(XPath xpath, Node l, Layer topLayer, GeoService s) throws XPathExpressionException {
+    private Layer parseLayer(XPath xpath, Node l, Layer topLayer, GeoService s,Map<String, TileMatrixSet> matricesByIdentifier) throws XPathExpressionException {
         Layer layer = new Layer();
         layer.setParent(topLayer);
         layer.setService(s);
@@ -246,10 +245,23 @@ public class TileService extends GeoService {
         String title = (String) expr.evaluate(l, XPathConstants.STRING);
         layer.setTitle(title);
         
-        
         expr = xpath.compile("Format");
         String format = (String) expr.evaluate(l, XPathConstants.STRING);
         layer.getDetails().put("image_extension", new ClobElement(format));
+        
+        
+        expr = xpath.compile("TileMatrixSetLink/TileMatrixSet");
+        NodeList tileMatrixSets = (NodeList) expr.evaluate(l, XPathConstants.NODESET);
+        
+        List<TileMatrixSet> tmses = new ArrayList<>();
+        for (int i = 0; i < tileMatrixSets.getLength(); i++) {
+            Node matrixSet = tileMatrixSets.item(i);
+            String tileMatrixSetIdentifier = matrixSet.getFirstChild().getNodeValue();
+            TileMatrixSet tms = matricesByIdentifier.get(tileMatrixSetIdentifier);
+            tmses.add(tms);
+        }
+        layer.setMatrixSets(tmses);
+        
         return layer;
     }
     
