@@ -187,6 +187,24 @@
         </attributes>
     </entity>
 
+    <entity class="nl.b3p.viewer.config.services.TileMatrix">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="tile_matrix_id_seq"/>
+                <sequence-generator name="tile_matrix_id_seq" sequence-name="tile_matrix_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.services.TileMatrixSet">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="tile_matrix_set_id_seq"/>
+                <sequence-generator name="tile_matrix_set_id_seq" sequence-name="tile_matrix_set_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+    
     <entity class="nl.b3p.viewer.config.services.StyleLibrary">
         <attributes>
             <id name="id">

@@ -4,3 +4,4 @@ nb-configuration.xml
 /solr-commons/target/
 /target/
 /viewer-admin/nbproject/
+/viewer-config-persistence/nbproject/

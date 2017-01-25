@@ -69,16 +69,16 @@ public class TileService extends GeoService {
     public static final String TILING_PROTOCOL_TMS = "TMS";
     
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private TileMatrix matrix;
+    private TileMatrixSet matrixSet;
     
     private String tilingProtocol;
 
-    public TileMatrix getMatrix() {
-        return matrix;
+    public TileMatrixSet getMatrixSet() {
+        return matrixSet;
     }
 
-    public void setMatrix(TileMatrix matrix) {
-        this.matrix = matrix;
+    public void setMatrixSet(TileMatrixSet matrixSet) {
+        this.matrixSet = matrixSet;
     }
 
     public String getTilingProtocol() {
