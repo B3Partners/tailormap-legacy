@@ -189,13 +189,15 @@ public class TileService extends GeoService {
             s.setUrl(getTile);
             
             
-            List<TileMatrixSet>  matrices = parseMatrix();
+            List<TileMatrixSet>  matrices = parseMatrixSets(xpath, doc);
             s.setMatrixSets(matrices);
             
+            // Create lookup list for later linking it to layers
             Map<String, TileMatrixSet> matricesByIdentifier = new HashMap<>();
             for (TileMatrixSet matrix : matrices) {
                 matricesByIdentifier.put(matrix.getIdentifier(), matrix);
             }
+            
             // Layers            
             //make fake top layer for tiling.
             Layer topLayer = new Layer();
@@ -206,8 +208,6 @@ public class TileService extends GeoService {
               //set tiling layer as child of top layer
             topLayer.setChildren(layers);
             s.setTopLayer(topLayer);
-            
-            
             
             em.persist(s);
             
@@ -253,11 +253,39 @@ public class TileService extends GeoService {
         return layer;
     }
     
-    protected List<TileMatrixSet> parseMatrix(){
+    protected List<TileMatrixSet> parseMatrixSets(XPath xpath, Document doc) throws XPathExpressionException {
         List<TileMatrixSet> matrixSets = new ArrayList<>();
+
+        XPathExpression expr = xpath.compile("/Capabilities/Contents/TileMatrixSet");
+        NodeList tileMatrixSets = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+
+        for (int i = 0; i < tileMatrixSets.getLength(); i++) {
+            Node matrixSet = tileMatrixSets.item(i);
+            matrixSets.add(parseTileMatrixSet(xpath, matrixSet));
+        }
+
         return matrixSets;
     }
+
     
+    protected TileMatrixSet parseTileMatrixSet(XPath xpath, Node matrixSet) throws XPathExpressionException{
+        TileMatrixSet tms = new TileMatrixSet();
+        List<TileMatrix> tileMatrices = new ArrayList<>();
+        tms.setMatrices(tileMatrices);
+        
+        XPathExpression expr = xpath.compile("TileMatrix");
+        NodeList tileMatricesNodes = (NodeList) expr.evaluate(matrixSet, XPathConstants.NODESET);
+        for (int i = 0; i < tileMatricesNodes.getLength(); i++) {
+            Node tileMatrix = tileMatricesNodes.item(i);
+            tileMatrices.add(parseTileMatrix(xpath, tileMatrix));
+        }
+        return tms;
+    }
+    
+    protected TileMatrix parseTileMatrix(XPath xpath, Node tileMatrix){
+        TileMatrix tm = new TileMatrix();
+        return tm;
+    }
     /**
      * Get the layer that contains the tiling settings etc.
      * @return the layer with tiling settings

@@ -5,13 +5,22 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import nl.b3p.viewer.util.TestUtil;
 import nl.b3p.web.WaitPageStatus;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -19,6 +28,7 @@ import static org.junit.Assert.*;
  */
 public class TileServiceTest extends TestUtil{
     
+    private TileService instance = new TileService();
     public TileServiceTest() {
     }
     
@@ -39,7 +49,6 @@ public class TileServiceTest extends TestUtil{
         params.put(TileService.PARAM_TILESIZE, 256);
         params.put(TileService.PARAM_TILINGPROTOCOL, "TMS");
         WaitPageStatus status = new WaitPageStatus();
-        TileService instance = new TileService();
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         assertEquals("tiled", result.getProtocol());
@@ -67,7 +76,6 @@ public class TileServiceTest extends TestUtil{
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         WaitPageStatus status = new WaitPageStatus();
-        TileService instance = new TileService();
         
         GeoService result = instance.parseWMTSCapabilities(url, params, status, entityManager);
         compareWMTS (result, url);
@@ -81,7 +89,6 @@ public class TileServiceTest extends TestUtil{
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
-        TileService instance = new TileService();
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         compareWMTS (result, url);
@@ -107,9 +114,42 @@ public class TileServiceTest extends TestUtil{
         assertEquals("test:gemeente", layer.getName());
         assertEquals("gem_2014_new", layer.getTitle());
         assertNotNull(ts.getMatrixSets());
-        assertEquals(16,ts.getMatrixSets().get(0).getMatrices().size());
+        assertEquals(6,ts.getMatrixSets().size());
+        assertEquals(16,ts.getMatrixSets().get(1).getMatrices().size());
         assertEquals("epsg:28992",layer.getMatrixSets().get(0).getIdentifier());
         assertEquals(16,layer.getMatrixSets().get(0).getMatrices().size());
+    }
+    
+    @Test
+    public void testParseTileMatrixSet() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
         
+        URL u = TileServiceTest.class.getResource("tilematrixset.xml");
+        String url = u.toString();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        org.w3c.dom.Document doc = builder.parse(url);
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        
+        TileMatrixSet tms = instance.parseTileMatrixSet(xpath, doc.getChildNodes().item(0));
+        assertNotNull(tms);
+        assertEquals("GlobalCRS84Pixel", tms.getIdentifier());
+        assertEquals("urn:ogc:def:crs:EPSG::4326", tms.getCrs());
+        
+        List<TileMatrix> matrices = tms.getMatrices();
+        assertNotNull(matrices);
+        assertEquals(18, matrices.size());
+        
+        TileMatrix first = matrices.get(0);
+        assertNotNull(first);
+        assertEquals("GlobalCRS84Pixel:0", first.getIdentifier());
+        assertEquals("7.951392199519542E8", first.getScaleDenominator());
+        assertEquals("90.0 -180.0", first.getTopLeftPoint());
+        assertEquals(256, first.getTileHeight());
+        assertEquals(256, first.getTileWitdh());
+        assertEquals(1, first.getMatrixHeight());
+        assertEquals(1, first.getMatrixWitdh());
+        assertNull(first.getTitle());
+        assertNull(first.getDescription());
     }
 }
