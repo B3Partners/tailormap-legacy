@@ -163,8 +163,8 @@ public class TileServiceTest extends TestUtil{
         assertEquals(256, first.getTileHeight());
         assertEquals(256, first.getTileWitdh());
         assertEquals(1, first.getMatrixHeight());
-        assertEquals(1, first.getMatrixWitdh());
-        assertNull(first.getTitle());
-        assertNull(first.getDescription());
+        assertEquals(1, first.getMatrixWidth());
+        assertEquals("",first.getTitle());
+        assertEquals("",first.getDescription());
     }
 }

@@ -280,7 +280,6 @@ public class TileService extends GeoService {
             tileMatrices.add(parseTileMatrix(xpath, tileMatrix));
         }
         
-        
         expr = xpath.compile("Identifier"); 
         String identifier = (String) expr.evaluate(matrixSet, XPathConstants.STRING);
         tms.setIdentifier(identifier);
@@ -291,8 +290,45 @@ public class TileService extends GeoService {
         return tms;
     }
     
-    protected TileMatrix parseTileMatrix(XPath xpath, Node tileMatrix){
+    protected TileMatrix parseTileMatrix(XPath xpath, Node tileMatrix) throws XPathExpressionException{
         TileMatrix tm = new TileMatrix();
+        
+        XPathExpression expr = xpath.compile("Identifier"); 
+        String identifier = (String) expr.evaluate(tileMatrix, XPathConstants.STRING);
+        tm.setIdentifier(identifier);
+        
+        expr = xpath.compile("ScaleDenominator"); 
+        String scaledenom = (String) expr.evaluate(tileMatrix, XPathConstants.STRING);
+        tm.setScaleDenominator(scaledenom);
+        
+        expr = xpath.compile("TopLeftCorner"); 
+        String topLeft = (String) expr.evaluate(tileMatrix, XPathConstants.STRING);
+        tm.setTopLeftPoint(topLeft);
+        
+        expr = xpath.compile("TileWidth"); 
+        int tileWidth = ((Double) expr.evaluate(tileMatrix, XPathConstants.NUMBER)).intValue();
+        tm.setTileWitdh(tileWidth);
+        
+        expr = xpath.compile("TileHeight"); 
+        int tileHeight = ((Double) expr.evaluate(tileMatrix, XPathConstants.NUMBER)).intValue();
+        tm.setTileHeight(tileHeight);
+        
+        expr = xpath.compile("MatrixWidth"); 
+        int matrixidth = ((Double) expr.evaluate(tileMatrix, XPathConstants.NUMBER)).intValue();
+        tm.setMatrixWidth(matrixidth);
+        
+        expr = xpath.compile("MatrixHeight"); 
+        int matrixHeight = ((Double) expr.evaluate(tileMatrix, XPathConstants.NUMBER)).intValue();
+        tm.setMatrixHeight(matrixHeight);
+        
+        expr = xpath.compile("Title"); 
+        String title = (String) expr.evaluate(tileMatrix, XPathConstants.STRING);
+        tm.setTitle(title);
+        
+        expr = xpath.compile("Abstract"); 
+        String desc = (String) expr.evaluate(tileMatrix, XPathConstants.STRING);
+        tm.setDescription(desc);
+        
         return tm;
     }
     /**

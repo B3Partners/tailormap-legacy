@@ -38,7 +38,7 @@ public class TileMatrix {
     private String topLeftPoint;
     private int tileWitdh;
     private int tileHeight;
-    private int matrixWitdh;
+    private int matrixWidth;
     private int matrixHeight;
     
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
@@ -109,12 +109,12 @@ public class TileMatrix {
         this.tileHeight = tileHeight;
     }
 
-    public int getMatrixWitdh() {
-        return matrixWitdh;
+    public int getMatrixWidth() {
+        return matrixWidth;
     }
 
-    public void setMatrixWitdh(int matrixWitdh) {
-        this.matrixWitdh = matrixWitdh;
+    public void setMatrixWidth(int matrixWidth) {
+        this.matrixWidth = matrixWidth;
     }
 
     public int getMatrixHeight() {
