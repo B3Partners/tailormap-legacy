@@ -17,15 +17,12 @@
 package nl.b3p.viewer.config.services;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -68,18 +65,19 @@ public class TileService extends GeoService {
     public static final String TILING_PROTOCOL_WMTS = "WMTS";
     public static final String TILING_PROTOCOL_TMS = "TMS";
     
-    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private TileMatrixSet matrixSet;
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="tileService")
+    private List<TileMatrixSet> matrixSets = new ArrayList<>();
+
+    public List<TileMatrixSet> getMatrixSets() {
+        return matrixSets;
+    }
+
+    public void setMatrixSets(List<TileMatrixSet> matrixSets) {
+        this.matrixSets = matrixSets;
+    }
     
     private String tilingProtocol;
 
-    public TileMatrixSet getMatrixSet() {
-        return matrixSet;
-    }
-
-    public void setMatrixSet(TileMatrixSet matrixSet) {
-        this.matrixSet = matrixSet;
-    }
 
     public String getTilingProtocol() {
         return tilingProtocol;
@@ -172,8 +170,6 @@ public class TileService extends GeoService {
     protected TileService parseWMTSCapabilities(String url, Map params, WaitPageStatus status, EntityManager em){
         TileService s = null;
         try {
-            
-            
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(url);
@@ -188,29 +184,30 @@ public class TileService extends GeoService {
             String serviceName = (String)expr.evaluate(doc, XPathConstants.STRING);;
             s.setName(serviceName);
             
-            
             expr = xpath.compile("/Capabilities/OperationsMetadata/Operation[@name='GetTile']//Get/@href");
             String getTile = (String)expr.evaluate(doc, XPathConstants.STRING);;
             s.setUrl(getTile);
             
-            // Layers            
             
-               //make fake top layer for tiling.
+            List<TileMatrixSet>  matrices = parseMatrix();
+            s.setMatrixSets(matrices);
+            
+            Map<String, TileMatrixSet> matricesByIdentifier = new HashMap<>();
+            for (TileMatrixSet matrix : matrices) {
+                matricesByIdentifier.put(matrix.getIdentifier(), matrix);
+            }
+            // Layers            
+            //make fake top layer for tiling.
             Layer topLayer = new Layer();
             topLayer.setVirtual(true);
             topLayer.setService(s);
             
             List<Layer> layers = parseLayers(xpath, doc, topLayer, s);
-            /*
-            Layer tilingLayer = new Layer();
-            tilingLayer.setName(serviceName);
-            tilingLayer.setTitle(serviceName);
-            tilingLayer.setParent(topLayer);
-            tilingLayer.setService(s);
-            */
               //set tiling layer as child of top layer
             topLayer.setChildren(layers);
             s.setTopLayer(topLayer);
+            
+            
             
             em.persist(s);
             
@@ -230,14 +227,13 @@ public class TileService extends GeoService {
         
         for (int i = 0; i < nl.getLength(); i++) {
             Node l = nl.item(i);
-            layers.add(parseLayer(xpath, doc,l, topLayer, s));
+            layers.add(parseLayer(xpath, l, topLayer, s));
             
         }
         return layers;
     }
 
-    private Layer parseLayer(XPath xpath, Document doc,Node l, Layer topLayer, GeoService s) throws XPathExpressionException {
-
+    private Layer parseLayer(XPath xpath, Node l, Layer topLayer, GeoService s) throws XPathExpressionException {
         Layer layer = new Layer();
         layer.setParent(topLayer);
         layer.setService(s);
@@ -255,6 +251,11 @@ public class TileService extends GeoService {
         String format = (String) expr.evaluate(l, XPathConstants.STRING);
         layer.getDetails().put("image_extension", new ClobElement(format));
         return layer;
+    }
+    
+    protected List<TileMatrixSet> parseMatrix(){
+        List<TileMatrixSet> matrixSets = new ArrayList<>();
+        return matrixSets;
     }
     
     /**

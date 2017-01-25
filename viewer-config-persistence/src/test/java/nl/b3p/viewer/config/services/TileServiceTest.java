@@ -54,6 +54,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals(256, tileSet.getHeight());
         assertEquals("osm", tileSet.getName());
         assertEquals("png",l.getDetails().get("image_extension").getValue());
+        assertEquals(0, ts.getMatrixSets().size());
     }
 
     /**
@@ -105,6 +106,10 @@ public class TileServiceTest extends TestUtil{
         Layer layer = topLayer.getChildren().get(0);
         assertEquals("test:gemeente", layer.getName());
         assertEquals("gem_2014_new", layer.getTitle());
+        assertNotNull(ts.getMatrixSets());
+        assertEquals(16,ts.getMatrixSets().get(0).getMatrices().size());
+        assertEquals("epsg:28992",layer.getMatrixSets().get(0).getIdentifier());
+        assertEquals(16,layer.getMatrixSets().get(0).getMatrices().size());
         
     }
 }

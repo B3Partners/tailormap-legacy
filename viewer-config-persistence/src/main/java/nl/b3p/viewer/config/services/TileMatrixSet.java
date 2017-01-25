@@ -22,6 +22,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
@@ -39,6 +40,9 @@ public class TileMatrixSet {
     
     @OneToMany(cascade=CascadeType.ALL,fetch = FetchType.LAZY, mappedBy="matrixSet")
     private List<TileMatrix> matrices = new ArrayList<>();
+    
+    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private TileService tileService;
 
     public Long getId() {
         return id;
@@ -71,6 +75,12 @@ public class TileMatrixSet {
     public void setMatrices(List<TileMatrix> matrices) {
         this.matrices = matrices;
     }
-    
-    
+
+    public TileService getTileService() {
+        return tileService;
+    }
+
+    public void setTileService(TileService tileService) {
+        this.tileService = tileService;
+    }
 }
