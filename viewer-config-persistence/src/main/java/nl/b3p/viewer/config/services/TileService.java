@@ -279,6 +279,15 @@ public class TileService extends GeoService {
             Node tileMatrix = tileMatricesNodes.item(i);
             tileMatrices.add(parseTileMatrix(xpath, tileMatrix));
         }
+        
+        
+        expr = xpath.compile("Identifier"); 
+        String identifier = (String) expr.evaluate(matrixSet, XPathConstants.STRING);
+        tms.setIdentifier(identifier);
+        
+        expr = xpath.compile("SupportedCRS"); 
+        String crs = (String) expr.evaluate(matrixSet, XPathConstants.STRING);
+        tms.setCrs(crs);
         return tms;
     }
     

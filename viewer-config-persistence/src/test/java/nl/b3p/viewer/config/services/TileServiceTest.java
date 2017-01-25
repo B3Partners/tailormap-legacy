@@ -29,7 +29,14 @@ import org.xml.sax.SAXException;
 public class TileServiceTest extends TestUtil{
     
     private TileService instance = new TileService();
-    public TileServiceTest() {
+
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = null;
+    XPathFactory xPathfactory = XPathFactory.newInstance();
+    XPath xpath = xPathfactory.newXPath();
+        
+    public TileServiceTest() throws ParserConfigurationException {
+        builder = factory.newDocumentBuilder();
     }
     
 
@@ -124,12 +131,8 @@ public class TileServiceTest extends TestUtil{
     public void testParseMultipleTileMatrixSets() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
         
         URL u = TileServiceTest.class.getResource("singleLayer.xml");
-        String url = u.toString();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        String url = u.toString();        
         org.w3c.dom.Document doc = builder.parse(url);
-        XPathFactory xPathfactory = XPathFactory.newInstance();
-        XPath xpath = xPathfactory.newXPath();
         
         List<TileMatrixSet> sets = instance.parseMatrixSets(xpath, doc);
         assertNotNull(sets);
@@ -141,11 +144,7 @@ public class TileServiceTest extends TestUtil{
         
         URL u = TileServiceTest.class.getResource("tilematrixset.xml");
         String url = u.toString();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
         org.w3c.dom.Document doc = builder.parse(url);
-        XPathFactory xPathfactory = XPathFactory.newInstance();
-        XPath xpath = xPathfactory.newXPath();
         
         TileMatrixSet tms = instance.parseTileMatrixSet(xpath, doc.getChildNodes().item(0));
         assertNotNull(tms);
