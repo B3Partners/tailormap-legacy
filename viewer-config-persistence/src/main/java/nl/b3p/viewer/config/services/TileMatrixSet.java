@@ -24,6 +24,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -43,7 +45,23 @@ public class TileMatrixSet {
     
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private TileService tileService;
+    
+    public JSONObject toJSONObject(){
+        JSONObject obj = new JSONObject();
+        obj.put("id",id);
+        obj.put("identifier",identifier);
+        obj.put("crs",crs);
+        
+        JSONArray matricesJSON = new JSONArray();
+        for (TileMatrix matrix : matrices) {
+            matricesJSON.put(matrix.toJSONObject());
+        }
+        obj.put("matrices", matricesJSON);
+        
+        return obj;
+    }
 
+    // <editor-fold defaultstate="collapsed" desc="Getters and setters" >
     public Long getId() {
         return id;
     }
@@ -83,4 +101,5 @@ public class TileMatrixSet {
     public void setTileService(TileService tileService) {
         this.tileService = tileService;
     }
+    // </editor-fold>
 }

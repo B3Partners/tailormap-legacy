@@ -38,6 +38,7 @@ import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -357,11 +358,7 @@ public class TileService extends GeoService {
     
     @Override
     public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags, EntityManager em) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,em);
-        if(tilingProtocol != null) {
-            o.put("tilingProtocol", tilingProtocol);
-        }
-        return o;
+        return toJSONObject(flatten, layersToInclude,validXmlTags, false,em);
     }    
     
     @Override
@@ -370,6 +367,11 @@ public class TileService extends GeoService {
         if(tilingProtocol != null) {
             o.put("tilingProtocol", tilingProtocol);
         }
+        JSONArray matrixSetsArray = new JSONArray();
+        for (TileMatrixSet matrixSet : matrixSets) {
+            matrixSetsArray.put(matrixSet.toJSONObject());
+        }
+        o.put("matrixSets", matrixSetsArray);
         return o;
     }    
 

@@ -21,6 +21,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -28,7 +30,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class TileMatrix {
-    
+
     @Id
     private Long id;
     private String identifier;
@@ -40,11 +42,26 @@ public class TileMatrix {
     private int tileHeight;
     private int matrixWidth;
     private int matrixHeight;
-    
-    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private TileMatrixSet matrixSet;
-    
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private TileMatrixSet matrixSet;
+
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("identifier", identifier);
+        obj.put("title", title);
+        obj.put("description", description);
+        obj.put("scaleDenominator", scaleDenominator);
+        obj.put("topLeftPoint", topLeftPoint);
+        obj.put("tileWitdh", tileWitdh);
+        obj.put("tileHeight", tileHeight);
+        obj.put("matrixWidth", matrixWidth);
+        obj.put("matrixHeight", matrixHeight);
+        return obj;
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="Getters and setters" >
     public Long getId() {
         return id;
     }
@@ -132,6 +149,6 @@ public class TileMatrix {
     public void setMatrixSet(TileMatrixSet matrixSet) {
         this.matrixSet = matrixSet;
     }
-    
-    
+
+    // </editor-fold>
 }

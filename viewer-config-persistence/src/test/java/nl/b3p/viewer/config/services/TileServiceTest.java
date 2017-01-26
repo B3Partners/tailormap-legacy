@@ -18,6 +18,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import nl.b3p.viewer.util.TestUtil;
 import nl.b3p.web.WaitPageStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.xml.sax.SAXException;
@@ -71,6 +73,11 @@ public class TileServiceTest extends TestUtil{
         assertEquals("osm", tileSet.getName());
         assertEquals("png",l.getDetails().get("image_extension").getValue());
         assertEquals(0, ts.getMatrixSets().size());
+        JSONObject serviceObj = ts.toJSONObject(false, entityManager);
+        assertTrue(serviceObj.has("matrixSets"));
+        JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
+        assertEquals(0, matrixSets.length());
+        
     }
 
     /**
@@ -126,6 +133,13 @@ public class TileServiceTest extends TestUtil{
         assertEquals(16,ts.getMatrixSets().get(1).getMatrices().size());
         assertEquals("epsg:28992",layer.getMatrixSets().get(0).getIdentifier());
         assertEquals(16,layer.getMatrixSets().get(0).getMatrices().size());
+        JSONObject serviceObj = ts.toJSONObject(false, entityManager);
+        assertTrue(serviceObj.has("matrixSets"));
+        JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
+        assertEquals(6, matrixSets.length());
+        JSONObject matrix = matrixSets.getJSONObject(1);
+        JSONArray matrices = matrix.getJSONArray("matrices");
+        assertEquals(16, matrices.length());
     }
     
     @Test
