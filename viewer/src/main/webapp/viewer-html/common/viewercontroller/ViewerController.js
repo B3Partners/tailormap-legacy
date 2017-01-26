@@ -934,14 +934,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);
                 }
             }else if (service.protocol == "tiled"){
-                var res=layer.resolutions.split(",");
-                for (var i=0; res.length > i; i++){
-                    res[i] = Number(res[i]);
+                if(layer.resolutions){
+                    var res=layer.resolutions.split(",");
+                    for (var i=0; res.length > i; i++){
+                        res[i] = Number(res[i]);
+                    }
+                    options.resolutions = res;
                 }
                 options.tileHeight = layer.tileHeight;
                 options.tileWidth = layer.tileWidth;
                 options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
-                options.resolutions = res,
                 options.protocol = service.tilingProtocol;
                 options.title = layer.title;
                 options.viewerController=this;
