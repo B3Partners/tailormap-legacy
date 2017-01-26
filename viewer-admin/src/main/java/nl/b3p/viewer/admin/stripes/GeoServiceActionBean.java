@@ -720,7 +720,7 @@ public class GeoServiceActionBean implements ActionBean {
             if (serviceName == null) {
                 errors.add("serviceName", new LocalizableError("validation.required.valueNotPresent"));
             }
-            if (protocol.equals(TileService.PROTOCOL)) {
+            if (protocol.equals(TileService.PROTOCOL) && !tilingProtocol.equalsIgnoreCase(TileService.TILING_PROTOCOL_WMTS)) {
                 if (resolutions == null) {
                     errors.add("resolutions", new LocalizableError("validation.required.valueNotPresent"));
                 }
