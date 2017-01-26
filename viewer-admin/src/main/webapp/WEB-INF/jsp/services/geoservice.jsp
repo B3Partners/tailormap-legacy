@@ -69,16 +69,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <script type="text/javascript">
         function checkProtocol() {
             var protocol = Ext.query("select[name='protocol']")[0].value;
-            Ext.fly('agsVersion').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "arcgis");
-            Ext.fly('useUrlTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "wms");
-            Ext.fly('serviceNameTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "arcims" || protocol == "tiled");
-            Ext.fly('tileSizeTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
-            Ext.fly('resolutionsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
-            Ext.fly('tilingProtocolTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
-            Ext.fly('serviceBboxTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
-            Ext.fly('extensionTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
-            Ext.fly('crsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
-            Ext.fly('useProxy').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "wms");
+            var tilingProtocol = Ext.query("select[name='tilingProtocol']")[0].value;
+            Ext.fly('agsVersion').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "arcgis");
+            Ext.fly('useUrlTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms" || tilingProtocol === "WMTS");
+            Ext.fly('serviceNameTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "arcims" || protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('tileSizeTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('resolutionsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('tilingProtocolTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('serviceBboxTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('extensionTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('crsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('useProxy').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
         }
         Ext.onReady(function() {
             appendPanel('headertext', 'formcontent');
@@ -157,7 +158,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Tiling Protocol:</td>
             <td>
             <label>
-                <stripes:select name="tilingProtocol">
+                <stripes:select name="tilingProtocol" onchange="checkProtocol()" onkeyup="checkProtocol()">
                     <stripes:option value="TMS">TMS</stripes:option>
                     <stripes:option value="WMTS">WMTS</stripes:option>
                     <stripes:option value="WMSc">WMSc</stripes:option>
