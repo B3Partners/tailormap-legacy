@@ -181,11 +181,11 @@ public class TileService extends GeoService {
             s.setTilingProtocol(TILING_PROTOCOL_WMTS);
             
             XPathExpression expr = xpath.compile("/Capabilities/ServiceIdentification/Title");
-            String serviceName = (String)expr.evaluate(doc, XPathConstants.STRING);;
+            String serviceName = (String)expr.evaluate(doc, XPathConstants.STRING);
             s.setName(serviceName);
             
             expr = xpath.compile("/Capabilities/OperationsMetadata/Operation[@name='GetTile']//Get/@href");
-            String getTile = (String)expr.evaluate(doc, XPathConstants.STRING);;
+            String getTile = (String)expr.evaluate(doc, XPathConstants.STRING);
             s.setUrl(getTile);
             
             
@@ -195,6 +195,7 @@ public class TileService extends GeoService {
             // Create lookup list for later linking it to layers
             Map<String, TileMatrixSet> matricesByIdentifier = new HashMap<>();
             for (TileMatrixSet matrix : matrices) {
+                matrix.setTileService(s);
                 matricesByIdentifier.put(matrix.getIdentifier(), matrix);
             }
             
@@ -221,7 +222,7 @@ public class TileService extends GeoService {
     }
     
     private List<Layer> parseLayers(XPath xpath, Document doc, Layer topLayer, GeoService s, Map<String, TileMatrixSet> matricesByIdentifier) throws XPathExpressionException{
-        List<Layer> layers = new ArrayList<Layer>();
+        List<Layer> layers = new ArrayList<>();
         XPathExpression expr = xpath.compile("/Capabilities/Contents/Layer");
         NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
         

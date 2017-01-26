@@ -85,6 +85,7 @@ public class TileServiceTest extends TestUtil{
         WaitPageStatus status = new WaitPageStatus();
         
         GeoService result = instance.parseWMTSCapabilities(url, params, status, entityManager);
+        entityManager.getTransaction().commit();
         compareWMTS (result, url);
     }
     
