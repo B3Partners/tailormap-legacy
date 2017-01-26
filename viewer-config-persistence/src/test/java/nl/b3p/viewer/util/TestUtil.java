@@ -82,6 +82,8 @@ public abstract class TestUtil extends LoggingTestUtil {
         final String persistenceUnit = System.getProperty("test.persistence.unit");
         Map config = new HashMap();
         String testname = testName.getMethodName();
+        testname = testname.replaceAll(":", "-");
+        testname = testname.replaceAll(" ", "");
         String randomizer = RandomStringUtils.randomAlphabetic(8);
         config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
         entityManager = Persistence.createEntityManagerFactory(persistenceUnit,config).createEntityManager();
