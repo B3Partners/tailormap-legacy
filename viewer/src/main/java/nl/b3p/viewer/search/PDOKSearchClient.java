@@ -16,6 +16,9 @@
  */
 package nl.b3p.viewer.search;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -27,6 +30,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.geotools.geometry.jts.WKTReader2;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,9 +43,11 @@ public class PDOKSearchClient extends SearchClient {
 
     private static final Log log = LogFactory.getLog(SolrSearchClient.class);  
     private SolrServer server;
+    private WKTReader2 wkt;
     
     public PDOKSearchClient(){
         server = new HttpSolrServer("http://geodata.nationaalgeoregister.nl/locatieserver");
+        wkt = new WKTReader2();
     }
     
     @Override
@@ -71,31 +77,8 @@ public class PDOKSearchClient extends SearchClient {
 
     @Override
     public JSONArray autosuggest(String term) throws JSONException {
-        JSONObject obj = new JSONObject();
-        JSONArray respDocs = new JSONArray();
-        try {
-            JSONObject response = new JSONObject();
-            response.put("docs", respDocs);
-            obj.put("response", response);
-           
-            SolrQuery query = new SolrQuery();
-            query.setQuery(term);
-            query.setRequestHandler("/suggest");
-            QueryResponse rsp = server.query(query);
-            SolrDocumentList list = rsp.getResults();
-
-            for (SolrDocument solrDocument : list) {
-                JSONObject doc = solrDocumentToResult(solrDocument);
-                if(doc != null){
-                    respDocs.put(doc);
-                }
-            }
-            response.put("docs", respDocs);
-            return respDocs;
-        } catch (SolrServerException ex) {
-            log.error(ex);
-        }
-        return respDocs;
+      SearchResult r = search(term);
+      return r.getResults();
     }
     
     private JSONObject solrDocumentToResult(SolrDocument doc){
@@ -107,20 +90,26 @@ public class PDOKSearchClient extends SearchClient {
                 result.put(key, values.get(key));
             }
             String centroide = (String)doc.getFieldValue("centroide_rd");
+            
+            String geom = centroide;
+            if(values.containsKey("geometrie_rd")){
+                geom = (String) values.get("geometrie_rd");
+            }
+            Geometry g = wkt.read(geom);
+            Envelope env = g.getEnvelopeInternal();
+            
             if (centroide != null) {
-                String x = centroide.substring(6, centroide.indexOf(" ", 6));
-                String y = centroide.substring(centroide.indexOf(" ") + 1, centroide.length() - 1);
                 Map bbox = new HashMap();
-                bbox.put("minx", x);
-                bbox.put("miny", y);
-                bbox.put("maxx", x);
-                bbox.put("maxy", y);
+                bbox.put("minx", env.getMinX());
+                bbox.put("miny", env.getMinY());
+                bbox.put("maxx", env.getMaxX());
+                bbox.put("maxy", env.getMaxY());
 
                 result.put("location", bbox);
             }
             result.put("label", values.get("weergavenaam"));
             
-        } catch (JSONException ex) {
+        } catch (JSONException | ParseException ex) {
             log.error(ex);
         }
         return result;
