@@ -291,7 +291,7 @@ public class TileService extends GeoService {
         NodeList tileMatricesNodes = (NodeList) expr.evaluate(matrixSet, XPathConstants.NODESET);
         for (int i = 0; i < tileMatricesNodes.getLength(); i++) {
             Node tileMatrix = tileMatricesNodes.item(i);
-            tileMatrices.add(parseTileMatrix(xpath, tileMatrix));
+            tileMatrices.add(parseTileMatrix(xpath, tileMatrix,tms));
         }
         
         expr = xpath.compile("Identifier"); 
@@ -304,8 +304,9 @@ public class TileService extends GeoService {
         return tms;
     }
     
-    protected TileMatrix parseTileMatrix(XPath xpath, Node tileMatrix) throws XPathExpressionException{
+    protected TileMatrix parseTileMatrix(XPath xpath, Node tileMatrix, TileMatrixSet tms) throws XPathExpressionException{
         TileMatrix tm = new TileMatrix();
+        tm.setMatrixSet(tms);
         
         XPathExpression expr = xpath.compile("Identifier"); 
         String identifier = (String) expr.evaluate(tileMatrix, XPathConstants.STRING);
