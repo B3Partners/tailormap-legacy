@@ -95,8 +95,8 @@ public class SolrSearchClient extends SearchClient {
     
     @Override
     public JSONArray autosuggest(String term) throws JSONException {
-       JSONObject obj = new JSONObject();
-            JSONArray respDocs = new JSONArray();
+        JSONObject obj = new JSONObject();
+        JSONArray respDocs = new JSONArray();
         try {
             SolrServer server = SolrInitializer.getServerInstance();
 

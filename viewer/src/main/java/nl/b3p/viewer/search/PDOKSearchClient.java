@@ -16,13 +16,8 @@
  */
 package nl.b3p.viewer.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -75,8 +70,32 @@ public class PDOKSearchClient extends SearchClient {
     }
 
     @Override
-    public JSONArray autosuggest(String query) throws JSONException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public JSONArray autosuggest(String term) throws JSONException {
+        JSONObject obj = new JSONObject();
+        JSONArray respDocs = new JSONArray();
+        try {
+            JSONObject response = new JSONObject();
+            response.put("docs", respDocs);
+            obj.put("response", response);
+           
+            SolrQuery query = new SolrQuery();
+            query.setQuery(term);
+            query.setRequestHandler("/suggest");
+            QueryResponse rsp = server.query(query);
+            SolrDocumentList list = rsp.getResults();
+
+            for (SolrDocument solrDocument : list) {
+                JSONObject doc = solrDocumentToResult(solrDocument);
+                if(doc != null){
+                    respDocs.put(doc);
+                }
+            }
+            response.put("docs", respDocs);
+            return respDocs;
+        } catch (SolrServerException ex) {
+            log.error(ex);
+        }
+        return respDocs;
     }
     
     private JSONObject solrDocumentToResult(SolrDocument doc){
@@ -88,14 +107,17 @@ public class PDOKSearchClient extends SearchClient {
                 result.put(key, values.get(key));
             }
             String centroide = (String)doc.getFieldValue("centroide_rd");
-            String x = centroide.substring(6, centroide.indexOf(" ", 6));
-            String y = centroide.substring( centroide.indexOf(" ")+1, centroide.length()-1);
-            Map bbox = new HashMap();
-            bbox.put("minx", x);
-            bbox.put("miny", y);
-            bbox.put("maxx", x);
-            bbox.put("maxy", y);
-            result.put("location", bbox);
+            if (centroide != null) {
+                String x = centroide.substring(6, centroide.indexOf(" ", 6));
+                String y = centroide.substring(centroide.indexOf(" ") + 1, centroide.length() - 1);
+                Map bbox = new HashMap();
+                bbox.put("minx", x);
+                bbox.put("miny", y);
+                bbox.put("maxx", x);
+                bbox.put("maxy", y);
+
+                result.put("location", bbox);
+            }
             result.put("label", values.get("weergavenaam"));
             
         } catch (JSONException ex) {
