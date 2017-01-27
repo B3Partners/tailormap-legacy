@@ -59,7 +59,7 @@ public class PDOKSearchClient extends SearchClient {
             JSONArray respDocs = new JSONArray();
             SolrQuery query = new SolrQuery();
             if(this.filter != null){
-                term += this.filter;
+                term += " " + this.filter;
             }
             query.setQuery(term);
             query.setRequestHandler("/free");
