@@ -145,8 +145,7 @@ public class SearchActionBean implements ActionBean {
     }
     
     public Resolution autosuggest() throws JSONException {
-        
-         JSONObject result = new JSONObject();        
+        JSONObject result = new JSONObject();        
         JSONObject request = new JSONObject();
         request.put("appId",appId);
         request.put("componentName",componentName);
@@ -223,7 +222,8 @@ public class SearchActionBean implements ActionBean {
                 }
                 ((SolrSearchClient)client).setVisibleLayers(visLayers);
             }else if (type.equalsIgnoreCase("pdok")) {
-                client = new PDOKSearchClient();
+                String filter = config.optString("filter");
+                client = new PDOKSearchClient(filter);
             } else{
                 client = null;
             }

@@ -44,10 +44,12 @@ public class PDOKSearchClient extends SearchClient {
     private static final Log log = LogFactory.getLog(SolrSearchClient.class);  
     private SolrServer server;
     private WKTReader2 wkt;
+    private String filter;
     
-    public PDOKSearchClient(){
+    public PDOKSearchClient(String filter){
         server = new HttpSolrServer("http://geodata.nationaalgeoregister.nl/locatieserver");
         wkt = new WKTReader2();
+        this.filter = filter;
     }
     
     @Override
@@ -56,6 +58,9 @@ public class PDOKSearchClient extends SearchClient {
         try {
             JSONArray respDocs = new JSONArray();
             SolrQuery query = new SolrQuery();
+            if(this.filter != null){
+                term += this.filter;
+            }
             query.setQuery(term);
             query.setRequestHandler("/free");
             QueryResponse rsp = server.query(query);
