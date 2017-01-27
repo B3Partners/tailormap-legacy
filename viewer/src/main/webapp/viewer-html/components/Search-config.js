@@ -165,6 +165,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 inputValue: 'solr',
                                 checked: config.type=="solr"
                             },{
+                                boxLabel: 'PDOK Adreszoeker', 
+                                name: 'type' + config.id, 
+                                inputValue: 'pdok',
+                                checked: config.type==="pdok"
+                            },{
                                 boxLabel: 'Eenvoudig', 
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
@@ -226,7 +231,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         // When switching radio input type is an array
         if(typeof type !== 'string') return;
         this.hideExtraConfig(configid);
-        if(type === 'solr' || type === 'simplelist') {
+        if(type === 'solr' || type === 'simplelist' || type === 'pdok') {
             if(type === 'solr') {
                 // Show additional Solr configuration
                 this.addSolrconfig(configid);
