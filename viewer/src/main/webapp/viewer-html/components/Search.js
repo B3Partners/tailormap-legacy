@@ -210,7 +210,7 @@ Ext.define ("viewer.components.Search",{
             if (this.searchconfigs.length> 0){
                 var queryMode = 'local';
                 var extraParams = {};
-                if(this.searchconfigs.length === 1 && this.searchconfigs[0].type === "solr" ){
+                if(this.searchconfigs.length === 1 && (this.searchconfigs[0].type === "solr" || this.searchconfigs[0].type === "pdok" ) ){
                     queryMode = "remote";
                     
                     extraParams["searchName"]=this.searchconfigs[0].id;
@@ -266,7 +266,7 @@ Ext.define ("viewer.components.Search",{
                             }
                         },
                         beforeQuery : function(request){
-                            if(this.getCurrentSearchType() !== "solr"){
+                            if(this.getCurrentSearchType() !== "solr" && this.getCurrentSearchType() !== "pdok" ){
                                     return false;
                             }
                             var q = request.query;
@@ -353,8 +353,12 @@ Ext.define ("viewer.components.Search",{
     searchHighlightedSuggestion: function(node){
         var data = node.raw !== undefined ? node.raw : node.data;
         this.searchField.setValue(data.originalLabel || data.label);
-        this.handleSearchResult(data);
-        this.searchField.collapse();
+        if(data.location){
+            this.handleSearchResult(data);
+            this.searchField.collapse();
+        }else{
+            this.search();
+        }
     },
     hideWindow : function(){
         this.searchField.collapse();
@@ -648,7 +652,7 @@ Ext.define ("viewer.components.Search",{
         for(var i = 0 ; i < this.searchconfigs.length ;i++){
             var config = this.searchconfigs[i];
             if(config.id === searchConfig){
-                if(config.type === "solr"){
+                if(config.type === "solr" || config.type === "pdok" ){
                     this.searchField.queryMode = "remote";
                     var proxy = this.searchField.getStore().getProxy();
                     var params = proxy.extraParams;

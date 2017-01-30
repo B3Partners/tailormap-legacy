@@ -25,6 +25,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.search.ArcGisRestSearchClient;
 import nl.b3p.viewer.search.OpenLSSearchClient;
+import nl.b3p.viewer.search.PDOKSearchClient;
 import nl.b3p.viewer.search.SearchClient;
 import nl.b3p.viewer.search.SearchResult;
 import nl.b3p.viewer.search.SolrSearchClient;
@@ -144,8 +145,7 @@ public class SearchActionBean implements ActionBean {
     }
     
     public Resolution autosuggest() throws JSONException {
-        
-         JSONObject result = new JSONObject();        
+        JSONObject result = new JSONObject();        
         JSONObject request = new JSONObject();
         request.put("appId",appId);
         request.put("componentName",componentName);
@@ -221,7 +221,10 @@ public class SearchActionBean implements ActionBean {
                     }catch(NumberFormatException e){}
                 }
                 ((SolrSearchClient)client).setVisibleLayers(visLayers);
-            }else{
+            }else if (type.equalsIgnoreCase("pdok")) {
+                String filter = config.optString("filter");
+                client = new PDOKSearchClient(filter);
+            } else{
                 client = null;
             }
         }
