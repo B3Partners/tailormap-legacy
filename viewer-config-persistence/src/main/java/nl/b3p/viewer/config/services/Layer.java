@@ -472,12 +472,12 @@ public class Layer implements Cloneable, Serializable {
                 }
                 o.put("resolutions",resolutions);
             }
-            if (boundingBoxes.size()==1){
-                BoundingBox bbox=boundingBoxes.values().iterator().next();
-                o.put("bbox",bbox.toJSONObject());
-            }
         }
 
+        if (boundingBoxes.size()==1){
+            BoundingBox bbox=boundingBoxes.values().iterator().next();
+            o.put("bbox",bbox.toJSONObject());
+        }
 
         return o;
     }

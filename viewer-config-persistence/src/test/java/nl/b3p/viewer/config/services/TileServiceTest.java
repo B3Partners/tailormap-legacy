@@ -130,7 +130,7 @@ public class TileServiceTest extends TestUtil{
         JSONObject layers = serviceObj.getJSONObject("layers");
         JSONObject jsonLayer = layers.getJSONObject("brtachtergrondkaart");
         assertNotNull(jsonLayer);
-        assertTrue(!jsonLayer.has("bbox"));
+        assertTrue(jsonLayer.has("bbox"));
 
     }
     
