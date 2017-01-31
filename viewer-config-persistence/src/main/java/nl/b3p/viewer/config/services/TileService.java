@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.CascadeType;
@@ -24,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,9 +40,15 @@ import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -68,30 +76,12 @@ public class TileService extends GeoService {
     
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="tileService")
     private List<TileMatrixSet> matrixSets = new ArrayList<>();
-
-    public List<TileMatrixSet> getMatrixSets() {
-        return matrixSets;
-    }
-
-    public void setMatrixSets(List<TileMatrixSet> matrixSets) {
-        this.matrixSets = matrixSets;
-    }
     
+    @Transient
+    private DefaultGeographicCRS wgs84 = DefaultGeographicCRS.WGS84;
+
     private String tilingProtocol;
 
-
-    public String getTilingProtocol() {
-        return tilingProtocol;
-    }
-
-    public void setTilingProtocol(String tilingProtocol) {
-        this.tilingProtocol = tilingProtocol;
-    }
-
-    @Override
-    public void checkOnline(EntityManager em) throws Exception {
-    }
-    
     @Override
     public GeoService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) {
         status.setCurrentAction("Bezig met aanmaken tile service");
@@ -263,22 +253,64 @@ public class TileService extends GeoService {
             tmses.add(tms);
         }
         layer.setMatrixSets(tmses);
+        parseBoundingBox(layer, xpath, l, tmses);
         
         return layer;
     }
     
+    protected void parseBoundingBox(Layer layer,XPath xpath, Node l, List<TileMatrixSet> tmses) throws XPathExpressionException{
+        XPathExpression expr = xpath.compile("WGS84BoundingBox/LowerCorner");
+        String lowercorner = (String) expr.evaluate(l, XPathConstants.STRING);
+        
+        expr = xpath.compile("WGS84BoundingBox/UpperCorner");
+        String uppercorner = (String) expr.evaluate(l, XPathConstants.STRING);
+        
+        if(lowercorner != null && uppercorner != null && !lowercorner.isEmpty() && ! uppercorner.isEmpty()){
+            try {                
+                double lat1 = Double.parseDouble(uppercorner.substring(0, uppercorner.indexOf(" ")));
+                double lon1 = Double.parseDouble(uppercorner.substring(uppercorner.indexOf(" ")+1));
+                
+                double lat2 = Double.parseDouble(lowercorner.substring(0, lowercorner.indexOf(" ")));
+                double lon2 = Double.parseDouble(lowercorner.substring(lowercorner.indexOf(" ")+1));
+                
+                Envelope env = new Envelope(lat1, lat2,lon2,lon1);
+                
+                for (TileMatrixSet tms : tmses) {
+                    if(!tms.getCrs().contains("28992")){
+                        continue;
+                    }
+                    org.opengis.referencing.crs.CoordinateReferenceSystem targetCRS = CRS.decode(tms.getCrs());
+
+                    MathTransform transform = CRS.findMathTransform(wgs84, targetCRS, false);
+                    Envelope newBBox = JTS.transform(env, transform);
+                    BoundingBox bbox = new BoundingBox();
+                    CoordinateReferenceSystem crs = new CoordinateReferenceSystem(tms.getCrs());
+                    bbox.setCrs(crs);
+                    bbox.setMaxx(newBBox.getMaxX());
+                    bbox.setMinx(newBBox.getMinX());
+                    bbox.setMaxy(newBBox.getMaxY());
+                    bbox.setMiny(newBBox.getMinY());
+                    layer.getBoundingBoxes().put(crs, bbox);
+                }
+            } catch (FactoryException | TransformException ex) {
+                log.error("cannot parse bounding boxes",ex);
+            }
+
+        }
+    }
+    
     protected List<TileMatrixSet> parseMatrixSets(XPath xpath, Document doc) throws XPathExpressionException {
-        List<TileMatrixSet> matrixSets = new ArrayList<>();
+        List<TileMatrixSet> tmses = new ArrayList<>();
 
         XPathExpression expr = xpath.compile("/Capabilities/Contents/TileMatrixSet");
         NodeList tileMatrixSets = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 
         for (int i = 0; i < tileMatrixSets.getLength(); i++) {
             Node matrixSet = tileMatrixSets.item(i);
-            matrixSets.add(parseTileMatrixSet(xpath, matrixSet));
+            tmses.add(parseTileMatrixSet(xpath, matrixSet));
         }
 
-        return matrixSets;
+        return tmses;
     }
 
     
@@ -301,7 +333,32 @@ public class TileService extends GeoService {
         expr = xpath.compile("SupportedCRS"); 
         String crs = (String) expr.evaluate(matrixSet, XPathConstants.STRING);
         tms.setCrs(crs);
+        
+        TileMatrix tm = tileMatrices.get(tileMatrices.size()-1);
+        // parse boundingbox
+        String topLeft = tm.getTopLeftPoint();
+        double minX = new Double(topLeft.substring(0, topLeft.indexOf(" ")));
+        double maxY = new Double(topLeft.substring(topLeft.indexOf(" ")+1));
+        double scaleDenominator = new Double(tm.getScaleDenominator());
+        double pixelSpan = scaleDenominator * 0.00028 / metersPerUnit(crs);
+        double tileSpanX = tm.getTileWitdh() * pixelSpan;
+        double tileSpanY = tm.getTileHeight() * pixelSpan;
+        double maxX =  minX + tileSpanX * tm.getMatrixWidth();
+        double minY = maxY - tileSpanY * tm.getMatrixHeight();
+        
+        BoundingBox bb = new BoundingBox();
+        bb.setCrs(new CoordinateReferenceSystem(crs));
+        
+        bb.setMinx(minX);
+        bb.setMaxx(maxX);
+        bb.setMaxy(maxY);
+        bb.setMiny(minY);
+        tms.setBbox(bb);        
         return tms;
+    }
+    
+    protected double metersPerUnit(String crs){
+        return 1;
     }
     
     protected TileMatrix parseTileMatrix(XPath xpath, Node tileMatrix, TileMatrixSet tms) throws XPathExpressionException{
@@ -373,7 +430,31 @@ public class TileService extends GeoService {
             matrixSetsArray.put(matrixSet.toJSONObject());
         }
         o.put("matrixSets", matrixSetsArray);
+        
         return o;
     }    
+    
+    // <editor-fold desc="Getters and setters"  defaultstate="collapsed">
+    
+    public List<TileMatrixSet> getMatrixSets() {
+        return matrixSets;
+    }
 
+    public void setMatrixSets(List<TileMatrixSet> matrixSets) {
+        this.matrixSets = matrixSets;
+    }
+    
+    public String getTilingProtocol() {
+        return tilingProtocol;
+    }
+
+    public void setTilingProtocol(String tilingProtocol) {
+        this.tilingProtocol = tilingProtocol;
+    }
+
+    @Override
+    public void checkOnline(EntityManager em) throws Exception {
+    }
+    
+    // </editor-fold>
 }

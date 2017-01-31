@@ -18,7 +18,11 @@ package nl.b3p.viewer.config.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -46,6 +50,17 @@ public class TileMatrixSet {
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private TileService tileService;
     
+    
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "crs.name", column = @Column(name="max_crs")),
+        @AttributeOverride(name = "minx", column = @Column(name="max_minx")),
+        @AttributeOverride(name = "maxx", column = @Column(name="max_maxx")),
+        @AttributeOverride(name = "miny", column = @Column(name="max_miny")),
+        @AttributeOverride(name = "maxy", column = @Column(name="max_maxy"))
+    })
+    private BoundingBox bbox;
+    
     public JSONObject toJSONObject(){
         JSONObject obj = new JSONObject();
         obj.put("id",id);
@@ -57,7 +72,11 @@ public class TileMatrixSet {
             matricesJSON.put(matrix.toJSONObject());
         }
         obj.put("matrices", matricesJSON);
+
         
+        if(bbox != null){
+            obj.put("bbox",bbox.toJSONObject());
+        }
         return obj;
     }
 
@@ -100,6 +119,14 @@ public class TileMatrixSet {
 
     public void setTileService(TileService tileService) {
         this.tileService = tileService;
+    }
+    
+    public BoundingBox getBbox() {
+        return bbox;
+    }
+
+    public void setBbox(BoundingBox bbox) {
+        this.bbox = bbox;
     }
     // </editor-fold>
 }

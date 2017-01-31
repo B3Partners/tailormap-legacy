@@ -154,7 +154,7 @@ public class Layer implements Cloneable, Serializable {
 
     
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="matrix_set", unique=true))
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="matrix_set"))
     @OrderColumn(name="list_index")
     private List<TileMatrixSet> matrixSets = new ArrayList<>();
     
@@ -476,7 +476,6 @@ public class Layer implements Cloneable, Serializable {
                 BoundingBox bbox=boundingBoxes.values().iterator().next();
                 o.put("bbox",bbox.toJSONObject());
             }
-
         }
 
 
