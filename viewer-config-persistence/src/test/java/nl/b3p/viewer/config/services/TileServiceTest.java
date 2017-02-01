@@ -134,6 +134,45 @@ public class TileServiceTest extends TestUtil{
 
     }
     
+    @Test
+    public void testLoadLufoWMTSFromURL() {
+        URL u = TileServiceTest.class.getResource("wmtsgetcapLufo.xml");
+        String url = u.toString();
+        Map params = new HashMap();
+        params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
+        params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
+        WaitPageStatus status = new WaitPageStatus();
+        
+        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        Layer topLayer = result.getTopLayer();
+        assertEquals(1, topLayer.getChildren().size());
+        
+        Layer brt = topLayer.getChildren().get(0);
+        assertEquals("Topografie", brt.getName());
+        assertEquals(0, brt.getBoundingBoxes().size());
+
+        BoundingBox bbox = brt.getMatrixSets().get(0).getBbox();
+        assertEquals(595401.92, bbox.getMaxx(), 0.01);
+        assertEquals(903402.0, bbox.getMaxy(), 0.01);
+        assertEquals(-285401.92, bbox.getMinx(), 0.01);
+        assertEquals(22598.16, bbox.getMiny(), 0.01);
+        
+        JSONObject serviceObj = result.toJSONObject(false, entityManager);
+        assertTrue(serviceObj.has("matrixSets"));
+        JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
+        assertEquals(6, matrixSets.length());
+        JSONObject matrix = matrixSets.getJSONObject(1);
+        JSONArray matrices = matrix.getJSONArray("matrices");
+        assertEquals(22, matrices.length());
+        assertTrue(serviceObj.has("layers"));
+        JSONObject layers = serviceObj.getJSONObject("layers");
+        JSONObject jsonLayer = layers.getJSONObject("Topografie");
+        assertNotNull(jsonLayer);
+        assertTrue(!jsonLayer.has("bbox"));
+
+    }
+    
+    
     
     @Test
     public void testLoadWMTSMultipleLayersFromURL() {
