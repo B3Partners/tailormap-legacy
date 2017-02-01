@@ -941,14 +941,28 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     }
                     options.resolutions = res;
                 }
+                if(layer.bbox){
+                    options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
+                }
+                
                 options.tileHeight = layer.tileHeight;
                 options.tileWidth = layer.tileWidth;
-                options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
                 options.protocol = service.tilingProtocol;
                 options.title = layer.title;
                 options.viewerController=this;
                 if (layer.details && layer.details["image_extension"]){
                     options.extension = layer.details["image_extension"];
+                }
+                if(layer.matrixSets){
+                    var matrixSet = layer.matrixSets[0];
+                    for(var i = 0 ; i < layer.matrixSets.length ;i++){
+                        if(layer.matrixSets[i].crs.indexOf("28992") !== -1){
+                            matrixSet = layer.matrixSets[i];
+                            break;
+                        }
+                    }
+                    
+                    options.matrixSet = matrixSet;
                 }
                 layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
             }
