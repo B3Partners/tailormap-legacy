@@ -336,12 +336,12 @@ public class TileService extends GeoService {
         
         TileMatrix tm = tileMatrices.get(tileMatrices.size()-1);
         // parse boundingbox
-        String topLeft = tm.getTopLeftPoint();
+        String topLeft = tm.getTopLeftCorner();
         double minX = new Double(topLeft.substring(0, topLeft.indexOf(" ")));
         double maxY = new Double(topLeft.substring(topLeft.indexOf(" ")+1));
         double scaleDenominator = new Double(tm.getScaleDenominator());
         double pixelSpan = scaleDenominator * 0.00028 / metersPerUnit(crs);
-        double tileSpanX = tm.getTileWitdh() * pixelSpan;
+        double tileSpanX = tm.getTileWidth() * pixelSpan;
         double tileSpanY = tm.getTileHeight() * pixelSpan;
         double maxX =  minX + tileSpanX * tm.getMatrixWidth();
         double minY = maxY - tileSpanY * tm.getMatrixHeight();
@@ -375,11 +375,11 @@ public class TileService extends GeoService {
         
         expr = xpath.compile("TopLeftCorner"); 
         String topLeft = (String) expr.evaluate(tileMatrix, XPathConstants.STRING);
-        tm.setTopLeftPoint(topLeft);
+        tm.setTopLeftCorner(topLeft);
         
         expr = xpath.compile("TileWidth"); 
         int tileWidth = ((Double) expr.evaluate(tileMatrix, XPathConstants.NUMBER)).intValue();
-        tm.setTileWitdh(tileWidth);
+        tm.setTileWidth(tileWidth);
         
         expr = xpath.compile("TileHeight"); 
         int tileHeight = ((Double) expr.evaluate(tileMatrix, XPathConstants.NUMBER)).intValue();

@@ -241,9 +241,9 @@ public class TileServiceTest extends TestUtil{
         assertNotNull(first);
         assertEquals("GlobalCRS84Pixel:0", first.getIdentifier());
         assertEquals("7.951392199519542E8", first.getScaleDenominator());
-        assertEquals("90.0 -180.0", first.getTopLeftPoint());
+        assertEquals("90.0 -180.0", first.getTopLeftCorner());
         assertEquals(256, first.getTileHeight());
-        assertEquals(256, first.getTileWitdh());
+        assertEquals(256, first.getTileWidth());
         assertEquals(1, first.getMatrixHeight());
         assertEquals(1, first.getMatrixWidth());
         assertEquals("",first.getTitle());

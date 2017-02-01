@@ -478,6 +478,11 @@ public class Layer implements Cloneable, Serializable {
             BoundingBox bbox=boundingBoxes.values().iterator().next();
             o.put("bbox",bbox.toJSONObject());
         }
+        JSONArray sets = new JSONArray();
+        o.put("matrixSets", sets);
+        for (TileMatrixSet matrixSet : matrixSets) {
+            sets.put(matrixSet.toJSONObject());
+        }
 
         return o;
     }

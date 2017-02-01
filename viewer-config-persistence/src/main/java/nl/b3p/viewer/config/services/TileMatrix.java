@@ -37,8 +37,8 @@ public class TileMatrix {
     private String title;
     private String description;
     private String scaleDenominator;
-    private String topLeftPoint;
-    private int tileWitdh;
+    private String topLeftCorner;
+    private int tileWidth;
     private int tileHeight;
     private int matrixWidth;
     private int matrixHeight;
@@ -53,8 +53,8 @@ public class TileMatrix {
         obj.put("title", title);
         obj.put("description", description);
         obj.put("scaleDenominator", scaleDenominator);
-        obj.put("topLeftPoint", topLeftPoint);
-        obj.put("tileWitdh", tileWitdh);
+        obj.put("topLeftCorner", topLeftCorner);
+        obj.put("tileWidth", tileWidth);
         obj.put("tileHeight", tileHeight);
         obj.put("matrixWidth", matrixWidth);
         obj.put("matrixHeight", matrixHeight);
@@ -102,20 +102,13 @@ public class TileMatrix {
         this.scaleDenominator = scaleDenominator;
     }
 
-    public String getTopLeftPoint() {
-        return topLeftPoint;
+
+    public int getTileWidth() {
+        return tileWidth;
     }
 
-    public void setTopLeftPoint(String topLeftPoint) {
-        this.topLeftPoint = topLeftPoint;
-    }
-
-    public int getTileWitdh() {
-        return tileWitdh;
-    }
-
-    public void setTileWitdh(int tileWitdh) {
-        this.tileWitdh = tileWitdh;
+    public void setTileWidth(int tileWidth) {
+        this.tileWidth = tileWidth;
     }
 
     public int getTileHeight() {
@@ -149,6 +142,13 @@ public class TileMatrix {
     public void setMatrixSet(TileMatrixSet matrixSet) {
         this.matrixSet = matrixSet;
     }
+    
+    public String getTopLeftCorner() {
+        return topLeftCorner;
+    }
 
+    public void setTopLeftCorner(String topLeftCorner) {
+        this.topLeftCorner = topLeftCorner;
+    }
     // </editor-fold>
 }
