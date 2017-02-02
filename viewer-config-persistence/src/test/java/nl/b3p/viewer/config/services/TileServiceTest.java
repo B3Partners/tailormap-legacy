@@ -16,6 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import nl.b3p.viewer.config.ClobElement;
+import static nl.b3p.viewer.config.services.Layer.DETAIL_WMS_STYLES;
 import nl.b3p.viewer.util.TestUtil;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONArray;
@@ -113,6 +115,9 @@ public class TileServiceTest extends TestUtil{
         
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
+        JSONArray styles = new JSONArray(brt.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
+        JSONObject style = (JSONObject)styles.get(0);
+        assertEquals("",  style.getString("identifier"));
         assertEquals(1, brt.getBoundingBoxes().size());
 
         BoundingBox bbox = brt.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
@@ -151,6 +156,9 @@ public class TileServiceTest extends TestUtil{
         
         Layer tijdreis = topLayer.getChildren().get(0);
         assertEquals("Historische_tijdreis_1950", tijdreis.getName());
+        JSONArray styles = new JSONArray(tijdreis.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
+        JSONObject style = (JSONObject)styles.get(0);
+        assertEquals("default",  style.getString("identifier"));
         assertEquals(1, tijdreis.getBoundingBoxes().size());
 
         BoundingBox bbox = tijdreis.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
@@ -262,6 +270,9 @@ public class TileServiceTest extends TestUtil{
         Layer layer = topLayer.getChildren().get(0);
         assertEquals("test:gemeente", layer.getName());
         assertEquals("gem_2014_new", layer.getTitle());
+        JSONArray styles = new JSONArray(layer.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
+        JSONObject style = (JSONObject)styles.get(0);
+        assertEquals("",  style.getString("identifier"));
         assertNotNull(ts.getMatrixSets());
         assertEquals(6,ts.getMatrixSets().size());
         assertEquals(16,ts.getMatrixSets().get(1).getMatrices().size());

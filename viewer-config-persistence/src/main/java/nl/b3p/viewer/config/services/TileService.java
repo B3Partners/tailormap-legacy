@@ -255,6 +255,25 @@ public class TileService extends GeoService {
         layer.setMatrixSets(tmses);
         parseBoundingBox(layer, xpath, l, tmses);
         
+        
+        expr = xpath.compile("Style");
+        NodeList styles = (NodeList) expr.evaluate(l, XPathConstants.NODESET);
+        JSONArray stylesJSON = new JSONArray();
+        for (int i = 0; i < styles.getLength(); i++) {
+            JSONObject styleJSON = new JSONObject();
+            stylesJSON.put(styleJSON);
+            
+            Node style = styles.item(i);
+            expr = xpath.compile("Identifier");
+            
+            String identifier = (String) expr.evaluate(style, XPathConstants.STRING);
+            String isDefault = style.getAttributes().getNamedItem("isDefault").getNodeValue();
+            
+            styleJSON.put("identifier", identifier);
+            styleJSON.put("isDefault", isDefault);
+        }
+        layer.getDetails().put(Layer.DETAIL_WMS_STYLES, new ClobElement(stylesJSON.toString()));
+        
         return layer;
     }
     
