@@ -66,6 +66,7 @@ public class TileServiceTest extends TestUtil{
         TileService ts =(TileService)result;
         assertEquals("osm", ts.getTilingLayer().getName());
         assertEquals("TMS", ts.getTilingProtocol());
+        assertEquals(ts.getUrl(), url);
         Layer l = ts.getTilingLayer();
         TileSet tileSet =l.getTileset();
         assertEquals(3, tileSet.getResolutions().size());
@@ -106,6 +107,7 @@ public class TileServiceTest extends TestUtil{
         WaitPageStatus status = new WaitPageStatus();
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        assertEquals("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
         Layer topLayer = result.getTopLayer();
         assertEquals(36, topLayer.getChildren().size());
         
@@ -131,7 +133,44 @@ public class TileServiceTest extends TestUtil{
         JSONObject jsonLayer = layers.getJSONObject("brtachtergrondkaart");
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
+    }
+    
+    @Test
+    public void testLoadArcGisWMTSFromURL() {
+        URL u = TileServiceTest.class.getResource("arcgis_wmts.xml");
+        String url = u.toString();
+        Map params = new HashMap();
+        params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
+        
+        WaitPageStatus status = new WaitPageStatus();
+        
+        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        assertEquals("http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?",result.getUrl());
+        Layer topLayer = result.getTopLayer();
+        assertEquals(1, topLayer.getChildren().size());
+        
+        Layer tijdreis = topLayer.getChildren().get(0);
+        assertEquals("Historische_tijdreis_1950", tijdreis.getName());
+        assertEquals(1, tijdreis.getBoundingBoxes().size());
 
+        BoundingBox bbox = tijdreis.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
+        assertEquals(-2193.08, bbox.getMiny(), 0.01);
+        assertEquals(-22789.15, bbox.getMinx(), 0.01);
+        assertEquals(312447.48, bbox.getMaxx(), 0.01);
+        assertEquals(662400.47, bbox.getMaxy(), 0.01);
+        
+        JSONObject serviceObj = result.toJSONObject(false, entityManager);
+        assertTrue(serviceObj.has("matrixSets"));
+        JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
+        assertEquals(1, matrixSets.length());
+        JSONObject matrix = matrixSets.getJSONObject(0);
+        JSONArray matrices = matrix.getJSONArray("matrices");
+        assertEquals(12, matrices.length());
+        assertTrue(serviceObj.has("layers"));
+        JSONObject layers = serviceObj.getJSONObject("layers");
+        JSONObject jsonLayer = layers.getJSONObject("Historische_tijdreis_1950");
+        assertNotNull(jsonLayer);
+        assertTrue(jsonLayer.has("bbox"));
     }
     
     @Test
@@ -146,6 +185,7 @@ public class TileServiceTest extends TestUtil{
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
         assertEquals(1, topLayer.getChildren().size());
+        assertEquals("http://webservices.gbo-provincies.nl/geowebcache/service/wmts?", result.getUrl());
         
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("Topografie", brt.getName());

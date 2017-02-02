@@ -175,7 +175,7 @@ public class TileService extends GeoService {
             String serviceName = (String)expr.evaluate(doc, XPathConstants.STRING);
             s.setName(serviceName);
             
-            expr = xpath.compile("/Capabilities/OperationsMetadata/Operation[@name='GetTile']//Get/@href");
+            expr = xpath.compile("/Capabilities/OperationsMetadata/Operation[@name='GetTile']//Get/Constraint/AllowedValues/Value[.='KVP']/../../../@href");
             String getTile = (String)expr.evaluate(doc, XPathConstants.STRING);
             s.setUrl(getTile);
             
