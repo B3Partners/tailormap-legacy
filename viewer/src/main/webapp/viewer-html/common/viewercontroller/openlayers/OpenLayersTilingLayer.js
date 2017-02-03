@@ -87,10 +87,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             options.projection =  'EPSG:28992';
             this.frameworkLayer = new OpenLayers.Layer.ArcGISCache(this.name,this.url,options);
         }else if (this.getProtocol()==="WMTS"){
-            var map = this.config.viewerController.mapComponent.getMap();
             var convertRatio = 1/0.00028;
             options.url = this.url;
-            options.style = "default";
+            options.style = this.config.style;
             options.layer = this.config.name;
             options.matrixSet = this.config.matrixSet.identifier;
             options.matrixIds = this.getMatrixIds(this.config.matrixSet.matrices);

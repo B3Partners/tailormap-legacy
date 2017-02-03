@@ -953,6 +953,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if (layer.details && layer.details["image_extension"]){
                     options.extension = layer.details["image_extension"];
                 }
+                if (layer.details && layer.details["wms.styles"]){
+                    var styles = Ext.JSON.decode(layer.details["wms.styles"]);
+                    options.style = "";
+                    for (var  i = 0 ; i < styles.length ;i++){
+                        var style = styles[i];
+                        if(style.isDefault){
+                            options.style = style.identifier;
+                        }
+                    }
+                    
+                }
                 if(layer.matrixSets){
                     var matrixSet = layer.matrixSets[0];
                     for(var i = 0 ; i < layer.matrixSets.length ;i++){
