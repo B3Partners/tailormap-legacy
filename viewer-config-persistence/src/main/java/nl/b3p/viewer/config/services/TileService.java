@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2011-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ import org.xml.sax.SAXException;
 /**
  *
  * @author Matthijs Laan
+ * @author Meine Toonen
  */
 @Entity
 @DiscriminatorValue(TileService.PROTOCOL)
@@ -78,7 +79,7 @@ public class TileService extends GeoService {
     private List<TileMatrixSet> matrixSets = new ArrayList<>();
     
     @Transient
-    private DefaultGeographicCRS wgs84 = DefaultGeographicCRS.WGS84;
+    private final DefaultGeographicCRS wgs84 = DefaultGeographicCRS.WGS84;
 
     private String tilingProtocol;
 
@@ -175,8 +176,15 @@ public class TileService extends GeoService {
             String serviceName = (String)expr.evaluate(doc, XPathConstants.STRING);
             s.setName(serviceName);
             
-            expr = xpath.compile("/Capabilities/OperationsMetadata/Operation[@name='GetTile']//Get/Constraint/AllowedValues/Value[.='KVP']/../../../@href");
+            expr = xpath.compile("/Capabilities/OperationsMetadata/Operation[@name='GetTile']//Constraint/AllowedValues/Value[.='KVP']/../../..//Get/@href");
             String getTile = (String)expr.evaluate(doc, XPathConstants.STRING);
+            if(getTile.isEmpty()){
+                expr = xpath.compile("/Capabilities/OperationsMetadata/Operation[@name='GetTile']//Constraint/AllowedValues/Value[.='KVP']/../../../@href");
+                getTile = (String)expr.evaluate(doc, XPathConstants.STRING);
+            }
+            if(getTile.isEmpty()){
+                getTile = url;
+            }
             s.setUrl(getTile);
             
             
@@ -265,12 +273,14 @@ public class TileService extends GeoService {
             
             Node style = styles.item(i);
             expr = xpath.compile("Identifier");
-            
             String identifier = (String) expr.evaluate(style, XPathConstants.STRING);
-            String isDefault = style.getAttributes().getNamedItem("isDefault").getNodeValue();
-            
             styleJSON.put("identifier", identifier);
-            styleJSON.put("isDefault", isDefault);
+            
+            if( style.getAttributes().getNamedItem("isDefault") != null ){
+                String isDefault = style.getAttributes().getNamedItem("isDefault").getNodeValue();
+                styleJSON.put("isDefault", isDefault);
+            }
+            
         }
         layer.getDetails().put(Layer.DETAIL_WMS_STYLES, new ClobElement(stylesJSON.toString()));
         

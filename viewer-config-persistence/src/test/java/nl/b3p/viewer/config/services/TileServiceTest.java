@@ -182,8 +182,8 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
-    public void testLoadLufoWMTSFromURL() {
-        URL u = TileServiceTest.class.getResource("wmtsgetcapLufo.xml");
+    public void testLoadTopoWMTSFromURL() {
+        URL u = TileServiceTest.class.getResource("topo.xml");
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
@@ -220,6 +220,44 @@ public class TileServiceTest extends TestUtil{
 
     }
     
+    
+    @Test
+    public void testLoadLufoWMTSFromURL() {
+        URL u = TileServiceTest.class.getResource("wmtsgetcapLufo.xml");
+        String url = u.toString();
+        Map params = new HashMap();
+        params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
+        params.put(TileService.PARAM_SERVICENAME, "luchtfoto");
+        WaitPageStatus status = new WaitPageStatus();
+        
+        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        Layer topLayer = result.getTopLayer();
+        assertEquals(12, topLayer.getChildren().size());
+        assertEquals("http://webservices.gbo-provincies.nl/lufo/services/wmts?", result.getUrl());
+        
+        Layer actueelWinter = topLayer.getChildren().get(0);
+        assertEquals("actueel_winter", actueelWinter.getName());
+        assertEquals(1, actueelWinter.getBoundingBoxes().size());
+
+        BoundingBox bbox = actueelWinter.getMatrixSets().get(0).getBbox();
+        assertEquals(595401.92, bbox.getMaxx(), 0.01);
+        assertEquals(903401.92, bbox.getMaxy(), 0.01);
+        assertEquals(-285401.92, bbox.getMinx(), 0.01);
+        assertEquals(22598.08, bbox.getMiny(), 0.01);
+        
+        JSONObject serviceObj = result.toJSONObject(false, entityManager);
+        assertTrue(serviceObj.has("matrixSets"));
+        JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
+        assertEquals(1, matrixSets.length());
+        JSONObject matrix = matrixSets.getJSONObject(0);
+        JSONArray matrices = matrix.getJSONArray("matrices");
+        assertEquals(16, matrices.length());
+        assertTrue(serviceObj.has("layers"));
+        JSONObject layers = serviceObj.getJSONObject("layers");
+        JSONObject jsonLayer = layers.getJSONObject("actueel_winter");
+        assertNotNull(jsonLayer);
+        assertTrue(jsonLayer.has("bbox"));
+    }
     
     
     @Test
