@@ -203,6 +203,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put(JDBCDataStoreFactory.FETCHSIZE.key,50);
         params.put("passwd", getPassword());
         params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
+        params.put(JDBCDataStoreFactory.PK_METADATA_TABLE.key, "gt_pk_metadata");
         log.debug("Opening datastore using parameters: " + params);
         try {
             DataStore ds = DataStoreFinder.getDataStore(params);
