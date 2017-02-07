@@ -2,8 +2,7 @@ timestamps {
     node {
         withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven 3.3.9'}/bin:${env.JAVA_HOME}/bin"]) {
             stage('Prepare') {
-                 // git 'https://github.com/flamingo-geocms/flamingo.git'
-                 git branch: 'jenkins-ci', credentialsId: '824987a7-c70c-45ce-ac42-147969e3ed51', url: 'https://github.com/flamingo-geocms/flamingo.git'
+                 checkout scm
                  sh "sqlplus -l -S jenkins_flamingo/jenkins_flamingo@192.168.1.41:1521/DB01 < ./.jenkins/clear-oracle-schema.sql"
             }
 
