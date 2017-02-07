@@ -133,7 +133,7 @@
         "closureCompilerSafe": true,
         "type" : "popup",
         "group": "Map",
-        "singleton": true,
+        "singleton": false,
         "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
     },

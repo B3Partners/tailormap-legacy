@@ -92,7 +92,9 @@ Ext.define ("viewer.components.Maptip",{
         this.maptipComponent = this.config.viewerController.mapComponent.createComponent(conf);
         this.config.viewerController.mapComponent.addComponent(this.maptipComponent);
         document.getElementById(this.getDiv()).addEventListener('click', this.relatedFeaturesListener.bind(this));
-        document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        if(this.popup){
+            document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        }
         return this;
     },
     /**
