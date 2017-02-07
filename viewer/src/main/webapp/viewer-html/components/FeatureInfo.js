@@ -28,8 +28,8 @@ Ext.define ("viewer.components.FeatureInfo",{
     constructor: function (conf){    
         conf.isPopup=true;
         //don't call maptip constructor but that of super maptip.
-        this.initConfig(conf);   
-		viewer.components.FeatureInfo.superclass.constructor.call(this, this.config);
+        this.initConfig(conf);
+        viewer.components.FeatureInfo.superclass.constructor.call(this, this.config);
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloonFeatureInfo",this.width,this.height);
         //set the offset of the map
@@ -75,7 +75,7 @@ Ext.define ("viewer.components.FeatureInfo",{
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.viewerController.isSummaryLayer(mapLayer)){   
+        if(this.config.viewerController.isSummaryLayer(mapLayer)){   
             //Store the current map extent for every maptip request.            
             this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
                 this.setRequestExtent(map.getExtent());
