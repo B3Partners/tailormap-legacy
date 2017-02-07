@@ -6,7 +6,7 @@
     />
     
     <!-- properties below are expanded at runtime and are available
-    in ../resources/postgres.properties -->
+    in ../resources/oracle.properties -->
     <Resource name="jdbc/geo_viewer"
               auth="Container"
               type="javax.sql.DataSource"
@@ -15,7 +15,7 @@
               driverClassName="${testdb.driverClassName}"
               url="${testdb.url}"
               maxActive="40"
-              validationQuery="select 1"
+              validationQuery="select 1 from dual"
               timeBetweenEvictionRunsMillis="30000"
               minEvictableIdleTimeMillis="5000"
     />

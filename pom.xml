@@ -631,6 +631,13 @@
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </profile>
+        <profile>
+            <id>jenkins</id>
+            <properties>
+                <test.persistence.unit>viewer-config-oracle</test.persistence.unit>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
+        </profile>
     </profiles>
     <modules>
         <module>solr-commons</module>
