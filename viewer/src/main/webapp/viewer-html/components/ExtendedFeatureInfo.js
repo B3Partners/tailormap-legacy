@@ -57,13 +57,10 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
      * 
      */
     onDataReturned: function(options){
-        var data = options.data;
+       var data = options.data;
         
-      /*  this.lastPosition.x = options.x;
-        this.lastPosition.y = options.y;
-        this.worldPosition = options.coord;*/
-        //alert(layer);
-        var me = this;
+        this.worldPosition = options.coord;
+        this.config.viewerController.mapComponent.getMap().setMarker("featureInfoMarker",options.coord.x,options.coord.y);
         var data = options.data;
         var components = [];
         if (!data) {
@@ -71,28 +68,9 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         }
         components = this.createInfoHtmlElements(data, options);
         this.content.append(components);
-        this.popup.show();
-        /*var found=false;
-        var data = options.data;
-        for (var layerIndex in data) {
-            if(!data.hasOwnProperty(layerIndex)){
-                continue;
-            }
-            var layer=data[layerIndex];
-            for (var index in layer.features) {
-                if(layer.features.hasOwnProperty(index)) {
-                    found = true;
-                    break;
-                }
-            }
-            if(found){
-                break;
-            }
+        if(this.popup){
+            this.popup.show();
         }
-        if (!found){
-            this.setMaptipEnabled(true);
-        }
-        this.callParent(arguments);*/
     },
     /**
      *Called when extent is changed, recalculate the position
