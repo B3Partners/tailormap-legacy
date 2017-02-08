@@ -32,7 +32,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
     constructor: function (conf){  
         //don't call maptip constructor but that of super maptip.
         this.initConfig(conf);
-        viewer.components.ExtendedFeatureInfo.superclass.constructor.call(this, this.config);
+        viewer.components.Maptip.superclass.constructor.call(this, this.config);
         this.showMaxFeaturesText = false;
         this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
         this.config.moreLink = null;
@@ -42,11 +42,22 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.origDiv.appendChild(div);
         this.content = new Ext.Element(document.createElement("div"));
         div.appendChild(this.content);
-        
+
         this.pagination = new Ext.Element(document.createElement("div"));
         this.pagination.addCls("extended_feature_info_pagination");
         div.appendChild(this.pagination);
+        this.divsCreated = true;
         
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
+         //Add event when started the identify (clicked on the map)
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
+        //listen to a extent change
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
+            document.getElementById(this.getDiv()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        if(this.popup){
+            document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        }
         return this;
     },
     
@@ -72,8 +83,18 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         }
         for(var i = 0 ; i < data.length ;i++){
             var d = data[i];
-            this.currentData [d.appLayer.id ] = d;
-            
+            for(var j = 0 ; j < d.features.length ; j++){
+                var feature = d.features[j];
+                var newData = {
+                    appLayer: d.appLayer,
+                    featureType : d.featureType,
+                    features : [feature],
+                    moreFeaturesAvailable: d.moreFeatureAvailable,
+                    requestId: d.requestId,
+                    request: d.request
+                };
+                this.currentData.push(newData);
+            }
         }
         this.currentOptions = options;
         this.worldPosition = options.coord;
@@ -91,45 +112,34 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
     showPage: function(index){
         this.currentIndex = index;
         this.content.setHtml("");
-        //var data = this.data[0].features[index];
-        var cur = this.currentData[this.currentLayer];
-        var newData = {
-            appLayer: cur.appLayer,
-            featureType : cur.featureType,
-            features : cur.features,
-            moreFeaturesAvailable: cur.moreFeatureAvailable,
-            requestId: cur.requestId,
-            request: cur.request
-        };
-        var newFeature = newData.features[index];
-        newData.features = [newFeature];
-        var components = this.createInfoHtmlElements([newData], this.currentOptions);
+        var data = this.currentData[index];
+        var components = this.createInfoHtmlElements([data], this.currentOptions);
         this.content.append(components);
-        this.createPagination(this.currentLayer);
+        this.createPagination();
     },
-    createPagination: function(applayerId){
+    createPagination: function(){
         this.pagination.setHtml("");
         var me = this;
-        var data = this.currentData[applayerId];
-        var numPages = data.features.length;
+        var data = this.currentData;
+        var numPages = data.length;
         
-        if(this.currentIndex > 0){
+        if (this.currentIndex > 0) {
             var prevElem = document.createElement("a");
             prevElem.href = 'javascript: void(0)';
             var prev = new Ext.Element(prevElem);
             prev.addListener("click",
                     function (evt, el, o) {
-                        me.showPage(this.currentIndex -1);
+                        me.showPage(this.currentIndex - 1);
                     },
                     this);
             prev.insertHtml("beforeEnd", "Vorige");
-            this.pagination.appendChild(prev);  
-        }else{
+            this.pagination.appendChild(prev);
+        } else {
             this.pagination.insertHtml("beforeEnd", "Vorige");
         }
-        this.pagination.insertHtml ( "beforeEnd", " | ");
-        
-        if(this.currentIndex < (numPages -1)){
+        this.pagination.insertHtml("beforeEnd", " | ");
+
+        if (this.currentIndex < (numPages - 1)) {
             var nextElem = document.createElement("a");
             nextElem.href = 'javascript: void(0)';
             var next = new Ext.Element(nextElem);
@@ -139,8 +149,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
                     },
                     this);
             next.insertHtml("beforeEnd", "Volgende");
-            this.pagination.appendChild(next);  
-        }else{
+            this.pagination.appendChild(next);
+        } else {
             this.pagination.insertHtml("beforeEnd", "Volgende");
         }
     },
