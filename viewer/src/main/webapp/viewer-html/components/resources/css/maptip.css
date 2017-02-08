@@ -95,6 +95,11 @@
     cursor: pointer;
 }
 /*** Features (feature info and maptip) css ***/
+
+.extended_feature_info_pagination {
+    text-align:center;
+}
+
 .feature_summary_feature{
     float: left;
     width: 100%;

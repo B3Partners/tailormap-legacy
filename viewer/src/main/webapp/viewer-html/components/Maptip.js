@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Maptip",{
     extend: "viewer.components.Component",
     balloon: null,
     maptipComponent: null,
+    showMaxFeaturesText:null,
     config: {
         layers: null,
         maptipdelay: 500,
@@ -62,7 +63,8 @@ Ext.define ("viewer.components.Maptip",{
     constructor: function (conf){
         conf.isPopup=true;
         this.initConfig(conf);
-		viewer.components.Maptip.superclass.constructor.call(this, this.config);
+	viewer.components.Maptip.superclass.constructor.call(this, this.config);
+        this.showMaxFeaturesText = true;
 
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.config.viewerController.mapComponent,"balloon",this.config.width,this.config.height);
@@ -414,7 +416,7 @@ Ext.define ("viewer.components.Maptip",{
                     components.push(featureDiv);
 
                 }
-                if(layer.moreFeaturesAvailable){
+                if(layer.moreFeaturesAvailable && this.showMaxFeaturesText){
                     var moreFeatures = new Ext.Element(document.createElement("div"));
                     moreFeatures.addCls("feature_summary_feature");
                     moreFeatures.insertHtml("beforeEnd","Maximum aantal resultaten bereikt. Alleen de eerste 10 worden getoond.");
