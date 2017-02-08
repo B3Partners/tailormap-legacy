@@ -40,13 +40,21 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         var div = new Ext.Element(document.createElement("div"));
         this.origDiv = Ext.get(this.getContentDiv());
         this.origDiv.appendChild(div);
+        
+        if(!this.config.hasSharedPopup){
+            var title = new Ext.Element(document.createElement("div"));
+            title.addCls("extended_feature_info_title");
+            title.insertHtml("beforeEnd",this.config.title);
+            title.insertHtml("beforeEnd","<hr>");
+            div.appendChild(title);
+        }
+        
         this.content = new Ext.Element(document.createElement("div"));
         div.appendChild(this.content);
 
         this.pagination = new Ext.Element(document.createElement("div"));
         this.pagination.addCls("extended_feature_info_pagination");
         div.appendChild(this.pagination);
-        this.divsCreated = true;
         
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
@@ -55,8 +63,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         //listen to a extent change
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
             document.getElementById(this.getDiv()).addEventListener('click', this.relatedFeaturesListener.bind(this));
-        if(this.popup){
-            document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        if(this.config.hasSharedPopup){
+      //      document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
         }
         return this;
     },
