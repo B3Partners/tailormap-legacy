@@ -14,34 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * FeatureInfo component
  * Shows feature info.
  * @author Meine Toonen
  */
 Ext.define ("viewer.components.ExtendedFeatureInfo",{
-    extend: "viewer.components.FeatureInfo",   
+    extend: "viewer.components.FeatureInfo",
+    currentdata:null,
+    currentOptions:null,
+    currentIndex:null,
+    pagination:null,
     content:null,
     
     constructor: function (conf){  
         //don't call maptip constructor but that of super maptip.
         this.initConfig(conf);
-        this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
-        this.content = Ext.get(this.getContentDiv());
         viewer.components.ExtendedFeatureInfo.superclass.constructor.call(this, this.config);
+        this.showMaxFeaturesText = false;
+        this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
+        this.config.moreLink = null;
         
-        //this.onResize();
-        //listen to the on addlayer
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
-         //Add event when started the identify (clicked on the map)
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
-        //listen to a extent change
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
-      /*  document.getElementById(this.getDiv()).addEventListener('click', this.relatedFeaturesListener.bind(this));
-        if(this.popup){
-            document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
-        }*/
+        var div = new Ext.Element(document.createElement("div"));
+        this.origDiv = Ext.get(this.getContentDiv());
+        this.origDiv.appendChild(div);
+        this.content = new Ext.Element(document.createElement("div"));
+        div.appendChild(this.content);
+        
+        this.pagination = new Ext.Element(document.createElement("div"));
+        this.pagination.addCls("extended_feature_info_pagination");
+        div.appendChild(this.pagination);
+        
         return this;
     },
     
@@ -49,27 +54,94 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
-        /*this.balloon.setContent("");
-        this.balloon.hide();*/
+        this.content.setHtml("");
+        this.currentData = [];
         this.setMaptipEnabled(false);
     },
     /**
      * 
      */
     onDataReturned: function(options){
-       var data = options.data;
-        
-        this.worldPosition = options.coord;
-        this.config.viewerController.mapComponent.getMap().setMarker("featureInfoMarker",options.coord.x,options.coord.y);
         var data = options.data;
-        var components = [];
         if (!data) {
             return;
         }
-        components = this.createInfoHtmlElements(data, options);
-        this.content.append(components);
+        
+        if(data[0].requestId === this.currentRequestId){
+            this.currentLayer = data[0].appLayer.id;
+        }
+        for(var i = 0 ; i < data.length ;i++){
+            var d = data[i];
+            this.currentData [d.appLayer.id ] = d;
+            
+        }
+        this.currentOptions = options;
+        this.worldPosition = options.coord;
+        this.config.viewerController.mapComponent.getMap().setMarker("featureInfoMarker",options.coord.x,options.coord.y);
+        
         if(this.popup){
             this.popup.show();
+        }
+        this.createPagination(this.currentLayer);
+        if(data[0].requestId === this.currentRequestId){
+            this.showPage(0);
+        }
+    },
+    
+    showPage: function(index){
+        this.currentIndex = index;
+        this.content.setHtml("");
+        //var data = this.data[0].features[index];
+        var cur = this.currentData[this.currentLayer];
+        var newData = {
+            appLayer: cur.appLayer,
+            featureType : cur.featureType,
+            features : cur.features,
+            moreFeaturesAvailable: cur.moreFeatureAvailable,
+            requestId: cur.requestId,
+            request: cur.request
+        };
+        var newFeature = newData.features[index];
+        newData.features = [newFeature];
+        var components = this.createInfoHtmlElements([newData], this.currentOptions);
+        this.content.append(components);
+        this.createPagination(this.currentLayer);
+    },
+    createPagination: function(applayerId){
+        this.pagination.setHtml("");
+        var me = this;
+        var data = this.currentData[applayerId];
+        var numPages = data.features.length;
+        
+        if(this.currentIndex > 0){
+            var prevElem = document.createElement("a");
+            prevElem.href = 'javascript: void(0)';
+            var prev = new Ext.Element(prevElem);
+            prev.addListener("click",
+                    function (evt, el, o) {
+                        me.showPage(this.currentIndex -1);
+                    },
+                    this);
+            prev.insertHtml("beforeEnd", "Vorige");
+            this.pagination.appendChild(prev);  
+        }else{
+            this.pagination.insertHtml("beforeEnd", "Vorige");
+        }
+        this.pagination.insertHtml ( "beforeEnd", " | ");
+        
+        if(this.currentIndex < (numPages -1)){
+            var nextElem = document.createElement("a");
+            nextElem.href = 'javascript: void(0)';
+            var next = new Ext.Element(nextElem);
+            next.addListener("click",
+                    function (evt, el, o) {
+                        me.showPage(this.currentIndex + 1);
+                    },
+                    this);
+            next.insertHtml("beforeEnd", "Volgende");
+            this.pagination.appendChild(next);  
+        }else{
+            this.pagination.insertHtml("beforeEnd", "Volgende");
         }
     },
     /**
