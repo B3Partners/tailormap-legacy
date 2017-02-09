@@ -137,6 +137,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         var data = this.currentData;
         var numPages = data.length;
         
+        this.pagination.insertHtml("afterBegin", "<hr/> ");
         if (this.currentIndex > 0) {
             var prevElem = document.createElement("a");
             prevElem.href = 'javascript: void(0)';
