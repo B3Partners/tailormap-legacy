@@ -118,8 +118,10 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         if(this.popup){
             this.popup.show();
         }
-        
-        this.config.viewerController.layoutManager.expandRegion(this.config.name);
+        if( !this.config.isPopup ) {
+            this.config.viewerController.layoutManager.showTabComponent(this.name);
+            this.config.viewerController.layoutManager.expandRegion(this.config.name);
+        }
     },
     showPage: function(index){
         this.currentIndex = index;
