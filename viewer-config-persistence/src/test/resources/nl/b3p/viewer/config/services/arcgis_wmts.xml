@@ -1,0 +1,190 @@
+<Capabilities version="1.0.0" xmlns="http://www.opengis.net/wmts/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd">
+	<!-- Service Identification -->
+	<ows:ServiceIdentification>
+		<ows:Title>Historische_tijdreis_1950</ows:Title>
+		<ows:ServiceType>OGC WMTS</ows:ServiceType>
+		<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+	</ows:ServiceIdentification>
+	<!-- Operations Metadata -->
+	<ows:OperationsMetadata>
+		<ows:Operation name="GetCapabilities">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS/1.0.0/WMTSCapabilities.xml">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>RESTful</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+					<ows:Get xlink:href="http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>KVP</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+		<ows:Operation name="GetTile">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS/tile/1.0.0/">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>RESTful</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+					<ows:Get xlink:href="http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?">
+						<ows:Constraint name="GetEncoding">
+							<ows:AllowedValues>
+								<ows:Value>KVP</ows:Value>
+							</ows:AllowedValues>
+						</ows:Constraint>
+					</ows:Get>
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+	</ows:OperationsMetadata>
+	<Contents>
+		<Layer>
+			<ows:Title>Historische_tijdreis_1950</ows:Title>
+			<ows:Identifier>Historische_tijdreis_1950</ows:Identifier>
+			<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::28992">
+				<ows:LowerCorner>-1280.7604000009596 -48.10236220655497</ows:LowerCorner>
+				<ows:UpperCorner>293512.95708775596 659829.9918000016</ows:UpperCorner>
+			</ows:BoundingBox>
+			<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+				<ows:LowerCorner>3.009687194217067 47.974508332517125</ows:LowerCorner>
+				<ows:UpperCorner>7.494617901300302 53.9238605863922</ows:UpperCorner>
+			</ows:WGS84BoundingBox>
+			<Style isDefault="true">
+				<ows:Title>Default Style</ows:Title>
+				<ows:Identifier>default</ows:Identifier>
+			</Style>
+			<Format>image/jpgpng</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>default028mm</TileMatrixSet>
+			</TileMatrixSetLink>
+			<ResourceURL format="image/jpgpng" resourceType="tile" template="http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS/tile/1.0.0/Historische_tijdreis_1950/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}"/>
+		</Layer>
+		<!-- Tile Matrix Set -->
+		<TileMatrixSet>
+			<ows:Title>TileMatrix using 0.28mm</ows:Title>
+			<ows:Abstract>The tile matrix set that has scale values calculated based on the dpi defined by OGC specification (dpi assumes 0.28mm as the physical distance of a pixel).</ows:Abstract>
+			<ows:Identifier>default028mm</ows:Identifier>
+			<ows:SupportedCRS>urn:ogc:def:crs:EPSG::28992</ows:SupportedCRS>
+			<TileMatrix>
+				<ows:Identifier>0</ows:Identifier>
+				<ScaleDenominator>1.1611451792503586E7</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>38</MatrixWidth>
+				<MatrixHeight>38</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>1</ows:Identifier>
+				<ScaleDenominator>5805725.896251793</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>75</MatrixWidth>
+				<MatrixHeight>75</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>2</ows:Identifier>
+				<ScaleDenominator>2902862.9481258965</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>149</MatrixWidth>
+				<MatrixHeight>150</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>3</ows:Identifier>
+				<ScaleDenominator>1451431.4740629483</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>297</MatrixWidth>
+				<MatrixHeight>300</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>4</ows:Identifier>
+				<ScaleDenominator>725715.7370314741</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>593</MatrixWidth>
+				<MatrixHeight>599</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>5</ows:Identifier>
+				<ScaleDenominator>362857.86851573706</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>1185</MatrixWidth>
+				<MatrixHeight>1197</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>6</ows:Identifier>
+				<ScaleDenominator>181428.93425786853</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>2370</MatrixWidth>
+				<MatrixHeight>2393</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>7</ows:Identifier>
+				<ScaleDenominator>90714.46712893427</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>4739</MatrixWidth>
+				<MatrixHeight>4785</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>8</ows:Identifier>
+				<ScaleDenominator>45357.23356446713</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>9477</MatrixWidth>
+				<MatrixHeight>9570</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>9</ows:Identifier>
+				<ScaleDenominator>22678.616782233566</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>18953</MatrixWidth>
+				<MatrixHeight>19140</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>10</ows:Identifier>
+				<ScaleDenominator>11339.308391116783</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>37905</MatrixWidth>
+				<MatrixHeight>38279</MatrixHeight>
+			</TileMatrix>
+			<TileMatrix>
+				<ows:Identifier>11</ows:Identifier>
+				<ScaleDenominator>5669.654195558392</ScaleDenominator>
+				<TopLeftCorner>-3.05155E7 3.1112399999999993E7</TopLeftCorner>
+				<TileWidth>256</TileWidth>
+				<TileHeight>256</TileHeight>
+				<MatrixWidth>75810</MatrixWidth>
+				<MatrixHeight>76557</MatrixHeight>
+			</TileMatrix>
+		</TileMatrixSet>
+	</Contents>
+	<ServiceMetadataURL xlink:href="http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS/1.0.0/WMTSCapabilities.xml"/>
+</Capabilities>
