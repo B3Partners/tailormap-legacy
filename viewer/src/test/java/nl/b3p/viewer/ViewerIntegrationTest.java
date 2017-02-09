@@ -27,6 +27,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -35,6 +37,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeNotNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,6 +47,7 @@ import org.junit.Test;
  */
 public class ViewerIntegrationTest {
 
+    private static final Log LOG = LogFactory.getLog(ViewerIntegrationTest.class);
     /**
      * the viewer url. {@value}
      */
@@ -58,15 +62,21 @@ public class ViewerIntegrationTest {
      */
     private HttpResponse response;
 
-    private static final Properties postgresprop = new Properties();
+    private static final Properties databaseprop = new Properties();
 
     /**
      * initialize database props.
+     *
      * @throws java.io.IOException if loading the property file fails
+     * @throws java.lang.ClassNotFoundException if the database driver class
+     * cannot be found
      */
     @BeforeClass
-    public static void loadDBprop() throws IOException {
-        postgresprop.load(ViewerIntegrationTest.class.getClassLoader().getResourceAsStream("postgres.properties"));
+    public static void loadDBprop() throws IOException, ClassNotFoundException {
+        assumeNotNull("Verwacht database omgeving te zijn aangegeven.", System.getProperty("database.properties.file"));
+        databaseprop.load(ViewerIntegrationTest.class.getClassLoader().getResourceAsStream(System.getProperty("database.properties.file")));
+        LOG.debug("database props: " + databaseprop);
+        Class.forName(databaseprop.getProperty("testdb.driverClassName"));
     }
 
     /**
@@ -111,14 +121,15 @@ public class ViewerIntegrationTest {
      */
     @Test
     public void testMetadataVersion() throws SQLException, ClassNotFoundException {
-        // get 'database_version' from table metadata and check that is has the value of '15'
-        Class.forName(postgresprop.getProperty("postgres.driverClassName"));
-        Connection connection = DriverManager.getConnection(
-                postgresprop.getProperty("postgres.url"),
-                postgresprop.getProperty("postgres.username"),
-                postgresprop.getProperty("postgres.password")
+        // get 'database_version' from table metadata and check that is has the value of 'n'
+        Connection connection = DriverManager.getConnection(databaseprop.getProperty("testdb.url"),
+                databaseprop.getProperty("testdb.username"),
+                databaseprop.getProperty("testdb.password")
         );
-        ResultSet rs = connection.createStatement().executeQuery("SELECT config_value FROM metadata WHERE config_key = 'database_version';");
+        ResultSet rs = connection.createStatement(
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY
+        ).executeQuery("SELECT config_value FROM metadata WHERE config_key = 'database_version'");
 
         String actual_config_value = "-1";
         while (rs.next()) {

@@ -1,0 +1,166 @@
+<TileMatrixSet>
+      <ows:Identifier>GlobalCRS84Pixel</ows:Identifier>
+      <ows:SupportedCRS>urn:ogc:def:crs:EPSG::4326</ows:SupportedCRS>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:0</ows:Identifier>
+        <ScaleDenominator>7.951392199519542E8</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:1</ows:Identifier>
+        <ScaleDenominator>3.975696099759771E8</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:2</ows:Identifier>
+        <ScaleDenominator>1.9878480498798856E8</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>3</MatrixWidth>
+        <MatrixHeight>2</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:3</ows:Identifier>
+        <ScaleDenominator>1.325232033253257E8</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>5</MatrixWidth>
+        <MatrixHeight>3</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:4</ows:Identifier>
+        <ScaleDenominator>6.626160166266285E7</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>9</MatrixWidth>
+        <MatrixHeight>5</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:5</ows:Identifier>
+        <ScaleDenominator>3.3130800831331424E7</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>17</MatrixWidth>
+        <MatrixHeight>9</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:6</ows:Identifier>
+        <ScaleDenominator>1.325232033253257E7</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>43</MatrixWidth>
+        <MatrixHeight>22</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:7</ows:Identifier>
+        <ScaleDenominator>6626160.166266285</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>85</MatrixWidth>
+        <MatrixHeight>43</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:8</ows:Identifier>
+        <ScaleDenominator>3313080.0831331424</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>169</MatrixWidth>
+        <MatrixHeight>85</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:9</ows:Identifier>
+        <ScaleDenominator>1656540.0415665712</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>338</MatrixWidth>
+        <MatrixHeight>169</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:10</ows:Identifier>
+        <ScaleDenominator>552180.0138555238</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1013</MatrixWidth>
+        <MatrixHeight>507</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:11</ows:Identifier>
+        <ScaleDenominator>331308.00831331423</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1688</MatrixWidth>
+        <MatrixHeight>844</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:12</ows:Identifier>
+        <ScaleDenominator>110436.00277110476</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>5063</MatrixWidth>
+        <MatrixHeight>2532</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:13</ows:Identifier>
+        <ScaleDenominator>55218.00138555238</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>10125</MatrixWidth>
+        <MatrixHeight>5063</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:14</ows:Identifier>
+        <ScaleDenominator>33130.80083133143</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16875</MatrixWidth>
+        <MatrixHeight>8438</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:15</ows:Identifier>
+        <ScaleDenominator>11043.600277110474</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>50625</MatrixWidth>
+        <MatrixHeight>25313</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:16</ows:Identifier>
+        <ScaleDenominator>3313.080083133142</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>168750</MatrixWidth>
+        <MatrixHeight>84375</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>GlobalCRS84Pixel:17</ows:Identifier>
+        <ScaleDenominator>1104.3600277110472</ScaleDenominator>
+        <TopLeftCorner>90.0 -180.0</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>506250</MatrixWidth>
+        <MatrixHeight>253125</MatrixHeight>
+      </TileMatrix>
+    </TileMatrixSet>

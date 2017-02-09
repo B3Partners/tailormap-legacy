@@ -717,10 +717,10 @@ public class GeoServiceActionBean implements ActionBean {
     @ValidationMethod(on = "add")
     public void validateParams(ValidationErrors errors) {
         if (protocol.equals(ArcIMSService.PROTOCOL) || protocol.equals(TileService.PROTOCOL)) {
-            if (serviceName == null) {
+            if (serviceName == null && (protocol.equals(TileService.PROTOCOL) && !tilingProtocol.equalsIgnoreCase(TileService.TILING_PROTOCOL_WMTS))) {
                 errors.add("serviceName", new LocalizableError("validation.required.valueNotPresent"));
             }
-            if (protocol.equals(TileService.PROTOCOL)) {
+            if (protocol.equals(TileService.PROTOCOL) && !tilingProtocol.equalsIgnoreCase(TileService.TILING_PROTOCOL_WMTS)) {
                 if (resolutions == null) {
                     errors.add("resolutions", new LocalizableError("validation.required.valueNotPresent"));
                 }
