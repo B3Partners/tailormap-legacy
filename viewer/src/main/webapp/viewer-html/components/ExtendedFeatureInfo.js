@@ -108,15 +108,19 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.worldPosition = options.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("featureInfoMarker",options.coord.x,options.coord.y);
         
-        if(this.popup){
-            this.popup.show();
-        }
+        this.activateResultsDiv();
         this.createPagination(this.currentLayer);
         if(data[0].requestId === this.currentRequestId){
             this.showPage(0);
         }
     },
-    
+    activateResultsDiv: function(){
+        if(this.popup){
+            this.popup.show();
+        }
+        
+        this.config.viewerController.layoutManager.expandRegion(this.config.name);
+    },
     showPage: function(index){
         this.currentIndex = index;
         this.content.setHtml("");
