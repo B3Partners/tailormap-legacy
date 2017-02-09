@@ -41,7 +41,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.origDiv = Ext.get(this.getContentDiv());
         this.origDiv.appendChild(div);
         
-        if(!this.config.hasSharedPopup){
+        if(!this.config.hasSharedPopup && this.config.title){
             var title = new Ext.Element(document.createElement("div"));
             title.addCls("extended_feature_info_title");
             title.insertHtml("beforeEnd",this.config.title);
