@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.define('viewer.LayoutManager', {
     defaultRegionSettings: {
         header: {region: 'north', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}},
@@ -405,13 +407,24 @@ Ext.define('viewer.LayoutManager', {
         return {};
     },
 
+    processCollapsibleItems:function (items, id){
+        if(items.items){
+            this.processCollapsibleItems(items.items,id);
+        }
+        for(var i = 0 ;i < items.length ;i++){
+            if(items[i].items){
+                this.processCollapsibleItems(items[i].items, id);
+            }else{
+                this.collapsibleComponents[items[i].data.cmp_name] = id;
+            }
+        }
+    },
+    
     getCollapseConfig: function(regionLayout, columnOrientation, items) {
         var me = this;
         if(columnOrientation === 'vertical' && regionLayout.hasOwnProperty('enableCollapse') && regionLayout.enableCollapse) {
             var id = Ext.id();
-            for(var i = 0 ; i < items.length; i++){
-                me.collapsibleComponents[items[i].data.cmp_name] = id;
-            }
+            this.processCollapsibleItems(items,id);
             return {
                 xtype: 'panel',
                 border: 0,
