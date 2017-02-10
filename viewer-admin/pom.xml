@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.7.10-SNAPSHOT</version>
+        <version>4.8.0-SNAPSHOT</version>
     </parent>
     <name>viewer-admin</name>
 
@@ -263,6 +263,7 @@
                             <skipTests>!${test.skip.integrationtests}</skipTests>
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                                <database.properties.file>postgres.properties</database.properties.file>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                         </configuration>
@@ -325,6 +326,105 @@
                                 <groupId>org.postgresql</groupId>
                                 <artifactId>postgresql</artifactId>
                                 <version>${postgresql.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jenkins</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.oracle</groupId>
+                    <artifactId>ojdbc7</artifactId>
+                    <version>12.1.0.2.0</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>src/test/resources/oracle.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*IntegrationTest.java</include>
+                            </includes>
+                            <trimStackTrace>false</trimStackTrace>
+                            <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
+                            <skipTests>!${test.skip.integrationtests}</skipTests>
+                            <systemPropertyVariables>
+                                <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                                <database.properties.file>oracle.properties</database.properties.file>
+                            </systemPropertyVariables>
+                            <useFile>false</useFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <port>9091</port>
+                            <contextFile>${project.basedir}/src/test/tomcatconf/jenkinscontext.xml</contextFile>
+                            <systemProperties />
+                            <useTestClasspath>true</useTestClasspath>
+                            <tomcatLoggingFile>${project.basedir}/src/test/tomcatconf/logging.properties</tomcatLoggingFile>
+                            <propertiesPortFilePath>${project.build.testOutputDirectory}/tomcatports.properties</propertiesPortFilePath>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>tomcat-startup</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <fork>true</fork>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>tomcat-shutdown</id>
+                                <goals>
+                                    <goal>shutdown</goal>
+                                </goals>
+                                <phase>post-integration-test</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax.mail</groupId>
+                                <artifactId>mail</artifactId>
+                                <version>1.4.7</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.oracle</groupId>
+                                <artifactId>ojdbc7</artifactId>
+                                <version>12.1.0.2.0</version>
                             </dependency>
                         </dependencies>
                     </plugin>

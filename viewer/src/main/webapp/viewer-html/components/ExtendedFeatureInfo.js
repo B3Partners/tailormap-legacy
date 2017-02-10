@@ -41,7 +41,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.origDiv = Ext.get(this.getContentDiv());
         this.origDiv.appendChild(div);
         
-        if(!this.config.hasSharedPopup){
+        if(!this.config.hasSharedPopup && this.config.title){
             var title = new Ext.Element(document.createElement("div"));
             title.addCls("extended_feature_info_title");
             title.insertHtml("beforeEnd",this.config.title);
@@ -107,16 +107,22 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.currentOptions = options;
         this.worldPosition = options.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("featureInfoMarker",options.coord.x,options.coord.y);
-        
-        if(this.popup){
-            this.popup.show();
-        }
+
+        this.activateResultsDiv();
         this.createPagination(this.currentLayer);
         if(data[0].requestId === this.currentRequestId){
             this.showPage(0);
         }
     },
-    
+    activateResultsDiv: function(){
+        if(this.popup){
+            this.popup.show();
+        }
+        if( !this.config.isPopup ) {
+            this.config.viewerController.layoutManager.showTabComponent(this.name);
+            this.config.viewerController.layoutManager.expandRegion(this.config.name);
+        }
+    },
     showPage: function(index){
         this.currentIndex = index;
         this.content.setHtml("");
@@ -131,6 +137,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         var data = this.currentData;
         var numPages = data.length;
         
+        this.pagination.insertHtml("afterBegin", "<hr/> ");
         if (this.currentIndex > 0) {
             var prevElem = document.createElement("a");
             prevElem.href = 'javascript: void(0)';
