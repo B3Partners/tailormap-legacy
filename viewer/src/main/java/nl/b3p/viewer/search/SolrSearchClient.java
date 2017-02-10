@@ -58,6 +58,18 @@ public class SolrSearchClient extends SearchClient {
             if(term == null){
                 term = "";
             }else{
+                String[] terms = term.split(" ");
+                String newTerm = null;
+                for (String t : terms) {
+                    if(newTerm != null){
+                        newTerm += " AND ";
+                    }else{
+                        newTerm = "";
+                    }
+                    newTerm += t;
+                }
+                term = newTerm;
+                
                 term = term.replaceAll("\\:", "\\\\:");
                 term  += " AND (";
             }
@@ -70,6 +82,7 @@ public class SolrSearchClient extends SearchClient {
             }
             SolrQuery query = new SolrQuery();
             query.setQuery(term);
+            
             query.setRequestHandler("/select");
             QueryResponse rsp = server.query(query);
             SolrDocumentList list = rsp.getResults();
