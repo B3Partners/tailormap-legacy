@@ -34,7 +34,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /* Keep track of open popups to close previous when configured */
     singlePopup: false,
     previousPopup: null,
+    
     dataSelectionChecker:null,
+    
     /** Layers initialized?*/
     layersInitialized: false,
     /**
@@ -44,6 +46,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /**
      * List of layers for this application and whether the user has them checked/unchecked
      */
+   
+    
     savedCheckedState: {},
     // Debounce applyFilter calls
     filterDebounce: {},
@@ -67,9 +71,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker", { viewerController: this });
         this.app = app;
-
+        //console.log(app.components.openLayersMap1.className);
+        
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));
-
+        //console.log(this.dataSelectionChecker.naam);
+        //console.log(this.queryParams);
         this.savedCheckedState = this.restoreSavedCheckedState();
 
         var logLevel=viewer.components.Logger.LEVEL_ERROR;
@@ -104,6 +110,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         try {
             if(app.details && app.details.globalLayout) {
                 var globalLayout = Ext.JSON.decode(app.details.globalLayout);
+                
                 if(globalLayout.hasOwnProperty('singlePopup') && globalLayout.singlePopup) {
                     this.singlePopup = globalLayout.singlePopup;
                 }
@@ -117,12 +124,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var comps = this.app.components;
         var config = {};
         for (var c in comps){
+            
             if(!comps.hasOwnProperty(c)) {
                 continue;
             }
             var component = comps[c];
             if(component.className == "viewer.mapcomponents.FlamingoMap" ||
-                component.className == "viewer.mapcomponents.OpenLayersMap"){
+                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OpenLayersMap3"){
                 config = component.config;
                 break;
             }
@@ -132,6 +140,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         }else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
+        }else if(viewerType == "openlayers3"){
+            
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
         }
@@ -292,7 +302,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap") {
             return null;
         }
-
+        
         config.viewerController = this;
         config.name=name;
         config.details=details;

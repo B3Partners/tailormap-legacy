@@ -20,6 +20,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     config:{
         resolutions : null,
         id: null
+        
     },
     /**
      * Construct a map component
