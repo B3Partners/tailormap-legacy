@@ -375,6 +375,7 @@
                                 <database.properties.file>oracle.properties</database.properties.file>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
+                            <rerunFailingTestsCount>3</rerunFailingTestsCount>
                         </configuration>
                         <executions>
                             <execution>
