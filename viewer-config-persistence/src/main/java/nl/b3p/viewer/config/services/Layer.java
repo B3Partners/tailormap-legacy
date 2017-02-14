@@ -152,6 +152,12 @@ public class Layer implements Cloneable, Serializable {
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String,ClobElement> details = new HashMap<>();
 
+    
+    @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="matrix_set"))
+    @OrderColumn(name="list_index")
+    private List<TileMatrixSet> matrixSets = new ArrayList<>();
+    
     public Layer() {
     }
 
@@ -466,13 +472,17 @@ public class Layer implements Cloneable, Serializable {
                 }
                 o.put("resolutions",resolutions);
             }
-            if (boundingBoxes.size()==1){
-                BoundingBox bbox=boundingBoxes.values().iterator().next();
-                o.put("bbox",bbox.toJSONObject());
-            }
-
         }
 
+        if (boundingBoxes.size()==1){
+            BoundingBox bbox=boundingBoxes.values().iterator().next();
+            o.put("bbox",bbox.toJSONObject());
+        }
+        JSONArray sets = new JSONArray();
+        o.put("matrixSets", sets);
+        for (TileMatrixSet matrixSet : matrixSets) {
+            sets.put(matrixSet.toJSONObject());
+        }
 
         return o;
     }
@@ -663,6 +673,13 @@ public class Layer implements Cloneable, Serializable {
     public void setBoundingBoxes(Map<CoordinateReferenceSystem, BoundingBox> boundingBoxes) {
         this.boundingBoxes = boundingBoxes;
     }
+    
+    public List<TileMatrixSet> getMatrixSets() {
+        return matrixSets;
+    }
 
+    public void setMatrixSets(List<TileMatrixSet> matrixSets) {
+        this.matrixSets = matrixSets;
+    }
     //</editor-fold>
 }

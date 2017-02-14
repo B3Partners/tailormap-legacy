@@ -426,7 +426,7 @@ public class Application {
 
         if (!onlyServicesAndLayers){
             // Prevent n+1 query for ConfiguredComponent.details
-            Stripersist.getEntityManager().createQuery(
+            em.createQuery(
                     "from ConfiguredComponent cc left join fetch cc.details where application = :this")
                     .setParameter("this", this)
                     .getResultList();

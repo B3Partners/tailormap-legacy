@@ -154,7 +154,7 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         instance.updateApplicationLayersAttributesOrder(entityManager);
         List<ApplicationLayer> appLayers = entityManager.createQuery("From ApplicationLayer").getResultList();
         for (ApplicationLayer appLayer : appLayers) {
-            System.out.println("Checking layer " + appLayer.getLayerName());
+            
             List<ConfiguredAttribute> attrs = appLayer.getAttributes();
             if (!areInCorrectOrder(attrs)) {
                 fail("Attributes of "  + appLayer.getLayerName() + " not in correct order (should be alphabetically");
@@ -181,7 +181,6 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
     private boolean areInCorrectOrder(List<ConfiguredAttribute> attrs ){
          String prevNaam = null;
         for (ConfiguredAttribute attr : attrs) {
-            System.out.println("Attribute:" + attr.getAttributeName());
             if (prevNaam != null && attr.getAttributeName().compareTo(prevNaam) < 1) {
                 return false;
             } else {

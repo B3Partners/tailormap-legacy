@@ -1,0 +1,609 @@
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd">
+    <ows:ServiceIdentification>
+        <ows:Title>luchtfoto</ows:Title>
+        <ows:Abstract>luchtfoto wmts</ows:Abstract>
+        <ows:ServiceType>WMTS</ows:ServiceType>
+        <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+    </ows:ServiceIdentification>
+    <ows:ServiceProvider>
+        <ows:ProviderName>GBO provincies</ows:ProviderName>
+        <ows:ProviderSite xlink:href="http://www.gbo-provincies.nl"/>
+        <ows:ServiceContact>
+            <ows:IndividualName>Functioneel beheerder</ows:IndividualName>
+            <ows:PositionName>Functioneel beheerder</ows:PositionName>
+            <ows:ContactInfo>
+                <ows:Phone/>
+                <ows:Address>
+                    <ows:ElectronicMailAddress>ondergrondenreferenties@gbo-provincies.nl</ows:ElectronicMailAddress>
+                </ows:Address>
+                <ows:OnlineResource xlink:href="http://www.gbo-provincies.nl"/>
+                <ows:HoursOfService>24x7</ows:HoursOfService>
+            </ows:ContactInfo>
+            <ows:Role>PointOfContact</ows:Role>
+        </ows:ServiceContact>
+    </ows:ServiceProvider>
+    <ows:OperationsMetadata>
+        <ows:Operation name="GetCapabilities">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://webservices.gbo-provincies.nl/lufo/services/wmts?"/>
+                </ows:HTTP>
+            </ows:DCP>
+            <ows:Constraint name="GetEncoding">
+                <ows:AllowedValues>
+                    <ows:Value>KVP</ows:Value>
+                </ows:AllowedValues>
+            </ows:Constraint>
+        </ows:Operation>
+        <ows:Operation name="GetTile">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://webservices.gbo-provincies.nl/lufo/services/wmts?"/>
+                </ows:HTTP>
+            </ows:DCP>
+            <ows:Constraint name="GetEncoding">
+                <ows:AllowedValues>
+                    <ows:Value>KVP</ows:Value>
+                </ows:AllowedValues>
+            </ows:Constraint>
+        </ows:Operation>
+        <ows:Operation name="GetFeatureInfo">
+            <ows:DCP>
+                <ows:HTTP>
+                    <ows:Get xlink:href="http://webservices.gbo-provincies.nl/lufo/services/wmts?"/>
+                </ows:HTTP>
+            </ows:DCP>
+            <ows:Constraint name="GetEncoding">
+                <ows:AllowedValues>
+                    <ows:Value>KVP</ows:Value>
+                </ows:AllowedValues>
+            </ows:Constraint>
+        </ows:Operation>
+        <ows:Constraint name="GetEncoding">
+            <ows:AllowedValues>
+                <ows:Value>KVP</ows:Value>
+            </ows:AllowedValues>
+        </ows:Constraint>
+    </ows:OperationsMetadata>
+    <Contents>
+        <Layer>
+            <ows:Title>Luchtfoto 2015 (Winter)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>actueel_winter</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2015 (Zomer)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>actueel_zomer</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2014 (Winter)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2014_winter</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2014 (Zomer)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2014_zomer</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2013 (Winter)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2013_winter</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2013 (Zomer)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2013_zomer</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2012 (Winter)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2012_winter</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2012 (Zomer)</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2012_zomer</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2011</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2011</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2010</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2010</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2009</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2009</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <Layer>
+            <ows:Title>Luchtfoto 2008</ows:Title>
+            <ows:WGS84BoundingBox>
+                <ows:LowerCorner>-1.657292 48.040502</ows:LowerCorner>
+                <ows:UpperCorner>12.431727 56.102685</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:Identifier>luchtfoto_2008</ows:Identifier>
+            <Style>
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/jpeg</Format>
+            <InfoFormat>application/vnd.ogc.gml</InfoFormat>
+            <InfoFormat>text/xml</InfoFormat>
+            <InfoFormat>text/plain</InfoFormat>
+            <InfoFormat>text/html</InfoFormat>
+            <InfoFormat>application/gml+xml; version=2.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.0</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+            <InfoFormat>application/gml+xml; version=3.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/2.1.2</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.0.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.1.1</InfoFormat>
+            <InfoFormat>text/xml; subtype=gml/3.2.1</InfoFormat>
+            <TileMatrixSetLink>
+                <TileMatrixSet>NLDEPSG28992Scale</TileMatrixSet>
+            </TileMatrixSetLink>
+        </Layer>
+        <TileMatrixSet>
+            <ows:Identifier>NLDEPSG28992Scale</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:EPSG::28992</ows:SupportedCRS>
+            <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:NLDEPSG28992Scale</WellKnownScaleSet>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:0</ows:Identifier>
+                <ScaleDenominator>1.2288E7</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>1</MatrixWidth>
+                <MatrixHeight>1</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:1</ows:Identifier>
+                <ScaleDenominator>6144000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>2</MatrixWidth>
+                <MatrixHeight>2</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:2</ows:Identifier>
+                <ScaleDenominator>3072000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>4</MatrixWidth>
+                <MatrixHeight>4</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:3</ows:Identifier>
+                <ScaleDenominator>1536000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>8</MatrixWidth>
+                <MatrixHeight>8</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:4</ows:Identifier>
+                <ScaleDenominator>768000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>16</MatrixWidth>
+                <MatrixHeight>16</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:5</ows:Identifier>
+                <ScaleDenominator>384000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>32</MatrixWidth>
+                <MatrixHeight>32</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:6</ows:Identifier>
+                <ScaleDenominator>192000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>64</MatrixWidth>
+                <MatrixHeight>64</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:7</ows:Identifier>
+                <ScaleDenominator>96000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>128</MatrixWidth>
+                <MatrixHeight>128</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:8</ows:Identifier>
+                <ScaleDenominator>48000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>256</MatrixWidth>
+                <MatrixHeight>256</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:9</ows:Identifier>
+                <ScaleDenominator>24000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>512</MatrixWidth>
+                <MatrixHeight>512</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:10</ows:Identifier>
+                <ScaleDenominator>12000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>1024</MatrixWidth>
+                <MatrixHeight>1024</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:11</ows:Identifier>
+                <ScaleDenominator>6000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>2048</MatrixWidth>
+                <MatrixHeight>2048</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:12</ows:Identifier>
+                <ScaleDenominator>3000.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>4096</MatrixWidth>
+                <MatrixHeight>4096</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:13</ows:Identifier>
+                <ScaleDenominator>1500.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>8192</MatrixWidth>
+                <MatrixHeight>8192</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:14</ows:Identifier>
+                <ScaleDenominator>750.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>16384</MatrixWidth>
+                <MatrixHeight>16384</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>EPSG:28992:15</ows:Identifier>
+                <ScaleDenominator>375.0</ScaleDenominator>
+                <TopLeftCorner>-285401.92 903401.92</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>32768</MatrixWidth>
+                <MatrixHeight>32768</MatrixHeight>
+            </TileMatrix>
+        </TileMatrixSet>
+    </Contents>
+    <Themes>
+        <Theme>
+            <ows:Title>Luchtfoto's</ows:Title>
+            <ows:Identifier/>
+            <Theme>
+                <ows:Title>Luchtfoto 2015 (Winter)</ows:Title>
+                <ows:Identifier>actueel_winter</ows:Identifier>
+                <LayerRef>actueel_winter</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2015 (Zomer)</ows:Title>
+                <ows:Identifier>actueel_zomer</ows:Identifier>
+                <LayerRef>actueel_zomer</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2014 (Winter)</ows:Title>
+                <ows:Identifier>luchtfoto_2014_winter</ows:Identifier>
+                <LayerRef>luchtfoto_2014_winter</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2014 (Zomer)</ows:Title>
+                <ows:Identifier>luchtfoto_2014_zomer</ows:Identifier>
+                <LayerRef>luchtfoto_2014_zomer</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2013 (Winter)</ows:Title>
+                <ows:Identifier>luchtfoto_2013_winter</ows:Identifier>
+                <LayerRef>luchtfoto_2013_winter</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2013 (Zomer)</ows:Title>
+                <ows:Identifier>luchtfoto_2013_zomer</ows:Identifier>
+                <LayerRef>luchtfoto_2013_zomer</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2012 (Winter)</ows:Title>
+                <ows:Identifier>luchtfoto_2012_winter</ows:Identifier>
+                <LayerRef>luchtfoto_2012_winter</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2012 (Zomer)</ows:Title>
+                <ows:Identifier>luchtfoto_2012_zomer</ows:Identifier>
+                <LayerRef>luchtfoto_2012_zomer</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2011</ows:Title>
+                <ows:Identifier>luchtfoto_2011</ows:Identifier>
+                <LayerRef>luchtfoto_2011</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2010</ows:Title>
+                <ows:Identifier>luchtfoto_2010</ows:Identifier>
+                <LayerRef>luchtfoto_2010</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2009</ows:Title>
+                <ows:Identifier>luchtfoto_2009</ows:Identifier>
+                <LayerRef>luchtfoto_2009</LayerRef>
+            </Theme>
+            <Theme>
+                <ows:Title>Luchtfoto 2008</ows:Title>
+                <ows:Identifier>luchtfoto_2008</ows:Identifier>
+                <LayerRef>luchtfoto_2008</LayerRef>
+            </Theme>
+        </Theme>
+    </Themes>
+</Capabilities>
