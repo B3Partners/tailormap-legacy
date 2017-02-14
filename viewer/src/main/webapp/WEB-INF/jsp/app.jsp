@@ -97,7 +97,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </c:if>
-
+                            
+        <c:if test="${actionBean.viewerType == 'openlayers3'}">
+               <link href="${contextPath}/viewer-html/common/resources/css/openlayers3.css" rel="stylesheet">
+               <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/OpenLayers.js"></script>
+        </c:if>
+               
         <c:choose>
             <c:when test="${!(param.debug == true)}">
                 <script type="text/javascript" src="${contextPath}/viewer-html/viewer-min.js"></script>
@@ -181,6 +186,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersIdentifyTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersDefaultTool.js"></script>
                     </c:when>
+                        <c:when test="${actionBean.viewerType == 'openlayers3'}">
+                            <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers3"/>
+                            <script type="text/javascript" src="${scriptDir}/OpenLayersMap3Component.js"></script>
+                            
+                        </c:when>
                     <c:otherwise>
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/flamingo"/>
                         <script type="text/javascript" src="${scriptDir}/FlamingoLayer.js"></script>

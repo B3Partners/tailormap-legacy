@@ -31,7 +31,27 @@
             }
         }
     },
-
+    
+    {
+        "className": "viewer.mapcomponents.OpenLayersMap3",
+        "name": "OpenLayers Map3",
+        "shortName": "Om3",
+        "group": "Map",
+        "singleton": true,
+        "restrictions": ["content"],
+        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "extPropertyGridConfigs": {
+            "propertyNames": {
+                "resolutions": "Resoluties (komma gescheiden)",
+                "theme": "Theme ('flamingo' or 'default')"
+            },
+            "source": {
+                "resolutions": "",
+                "theme": "flamingo"
+            }
+        }
+    },
+    
     {
         "className": "viewer.components.tools.StreetView",
         "name": "Streetview",
@@ -919,25 +939,5 @@
         "sources": ["tools/Tool.js","CoordinateLinkWindow.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","CoordinateLinkWindow-config.js"],
         "restrictions": ["top_menu"]
-    },
-    
-    {
-        "className": "viewer.mapcomponents.OpenLayersMap3",
-        "name": "OpenLayers Map3",
-        "shortName": "Om3",
-        "group": "Map",
-        "singleton": true,
-        "restrictions": ["content"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
-        "extPropertyGridConfigs": {
-            "propertyNames": {
-                "resolutions": "Resoluties (komma gescheiden)",
-                "theme": "Theme ('flamingo' or 'default')"
-            },
-            "source": {
-                "resolutions": "",
-                "theme": "flamingo"
-            }
-        }
-    }
+    }   
 ]
