@@ -33,6 +33,7 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureIterator;
@@ -110,7 +111,7 @@ public class FeatureToJson {
         /* Use the first property as sort field, otherwise geotools while give a error when quering
          * a JDBC featureType without a primary key.
          */
-        else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()){
+        else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
             setSortBy(q, propertyNames.get(0),dir);
         }
         Integer start = q.getStartIndex();
