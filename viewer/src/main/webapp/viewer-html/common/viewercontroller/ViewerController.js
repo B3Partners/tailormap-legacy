@@ -141,7 +141,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else if(viewerType == "openlayers3"){
-            
+            this.mapComponent = new viewer.viewercontroller.OpenLayersMap3Component(this, mapId, config);
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
         }
@@ -152,7 +152,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType == "openlayers") {
+        if(viewerType == "openlayers" ) {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
     },
