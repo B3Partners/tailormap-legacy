@@ -6,37 +6,20 @@ package nl.b3p.viewer.image;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import javax.swing.ImageIcon;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  *
  * @author Roy Braam
+ * @author mprins
  */
-public class Tiling {
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-        File destDir = new File(DEST_DIR);
-        if(!destDir.exists()) {
-            destDir.mkdir();
-        }
-    }
-
-    @After
-    public void tearDown() {
-    }
+public class TilingIntegrationTest {
 
     private static final String DEST_DIR = "test-output";
     
@@ -81,13 +64,31 @@ public class Tiling {
             + "height: 1024,"
             + "srid: 28992"          
             + "}";
+
+    @BeforeClass
+    public static void setUp() {
+        File destDir = new File(DEST_DIR);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+    }
+
     @Test
     /* Test WMSc
      */
     public void wmscTest() throws Exception {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
-        File f = new File(DEST_DIR + "/WMSc.png");
-        FileOutputStream fos = new FileOutputStream(DEST_DIR + "/WMSc.png");
-        CombineImagesHandler.combineImage(fos, settings, null);
+        // this will produce a png because CombineImagesHandler#defaultReturnMime is image/png
+        try (FileOutputStream fos = new FileOutputStream(DEST_DIR + "/WMSc.pngtest")) {
+            CombineImagesHandler.combineImage(fos, settings, null);
+        }
+
+        File f = new File(DEST_DIR + "/WMSc.pngtest");
+        try {
+            ImageIcon i = new ImageIcon(f.getAbsolutePath());
+        } catch (Exception e) {
+            fail("not a valid png");
+        }
+        assertEquals("Image is not a valid png", "image/png", Files.probeContentType(f.toPath()));
     }
 }

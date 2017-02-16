@@ -159,7 +159,6 @@ Ext.define("viewer.components.Graph", {
             return;
         }
         var graphConfig = this.getConfigByAppLayer(appLayer.id);
-        var attributes = [];
         if(!graphConfig){
             return;
         }
@@ -180,12 +179,14 @@ Ext.define("viewer.components.Graph", {
         }
         for(var i = 0; i < graphConfig.length; i++) {
             (function(config, index){
+                var attributes = [];
                 for(var j = 0; j < config.serieAttribute.length; j++) {
                     attributes.push(config.serieAttribute[j]);
                 }
                 attributes.push(config.categoryAttribute);
                 var extraParams = {
                     attributesToInclude : attributes,
+                    attributesNotNull : attributes,
                     graph:true
                 };
                 me.config.viewerController.mapComponent.getMap().setMarker("edit",x,y);
@@ -230,7 +231,9 @@ Ext.define("viewer.components.Graph", {
         options.filter = filter;
         options.graph = true;
         options.arrays = false;
+        options.sort = this.getAttributeTitle(appLayer, config.categoryAttribute);
         options.attributesToInclude = attributes;
+        options.attributesNotNull = attributes;
         Ext.Ajax.request({
             url: appLayer.featureService.getStoreUrl() + featureType+filter,
             params: options,

@@ -181,6 +181,22 @@
         </attributes>
     </entity>
 
+    <entity class="nl.b3p.viewer.config.services.TileMatrix">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.services.TileMatrixSet">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
     <entity class="nl.b3p.viewer.config.app.Resource">
         <attributes>
             <basic name="data">

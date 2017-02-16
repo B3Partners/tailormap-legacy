@@ -138,8 +138,16 @@ public class DatabaseSynchronizer implements Servlet {
 
         
         updates.put("21", new UpdateElement(Collections.singletonList("remove_selectedIndexChecked.sql"), String.class));
-        
+
         updates.put("22", new UpdateElement(Collections.singletonList("add_user_ips.sql"), String.class));
+        
+        updates.put("23", new UpdateElement(Collections.singletonList("removeDuplicateStartLayersLevels.sql"), String.class));
+
+        
+        updates.put("24", new UpdateElement(Collections.singletonList("removeFaultyTopLayers.sql"), String.class));
+        updates.put("25", new UpdateElement (Collections.singletonList("alter_layer_children_child_unique.sql"), String.class));
+
+        updates.put("26", new UpdateElement(Collections.singletonList("add-wmts-support.sql"), String.class));
 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }
@@ -169,7 +177,7 @@ public class DatabaseSynchronizer implements Servlet {
 
         try {
             checkScriptDir();
-            log.info("Try to update the database");
+            log.info("Checking for need to update the database.");
 
             this.databaseProductName = DynamicStripersistInitializer.databaseProductName;
             if (em!=null){
@@ -184,12 +192,13 @@ public class DatabaseSynchronizer implements Servlet {
                     if (!metadata.isEmpty()) {
                         mdVersion = metadata.get(0);
                         version = mdVersion.getConfigValue();
+                        log.info("Current database version is: " + version);
                     }else{
-                        log.info("Database already initialized but not valid. Try to execute scripts again");
+                        log.warn("Database already initialized but not valid. Try to execute scripts again.");
                     }
                     scripts = getUpdates(version);
                 } catch (Exception e) {
-                    log.info("No correct database, run init scripts");
+                    log.warn("No correct database, run init scripts");
                     log.debug("Cause: ",e);
                     scripts.put("0",updates.get("0"));
                 }
@@ -348,7 +357,7 @@ public class DatabaseSynchronizer implements Servlet {
                             if (is==null){
                                 throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
                             }
-                            log.info("Run database script: "+scriptName);
+                            log.info("Running database upgrade script: " + scriptName);
                             runner.runScript(new InputStreamReader(is));
                             if (!this.errored){
                                 this.successVersion = entry.getKey();

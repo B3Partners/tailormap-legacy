@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/viewer-admin" reloadable="true" crossContext="true" backgroundProcessorDelay="5" swallowOutput="true">
+    <Parameter name="componentregistry.path"
+               override="false"
+               value="/viewer-html/components"
+    />
+    
+    <!-- properties below are expanded at runtime and are available
+    in ../resources/oracle.properties -->
+    <Resource name="jdbc/geo_viewer"
+              auth="Container"
+              type="javax.sql.DataSource"
+              username="${testdb.username}"
+              password="${testdb.password}"
+              driverClassName="${testdb.driverClassName}"
+              url="${testdb.url}"
+              maxActive="40"
+              validationQuery="select 1 from dual"
+              timeBetweenEvictionRunsMillis="30000"
+              minEvictableIdleTimeMillis="5000"
+    />
+
+    <Resource name="mail/session"
+              auth="Container"
+              type="javax.mail.Session"
+              mail.smtp.host="localhost"
+              mail.smtp.from="no-reply@b3partners.nl"
+    />
+
+    <!-- org.apache.catalina.realm.CombinedRealm or org.apache.catalina.realm.LockOutRealm -->
+    <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm allRolesMode="authOnly"
+               className="org.apache.catalina.realm.DataSourceRealm"
+               digest="SHA-1"
+               roleNameCol="group_"
+               userCredCol="password"
+               userNameCol="username"
+               userRoleTable="user_groups"
+               userTable="user_"
+               dataSourceName="jdbc/geo_viewer"
+               localDataSource="true"
+        />
+    </Realm>
+</Context>

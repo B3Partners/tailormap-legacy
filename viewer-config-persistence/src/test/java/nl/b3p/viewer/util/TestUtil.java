@@ -49,7 +49,7 @@ import org.junit.rules.TestName;
  * @author Mark Prins <mark@b3partners.nl>
  * @author Meine Toonen <meinetoonen@b3partners.nl>
  */
-public abstract class TestUtil {
+public abstract class TestUtil extends LoggingTestUtil {
 
     protected EntityManager entityManager;
 
@@ -66,6 +66,7 @@ public abstract class TestUtil {
     public Application app;
 
     private static final Log log = LogFactory.getLog(TestUtil.class);
+
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
      * transactie.
@@ -74,15 +75,13 @@ public abstract class TestUtil {
      *
      * @see #entityManager
      */
-
-    @Rule 
-    public TestName testName = new TestName();
-    
     @Before
     public void setUp() throws Exception {
         final String persistenceUnit = System.getProperty("test.persistence.unit");
         Map config = new HashMap();
         String testname = testName.getMethodName();
+        testname = testname.replaceAll(":", "-");
+        testname = testname.replaceAll(" ", "");
         String randomizer = RandomStringUtils.randomAlphabetic(8);
         config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
         entityManager = Persistence.createEntityManagerFactory(persistenceUnit,config).createEntityManager();
@@ -107,15 +106,18 @@ public abstract class TestUtil {
         }
     }
 
-    // Helper functions for testing
+    /**
+     * Helper function for testing.
+     */
     public <T> void persistEntityTest(T entity, Class<T> clazz){
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
     }
     
-    // Helper functions for initializing data
-
+    /**
+     * Helper function for initializing data.
+     */
     public void loadTestData() throws URISyntaxException, IOException, SQLException {
 
         Application app = entityManager.find(Application.class, applicationId);
@@ -126,7 +128,9 @@ public abstract class TestUtil {
         Metadata version = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         originalVersion = version.getConfigValue();
     }
-
+    /**
+     * Helper function for initializing data.
+     */
     public void executeScript(Reader f) throws IOException, SQLException {
         Connection conn = null;
 
@@ -143,7 +147,9 @@ public abstract class TestUtil {
             }
         }
     }
-    
+    /**
+     * Helper function for initializing data.
+     */
     public void initData( boolean addToStartmap) {
         app = new Application();
         app.setName("testapp");

@@ -741,3 +741,8 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .x-gridheaderfilters-filter-container .x-anchor-form-item {
     margin-bottom: 0;
 }
+
+.x-grid-item-container .removed, .x-grid-item-container .removed .x-grid-item-focused {
+    color: #BBBBBB;
+    text-decoration: line-through;
+}

@@ -101,5 +101,5 @@ Ext.define("viewer.components.CoordinateLinkWindow", {
             this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
         }
         this.toolMapClick.deactivateTool();
-    },
+    }
 });

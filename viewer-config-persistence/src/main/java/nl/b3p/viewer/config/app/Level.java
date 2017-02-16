@@ -190,7 +190,7 @@ public class Level implements Comparable{
             JSONArray ls = new JSONArray();
             o.put("layers", ls);
             for(ApplicationLayer l: layers) {
-                if(request == null || Authorizations.isAppLayerReadAuthorized(app, l, request, em)) {
+                if((request == null || Authorizations.isAppLayerReadAuthorized(app, l, request, em)) && l.getStartLayers().containsKey(app)) {
                     ls.put(l.getId().toString());
                 }
             }            
@@ -291,21 +291,26 @@ public class Level implements Comparable{
         return false;
     }
 
-    public void processForMashup(Application app) throws Exception{
+    public void processForMashup(Application mashup, Application motherApp) throws Exception{
         for (Level child : children) {
-            child.processForMashup(app);
+            child.processForMashup(mashup, motherApp);
         }
         for (ApplicationLayer layer : layers) {
-            layer.processStartLayers(app, layer);
+            layer.processStartLayers(mashup, layer, motherApp);
         }
-        processStartLevels(app, this);
+        processStartLevels(mashup, this, motherApp);
     }
     
-    private void processStartLevels(Application app, Level original) throws Exception{
-        List<StartLevel> sls = new ArrayList<StartLevel>(original.startLevels.values());
-        for (int i = 0; i < sls.size(); i++) {
-            StartLevel value = sls.get(i);
-            this.getStartLevels().put(app, value.deepCopy(app, this));
+    private void processStartLevels(Application app, Level original, Application copyFrom) throws Exception{
+       StartLevel sl = original.getStartLevels().get(copyFrom);
+       if(sl != null){
+           this.getStartLevels().put(app, sl.deepCopy(app, this));
+       }else if (Objects.equals(app.getId(), copyFrom.getId())){
+            List<StartLevel> sls = new ArrayList<StartLevel>(original.startLevels.values());
+            for (int i = 0; i < sls.size(); i++) {
+                StartLevel value = sls.get(i);
+                this.getStartLevels().put(app, value.deepCopy(app, this));
+            }
         }
     }
 
@@ -326,7 +331,7 @@ public class Level implements Comparable{
         }
         
         copy.setStartLevels(new HashMap<Application,StartLevel>());
-        copy.processStartLevels(app, this);
+        copy.processStartLevels(app, this, app);
         
         // do not clone documents, only the list
         copy.setDocuments(new ArrayList<Document>(documents));

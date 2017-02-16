@@ -426,7 +426,7 @@ public class Application {
 
         if (!onlyServicesAndLayers){
             // Prevent n+1 query for ConfiguredComponent.details
-            Stripersist.getEntityManager().createQuery(
+            em.createQuery(
                     "from ConfiguredComponent cc left join fetch cc.details where application = :this")
                     .setParameter("this", this)
                     .getResultList();
@@ -540,7 +540,7 @@ public class Application {
         mashup.setName(mashup.getName() + "_" + mashupName);
         em.persist(mashup);
         if(mashup.getRoot() != null){
-            mashup.getRoot().processForMashup(mashup);
+            mashup.getRoot().processForMashup(mashup, source);
         }
 
         mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));

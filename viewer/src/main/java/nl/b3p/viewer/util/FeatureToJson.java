@@ -59,14 +59,14 @@ public class FeatureToJson {
     private boolean edit = false;
     private boolean graph = false;
     private List<Long> attributesToInclude = new ArrayList<Long>();
-    private static final int TIMEOUT=5000;
+    private static final int TIMEOUT = 5000;
 
     public FeatureToJson(boolean arrays,boolean edit){
         this.arrays=arrays;
         this.edit=edit;
     }
 
-    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<Long> attributesToInclude){
+    public FeatureToJson(boolean arrays, boolean edit, boolean graph, List<Long> attributesToInclude) {
         this.arrays=arrays;
         this.edit=edit;
         this.graph = graph;
@@ -103,6 +103,7 @@ public class FeatureToJson {
                 propertyNames.add(ad.getName());
             }
         }
+        
         if (sort!=null){
             setSortBy(q, propertyNames, sort, dir);
         }
@@ -398,4 +399,5 @@ public class FeatureToJson {
         filter=(Filter) filter.accept(new SimplifyingFilterVisitor(),null);
         return filter;
     }
+
 }

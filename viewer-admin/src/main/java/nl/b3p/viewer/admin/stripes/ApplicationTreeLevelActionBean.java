@@ -214,31 +214,35 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     }
     
     public Resolution save() {                
+        
+        EntityManager em = Stripersist.getEntityManager();
+        saveLevel(em);
+        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
+        return edit();
+    }
+    
+    protected void saveLevel(EntityManager em){
         level.getReaders().clear();
         for(String groupName: groupsRead) {
             level.getReaders().add(groupName);
         }
-        
-        updateApplayersInLevel(selectedlayers, level, Stripersist.getEntityManager());
+        updateApplayersInLevel(selectedlayers, level, em);
         
         level.getDocuments().clear();
         if(selecteddocs != null && selecteddocs.length() > 0){
             String[] docIds = selecteddocs.split(",");
              for(int i = 0; i < docIds.length; i++){
                 Long id = new Long(docIds[i].substring(1));
-                Document doc = Stripersist.getEntityManager().find(Document.class, id);
+                Document doc = em.find(Document.class, id);
                 level.getDocuments().add(doc);
              }
         }
         
-        EntityManager em = Stripersist.getEntityManager();
         em.persist(level);
         application.authorizationsModified();
         SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
         em.getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
-        return edit();
     }
     
      protected void updateApplayersInLevel(String selectedLayers, Level level, EntityManager em){
@@ -263,7 +267,11 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                         appLayer = new ApplicationLayer();
                         appLayer.setService(layer.getService());
                         appLayer.setLayerName(layer.getName());
-                        
+                       StartLayer sl = new StartLayer();
+                        sl.setApplication(application);
+                        sl.setApplicationLayer(appLayer);
+                        appLayer.getStartLayers().put(application, sl);
+                        application.getStartLayers().add(sl);
                         if(layer.getFeatureType() != null){
                             SimpleFeatureType sft = layer.getFeatureType();
                             for(Iterator it = sft.getAttributes().iterator(); it.hasNext();){

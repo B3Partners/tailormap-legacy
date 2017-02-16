@@ -896,9 +896,9 @@
         "name": "Cyclorama foto's",
         "shortName": "Cr",
         "group": "Component",
-        "sources": ["Cyclorama.js"],
+        "sources": ["tools/Tool.js","Cyclorama.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Cyclorama-config.js"],
-        "restrictions": ["content"],
+        "restrictions": ["top_menu"],
         "singleton": true,
         "showHelp": true
     },

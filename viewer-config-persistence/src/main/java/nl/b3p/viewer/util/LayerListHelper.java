@@ -59,7 +59,7 @@ public class LayerListHelper {
         Application.TreeCache tc = application.loadTreeCache(em);
 
         long end = System.currentTimeMillis();
-        log.error("TreeCache" + (end-startTime));
+        log.info("TreeCache load time:" + (end - startTime) + " millis");
         for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
 
             Layer l = appLayer.getService().getLayer(appLayer.getLayerName(),em);

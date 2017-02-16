@@ -52,7 +52,7 @@ Ext.define("viewer.components.Edit", {
         allowEdit: true,
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor',
-        showEditLinkInFeatureInfo: true,
+        showEditLinkInFeatureInfo: false,
         details: {
             minWidth: 400,
             minHeight: 250

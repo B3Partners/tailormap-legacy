@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * Cyclorama component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.Cyclorama",{
-    extend: "viewer.components.Component",
+    extend: "viewer.components.tools.Tool",
     toolMapClick:null,
     deActivatedTools:null,
     window:null,
@@ -30,7 +32,25 @@ Ext.define ("viewer.components.Cyclorama",{
     },
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.Cyclorama.superclass.constructor.call(this, this.config);
+	viewer.components.Cyclorama.superclass.constructor.call(this, this.config);
+        
+        
+        this.button = this.config.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
+            id: this.getName(),
+            name: this.getName(),
+            tooltip: this.config.tooltip || null,
+            displayClass: !!this.config.iconUrl ? "Cyclorama-" + Ext.id() : "streetView",
+            //displayClass: !!this.config.iconUrl ? "Cyclorama-" + Ext.id() : "Cyclorama",
+            viewerController: this.config.viewerController,
+            iconUrl: this.config.iconUrl || null
+        });
+        
+        this.config.viewerController.mapComponent.addTool(this.button);
+        this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN, this.buttonDown, this);
+        this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP, this.buttonUp, this);
+        // Registreer voor layerinitialized
+        
         // Registreer voor layerinitialized
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initComp, this);
        
@@ -51,7 +71,6 @@ Ext.define ("viewer.components.Cyclorama",{
         });
         if (this.config.layers === "-666") { // Gebruik van directe cyclomediaservice
             this.imageIdName = "imageId";
-            this.toolMapClick.activateTool();
             this.isDirect = true;
         } else {
             this.isDirect = false;
@@ -68,7 +87,6 @@ Ext.define ("viewer.components.Cyclorama",{
                         break;
                     }
                 }
-                me.toolMapClick.activateTool();
             }
             if (!attributes) {
                 this.viewerController.app.appLayers[this.config.layers].featureService.loadAttributes(appLayer, processAttributes);
@@ -178,27 +196,22 @@ Ext.define ("viewer.components.Cyclorama",{
         var coords = event.coord;
         var x = coords.x;
         var y = coords.y;
-        var radius=4*this.config.viewerController.mapComponent.getMap().getResolution();
+        var radius=4*Math.ceil(this.config.viewerController.mapComponent.getMap().getResolution());
         
         if(this.isDirect){
             var params = {
                 directRequest: true,
                 x: parseInt(x),
                 y: parseInt(y),
-                offset: radius
+                offset: radius,
+                appId: appId,
+                accountId: this.config.keyCombo
             };
-            Ext.Ajax.request({
-                url: actionBeans["cyclorama"],
-                params: params,
-                scope: this,
-                success: function(result) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    this.processResponse(response);
-                },
-                failure: function(result) {
-                   this.viewerController.logger.error(result);
-                }
-            });
+
+            var width = parseInt(this.config.width);
+            var height = parseInt(this.config.height);
+            var href = actionBeans["cyclorama"] + "?"+ Ext.urlEncode(params);
+            window.open(href, "cyclorama", 'width=' + width + ',height='+ height+',scrollbars=yes'); 
         }else{
 
             var appLayer = this.viewerController.getAppLayerById(this.config.layers);
@@ -214,7 +227,6 @@ Ext.define ("viewer.components.Cyclorama",{
             var featureInfo = Ext.create("viewer.FeatureInfo", {
                 viewerController: me.viewerController
             });
-            var radius = me.viewerController.mapComponent.getMap().getResolution() * 4;
             featureInfo.layersFeatureInfo(x, y, radius, [appLayer], extraParams,function(response){
                 for ( var i = 0 ; i < response.length; i++){
                     var resp = response[i];
@@ -227,6 +239,29 @@ Ext.define ("viewer.components.Cyclorama",{
                    this.viewerController.logger.error(error);
             },me);
         }
+    },
+        /**
+     *The next functions will synchronize the button and the tool.
+     */
+    /**
+     * When the button is hit and toggled true
+     * @param button the button
+     * @param object the options.        
+     */
+    buttonDown: function (button, object) {
+        this.toolMapClick.activateTool();
+
+        this.config.viewerController.mapComponent.setCursor(true, "crosshair");
+    },
+    /**
+     * When the button is hit and toggled false
+     */
+    buttonUp: function (button, object) {
+        this.config.viewerController.mapComponent.setCursor(false);
+        if (this.config.useMarker) {
+            this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
+        this.toolMapClick.deactivateTool();
     }
 
 });

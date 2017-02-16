@@ -5,17 +5,17 @@
         override="false"
         value="/viewer-html/components"
     />
-    
+
     <!-- properties below are expanded at runtime and are available
     in ../resources/postgres.properties -->
     <Resource
         name="jdbc/geo_viewer"
         auth="Container"
         type="javax.sql.DataSource"
-        username="${postgres.username}"
-        password="${postgres.password}"
-        driverClassName="${postgres.driverClassName}"
-        url="${postgres.url}"
+        username="${testdb.username}"
+        password="${testdb.password}"
+        driverClassName="${testdb.driverClassName}"
+        url="${testdb.url}"
         maxActive="40"
         validationQuery="select 1"
         timeBetweenEvictionRunsMillis="30000"
@@ -39,6 +39,7 @@
                userNameCol="username"
                userRoleTable="user_groups"
                userTable="user_"
+               localDataSource="true"
         />
     </Realm>
 </Context>

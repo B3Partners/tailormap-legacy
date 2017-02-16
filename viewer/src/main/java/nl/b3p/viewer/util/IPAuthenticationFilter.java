@@ -56,6 +56,9 @@ public class IPAuthenticationFilter implements Filter {
     
     private static final String IP_CHECK = IPAuthenticationFilter.class + "_IP_CHECK";
     private static final String USER_CHECK = IPAuthenticationFilter.class + "_USER_CHECK";
+    private static final String TIME_USER_CHECKED = IPAuthenticationFilter.class + "_TIME_USER_CHECKED";
+    
+    private static final int MAX_TIME_USER_CACHE = 20000;
     
     
     public IPAuthenticationFilter() {
@@ -74,78 +77,83 @@ public class IPAuthenticationFilter implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
         
-        log.debug("IPAuthenticationFilter:doFilter()");
         HttpServletRequest request = (HttpServletRequest) r;
         HttpSession session = request.getSession();
-        User u = null;
-        if(session.getAttribute(IP_CHECK) == null  && session.getAttribute(USER_CHECK) == null){
-            
-            String ipAddress = getIp(request);
-            session.setAttribute(IP_CHECK, ipAddress);
-            Stripersist.requestInit();
-            
-            EntityManager em = Stripersist.getEntityManager();
-            List<User> users = em.createQuery("from User", User.class).getResultList();
-            List<User> possibleUsers = new ArrayList<User>();
-            
-            for (User user : users) {
-                if(checkValidIpAddress(request, user)){
-                    possibleUsers.add(user);
-                }
-            }
-            
-            if(possibleUsers.isEmpty()){
-                log.debug("No possible users found for ip");
-            }else if( possibleUsers.size() == 1){
-                u = possibleUsers.get(0);
-                Hibernate.initialize(u.getGroups());
-                session.setAttribute(IP_CHECK, ipAddress);
-                session.setAttribute(USER_CHECK, u);
-            }else{
-                log.debug("Too many possible users found for ip.");
-            }
-            Stripersist.requestComplete();
+        if(request.getUserPrincipal() != null){
+            chain.doFilter(request, response);
         }else{
-            u = (User) session.getAttribute(USER_CHECK);
-        }
-        final User user = u;
+            User u = null;
+            if((session.getAttribute(IP_CHECK) == null  && session.getAttribute(USER_CHECK) == null) || isCacheValid(session)){
 
-        RequestWrapper wrappedRequest = new RequestWrapper((HttpServletRequest) request){
-            @Override
-            public Principal getUserPrincipal() {
-                if(user != null){
-                    return user;
-                }else{
-                    return super.getUserPrincipal();
-                }
-            }
+                String ipAddress = getIp(request);
+                session.setAttribute(IP_CHECK, ipAddress);
+                Stripersist.requestInit();
 
-            @Override
-            public String getRemoteUser() {
-                if(user != null){
-                    return user.getName();
-                }else{
-                    return super.getRemoteUser();
-                }
-            }
+                EntityManager em = Stripersist.getEntityManager();
+                List<User> users = em.createQuery("from User", User.class).getResultList();
+                List<User> possibleUsers = new ArrayList<User>();
 
-            @Override
-            public boolean isUserInRole(String role) {
-                if(user != null){
-                    return user.checkRole(role);
-                }else{
-                    return super.isUserInRole(role);
+                for (User user : users) {
+                    if(checkValidIpAddress(request, user)){
+                        possibleUsers.add(user);
+                    }
                 }
+
+                if(possibleUsers.isEmpty()){
+                    log.debug("No possible users found for ip");
+                }else if( possibleUsers.size() == 1){
+                    u = possibleUsers.get(0);
+                    u.setAuthenticatedByIp(true);
+                    Hibernate.initialize(u.getGroups());
+                    session.setAttribute(IP_CHECK, ipAddress);
+                    session.setAttribute(USER_CHECK, u);
+                    session.setAttribute(TIME_USER_CHECKED, System.currentTimeMillis());
+                }else{
+                    log.debug("Too many possible users found for ip.");
+                }
+                Stripersist.requestComplete();
+            }else{
+                u = (User) session.getAttribute(USER_CHECK);
             }
-        };
-          
-        Throwable problem = null;
-        
-        try {
-            chain.doFilter(wrappedRequest, response);
-        } catch (IOException | ServletException t) {
-            log.error("Error processing chain", problem);
-            throw t;
+            final User user = u;
+
+            RequestWrapper wrappedRequest = new RequestWrapper((HttpServletRequest) request){
+                @Override
+                public Principal getUserPrincipal() {
+                    if(user != null){
+                        return user;
+                    }else{
+                        return super.getUserPrincipal();
+                    }
+                }
+
+                @Override
+                public String getRemoteUser() {
+                    if(user != null){
+                        return user.getName();
+                    }else{
+                        return super.getRemoteUser();
+                    }
+                }
+
+                @Override
+                public boolean isUserInRole(String role) {
+                    if(user != null){
+                        return user.checkRole(role);
+                    }else{
+                        return super.isUserInRole(role);
+                    }
+                }
+            };
+
+            Throwable problem = null;
+
+            try {
+                chain.doFilter(wrappedRequest, response);
+            } catch (IOException | ServletException t) {
+                log.error("Error processing chain", problem);
+                throw t;
+            }
         }
     }
 
@@ -213,21 +221,10 @@ public class IPAuthenticationFilter implements Filter {
                 }
             }
 
-            if (ipAddress.equalsIgnoreCase(remoteAddress)
-                    || ipAddress.equalsIgnoreCase("0.0.0.0")
-                    || ipAddress.equalsIgnoreCase("::")) {
+            if (ipAddress.equalsIgnoreCase(remoteAddress)) {
                 return true;
             }
         }
-
-        /* lokale verzoeken mogen ook */
-        String localAddress = request.getLocalAddr();
-
-        if (remoteAddress.equalsIgnoreCase(localAddress)) {
-            log.debug("Toegang vanaf lokaal adres toegestaan: lokaal adres " + localAddress + ", remote adres: " + remoteAddress);
-            return true;
-        }
-
         log.info("IP adres " + remoteAddress + " niet toegestaan voor gebruiker " + user.getName());
 
         return false;
@@ -269,6 +266,22 @@ public class IPAuthenticationFilter implements Filter {
         }
 
         return true;
+    }
+    
+    private boolean isCacheValid(HttpSession session){
+        if(session == null){
+            return true;
+        }
+        if( session.getAttribute(TIME_USER_CHECKED) == null){
+            return true;
+        }
+        long prev = (long)session.getAttribute(TIME_USER_CHECKED);
+        long now = System.currentTimeMillis();
+        if(now - prev > MAX_TIME_USER_CACHE){
+            return true;
+        }
+        
+        return false;
     }
     
     /**

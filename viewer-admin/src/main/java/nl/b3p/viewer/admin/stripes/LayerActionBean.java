@@ -28,6 +28,7 @@ import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.hibernate.Hibernate;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -257,17 +258,16 @@ public class LayerActionBean implements ActionBean {
         for (String groupName : groupsPreventGeomEdit) {
             layer.getPreventGeomEditors().add(groupName);
         }
-
+        EntityManager em = Stripersist.getEntityManager();       
         layer.setFeatureType(simpleFeatureType);
 
-        Stripersist.getEntityManager().persist(layer);
+        em.persist(layer);
         layer.getService().authorizationsModified();
         List<Application> apps = findApplications(layer);
-        EntityManager em = Stripersist.getEntityManager();
         for (Application application : apps) {
             SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
         }
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
 
         return new ForwardResolution(JSP);

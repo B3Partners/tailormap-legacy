@@ -47,6 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div style="clear: both;"></div>
                     <stripes:hidden id="selectedlayersinput" name="selectedContent" />
                     <stripes:hidden id="checkedlayersinput" name="checkedLayersString" />
+                    <stripes:hidden id="removedrecordsinput" name="removedRecordsString" />
 
                     <stripes:submit name="save" value="Opslaan"/>
                     <stripes:submit name="default" value="Annuleren"/>
@@ -72,6 +73,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var moverighticon = '${contextPath}/resources/images/move-right.gif';
                 var moveupicon = '${contextPath}/resources/images/move-up.gif';
                 var movedownicon = '${contextPath}/resources/images/move-down.gif';
+                var removeicon = '${contextPath}/resources/images/bin_empty.png';
+                var unremoveicon = '${contextPath}/resources/images/bin.png';
             
             </script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/TreeSelection.js"></script>

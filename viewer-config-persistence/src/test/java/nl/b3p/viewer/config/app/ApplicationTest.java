@@ -128,6 +128,100 @@ public class ApplicationTest extends TestUtil {
             assert (false);
         }
     }
+    
+    @Test
+    public void testMakeMashupDontDuplicateStartLayers(){
+         initData(true);
+        try {
+            int expectedStartLayerSize = app.getStartLayers().size();
+            
+
+            Application mashup = app.createMashup("mashup", entityManager,false);
+            entityManager.persist(mashup);
+
+            Application secondMashup = app.createMashup("mashup2", entityManager,false);
+            entityManager.persist(secondMashup);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            // Check first mashup
+            assertFalse(app.getId().equals(mashup.getId()));
+            assertEquals(expectedStartLayerSize, mashup.getStartLayers().size());
+
+            for (StartLayer startLayer : mashup.getStartLayers()) {
+                assertEquals(mashup.getId(), startLayer.getApplication().getId());
+            }
+
+            TreeCache tc = mashup.loadTreeCache(entityManager);
+            List<ApplicationLayer> appLayers = tc.getApplicationLayers();
+            for (ApplicationLayer appLayer : appLayers) {
+                assertTrue(appLayer.getStartLayers().containsKey(mashup));
+            }
+            
+            // second mashup
+            assertFalse(app.getId().equals(secondMashup.getId()));
+            assertEquals(expectedStartLayerSize, secondMashup.getStartLayers().size());
+
+            for (StartLayer startLayer : secondMashup.getStartLayers()) {
+                assertEquals(secondMashup.getId(), startLayer.getApplication().getId());
+            }
+
+            TreeCache tc2 = secondMashup.loadTreeCache(entityManager);
+            List<ApplicationLayer> appLayers2 = tc2.getApplicationLayers();
+            for (ApplicationLayer appLayer : appLayers2) {
+                assertTrue(appLayer.getStartLayers().containsKey(secondMashup));
+            }
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+    
+    @Test
+    public void testMakeMashupDontDuplicateStartLevels(){
+         initData(true);
+        try {
+            int expectedStartLevelSize = app.getStartLevels().size();
+            int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
+            
+
+            Application mashup = app.createMashup("mashup", entityManager,false);
+            entityManager.persist(mashup);
+
+            Application secondMashup = app.createMashup("mashup2", entityManager,false);
+            entityManager.persist(secondMashup);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+
+            // Check first mashup
+            assertFalse(app.getId().equals(mashup.getId()));
+            assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), mashup.getRoot());
+
+            for (StartLevel startLevel : mashup.getStartLevels()) {
+                assertEquals(mashup.getId(), startLevel.getApplication().getId());
+            }
+
+            // second mashup
+            assertFalse(app.getId().equals(secondMashup.getId()));
+            assertEquals(expectedStartLevelSize, secondMashup.getStartLevels().size());
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), secondMashup.getRoot());
+
+            for (StartLevel startLevel : secondMashup.getStartLevels()) {
+                assertEquals(secondMashup.getId(), startLevel.getApplication().getId());
+            }
+
+            TreeCache tc2 = secondMashup.loadTreeCache(entityManager);
+            
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
 
     @Test
     public void testMakeMashupDontLinkComponents() throws Exception {
@@ -180,8 +274,8 @@ public class ApplicationTest extends TestUtil {
     public void testMakeMashupOfApplicationWithExistingMashup() throws Exception {
         initData(true);
         try {
-            int expectedStartLayerSize = app.getStartLayers().size() * 2;
-            int expectedStartLevelSize = app.getStartLevels().size() * 2;
+            int expectedStartLayerSize = app.getStartLayers().size();
+            int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 3;
 
             Application mashup1 = app.createMashup("mashup", entityManager,false);

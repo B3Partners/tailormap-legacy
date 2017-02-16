@@ -53,10 +53,26 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                     xtype: 'textfield'
                 }
             }, {
+                id: 'mashup',
+                text: "Mashup",
+                dataIndex: 'mashup',
+                width: 120,
+                filter: {
+                    xtype: 'textfield'
+                }
+            },{
+                id: 'motherapplication',
+                text: "Moederapplicatie",
+                dataIndex: 'motherapplication',
+                width: 200,
+                filter: {
+                    xtype: 'textfield'
+                }
+            },{
                 id: 'owner',
                 text: "Eigenaar",
                 dataIndex: 'owner',
-                flex: 1,
+                width: 160,
                 filter: {
                     xtype: 'textfield'
                 }
@@ -92,6 +108,8 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             {name: 'id', type: 'int' },
             {name: 'name', type: 'string'},
             {name: 'published', type: 'string'},
+            {name: 'mashup', type: 'string'},
+            {name: 'motherapplication', type: 'string'},
             {name: 'owner', type: 'string'}
         ];
     },

@@ -5,14 +5,15 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.Application.TreeCache;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
@@ -88,5 +89,31 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         assertNull(error);
         Level test = entityManager.find(Level.class, id);
         assertNull(test);        
+    }
+    
+    @Test
+    public void testAddLayerToExistingLevel() throws Exception{
+        
+        initData(true);
+        int numStartLayers = app.getStartLayers().size();
+        TreeCache cache =app.loadTreeCache(entityManager);
+        
+        int numAppLayers = cache.getApplicationLayers().size();
+        
+        instance.setApplication(app);
+        instance.setLevel(testLevel);
+        instance.setSelectedlayers("l10,al6");
+        assertNotNull(testAppLayer);
+        assertNotNull(testLevel);
+        
+        instance.saveLevel(entityManager);
+        
+        Application application = entityManager.find(Application.class, app.getId());
+        assertEquals(numStartLayers + 1, application.getStartLayers().size());
+        
+        app.setTreeCache(null);
+        cache =app.loadTreeCache(entityManager);
+        assertEquals(numAppLayers + 1, cache.getApplicationLayers().size());
+        
     }
 }

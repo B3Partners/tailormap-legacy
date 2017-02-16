@@ -275,6 +275,12 @@
                 <version>2.2.3</version>
             </dependency>
             <dependency>
+                <!-- override the version provided by hibernate -->
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.22.0-CR1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>3.6.8.Final</version>
@@ -283,6 +289,16 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>3.6.8.Final</version>
+                <exclusions>
+                    <exclusion>
+                        <!--
+                        exclude old javassist so we can use 3.22.0-CR1, see issue #745
+                        when upgrading hibernate this should be removed
+                        -->
+                        <groupId>javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- viewer-config-persistence -->
@@ -406,7 +422,7 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.common</artifactId>
-                <version>2.10.1</version>
+                <version>2.12.0</version>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
@@ -490,7 +506,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.0.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -534,7 +550,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
@@ -549,7 +565,7 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <!-- current of the compiler versions (2.5 atm) fail on an inline finction:
+                    <!-- current release of the compiler versions (2.5 atm) fails on an inline function:
                     [ERROR] JSC_BAD_FUNCTION_DECLARATION. functions can only be declared at top level or immediately within another function in ES5 strict mode at /home/mark/dev/projects/flamingo/viewer/src/main/webapp/viewer-html/common/viewercontroller/openlayers/OpenLayersMapComponent.js line 381 : 16
                     -->
                     <version>2.4</version>
@@ -612,6 +628,13 @@
                 de schema's de test worden niet automatisch aangemaakt.
                 -->
                 <test.persistence.unit>viewer-config-postgresql</test.persistence.unit>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
+        </profile>
+        <profile>
+            <id>jenkins</id>
+            <properties>
+                <test.persistence.unit>viewer-config-oracle</test.persistence.unit>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </profile>

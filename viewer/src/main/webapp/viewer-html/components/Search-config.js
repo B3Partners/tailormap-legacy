@@ -165,6 +165,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 inputValue: 'solr',
                                 checked: config.type=="solr"
                             },{
+                                boxLabel: 'PDOK Adreszoeker', 
+                                name: 'type' + config.id, 
+                                inputValue: 'pdok',
+                                checked: config.type==="pdok"
+                            },{
                                 boxLabel: 'Eenvoudig', 
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
@@ -178,6 +183,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         },
                         { fieldLabel: 'URL *', name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
                         { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
+                        { xtype: 'container', itemId: 'pdokConfig' + config.id, hidden: true, height: 130, autoScroll: true,items: [{xtype: "textfield",value: config.filter,name: "filter" + config.id,itemId: "filter" + config.id,fieldLabel: "Optioneel filter",labelWidth: 120,width: 600}] },
                         { xtype: 'container', itemId: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', layout: { type: 'vbox', align: 'stretch' } },
                         {
                             xtype:'button',
@@ -226,13 +232,16 @@ Ext.define("viewer.components.SearchConfiguration",{
         // When switching radio input type is an array
         if(typeof type !== 'string') return;
         this.hideExtraConfig(configid);
-        if(type === 'solr' || type === 'simplelist') {
+        if(type === 'solr' || type === 'simplelist' || type === 'pdok') {
             if(type === 'solr') {
                 // Show additional Solr configuration
                 this.addSolrconfig(configid);
             }
             if(type === 'simplelist') {
                 this.addSimplelistConfig(configid);
+            }
+            if(type === "pdok"){
+                this.addPdokConfig(configid);
             }
             this.hideUrl(configid);
         } else {
@@ -264,6 +273,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             searchconfig.urlOnly= urlOnly;
             if(type === 'solr') {
                 me.saveSolrconfig(configid);
+            }
+            if(type === 'pdok') {
+                me.savePDOKConfig(configid);
             }
             if(type === 'simplelist') {
                 me.saveSimpleListConfig(configid);
@@ -404,6 +416,15 @@ Ext.define("viewer.components.SearchConfiguration",{
         solrConfigContainer.setVisible(true);
         this.panel.updateLayout();
     },
+    addPdokConfig: function(configid){
+        var searchConfig = this.getConfig(configid);
+        var solrConfigContainer = Ext.ComponentQuery.query('#pdokConfig' + configid)[0];
+        solrConfigContainer.setVisible(true);
+        var a =0;
+        this.panel.updateLayout();
+        
+        
+    },
     /**
      * Shows the window with layers which must be on / will be switched on when
      * using the solr search
@@ -511,6 +532,12 @@ Ext.define("viewer.components.SearchConfiguration",{
         me.switchLayersOn.resetChecked(switchOnLayersChecked);
         // Show the window
         me.layerSelectionWindow.show();
+    },
+    savePDOKConfig:function(searchconfigId){
+        var searchConfig = this.getConfig(searchconfigId);
+        var filter = Ext.ComponentQuery.query('#filter'+searchconfigId)[0].value
+        
+        searchConfig.filter = filter;
     },
     // Save Solr configuration
     saveSolrconfig: function(searchconfigId, requiredOn, switchOn) {
