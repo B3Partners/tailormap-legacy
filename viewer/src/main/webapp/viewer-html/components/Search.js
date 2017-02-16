@@ -197,6 +197,7 @@ Ext.define ("viewer.components.Search",{
                 emptyText: 'Maak uw keuze',
                 name: 'searchName' + this.name,
                 itemId: 'searchName' + this.name,
+                value: this.searchconfigs.length > 0 ? this.searchconfigs[0].id : null,
                 listeners: {
                     change: {
                         fn: function(combo, newValue) {
@@ -231,7 +232,6 @@ Ext.define ("viewer.components.Search",{
                         }
                     }
                 });
-                var me = this;
                 this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
                     name: 'searchfield',
                     hideTrigger: me.searchFieldTriggers === null,
