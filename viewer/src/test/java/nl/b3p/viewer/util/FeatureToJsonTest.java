@@ -74,7 +74,7 @@ public class FeatureToJsonTest {
         
         Query q = new Query();
         q.setStartIndex(10);
-        q.setMaxFeatures(20);
+        q.setMaxFeatures(10);
         String sort = null;
         String dir = null;
         List<Long> attributesToInclude = new ArrayList<>();
