@@ -1,22 +1,35 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2017 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
 import org.geotools.data.Query;
+import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.opengis.filter.Filter;
@@ -29,10 +42,13 @@ public class FeatureToJsonTest {
     
     private String url = "http://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
     private String featureTypeName = "Test_omgeving:cbs_gemeente_2014";
+    
 
-    private ApplicationLayer al = null;
+    private ApplicationLayer al = new ApplicationLayer();
     private FeatureSource fs = new WFSFeatureSource();
     private SimpleFeatureType ft = new SimpleFeatureType();
+    
+    
 
     public FeatureToJsonTest() {
         
@@ -43,6 +59,7 @@ public class FeatureToJsonTest {
         ft.setTypeName(featureTypeName);
         fs.setUrl(url);
         fs.getFeatureTypes().add(ft);
+        
     }
 
     /**
@@ -85,6 +102,4 @@ public class FeatureToJsonTest {
         assertFalse(result.length() == 0);
         assertEquals(10, result.length());
     }
-
-    
 }

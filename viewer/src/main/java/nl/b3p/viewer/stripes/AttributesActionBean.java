@@ -75,7 +75,7 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private SimpleFeatureType featureType;
 
-    private Layer layer = null;
+    protected Layer layer = null;
 
     @Validate
     private int limit;
@@ -456,7 +456,7 @@ public class AttributesActionBean implements ActionBean {
                 if(isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
-                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(ft, extraDataStoreParams);
                 } /*else if(ft.getFeatureSource() instanceof ArcGISFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     if(isDebug()) {
