@@ -23,33 +23,41 @@ import static org.junit.Assert.*;
  */
 public class AttributesActionBeanTest {
     private AttributesActionBean instance = new AttributesActionBean();
+    private ApplicationLayer applayer = new ApplicationLayer();
     
+    private String urlGeoserver = "http://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
+    private String typenameGeoserver = "Test_omgeving:cbs_gemeente_2014";
+    private FeatureSource fsGeoserver = new WFSFeatureSource();
+    private SimpleFeatureType ftGeoserver = new SimpleFeatureType();
     
-    private String url = "http://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
-    private String featureTypeName = "Test_omgeving:cbs_gemeente_2014";
 
-    private ApplicationLayer al = null;
-    private FeatureSource fs = new WFSFeatureSource();
-    private SimpleFeatureType ft = new SimpleFeatureType();
-    private ApplicationLayer appLayer=new ApplicationLayer();
-    
+    private FeatureSource fsDeegree = new WFSFeatureSource();
+    private SimpleFeatureType ftDeegree = new SimpleFeatureType();
+    private String urlDeegree = "http://afnemers.ruimtelijkeplannen.nl/afnemers/services";
+    private String typenameDeegree = "Test_omgeving:cbs_gemeente_2014";
+
+
     public AttributesActionBeanTest() {
     }
     
     
     @Before
     public void setUp() {
-        ft.setFeatureSource(fs);
-        ft.setTypeName(featureTypeName);
-        fs.setUrl(url);
-        fs.getFeatureTypes().add(ft);
-        
-        appLayer.setId(666L);
+        ftGeoserver.setFeatureSource(fsGeoserver);
+        ftGeoserver.setTypeName(typenameGeoserver);
+        fsGeoserver.setUrl(urlGeoserver);
+        fsGeoserver.getFeatureTypes().add(ftGeoserver);
         
         
-        instance.setFeatureType(ft);
-        instance.setAppLayer(appLayer);
+        ftDeegree.setFeatureSource(fsDeegree);
+        ftDeegree.setTypeName(typenameDeegree);
+        fsDeegree.setUrl(urlDeegree);
+        fsDeegree.getFeatureTypes().add(ftDeegree);
+        
+        applayer.setId(666L);
+        instance.setAppLayer(applayer);
         instance.setContext(new TestActionBeanContext());
+        
     }
     
     @After
@@ -60,9 +68,10 @@ public class AttributesActionBeanTest {
      * Test of store method, of class AttributesActionBean.
      */
     @Test
-    public void testStoreFirstPage() throws Exception {
+    public void testStoreFirstPageGS() throws Exception {
         System.out.println("store");
         
+        instance.setFeatureType(ftGeoserver);
         instance.setStart(0);
         instance.setLimit(10);
         
@@ -73,9 +82,41 @@ public class AttributesActionBeanTest {
     }
     
     @Test
-    public void testStoreSecondPage() throws Exception {
+    public void testStoreSecondPageGS() throws Exception {
         System.out.println("store");
         
+        instance.setFeatureType(ftGeoserver);
+        instance.setStart(10);
+        instance.setLimit(10);
+        
+        JSONObject result = instance.executeStore();
+        
+        JSONArray features = result.getJSONArray("features");
+        assertEquals(10, features.length());
+    }
+    
+    /**
+     * Test of store method, of class AttributesActionBean.
+     */
+    @Test
+    public void testStoreFirstPageDG() throws Exception {
+        System.out.println("store");
+        
+        instance.setFeatureType(ftDeegree);
+        instance.setStart(0);
+        instance.setLimit(10);
+        
+        JSONObject result = instance.executeStore();
+        
+        JSONArray features = result.getJSONArray("features");
+        assertEquals(10, features.length());
+    }
+    
+    @Test
+    public void testStoreSecondPageDG() throws Exception {
+        System.out.println("store");
+        
+        instance.setFeatureType(ftDeegree);
         instance.setStart(10);
         instance.setLimit(10);
         
