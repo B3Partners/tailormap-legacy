@@ -432,13 +432,18 @@ public class AttributesActionBean implements ActionBean {
 */
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
-
-        if(unauthorized) {
+        if (unauthorized) {
             json.put("success", false);
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
+        json = executeStore();
 
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+    }
+    
+    protected JSONObject executeStore(){
+        JSONObject json = new JSONObject();
         try {
             int total = 0;
 
@@ -515,9 +520,9 @@ public class AttributesActionBean implements ActionBean {
             }
             json.put("message", message);
         }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        return json;
     }
+    
     
     private void setAttributesNotNullFilters(Query q, ApplicationLayer al, SimpleFeatureType ft) throws CQLException {
         FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
