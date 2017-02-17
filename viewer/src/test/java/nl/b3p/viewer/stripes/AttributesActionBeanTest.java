@@ -5,7 +5,10 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.util.ArrayList;
+import java.util.List;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
@@ -34,7 +37,7 @@ public class AttributesActionBeanTest {
     private FeatureSource fsDeegree = new WFSFeatureSource();
     private SimpleFeatureType ftDeegree = new SimpleFeatureType();
     private String urlDeegree = "http://afnemers.ruimtelijkeplannen.nl/afnemers/services";
-    private String typenameDeegree = "Test_omgeving:cbs_gemeente_2014";
+    private String typenameDeegree = "app:Bestemmingsplangebied";
 
 
     public AttributesActionBeanTest() {
@@ -57,6 +60,15 @@ public class AttributesActionBeanTest {
         applayer.setId(666L);
         instance.setAppLayer(applayer);
         instance.setContext(new TestActionBeanContext());
+        
+        List<ConfiguredAttribute> cas = new ArrayList<>();
+        ConfiguredAttribute ca = new ConfiguredAttribute();
+        ca.setAttributeName("naam");
+        ca.setVisible(true);
+        cas.add(ca);
+        
+        applayer.setAttributes(cas);
+        
         
     }
     
