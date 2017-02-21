@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     circle: null,
     box:null,
     freehand:null,
-    drawFeatureControls:null,
+    drawFeatureControls: null,
+    activeDrawFeatureControl: null,
     modifyFeature:null,
     constructor : function (config){
         config.colorPrefix = '#';
@@ -208,20 +209,30 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         return this.getFrameworkLayer().addFeatures(olFeatures);
     },
 
-    drawFeature : function(type){
-        if(type === "Point"){
+    drawFeature: function (type) {
+// call superclass method to register keydown events
+
+        this.superclass.drawFeature.call(this, type);
+
+        if (type === "Point") {
+            this.activeDrawFeatureControl = this.point;
             this.point.activate();
-        }else if(type == "LineString"){
+        } else if (type === "LineString") {
+            this.activeDrawFeatureControl = this.line;
             this.line.activate();
-        }else if(type === "Polygon"){
+        } else if (type === "Polygon") {
+            this.activeDrawFeatureControl = this.polygon;
             this.polygon.activate();
-        }else if(type === "Circle"){
+        } else if (type === "Circle") {
+            this.activeDrawFeatureControl = this.circle;
             this.circle.activate();
-        }else if(type === "Box"){
+        } else if (type === "Box") {
+            this.activeDrawFeatureControl = this.box;
             this.box.activate();
-        }else if(type === "Freehand"){
+        } else if (type === "Freehand") {
+            this.activeDrawFeatureControl = this.freehand;
             this.freehand.activate();
-        }else {
+        } else {
            this.config.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
     },
@@ -229,6 +240,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Stop the drawing controls
      */
     stopDrawing: function(){
+        // remove key event listener
+        this.superclass.stopDrawing.call(this);
+
         //also stop drawing
         if (this.point.active){
             this.point.cancel();
@@ -249,8 +263,43 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.freehand.cancel();
             this.freehand.deactivate();
         }
+        this.activeDrawFeatureControl = null;
     },
-    
+
+    /** handle CTRL-Z key when drawing. */
+    undoSketch: function () {
+        if (this.activeDrawFeatureControl) {
+            // undo makes no sense on a circle because it is drawn by radius
+            if (this.activeDrawFeatureControl !== this.circle) {
+                try {
+                    // wrap all this in a try, eg openlayers undo() will not validate
+                    // the stack and just try to read a geometry from the path handler;
+                    // but that will be empty if nothing was drawn yet causing a NPE
+                    this.activeDrawFeatureControl.undo();
+                } catch (e) {
+                    // catch 'TypeError: Cannot read property 'geometry' of null'
+                }
+            }
+        }
+    },
+
+    /** handle CTRL-Y key when drawing. */
+    redoSketch: function () {
+        if (this.activeDrawFeatureControl) {
+            // redo makes no sense on a circle because undo is disabled
+            if (this.activeDrawFeatureControl !== this.circle) {
+                this.activeDrawFeatureControl.redo();
+            }
+        }
+    },
+
+    /** handle ESC key when drawing. */
+    cancelSketch: function () {
+        if (this.activeDrawFeatureControl) {
+            this.activeDrawFeatureControl.cancel();
+        }
+    },
+
     /**
      * Called when a feature is selected
      */
