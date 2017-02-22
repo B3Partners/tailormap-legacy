@@ -164,7 +164,7 @@
             <dependency>
                 <groupId>nl.geozet</groupId>
                 <artifactId>openls-databinding</artifactId>
-                <version>0.4</version>
+                <version>1.0</version>
             </dependency>
             <!-- lucene for csw advanced searching -->
             <dependency>
