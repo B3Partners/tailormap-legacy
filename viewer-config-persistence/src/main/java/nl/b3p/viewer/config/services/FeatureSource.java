@@ -23,6 +23,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.Feature;

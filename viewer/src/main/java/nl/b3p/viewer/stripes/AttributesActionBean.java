@@ -75,7 +75,7 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private SimpleFeatureType featureType;
 
-    private Layer layer = null;
+    protected Layer layer = null;
 
     @Validate
     private int limit;
@@ -432,13 +432,18 @@ public class AttributesActionBean implements ActionBean {
 */
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
-
-        if(unauthorized) {
+        if (unauthorized) {
             json.put("success", false);
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
+        json = executeStore();
 
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+    }
+    
+    protected JSONObject executeStore(){
+        JSONObject json = new JSONObject();
         try {
             int total = 0;
 
@@ -451,7 +456,7 @@ public class AttributesActionBean implements ActionBean {
                 if(isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
-                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(ft, extraDataStoreParams);
                 } /*else if(ft.getFeatureSource() instanceof ArcGISFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     if(isDebug()) {
@@ -515,9 +520,9 @@ public class AttributesActionBean implements ActionBean {
             }
             json.put("message", message);
         }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        return json;
     }
+    
     
     private void setAttributesNotNullFilters(Query q, ApplicationLayer al, SimpleFeatureType ft) throws CQLException {
         FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());

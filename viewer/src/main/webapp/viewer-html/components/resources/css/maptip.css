@@ -95,11 +95,28 @@
     cursor: pointer;
 }
 /*** Features (feature info and maptip) css ***/
+.extendedfeatureinfo-component-container{
+    overflow: hidden;
+}
+.extended_feature_info_pagination {
+    text-align:center;
+    position: absolute;
+    bottom: 0px;
+    overflow: hidden;
+    width:100%;
+    margin-bottom: 10px;
+}
+.extended_feature_info_title{
+    font-weight: bold;
+    text-align:center;
+}
+
 .feature_summary_feature{
     float: left;
     width: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
+    margin-left: 5px;
     border-bottom: 1px solid #C7C7C7;
     overflow: auto;
 }

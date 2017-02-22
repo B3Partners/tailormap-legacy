@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.define('viewer.LayoutManager', {
     defaultRegionSettings: {
         header: {region: 'north', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}},
@@ -37,6 +39,7 @@ Ext.define('viewer.LayoutManager', {
     wrapperId: 'wrapper',
     autoRender: true,
     tabComponents: {},
+    collapsibleComponents: {},
     popupWin: null,
     // container for all floating panels
     floatingPanels: [],
@@ -222,7 +225,7 @@ Ext.define('viewer.LayoutManager', {
                     // Create and return the floating panel
                     return me.createFloatingPanel(regionlayout, centerItem.regionDefaultConfig.region, items, layout, extLayout);
                 }
-                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, centerItem.regionDefaultConfig.columnOrientation));
+                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, centerItem.regionDefaultConfig.columnOrientation,items));
                 return Ext.apply({
                     xtype: 'container',
                     region: regionid,
@@ -269,7 +272,7 @@ Ext.define('viewer.LayoutManager', {
                     return me.createFloatingPanel(regionlayout, regionitems[0].regionDefaultConfig.region, componentItems, layout, extLayout);
                 }
 
-                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, regionitems[0].regionDefaultConfig.columnOrientation));
+                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, regionitems[0].regionDefaultConfig.columnOrientation,componentItems));
                 return Ext.apply({
                     xtype: 'container',
                     region: regionid,
@@ -404,13 +407,29 @@ Ext.define('viewer.LayoutManager', {
         return {};
     },
 
-    getCollapseConfig: function(regionLayout, columnOrientation) {
+    processCollapsibleItems:function (items, id){
+        if(items.items){
+            this.processCollapsibleItems(items.items,id);
+        }
+        for(var i = 0 ;i < items.length ;i++){
+            if(items[i].items){
+                this.processCollapsibleItems(items[i].items, id);
+            }else{
+                this.collapsibleComponents[items[i].data.cmp_name] = id;
+            }
+        }
+    },
+    
+    getCollapseConfig: function(regionLayout, columnOrientation, items) {
         var me = this;
         if(columnOrientation === 'vertical' && regionLayout.hasOwnProperty('enableCollapse') && regionLayout.enableCollapse) {
+            var id = Ext.id();
+            this.processCollapsibleItems(items,id);
             return {
                 xtype: 'panel',
                 border: 0,
                 collapsible: true,
+                id: id,
                 animCollapse: false,
                 title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
                 collapsed: regionLayout.hasOwnProperty('defaultCollapsed') && regionLayout.defaultCollapsed,
@@ -710,6 +729,18 @@ Ext.define('viewer.LayoutManager', {
             return;
         }
         Ext.getCmp(this.tabComponents[componentId].tabId).setActiveTab(this.tabComponents[componentId].tabNo);
+    },
+    
+    expandRegion: function(componentId) {
+        if(!this.collapsibleComponents[componentId]){
+            if(!this.isTabComponent(componentId)) {
+                return;
+            }else{
+                Ext.getCmp(this.tabComponents[componentId].tabId).ownerCt.expand();
+            }
+        }else{
+            Ext.getCmp(this.collapsibleComponents[componentId]).expand();
+        }
     },
 
     isTabComponent: function(componentId) {
