@@ -1,17 +1,17 @@
 /*
- * Copyright (C) 2013-2016 B3Partners B.V.
+ * Copyright (C) 2013-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.util;
@@ -33,6 +33,7 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureIterator;
@@ -110,7 +111,7 @@ public class FeatureToJson {
         /* Use the first property as sort field, otherwise geotools while give a error when quering
          * a JDBC featureType without a primary key.
          */
-        else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()){
+        else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
             setSortBy(q, propertyNames.get(0),dir);
         }
         Integer start = q.getStartIndex();
@@ -119,7 +120,7 @@ public class FeatureToJson {
         }
         boolean offsetSupported = fs.getQueryCapabilities().isOffsetSupported();
         //if offSet is not supported, get more features (start + the wanted features)
-        if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES){
+        if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES || fs.getDataStore() instanceof WFSDataStore){
             q.setMaxFeatures(q.getMaxFeatures()+start);
         }
         FeatureIterator<SimpleFeature> it = null;

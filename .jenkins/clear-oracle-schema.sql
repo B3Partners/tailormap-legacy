@@ -22,7 +22,7 @@ BEGIN
                               || cur_rec.object_type
                               || ' "'
                               || cur_rec.object_name
-                              || '" CASCADE CONSTRAINTS';
+                              || '" CASCADE CONSTRAINTS PURGE';
          ELSE
             EXECUTE IMMEDIATE    'DROP '
                               || cur_rec.object_type
