@@ -61,6 +61,7 @@ public class FeatureToJson {
     private boolean graph = false;
     private List<Long> attributesToInclude = new ArrayList<Long>();
     private static final int TIMEOUT = 5000;
+    private FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
     public FeatureToJson(boolean arrays,boolean edit){
         this.arrays=arrays;
@@ -337,7 +338,6 @@ public class FeatureToJson {
      * @param dir sorting direction DESC or ASC
      */
     private void setSortBy(Query q,String sort, String dir){
-        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         if(sort != null) {
             q.setSortBy(new SortBy[] {
@@ -360,7 +360,6 @@ public class FeatureToJson {
     }
 
     private Filter createFilter(SimpleFeature feature,FeatureTypeRelation rel) {
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         List<Filter> filters = new ArrayList<Filter>();
         for (FeatureTypeRelationKey key : rel.getRelationKeys()){
             AttributeDescriptor rightSide = key.getRightSide();
@@ -371,14 +370,14 @@ public class FeatureToJson {
             }
             if (AttributeDescriptor.GEOMETRY_TYPES.contains(rightSide.getType()) &&
                     AttributeDescriptor.GEOMETRY_TYPES.contains(leftSide.getType())){
-                filters.add(ff.not(ff.isNull(ff.property(rightSide.getName()))));
-                filters.add(ff.intersects(ff.property(rightSide.getName()),ff.literal(value)));
+                filters.add(ff2.not(ff2.isNull(ff2.property(rightSide.getName()))));
+                filters.add(ff2.intersects(ff2.property(rightSide.getName()),ff2.literal(value)));
             }else{
-                filters.add(ff.equals(ff.property(rightSide.getName()),ff.literal(value)));
+                filters.add(ff2.equals(ff2.property(rightSide.getName()),ff2.literal(value)));
             }
         }
         if (filters.size()>1){
-            return ff.and(filters);
+            return ff2.and(filters);
         }else if (filters.size()==1){
             return filters.get(0);
         }else{
@@ -387,7 +386,6 @@ public class FeatureToJson {
     }
 
     public static Filter reformatFilter(Filter filter, SimpleFeatureType ft) throws Exception {
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)){
             return filter;
         }

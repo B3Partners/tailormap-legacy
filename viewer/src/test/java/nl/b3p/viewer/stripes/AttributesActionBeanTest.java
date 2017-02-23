@@ -45,7 +45,8 @@ import org.opengis.filter.Filter;
  */
 public class AttributesActionBeanTest {
     private AttributesActionBean instance = new AttributesActionBean();
-    private ApplicationLayer applayer = new ApplicationLayer();
+    private ApplicationLayer applayerGS = new ApplicationLayer();
+    private ApplicationLayer applayerDG = new ApplicationLayer();
     
     private String urlGeoserver = "http://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
     private String typenameGeoserver = "Test_omgeving:cbs_gemeente_2014";
@@ -91,17 +92,24 @@ public class AttributesActionBeanTest {
         fsDeegree.setUrl(urlDeegree);
         fsDeegree.getFeatureTypes().add(ftDeegree);
         
-        applayer.setId(666L);
-        instance.setAppLayer(applayer);
+        applayerGS.setId(666L);
+        applayerDG.setId(666L);
         instance.setContext(new TestActionBeanContext());
         
         List<ConfiguredAttribute> cas = new ArrayList<>();
         ConfiguredAttribute ca = new ConfiguredAttribute();
-        ca.setAttributeName("naam");
+        ca.setAttributeName("GM_NAAM");
         ca.setVisible(true);
         cas.add(ca);
         
-        applayer.setAttributes(cas);
+        List<ConfiguredAttribute> casDG = new ArrayList<>();
+        ConfiguredAttribute caDG = new ConfiguredAttribute();
+        caDG.setAttributeName("naam");
+        caDG.setVisible(true);
+        casDG.add(caDG);
+        
+        applayerGS.setAttributes(cas);
+        applayerDG.setAttributes(casDG);
         
         // RelatedFeature tests
         
@@ -176,6 +184,7 @@ public class AttributesActionBeanTest {
         instance.setFeatureType(ftGeoserver);
         instance.setStart(0);
         instance.setLimit(10);
+        instance.setAppLayer(applayerGS);
         
         JSONObject result = instance.executeStore();
         
@@ -190,6 +199,7 @@ public class AttributesActionBeanTest {
         instance.setFeatureType(ftGeoserver);
         instance.setStart(10);
         instance.setLimit(10);
+        instance.setAppLayer(applayerGS);
         
         JSONObject result = instance.executeStore();
         
@@ -200,13 +210,14 @@ public class AttributesActionBeanTest {
     /**
      * Test of store method, of class AttributesActionBean.
      */
-    //@Test at the time of committing, the service was down.
+    @Test //at the time of committing, the service was down.
     public void testStoreFirstPageDG() throws Exception {
         System.out.println("store");
         
         instance.setFeatureType(ftDeegree);
         instance.setStart(0);
         instance.setLimit(10);
+        instance.setAppLayer(applayerDG);
         
         JSONObject result = instance.executeStore();
         
@@ -214,13 +225,14 @@ public class AttributesActionBeanTest {
         assertEquals(10, features.length());
     }
     
-    //@Test at the time of committing, the service was down.
+    @Test //at the time of committing, the service was down.
     public void testStoreSecondPageDG() throws Exception {
         System.out.println("store");
         
         instance.setFeatureType(ftDeegree);
         instance.setStart(10);
         instance.setLimit(10);
+        instance.setAppLayer(applayerDG);
         
         JSONObject result = instance.executeStore();
         
@@ -246,7 +258,7 @@ public class AttributesActionBeanTest {
         assertEquals(10, features.length());
     }
     
-     @Test
+    @Test
     public void testGetJSONFeaturesRelatedFeaturetypeMain() throws Exception {
         System.out.println("store");
         
