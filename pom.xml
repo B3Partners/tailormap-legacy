@@ -46,7 +46,7 @@
         <powermock.version>1.6.6</powermock.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>9.4.1212.jre7</postgresql.version>
+        <postgresql.version>42.0.0</postgresql.version>
         <apache.poi.version>3.15</apache.poi.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
@@ -164,7 +164,7 @@
             <dependency>
                 <groupId>nl.geozet</groupId>
                 <artifactId>openls-databinding</artifactId>
-                <version>0.4</version>
+                <version>1.0</version>
             </dependency>
             <!-- lucene for csw advanced searching -->
             <dependency>
@@ -485,7 +485,7 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-plugin-updates
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-plugin-updates -T1
                     and check the output for any available updates
                 -->
                 <plugin>
@@ -516,7 +516,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.6.1</version>
                     <configuration>
                         <source>${project.build.sourceVersion}</source>
                         <target>${project.build.targetVersion}</target>
@@ -555,7 +555,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.1</version>
+                    <version>2.2.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
