@@ -127,9 +127,11 @@ public class SolrConf {
             last = sdf.format(lastUpdated);
         }
         json.put("lastUpdated", last);
-        json.put("featureTypeId", simpleFeatureType.getId());
-        json.put("featureTypeName", simpleFeatureType.getTypeName());
-        json.put("featureSourceName", simpleFeatureType.getFeatureSource().getName());
+        if (simpleFeatureType != null) {
+            json.put("featureTypeId", simpleFeatureType.getId());
+            json.put("featureTypeName", simpleFeatureType.getTypeName());
+            json.put("featureSourceName", simpleFeatureType.getFeatureSource().getName());
+        }
         return json;
     }
 }
