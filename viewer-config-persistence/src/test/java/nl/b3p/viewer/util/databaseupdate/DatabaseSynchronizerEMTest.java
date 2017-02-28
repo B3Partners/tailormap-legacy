@@ -45,7 +45,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  *
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterface {
 

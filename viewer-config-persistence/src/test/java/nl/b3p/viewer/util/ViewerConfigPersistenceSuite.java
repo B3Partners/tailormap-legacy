@@ -30,7 +30,7 @@ import org.junit.runners.Suite;
 
 /**
  *
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

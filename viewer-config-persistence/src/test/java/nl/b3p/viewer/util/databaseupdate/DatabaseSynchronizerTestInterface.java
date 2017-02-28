@@ -24,7 +24,7 @@ import org.junit.Before;
 
 /**
  *
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public abstract class DatabaseSynchronizerTestInterface extends TestUtil {
 

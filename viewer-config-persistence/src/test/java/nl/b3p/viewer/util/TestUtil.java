@@ -22,9 +22,7 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -42,14 +40,12 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TestName;
 
 /**
  * utility methoden voor unit tests.
  *
- * @author Mark Prins <mark@b3partners.nl>
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Mark Prins mark@b3partners.nl
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public abstract class TestUtil extends LoggingTestUtil {
 
@@ -110,6 +106,9 @@ public abstract class TestUtil extends LoggingTestUtil {
 
     /**
      * Helper function for testing.
+     * @param <T> Type of entity to persist
+     * @param entity The entity to persist
+     * @param clazz Class to persist
      */
     public <T> void persistEntityTest(T entity, Class<T> clazz){
         entityManager.persist(entity);
@@ -119,6 +118,9 @@ public abstract class TestUtil extends LoggingTestUtil {
     
     /**
      * Helper function for initializing data.
+     * @throws java.net.URISyntaxException Thrown when the testdata cannot be found
+     * @throws java.io.IOException Thrown when the testdata cannot be found
+     * @throws java.sql.SQLException Thrown when the testdata cannot be loaded
      */
     public void loadTestData() throws URISyntaxException, IOException, SQLException {
 
@@ -132,6 +134,9 @@ public abstract class TestUtil extends LoggingTestUtil {
     }
     /**
      * Helper function for initializing data.
+     * @param f The reader containing the scripts to be executed
+     * @throws java.io.IOException Thrown when the testdata cannot be found
+     * @throws java.sql.SQLException Thrown when the testdata cannot be loaded
      */
     public void executeScript(Reader f) throws IOException, SQLException {
         Connection conn = null;
@@ -151,6 +156,7 @@ public abstract class TestUtil extends LoggingTestUtil {
     }
     /**
      * Helper function for initializing data.
+     * @param addToStartmap Do the layers/levels have to be added to the startmap?
      */
     public void initData( boolean addToStartmap) {
         app = new Application();

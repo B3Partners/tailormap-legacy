@@ -18,7 +18,7 @@ package nl.b3p.viewer.util;
 
 /**
  *
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class SelectedContentCacheTest extends TestUtil {
 
