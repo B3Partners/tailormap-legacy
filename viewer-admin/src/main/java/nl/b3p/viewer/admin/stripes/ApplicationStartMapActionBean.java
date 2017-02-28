@@ -515,22 +515,24 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     protected void removeStartLevel(Level l, EntityManager em){
         StartLevel sl = l.getStartLevels().get(application);
-        List<ApplicationLayer> als = l.getLayers();
-        for (ApplicationLayer al : als) {
-            StartLayer startLayer = al.getStartLayers().get(application);
-            al.getStartLayers().remove(application);
-            application.getStartLayers().remove(startLayer);
-            if (startLayer != null) {
-                em.remove(startLayer);
+        if (sl != null) {
+            List<ApplicationLayer> als = l.getLayers();
+            for (ApplicationLayer al : als) {
+                StartLayer startLayer = al.getStartLayers().get(application);
+                al.getStartLayers().remove(application);
+                application.getStartLayers().remove(startLayer);
+                if (startLayer != null) {
+                    em.remove(startLayer);
+                }
             }
-        }
-        l.getStartLevels().remove(application);
-        em.remove(sl);
-        application.getStartLevels().remove(sl);
-        
-        List<Level> children = l.getChildren();
-        for (Level child : children) {
-            removeStartLevel(child, em);
+            l.getStartLevels().remove(application);
+            em.remove(sl);
+            application.getStartLevels().remove(sl);
+
+            List<Level> children = l.getChildren();
+            for (Level child : children) {
+                removeStartLevel(child, em);
+            }
         }
     }
 
