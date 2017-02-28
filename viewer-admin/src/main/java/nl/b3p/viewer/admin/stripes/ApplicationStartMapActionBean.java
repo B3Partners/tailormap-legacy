@@ -198,11 +198,6 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                                 Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
                                 if(l != null) {
-                                    if(l.containsLevelInSubtree(level)) {
-                                        result = false;
-                                        message = "Niveau kan niet worden geselecteerd omdat een bovenliggend niveau al geselecteerd is";
-                                        break;
-                                    }
                                     if(l.isInSubtreeOf(level)) {
                                         result = false;
                                         message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
