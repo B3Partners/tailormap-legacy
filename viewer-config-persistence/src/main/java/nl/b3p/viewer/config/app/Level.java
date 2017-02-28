@@ -279,6 +279,19 @@ public class Level implements Comparable{
     public boolean containsLevelInSubtree(Level level) {
         return this.getParentInSubtree(level)!=null;
     }
+    
+    public boolean hasLayerInSubtree(){
+        if(!layers.isEmpty()){
+            return true;
+        }else{
+            for (Level level : children) {
+                if(level.hasLayerInSubtree()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public boolean isInSubtreeOf(Level level) {
         Level parentLevel = parent;
