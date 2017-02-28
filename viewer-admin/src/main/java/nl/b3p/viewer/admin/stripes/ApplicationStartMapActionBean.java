@@ -176,8 +176,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     result = false;
                     message = "Niveau met id " + id + " is onbekend!";
                 } else {
-                    
-                    if(level.getLayers().isEmpty()) {
+                    if(!level.hasLayerInSubtree()) {
                         message = "Niveau is geen kaart";
                         result = false;
                         
