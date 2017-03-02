@@ -83,6 +83,15 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
     },
 
     /**
+     * Get the column index for the column to be sorted by default
+     * Can be overridden in child class
+     * @returns {number}
+     */
+    getDefaultSortColumn: function() {
+        return 0;
+    },
+
+    /**
      * Get the additional options for the grid (like columns, extra listeners, etc)
      * @returns {{}}
      */
@@ -107,12 +116,13 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
             extend: 'Ext.data.Model',
             fields: this.getGridModel()
         });
-        return Ext.create('Ext.data.Store', {
+        var columns = this.getGridColumns();
+        var sortIndex = this.getDefaultSortColumn();
+        var storeParameters = {
             pageSize: 10,
             model: 'TableRow',
             remoteSort: true,
             remoteFilter: true,
-            sorters: 'name',
             autoLoad: true,
             proxy: {
                 type: 'ajax',
@@ -133,7 +143,11 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
                     scope: this
                 }
             }
-        });
+        };
+        if(columns[sortIndex] && columns[sortIndex].dataIndex) {
+            storeParameters.sorters = columns[sortIndex].dataIndex;
+        }
+        return Ext.create('Ext.data.Store', storeParameters);
     },
 
     createGrid: function() {

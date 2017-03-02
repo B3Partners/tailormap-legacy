@@ -89,6 +89,10 @@ Ext.define('vieweradmin.components.AttributeSource', {
         ];
     },
 
+    getDefaultSortColumn: function() {
+        return 1;
+    },
+
     getGridModel: function() {
         return [
             {name: 'id', type: 'int' },
