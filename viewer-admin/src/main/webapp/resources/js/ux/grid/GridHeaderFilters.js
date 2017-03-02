@@ -471,10 +471,11 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
         if(Ext.isArray(filters))
         {
             var conv = {};
-            Ext.each(filters, function(filter){
-                if(filter.property)
+            Ext.each(filters, function(filter) {
+                var property = filter.getProperty();
+                if(property)
                 {
-                    conv[filter.property] = filter.value; 
+                    conv[property] = filter.getValue();
                 }
             });
             filters = conv;
@@ -554,8 +555,8 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
         var sf = this.grid.getStore().getFilters();
         var res = {};
         sf.each(function(filter){
-            var name = filter.property;
-            var value = filter.value;
+            var name = filter.getProperty();
+            var value = filter.getValue();
             if(name && value)
             {
                 res[name] = value;            
@@ -578,7 +579,7 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
                 var value = filters[fn];
                 
                 var sf = storeFilters.findBy(function(filter){
-                    return filter.property == fn;
+                    return filter.getProperty() == fn;
                 });
                 
                 if(Ext.isEmpty(value))
