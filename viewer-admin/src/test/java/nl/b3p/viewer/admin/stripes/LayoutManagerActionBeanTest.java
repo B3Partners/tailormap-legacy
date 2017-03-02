@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class LayoutManagerActionBeanTest extends TestUtil{
     

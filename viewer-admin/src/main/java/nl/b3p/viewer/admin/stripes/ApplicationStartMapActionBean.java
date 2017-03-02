@@ -2,16 +2,16 @@
  * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.admin.stripes;
@@ -176,8 +176,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     result = false;
                     message = "Niveau met id " + id + " is onbekend!";
                 } else {
-                    
-                    if(level.getLayers().isEmpty()) {
+                    if(!level.hasLayerInSubtree()) {
                         message = "Niveau is geen kaart";
                         result = false;
                         
@@ -198,11 +197,6 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                                 Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
                                 if(l != null) {
-                                    if(l.containsLevelInSubtree(level)) {
-                                        result = false;
-                                        message = "Niveau kan niet worden geselecteerd omdat een bovenliggend niveau al geselecteerd is";
-                                        break;
-                                    }
                                     if(l.isInSubtreeOf(level)) {
                                         result = false;
                                         message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
@@ -520,22 +514,24 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     protected void removeStartLevel(Level l, EntityManager em){
         StartLevel sl = l.getStartLevels().get(application);
-        List<ApplicationLayer> als = l.getLayers();
-        for (ApplicationLayer al : als) {
-            StartLayer startLayer = al.getStartLayers().get(application);
-            al.getStartLayers().remove(application);
-            application.getStartLayers().remove(startLayer);
-            if (startLayer != null) {
-                em.remove(startLayer);
+        if (sl != null) {
+            List<ApplicationLayer> als = l.getLayers();
+            for (ApplicationLayer al : als) {
+                StartLayer startLayer = al.getStartLayers().get(application);
+                al.getStartLayers().remove(application);
+                application.getStartLayers().remove(startLayer);
+                if (startLayer != null) {
+                    em.remove(startLayer);
+                }
             }
-        }
-        l.getStartLevels().remove(application);
-        em.remove(sl);
-        application.getStartLevels().remove(sl);
-        
-        List<Level> children = l.getChildren();
-        for (Level child : children) {
-            removeStartLevel(child, em);
+            l.getStartLevels().remove(application);
+            em.remove(sl);
+            application.getStartLevels().remove(sl);
+
+            List<Level> children = l.getChildren();
+            for (Level child : children) {
+                removeStartLevel(child, em);
+            }
         }
     }
 

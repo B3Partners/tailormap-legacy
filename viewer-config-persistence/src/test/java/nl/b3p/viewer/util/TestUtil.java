@@ -2,16 +2,16 @@
  * Copyright (C) 2015 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.util;
@@ -40,14 +40,12 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TestName;
 
 /**
  * utility methoden voor unit tests.
  *
- * @author Mark Prins <mark@b3partners.nl>
- * @author Meine Toonen <meinetoonen@b3partners.nl>
+ * @author Mark Prins mark@b3partners.nl
+ * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public abstract class TestUtil extends LoggingTestUtil {
 
@@ -108,6 +106,9 @@ public abstract class TestUtil extends LoggingTestUtil {
 
     /**
      * Helper function for testing.
+     * @param <T> Type of entity to persist
+     * @param entity The entity to persist
+     * @param clazz Class to persist
      */
     public <T> void persistEntityTest(T entity, Class<T> clazz){
         entityManager.persist(entity);
@@ -117,6 +118,9 @@ public abstract class TestUtil extends LoggingTestUtil {
     
     /**
      * Helper function for initializing data.
+     * @throws java.net.URISyntaxException Thrown when the testdata cannot be found
+     * @throws java.io.IOException Thrown when the testdata cannot be found
+     * @throws java.sql.SQLException Thrown when the testdata cannot be loaded
      */
     public void loadTestData() throws URISyntaxException, IOException, SQLException {
 
@@ -130,6 +134,9 @@ public abstract class TestUtil extends LoggingTestUtil {
     }
     /**
      * Helper function for initializing data.
+     * @param f The reader containing the scripts to be executed
+     * @throws java.io.IOException Thrown when the testdata cannot be found
+     * @throws java.sql.SQLException Thrown when the testdata cannot be loaded
      */
     public void executeScript(Reader f) throws IOException, SQLException {
         Connection conn = null;
@@ -149,6 +156,7 @@ public abstract class TestUtil extends LoggingTestUtil {
     }
     /**
      * Helper function for initializing data.
+     * @param addToStartmap Do the layers/levels have to be added to the startmap?
      */
     public void initData( boolean addToStartmap) {
         app = new Application();
