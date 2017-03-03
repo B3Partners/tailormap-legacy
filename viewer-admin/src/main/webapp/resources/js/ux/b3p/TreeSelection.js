@@ -170,8 +170,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 expanded: true
             },
             selModel: {
-                mode: "MULTI",
-                selectOnExpanderClick: true
+                mode: "MULTI"
             },
             viewConfig: this.getViewConfig('selection'),
             useArrows: true,

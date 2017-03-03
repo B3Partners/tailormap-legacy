@@ -151,7 +151,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             { text: 'Waarde', dataIndex: 'value', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
             { xtype: 'actioncolumn', menuDisabled: true, sortable: false, width: 30, items: [{
                 icon: false,
-                iconCls: 'removebutton-icon',
+                iconCls: 'x-fa fa-minus-circle',
                 tooltip: 'Verwijder',
                 handler: function (grid, rowIndex, colIndex) {
                     grid.getStore().removeAt(rowIndex);

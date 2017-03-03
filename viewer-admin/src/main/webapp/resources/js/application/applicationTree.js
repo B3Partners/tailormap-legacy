@@ -58,7 +58,8 @@ Ext.onReady(function() {
         },
         items: [{
             text: 'Subniveau toevoegen',
-            icon: imagesPath + "add.png",
+            // icon: imagesPath + "add.png",
+            iconCls: 'x-fa fa-plus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
                     addSublevel(item.ownerCt.config.data.clickedItem);
@@ -66,7 +67,8 @@ Ext.onReady(function() {
             }
         },{
             text: 'Verwijderen',
-            icon: imagesPath + "delete.png",
+            // icon: imagesPath + "delete.png",
+            iconCls: 'x-fa fa-minus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
                     removeLevel(item.ownerCt.config.data.clickedItem);
@@ -81,7 +83,8 @@ Ext.onReady(function() {
             }
         },{
             text: 'Bewerken',
-            icon: imagesPath + "wrench.png",
+            // icon: imagesPath + "wrench.png",
+            iconCls: 'x-fa fa-wrench',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.clickedItem;
@@ -99,7 +102,8 @@ Ext.onReady(function() {
         },
         items: [{
             text: 'Bewerken',
-            icon: imagesPath + "wrench.png",
+            // icon: imagesPath + "wrench.png",
+            iconCls: 'x-fa fa-wrench',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.clickedItem;

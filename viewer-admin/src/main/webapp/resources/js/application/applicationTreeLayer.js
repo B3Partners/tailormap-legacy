@@ -272,7 +272,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 itemId: 'filter' + attribute.id,
                 height: 240,
                 title: name + (isEnabled ? ' (&times;)' : ''),
-                iconCls: "edit-icon-bw",
+                iconCls: "x-fa fa-wrench",
                 collapsed: idx !== 0,
                 items: [
                     { fieldLabel: 'Filterbaar / Selecteerbaar', name: 'filterable_selectable', inputValue: 1, checked: isEnabled, xtype: 'checkbox',  labelWidth: 150, listeners: {
@@ -478,7 +478,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 itemId: 'edit' + attribute.id,
                 title: name + (attribute.editable ? ' (&times;)' : ''),
                 height: this.getAttributeEditHeight(attribute.valueList),
-                iconCls: "edit-icon-bw",
+                iconCls: "x-fa fa-wrench",
                 collapsed: idx !== 0,
                 items: this.getAttributeEditSettings(attribute, name)
             })));

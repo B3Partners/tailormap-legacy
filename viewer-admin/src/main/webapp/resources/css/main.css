@@ -310,37 +310,17 @@ input[type="submit"]:hover,
   border: 2px solid #cccccc;
   color: #cccccc;
 }
-.savebutton-icon {
-  background-image: url("../images/save.png");
-}
-.cancelbutton-icon {
-  background-image: url("../images/cancel.png");
-}
-.removebutton-icon {
-  background-image: url("../images/delete.png");
-}
-.addbutton-icon {
-  background-image: url("../images/add.png");
-}
-.edit-icon {
-  background-image: url("../images/wrench.png");
-}
-.edit-icon-bw {
-  margin-bottom: 0px;
-  margin-top: -3px;
-  background-image: url("../images/wrench_bw.png");
-}
 .headerCollapsed,
 .x-headerCollapsed {
   cursor: pointer;
 }
-.headerCollapsed:hover span,
-.x-headerCollapsed:hover span {
-  color: #000;
+.headerCollapsed:hover .x-title-text,
+.x-headerCollapsed:hover .x-title-text {
+  color: #333;
 }
-.headerCollapsed:hover img,
-.x-headerCollapsed:hover img {
-  background-image: url("../images/wrench.png");
+.headerCollapsed:hover .x-fa,
+.x-headerCollapsed:hover .x-fa {
+  color: #333;
 }
 #layout-container {
   overflow: hidden;
@@ -411,6 +391,13 @@ input[type="submit"]:hover,
     text-align: center;
     z-index: 10;
 }
+.icon, .helplink {
+    font: normal normal normal 15px/1 FontAwesome;
+    text-rendering: auto;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing:antialiased;
+    text-decoration: none;
+}
 #layout-container .content-container .component-block .icon {
     cursor: pointer;
     width: 16px;
@@ -423,15 +410,14 @@ input[type="submit"]:hover,
 }
 #layout-container .content-container .component-block .wrangler {
     left: 24px;
-    background-image: url("../images/wrench.png");
 }
 #layout-container .content-container .component-block .remove {
-    background-image: url("../images/delete.png");
+    color: #cb1e1b;
 }
 #layout-container .content-container .component-block .draghandle {
     left: auto;
     right: 4px;
-    background-image: url("../images/arrow-move.png");
+    color: #333333;
 }
 #layout-container .content-container .component-block:hover .icon {
     display: block;
@@ -538,11 +524,19 @@ input[type="submit"]:hover,
   float: left;
 }
 .helplink {
-  background-image: url("../images/help.png");
-  width: 16px;
-  height: 16px;
-  display: block;
-  float: right;
+    width: 16px;
+    height: 16px;
+    display: block;
+    float: right;
+    color: #1c6ca7;
+    margin-left: 5px;
+    margin-top: 1px;
+}
+.helplink:before {
+    content: "\f059" !important;
+}
+.helplink::before {
+    content: "\f059" !important;
 }
 .helpBlock {
   margin: 5px;

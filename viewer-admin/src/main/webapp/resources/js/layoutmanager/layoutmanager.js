@@ -578,10 +578,10 @@ Ext.define('LayoutManager', {
             cls: 'component-view',
             tpl: '<tpl for=".">' +
             '<div class="component-block x-unselectable">' +
-            '<div class="icon remove"></div>' +
-            '<div class="icon wrangler"></div>' +
+            '<div class="icon remove fa fa-minus-circle"></div>' +
+            '<div class="icon wrangler fa fa-wrench"></div>' +
             '<span class="title">{name}</span>' +
-            '<div class="icon draghandle"></div>' +
+            '<div class="icon draghandle fa fa-arrows"></div>' +
             '</div>' +
             '</tpl>',
             itemSelector: 'div.component-block',

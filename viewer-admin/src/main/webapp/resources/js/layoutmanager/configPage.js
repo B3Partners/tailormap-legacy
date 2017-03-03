@@ -95,7 +95,8 @@ Ext.define("vieweradmin.components.ConfigPage", {
             height: '100%',
             activeTab: 0,
             defaults :{
-                bodyPadding: 10
+                bodyPadding: 10,
+                autoScroll: true
             },
             layoutOnTabChange: true,
             items: tabs,
@@ -133,7 +134,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 xtype: 'button',
                 text: 'Annuleren',
                 id: 'cancalConfigButton',
-                iconCls: 'cancelbutton-icon',
+                iconCls: 'x-fa fa-times',
                 listeners: {
                     click: {
                         fn: function() {
@@ -146,7 +147,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 xtype: 'button',
                 text: 'Opslaan',
                 id: 'saveConfigButton',
-                iconCls: 'savebutton-icon',
+                iconCls: 'x-fa fa-floppy-o',
                 listeners: {
                     click: {
                         fn: this.save,
