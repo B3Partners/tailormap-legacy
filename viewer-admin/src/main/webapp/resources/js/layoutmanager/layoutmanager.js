@@ -103,6 +103,7 @@ Ext.define('LayoutManager', {
         backgroundcolor: { title: 'Achtergrondkleur', key: 'bgcolor', type: 'text' }
     },
     layoutRegionsStore: null,
+    configuredComponents: [],
     popupWin: null,
     tooltips: {},
     configWindows: {},
@@ -535,6 +536,8 @@ Ext.define('LayoutManager', {
         for(var i = 0 ; i < panels.length;i++){
             panels[i].expand(); 
         }
+
+        this.addConfiguredComponentsToRegions();
     },
     
     changeCaseFirstLetter: function(string, lowercase) {
@@ -669,10 +672,44 @@ Ext.define('LayoutManager', {
                         componentData: component.data,
                         componentName: componentref.name
                     };
-                    me.addComponentToRegion(layoutRegion.regionContainer, data, layoutRegion);
+                    me.addConfiguredComponent(data);
                 }
             });
         });
+    },
+
+    /**
+     * All initially configured components are added to an array. After all configured components have been
+     * initialized we add all the components to the corresponding regions. This is to make sure the order in which
+     * the components appear in the region is respected. If we would add the components immediately we can end up
+     * with a different order because method addConfiguredComponents() is called four times (1x for each component toolbox)
+     */
+    addConfiguredComponent: function(componentData) {
+        this.configuredComponents.push(componentData);
+    },
+
+    addConfiguredComponentsToRegions: function() {
+        this.layoutRegionsStore.each(function(layoutRegion){
+            var regionId = layoutRegion.get('id');
+            if(!(Ext.isDefined(this.config.layoutJson[regionId]) && Ext.isDefined(this.config.layoutJson[regionId]['components']))) {
+                return;
+            }
+            Ext.Array.each(this.config.layoutJson[regionId]['components'], function(componentref) {
+                var component = this.findConfiguredComponent(componentref.name);
+                if(component) {
+                    this.addComponentToRegion(layoutRegion.regionContainer, component, layoutRegion);
+                }
+            }, this);
+        }, this);
+    },
+
+    findConfiguredComponent: function(componentName) {
+        for(var i = 0; i < this.configuredComponents.length; i++) {
+            if(this.configuredComponents[i].componentName === componentName) {
+                return this.configuredComponents[i];
+            }
+        }
+        return null;
     },
     
     addComponentToRegion: function(container, data, layoutRegion, createTooltip) {
