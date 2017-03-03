@@ -202,24 +202,31 @@ Ext.define("viewer.AppStyle", {
             ]));
         }
         if(this.config.font) {
-            /* Textcolor */
+            /* Font family */
             css.push(this.generateStyleDeclaration([
                 ".x-grid-row .x-grid-cell", /* Tree */
                 ".x-grid-cell", /* Tree */
                 ".x-panel-body-default", /* Panels (tree's, etc.) */
-                ".x-panel-header-text-default", /* Panel headers */
+                ".x-panel-header-text-default, .x-panel-header-title-default", /* Panel headers */
                 ".x-window-body-default", /* Popup body */
                 ".x-border-layout-ct", /* Main containers */
                 ".x-body", /* Body class */
                 ".x-btn, .x-btn-inner, .x-btn .x-btn-inner", /* Button classes */
                 ".x-field", /* Form fields */
                 ".x-tab", /* Tabs */
-                ".x-tab button", /* Tabs */
-                ".x-form-field", /* Form fields */
+                ".x-tab-button, .x-tab-inner-default", /* Tabs */
+                ".x-form-field:not(.x-form-checkbox):not(.x-form-radio)", /* Form fields */
                 ".x-form-item", /* Form items */
-                ".x-window-header-text-default" /* Popup header */
+                ".x-boundlist-item", /* Selectbox content */
+                ".x-menu-item-text-default, .x-menu-item-text", /* Menu item text */
+                ".x-form-cb-label", /* Checkbox label */
+                ".x-form-item-label-text", /* Form item labels */
+                ".x-column-header", /* Grid column headers */
+                ".x-toolbar-text-default, .x-toolbar-text", /* Grid toolbar text */
+                ".x-window-header-text-default, .x-window-header-title-default", /* Popup header */
+                "body div.olControlMousePosition" /* Coordinates component */
             ], [
-                "font-family: [font]"
+                "font-family: '[font]'"
             ]));
         }
         if(this.config.globalLayout.extraCss) {
