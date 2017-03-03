@@ -48,6 +48,7 @@
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.0.0</postgresql.version>
         <apache.poi.version>3.15</apache.poi.version>
+        <apache.httpcomponents.version>4.5.3</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -400,23 +401,23 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.2</version>
+                <version>${apache.httpcomponents.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId>
-                <version>4.5.2</version>
+                <version>${apache.httpcomponents.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>fluent-hc</artifactId>
-                <version>4.5.2</version>
+                <version>${apache.httpcomponents.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
-                <version>4.5.2</version>
+                <version>${apache.httpcomponents.version}</version>
             </dependency>
 
             <dependency>
