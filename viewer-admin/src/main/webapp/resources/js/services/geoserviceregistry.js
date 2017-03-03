@@ -74,7 +74,7 @@ Ext.onReady(function() {
         },
         items: [{
             text: 'Subcategorie toevoegen',
-            icon: imagesPath + "add.png",
+            iconCls: 'x-fa fa-plus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
                     addSubcategory(item.ownerCt.config.data.clickedItem);
@@ -83,7 +83,7 @@ Ext.onReady(function() {
         },
         {
             text: 'Categorie verwijderen',
-            icon: imagesPath + "delete.png",
+            iconCls: 'x-fa fa-minus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
                     removeCategory(item.ownerCt.config.data.clickedItem);
@@ -102,7 +102,7 @@ Ext.onReady(function() {
         { xtype: "menuseparator"},
         {
             text: 'Service toevoegen',
-            icon: imagesPath + "serviceok.png",
+            iconCls: 'x-fa fa-cog',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.clickedItem;
@@ -112,7 +112,7 @@ Ext.onReady(function() {
         },
         {
             text: 'CSW service doorzoeken',
-            icon: imagesPath + "serviceok.png",
+            iconCls: 'x-fa fa-cog',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.clickedItem;
@@ -130,7 +130,7 @@ Ext.onReady(function() {
         },
         items: [{
             text: 'Bewerken',
-            icon: imagesPath + "wrench.png",
+            iconCls: 'x-fa fa-wrench',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.record;
