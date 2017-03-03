@@ -61,7 +61,7 @@ Ext.define("viewer.components.Component",{
             me.config.isPopup = false;
         }
         if(me.config.isPopup) {
-            if(this.viewerController.hasSvgSprite()) {
+            if(this.viewerController.hasSvgSprite() && !this.config.iconUrl) {
                 config.popupIcon = this.getSvgIcon();
             } else {
                 config.iconCls = this.getPopupIcon();

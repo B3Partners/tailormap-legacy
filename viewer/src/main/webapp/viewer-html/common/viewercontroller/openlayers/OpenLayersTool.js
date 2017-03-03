@@ -52,6 +52,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             this.iconUrl_dis = conf.iconUrl;
         }
         if (this.iconUrl_up!= null || this.iconUrl_sel!=null){
+            this.frameworkObject.flamingoIconDefined = true;
             var html="";
             if (this.iconUrl_up!= null){
                 html += ".olControlPanel ."+this.frameworkObject.displayClass+"ItemInactive";

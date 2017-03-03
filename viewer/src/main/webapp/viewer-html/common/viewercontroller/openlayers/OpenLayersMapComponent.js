@@ -144,6 +144,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         OpenLayers.Util.extend(panel, {
             createControlMarkup: function(control) {
                 var buttondiv = document.createElement("div");
+                if(control.flamingoIconDefined) {
+                    return buttondiv;
+                }
                 var displayClass = control.displayClass.toLowerCase().replace("olcontrolnavigationhistory ", "");
                 buttondiv.innerHTML = [
                     '<svg role="img" title=""><use xlink:href="',
