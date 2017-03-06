@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 /**
  * Edit component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author mprins
  */
 Ext.define("viewer.components.Edit", {
     extend: "viewer.components.Component",
@@ -482,10 +483,6 @@ Ext.define("viewer.components.Edit", {
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         input = this.createDynamicInput(attribute, values);
                     }
-                    if (attribute.disableUserEdit) {
-                        input.setReadOnly(true);
-                        input.addCls("x-item-disabled");
-                    }
                     this.inputContainer.add(input);
                     this.setButtonDisabled("editButton", false);
                 }
@@ -528,7 +525,12 @@ Ext.define("viewer.components.Edit", {
             options.submitFormat = 'c';
             input = Ext.create("Ext.form.field.Date", options);
         }
-        this.inputContainer.add(input);
+
+        if (attribute.disableUserEdit) {
+            input.setReadOnly(true);
+            input.addCls("x-item-disabled");
+        }
+
         return input;
     },
     createDynamicInput: function (attribute, values) {
@@ -635,7 +637,10 @@ Ext.define("viewer.components.Edit", {
             }
         }
 
-        this.inputContainer.add(input);
+        if (attribute.disableUserEdit) {
+            input.setReadOnly(true);
+            input.addCls("x-item-disabled");
+        }
 
         return input;
     },
