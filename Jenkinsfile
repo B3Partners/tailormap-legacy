@@ -1,8 +1,16 @@
 timestamps {
     node {
 
+        properties([
+            [$class: 'jenkins.model.BuildDiscarderProperty', strategy: [$class: 'LogRotator', 
+                artifactDaysToKeepStr: '8', 
+                artifactNumToKeepStr: '3', 
+                daysToKeepStr: '15', 
+                numToKeepStr: '5']
+            ]]);
+        
         withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven 3.3.9'}/bin:${env.JAVA_HOME}/bin"]) {
-
+            
             stage('Prepare') {
                  checkout scm
                  sh "sqlplus -l -S jenkins_flamingo/jenkins_flamingo@192.168.1.41:1521/DB01 < ./.jenkins/clear-oracle-schema.sql"

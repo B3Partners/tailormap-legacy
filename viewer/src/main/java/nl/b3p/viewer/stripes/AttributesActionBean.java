@@ -87,6 +87,11 @@ public class AttributesActionBean implements ActionBean {
     private String dir;
     @Validate
     private String sort;
+    /**
+     * set to {@code true}/{@code 1} to get indexed response
+     * (c0:value,c1:value,... array), {@code false}/{@code 0} to get normal
+     * response (attr_name:attr_value,...).
+     */
     @Validate
     private boolean arrays;
     @Validate
