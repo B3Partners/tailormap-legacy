@@ -43,6 +43,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }
         //TODO: remove the hardcoded projection....
         Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
+       
         //set some default options.
         this.mapOptions =  {
             projection:new OpenLayers.Projection("EPSG:28992"),
@@ -129,6 +130,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             saveState: true,
             div: this.contentTop // Render the panel to the previously created div
         });
+        console.log(this.contentTop);
         this.panel = panel;
         this.maps[0].getFrameworkMap().addControl(this.panel);
     },
@@ -158,7 +160,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         container.style.position = "absolute";
 
         // Top menu
+        console.log("ddd");
+        console.log(this.getMap().frameworkMap.viewPortDiv.id);
         var mapEl = Ext.get(this.getMap().frameworkMap.viewPortDiv.id);
+        console.log(mapEl);
         var currentHeight = mapEl.getHeight();
         mapEl.dom.style.position = "absolute";
 
@@ -419,6 +424,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 options.div = this.contentBottom;
                 config.cssClass = "olControlMousePosition";
             }
+            console.log("hi");
+            console.log(options);
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
             var frameworkOptions={}
@@ -673,6 +680,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             //add the component to the map
             this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());
             component.getFrameworkObject().activate();
+            console.log(component);
             component.doAfterAdd();
         }
     },
@@ -709,6 +717,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var tools = this.tools;
         for(var i = 0 ; i < tools.length ; i++){
             var t = tools[i];
+            console.log("nee");
+            console.log(tools[i]);
             t.getFrameworkTool().deactivate();
         }
         var tool = this.getTool(id);

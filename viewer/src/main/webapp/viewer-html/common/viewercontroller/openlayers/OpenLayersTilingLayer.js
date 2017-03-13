@@ -75,7 +75,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             //set TMS tiling options.
             options.serviceVersion= version;
             options.layername= layerName,
-
             this.frameworkLayer = new OpenLayers.Layer.TMS(layerName,this.url,options);
         }else if(this.getProtocol()=="ArcGisRest"){
             options.resolutions = this.resolutions;

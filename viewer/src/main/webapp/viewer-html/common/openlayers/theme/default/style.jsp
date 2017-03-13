@@ -14,7 +14,7 @@ div.olMap {
     z-index: 0;
     padding: 0 !important;
     margin: 0 !important;
-    cursor: default;
+    cursor: default;z
 }
 
 div.olMapViewport {

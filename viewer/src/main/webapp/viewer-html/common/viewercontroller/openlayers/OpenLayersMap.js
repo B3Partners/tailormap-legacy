@@ -49,7 +49,6 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }else{
             this.config.viewerController.logger.error("No bounds found, can't center viewport");
         }
-        
         config.restrictedExtent = maxBounds;
         
         
@@ -61,8 +60,9 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.Navigation()
         ];
-        this.frameworkMap=new OpenLayers.Map(config.domId,config);        
+        this.frameworkMap = new OpenLayers.Map(config.domId,config); 
         this.frameworkMap.centerLayerContainer();
+        console.log(this.frameworkMap);
         /* Zoom to the start extent when the first layer is added
          * because openlayers needs the baselayer to zoom. After zooming, remove the listener.
          */

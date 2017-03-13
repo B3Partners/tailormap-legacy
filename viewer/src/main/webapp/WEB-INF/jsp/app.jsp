@@ -186,11 +186,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersIdentifyTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersDefaultTool.js"></script>
                     </c:when>
+                    
                         <c:when test="${actionBean.viewerType == 'openlayers3'}">
-                            <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers3"/>
-                            <script type="text/javascript" src="${scriptDir}/OpenLayersMap3Component.js"></script>
+                        <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers3"/>
+                        <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js" type="text/javascript"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Layer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersMap3.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/Utils.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers3TilingLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersMap3Component.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Component.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Tool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/ToolMapClick3.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers3WMSLayer.js"></script>
                             
-                        </c:when>
+                        <!-- The components -->
+                        
+                        <!-- The tools -->
+                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayers3IdentifyTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayers3DefaultTool.js"></script>
+                         
+                    </c:when>
+                        
                     <c:otherwise>
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/flamingo"/>
                         <script type="text/javascript" src="${scriptDir}/FlamingoLayer.js"></script>

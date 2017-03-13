@@ -142,6 +142,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else if(viewerType == "openlayers3"){
             this.mapComponent = new viewer.viewercontroller.OpenLayersMap3Component(this, mapId, config);
+            
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
         }
@@ -152,9 +153,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType == "openlayers" ) {
+        if(viewerType == "openlayers" || viewerType == "openlayers3") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
+        console.log("klaar?");
     },
 
     showLoading: function(msg) {
@@ -299,7 +301,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         // XXX
-        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap") {
+        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OpenLayersMap3" ) {
             return null;
         }
         
@@ -840,7 +842,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         options.attribution = layer.details && layer.details.attribution ? layer.details.attribution : null;
 
         var layerObj = null;
-
         try {
             if(service.protocol =="wms" ){
                 var layerUrl = service.url;
@@ -985,7 +986,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         layerObj.appLayerId = appLayer.id;
         this.layers[id] = layerObj;
         this.mapComponent.getMap().addLayer(layerObj);
-
         return layerObj;
     },
     /**

@@ -41,7 +41,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @returns the framework map object.
      */
     getFrameworkMap: function(){
-        return this.frameworkMap;
+    return this.frameworkMap;
     },
     
     /**

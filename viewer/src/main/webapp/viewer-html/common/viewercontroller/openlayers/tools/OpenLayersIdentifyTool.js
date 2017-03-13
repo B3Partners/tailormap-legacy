@@ -40,7 +40,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     constructor : function (conf){
         this.useWMSGetFeatureInfo=true;
         //this.wmsGetFeatureInfoFormat="text/plain";
-        
+
         var frameworkOptions = {
             displayClass: "olControlIdentify",
             type: OpenLayers.Control.TYPE_TOOL,
@@ -111,7 +111,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     /**
      * Called when a layer is added
      */
-    onAddLayer: function(map,options){        
+    onAddLayer: function(map,options){ 
+        console.log("hier");
         var mapLayer=options.layer;
         if (mapLayer==null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
             return;
@@ -213,7 +214,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             this.wmsGetFeatureInfoControl.deactivate();
         }
     },
-    handleClick: function(tool,options){                
+    handleClick: function(tool,options){      
         this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     }, 
     //called when wms layers return data.           
