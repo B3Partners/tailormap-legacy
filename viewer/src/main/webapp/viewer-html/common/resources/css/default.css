@@ -1,0 +1,75 @@
+.ol-mouse-position {
+    right: 10px !important;
+    font-size: small !important;
+    bottom: 10px;
+    display: block;
+}
+
+.olControlPanel{
+    position: absolute;
+    float: left;
+    border: 1px solid grey;
+    padding: 2px;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    background-color: #EEE;
+}
+.olControlPanel div {
+    float: left;
+    display:block;
+    width: 28px;
+    height: 28px;
+    margin: 5px;
+    background-repeat: no-repeat;
+}
+
+.olControlPanel .ol-zoom-inItemInactive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_box_off.png");
+}
+.olControlPanel .ol-zoom-inItemActive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_box_on.png");
+}
+
+.olControlPanel .ol-zoom-outItemActive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_out_on.png");
+}
+.olControlPanel .ol-zoom-outItemInactive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_out_off.png");
+}
+
+.olControlPanel .ol-MeasureItemInactive{
+    background-image: url("../../openlayers/theme/default/img/measure_off.png");
+}
+.olControlPanel .ol-MeasureItemActive{
+    background-image: url("../../openlayers/theme/default/img/measure_on.png");
+    /*
+    background: url("/viewer/resources/images/default_sprite.png") 508px 107px;
+    background-color: transparent;
+    background-image: url("/viewer/resources/images/default_sprite.png");
+    background-repeat: repeat;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-origin: padding-box;
+    background-position-x: 508px;
+    background-position-y: 107px;
+    background-size: auto auto;
+    */
+}
+
+.olControlPanel .ol-zoom-MaxExtentItemInactive {
+    width:  28px;
+    height: 28px;
+    background-image: url("../../openlayers/img/zoom-world-mini.png");
+}
+
+.olControlPanel .ol-DragPanItemActive {
+    background-image: url("../../openlayers/theme/default/img/pan_on.png");
+}
+.olControlPanel .ol-DragPanItemInactive {
+    background-image: url("../../openlayers/theme/default/img/pan_off.png");
+}
+
+.olControlPanel .ol-IdentifyItemInactive{
+    background-image: url("../../openlayers/theme/default/img/identify_off.png");
+}

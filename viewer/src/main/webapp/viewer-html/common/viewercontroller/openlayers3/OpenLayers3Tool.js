@@ -14,16 +14,47 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
         viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.constructor.call(this, conf);                       
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
-        this.enabledEvents= new Object();;
+        this.enabledEvents= new Object();
+        this.setTool(conf);
         this.overwriteStyle(conf);
-        if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
-            var me = this;
-            frameworkObject.trigger= function(){
-                me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);
-            };
-        }
         return this;
     },
+    
+    setTool : function(conf){
+      var me = this;
+      me.conf = conf;  
+      console.log(conf.class);
+      this.panelTool = document.createElement('div');
+      this.panelTool.className = conf.class+'ItemInactive';
+      this.panelTool.id = conf.id;
+      
+      if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
+            var me = this;
+            this.panelTool.addEventListener('click',function(){
+                me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);},me
+            );
+      }else{
+      
+        this.panelTool.addEventListener("click",function(){me.test();},me);
+      
+        }
+        conf.viewerController.mapComponent.toolsToAdd.push(this); 
+    },
+    
+    test:function(){
+      this.conf.viewerController.mapComponent.activateTool(this);  
+    },
+    
+    
+    overwriteStylem: function(conf){
+      if(conf.active){
+          conf.panelTool.className = conf.class+'ItemActive';
+      }else{
+          conf.panelTool.className = conf.class+'ItemInactive';
+      }
+    },
+    
+    
     
     overwriteStyle: function(conf){
         if(conf.hasOwnProperty("iconUrl") && conf.iconUrl) {
@@ -68,7 +99,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
                 this.enabledEvents[olSpecificEvent]++;                
             }else{
                 this.enabledEvents[olSpecificEvent] = 1;
-                this.frameworkObject.events.register(olSpecificEvent, this, this.handleEvent);
+                //this.frameworkObject.events.register(olSpecificEvent, this, this.handleEvent);
             }
             
         }        

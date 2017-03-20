@@ -78,7 +78,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
      * Returns the framework object
      * @deprecated use getFrameworkObject
      */
-    getFrameworkTool : function(){
+    getFrameworkTool : function(){ 
         return this.frameworkObject;
     },
     getFrameworkObject: function() {

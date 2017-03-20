@@ -99,7 +99,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:if>
                             
         <c:if test="${actionBean.viewerType == 'openlayers3'}">
-               <link href="${contextPath}/viewer-html/common/resources/css/openlayers3.css" rel="stylesheet">
+               <link href="${contextPath}/viewer-html/common/openlayers3/theme/openlayers3.css" rel="stylesheet">
+               <link href="${contextPath}/viewer-html/common/resources/css/default.css" rel="stylesheet">
                <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/OpenLayers.js"></script>
         </c:if>
                
@@ -174,6 +175,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/OpenLayersComponent.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersMapComponent.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersSnappingController.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersMeasure.js"></script>
 
                         <!-- The components -->
                         <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
@@ -199,6 +201,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3Tool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/ToolMapClick3.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3WMSLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Measure.js"></script>
                             
                         <!-- The components -->
                         

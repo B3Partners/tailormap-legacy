@@ -62,7 +62,6 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         ];
         this.frameworkMap = new OpenLayers.Map(config.domId,config); 
         this.frameworkMap.centerLayerContainer();
-        console.log(this.frameworkMap);
         /* Zoom to the start extent when the first layer is added
          * because openlayers needs the baselayer to zoom. After zooming, remove the listener.
          */

@@ -77,6 +77,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
      * Activate the tool
      */
     activateTool : function(){
+        console.log("hallo");
         this.clickControl.activate();
     },
     /**

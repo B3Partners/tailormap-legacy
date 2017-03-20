@@ -130,7 +130,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             saveState: true,
             div: this.contentTop // Render the panel to the previously created div
         });
-        console.log(this.contentTop);
         this.panel = panel;
         this.maps[0].getFrameworkMap().addControl(this.panel);
     },
@@ -160,10 +159,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         container.style.position = "absolute";
 
         // Top menu
-        console.log("ddd");
-        console.log(this.getMap().frameworkMap.viewPortDiv.id);
         var mapEl = Ext.get(this.getMap().frameworkMap.viewPortDiv.id);
-        console.log(mapEl);
         var currentHeight = mapEl.getHeight();
         mapEl.dom.style.position = "absolute";
 
@@ -424,8 +420,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 options.div = this.contentBottom;
                 config.cssClass = "olControlMousePosition";
             }
-            console.log("hi");
-            console.log(options);
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
             var frameworkOptions={}
@@ -484,11 +478,17 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
         }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
+            var t = new viewer.viewercontroller.openlayers.OpenLayersMeasure(conf);
+            frameworkOptions = t.initialConfig.frameworkOptions;
+            if (conf.tooltip){
+                frameworkOptions.title=conf.tooltip;
+            }
             var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
             var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
             if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
                 measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
             }
+            t.initEvents(measureTool.getFrameworkTool());
             return measureTool;
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
             return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions));
@@ -680,7 +680,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             //add the component to the map
             this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());
             component.getFrameworkObject().activate();
-            console.log(component);
             component.doAfterAdd();
         }
     },
@@ -717,8 +716,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var tools = this.tools;
         for(var i = 0 ; i < tools.length ; i++){
             var t = tools[i];
-            console.log("nee");
-            console.log(tools[i]);
             t.getFrameworkTool().deactivate();
         }
         var tool = this.getTool(id);

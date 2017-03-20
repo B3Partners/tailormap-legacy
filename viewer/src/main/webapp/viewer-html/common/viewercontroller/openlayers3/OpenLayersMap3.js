@@ -40,6 +40,8 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         config.restrictedExtent = maxBounds;
         this.frameworkMap = new ol.Map({
         target: config.domId,
+        controls: [],
+        interactions: [new ol.interaction.MouseWheelZoom()],
         view: new ol.View({
             projection: config.projection,
             center: config.center,
@@ -52,8 +54,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             extent: config.restrictedExtent
         })
     });
-    
-    console.log(this.frameworkMap);
+    return this;
      },
      
      addLayer : function(layer){        
@@ -84,6 +85,35 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
      
      getScale : function(){
         return this.getFrameworkMap().getView().getResolution();
+    },
+    moveTo: function(x,y){
+        var center = [x,y];
+        this.getFrameworkMap().getView().setCenter(center);
+        new ol.geom.Point(center);
+    },
+    
+    setMarker : function(markerName,x,y,type){
+        var positionFeature = new ol.Feature();
+        positionFeature.setStyle(new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 10,
+                fill: new ol.style.Fill({
+                    color: '#3399CC'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 4
+                })
+            })
+        }));
+        var center = [x,y];
+        positionFeature.setGeometry(new ol.geom.Point(center));
+        new ol.layer.Vector({
+            map: this.frameworkMap,
+            source: new ol.source.Vector({
+                features: [positionFeature]
+            })
+        });
     }
     
     });
