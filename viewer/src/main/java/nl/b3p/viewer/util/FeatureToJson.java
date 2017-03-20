@@ -1,17 +1,17 @@
 /*
- * Copyright (C) 2013-2016 B3Partners B.V.
+ * Copyright (C) 2013-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.util;
@@ -33,6 +33,7 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureIterator;
@@ -60,6 +61,7 @@ public class FeatureToJson {
     private boolean graph = false;
     private List<Long> attributesToInclude = new ArrayList<Long>();
     private static final int TIMEOUT = 5000;
+    private FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
     public FeatureToJson(boolean arrays,boolean edit){
         this.arrays=arrays;
@@ -110,7 +112,7 @@ public class FeatureToJson {
         /* Use the first property as sort field, otherwise geotools while give a error when quering
          * a JDBC featureType without a primary key.
          */
-        else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()){
+        else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
             setSortBy(q, propertyNames.get(0),dir);
         }
         Integer start = q.getStartIndex();
@@ -119,7 +121,7 @@ public class FeatureToJson {
         }
         boolean offsetSupported = fs.getQueryCapabilities().isOffsetSupported();
         //if offSet is not supported, get more features (start + the wanted features)
-        if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES){
+        if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES || fs.getDataStore() instanceof WFSDataStore){
             q.setMaxFeatures(q.getMaxFeatures()+start);
         }
         FeatureIterator<SimpleFeature> it = null;
@@ -336,7 +338,6 @@ public class FeatureToJson {
      * @param dir sorting direction DESC or ASC
      */
     private void setSortBy(Query q,String sort, String dir){
-        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         if(sort != null) {
             q.setSortBy(new SortBy[] {
@@ -359,7 +360,6 @@ public class FeatureToJson {
     }
 
     private Filter createFilter(SimpleFeature feature,FeatureTypeRelation rel) {
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         List<Filter> filters = new ArrayList<Filter>();
         for (FeatureTypeRelationKey key : rel.getRelationKeys()){
             AttributeDescriptor rightSide = key.getRightSide();
@@ -370,14 +370,14 @@ public class FeatureToJson {
             }
             if (AttributeDescriptor.GEOMETRY_TYPES.contains(rightSide.getType()) &&
                     AttributeDescriptor.GEOMETRY_TYPES.contains(leftSide.getType())){
-                filters.add(ff.not(ff.isNull(ff.property(rightSide.getName()))));
-                filters.add(ff.intersects(ff.property(rightSide.getName()),ff.literal(value)));
+                filters.add(ff2.not(ff2.isNull(ff2.property(rightSide.getName()))));
+                filters.add(ff2.intersects(ff2.property(rightSide.getName()),ff2.literal(value)));
             }else{
-                filters.add(ff.equals(ff.property(rightSide.getName()),ff.literal(value)));
+                filters.add(ff2.equals(ff2.property(rightSide.getName()),ff2.literal(value)));
             }
         }
         if (filters.size()>1){
-            return ff.and(filters);
+            return ff2.and(filters);
         }else if (filters.size()==1){
             return filters.get(0);
         }else{
@@ -386,7 +386,6 @@ public class FeatureToJson {
     }
 
     public static Filter reformatFilter(Filter filter, SimpleFeatureType ft) throws Exception {
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)){
             return filter;
         }

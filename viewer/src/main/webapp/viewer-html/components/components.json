@@ -146,6 +146,18 @@
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
     },
     {
+        "className": "viewer.components.ExtendedFeatureInfo",
+        "name": "Extended feature info",
+        "shortName": "Efi",
+        "sources": ["Maptip.js","FeatureInfo.js","ExtendedFeatureInfo.js"],
+        "closureCompilerSafe": true,
+        "type" : "popup",
+        "group": "Map",
+        "singleton": false,
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
+    },
+    {
         "className": "viewer.components.tools.Identify",
         "name": "Identify",
         "shortName": "Id",

@@ -945,19 +945,51 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);
                 }
             }else if (service.protocol == "tiled"){
-                var res=layer.resolutions.split(",");
-                for (var i=0; res.length > i; i++){
-                    res[i] = Number(res[i]);
+                if(layer.resolutions){
+                    var res=layer.resolutions.split(",");
+                    for (var i=0; res.length > i; i++){
+                        res[i] = Number(res[i]);
+                    }
+                    options.resolutions = res;
                 }
+                if(layer.bbox){
+                    options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
+                }
+                
                 options.tileHeight = layer.tileHeight;
                 options.tileWidth = layer.tileWidth;
-                options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
-                options.resolutions = res,
                 options.protocol = service.tilingProtocol;
                 options.title = layer.title;
                 options.viewerController=this;
                 if (layer.details && layer.details["image_extension"]){
                     options.extension = layer.details["image_extension"];
+                }
+                if (layer.details && layer.details["wms.styles"]){
+                    var styles = Ext.JSON.decode(layer.details["wms.styles"]);
+                    options.style = "";
+                    var found = false;
+                    for (var  i = 0 ; i < styles.length ;i++){
+                        var style = styles[i];
+                        if(style.isDefault){
+                            options.style = style.identifier;
+                            found = true;
+                        }
+                    }
+                    if(!found && styles.length > 0){
+                        options.style = styles[0].identifier;
+                    }
+                    
+                }
+                if(layer.matrixSets){
+                    var matrixSet = layer.matrixSets[0];
+                    for(var i = 0 ; i < layer.matrixSets.length ;i++){
+                        if(layer.matrixSets[i].crs.indexOf("28992") !== -1){
+                            matrixSet = layer.matrixSets[i];
+                            break;
+                        }
+                    }
+                    
+                    options.matrixSet = matrixSet;
                 }
                 layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
             }

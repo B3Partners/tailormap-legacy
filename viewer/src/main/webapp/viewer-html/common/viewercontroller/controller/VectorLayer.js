@@ -2,22 +2,23 @@
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
- * Abstract component to for vectorlayers
-  *@author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * Abstract component to for vectorlayers.
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author mprins
  */
 Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
@@ -70,10 +71,58 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     addFeatures : function(features){
         Ext.Error.raise({msg: "VectorLayer.addFeatures() Not implemented! Must be implemented in sub-class"});
     },
+    /**
+     ** Note: subclasses should call this method to add the keylistener.
+     * @param {String} type geometry type to draw
+     *
+     */
     drawFeature : function(type){
-        Ext.Error.raise({msg: "VectorLayer.drawFeature() Not implemented! Must be implemented in sub-class"});  
+        // listen for certain key-press events in the document to undo editing
+        var me = this;
+        Ext.getDoc().on('keydown', me._keyListener, me);
     },
-    stopDrawing : function(){
-        Ext.Error.raise({msg: "VectorLayer.stopDrawing() Not implemented! Must be implemented in sub-class"});
+    /**
+     * Note: subclasses should call this method to remove the added keylistener.
+     */
+    stopDrawing: function () {
+        // remove the previously added key listener
+        var me = this;
+        Ext.getDoc().un('keydown', me._keyListener, me);
+    },
+    /**
+     * handle CTRL-Z, CTRL-Y and ESC keydown.
+     * @param {Ext.event.Event} evt the Ext.event.Event
+     * @param {Ext.dom.Element} t the targett (not used)
+     * @param {Object} eOpts any options from the addListener call (not used)
+     */
+    _keyListener: function (evt, t, eOpts) {
+        //var me = this;
+        switch (evt.keyCode) {
+            case 90: // z
+                if (evt.metaKey || evt.ctrlKey) {
+                    this.undoSketch();
+                }
+                break;
+            case 89: // y
+                if (evt.metaKey || evt.ctrlKey) {
+                    this.redoSketch();
+                }
+                break;
+            case 27: // esc
+                this.cancelSketch();
+                break;
+        }
+    },
+    /** handle CTRL-Z key when drawing. */
+    undoSketch: function () {
+        Ext.Error.raise({msg: "VectorLayer.undoSketch() Not implemented! Must be implemented in sub-class"});
+    },
+    /** handle CTRL-Y key when drawing. */
+    redoSketch: function () {
+        Ext.Error.raise({msg: "VectorLayer.redoSketch() Not implemented! Must be implemented in sub-class"});
+    },
+    /** handle ESC key when drawing. */
+    cancelSketch: function () {
+        Ext.Error.raise({msg: "VectorLayer.cancelSketch() Not implemented! Must be implemented in sub-class"});
     }
 });

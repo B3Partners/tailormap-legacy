@@ -1,22 +1,23 @@
 /*
- * Copyright (C) 2012-2016 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
  * Edit component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author mprins
  */
 Ext.define("viewer.components.Edit", {
     extend: "viewer.components.Component",
@@ -482,10 +483,6 @@ Ext.define("viewer.components.Edit", {
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         input = this.createDynamicInput(attribute, values);
                     }
-                    if (attribute.disableUserEdit) {
-                        input.setReadOnly(true);
-                        input.addCls("x-item-disabled");
-                    }
                     this.inputContainer.add(input);
                     this.setButtonDisabled("editButton", false);
                 }
@@ -528,7 +525,12 @@ Ext.define("viewer.components.Edit", {
             options.submitFormat = 'c';
             input = Ext.create("Ext.form.field.Date", options);
         }
-        this.inputContainer.add(input);
+
+        if (attribute.disableUserEdit) {
+            input.setReadOnly(true);
+            input.addCls("x-item-disabled");
+        }
+
         return input;
     },
     createDynamicInput: function (attribute, values) {
@@ -635,7 +637,10 @@ Ext.define("viewer.components.Edit", {
             }
         }
 
-        this.inputContainer.add(input);
+        if (attribute.disableUserEdit) {
+            input.setReadOnly(true);
+            input.addCls("x-item-disabled");
+        }
 
         return input;
     },

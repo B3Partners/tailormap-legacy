@@ -1,5 +1,5 @@
 dist: trusty
-sudo: required
+sudo: false
 language: java
 
 addons:
@@ -37,10 +37,12 @@ script:
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
          mvn javadoc:javadoc;
     fi
+  # on oracle java 8 run a test-javadoc build to check for errors
+  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
+         mvn javadoc:test-javadoc;
+    fi
 
 jdk:
-  - openjdk7
-  - oraclejdk7
   - oraclejdk8
   - openjdk8
 

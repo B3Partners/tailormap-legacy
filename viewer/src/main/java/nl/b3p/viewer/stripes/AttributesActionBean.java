@@ -2,16 +2,16 @@
  * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.stripes;
@@ -75,7 +75,7 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private SimpleFeatureType featureType;
 
-    private Layer layer = null;
+    protected Layer layer = null;
 
     @Validate
     private int limit;
@@ -87,6 +87,11 @@ public class AttributesActionBean implements ActionBean {
     private String dir;
     @Validate
     private String sort;
+    /**
+     * set to {@code true}/{@code 1} to get indexed response
+     * (c0:value,c1:value,... array), {@code false}/{@code 0} to get normal
+     * response (attr_name:attr_value,...).
+     */
     @Validate
     private boolean arrays;
     @Validate
@@ -432,13 +437,18 @@ public class AttributesActionBean implements ActionBean {
 */
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
-
-        if(unauthorized) {
+        if (unauthorized) {
             json.put("success", false);
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
+        json = executeStore();
 
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+    }
+    
+    protected JSONObject executeStore(){
+        JSONObject json = new JSONObject();
         try {
             int total = 0;
 
@@ -451,7 +461,7 @@ public class AttributesActionBean implements ActionBean {
                 if(isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
-                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(ft, extraDataStoreParams);
                 } /*else if(ft.getFeatureSource() instanceof ArcGISFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     if(isDebug()) {
@@ -515,9 +525,9 @@ public class AttributesActionBean implements ActionBean {
             }
             json.put("message", message);
         }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        return json;
     }
+    
     
     private void setAttributesNotNullFilters(Query q, ApplicationLayer al, SimpleFeatureType ft) throws CQLException {
         FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());

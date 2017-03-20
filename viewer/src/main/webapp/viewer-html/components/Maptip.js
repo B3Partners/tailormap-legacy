@@ -2,16 +2,16 @@
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global Ext */
@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Maptip",{
     extend: "viewer.components.Component",
     balloon: null,
     maptipComponent: null,
+    showMaxFeaturesText:null,
     config: {
         layers: null,
         maptipdelay: 500,
@@ -62,7 +63,8 @@ Ext.define ("viewer.components.Maptip",{
     constructor: function (conf){
         conf.isPopup=true;
         this.initConfig(conf);
-		viewer.components.Maptip.superclass.constructor.call(this, this.config);
+	viewer.components.Maptip.superclass.constructor.call(this, this.config);
+        this.showMaxFeaturesText = true;
 
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.config.viewerController.mapComponent,"balloon",this.config.width,this.config.height);
@@ -92,7 +94,9 @@ Ext.define ("viewer.components.Maptip",{
         this.maptipComponent = this.config.viewerController.mapComponent.createComponent(conf);
         this.config.viewerController.mapComponent.addComponent(this.maptipComponent);
         document.getElementById(this.getDiv()).addEventListener('click', this.relatedFeaturesListener.bind(this));
-        document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        if(this.popup){
+            document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        }
         return this;
     },
     /**
@@ -412,7 +416,7 @@ Ext.define ("viewer.components.Maptip",{
                     components.push(featureDiv);
 
                 }
-                if(layer.moreFeaturesAvailable){
+                if(layer.moreFeaturesAvailable && this.showMaxFeaturesText){
                     var moreFeatures = new Ext.Element(document.createElement("div"));
                     moreFeatures.addCls("feature_summary_feature");
                     moreFeatures.insertHtml("beforeEnd","Maximum aantal resultaten bereikt. Alleen de eerste 10 worden getoond.");

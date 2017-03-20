@@ -2,16 +2,16 @@
  * Copyright (C) 2015-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.util.databaseupdate;
@@ -142,9 +142,12 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("22", new UpdateElement(Collections.singletonList("add_user_ips.sql"), String.class));
         
         updates.put("23", new UpdateElement(Collections.singletonList("removeDuplicateStartLayersLevels.sql"), String.class));
+
         
         updates.put("24", new UpdateElement(Collections.singletonList("removeFaultyTopLayers.sql"), String.class));
         updates.put("25", new UpdateElement (Collections.singletonList("alter_layer_children_child_unique.sql"), String.class));
+
+        updates.put("26", new UpdateElement(Collections.singletonList("add-wmts-support.sql"), String.class));
 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }
