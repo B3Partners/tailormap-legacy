@@ -12,8 +12,4 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayers3Measure",{
         console.log("joehoe");
     }
 
-
-
-
-
 });

@@ -50,7 +50,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             resolutions = [3440.64,1720.32,860.16,430.08,215.04,107.52,53.76,26.88,13.44,6.72,3.36,1.68,0.84,0.42,0.21,0.105];
         }
         var extentAr = [-285401.0,22598.0,595401.0,903401.0];
-      //  var extentAr = [7700,304000,280000,62000];
+        //  var extentAr = [7700,304000,280000,62000];
     
         //Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
         proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
@@ -75,8 +75,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         },this);
         return this;
     },
-      
-      
+    
+    createVectorLayer : function(options){
+        console.log('created');
+    },
+    
     checkTools(){
         var enable = true;
         if(this.getTools().length !== 0){

@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
         <action>
-            <actionName>debug</actionName>
-            <preAction>build-with-dependencies</preAction>
-            <packagings>
-                <packaging>war</packaging>
-                <packaging>ear</packaging>
-                <packaging>ejb</packaging>
-            </packagings>
-            <goals>
-                <goal>package</goal>
-            </goals>
-            <properties>
-                <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
-                <netbeans.deploy>true</netbeans.deploy>
-            </properties>
-        </action>
-        <action>
             <actionName>build</actionName>
-            <preAction>build-with-dependencies</preAction>
             <packagings>
                 <packaging>*</packaging>
             </packagings>
@@ -58,15 +41,15 @@
         <action>
             <actionName>run</actionName>
             <packagings>
-                <packaging>war</packaging>
-                <packaging>ear</packaging>
-                <packaging>ejb</packaging>
+                <packaging>jar</packaging>
             </packagings>
             <goals>
-                <goal>package</goal>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <netbeans.deploy>true</netbeans.deploy>
+                <exec.args>-classpath %classpath ${packageClassName}</exec.args>
+                <exec.executable>java</exec.executable>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </action>

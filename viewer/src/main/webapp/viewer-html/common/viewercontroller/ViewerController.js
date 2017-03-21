@@ -156,7 +156,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(viewerType == "openlayers" || viewerType == "openlayers3") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
-        console.log("klaar?");
     },
 
     showLoading: function(msg) {
