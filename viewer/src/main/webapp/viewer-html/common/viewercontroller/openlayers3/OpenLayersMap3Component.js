@@ -13,16 +13,12 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     mapOptions:null,
     // References to the dom object of the content top and -bottom.
     contentTop:null,
-    toolsToAdd:null,
-    toolsAdded:null,
     selectedTool:null,
     contentBottom:null,
     config:{
         theme: "flamingo"
     },
     constructor:function(viewerController, domId, config){
-        this.toolsToAdd = [];
-        this.toolsAdded =[];
         this.selectedTool =[];
         this.domId = Ext.id();
         var container = document.createElement('div');
@@ -127,29 +123,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     },
     
     getPanel : function(){
-        if(!this.toolsToAdd.length<=0){
-            this.createPanel();
-        }
-        
         return this.panel;
-    },
-    
-    
-    createPanel : function(){ 
-
-        
-        this.panel = this.contentTop;
-        for(var i =0; i<this.toolsToAdd.length; i++){
-            this.panel.appendChild(this.toolsToAdd[i].panelTool);
-            this.toolsAdded.push(this.toolsToAdd[i]);
-            this.toolsToAdd.splice(0,1);
-        }
-        
-        //ol.inherits(this.panel, ol.control.Control);
-        
-        //this.maps[0].getFrameworkMap().addControl(ol.control.defaults().extend([
-          //this.panel.generateGeoJSONControl
-        //]));
     },
     
     createMap : function(id, options){
@@ -417,8 +391,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                 MapComponent.prototype.addTool.call(this,tool[i]);
             }
         } 
-        this.getPanel();
-       
+        this.panel = this.contentTop;
+        this.panel.appendChild(tool.panelTool);
+ 
         if(!(tool instanceof Array) ){
             this.superclass.addTool.call(this,tool);
             //check if this is the first tool, activate it.
@@ -439,11 +414,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     activateTool:function(tool){
         tool.active= true;
         if(!tool.onlyClick){
-            for(var i =0; i < this.toolsAdded.length;i++){
-                if(this.toolsAdded[i].panelTool !== tool.panelTool){
-                    this.toolsAdded[i].active = false; 
+            for(var i =0; i < this.tools.length;i++){
+                if(this.tools[i].panelTool !== tool.panelTool){
+                    this.tools[i].active = false; 
                 }
-                this.toolsAdded[i].overwriteStylem(this.toolsAdded[i]);
+                this.tools[i].overwriteStylem(this.tools[i]);
             }
             if(this.selectedTool.length > 0){
                 for(var i = 0; i < this.selectedTool.length;i++ ){

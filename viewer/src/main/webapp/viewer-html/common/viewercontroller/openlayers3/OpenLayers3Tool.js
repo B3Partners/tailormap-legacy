@@ -34,11 +34,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
                 me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);},me
             );
       }else{
-      
         this.panelTool.addEventListener("click",function(){me.test();},me);
-      
         }
-        conf.viewerController.mapComponent.toolsToAdd.push(this); 
     },
     
     test:function(){
