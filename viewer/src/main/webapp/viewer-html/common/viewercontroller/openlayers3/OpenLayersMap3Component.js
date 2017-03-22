@@ -72,11 +72,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         return this;
     },
     
-    createVectorLayer : function(options){
-        console.log('created');
-    },
     
-    checkTools(){
+    checkTools : function(){
         var enable = true;
         if(this.getTools().length !== 0){
             var tools = this.getTools();
@@ -146,9 +143,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         var tmsLayer= new viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer(options);
         return tmsLayer;  
     },
-    test:function(){
-      console.log("clicked");  
+    
+    createVectorLayer : function(options){
+        console.log('created');
     },
+
     createWMSLayer : function(name, wmsurl,ogcParams,config){
         config.options = new Object();
         config.options["id"]=null;
@@ -326,6 +325,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
       if (conf.tooltip){
           frameworkOptions.title=conf.tooltip;
       }
+
       if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
             conf.tool = "zoom-in";
             conf.class = "ol-zoom-in";
@@ -333,7 +333,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             conf.active = false;
             conf.onlyClick =false;
             return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.interaction.DragBox());
-      }
+      }      
       else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON){//3,
             conf.tool = "zoom-out";
             conf.class = "ol-zoom-out";
@@ -361,11 +361,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
 
           var t = new viewer.viewercontroller.openlayers3.OpenLayers3Measure(conf);
           var typ =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'LineString' : 'Polygon');
-          var t = new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.interaction.Draw({type:typ,
-            finishCondition:false}));
+          var t = new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.interaction.Draw({type:typ}));
             
           return t;
-        }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
+        }else if(conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
           frameworkOptions.type=conf.type;
           conf.id = "loc";
           conf.class = "ol-Identify";
@@ -394,7 +393,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         this.panel = this.contentTop;
         this.panel.appendChild(tool.panelTool);
  
-        if(!(tool instanceof Array) ){
+        if(!(tool instanceof Array)){
             this.superclass.addTool.call(this,tool);
             //check if this is the first tool, activate it.
             if (tool.getVisible()){
@@ -444,10 +443,12 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             },this);
             this.selectedTool.push(temp);
 
-            var temp = this.maps[0].getFrameworkMap().on('click',function(evt){  
-            var crd = evt.coordinate;
-            this.maps[0].getFrameworkMap().getView().setCenter(crd);
-            this.maps[0].getFrameworkMap().getView().setZoom( this.maps[0].getFrameworkMap().getView().getZoom()+1);},this);
+            var temp = this.maps[0].getFrameworkMap().on('click',function(evt)
+            {  
+                var crd = evt.coordinate;
+                this.maps[0].getFrameworkMap().getView().setCenter(crd);
+                this.maps[0].getFrameworkMap().getView().setZoom( this.maps[0].getFrameworkMap().getView().getZoom()+1);
+            },this);
             this.selectedTool.push(temp);
         }
         else if(tool.id=="ol-zoom-out"){
@@ -469,6 +470,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                var extent = this.maps[0].getFrameworkMap().getView().getProjection().getExtent();
                this.maps[0].getFrameworkMap().getView().fit(extent,this.maps[0].getFrameworkMap().getSize());
         }
+        
         else if (tool.id=='ol-DragPan'){
             this.selectedTool.push(tool.frameworkObject);
             this.maps[0].getFrameworkMap().addInteraction(tool.frameworkObject);
@@ -477,7 +479,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         else if (tool.id=='measure'){
             this.selectedTool.push(tool.frameworkObject);
             this.maps[0].getFrameworkMap().addInteraction(tool.frameworkObject);
-            //needed to delete fix later
+            //needed to delete fix later    
         }
     }
     

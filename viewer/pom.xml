@@ -285,6 +285,7 @@
                                 <param>${viewerhtml.path}/common/ajax/ArcQueryUtil.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureExtent.js</param>
                                 <!-- Abstracts MapComponent -->
+
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Map.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Layer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/TilingLayer.js</param>
@@ -368,6 +369,38 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
+                        </compilation>
+                        <compilation>
+                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
+                            <compilerOptions>
+                                <prettyPrint>true</prettyPrint>
+                                <languageIn>ECMASCRIPT3</languageIn>
+                            </compilerOptions>
+                            <externFiles />
+                            <sourceFiles>
+                                <!-- OpenLayers3 -->
+                                
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/test.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Layer.js</param>
+
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3WMSLayer.js</param>
+
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3TilingLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Tool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/Utils.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Measure.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/ToolMapClick3.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Component.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3Component.js</param>
+
+                                <!-- OpenLayers Components -->
+                                
+                                <!-- OpenLayers Tools -->
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3IdentifyTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3DefaultTool.js</param>
+                            </sourceFiles>
+                            <outputFile>${minify.outputdir}/openlayers3-min.js</outputFile>
                         </compilation>
                         <compilation>
                             <compilationLevel>WHITESPACE_ONLY</compilationLevel>

@@ -23,16 +23,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
     setTool : function(conf){
       var me = this;
       me.conf = conf;  
-      console.log(conf.class);
       this.panelTool = document.createElement('div');
       this.panelTool.className = conf.class+'ItemInactive';
       this.panelTool.id = conf.id;
-      
       if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
             var me = this;
-            this.panelTool.addEventListener('click',function(){
-                me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);},me
-            );
+            this.panelTool.addEventListener('click',function(){me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);},me);
       }else{
         this.panelTool.addEventListener("click",function(){me.test();},me);
         }
@@ -103,8 +99,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
         viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.addListener.call(this,event,handler,scope);
     },
     
-    activate: function(){
-        this.getFrameworkTool().activate();
+    activate: function(test){
+        //this.getFrameworkTool().activate();
+        console.log(test);
     },
     
     deactivate : function(){
