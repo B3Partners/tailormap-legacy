@@ -10,9 +10,10 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
     extend: "viewer.viewercontroller.controller.Tool",
     controls:null,
     enabledEvents: null,
-    constructor : function (conf,frameworkObject){
-        viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.constructor.call(this, conf);                       
-        this.frameworkObject=frameworkObject;
+    constructor : function (conf,tool){
+        viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.constructor.call(this, conf);
+        this.olTool = tool;
+        this.frameworkObject=tool.frameworkObject;
         this.controls = new Array();
         this.enabledEvents= new Object();
         this.setTool(conf);
@@ -26,12 +27,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
       this.panelTool = document.createElement('div');
       this.panelTool.className = conf.class+'ItemInactive';
       this.panelTool.id = conf.id;
-      if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
-            var me = this;
-            this.panelTool.addEventListener('click',function(){me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);},me);
-      }else{
+      //if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
+            //var me = this;
+            //this.panelTool.addEventListener('click',function(){me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);},me);
+      //}else{
         this.panelTool.addEventListener("click",function(){me.test();},me);
-        }
+       // }
     },
     
     test:function(){
@@ -99,12 +100,19 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
         viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.addListener.call(this,event,handler,scope);
     },
     
-    activate: function(test){
-        //this.getFrameworkTool().activate();
-        console.log(test);
+    activate: function(conf){
+        this.olTool.activate(conf);
+        if(!conf.onlyClick){
+            conf.active = true;
+            this.overwriteStylem(conf);
+        }
     },
     
-    deactivate : function(){
-        this.getFrameworkTool().deactivate();
+    deactivate : function(conf){
+        this.olTool.deactivate();
+        if(!conf.onlyClick){
+            conf.active = false;
+            this.overwriteStylem(conf);
+        }
     }
 });

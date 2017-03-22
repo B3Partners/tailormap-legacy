@@ -208,7 +208,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <!-- The tools -->
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayers3IdentifyTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayers3DefaultTool.js"></script>
-                         
+                        <script type="text/javascript" src="${scriptDir}/tools/ZoomIn.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/ZoomOutButton.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/Measure.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/FullExtent.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/ToolButton.js"></script> 
+                        <script type="text/javascript" src="${scriptDir}/tools/DragPan.js"></script> 
                     </c:when>
                         
                     <c:otherwise>

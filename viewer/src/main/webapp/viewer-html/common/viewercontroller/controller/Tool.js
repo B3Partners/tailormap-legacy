@@ -110,7 +110,6 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
      * must be implemented
      */
     deactivate: function(){
-        console.log("hallo");
         Ext.Error.raise({msg: "Tool.deactivate() not implemented! Must be implemented in sub-class"});
     },
     getVisible : function(){

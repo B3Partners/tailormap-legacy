@@ -1,0 +1,32 @@
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomOutButton",{
+
+    constructor : function(conf){
+        conf.tool = "zoom-out";
+        conf.class = "ol-zoom-out";
+        conf.id = "ol-zoom-out";
+        conf.active = false;
+        conf.onlyClick =true;
+        this.mapComponent = conf.viewerController.mapComponent;
+        this.frameworkObject = new ol.control.Zoom();
+    },
+
+    activate : function(){
+        if (this.mapComponent.maps[0].getFrameworkMap().getView().getZoom() <= 6){
+            return;
+        }else{
+            this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()-1);
+        }
+    },
+
+    deactivate : function() {
+        //only click can't be deactivated
+    }
+
+});

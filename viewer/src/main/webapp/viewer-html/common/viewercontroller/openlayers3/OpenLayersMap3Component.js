@@ -204,9 +204,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         container.style.position = "absolute";
 
         // Top menu
-        console.log(this.getMap().frameworkMap.getViewport());
         var mapEl = Ext.get(this.getMap().frameworkMap.getViewport());
-        console.log(mapEl);
         var currentHeight = mapEl.getHeight();
         mapEl.dom.style.position = "absolute";
 
@@ -327,55 +325,63 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
       }
 
       if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            conf.tool = "zoom-in";
-            conf.class = "ol-zoom-in";
-            conf.id = "ol-zoom-in";
-            conf.active = false;
-            conf.onlyClick =false;
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.interaction.DragBox());
+            //conf.tool = "zoom-in";
+            //conf.class = "ol-zoom-in";
+            //conf.id = "ol-zoom-in";
+            //conf.active = false;
+            //conf.onlyClick =false;
+            //return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.interaction.DragBox());
+            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.ZoomIn(conf));
       }      
       else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON){//3,
-            conf.tool = "zoom-out";
-            conf.class = "ol-zoom-out";
-            conf.id = "ol-zoom-out";
-            conf.active = false;
-            conf.onlyClick =true;
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.control.Zoom());
+            //conf.tool = "zoom-out";
+            //conf.class = "ol-zoom-out";
+            //conf.id = "ol-zoom-out";
+            //conf.active = false;
+            //conf.onlyClick =true;
+            //return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.control.Zoom());
+            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.ZoomOutButton(conf));
       }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,
-            conf.tool = "max-extent";
-            conf.class = "ol-zoom-MaxExtent";
-            conf.id = "max-extent";
-            conf.active = false;
-            conf.onlyClick =true;
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf,new ol.control.ZoomToExtent());
+            //conf.tool = "max-extent";
+            //conf.class = "ol-zoom-MaxExtent";
+            //conf.id = "max-extent";
+            //conf.active = false;
+            //conf.onlyClick =true;
+            //return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf,new ol.control.ZoomToExtent());
+            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.FullExtent(conf));           
       }else if (type==viewer.viewercontroller.controller.Tool.PAN){//7,
-          conf.id = "ol-DragPan";
-          conf.class = "ol-DragPan";
-          conf.onlyClick = false;
-          return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf,new ol.interaction.DragPan( ));
+          //conf.id = "ol-DragPan";
+          //conf.class = "ol-DragPan";
+          //conf.onlyClick = false;
+          //return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf,new ol.interaction.DragPan( ));
+          return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.DragPan(conf)); 
           
       }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
-          conf.id = "measure";
-          conf.class = "ol-Measure";
-          conf.onlyClick = false;
+          //conf.id = "measure";
+          //conf.class = "ol-Measure";
+          //conf.onlyClick = false;
 
-          var t = new viewer.viewercontroller.openlayers3.OpenLayers3Measure(conf);
-          var typ =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'LineString' : 'Polygon');
-          var t = new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.interaction.Draw({type:typ}));
+          //var t = new viewer.viewercontroller.openlayers3.OpenLayers3Measure(conf);
+          //var typ =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'LineString' : 'Polygon');
+          //var t = new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.interaction.Draw({type:typ}));
             
+          //return t;
+          conf.typ =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'LineString' : 'Polygon');
+          var t = new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.Measure(conf));
           return t;
         }else if(conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
-          frameworkOptions.type=conf.type;
-          conf.id = "loc";
-          conf.class = "ol-Identify";
-          conf.onlyClick = true;
+          //frameworkOptions.type=conf.type;
+          //conf.id = "loc";
+          //conf.class = "ol-Identify";
+          //conf.onlyClick = true;
             
-            if(conf.displayClass){
-                frameworkOptions.displayClass = conf.displayClass;
-            }else{
-                frameworkOptions.displayClass ="olButton_"+conf.id;
-            }
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.control.Control(frameworkOptions));
+            //if(conf.displayClass){
+                //frameworkOptions.displayClass = conf.displayClass;
+            //}else{
+                //frameworkOptions.displayClass ="olButton_"+conf.id;
+            //}
+            //return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.control.Control(frameworkOptions));
+            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.ToolButton(conf));
         }
     },
     
@@ -392,7 +398,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         } 
         this.panel = this.contentTop;
         this.panel.appendChild(tool.panelTool);
- 
+        if(!tool.onlyClick){
+            this.maps[0].getFrameworkMap().addInteraction(tool.frameworkObject);
+        }
+        
         if(!(tool instanceof Array)){
             this.superclass.addTool.call(this,tool);
             //check if this is the first tool, activate it.
@@ -409,7 +418,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             }
         }
     },
-    
+    /*
     activateTool:function(tool){
         tool.active= true;
         if(!tool.onlyClick){
@@ -429,7 +438,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         }
         this.activateSelectedTool(tool);
     },
-    
+    */
+    /*
     activateSelectedTool:function(tool){
         if(tool.id=="ol-zoom-in"){
             //this.old = tool.frameworkObject;
@@ -481,21 +491,21 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             this.maps[0].getFrameworkMap().addInteraction(tool.frameworkObject);
             //needed to delete fix later    
         }
+    },
+    */
+    
+    
+    activateTool : function (tool){
+        var tools = this.tools;
+        if(!tool.onlyClick){
+            for(var i = 0 ; i < tools.length ; i++){
+                var t = tools[i];
+                t.deactivate(t);
+            }
+        }
+        var t = tool
+        t.activate(t);
     }
     
-    /*
-    activateTool : function (id,firstIfNull){
-        var tools = this.tools;
-        for(var i = 0 ; i < tools.length ; i++){
-            var t = tools[i];
-            //t.getFrameworkTool().deactivate();
-        }
-        var tool = this.getTool(id);
-        if(firstIfNull){
-            tool = tools[0];
-        }
-        //tool.getFrameworkTool().activate();
-    }
-    */
     
 });

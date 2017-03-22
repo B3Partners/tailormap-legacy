@@ -18,7 +18,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         this.options.singleTile=true;
         this.options.transitionEffect = "resize";
         this.options.attribution = this.config.attribution;
-        console.log(config);
         var sources = new ol.source.ImageWMS({
             url:config.options.url,
             projection: config.viewerController.mapComponent.mapOptions.projection,
