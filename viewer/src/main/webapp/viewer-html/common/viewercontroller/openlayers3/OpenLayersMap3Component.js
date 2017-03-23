@@ -280,7 +280,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     createComponent : function (config){
         var type = config.type;
         var comp = null;
-        
+        console.log(config);
         if(type === viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
@@ -509,11 +509,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         if(!tool.onlyClick){
             for(var i = 0 ; i < tools.length ; i++){
                 var t = tools[i];
-                t.deactivate(t);
+                t.deactivate();
             }
         }
-        var t = tool
-        t.activate(t);
+        var t = tool;
+        t.activate();
     }
     
     

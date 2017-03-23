@@ -9,6 +9,7 @@
 
 
 Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
+    extend: "viewer.viewercontroller.openlayers3.OpenLayers3Tool",
     sketch:null,
     listener:null,
     measureTooltipElement:null,
@@ -16,6 +17,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
     overlay:null,
     layer:null,
     constructor : function(conf){
+        //viewer.viewercontroller.openlayers3.tools.Measure.superclass.constructor.call(this,conf);
         this.initConfig(conf);
         this.conf = conf;
         this.overlay =[];
@@ -23,6 +25,8 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
         conf.id = "measure";
         conf.class = "ol-Measure";
         conf.onlyClick = false;
+        conf.actives =false;
+        //console.log(conf);
         this.mapComponent = conf.viewerController.mapComponent;
         this.frameworkObject = this.initTool(conf.typ);
         this.initEvents();
@@ -30,6 +34,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
     },
 
     activate : function(){
+        this.conf.actives =true;
         this.pan = new ol.interaction.DragPan();
         this.frameworkObject = this.initTool(this.conf.typ);
         this.initEvents();
@@ -40,6 +45,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
     },
 
     deactivate : function() {
+        this.conf.actives =false;
         this.frameworkObject.setActive(false);
         
         for(var i=0; i < this.overlay.length;i++){
@@ -183,7 +189,10 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
               ' ' + 'm';
         }
         return output;
-    }
+    },
     
+    isActive : function(){
+        return this.frameworkObject.getActive();
+    }
     
 });

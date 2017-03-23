@@ -8,6 +8,8 @@
 Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomOutButton",{
 
     constructor : function(conf){
+        this.initConfig(conf);
+        this.conf = conf;
         conf.tool = "zoom-out";
         conf.class = "ol-zoom-out";
         conf.id = "ol-zoom-out";
@@ -27,6 +29,9 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomOutButton",{
 
     deactivate : function() {
         //only click can't be deactivated
+    },
+    isActive : function(){
+        return false;
     }
 
 });

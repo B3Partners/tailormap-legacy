@@ -9,10 +9,12 @@
 Ext.define("viewer.viewercontroller.openlayers3.tools.FullExtent",{
 
     constructor : function(conf){
+        this.initConfig(conf);
+        this.conf = conf;
         conf.tool = "max-extent";
         conf.class = "ol-zoom-MaxExtent";
         conf.id = "max-extent";
-        conf.active = false;
+        conf.actives = false;
         conf.onlyClick =true;
         this.mapComponent = conf.viewerController.mapComponent;
         this.frameworkObject = new ol.control.ZoomToExtent();
@@ -25,6 +27,10 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.FullExtent",{
 
     deactivate : function() {
         //only click can't be deactivated
+    },
+    
+    isActive : function(){
+        return false;
     }
 
 });

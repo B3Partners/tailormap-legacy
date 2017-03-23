@@ -10,10 +10,12 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
 
     tempKey:null,
     constructor : function(conf){
+        this.initConfig(conf);
+        this.conf = conf;
         conf.tool = "zoom-in";
         conf.class = "ol-zoom-in";
         conf.id = "ol-zoom-in";
-        conf.active = false;
+        conf.actives = false;
         conf.onlyClick =false;
         this.mapComponent = conf.viewerController.mapComponent;
         this.frameworkObject = new ol.interaction.DragBox();
@@ -21,6 +23,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
     },
 
     activate : function(){
+        this.conf.actives = true;
         this.frameworkObject.setActive(true);
         
         this.tempKey = this.mapComponent.maps[0].getFrameworkMap().on('click',function(evt){  
@@ -31,6 +34,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
     },
 
     deactivate : function() {
+        this.conf.actives = false;
         this.frameworkObject.setActive(false);
         ol.Observable.unByKey(this.tempKey);
     },
@@ -44,5 +48,8 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
         },this);
         
         this.deactivate();
+    },
+    isActive : function(){
+        return this.frameworkObject.getActive();
     }
 });

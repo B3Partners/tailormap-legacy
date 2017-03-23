@@ -8,6 +8,8 @@
 Ext.define("viewer.viewercontroller.openlayers3.tools.ToolButton",{
     
     constructor : function(conf){
+        this.initConfig(conf);
+        this.conf = conf;
         var frameworkOptions ={};
         frameworkOptions.type=conf.type;
         conf.id = "loc";
@@ -29,6 +31,10 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ToolButton",{
 
     deactivate : function() {
         //only click can't be deactivated
+    },
+    
+    isActive : function(){
+        return false;
     }
 
 });

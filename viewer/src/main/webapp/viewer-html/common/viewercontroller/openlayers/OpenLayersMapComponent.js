@@ -357,6 +357,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     createComponent : function (config){
         var type = config.type;
         var comp = null;
+        console.log(config);
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor",config);
         }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){

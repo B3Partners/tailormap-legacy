@@ -42,9 +42,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
     
     overwriteStylem: function(conf){
       if(conf.active){
-          conf.panelTool.className = conf.class+'ItemActive';
+          this.panelTool.className = conf.class+'ItemActive';
       }else{
-          conf.panelTool.className = conf.class+'ItemInactive';
+          this.panelTool.className = conf.class+'ItemInactive';
       }
     },
     
@@ -100,19 +100,23 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
         viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.addListener.call(this,event,handler,scope);
     },
     
-    activate: function(conf){
-        this.olTool.activate(conf);
-        if(!conf.onlyClick){
-            conf.active = true;
-            this.overwriteStylem(conf);
+    activate: function(){
+        this.olTool.activate(this);
+        if(!this.conf.onlyClick){
+            this.conf.active = true;
+            this.overwriteStylem(this.conf);
         }
     },
     
-    deactivate : function(conf){
+    deactivate : function(){
         this.olTool.deactivate();
-        if(!conf.onlyClick){
-            conf.active = false;
-            this.overwriteStylem(conf);
+        if(!this.conf.onlyClick){
+            this.conf.active = false;
+            this.overwriteStylem(this.conf);
         }
+    },
+    
+    isActive : function(){
+        return this.olTool.isActive();
     }
 });

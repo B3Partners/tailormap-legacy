@@ -241,6 +241,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     stopDrawing: function(){
         // remove key event listener
+        console.log("en vai hier ");
         this.superclass.stopDrawing.call(this);
 
         //also stop drawing
