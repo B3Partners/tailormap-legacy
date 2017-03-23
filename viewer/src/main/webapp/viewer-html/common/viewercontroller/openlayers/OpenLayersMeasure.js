@@ -22,6 +22,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMeasure",{
                             measureValueDiv = document.createElement('div');
                             measureValueDiv.id = "olControlMeasureValue";
                             measureValueDiv.style.position = 'absolute';
+                            console.log(this.map);
                             this.map.div.appendChild(measureValueDiv);
                             measureValueDiv.style.zIndex = "10000";
                             measureValueDiv.className = "olControlMaptip";
@@ -123,6 +124,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMeasure",{
         var frameworkTool = tool;
         
         function removeClone() {
+            console.log("remove");
             var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
             if(clonedValueDiv && clonedValueDiv.parentNode) {
                 clonedValueDiv.parentNode.removeChild(clonedValueDiv);
@@ -130,6 +132,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMeasure",{
         }
         
         function removeMeasure() {
+            console.log("meas");
             var measureValueDiv = document.getElementById("olControlMeasureValue");
             if (measureValueDiv) {
                 measureValueDiv.style.display="none";
@@ -137,6 +140,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMeasure",{
         }
         
         function createMeasureClone() {
+            console.log("create");
             var measureValueDiv = document.getElementById("olControlMeasureValue");
             if(!measureValueDiv) {
                 return;

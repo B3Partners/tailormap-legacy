@@ -65,9 +65,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             extent: options.maxExtent,
             maxResolution: options.maxResolution,
             visible: options.visibility
-        });
-            
-            
+        }); 
         }
     },
     

@@ -145,7 +145,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     },
     
     createVectorLayer : function(options){
-        console.log('created');
+        if (options==undefined){
+            options = new Object();
+            options["isBaseLayer"]= false;
+        }else{
+            if(options["isBaseLayer"] == undefined){
+                options["isBaseLayer"]= false;
+            }
+        }
+
+        return Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",options);
     },
 
     createWMSLayer : function(name, wmsurl,ogcParams,config){
