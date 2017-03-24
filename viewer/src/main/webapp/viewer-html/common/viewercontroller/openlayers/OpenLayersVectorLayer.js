@@ -131,6 +131,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Does nothing, but is needed for API compliance
      */
     adjustStyle : function(){
+        console.log(this.style.fillColor);
     },
     /**
      * Removes all features and all 'sketches' (not finished geometries)
@@ -163,6 +164,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     getAllFeatures : function(){
+        console.log('get alles');
         var olFeatures = this.getFrameworkLayer().features;
         var features = new Array();
         for(var i = 0 ; i < olFeatures.length;i++){
@@ -174,6 +176,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     addFeature : function(feature){
+        console.log('wanneer?');
         var features = new Array();
         features.push(feature);
         this.addFeatures(features);
@@ -191,6 +194,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     
     addFeatures : function(features){
         var olFeatures = new Array();
+        console.log('lengte'+features.length);
         for(var i = 0 ; i < features.length ; i++){
             var feature = features[i];
             var olFeature = this.toOpenLayersFeature(feature);
@@ -305,6 +309,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Called when a feature is selected
      */
     activeFeatureChanged : function (object){
+        console.log('active');
         var feature = this.fromOpenLayersFeature (object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
@@ -313,6 +318,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Called when a feature is modified.
      */
     featureModified : function (evt){
+        console.log('modified');
         var featureObject = this.fromOpenLayersFeature(evt.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
@@ -321,6 +327,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Called when a feature is added to the vectorlayer. It deactivates all drawFeature controls, makes the added feature editable and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
      */
     featureAdded : function (object){
+        console.log('added');
         var feature = this.fromOpenLayersFeature (object.feature);
         for ( var i = 0 ; i < this.drawFeatureControls.length ; i++ ){
             var control = this.drawFeatureControls[i];

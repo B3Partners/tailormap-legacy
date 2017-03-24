@@ -18,6 +18,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     circle: null,
     source:null,
     box:null,
+    idNumber:0,
     freehand:null,
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
@@ -30,32 +31,53 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         this.maps = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         var index  = this.config.viewerController.mapComponent.getMap().getFrameworkMap().getLayers().getLength() +1;
         this.source = new ol.source.Vector();
-        
-        this.frameworkLayer = new ol.layer.Vector({
-            zIndex:index,
-            source: this.source,
-            style: new ol.style.Style({
+        this.styles = new ol.style.Style({
                 fill: new ol.style.Fill({
                 color: 'rgba(255, 255, 255, 0.2)'
             }),
             stroke: new ol.style.Stroke({
-                color: '#ffcc33',
+                color: '#32ff44',
                 width: 2
             }),
             image: new ol.style.Circle({
                 radius: 7,
                 fill: new ol.style.Fill({
-                    color: '#ffcc33'
+                    color: '#32ff44'
                 })
             })
-            })
+            });
+        
+        this.frameworkLayer = new ol.layer.Vector({
+            zIndex:index,
+            source: this.source,
+            style: this.styles
         });
-        //this.maps.addLayer(this.frameworkLayer);
-        this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
+
+        this.select = new ol.interaction.Select({
+            layers:[this.frameworkLayer]
+        });
+
+        this.modify = new ol.interaction.Modify({
+        features: this.select.getFeatures()
+        });  
+        
+      this.select.on('select',this.activeFeatureChanged,this);
+      this.source.on('addfeature',this.featureAdded,this );
+      this.modify.on('modifyend',this.featureModified,this);
+      
+      this.maps.addInteraction(this.select);
+      this.maps.addInteraction(this.modify);
+      this.select.setActive(false);
+        
+      this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
         
     },
     removeAllFeatures : function(){
+        console.log('joehoe');
+        //this.select.setActive(false);
+        //this.modify.setActive(false);
         this.source.clear();
+        this.maps.removeInteraction(this.draw);
     },
     removeFeature : function (feature){    
         Ext.Error.raise({msg: "VectorLayer.removeFeature() Not implemented! Must be implemented in sub-class"});    
@@ -67,16 +89,48 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         Ext.Error.raise({msg: "VectorLayer.getFeature() Not implemented! Must be implemented in sub-class"});
     },
     getFeatureById : function (featureId){
-        Ext.Error.raise({msg: "VectorLayer.getFeatureById() Not implemented! Must be implemented in sub-class"});
+        return this.fromOpenLayersFeature(this.source.getFeatureById(featureId));
     },
     getAllFeatures : function(){
-        Ext.Error.raise({msg: "VectorLayer.getAllFeatures() Not implemented! Must be implemented in sub-class"});
+        var olFeatures = this.source.getFeatures();
+        var features = new Array();
+        for(var i = 0 ; i < olFeatures.length;i++){
+            var olFeature = olFeatures[i];
+            var feature = this.fromOpenLayersFeature(olFeature);
+            features.push(feature);
+        }
+        return features;
     },
     addFeature : function(feature){
-        Ext.Error.raise({msg: "VectorLayer.addFeature() Not implemented! Must be implemented in sub-class"});
+        var features = new Array();
+        features.push(feature);
+        this.addFeatures(features);
+        
     },
     addFeatures : function(features){
-        Ext.Error.raise({msg: "VectorLayer.addFeatures() Not implemented! Must be implemented in sub-class"});
+       var olFeatures = new Array();
+       console.log('lengte'+features.length);
+        for(var i = 0 ; i < features.length ; i++){
+            var feature = features[i];
+            var olFeature = this.toOpenLayersFeature(feature);
+            console.log('ja');
+            console.log(olFeature);
+            olFeatures.push(olFeature);
+           // olFeature.style = this.getCurrentStyleHash();
+            // Check if framework independed feature has a label. If so, set it to the style
+            if (feature.config.label) {
+                //olFeature.style['label'] = feature.config.label;
+            }
+            // check if a colour was specified on the feature and set that for drawing
+            if (feature.config.color) {
+               // olFeature.style['fillcolor'] = feature.config.color;
+                //olFeature.style['strokecolor'] = feature.config.color;
+            }
+        }
+        return this.source.addFeatures(olFeatures);
+    },
+    setLabel : function (id, label){
+        
     },
     /**
      ** Note: subclasses should call this method to add the keylistener.
@@ -85,7 +139,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
      */
     drawFeature : function(type){
         
-        
+        this.select.setActive(false);
         this.maps.removeInteraction(this.draw);
         
         this.superclass.drawFeature.call(this, type);
@@ -115,11 +169,13 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
       this.draw = new ol.interaction.Draw({type:type,
       source:this.source});  
       this.maps.addInteraction(this.draw);
-      this.draw.on('drawend',function(evt){this.maps.removeInteraction(this.draw)},this);
+      this.draw.on('drawend',function(evt){
+        this.select.setActive(true);
+        evt.feature.setId("OpenLayers_Feature_Vector_"+this.idNumber);
+        this.idNumber++;
+        this.maps.removeInteraction(this.draw);},this);
     },
-    
-    adjustStyle : function(){
-    },
+
     /**
      * Note: subclasses should call this method to remove the added keylistener.
      */
@@ -140,10 +196,101 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     /** handle ESC key when drawing. */
     cancelSketch: function () {
         Ext.Error.raise({msg: "VectorLayer.cancelSketch() Not implemented! Must be implemented in sub-class"});
+    },
+    
+    /**
+     * Helper function: Converts the given OpenLayers Feature to the generic feature.
+     * @param openLayersFeature The OpenLayersFeature to be converted
+     * @return The generic feature
+     */
+    fromOpenLayersFeature : function(openLayersFeature){
+        var wktFormat= new ol.format.WKT();
+        var temp =openLayersFeature.getGeometry();
+        if(openLayersFeature.getGeometry().getType()=='Circle'){
+             openLayersFeature.setGeometry(ol.geom.Polygon.fromCircle(openLayersFeature.getGeometry()));
+        }
+        var wkt = wktFormat.writeGeometry(openLayersFeature.getGeometry());
+        var feature = new viewer.viewercontroller.controller.Feature(
+        {
+            id:openLayersFeature.getId(),
+            wktgeom: wkt
+        });
+        console.log(wkt);
+        if(openLayersFeature.style){
+            feature.label = openLayersFeature.style.label;
+            var color = openLayersFeature.style.fillColor;
+            if(color.indexOf("#") !== -1){
+                color = color.substring(color.indexOf("#")+1, color.length);
+            }
+            feature.color = color;
+        }
+        openLayersFeature.setGeometry(temp);
+        return feature;
+    }, 
+    
+    toOpenLayersFeature : function(feature){
+        var wktFormat= new ol.format.WKT();
+        var geom = wktFormat.readGeometry(feature.config.wktgeom);
+        var olFeature = new ol.Feature();
+        olFeature.setGeometry(geom);
+        return olFeature;
+        
+    },
+    
+    /**
+     * Called when a feature is added to the vectorlayer. and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
+     */
+    
+    featureAdded : function(object){
+        console.log('added');
+        var feature = this.fromOpenLayersFeature(object.feature);
+        
+        // If no stylehash is set for the feature, set it to the current settings
+        if(!object.feature.style){
+            //object.feature.style = this.getCurrentStyleHash();
+        }
+        this.editFeature(object.feature);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
+    },
+    
+    editFeature : function(feature){
+        var featureObject = this.fromOpenLayersFeature (feature);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
+    },
+    
+    featureModified : function (evt) {
+        console.log('modi');
+        var featureObject = this.fromOpenLayersFeature(evt.features.getArray()[0]);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
+    },
+    
+    activeFeatureChanged : function(object){
+        console.log('changed');
+        console.log(object);
+        var feature = this.fromOpenLayersFeature (object.selected[0]);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
+    },
+    
+    adjustStyle : function(color){
+        console.log(color);
+        color = '#'+color;
+        this.styles = new ol.style.Style({
+                fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: color,
+                width: 4
+            }),
+            image: new ol.style.Circle({
+                radius: 7,
+                fill: new ol.style.Fill({
+                    color: color
+                })
+            })
+            });
+            this.frameworkLayer.setStyle(this.styles);
     }
     
-    
-    
-    
     });
-    
+   

@@ -479,7 +479,7 @@ Ext.define ("viewer.components.Drawing",{
         this.config.color = hexColor;
         this.vectorLayer.style.fillcolor = this.config.color;
         this.vectorLayer.style.strokecolor = this.config.color;
-        this.vectorLayer.adjustStyle();
+        this.vectorLayer.adjustStyle(hexColor);
         if(this.activeFeature !== null){
             this.activeFeature.color = this.config.color;
             var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
