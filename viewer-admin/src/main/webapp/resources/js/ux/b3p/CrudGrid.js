@@ -36,6 +36,9 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
     constructor: function() {
         this.store = this.createStore();
         this.grid = this.createGrid();
+        // Align edit iframe below grid
+        var gridBottom = document.getElementById("grid-container").getBoundingClientRect().bottom;
+        document.getElementById("form-container").style.top = gridBottom + "px";
     },
 
     /**
