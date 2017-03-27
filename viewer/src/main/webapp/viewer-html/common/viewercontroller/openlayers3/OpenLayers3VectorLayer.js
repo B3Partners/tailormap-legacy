@@ -18,6 +18,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     circle: null,
     source:null,
     box:null,
+    tempFeature:null,
+    tempStyle:null,
     idNumber:0,
     freehand:null,
     drawFeatureControls: null,
@@ -30,7 +32,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         this.draw = new ol.interaction.Draw({type:'Point'});
         this.maps = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         var index  = this.config.viewerController.mapComponent.getMap().getFrameworkMap().getLayers().getLength() +1;
-        this.source = new ol.source.Vector();
+        this.source = new ol.source.Vector();           
+                
         this.styles = new ol.style.Style({
                 fill: new ol.style.Fill({
                 color: 'rgba(255, 255, 255, 0.2)'
@@ -49,12 +52,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         
         this.frameworkLayer = new ol.layer.Vector({
             zIndex:index,
-            source: this.source,
-            style: this.styles
+            source: this.source
         });
 
         this.select = new ol.interaction.Select({
-            layers:[this.frameworkLayer]
+            layers:[this.frameworkLayer],
+            style: this.styles
         });
 
         this.modify = new ol.interaction.Modify({
@@ -73,9 +76,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         
     },
     removeAllFeatures : function(){
-        console.log('joehoe');
-        //this.select.setActive(false);
-        //this.modify.setActive(false);
+        
         this.source.clear();
         this.maps.removeInteraction(this.draw);
     },
@@ -89,7 +90,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         Ext.Error.raise({msg: "VectorLayer.getFeature() Not implemented! Must be implemented in sub-class"});
     },
     getFeatureById : function (featureId){
-        return this.fromOpenLayersFeature(this.source.getFeatureById(featureId));
+        return this.source.getFeatureById(featureId);
     },
     getAllFeatures : function(){
         var olFeatures = this.source.getFeatures();
@@ -127,10 +128,22 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
                 //olFeature.style['strokecolor'] = feature.config.color;
             }
         }
+        console.log('jaoeheo');
         return this.source.addFeatures(olFeatures);
     },
     setLabel : function (id, label){
-        
+        if(id && label){
+        var olFeature = this.source.getFeatureById(id);
+        if(olFeature){
+            this.reload();
+        var style = olFeature.getStyle();
+        style.setText(new ol.style.Text({text:label}));
+        olFeature.setStyle(style);
+    }
+        if(this.tempStyle){
+        this.tempStyle.setText(new ol.style.Text({text:label}));
+    }
+        }
     },
     /**
      ** Note: subclasses should call this method to add the keylistener.
@@ -170,8 +183,25 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
       source:this.source});  
       this.maps.addInteraction(this.draw);
       this.draw.on('drawend',function(evt){
-        this.select.setActive(true);
+          this.select.setActive(true);
+          var nstyle =new ol.style.Style({
+                fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#ff3131',
+                width: 2
+            }),
+            image: new ol.style.Circle({
+                radius: 7,
+                fill: new ol.style.Fill({
+                    color: '#ff3131'
+                })
+            })
+            });
+        evt.feature.setStyle(nstyle);
         evt.feature.setId("OpenLayers_Feature_Vector_"+this.idNumber);
+        //this.select.setActive(true);
         this.idNumber++;
         this.maps.removeInteraction(this.draw);},this);
     },
@@ -206,6 +236,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     fromOpenLayersFeature : function(openLayersFeature){
         var wktFormat= new ol.format.WKT();
         var temp =openLayersFeature.getGeometry();
+        console.log(openLayersFeature.getGeometry().getType());
         if(openLayersFeature.getGeometry().getType()=='Circle'){
              openLayersFeature.setGeometry(ol.geom.Polygon.fromCircle(openLayersFeature.getGeometry()));
         }
@@ -215,7 +246,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
             id:openLayersFeature.getId(),
             wktgeom: wkt
         });
-        console.log(wkt);
         if(openLayersFeature.style){
             feature.label = openLayersFeature.style.label;
             var color = openLayersFeature.style.fillColor;
@@ -224,7 +254,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
             }
             feature.color = color;
         }
+        console.log('hier22');
         openLayersFeature.setGeometry(temp);
+        console.log('hier23');
         return feature;
     }, 
     
@@ -233,6 +265,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         var geom = wktFormat.readGeometry(feature.config.wktgeom);
         var olFeature = new ol.Feature();
         olFeature.setGeometry(geom);
+        olFeature.setStyle(this.styles);
         return olFeature;
         
     },
@@ -246,11 +279,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         var feature = this.fromOpenLayersFeature(object.feature);
         
         // If no stylehash is set for the feature, set it to the current settings
-        if(!object.feature.style){
+        //if(!object.feature.style){
             //object.feature.style = this.getCurrentStyleHash();
-        }
+        //}
         this.editFeature(object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
+        console.log('hier');
     },
     
     editFeature : function(feature){
@@ -265,31 +299,34 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     activeFeatureChanged : function(object){
-        console.log('changed');
-        console.log(object);
+        if(!object.selected[0]){
+            this.tempFeature.setStyle(this.tempStyle);
+            this.styles.setText(new ol.style.Text({text:''}));
+            return;
+        }
+        if(this.tempFeature !== null){
+            this.tempFeature.setStyle(this.tempStyle);
+            this.styles.setText(new ol.style.Text({text:''}));
+        }
+        var selected = object.selected[0];
+        this.tempFeature = object.selected[0];
+        this.tempStyle = object.selected[0].getStyle();
         var feature = this.fromOpenLayersFeature (object.selected[0]);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
+        this.styles.setText(selected.getStyle().getText());
+        selected.setStyle(this.styles);
     },
     
     adjustStyle : function(color){
         console.log(color);
         color = '#'+color;
-        this.styles = new ol.style.Style({
-                fill: new ol.style.Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
-            }),
-            stroke: new ol.style.Stroke({
-                color: color,
-                width: 4
-            }),
-            image: new ol.style.Circle({
-                radius: 7,
-                fill: new ol.style.Fill({
-                    color: color
-                })
-            })
-            });
-            this.frameworkLayer.setStyle(this.styles);
+        if(this.tempStyle){
+            this.tempStyle.getStroke().setColor(color);
+        }
+    },
+    
+    reload: function (){
+        this.mixins.openLayers3Layer.reload.call(this);
     }
     
     });
