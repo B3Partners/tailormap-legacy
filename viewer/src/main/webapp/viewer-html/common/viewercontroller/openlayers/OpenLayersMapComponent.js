@@ -58,7 +58,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
          */
         var me =this
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
-            setTimeout(function(){me.checkTools()},10);
+            setTimeout(function(){me.checkTools();},10);
         },this);
         return this;
     },

@@ -23,6 +23,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
     },
 
     activate : function(){
+        var pinch = new ol.interaction.PinchZoom();
         this.conf.actives = true;
         this.frameworkObject.setActive(true);
         
@@ -31,6 +32,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
             this.mapComponent.maps[0].getFrameworkMap().getView().setCenter(crd);
             this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()+1);
         },this);
+        this.mapComponent.maps[0].getFrameworkMap().addInteraction(pinch);
     },
 
     deactivate : function() {

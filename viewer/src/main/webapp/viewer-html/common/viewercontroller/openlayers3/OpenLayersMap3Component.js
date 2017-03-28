@@ -290,7 +290,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config, new ol.control.MousePosition({projection: config.projection,
             //target:options.target,
             undefinedHTML: 'outside',
-        coordinateFormat: ol.coordinate.createStringXY(2)}));
+            coordinateFormat: ol.coordinate.createStringXY(2)}));
         } else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
             var frameworkOptions={};
             frameworkOptions.bottomOutUnits='';

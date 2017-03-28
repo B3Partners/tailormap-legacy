@@ -131,7 +131,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Does nothing, but is needed for API compliance
      */
     adjustStyle : function(){
-        console.log(this.style.fillColor);
+
     },
     /**
      * Removes all features and all 'sketches' (not finished geometries)
@@ -164,7 +164,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     getAllFeatures : function(){
-        console.log('get alles');
         var olFeatures = this.getFrameworkLayer().features;
         var features = new Array();
         for(var i = 0 ; i < olFeatures.length;i++){
@@ -176,7 +175,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     addFeature : function(feature){
-        console.log('wanneer?');
         var features = new Array();
         features.push(feature);
         this.addFeatures(features);
@@ -194,7 +192,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     
     addFeatures : function(features){
         var olFeatures = new Array();
-        console.log('lengte'+features.length);
         for(var i = 0 ; i < features.length ; i++){
             var feature = features[i];
             var olFeature = this.toOpenLayersFeature(feature);
@@ -245,7 +242,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     stopDrawing: function(){
         // remove key event listener
-        console.log("en vai hier ");
         this.superclass.stopDrawing.call(this);
 
         //also stop drawing

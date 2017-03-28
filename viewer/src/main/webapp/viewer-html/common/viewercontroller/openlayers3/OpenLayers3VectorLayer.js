@@ -29,26 +29,29 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         config.colorPrefix = '#';
         viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer.superclass.constructor.call(this, config);
         this.mixins.openLayers3Layer.constructor.call(this,config);
+        this.defColor = this.colorPrefix + config.style['fillcolor'];
+        
         this.draw = new ol.interaction.Draw({type:'Point'});
         this.maps = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         var index  = this.config.viewerController.mapComponent.getMap().getFrameworkMap().getLayers().getLength() +1;
         this.source = new ol.source.Vector();           
-                
-        this.styles = new ol.style.Style({
-                fill: new ol.style.Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#32ff44',
-                width: 2
-            }),
+        
+        var selectFill = new ol.style.Fill({
+            color: 'rgba(255,255,255,0.4)'
+        });
+        var selectStroke = new ol.style.Stroke({
+            color: '#3399CC',
+            width: 1.25
+        });
+        this.selectStyle = new ol.style.Style({
             image: new ol.style.Circle({
-                radius: 7,
-                fill: new ol.style.Fill({
-                    color: '#32ff44'
-                })
-            })
-            });
+            fill: selectFill,
+            stroke: selectStroke,
+            radius: 5
+        }),
+        fill: selectFill,
+        stroke: selectStroke
+        });
         
         this.frameworkLayer = new ol.layer.Vector({
             zIndex:index,
@@ -57,7 +60,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
 
         this.select = new ol.interaction.Select({
             layers:[this.frameworkLayer],
-            style: this.styles
+            style: this.selectStyle
         });
 
         this.modify = new ol.interaction.Modify({
@@ -133,17 +136,18 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     setLabel : function (id, label){
         if(id && label){
-        var olFeature = this.source.getFeatureById(id);
-        if(olFeature){
-            this.reload();
-        var style = olFeature.getStyle();
-        style.setText(new ol.style.Text({text:label}));
-        olFeature.setStyle(style);
-    }
-        if(this.tempStyle){
-        this.tempStyle.setText(new ol.style.Text({text:label}));
-    }
+            var olFeature = this.source.getFeatureById(id);
+            if(olFeature){
+                this.reload();
+                var style = olFeature.getStyle();
+                style.setText(new ol.style.Text({text:label}));
+                olFeature.setStyle(style);
+            }
+            if(this.tempStyle){
+                this.tempStyle.setText(new ol.style.Text({text:label}));
+            }
         }
+        this.select.setActive(true);
     },
     /**
      ** Note: subclasses should call this method to add the keylistener.
@@ -179,31 +183,32 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     addInteraction : function(type){
-      this.draw = new ol.interaction.Draw({type:type,
-      source:this.source});  
-      this.maps.addInteraction(this.draw);
-      this.draw.on('drawend',function(evt){
-          this.select.setActive(true);
-          var nstyle =new ol.style.Style({
-                fill: new ol.style.Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#ff3131',
-                width: 2
-            }),
+        this.draw = new ol.interaction.Draw({type:type,
+        source:this.source});  
+        this.maps.addInteraction(this.draw);
+        this.draw.on('drawend',function(evt){
+            var featureFill = new ol.style.Fill({
+            color: 'rgba(255,255,255,0.4)'
+        });
+        var featureStroke = new ol.style.Stroke({
+            color: this.defColor,
+            width: 2
+        });
+        var featureStyle = new ol.style.Style({
             image: new ol.style.Circle({
-                radius: 7,
-                fill: new ol.style.Fill({
-                    color: '#ff3131'
-                })
-            })
-            });
-        evt.feature.setStyle(nstyle);
-        evt.feature.setId("OpenLayers_Feature_Vector_"+this.idNumber);
-        //this.select.setActive(true);
-        this.idNumber++;
-        this.maps.removeInteraction(this.draw);},this);
+            fill: featureFill,
+            stroke: featureStroke,
+            radius: 5
+        }),
+        fill: featureFill,
+        stroke: featureStroke
+        });
+            this.select.setActive(true);
+            evt.feature.setStyle(featureStyle);
+            evt.feature.setId("OpenLayers_Feature_Vector_"+this.idNumber);
+            //this.select.setActive(true);
+            this.idNumber++;
+            this.maps.removeInteraction(this.draw);},this);
     },
 
     /**
@@ -236,7 +241,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     fromOpenLayersFeature : function(openLayersFeature){
         var wktFormat= new ol.format.WKT();
         var temp =openLayersFeature.getGeometry();
-        console.log(openLayersFeature.getGeometry().getType());
         if(openLayersFeature.getGeometry().getType()=='Circle'){
              openLayersFeature.setGeometry(ol.geom.Polygon.fromCircle(openLayersFeature.getGeometry()));
         }
@@ -254,9 +258,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
             }
             feature.color = color;
         }
-        console.log('hier22');
         openLayersFeature.setGeometry(temp);
-        console.log('hier23');
         return feature;
     }, 
     
@@ -265,9 +267,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         var geom = wktFormat.readGeometry(feature.config.wktgeom);
         var olFeature = new ol.Feature();
         olFeature.setGeometry(geom);
-        olFeature.setStyle(this.styles);
+        olFeature.setStyle(this.selectStyle);
         return olFeature;
-        
     },
     
     /**
@@ -284,7 +285,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         //}
         this.editFeature(object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
-        console.log('hier');
     },
     
     editFeature : function(feature){
@@ -301,28 +301,37 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     activeFeatureChanged : function(object){
         if(!object.selected[0]){
             this.tempFeature.setStyle(this.tempStyle);
-            this.styles.setText(new ol.style.Text({text:''}));
+            this.selectStyle.setText(new ol.style.Text({text:''}));
+            this.tempFeature = null;
+            this.tempStyle = null;
             return;
         }
         if(this.tempFeature !== null){
             this.tempFeature.setStyle(this.tempStyle);
-            this.styles.setText(new ol.style.Text({text:''}));
+            this.selectStyle.setText(new ol.style.Text({text:''}));
+            this.tempFeature = null;
+            this.tempStyle = null;
         }
         var selected = object.selected[0];
         this.tempFeature = object.selected[0];
         this.tempStyle = object.selected[0].getStyle();
         var feature = this.fromOpenLayersFeature (object.selected[0]);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
-        this.styles.setText(selected.getStyle().getText());
-        selected.setStyle(this.styles);
+        this.selectStyle.setText(selected.getStyle().getText());
+        selected.setStyle(this.selectStyle);
     },
     
-    adjustStyle : function(color){
-        console.log(color);
+    adjustStyle : function(){
+        
+        console.log(this.colorPrefix + this.style['strokecolor']);
+        /*
         color = '#'+color;
+        this.defColor = color;
         if(this.tempStyle){
             this.tempStyle.getStroke().setColor(color);
         }
+        //this.tempStyle = null;
+        */
     },
     
     reload: function (){

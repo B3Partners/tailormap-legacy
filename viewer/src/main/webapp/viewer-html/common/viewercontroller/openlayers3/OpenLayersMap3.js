@@ -114,6 +114,12 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
                 features: [positionFeature]
             })
         });
+    },
+    
+    zoomToExtent : function (extent){
+            var bounds=this.utils.createBounds(extent);
+            console.log(bounds);
+            this.frameworkMap.getView().fit(bounds, this.frameworkMap.getSize()); 
     }
     
     });

@@ -21,5 +21,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
         if (this.frameworkLayer!=null){
             this.frameworkLayer.setVisible(visible);
         }
-    }
+    },
+    
+    reload : function (){
+        this.getFrameworkLayer().getSource().refresh();
+    },
     });
