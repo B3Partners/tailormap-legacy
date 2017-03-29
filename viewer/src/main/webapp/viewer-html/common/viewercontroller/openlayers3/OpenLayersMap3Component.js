@@ -141,6 +141,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             options.opacity = options.alpha / 100;
         }
         var tmsLayer= new viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer(options);
+        console.log('klaar');
         return tmsLayer;  
     },
     
