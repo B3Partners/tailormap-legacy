@@ -480,7 +480,7 @@ Ext.define ("viewer.components.Drawing",{
         this.vectorLayer.style.fillcolor = this.config.color;
         this.vectorLayer.style.strokecolor = this.config.color;
         this.vectorLayer.adjustStyle(hexColor);
-        if(this.activeFeature !== null){
+        if(this.activeFeature){
             this.activeFeature.color = this.config.color;
             var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
             this.activeFeature.config.wktgeom = feature.config.wktgeom;
@@ -604,7 +604,9 @@ Ext.define ("viewer.components.Drawing",{
             this.vectorLayer.style.strokecolor = featureObject._color;
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
+            console.log(featureObject._label);
             this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
+            console.log('klaar');
         }
 
     },
