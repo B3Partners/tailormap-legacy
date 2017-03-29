@@ -92,8 +92,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
         }); 
         }else if (this.getProtocol()==="WMTS"){
             var convertRatio = 1/0.00028;
-            console.log(options);
-            console.log(config);
             options.url = this.url;
             options.style = this.config.style;
             options.layer = this.config.name;

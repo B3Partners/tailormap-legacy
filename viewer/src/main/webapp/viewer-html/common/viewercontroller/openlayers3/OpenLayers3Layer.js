@@ -25,5 +25,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
     
     reload : function (){
         this.getFrameworkLayer().getSource().refresh();
+    },
+    getType: function(){
+        return this.type;
     }
     });

@@ -141,7 +141,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             options.opacity = options.alpha / 100;
         }
         var tmsLayer= new viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer(options);
-        console.log('klaar');
         return tmsLayer;  
     },
     
@@ -183,6 +182,17 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
 
         var wmsLayer = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",config);
         return wmsLayer;
+    },
+    
+    createArcServerLayer : function(name,url,options,viewerController){
+        options.name=name;
+        options.url=url;
+        options.viewerController=viewerController;
+        if(options.alpha != undefined) {
+            options.opacity = options.alpha / 100;
+        }
+        var arcServer = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",options);
+        return arcServer;
     },
     
     addMap : function(map) {
@@ -281,7 +291,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     createComponent : function (config){
         var type = config.type;
         var comp = null;
-        console.log(config);
         if(type === viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
