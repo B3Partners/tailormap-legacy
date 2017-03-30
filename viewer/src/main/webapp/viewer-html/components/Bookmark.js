@@ -50,8 +50,7 @@ Ext.define ("viewer.components.Bookmark",{
         if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true; 
         this.initConfig(conf);
 		viewer.components.Bookmark.superclass.constructor.call(this, this.config);
-       
-        imagePath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/bookmark/";
+
         this.shareUrls ={
             email: "mailto:%20?subject=[title]&body=[text]%20[url]",
             twitter: "http://twitter.com/share?url=[url]&text=[text]",
@@ -79,6 +78,7 @@ Ext.define ("viewer.components.Bookmark",{
     },
     loadWindow : function(){
         var socialButtons=[];
+        var imagePath = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/bookmark/";
         if(this.config.shareEmail){
             socialButtons.push({
                 xtype: 'button',                
