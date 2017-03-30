@@ -218,23 +218,23 @@ Ext.define ("viewer.components.AttributeList",{
             ]
         });
     },
-    layerSelectorInit: function(args) {
+    layerSelectorInit: function(evt) {
         // First clear selection so we are sure to get an 'changed' event
         this.layerSelector.clearSelection();
         // Select first layer
         this.layerSelector.selectFirstLayer();
         if(this.config.showAttributelistLinkInFeatureInfo) {
-            this.createFeatureInfoLink(args.store);
+            this.createFeatureInfoLink(evt.layers);
         }
     },
-    createFeatureInfoLink: function(store) {
-        if(this.editLinkInFeatureInfoCreated) {
+    createFeatureInfoLink: function(attributelistLayers) {
+        if(this.attributeListLinkInFeatureInfoCreated) {
             return;
         }
         var infoComponents = this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
         var appLayers = [];
-        store.each(function(record) {
-            appLayers.push(this.viewerController.getAppLayerById(record.get('layerId')));
+        Ext.each(attributelistLayers, function (record) {
+            appLayers.push(this.viewerController.getAppLayerById(record.id));
         }, this);
         for (var i = 0; i < infoComponents.length; i++) {
             infoComponents[i].registerExtraLink(
@@ -246,7 +246,7 @@ Ext.define ("viewer.components.AttributeList",{
                 appLayers
             );
         }
-        this.editLinkInFeatureInfoCreated = true;
+        this.attributeListLinkInFeatureInfoCreated = true;
     },
     handleFeatureInfoLink: function(feature, appLayer, coords) {
         // Show the window
