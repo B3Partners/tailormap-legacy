@@ -393,12 +393,22 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/ToolMapClick3.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Component.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3Component.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcServerLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3VectorLayer.js</param>
 
                                 <!-- OpenLayers Components -->
                                 
                                 <!-- OpenLayers Tools -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3IdentifyTool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3DefaultTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/DragPan.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/FullExtent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/Measure.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ToolButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ZoomIn.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ZoomOutButton.js</param>
+                                  
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers3-min.js</outputFile>
                         </compilation>
