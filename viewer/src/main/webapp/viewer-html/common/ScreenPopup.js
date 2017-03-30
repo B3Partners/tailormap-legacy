@@ -211,6 +211,11 @@ Ext.define ("viewer.components.ScreenPopup",{
                 this.popupWin.alignTo(Ext.get('wrapper'), [alignment, alignment].join('-'), pos);
             }
         }, this);
+
+        // IOS fix, see http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+        // This is especially an issue when loading Flamingo in an iframe
+        this.popupWin.getEl().dom.addEventListener('touchstart', function(){});
+
         return this;
     },
     parseBooleanValue: function(val) {

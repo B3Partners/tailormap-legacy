@@ -221,6 +221,9 @@ Ext.define("viewer.AppLoader", {
         }
         this.config.viewerController = new viewer.viewercontroller.ViewerController(this.config.viewerType, null, appConfig, listeners, mapConfig);
         this.exposeVariable(this.config.viewerController, "viewerController", !this.config.debugMode);
+        // IOS fix, see http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+        // This is especially an issue when loading Flamingo in an iframe
+        document.getElementById(this.config.viewerController.getWrapperId()).addEventListener('touchstart', function(){});
     },
 
     /**
