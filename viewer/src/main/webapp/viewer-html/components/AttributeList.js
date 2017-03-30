@@ -57,9 +57,11 @@ Ext.define ("viewer.components.AttributeList",{
         this.grids={};
         this.pagers={};
         this.renderButton({
-            handler: function(){
+            handler: function() {
+                var deferred = me.createDeferred();
                 me.showWindow();
                 me.layerSelector.initLayers();
+                return deferred.promise;
             },
             text: me.config.title,
             icon: me.config.iconUrl,
@@ -120,6 +122,14 @@ Ext.define ("viewer.components.AttributeList",{
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
+            listeners: {
+                afterrender: {
+                    fn: function() {
+                        this.resolveDeferred();
+                    },
+                    scope: this
+                }
+            },
             items: [{
                 id: this.name + 'LayerSelectorPanel',
                 xtype: "container",
@@ -267,6 +277,9 @@ Ext.define ("viewer.components.AttributeList",{
             this.loadWindow();
         }
         this.popup.show();
+        if(this.layerSelector.getVisibleLayerCount() === 0) {
+            this.resolveDeferred();
+        }
     },
     showWindowForLayer: function(layer) {
         this.showWindow();
@@ -636,6 +649,7 @@ Ext.define ("viewer.components.AttributeList",{
                     }
 
                     setTimeout(function(){ Ext.getCmp(me.name + 'mainGridPanel').updateLayout(); }, 0);
+                    me.resolveDeferred();
                 }
             },
             autoLoad: true

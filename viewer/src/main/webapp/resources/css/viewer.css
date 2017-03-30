@@ -359,6 +359,39 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
     -webkit-overflow-scrolling: touch;
 }
 
+.applicationSpriteClass .x-mask-msg {
+    width: 100%;
+    height: 100%;
+    background: rgba(208, 208, 208, .5);
+}
+
+.applicationSpriteClass .x-mask-msg-inner,
+.applicationSpriteClass .x-mask-msg-inner:after {
+    border-radius: 50%;
+    width: 80%;
+    height: 80%;
+    margin: 10%;
+}
+
+.applicationSpriteClass .x-mask-msg-inner {
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: 0.5em solid #FFFFFF;
+    border-right: 0.5em solid #FFFFFF;
+    border-bottom: 0.5em solid #FFFFFF;
+    border-left: 0.5em solid rgba(255, 255, 255, 0.2);
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 1.1s infinite linear;
+    animation: load8 1.1s infinite linear;
+}
+
+.applicationSpriteClass .x-mask-msg-text {
+    display: none;
+}
+
 /** LOADING Spinner */
 #appLoader {
     font-size: 13px;

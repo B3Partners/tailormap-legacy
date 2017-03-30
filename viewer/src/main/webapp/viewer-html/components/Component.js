@@ -171,14 +171,26 @@ Ext.define("viewer.components.Component",{
             scale: "large",
             icon: buttonIcon,
             tooltip: options.tooltip || null,
+            maskElement: "el",
             handler: function() {
                 if(me.popup && me.popup.isVisible()) {
                     me.popup.hide();
                 } else {
-                    me.config.viewerController.showLoading(me.title || '');
+                    me.button.setLoading(true);
+                    // me.config.viewerController.showLoading(me.title || '');
                     setTimeout(function() {
-                    options.handler();
-                        me.config.viewerController.hideLoading();
+                        var promise = options.handler();
+                        if(me.isPromise(promise)) {
+                            promise.always(function() {
+                                // me.config.viewerController.hideLoading();
+                                me.button.setLoading(false);
+                            });
+                        } else {
+                            setTimeout(function() {
+                                // me.config.viewerController.hideLoading();
+                                me.button.setLoading(false);
+                            }, 0);
+                        }
                     }, 0);
                 }
             },
@@ -460,6 +472,49 @@ Ext.define("viewer.components.Component",{
      */
     loadVariables: function(state){
         return;
+    },
+
+    /**
+     *  Handle promises
+     */
+
+    /**
+     * @type Ext.Deferred
+     */
+    currentDeferred: null,
+
+    createDeferred: function() {
+        this.currentDeferred = new Ext.Deferred();
+        // When we create a promise, make sure to clean up in case something goes wrong
+        window.setTimeout((function() {
+            this.cleanupDeferred();
+        }).bind(this), 30 * 1000);
+        return this.currentDeferred;
+    },
+
+    resolveDeferred: function() {
+        if(!this.isPromise(this.currentDeferred)) {
+            return;
+        }
+        this.currentDeferred.resolve.apply(this.currentDeferred, ["success"].concat(arguments));
+    },
+
+    rejectDeferred: function() {
+        if(!this.isPromise(this.currentDeferred)) {
+            return;
+        }
+        this.currentDeferred.reject.apply(this.currentDeferred, ["error"].concat(arguments));
+    },
+
+    isPromise: function(promise) {
+        return promise && (promise instanceof Ext.promise.Promise || promise instanceof Ext.Deferred);
+    },
+
+    cleanupDeferred: function() {
+        if(!this.isPromise(this.currentDeferred)) {
+            return;
+        }
+        this.currentDeferred.reject("timeout");
     }
 
 });
