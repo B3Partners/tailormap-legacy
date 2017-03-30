@@ -35,6 +35,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
             opacity: this.config.opacity != undefined ? this.config.opacity : 1,
             attribution: this.config.attribution
         });
+        console.log(this);
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE;
     },
     /**

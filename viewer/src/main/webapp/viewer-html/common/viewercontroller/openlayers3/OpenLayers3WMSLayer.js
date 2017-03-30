@@ -21,7 +21,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         var sources = new ol.source.ImageWMS({
             url:config.options.url,
             projection: config.viewerController.mapComponent.mapOptions.projection,
-            params :{ layers: config.options.layers
+            params :{ layers: config.options.layers,
+                      version: this.options.version,
+                      srs: this.options.srs,
+                      styles: this.options.styles,
+                      format: this.options.format,
+                      transparent: this.options.transparent         
             }
         });
         this.frameworkLayer = new ol.layer.Image({

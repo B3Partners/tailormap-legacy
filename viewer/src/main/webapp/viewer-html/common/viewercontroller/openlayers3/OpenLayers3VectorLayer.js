@@ -6,6 +6,8 @@
 
 
 
+/* global ol */
+
 Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     extend: "viewer.viewercontroller.controller.VectorLayer",
     mixins: {

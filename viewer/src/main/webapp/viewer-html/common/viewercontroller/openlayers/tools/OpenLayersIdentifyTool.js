@@ -112,7 +112,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
      * Called when a layer is added
      */
     onAddLayer: function(map,options){ 
-        console.log("hier");
         var mapLayer=options.layer;
         if (mapLayer==null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
             return;

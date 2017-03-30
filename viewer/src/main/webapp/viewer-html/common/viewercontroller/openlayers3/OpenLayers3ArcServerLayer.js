@@ -15,14 +15,17 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",{
             projection: config.viewerController.mapComponent.mapOptions.projection,
             params: {
                 layers:"show:"+config.layers,
-                transparent: true,
+                transparent: true
             },
             url:config.url,
             ratio:config.ratio
         });
         this.frameworkLayer = new ol.layer.Tile({
             source:source,
-            visible:config.visible
+            visible:config.visible,
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1,
+            preload: 1
+          
         });
         
         

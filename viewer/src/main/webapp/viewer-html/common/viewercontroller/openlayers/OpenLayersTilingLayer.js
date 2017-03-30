@@ -41,7 +41,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
         
         var opacity = this.config.opacity !== undefined ? this.config.opacity : 1;
-        console.log(this);
         var options = {
             serverResolutions: this.resolutions,
             type: this.extension,

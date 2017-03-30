@@ -88,7 +88,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             opacity: options.opacity,
             extent: options.maxExtent,
             maxResolution: options.maxResolution,
-            visible: options.visibility
+            visible: options.visibility,
+            preload: 1
         }); 
         }else if (this.getProtocol()==="WMTS"){
             var convertRatio = 1/0.00028;
@@ -121,7 +122,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             opacity: options.opacity,
             extent: options.maxExtent,
             maxResolution: options.maxResolution,
-            visible: options.visibility
+            visible: options.visibility,
+            preload: 1
         });   
 
         }
