@@ -93,11 +93,31 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
                 this.enabledEvents[olSpecificEvent]++;                
             }else{
                 this.enabledEvents[olSpecificEvent] = 1;
-                //this.frameworkObject.events.register(olSpecificEvent, this, this.handleEvent);
+                this.frameworkObject.on(olSpecificEvent, this, this.handleEvent);
             }
             
         }        
         viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.addListener.call(this,event,handler,scope);
+    },
+    
+    removeListener : function (event,handler,scope){
+        var olSpecificEvent = this.config.viewerController.mapComponent.getSpecificEventName(event);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            /* Remove event from OpenLayers Layer if the number of events == 0
+             * If there are no listeners for the OpenLayers event, remove the listener.             
+             */
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]--;
+                if (this.enabledEvents[olSpecificEvent] <= 0){
+                    this.enabledEvents[olSpecificEvent]=0;
+                    this.frameworkObject.un(olSpecificEvent, this, this.handleEvent);
+                }
+            }            
+        }
+        viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.removeListener.call(this,event,handler,scope);
     },
     
     activate: function(){
@@ -118,5 +138,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
     
     isActive : function(){
         return this.olTool.isActive();
+    },
+    handleEvent : function (event){
+        var eventName = this.config.viewerController.mapComponent.getGenericEventName(event.type);
+        if(!eventName){
+            eventName = event;
+        }
+        this.fire(eventName,{});
     }
 });

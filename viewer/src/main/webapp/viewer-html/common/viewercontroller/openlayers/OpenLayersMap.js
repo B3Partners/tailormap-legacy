@@ -306,6 +306,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
      * If the event is thrown by the OpenLayers event the given handlers are called.
      */
     addListener : function(event,handler,scope){
+        console.log(event);
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
@@ -315,8 +316,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
              * count the events for removing the listener again.
              */
             if(this.enabledEvents[olSpecificEvent]){
+                console.log('niet');
                 this.enabledEvents[olSpecificEvent]++;                
             }else{
+                console.log('wel');
                 this.enabledEvents[olSpecificEvent] = 1;
                 this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
             }
@@ -359,10 +362,12 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
      *
      */
     handleEvent : function(args){
+        console.log(args);
         var event = args.type;
         var options={};
         var genericEvent = this.config.viewerController.mapComponent.getGenericEventName(event);
         if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
+            console.log(args);
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
             if (options.layer ==undefined){
                 //if no layer found return, dont fire

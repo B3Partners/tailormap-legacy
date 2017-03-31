@@ -38,6 +38,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         }
  
         config.restrictedExtent = maxBounds;
+        
         this.frameworkMap = new ol.Map({
         target: config.domId,
         controls: [],
@@ -54,15 +55,56 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             extent: config.restrictedExtent
         })
     });
+        this.group = new ol.layer.Group();
+        this.frameworkMap.setLayerGroup(this.group);
+        
+        //this.group.on("change:layergroup", function(evt){console.log('chabggee');},this);
+    
+        if(config.options.startExtent){
+        console.log('ja');
+            var me = this;
+            var handler = function(){
+                me.zoomToExtent(config.options.startExtent);            
+                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+                //this.group.getLayers().un("add", function(evt){console.log('chabggee');},this);
+            };
+            this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+            this.group.getLayers().on("add",this.handleEvent,this);
+        }
+    
+    this.group.getLayers().on('remove',this.handleEvent,this);
+    
+    this.layersLoading = 0;
+        this.markerLayer=null;
+        this.defaultIcon = {};
+        this.markerIcons = {
+            "default": contextPath + '/viewer-html/common/openlayers/img/marker.png',
+            "spinner": contextPath + '/resources/images/spinner.gif'
+        };
+        this.markers=new Object();
+        this.getFeatureInfoControl = null;    
+    
+    this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved, this);
+        
+        // Prevents the markerlayer to "disappear" beneath all the layers
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function(){
+            if(this.markerLayer){
+                this.frameworkMap.setLayerIndex(this.markerLayer, this.frameworkMap.getNumLayers());
+            }
+        },this);
+    
+    
     return this;
      },
      
      addLayer : function(layer){        
         this.superclass.addLayer.call(this,layer);   
         //delete layer.getFrameworkLayer().id;
-        var map = this.getFrameworkMap()
+        var map = this.getFrameworkMap();
         var l = layer.getFrameworkLayer();
         try{
+            l.set('id',layer.id,false);
+            l.on("change:visible",function(evt){layer.type = evt.type;this.handleEvent(layer);},this);
             map.addLayer(l);
         }catch(exception){
             this.config.viewerController.logger.error(exception);
@@ -118,8 +160,113 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     
     zoomToExtent : function (extent){
             var bounds=this.utils.createBounds(extent);
-            console.log(bounds);
             this.frameworkMap.getView().fit(bounds, this.frameworkMap.getSize()); 
+    },
+    
+    handleEvent : function(args){
+        var event = args.type;
+        var options={};
+        var genericEvent = this.config.viewerController.mapComponent.getGenericEventName(event);
+        if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
+            args.id = args.element.get('id');
+            options.layer=this.getLayerByOpenLayersId(args.id);
+            if (options.layer ==undefined){
+                console.log('return');
+                //if no layer found return, dont fire
+                return;
+            }
+        }else if (genericEvent== viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED){
+            options.layer=this.getLayerByOpenLayersId(args.id);
+            if (options.layer ==undefined){
+                
+                //if no layer found return, dont fire
+                return;
+            }
+            options.visible=options.layer.visible;
+        }else if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED){
+            args.id = args.element.get('id');
+            options.layer=this.getLayerByOpenLayersId(args.id);
+            if (options.layer ==undefined){
+                //if no layer found return, dont fire
+                return;
+            }
+        }else if (genericEvent==viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT ||
+                  genericEvent==viewer.viewercontroller.controller.Event.ON_ZOOM_END ||
+                  genericEvent==viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT){
+            options.extent=this.getExtent();
+        }else{
+            this.config.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
+        }
+        this.fireEvent(genericEvent,this,options);
+    },
+    
+    getLayerByOpenLayersId: function(olId){
+        for (var i=0; i < this.layers.length; i++){
+            if (this.layers[i].frameworkLayer){
+                if (this.layers[i].id == olId){
+                    return this.layers[i];
+                }
+            }
+        }
+    },
+    
+    layerRemoved : function (map, options){
+        var l = options.layer.getFrameworkLayer();
+        for ( var i = 0 ; i < this.layers.length ;i++){
+            var frameworkLayer = this.layers[i].getFrameworkLayer();
+            if(frameworkLayer.id == l.id){
+                this.layers.splice(i,1);
+                break;
+            }
+        }
+    },
+    
+    addListener : function(event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        console.log(olSpecificEvent);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            /* Add event to OpenLayersMap only once, to prevent multiple fired events.    
+             * count the events for removing the listener again.
+             */
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]++;                
+            }else{
+                this.enabledEvents[olSpecificEvent] = 1;
+                console.log(olSpecificEvent);
+                //this.frameworkMap.on(olSpecificEvent,this.handleEvent, this);
+            }
+        }
+        viewer.viewercontroller.openlayers3.OpenLayersMap3.superclass.addListener.call(this,event,handler,scope);
+    },
+    
+    removeListener : function (event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            /* Remove event from OpenLayersMap if the number of events == 0
+             * If there are no listeners for the OpenLayers event, remove the listener.             
+             */
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]--;
+                if (this.enabledEvents[olSpecificEvent] <= 0){
+                    this.enabledEvents[olSpecificEvent]=0;
+                    this.frameworkMap.un(olSpecificEvent,this.handleEvent,this);
+                }
+            }            
+            viewer.viewercontroller.openlayers3.OpenLayersMap3.superclass.removeListener.call(this,event,handler,scope);
+        }else{
+            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
+        }
+    },
+    
+    getExtent : function(){
+        var extent = this.getFrameworkMap().getView().getProjection().getExtent();
+        return extent;
     }
     
     });

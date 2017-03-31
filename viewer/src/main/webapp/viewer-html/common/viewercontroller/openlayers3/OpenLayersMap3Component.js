@@ -110,10 +110,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_MEASURE]                                = "measure";
         this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]                 = "moveend";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]                          = "move";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]                          = "removelayer";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                            = "addlayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]                          = "remove";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                            = "add";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]                       = "getfeatureinfo";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "changelayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "change:visible";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                               = "activate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                             = "deactivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ZOOM_END]                               = "zoomend";

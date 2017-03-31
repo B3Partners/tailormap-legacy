@@ -133,6 +133,10 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
         this.mixins.openLayers3Layer.setVisible.call(this,vis);
     },
     
+    getVisible: function(){
+        return this.mixins.openLayers3Layer.getVisible.call(this);
+    },
+        
     getMatrixIds: function(matrices){
         var newMatrixIds = [];
         for(var i = 0 ; i<matrices.length;i++){
@@ -158,6 +162,15 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             matrixIds[z] = 'EPSG:28992:' + z;
         }
         return matrixIds;
+    },
+    addListener: function (event,handler,scope){
+        this.mixins.openLayers3Layer.addListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
+     */
+    removeListener: function (event,handler,scope){
+        this.mixins.openLayers3Layer.removeListener.call(this,event,handler,scope);
     }
     
 });
