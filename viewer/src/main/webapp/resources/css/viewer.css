@@ -262,6 +262,10 @@ body > .legend {
     background: #FFFFFF;
 }
 
+.edit-component-container .x-fieldset {
+    border-top: 1px solid #bbb !important;
+}
+
 /*/ makes (editable) field labels overflow into ellipsis*/
 .x-form-item-label-inner {
     overflow: hidden;
