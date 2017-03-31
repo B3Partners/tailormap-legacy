@@ -173,21 +173,22 @@ Ext.define("viewer.components.Component",{
             tooltip: options.tooltip || null,
             maskElement: "el",
             handler: function() {
+                if(me.button.isMasked()) {
+                    // Component is loading
+                    return;
+                }
                 if(me.popup && me.popup.isVisible()) {
                     me.popup.hide();
                 } else {
                     me.button.setLoading(true);
-                    // me.config.viewerController.showLoading(me.title || '');
                     setTimeout(function() {
                         var promise = options.handler();
                         if(me.isPromise(promise)) {
                             promise.always(function() {
-                                // me.config.viewerController.hideLoading();
                                 me.button.setLoading(false);
                             });
                         } else {
                             setTimeout(function() {
-                                // me.config.viewerController.hideLoading();
                                 me.button.setLoading(false);
                             }, 0);
                         }
