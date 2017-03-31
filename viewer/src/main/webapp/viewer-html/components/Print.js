@@ -231,7 +231,10 @@ Ext.define ("viewer.components.Print",{
                 //top container (1)
                 xtype: 'container',
                 height: 200,
-                layout: 'hbox',
+                layout: {
+                    type: 'box',
+                    vertical: false
+                },
                 width: '100%',
                 items: [/*{
                     xtype: "label",
@@ -243,7 +246,7 @@ Ext.define ("viewer.components.Print",{
                     flex: 0.4,
                     hideMode: "offsets",
                     hidden: !this.getLegend(),
-                    items: [{}],
+                    items: [],
                     autoScroll: true,
                     margin: '0 5 0 0'
                 },{
@@ -257,16 +260,33 @@ Ext.define ("viewer.components.Print",{
                 //bottom container (2)
                 xtype: 'container',
                 layout: {
-                    type: 'column'
+                    type: 'box',
+                    vertical: false
                 },
                 style: {
                     marginTop: '15px'
+                },
+                plugins: ['responsive'],
+                responsiveConfig: {
+                    'width < 550': {
+                        layout: {
+                            type: 'box',
+                            vertical: true,
+                            align: 'stretch'
+                        }
+                    },
+                    'width >= 550': {
+                        layout: {
+                            type: 'box',
+                            vertical: false
+                        }
+                    }
                 },
                 width: '100%',
                 items: [{
                     //bottom left (3)
                     xtype: 'container',
-                    columnWidth: 0.4,
+                    flex: 0.4,
                     items: [{
                         xtype: "label",
                         text: "Titel"
@@ -293,7 +313,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     //bottom right (4)
                     xtype: 'container',
-                    columnWidth: 0.6,
+                    flex: 0.6,
                     items: [{
                         //kwality row (5)
                         xtype: 'container',
@@ -342,11 +362,30 @@ Ext.define ("viewer.components.Print",{
                     },{
                         // (6)
                         xtype: 'container',
-                        layout: {type: 'column'},
+                        layout: {
+                            type: 'box',
+                            vertical: false
+                        },
+                        plugins: ['responsive'],
+                        responsiveConfig: {
+                            'width < 550': {
+                                layout: {
+                                    type: 'box',
+                                    vertical: true,
+                                    align: 'stretch'
+                                }
+                            },
+                            'width >= 550': {
+                                layout: {
+                                    type: 'box',
+                                    vertical: false
+                                }
+                            }
+                        },
                         items: [{
                             //(7)
                             xtype: 'container',
-                            columnWidth: 0.5,
+                            flex: 0.5,
                             items: [{
                                 xtype: 'label',
                                 text: 'Orientatie'
@@ -389,7 +428,27 @@ Ext.define ("viewer.components.Print",{
                         },{
                             //(8)
                             xtype: 'container',
-                            columnWidth: 0.5,
+                            flex: 0.5,
+                            layout: {
+                                type: 'box',
+                                vertical: true
+                            },
+                            plugins: ['responsive'],
+                            responsiveConfig: {
+                                'width < 550': {
+                                    layout: {
+                                        type: 'box',
+                                        vertical: true,
+                                        align: 'stretch'
+                                    }
+                                },
+                                'width >= 550': {
+                                    layout: {
+                                        type: 'box',
+                                        vertical: true
+                                    }
+                                }
+                            },
                             items: [{
                                 xtype: 'label',
                                 text: "Pagina formaat"
