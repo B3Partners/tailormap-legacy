@@ -90,8 +90,8 @@ Ext.define ("viewer.components.ScreenPopup",{
         var isMobile = viewer.components.MobileManager.isMobile();
         if(isMobile) {
             config.modal = true;
-            config.width = '90%';
-            config.height = '90%';
+            config.width = '100%';
+            config.height = '100%';
             config.draggable = false;
             config.resizable = false;
             if(this.config.details.minWidth) {
@@ -192,9 +192,6 @@ Ext.define ("viewer.components.ScreenPopup",{
                     this.currentOrientation = viewer.components.MobileManager.getOrientation();
                     setTimeout(function() { this.component.resizeScreenComponent() }, 0);
                 }
-                this.popupWin.mon(Ext.getBody(), 'click', function(el, e){
-                    this.popupWin.close();
-                }, this, { delegate: '.x-mask' });
             } else if(this.config.details.position === 'fixed' && !positionChanged) {
                 // Align popupWindow
                 var pos = [parseInt(this.config.details.x), parseInt(this.config.details.y)];
@@ -256,10 +253,10 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     resizePopup: function() {
         if(viewer.components.MobileManager.isMobile() && this.isVisible()) {
-    		// Set size in pixels to 90%/90% of the viewportwidth / height
-    		this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
+    		// Set size in pixels to 100% of the viewportwidth / height
+    		this.popupWin.setSize(Ext.Element.getViewportWidth(), Ext.Element.getViewportHeight());
 			// Reset position so popup remains centered
-			this.popupWin.setPosition(Ext.Element.getViewportWidth() * .05, Ext.Element.getViewportHeight() * .05);
+			this.popupWin.setPosition(0, 0);
     		// doLayout on the window
             this.popupWin.updateLayout();
 			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
