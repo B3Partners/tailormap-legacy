@@ -166,17 +166,17 @@ Ext.define("viewer.components.Edit", {
             style: {
                 backgroundColor: 'White'
             },
+            padding: 10,
             renderTo: this.getContentDiv(),
             items: [this.layerSelector.getLayerSelector(),
                 {
                     itemId: 'buttonPanel',
                     xtype: "container",
-                    padding: "4px",
                     items: this.createActionButtons()
                 },
                 {
                     itemId: "geomLabel",
-                    margin: 5,
+                    margin: '5 0',
                     text: '',
                     xtype: "label"
                 },
@@ -469,6 +469,8 @@ Ext.define("viewer.components.Edit", {
             }
             this.geomlabel.setText(tekst);
 
+            var groupedInputs = {};
+            var nonGrouped = [];
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
                 if (appLayer.featureType && attribute.featureType === appLayer.featureType && attribute.editable) {
@@ -482,9 +484,26 @@ Ext.define("viewer.components.Edit", {
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         input = this.createDynamicInput(attribute, values);
                     }
-                    this.inputContainer.add(input);
+                    if(attribute.folder_label) {
+                        if(!groupedInputs.hasOwnProperty(attribute.folder_label)) {
+                            groupedInputs[attribute.folder_label] = Ext.create('Ext.form.FieldSet', {
+                                title: attribute.folder_label,
+                                collapsible: true,
+                                collapsed: true,
+                                bodyPadding: 10,
+                                items: []
+                            });
+                        }
+                        groupedInputs[attribute.folder_label].add(input);
+                    } else {
+                        nonGrouped.push(input);
+                    }
                     this.setButtonDisabled("editButton", false);
                 }
+            }
+            this.inputContainer.add(nonGrouped);
+            for(var label in groupedInputs) if(groupedInputs.hasOwnProperty(label)) {
+                this.inputContainer.add(groupedInputs[label]);
             }
         } else {
             this.geomlabel.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
