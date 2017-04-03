@@ -82,7 +82,6 @@ Ext.define ("viewer.components.Maptip",{
 
         this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
         this.config.spinnerWhileIdentify = this.config.spinnerWhileIdentify ? this.config.spinnerWhileIdentify : false;
-
         //listen to the on addlayer
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
@@ -116,6 +115,7 @@ Ext.define ("viewer.components.Maptip",{
                 var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
                 //Store the current map extent for every maptip request.            
                 this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,function(map,options){
+                    console.log('event gehoord');
                     this.setRequestExtent(map.getExtent());
                 },this);
 
@@ -181,6 +181,7 @@ Ext.define ("viewer.components.Maptip",{
      * Do a server request
      */
     doServerRequest: function(map,options){
+        console.log('server req');
         if (!this.requestManager || !this.enabled){
             return;
         }
@@ -212,7 +213,9 @@ Ext.define ("viewer.components.Maptip",{
             }
             options.data = data;
             var curExtent = me.config.viewerController.mapComponent.getMap().getExtent();
-            if (curExtent.equals(me.requestExtent)){
+            console.log(curExtent);
+            console.log(me.requestExtent);
+            if ((curExtent===me.requestExtent)||curExtent.equals(me.requestExtent)){
                 for( var i = 0 ; i < data.length ;i++){
                     var data = data[i];
                     if(data.error) {
@@ -233,8 +236,9 @@ Ext.define ("viewer.components.Maptip",{
      * @param options the options of the event
      */
     onMapData: function(layer,options){
+        console.log('map data');
         var curExtent = this.config.viewerController.mapComponent.getMap().getExtent();
-        if (curExtent.equals(this.requestExtent)){
+        if ((curExtent===this.requestExtent)||curExtent.equals(this.requestExtent)){
             this.onDataReturned(options);
         }
     },

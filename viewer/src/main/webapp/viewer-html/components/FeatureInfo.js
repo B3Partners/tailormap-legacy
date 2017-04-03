@@ -69,15 +69,20 @@ Ext.define ("viewer.components.FeatureInfo",{
      * @see event ON_LAYER_ADDED
      */
     onAddLayer: function(map,options){
+       //console.log(options);
         var mapLayer=options.layer;
         if (mapLayer==null)
             return;
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.config.viewerController.isSummaryLayer(mapLayer)){   
-            //Store the current map extent for every maptip request.            
+        console.log(this.config.viewerController.isSummaryLayer(mapLayer));
+        if(this.config.viewerController.isSummaryLayer(mapLayer)){  
+            console.log(mapLayer);
+            //Store the current map extent for every maptip request.    
+            
             this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
+                console.log('hier');
                 this.setRequestExtent(map.getExtent());
             },this); 
             
@@ -138,6 +143,7 @@ Ext.define ("viewer.components.FeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
+        console.log('start');
         this.balloon.setContent("");
         this.balloon.hide();
         this.setMaptipEnabled(false);

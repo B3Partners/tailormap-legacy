@@ -171,7 +171,6 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             args.id = args.element.get('id');
             options.layer=this.getLayerByOpenLayersId(args.id);
             if (options.layer ==undefined){
-                console.log('return');
                 //if no layer found return, dont fire
                 return;
             }
@@ -263,6 +262,17 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
     },
+    
+    getWidth : function(){
+        var size = this.frameworkMap.getSize();
+        return size[0];
+    },
+    
+    getHeight : function (){
+        var size = this.frameworkMap.getSize();
+        return size[1];
+    },
+    
     
     getExtent : function(){
         var extent = this.getFrameworkMap().getView().getProjection().getExtent();

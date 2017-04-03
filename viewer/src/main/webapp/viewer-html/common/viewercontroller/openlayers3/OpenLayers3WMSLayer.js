@@ -42,5 +42,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
     
     setVisible: function(vis){
         this.mixins.openLayers3Layer.setVisible.call(this,vis);
-    }
+    },
+    
+    getVisible: function(){
+        return this.mixins.openLayers3Layer.getVisible.call(this);
+    },
 });

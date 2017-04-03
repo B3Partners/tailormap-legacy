@@ -314,6 +314,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             }
             comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config,
                 new ol.control.ScaleLine());
+        }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
+            comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",config,this.getMap());
         }
         
         return comp;
@@ -333,6 +335,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     createTool : function (conf){
       var type = conf.type;
       var id = conf.id;
+      console.log(type);
       conf.viewerController=this.viewerController;
       var frameworkOptions={};
       if(conf.frameworkOptions) {
@@ -401,6 +404,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             //}
             //return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new ol.control.Control(frameworkOptions));
             return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.ToolButton(conf));
+        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
+            //return new viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool(conf);
+            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool(conf));
         }
     },
     
@@ -417,7 +423,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         } 
         this.panel = this.contentTop;
         this.panel.appendChild(tool.panelTool);
-        if(!tool.onlyClick){
+        if(!tool.onlyClick && tool.frameworkObject){
             this.maps[0].getFrameworkMap().addInteraction(tool.frameworkObject);
         }
         
@@ -522,8 +528,36 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                 t.deactivate();
             }
         }
+        console.log('activated');
         var t = tool;
         t.activate();
+    },
+    
+    getWidth: function(){
+        var m=this.getMap();
+        if(m){
+            return m.getWidth();
+        }
+        return null;
+    },
+    /**
+     * @see viewer.viewercontroller.MapComponent#getHeight
+     */
+    getHeight: function (){
+        var m=this.getMap();
+        if(m){
+            return m.getHeight();
+        }
+        return null;
+    },
+    
+
+    setCursor: function(show,cursor) {
+        if(show) {
+            Ext.get(this.domId).dom.style.cursor = cursor;
+        } else {
+            Ext.get(this.domId).dom.style.cursor = "default";
+        }
     }
     
     

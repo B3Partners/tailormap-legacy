@@ -13,7 +13,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
     constructor : function (conf,tool){
         viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.constructor.call(this, conf);
         this.olTool = tool;
-        this.frameworkObject=tool.frameworkObject;
+        if(tool.frameworkObject){
+            this.frameworkObject=tool.frameworkObject;
+        }
         this.controls = new Array();
         this.enabledEvents= new Object();
         this.setTool(conf);

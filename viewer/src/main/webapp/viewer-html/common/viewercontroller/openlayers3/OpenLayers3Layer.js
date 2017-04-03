@@ -87,7 +87,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
     
     getVisible : function (){
         if (this.frameworkLayer!=null){
-            return this.frameworkLayer.getVisibile();
+            return this.frameworkLayer.getVisible();
         }
         return null;
     }
