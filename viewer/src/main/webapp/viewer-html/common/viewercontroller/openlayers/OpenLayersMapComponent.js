@@ -448,6 +448,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      **/
     createTool : function (conf){
         var type = conf.type;
+        console.log(type);
         var id = conf.id;
         conf.viewerController=this.viewerController;
         var frameworkOptions={};

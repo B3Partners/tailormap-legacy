@@ -35,8 +35,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.ToolMapClick3",{
             me.handleClick(evt);
         });
 
-        
-    
+
         /*this.clickControl = new OpenLayers.Control.Click({
             handlerOptions: me.config.handlerOptions,
             click: function(evt){

@@ -49,7 +49,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         this.clickControl = new OpenLayers.Control.Click({
             handlerOptions: me.config.handlerOptions,
             click: function(evt){
-                me.handleClick(evt)
+                me.handleClick(evt);
             }
         });
         this.olMap.addControl(this.clickControl);

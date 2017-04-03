@@ -29,7 +29,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool",{
         this.useWMSGetFeatureInfo=true;
         
         conf.id = conf.tooltip;
-        conf.class = "ol-Measure";
+        conf.class = "olControlIdentify";
         conf.onlyClick = false;
         conf.actives =false;
 
@@ -75,7 +75,6 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool",{
     },
     
     handleClick: function(tool,options){    
-        console.log('fired');
         this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     },
     

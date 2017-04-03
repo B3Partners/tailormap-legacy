@@ -235,7 +235,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             }else{
                 this.enabledEvents[olSpecificEvent] = 1;
                 console.log(olSpecificEvent);
-                //this.frameworkMap.on(olSpecificEvent,this.handleEvent, this);
+                this.frameworkMap.on(olSpecificEvent,this.handleEvent, this);
             }
         }
         viewer.viewercontroller.openlayers3.OpenLayersMap3.superclass.addListener.call(this,event,handler,scope);

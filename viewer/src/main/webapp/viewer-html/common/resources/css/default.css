@@ -106,3 +106,9 @@
       .tooltip-static:before {
         border-top-color: #ffcc33;
       }
+.olControlIdentifyItemActive{
+    background-image: url("../../openlayers/theme/default/img/identify_on.png");
+}
+.olControlIdentifyItemInactive{
+    background-image: url("../../openlayers/theme/default/img/identify_off.png");
+}

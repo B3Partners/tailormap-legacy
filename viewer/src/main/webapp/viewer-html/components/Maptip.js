@@ -213,8 +213,6 @@ Ext.define ("viewer.components.Maptip",{
             }
             options.data = data;
             var curExtent = me.config.viewerController.mapComponent.getMap().getExtent();
-            console.log(curExtent);
-            console.log(me.requestExtent);
             if ((curExtent===me.requestExtent)||curExtent.equals(me.requestExtent)){
                 for( var i = 0 ; i < data.length ;i++){
                     var data = data[i];

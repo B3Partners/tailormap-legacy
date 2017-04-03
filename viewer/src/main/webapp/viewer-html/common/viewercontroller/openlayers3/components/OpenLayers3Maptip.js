@@ -8,6 +8,8 @@
 Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",{
     extend: "viewer.viewercontroller.openlayers3.OpenLayers3Component",    
     map: null,
+    timerId: null,
+    delay: 500,
     /**
      * @constructor
      * @param {Object} conf
@@ -18,19 +20,39 @@ Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",{
         viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip.superclass.constructor.call(this,conf);
         this.map = map;
         //console.log(conf);
+        var me  = this;
         this.frameworkObject = new ol.interaction.Pointer({handleMoveEvent:function(evt){console.log('');},
         handleUpEvent:function(evt){console.log('pause');}
         });
-        //this.frameworkObject.on('change:active', function(evt){console.log(evt);},this );
-        //console.log(this.frameworkObject.handleEvent('pointermove'));
-        //this.map.getFrameworkMap().addInteraction(this.frameworkObject);
-        this.map.getFrameworkMap().on('click', function(evt) {
-            console.log('maptip fired');
-            this.map.fire(viewer.viewercontroller.controller.Event.ON_MAPTIP,evt);
-        //var pixel = map.getEventPixel(evt.originalEvent);
-        //displayFeatureInfo(pixel);
+        this.map.getFrameworkMap().on('pointermove', function(evt) {
+            this.clearTimer();
+            this.timerId = window.setTimeout(function(){me.onPause(evt); },this.delay);
       },this);
         
+    },
+
+    
+    clearTimer: function() {
+        if(this.timerId != null) {
+            window.clearTimeout(this.timerId);
+            this.timerId = null;
+        }
+    },
+    
+    onPause : function(evt){
+        console.log('pause?');
+        var crd = evt.coordinate;
+        var pix = evt.pixel;
+            
+        var options ={
+            x:pix[0],
+            y:pix[1],
+            coord: {
+                x:crd[0],
+                y:crd[1]
+            }
+        };
+        this.map.fire(viewer.viewercontroller.controller.Event.ON_MAPTIP,options);
     }
     
     
