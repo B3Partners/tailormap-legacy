@@ -53,7 +53,7 @@ public class TilingIntegrationTest {
     private static final String JSONCONFIG = "{"
             + "requests: [{"
             + "     protocol: 'WMSC',"
-            + "     url: 'http://geodata.nationaalgeoregister.nl/wmsc?request=GetMap&Service=WMS&Format=image/png&srs=epsg:28992&tiled=true&layers=brtachtergrondkaart',"
+            + "     url: 'http://geodata.nationaalgeoregister.nl/wmsc?request=GetMap&Service=WMS&Format=image/png&srs=epsg:28992&tiled=true&version=1.1.1&styles=&layers=brtachtergrondkaart',"
             + "     tileWidth: 256,"
             + "     tileHeight: 256,"
             + "     serverExtent: '-285401.92,22598.08,595401.9199999999,903401.9199999999',"
