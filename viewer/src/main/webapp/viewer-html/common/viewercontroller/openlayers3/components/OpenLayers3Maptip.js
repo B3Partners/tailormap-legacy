@@ -40,7 +40,6 @@ Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",{
     },
     
     onPause : function(evt){
-        console.log('pause?');
         var crd = evt.coordinate;
         var pix = evt.pixel;
             

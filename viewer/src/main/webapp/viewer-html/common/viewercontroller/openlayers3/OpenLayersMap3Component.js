@@ -335,7 +335,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     createTool : function (conf){
       var type = conf.type;
       var id = conf.id;
-      console.log(type);
       conf.viewerController=this.viewerController;
       var frameworkOptions={};
       if(conf.frameworkOptions) {
@@ -407,6 +406,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
             //return new viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool(conf);
             return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool(conf));
+        }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
+            return Ext.create ("viewer.viewercontroller.openlayers3.ToolMapClick3",conf);
+        }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
+            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.StreetViewButton(conf));
         }
     },
     
@@ -520,7 +523,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     */
     
     
-    activateTool : function (tool){
+    activateTool : function (tool,first){
+        console.log('aller eerst');
+        if(first){
+            tool=this.tools[0];
+        }
         var tools = this.tools;
         if(!tool.onlyClick){
             for(var i = 0 ; i < tools.length ; i++){
@@ -528,7 +535,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                 t.deactivate();
             }
         }
-        console.log('activated');
         var t = tool;
         t.activate();
     },

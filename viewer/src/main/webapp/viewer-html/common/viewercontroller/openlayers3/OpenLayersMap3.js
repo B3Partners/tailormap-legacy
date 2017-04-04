@@ -61,7 +61,6 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         //this.group.on("change:layergroup", function(evt){console.log('chabggee');},this);
     
         if(config.options.startExtent){
-        console.log('ja');
             var me = this;
             var handler = function(){
                 me.zoomToExtent(config.options.startExtent);            
@@ -135,6 +134,8 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     },
     
     setMarker : function(markerName,x,y,type){
+        console.log(markerName);
+        if(this.markers[markerName]=== undefined){
         var positionFeature = new ol.Feature();
         positionFeature.setStyle(new ol.style.Style({
             image: new ol.style.Circle({
@@ -150,15 +151,32 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         }));
         var center = [x,y];
         positionFeature.setGeometry(new ol.geom.Point(center));
-        new ol.layer.Vector({
-            map: this.frameworkMap,
-            source: new ol.source.Vector({
-                features: [positionFeature]
-            })
-        });
+        this.markers[markerName] = positionFeature;   
+        }else{
+            this.markers[markerName].setGeometry(new ol.geom.Point([x,y]));
+            return;
+        }
+        if(this.markerLayer===null){
+            this.markerLayer = new ol.layer.Vector({
+                map: this.frameworkMap,
+                source: new ol.source.Vector({
+                    features: [this.markers[markerName]]
+                })
+            });
+        }else{
+            this.markerLayer.getSource().addFeature(this.markers[markerName]);
+        }
     },
     
-    zoomToExtent : function (extent){
+    removeMarker : function(markerName){
+        if (this.markers[markerName] && this.markerLayer!=null){
+            this.markerLayer.getSource().removeFeature(this.markers[markerName]);
+            //this.markers[markerName].destroy(); 
+            delete this.markers[markerName];
+        }
+    },
+    
+    zoomToExtent : function(extent){
             var bounds=this.utils.createBounds(extent);
             this.frameworkMap.getView().fit(bounds, this.frameworkMap.getSize()); 
     },
@@ -222,7 +240,6 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     
     addListener : function(event,handler,scope){
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
-        console.log(olSpecificEvent);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
@@ -234,7 +251,6 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
                 this.enabledEvents[olSpecificEvent]++;                
             }else{
                 this.enabledEvents[olSpecificEvent] = 1;
-                console.log(olSpecificEvent);
                 this.frameworkMap.on(olSpecificEvent,this.handleEvent, this);
             }
         }

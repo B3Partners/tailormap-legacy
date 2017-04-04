@@ -76,13 +76,10 @@ Ext.define ("viewer.components.FeatureInfo",{
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        console.log(this.config.viewerController.isSummaryLayer(mapLayer));
         if(this.config.viewerController.isSummaryLayer(mapLayer)){  
-            console.log(mapLayer);
             //Store the current map extent for every maptip request.    
             
             this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
-                console.log('hier');
                 this.setRequestExtent(map.getExtent());
             },this); 
             

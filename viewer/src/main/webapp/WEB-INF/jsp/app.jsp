@@ -216,7 +216,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/Measure.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/FullExtent.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/ToolButton.js"></script> 
-                        <script type="text/javascript" src="${scriptDir}/tools/DragPan.js"></script> 
+                        <script type="text/javascript" src="${scriptDir}/tools/DragPan.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/StreetViewButton.js"></script>
                     </c:when>
                         
                     <c:otherwise>

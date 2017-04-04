@@ -117,6 +117,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
      */
     addListener : function(event,handler,scope){
         var olSpecificEvent = this.config.viewerController.mapComponent.getSpecificEventName(event);
+        console.log('tool');
+        console.log(olSpecificEvent);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;

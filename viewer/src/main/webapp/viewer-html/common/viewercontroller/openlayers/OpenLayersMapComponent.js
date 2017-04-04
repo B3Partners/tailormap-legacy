@@ -357,7 +357,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     createComponent : function (config){
         var type = config.type;
         var comp = null;
-        console.log(config);
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor",config);
         }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
@@ -525,6 +524,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             frameworkOptions.displayClass ="olToggle_"+conf.id;
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
+            console.log('hier');
             frameworkOptions.type=OpenLayers.Control.TYPE_TOOL;
             if (conf.displayClass) {
                 frameworkOptions.displayClass = conf.displayClass;

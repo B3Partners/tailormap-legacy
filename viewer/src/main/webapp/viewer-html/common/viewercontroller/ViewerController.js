@@ -310,7 +310,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         try{
             var instance = Ext.create(className, config);
-
             if(instance.config.hasSharedPopup){
                 instance.popup = this.layoutManager.popupWin;
             }
