@@ -58,14 +58,12 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         this.group = new ol.layer.Group();
         this.frameworkMap.setLayerGroup(this.group);
         
-        //this.group.on("change:layergroup", function(evt){console.log('chabggee');},this);
     
         if(config.options.startExtent){
             var me = this;
             var handler = function(){
                 me.zoomToExtent(config.options.startExtent);            
                 me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
-                //this.group.getLayers().un("add", function(evt){console.log('chabggee');},this);
             };
             this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             this.group.getLayers().on("add",this.handleEvent,this);
@@ -88,7 +86,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         // Prevents the markerlayer to "disappear" beneath all the layers
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function(){
             if(this.markerLayer){
-                this.frameworkMap.setLayerIndex(this.markerLayer, this.frameworkMap.getNumLayers());
+                this.markerLayer.setZIndex(this.frameworkMap.getLayers().getLength()+1);
             }
         },this);
     
@@ -145,7 +143,6 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     },
     
     setMarker : function(markerName,x,y,type){
-        console.log(markerName);
         if(this.markers[markerName]=== undefined){
         var positionFeature = new ol.Feature();
         positionFeature.setStyle(new ol.style.Style({
@@ -169,11 +166,11 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         }
         if(this.markerLayer===null){
             this.markerLayer = new ol.layer.Vector({
-                map: this.frameworkMap,
                 source: new ol.source.Vector({
                     features: [this.markers[markerName]]
                 })
             });
+            this.frameworkMap.addLayer(this.markerLayer);
         }else{
             this.markerLayer.getSource().addFeature(this.markers[markerName]);
         }
