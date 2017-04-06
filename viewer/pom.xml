@@ -396,8 +396,10 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcServerLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3VectorLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3WMSLayer.js</param>
 
                                 <!-- OpenLayers Components -->
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3Maptip.js</param>
                                 
                                 <!-- OpenLayers Tools -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3IdentifyTool.js</param>
@@ -408,6 +410,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ToolButton.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ZoomIn.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ZoomOutButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/StreetViewButton.js</param>
                                   
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers3-min.js</outputFile>
