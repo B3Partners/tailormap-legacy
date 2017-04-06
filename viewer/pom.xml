@@ -396,7 +396,6 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcServerLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3VectorLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3WMSLayer.js</param>
 
                                 <!-- OpenLayers Components -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3Maptip.js</param>
