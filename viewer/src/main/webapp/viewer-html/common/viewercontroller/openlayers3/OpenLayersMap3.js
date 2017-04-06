@@ -95,7 +95,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     
     return this;
      },
-     
+         
      addLayer : function(layer){        
         this.superclass.addLayer.call(this,layer);   
         //delete layer.getFrameworkLayer().id;
@@ -109,6 +109,17 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             this.config.viewerController.logger.error(exception);
         }
     },
+    
+    removeLayer : function(layer){
+        //remove layer from framework
+        this.getFrameworkMap().removeLayer(layer.getFrameworkLayer());
+        /**
+         *Dont call super because we listen to a remove of the layer with a listener
+         *at the framework:
+         *viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeLayer.call(this,layer);
+         */       
+    },
+    
     
     setLayerVisible : function(layer, visible){
         this.superclass.setLayerVisible.call(this,layer,visible);
@@ -206,7 +217,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             if (options.layer ==undefined){
                 //if no layer found return, dont fire
                 return;
-            }
+            }            
         }else if (genericEvent==viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT ||
                   genericEvent==viewer.viewercontroller.controller.Event.ON_ZOOM_END ||
                   genericEvent==viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT){
@@ -231,7 +242,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         var l = options.layer.getFrameworkLayer();
         for ( var i = 0 ; i < this.layers.length ;i++){
             var frameworkLayer = this.layers[i].getFrameworkLayer();
-            if(frameworkLayer.id == l.id){
+            if(frameworkLayer.get('id') == l.get('id')){
                 this.layers.splice(i,1);
                 break;
             }
