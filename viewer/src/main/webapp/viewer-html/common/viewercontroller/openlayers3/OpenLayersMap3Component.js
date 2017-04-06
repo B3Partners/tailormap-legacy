@@ -524,7 +524,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     
     
     activateTool : function (tool,first){
-        console.log('aller eerst');
         if(first){
             tool=this.tools[0];
         }

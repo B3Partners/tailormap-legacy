@@ -150,13 +150,10 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
                 olFeature.getStyle().getFill().setColor(this.colorPrefix+feature.config.color);
             }
         }
-        console.log('jopehoe');
         return this.source.addFeatures(olFeatures);
     },
     setLabel : function (id, label){
-        console.log(this.defColor);
         var olFeature = this.source.getFeatureById(id);
-        console.log(olFeature.getId());
         if(olFeature){
             if(label){
                 olFeature.getStyle().setText(new ol.style.Text({text:label}));
@@ -184,19 +181,14 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
             this.addInteraction(type);
         } else if (type === "LineString") {
             this.addInteraction(type);
-            console.log('LineString')
         } else if (type === "Polygon") {
             this.addInteraction(type);
-            console.log('Polygon')
         } else if (type === "Circle") {
             this.addInteraction(type);
-            console.log('Circle')
         } else if (type === "Box") {
             this.addInteraction(type);
-            console.log('Box')
         } else if (type === "Freehand") {
             this.addInteraction(type);
-            console.log('Freehand')
         } else {
            this.config.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
@@ -283,13 +275,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
      */
     
     featureAdded : function(object){
-        console.log('added');
 
         var feature = this.fromOpenLayersFeature(object.feature);
         
         // If no stylehash is set for the feature, set it to the current settings
         if(!object.feature.getStyle()){
-            console.log('added style');
+            
             object.feature.setStyle(this.getCurrtentStyle());
         }
         this.editFeature(object.feature);
@@ -297,7 +288,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     editFeature : function(feature){
-        console.log('edit');
         this.select.getFeatures().clear();
         this.select.getFeatures().push(feature);
         var featureObject = this.fromOpenLayersFeature(feature);
@@ -305,14 +295,11 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     featureModified : function (evt) {
-        console.log('modi');
         var featureObject = this.fromOpenLayersFeature(evt.features.getArray()[0]);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
     
     activeFeatureChanged : function(object){
-        console.log('activate');
-        console.log(object);
         object.selected[0].setStyle(this.selectStyle);
         var feature = this.fromOpenLayersFeature(object.selected[0]);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);

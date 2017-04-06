@@ -123,7 +123,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
     },
     
     activate: function(){
-        console.log('eerst activate');
         this.olTool.activate(this);
         if(!this.conf.onlyClick){
             this.conf.active = true;
@@ -132,7 +131,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
     },
     
     deactivate : function(){
-        console.log('eerst deactivate');
         this.olTool.deactivate(this);
         if(!this.conf.onlyClick){
             this.conf.active = false;
