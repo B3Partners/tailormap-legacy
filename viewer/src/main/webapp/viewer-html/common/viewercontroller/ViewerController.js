@@ -2025,8 +2025,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     return me.resizeComponentsImpl();
                 });
             }else{
-                this.doAlignAnchors();
-                return this.resizeComponentsImpl();
+                me.doAlignAnchors();
+                return me.resizeComponentsImpl();
             }
         }, 50);
     },
