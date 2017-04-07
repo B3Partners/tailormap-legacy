@@ -41,6 +41,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 text: "Naam",
                 dataIndex: 'name',
                 flex: 1,
+                minWidth: 130,
                 filter: {
                     xtype: 'textfield'
                 }
