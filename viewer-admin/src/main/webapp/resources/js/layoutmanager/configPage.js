@@ -43,6 +43,8 @@ Ext.define("vieweradmin.components.ConfigPage", {
         this.createMainTab();
         // Create the form for the Layout tab
         this.createLayoutTab();
+        // Create the form for the Responsive tab
+        this.createResponsiveTab();
         // Create the form for the Help tab
         if(this.showHelp()) {
             this.createHelpTab();
@@ -80,6 +82,11 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 title: 'Layout'
             });
         }
+        tabs.push({
+            itemId: 'responsive-tab',
+            contentEl:'responsive',
+            title: 'Responsive'
+        })
         if(this.showHelp()){
             tabs.push({
                 itemId: 'help-tab',
@@ -464,6 +471,38 @@ Ext.define("vieweradmin.components.ConfigPage", {
         }
     },
 
+    createResponsiveTab: function () {
+        var minWidth = '';
+        if(this.config.configObject.hasOwnProperty('requiredScreenWidth')) {
+            minWidth = this.config.configObject.requiredScreenWidth;
+        }
+        this.responsiveLayoutForm = new Ext.form.FormPanel({
+            frame: false,
+            width: 520,
+            border: 0,
+            items: [{
+                xtype:'fieldset',
+                title: 'Minimale afmetingen waarbij component zichtbaar is',
+                collapsible: false,
+                items:[{
+                    xtype: 'numberfield',
+                    fieldLabel: 'Minimale schermbreedte (px)',
+                    id: "requiredScreenWidth",
+                    name: 'requiredScreenWidth',
+                    value: minWidth,
+                    labelWidth: 180
+                },{
+                    xtype: 'container',
+                    html: 'Indien deze waarde is ingesteld wordt dit gebruikt om bij het starten van de applicatie' +
+                    'te bepalen of een component wel of niet getoond moet worden. Als de schermafmetingen op dat' +
+                    'moment kleiner zijn dan bovenstaande waarde dan wordt het component niet getoond.<br /><br />' +
+                    'Bij een lege waarde (of 0) wordt het component altijd getoond'
+                }]
+            }],
+            renderTo: "responsive"
+        });
+    },
+
     createHeightLayoutTab: function () {
         var compHeight = '';
         if(this.config.configObject.hasOwnProperty('componentHeight')) {
@@ -588,6 +627,10 @@ Ext.define("vieweradmin.components.ConfigPage", {
             if(heightConfig && heightConfig.getValue() !== '') {
                 config['componentHeight'] = parseInt(heightConfig.getValue(), 10);
             }
+        }
+        var responsiveWidthConfig = Ext.getCmp('requiredScreenWidth');
+        if(responsiveWidthConfig && responsiveWidthConfig.getValue() !== '') {
+            config['requiredScreenWidth'] = parseInt(responsiveWidthConfig.getValue(), 10);
         }
         var configFormObject = Ext.get("configObject");
         configFormObject.dom.value = JSON.stringify(config);

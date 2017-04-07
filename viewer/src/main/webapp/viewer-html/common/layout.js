@@ -81,10 +81,27 @@ Ext.define('viewer.LayoutManager', {
 
     filterComponentList: function(components) {
         var me = this;
+        var screenWidth = Ext.Element.getViewportWidth();
         var result = Ext.Array.filter(components, function(comp) {
+            // Filter out components that do not meet responsive configuration
+            var responsiveWidth = me.getRequiredScreenWidth(comp.name);
+            if(screenWidth < responsiveWidth) {
+                return false;
+            }
             return me.configuredComponents[comp.name] != undefined;
         });
         return result;
+    },
+
+    getRequiredScreenWidth: function(component) {
+        if(!this.componentsConfig.hasOwnProperty(component)) {
+            return 0;
+        }
+        var compConfig = this.componentsConfig[component];
+        if(!compConfig.hasOwnProperty("config") || !compConfig.config.hasOwnProperty("requiredScreenWidth")) {
+            return 0;
+        }
+        return compConfig.config.requiredScreenWidth ? compConfig.config.requiredScreenWidth : 0;
     },
 
     createRegionList: function() {
