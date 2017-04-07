@@ -303,7 +303,10 @@ input[type="submit"]:hover,
 }
 #component-container .component-view .component-block .wrangler,
 #component-container .component-view .component-block .remove,
-#component-container .component-view .component-block .draghandle {
+#component-container .component-view .component-block .draghandle,
+.x-dd-drag-ghost .component-block .wrangler,
+.x-dd-drag-ghost .component-block .remove,
+.x-dd-drag-ghost .component-block .draghandle{
   display: none;
 }
 #component-container .component-view .component-block.component-added {
@@ -742,4 +745,10 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .x-grid-item-container .removed, .x-grid-item-container .removed .x-grid-item-focused {
     color: #BBBBBB;
     text-decoration: line-through;
+}
+.disable-selection {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

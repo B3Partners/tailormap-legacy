@@ -611,6 +611,7 @@ Ext.define('LayoutManager', {
                         },
                         onStartDrag: function() {
                             var data = v.dragData;
+                            me.disableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 if(me.checkDropAllowed(region, data)) {
                                     Ext.get(region.get('htmlId')).addCls('dropallowed');
@@ -618,6 +619,7 @@ Ext.define('LayoutManager', {
                             });
                         },
                         endDrag: function() {
+                            me.enableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 Ext.get(region.get('htmlId')).removeCls('dropallowed');
                             });
@@ -630,7 +632,15 @@ Ext.define('LayoutManager', {
             }
         });
     },
-    
+
+    disableTextSelection: function() {
+        Ext.getBody().addCls('disable-selection');
+    },
+
+    enableTextSelection: function() {
+        Ext.getBody().removeCls('disable-selection');
+    },
+
     checkDropAllowed: function(layoutRegion, data) {
         var restrictions = data.componentData.restrictions;
         var notInCombinationWith = data.componentData.notInCombinationWith;
@@ -776,6 +786,7 @@ Ext.define('LayoutManager', {
                         },
                         onStartDrag: function() {
                             var data = v.dragData;
+                            me.disableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 if(me.checkDropAllowed(region, data)) {
                                     Ext.get(region.get('htmlId')).addCls('dropallowed');
@@ -783,6 +794,7 @@ Ext.define('LayoutManager', {
                             });
                         },
                         endDrag: function() {
+                            me.enableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 Ext.get(region.get('htmlId')).removeCls('dropallowed');
                             });
