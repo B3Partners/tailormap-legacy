@@ -127,6 +127,9 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.currentIndex = index;
         this.content.setHtml("");
         var data = this.currentData[index];
+        if(!data) {
+            return;
+        }
         var components = this.createInfoHtmlElements([data], this.currentOptions);
         this.content.append(components);
         this.createPagination();
