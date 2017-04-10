@@ -99,6 +99,13 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private String filter;
 
+    /**
+     * set to {@code false}/{@code 0} to get attributes without alias
+     * substitution.
+     */
+    @Validate
+    private boolean aliases = true;
+
     @Validate
     private boolean debug;
     @Validate
@@ -269,7 +276,15 @@ public class AttributesActionBean implements ActionBean {
     public void setAttributesNotNull(List<Long> attributesNotNull) {
         this.attributesNotNull = attributesNotNull;
     }
-    
+
+    public boolean isAliases() {
+        return aliases;
+    }
+
+    public void setAliases(boolean aliases) {
+        this.aliases = aliases;
+    }
+
     //</editor-fold>
 
     @After(stages=LifecycleStage.BindingAndValidation)
@@ -498,7 +513,7 @@ public class AttributesActionBean implements ActionBean {
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
 
-                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, attributesToInclude);
+                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
 
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
 
