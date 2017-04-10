@@ -101,7 +101,9 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         var l = layer.getFrameworkLayer();
         try{
             l.set('id',layer.id,false);
-            l.on("change:visible",function(evt){layer.type = evt.type;this.handleEvent(layer);},this);
+            l.on("change:visible",function(evt){
+                layer.tempType = evt.type;
+                this.handleEvent(layer);},this);
             map.addLayer(l);
         }catch(exception){
             this.config.viewerController.logger.error(exception);
@@ -190,7 +192,11 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     },
     
     handleEvent : function(args){
-        var event = args.type;
+        if(args.tempType){
+            var event = args.tempType;
+        }else{
+            var event = args.type;
+        }
         var options={};
         var genericEvent = this.config.viewerController.mapComponent.getGenericEventName(event);
         if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
@@ -201,6 +207,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
                 return;
             }
         }else if (genericEvent== viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED){
+            
             options.layer=this.getLayerByOpenLayersId(args.id);
             if (options.layer ==undefined){
                 
@@ -299,7 +306,8 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     
     
     getExtent : function(){
-        var extent = this.getFrameworkMap().getView().getProjection().getExtent();
+        //var extent = this.getFrameworkMap().getView().getProjection().getExtent();
+        var extent = this.getFrameworkMap().getView().calculateExtent(this.getFrameworkMap().getSize());
         return extent;
     }
     

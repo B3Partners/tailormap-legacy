@@ -9,6 +9,10 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
     config:{
         name: null
     },
+    enabledEvents: null,
+    events : null,
+    type:null,
+    alpha:100,
     constructor :function (config){       
         //console.log(config);
         this.initConfig(config);
@@ -90,5 +94,17 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
             return this.frameworkLayer.getVisible();
         }
         return null;
+    },
+    
+    setAlpha : function (alpha){
+        this.alpha=alpha;
+        if(this.frameworkLayer) {
+            this.frameworkLayer.setOpacity(alpha/100);
+        }
+    },
+    
+    getAlpha : function (){
+        return this.alpha;
     }
+    
     });

@@ -60,7 +60,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
      * @param button the button
      * @param object the options.        
      */
-    buttonDown : function(button,object){        
+    buttonDown : function(button,object){ 
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
     },

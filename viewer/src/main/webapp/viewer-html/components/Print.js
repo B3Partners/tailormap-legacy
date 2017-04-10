@@ -809,6 +809,7 @@ Ext.define ("viewer.components.Print",{
         var layers=this.viewerController.mapComponent.getMap().getLayers();
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
+    
             if (layer.getVisible()){
                 if (layer.getType()=== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
                     var features=layer.getAllFeatures();
@@ -818,6 +819,7 @@ Ext.define ("viewer.components.Print",{
                             wktGeoms.push(feature);
                         }
                     }
+                
                 }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol == "TMS" || layer.protocol == "WMSC")){
                     var printLayer = new Object();
                     printLayer.url=layer.config.url;
@@ -834,6 +836,7 @@ Ext.define ("viewer.components.Print",{
                     printLayer.url=layer.getLastMapRequest()[0].url;
                     printLayer.alpha=layer.alpha;
                     printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
+                    console.log(printLayer);
                     printLayers.push(printLayer);
                 }else{
                     var requests=layer.getLastMapRequest();
@@ -886,7 +889,12 @@ Ext.define ("viewer.components.Print",{
         values.requests=printLayers;
         var bbox=this.viewerController.mapComponent.getMap().getExtent();
         if (bbox){
-            values.bbox = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
+            if(bbox.minx){
+                values.bbox = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
+            }
+            else{
+                values.bbox = bbox[0]+","+bbox[1]+","+bbox[2]+","+bbox[3];
+            }
         }
         values.width = this.viewerController.mapComponent.getMap().getWidth();
         values.height = this.viewerController.mapComponent.getMap().getHeight();

@@ -18,18 +18,21 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         this.options.singleTile=true;
         this.options.transitionEffect = "resize";
         this.options.attribution = this.config.attribution;
-        var sources = new ol.source.ImageWMS({
+        var sources = new ol.source.TileWMS({
+            
             url:config.options.url,
             projection: config.viewerController.mapComponent.mapOptions.projection,
-            params :{ layers: config.options.layers,
-                      version: this.options.version,
-                      srs: this.options.srs,
-                      styles: this.options.styles,
-                      format: this.options.format,
-                      transparent: this.options.transparent         
+            params :{ LAYERS: config.options.layers,
+                      VERSION: this.options.version,
+                      SRS: this.options.srs,
+                      STYLES: this.options.styles,
+                      FORMAT: this.options.format,
+                      TRANSPARENT: this.options.transparent,
+                      TILED:true,
+                      REQUEST: 'GetMap'
             }
         });
-        this.frameworkLayer = new ol.layer.Image({
+        this.frameworkLayer = new ol.layer.Tile({
             source: sources,
             visible: this.options.visibility
         });
@@ -46,5 +49,25 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
     
     getVisible: function(){
         return this.mixins.openLayers3Layer.getVisible.call(this);
+    },
+    getType : function (){
+        return this.mixins.openLayers3Layer.getType.call(this);
+    },
+    
+    /**
+    *Gets the last wms request-url of this layer
+    *@returns the WMS getMap Reqeust.
+    */
+    getLastMapRequest : function(){
+        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+        var request=[{
+            url: this.getFrameworkLayer().getSource().getGetFeatureInfoUrl(map.getView().getCenter(),map.getView().getResolution(), map.getView().getProjection())
+        }];
+
+        return request;
+
+    },
+    setAlpha: function (alpha){
+        this.mixins.openLayersLayer.setAlpha.call(this,alpha);
     }
 });

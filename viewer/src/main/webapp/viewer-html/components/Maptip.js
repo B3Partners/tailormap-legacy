@@ -211,7 +211,8 @@ Ext.define ("viewer.components.Maptip",{
             }
             options.data = data;
             var curExtent = me.config.viewerController.mapComponent.getMap().getExtent();
-            if ((curExtent===me.requestExtent)||curExtent.equals(me.requestExtent)){
+
+            if ((curExtent[0]===me.requestExtent[0])||curExtent.equals(me.requestExtent)){
                 for( var i = 0 ; i < data.length ;i++){
                     var data = data[i];
                     if(data.error) {
@@ -233,7 +234,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     onMapData: function(layer,options){
         var curExtent = this.config.viewerController.mapComponent.getMap().getExtent();
-        if ((curExtent===this.requestExtent)||curExtent.equals(this.requestExtent)){
+        if ((curExtent[0]==this.requestExtent[0])||curExtent.equals(this.requestExtent)){
             this.onDataReturned(options);
         }
     },
