@@ -36,25 +36,31 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.showMaxFeaturesText = false;
         this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
         this.config.moreLink = null;
-        
-        var div = new Ext.Element(document.createElement("div"));
-        this.origDiv = Ext.get(this.getContentDiv());
-        this.origDiv.appendChild(div);
-        
-        if(!this.config.hasSharedPopup && this.config.title){
-            var title = new Ext.Element(document.createElement("div"));
-            title.addCls("extended_feature_info_title");
-            title.insertHtml("beforeEnd",this.config.title);
-            title.insertHtml("beforeEnd","<hr>");
-            div.appendChild(title);
-        }
-        
-        this.content = new Ext.Element(document.createElement("div"));
-        div.appendChild(this.content);
 
-        this.pagination = new Ext.Element(document.createElement("div"));
-        this.pagination.addCls("extended_feature_info_pagination");
-        div.appendChild(this.pagination);
+        this.content = new Ext.Element(document.createElement("div"));
+        this.navigateBackButton = this.createButton('left', 'Vorige');
+        this.navigateForwardButton = this.createButton('right', 'Volgende');
+        this.buttons = Ext.create('Ext.toolbar.Toolbar', {
+            xtype: 'toolbar',
+            dock: 'bottom',
+            hidden: true,
+            items: [
+                this.navigateBackButton,
+                this.navigateForwardButton
+            ]
+        });
+
+        var title = "";
+        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) {
+            title = this.config.title;
+        }
+        this.panel = Ext.create('Ext.panel.Panel', {
+            title: title,
+            contentEl: this.content,
+            autoScroll: true,
+            dockedItems: [this.buttons]
+        });
+        this.getContentContainer().add(this.panel);
         
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
@@ -67,6 +73,18 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
       //      document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
         }
         return this;
+    },
+
+    createButton: function(direction, label) {
+        return Ext.create('Ext.button.Button', {
+            text: label,
+            flex: 1,
+            iconCls: 'x-fa fa-angle-double-' + direction,
+            scope: this,
+            handler: function() {
+                this.navigate(direction);
+            }
+        });
     },
     
     /**
@@ -115,58 +133,43 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         }
     },
     activateResultsDiv: function(){
-        if(this.popup){
+        if(this.popup) {
             this.popup.show();
         }
-        if( !this.config.isPopup ) {
+        if(!this.config.isPopup) {
             this.config.viewerController.layoutManager.showTabComponent(this.name);
             this.config.viewerController.layoutManager.expandRegion(this.config.name);
         }
     },
     showPage: function(index){
         this.currentIndex = index;
+        if(this.currentIndex < 0) {
+            this.currentIndex = 0;
+        }
         this.content.setHtml("");
         var data = this.currentData[index];
-        var components = this.createInfoHtmlElements([data], this.currentOptions);
-        this.content.append(components);
+        if(data) {
+            var components = this.createInfoHtmlElements([data], this.currentOptions);
+            this.content.append(components);
+        }
         this.createPagination();
     },
     createPagination: function(){
-        this.pagination.setHtml("");
-        var me = this;
         var data = this.currentData;
         var numPages = data.length;
-        
-        this.pagination.insertHtml("afterBegin", "<hr/> ");
-        if (this.currentIndex > 0) {
-            var prevElem = document.createElement("a");
-            prevElem.href = 'javascript: void(0)';
-            var prev = new Ext.Element(prevElem);
-            prev.addListener("click",
-                    function (evt, el, o) {
-                        me.showPage(this.currentIndex - 1);
-                    },
-                    this);
-            prev.insertHtml("beforeEnd", "Vorige");
-            this.pagination.appendChild(prev);
+        if(numPages <= 1) {
+            if(!this.buttons.isHidden()) this.buttons.hide();
         } else {
-            this.pagination.insertHtml("beforeEnd", "Vorige");
+            if(this.buttons.isHidden()) this.buttons.show();
+            this.navigateBackButton.setDisabled(this.currentIndex === 0);
+            this.navigateForwardButton.setDisabled(this.currentIndex >= (numPages - 1));
         }
-        this.pagination.insertHtml("beforeEnd", " | ");
-
-        if (this.currentIndex < (numPages - 1)) {
-            var nextElem = document.createElement("a");
-            nextElem.href = 'javascript: void(0)';
-            var next = new Ext.Element(nextElem);
-            next.addListener("click",
-                    function (evt, el, o) {
-                        me.showPage(this.currentIndex + 1);
-                    },
-                    this);
-            next.insertHtml("beforeEnd", "Volgende");
-            this.pagination.appendChild(next);
+    },
+    navigate: function(direction) {
+        if(direction === 'right') {
+            this.showPage(this.currentIndex + 1);
         } else {
-            this.pagination.insertHtml("beforeEnd", "Volgende");
+            this.showPage(this.currentIndex - 1);
         }
     },
     /**
