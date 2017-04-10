@@ -36,7 +36,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
  */
 public class SolrInitializer implements ServletContextListener {
 
-    private static SolrServer server;
+    private static HttpSolrServer server;
     private static final Log log = LogFactory.getLog(SolrInitializer.class);
     
     private ServletContext context;
@@ -89,6 +89,7 @@ public class SolrInitializer implements ServletContextListener {
             solrUrl += "/";
         }
         server = new HttpSolrServer(solrUrl +SOLR_CORE_NAME);
+        server.setFollowRedirects(true);
     }
 
     public static SolrServer getServerInstance() {
