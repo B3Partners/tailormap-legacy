@@ -14,10 +14,10 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",{
         var source = new ol.source.TileArcGISRest({
             projection: config.viewerController.mapComponent.mapOptions.projection,
             params: {
-                layers:"show:"+config.layers,
-                transparent: true
+                LAYERS:"show:"+config.layers,
+                TRANSPARENT: true
             },
-            url:config.url,
+            url:config.url+"/export",
             ratio:config.ratio
         });
         this.frameworkLayer = new ol.layer.Tile({
@@ -33,14 +33,19 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",{
     },
     
     getLastMapRequest: function(){
-        var extent=this.getFrameworkLayer().map.getExtent();
-        var url= this.getFrameworkLayer().getURL(extent);
-        //size is wrong so make the size correct.
-        var newSize="SIZE="+this.getMap().getWidth()+"%2C"+this.getMap().getHeight();
-        url = url.replace("SIZE=256%2C256",newSize);
-        return [{
-            url: url
-        }];;
+        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+        var r = this.getFrameworkLayer().getSource().getTileUrlFunction();
+        var crd=[];
+        crd[0]= map.getView().getZoom();
+        crd[1] =map.getView().getCenter()[0];
+        crd[2] = map.getView().getCenter()[1];
+        console.log(r(crd,1, map.getView().getProjection()));
+        //console.log(r);
+        var request=[{
+            url: r(crd,1, map.getView().getProjection())
+        }];
+        //console.log(this.getFrameworkLayer().getSource().getUrls());
+        return request;
     },
 
     setQuery : function (filter){
