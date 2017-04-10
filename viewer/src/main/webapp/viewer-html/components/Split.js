@@ -95,6 +95,7 @@ Ext.define("viewer.components.Split", {
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
 
+        this.popup.addListener('hide', this.cancel, this);
         return this;
     },
     selectedContentChanged: function () {
