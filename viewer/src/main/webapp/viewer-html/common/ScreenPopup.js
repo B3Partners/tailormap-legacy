@@ -61,7 +61,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             autoScroll: true,
             constrainHeader: true
         };
-        
+
         if(MobileManager.isMobile()) {
             config.modal = true;
             config.width = '90%';
@@ -98,7 +98,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             con.style.width=  "100%";
             config.contentEl = con;
         }
-        
+
         // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false" && this.config.showHelpButton !== false) {
             config.tools = [{
@@ -131,7 +131,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         if(this.config.showOnStartup){
             this.popupWin.show();
         }
-        
+
         var positionChanged = false;
         if(config.draggable){
             this.popupWin.addListener("dragstart", function() {
@@ -217,14 +217,14 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     resizePopup: function() {
         if(MobileManager.isMobile() && this.isVisible()) {
-    		// Set size in pixels to 90%/90% of the viewportwidth / height
-    		this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
-			// Reset position so popup remains centered
-			this.popupWin.setPosition(Ext.Element.getViewportWidth() * .05, Ext.Element.getViewportHeight() * .05);
-    		// doLayout on the window
+            // Set size in pixels to 90%/90% of the viewportwidth / height
+            this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
+            // Reset position so popup remains centered
+            this.popupWin.setPosition(Ext.Element.getViewportWidth() * .05, Ext.Element.getViewportHeight() * .05);
+            // doLayout on the window
             this.popupWin.updateLayout();
-			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
-			this.currentOrientation = MobileManager.getOrientation();
+            // Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
+            this.currentOrientation = MobileManager.getOrientation();
         }
     },
     setWindowTitle : function(title){
