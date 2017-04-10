@@ -207,7 +207,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         Ext.getBody().mask();
     },
     enableBody : function(){
-        Ext.getBody().unmask()
+        Ext.getBody().unmask();
     },
     setIconClass: function(iconCls) {
         this.popupWin.setIconCls(iconCls);
