@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             maxResolution: options.maxResolution,
             visible: options.visibility,
             preload: 1
-        }); 
+        },options); 
         }else if (this.getProtocol()==="WMTS"){
             var convertRatio = 1/0.00028;
             options.url = this.url;
@@ -171,6 +171,28 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
      */
     removeListener: function (event,handler,scope){
         this.mixins.openLayers3Layer.removeListener.call(this,event,handler,scope);
+    },
+    
+    getType : function (){
+        return this.mixins.openLayers3Layer.getType.call(this);
+    },
+    
+    getLastMapRequest : function(){
+        var requests=[];
+        var grid = this.getFrameworkLayer().getSource().getTileGrid();
+        console.log(grid);
+        return requests;
+
+    },
+    setAlpha: function (alpha){
+        if(this.frameworkLayer) {
+            this.frameworkLayer.transitionEffect = alpha < 100 ? null : "resize";
+        }
+        this.mixins.openLayers3Layer.setAlpha.call(this,alpha);
+    },
+    getLayers: function (){
+        return this.frameworkLayer.options.layername;
     }
     
 });
+        

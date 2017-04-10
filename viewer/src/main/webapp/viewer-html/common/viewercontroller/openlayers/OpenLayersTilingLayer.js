@@ -153,7 +153,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         var grid = this.getFrameworkLayer().grid;
         for (var r=0; r < grid.length; r++){
             for (var c=0; c < grid[r].length; c++){
-                var tile = grid[r][c]
+                var tile = grid[r][c];
                 var bounds=tile.bounds;
                 var url = tile.url;
                 requests.push({
