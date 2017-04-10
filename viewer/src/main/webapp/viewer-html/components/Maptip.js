@@ -255,8 +255,14 @@ Ext.define ("viewer.components.Maptip",{
             if (!this.enabled){
                 return;
             }
+            var data=options.data;
+            var components=[];
+            if (!data){
+                return;
+            }
+            
             //if the mouse is in the balloon, stop. Dont show new data.
-            if (this.balloon.isMouseOver()){
+            if (this.balloon.isMouseOver() &&  options.data[0].requestId !== this.currentRequestId ){
                 return;
             }
             //if position is not the last position remove content
@@ -270,13 +276,7 @@ Ext.define ("viewer.components.Maptip",{
             this.lastPosition.x = options.x;
             this.lastPosition.y = options.y;
             this.worldPosition = options.coord;
-            //alert(layer);
-            var me = this;
-            var data=options.data;
-            var components=[];
-            if (!data){
-                return;
-            }
+       
             components = this.createInfoHtmlElements(data, options);
             if (!Ext.isEmpty(components)){
                 var x= options.x;
