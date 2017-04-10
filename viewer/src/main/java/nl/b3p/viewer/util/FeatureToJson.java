@@ -59,7 +59,8 @@ public class FeatureToJson {
     private boolean arrays = false;
     private boolean edit = false;
     private boolean graph = false;
-    private List<Long> attributesToInclude = new ArrayList<Long>();
+    private boolean aliases = true;
+    private List<Long> attributesToInclude = new ArrayList();
     private static final int TIMEOUT = 5000;
     private FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
@@ -74,6 +75,15 @@ public class FeatureToJson {
         this.graph = graph;
         this.attributesToInclude=attributesToInclude;
     }
+
+    public FeatureToJson(boolean arrays, boolean edit, boolean graph, boolean aliases, List<Long> attributesToInclude) {
+        this.arrays = arrays;
+        this.edit = edit;
+        this.graph = graph;
+        this.attributesToInclude = attributesToInclude;
+        this.aliases = aliases;
+    }
+
     /**
      * Get the features as JSONArray with the given params
      * @param al The application layer(if there is a application layer)
@@ -155,12 +165,16 @@ public class FeatureToJson {
                 j.put("c" + index++, formatValue(value));
             }
         } else {
-            for(String name: propertyNames) {
-                String alias = null;
-                if (attributeAliases!=null){
-                    alias=attributeAliases.get(name);
+            for (String name : propertyNames) {
+                if (!aliases) {
+                    j.put(name, formatValue(f.getAttribute(name)));
+                } else {
+                    String alias = null;
+                    if (attributeAliases != null) {
+                        alias = attributeAliases.get(name);
+                    }
+                    j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
                 }
-                j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
             }
         }
         //if edit and not yet set
