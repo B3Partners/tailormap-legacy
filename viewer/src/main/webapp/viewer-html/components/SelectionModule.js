@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, actionBeans, MobileManager, appId, contextPath */
+
 /**
  * SelectionModule component
  * Creates a SelectionModule component to build a tree
@@ -456,7 +458,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 checked: true,
                 name: 'layerSource',
                 boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : 'Kaart',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
@@ -466,7 +468,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 checked: (radioControls.length === 0),
                 name: 'layerSource',
                 boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : 'Kaartlaag',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
@@ -476,7 +478,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 name: 'layerSource',
                 checked: (radioControls.length === 0),
                 boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : 'Eigen service',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
         if(me.config.selectCsw){
@@ -485,7 +487,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 name:'layerSource',
                 checked: (radioControls.length === 0),
                 boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : 'CSW service',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
 
@@ -1872,7 +1874,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
         var levels = {};
         Ext.Object.each(me.levels, function(key,level) {
-            var layers = []
+            var layers = [];
             if(level.layers){
                 Ext.Array.each(level.layers, function(layer) {
                     if(layer !== layerid){
