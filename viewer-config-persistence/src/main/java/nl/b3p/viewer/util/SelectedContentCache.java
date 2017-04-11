@@ -42,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -70,7 +69,7 @@ public class SelectedContentCache {
                 ClobElement el = new ClobElement(cached.toString());
                 app.getDetails().put(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT, el);
                 setApplicationCacheDirty(app, false, useExpanded,em);
-                Stripersist.getEntityManager().getTransaction().commit();
+                em.getTransaction().commit();
             }
         } else {
             ClobElement el = app.getDetails().get(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT);

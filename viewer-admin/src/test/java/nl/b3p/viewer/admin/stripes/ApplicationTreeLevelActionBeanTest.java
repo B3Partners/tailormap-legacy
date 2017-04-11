@@ -10,9 +10,12 @@ import nl.b3p.viewer.config.app.Application.TreeCache;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -114,6 +117,41 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         app.setTreeCache(null);
         cache =app.loadTreeCache(entityManager);
         assertEquals(numAppLayers + 1, cache.getApplicationLayers().size());
+        
+    }
+    
+    @Test
+    public void testAddLayerToNewLevel() throws Exception{
+        
+        initData(false);
+        int numStartLayers = app.getStartLayers().size();
+        int numStartLevels = app.getStartLevels().size();
+        TreeCache cache =app.loadTreeCache(entityManager);
+        
+        Level newLevel = new Level();
+        newLevel.setName("pietje");
+        newLevel.setParent(testLevel);
+        
+        int numAppLayers = cache.getApplicationLayers().size();
+        int numLevels = cache.getLevels().size();
+        
+        instance.setApplication(app);
+        instance.setLevel(newLevel);
+        
+        instance.saveLevel(entityManager);
+        
+        Application application = entityManager.find(Application.class, app.getId());
+                
+        application.setTreeCache(null);
+        cache =application.loadTreeCache(entityManager);
+        assertEquals(numLevels +1 ,cache.getLevels().size());
+        assertEquals(numStartLevels +1 ,application.getStartLevels().size());
+        Level reloadedLevel = entityManager.find(Level.class, newLevel.getId());
+        StartLevel sl = reloadedLevel.getStartLevels().get(app);
+        assertNotNull(sl);
+        assertNull(sl.getSelectedIndex());
+        
+        int a = 0;
         
     }
 }
