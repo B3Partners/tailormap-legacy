@@ -244,7 +244,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var sc = this.config.viewerController.app.selectedContent;
         for( var i = 0 ; i < sc.length ; i++){
             var item = sc[i];
-            if(item.type == "level"){
+            if(item.type === "level"){
                 var level = this.config.viewerController.app.levels[item.id];
                 if(!level.background){
                     return false;
@@ -372,7 +372,7 @@ Ext.define ("viewer.components.SelectionModule",{
         me.popup.popupWin.setLoading("Zoeken...");
 
         var protocol = '', url = '', q = '';
-        if(me.customServiceType == 'csw') {
+        if(me.customServiceType === 'csw') {
             url = Ext.getCmp('cswServiceUrlTextfield').getValue();
             q = Ext.getCmp('cswSearchTextfield').getValue();
             var csw = Ext.create("viewer.CSWClient", {
@@ -1001,7 +1001,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         addParents(node.parentNode);
                     }
                 };
-                if(node.get('type') != 'cswresult' || (node.get('type') == 'cswresult') && node.data.loadedService) {
+                if(node.get('type') != 'cswresult' || (node.get('type') === 'cswresult') && node.data.loadedService) {
                     node.expand(false, function() {// expand all nodes
                         if(node.hasChildNodes()) {
                             node.eachChild(function(childNode) {
@@ -1094,12 +1094,12 @@ Ext.define ("viewer.components.SelectionModule",{
 
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
-            if(contentItem.type ==  "level") {
+            if(contentItem.type ===  "level") {
                 var level = me.addLevel(contentItem.id, true, true, this.config.showBackgroundLevels, null,null,me.levels);
                 if(level != null){
                     nodes.push(level);
                 }
-            } else if(contentItem.type == "appLayer"){
+            } else if(contentItem.type === "appLayer"){
                 var layer = me.addLayer(contentItem.id);
                 nodes.push(layer);
             }
@@ -1300,15 +1300,15 @@ Ext.define ("viewer.components.SelectionModule",{
             applicationTreeContainer.setStyle('visibility', 'hidden');
             registryTreeContainer.setStyle('visibility', 'hidden');
             customTreeContainer.setStyle('visibility', 'hidden');
-            if(field == 'radioApplication') {
+            if(field === 'radioApplication') {
                 applicationTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.applicationTree.treePanel;
             }
-            if(field == 'radioRegistry') {
+            if(field === 'radioRegistry') {
                 registryTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.registryTree.treePanel;
             }
-            if(field == 'radioCustom') {
+            if(field === 'radioCustom') {
                 me.customServiceType = 'custom';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
@@ -1317,7 +1317,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 customServiceUrlButton.setVisible(true);
                 this.setTopHeight(MobileManager.isMobile() ? 70 : 60);
             }
-            if(field == 'radioCSW') {
+            if(field === 'radioCSW') {
                 me.customServiceType = 'csw';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
@@ -1657,7 +1657,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var rootNode = parent ? parent : me.treePanels.selectionTree.treePanel.getRootNode();
         var recordOrigData = me.getOrigData(record);
         var recordid = record.get('id');
-        if(nodeType == "layer") {
+        if(nodeType === "layer") {
             recordid = 'rl' + recordid;
         }
         var searchNode = rootNode.findChild('id', recordid, false);
@@ -1774,7 +1774,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var parentNode = record.parentNode;
         // Root level reached and no service found
         if(parentNode == null) return null;
-        if(me.getNodeType(parentNode) == "service") {
+        if(me.getNodeType(parentNode) === "service") {
             return parentNode.data.service;
         } else {
             return me.findService(parentNode);
@@ -1818,11 +1818,11 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.removeLayer(recordOrigData.id, null);
                 me.removeService(recordOrigData.userService);
             }
-            else if(nodeType == "maplevel" || nodeType == "level") {
+            else if(nodeType === "maplevel" || nodeType === "level") {
                 // Added from application
                 me.removeLevel(recordOrigData.id, null);
             }
-            else if(nodeType == "appLayer") {
+            else if(nodeType === "appLayer") {
                 // Added from registry or application
                 me.removeLayer(recordOrigData.id, null);
                 me.removeService(recordOrigData.userService);
@@ -1867,7 +1867,7 @@ Ext.define ("viewer.components.SelectionModule",{
         });
         var selectedContent = [];
         Ext.Array.each(me.selectedContent, function(content) {
-            if(!(content.id == layerid && content.type == "appLayer")) {
+            if(!(content.id == layerid && content.type === "appLayer")) {
                 selectedContent.push(content);
             }
         });
@@ -1928,18 +1928,18 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         // Remove layers, levels and services with status = new, a.k.a. not added to the selectedContent
         Ext.Array.each(me.addedLayers, function(addedLayer) {
-            if(addedLayer.status == 'new') {
+            if(addedLayer.status === 'new') {
                 me.removeLayer(addedLayer.id);
             }
         });
 
         Ext.Array.each(me.addedLevels, function(addedLevel) {
-            if(addedLevel.status == 'new') {
+            if(addedLevel.status === 'new') {
                 me.removeLevel(addedLevel.id);
             }
         });
         Ext.Array.each(me.addedServices, function(addedService) {
-            if(addedService.status == 'new') {
+            if(addedService.status === 'new') {
                 me.removeService(addedService.id);
             }
         });
@@ -1951,7 +1951,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var checkedFirstBackgroundLayer = null;
         Ext.Array.each(me.addedServices, function(addedService) {
-            if(addedService.status == 'new') {
+            if(addedService.status === 'new') {
                 addedService.status = 'added';
                 me.config.viewerController.addService(addedService);
             }
@@ -1966,7 +1966,7 @@ Ext.define ("viewer.components.SelectionModule",{
             });
         });
         Ext.Array.each(me.addedLevels, function(addedLevel) {
-            if(addedLevel.status == 'new') {
+            if(addedLevel.status === 'new') {
                 addedLevel.status = 'added';
                 if(me.levels[addedLevel.id] && me.levels[addedLevel.id].background && checkedFirstBackgroundLayer === null && me.autoCheck('onlybackground')) {
                     checkedFirstBackgroundLayer = addedLevel.id;
@@ -1974,7 +1974,7 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         });
         Ext.Array.each(me.addedLayers, function(addedLayer) {
-            if(addedLayer.status == 'new') {
+            if(addedLayer.status === 'new') {
                 addedLayer.status = 'added';
                 me.config.viewerController.addAppLayer(addedLayer);
             }
