@@ -1001,7 +1001,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         addParents(node.parentNode);
                     }
                 };
-                if(node.get('type') != 'cswresult' || (node.get('type') === 'cswresult') && node.data.loadedService) {
+                if(node.get('type') !== 'cswresult' || (node.get('type') === 'cswresult') && node.data.loadedService) {
                     node.expand(false, function() {// expand all nodes
                         if(node.hasChildNodes()) {
                             node.eachChild(function(childNode) {
