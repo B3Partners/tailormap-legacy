@@ -237,7 +237,18 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 level.getDocuments().add(doc);
              }
         }
-        
+        if(level.getStartLevels().isEmpty()){
+            List<Application> apps = application.getMashups(em);
+            apps.add(application);
+            for (Application app : apps) {
+                StartLevel sl = new StartLevel();
+                sl.setApplication(app);
+                sl.setLevel(level);
+                sl.setSelectedIndex(null);
+                app.getStartLevels().add(sl);
+                level.getStartLevels().put(app, sl);
+            }
+        }
         em.persist(level);
         application.authorizationsModified();
         SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
