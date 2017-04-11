@@ -129,7 +129,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             con.style.width=  "100%";
             config.contentEl = con;
         }
-        
+
         // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false" && this.config.showHelpButton !== false) {
             config.tools = [{
@@ -162,7 +162,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         if(this.config.showOnStartup){
             this.popupWin.show();
         }
-        
+
         var positionChanged = false;
         if(config.draggable){
             this.popupWin.addListener("dragstart", function() {
@@ -243,7 +243,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         mask.setZIndex(this.popupWin.getEl().getZIndex() - 1);
     },
     enableBody : function(){
-        Ext.getBody().unmask()
+        Ext.getBody().unmask();
     },
     setIconClass: function(iconCls) {
         this.popupWin.setIconCls(iconCls);
@@ -253,14 +253,14 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     resizePopup: function() {
         if(viewer.components.MobileManager.isMobile() && this.isVisible()) {
-    		// Set size in pixels to 100% of the viewportwidth / height
-    		this.popupWin.setSize(Ext.Element.getViewportWidth(), Ext.Element.getViewportHeight());
-			// Reset position so popup remains centered
-			this.popupWin.setPosition(0, 0);
-    		// doLayout on the window
+            // Set size in pixels to 100% of the viewportwidth / height
+            this.popupWin.setSize(Ext.Element.getViewportWidth(), Ext.Element.getViewportHeight());
+            // Reset position so popup remains centered
+            this.popupWin.setPosition(0, 0);
+            // doLayout on the window
             this.popupWin.updateLayout();
-			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
-			this.currentOrientation = viewer.components.MobileManager.getOrientation();
+            // Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
+            this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
     },
     setWindowTitle : function(title){

@@ -54,8 +54,8 @@ Ext.define("viewer.components.Split", {
     },
     constructor: function (conf) {
         this.initConfig(conf);
-		viewer.components.Split.superclass.constructor.call(this, this.config);
-        this.config.actionbeanUrl = FlamingoAppLoader.get('contextPath') + '/action/feature/split';
+        viewer.components.Split.superclass.constructor.call(this, this.config);
+        this.config.actionbeanUrl = contextPath + '/action/feature/split';
         var me = this;
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
                 function (event) {
@@ -95,6 +95,7 @@ Ext.define("viewer.components.Split", {
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
 
+        this.popup.addListener('hide', this.cancel, this);
         return this;
     },
     selectedContentChanged: function () {
