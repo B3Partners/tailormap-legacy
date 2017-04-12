@@ -190,7 +190,6 @@ public abstract class TestUtil extends LoggingTestUtil {
             testAppLayer = new ApplicationLayer();
             testAppLayer.setLayerName("testApplayer");
             testLevel.getLayers().add(testAppLayer);
-            persistEntityTest(testAppLayer, ApplicationLayer.class);
 
             testStartLayer = new StartLayer();
             testStartLayer.setApplicationLayer(testAppLayer);
@@ -199,6 +198,7 @@ public abstract class TestUtil extends LoggingTestUtil {
             app.getStartLayers().add(testStartLayer);
 
             testAppLayer.getStartLayers().put(app, testStartLayer);
+            persistEntityTest(testAppLayer, ApplicationLayer.class);
 
             testStartLevel.setSelectedIndex(9);
             entityManager.persist(testStartLevel);

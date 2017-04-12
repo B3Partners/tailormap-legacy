@@ -245,11 +245,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             for(ApplicationLayer al: l.getLayers()) {
                 StartLayer startLayer = al.getStartLayers().get(application);
                 if(shouldBeRemoved(al)){
-                    al.getStartLayers().remove(application);
+                    /*al.getStartLayers().remove(application);
                     application.getStartLayers().remove(startLayer);
                     if(startLayer != null){
                         em.remove(startLayer);
-                    }
+                    }*/
+                    startLayer.setSelectedIndex(-1);
                 }else{
                     if(!wasNew && startLayer == null){
                         // if the startLevel was new, there is no startLayer. So if it wasn't new, and there isn't a startLayer, it means the startLayer was removed
@@ -377,8 +378,19 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     public Resolution loadSelectedLayers() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
 
-        final JSONArray children = new JSONArray();
+        final JSONArray children = loadSelectedLayers(em);
         
+        return new StreamingResolution("application/json") {
+
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(children.toString());
+            }
+        };
+    }
+    
+    protected JSONArray loadSelectedLayers(EntityManager em){
+        final JSONArray children = new JSONArray();
         rootlevel = application.getRoot();
 
         if(levelId != null && levelId.substring(1).equals(rootlevel.getId().toString())){
@@ -472,14 +484,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 }
             }
         }
-
-        return new StreamingResolution("application/json") {
-
-            @Override
-            public void stream(HttpServletResponse response) throws Exception {
-                response.getWriter().print(children.toString());
-            }
-        };
+        return children;
     }
     
     private static void walkAppTreeForStartMap(List selectedContent, Level l, Application app){
@@ -491,7 +496,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         for(ApplicationLayer al: l.getLayers()) {
             StartLayer startLayer = al.getStartLayers().get(app);
             if(startLayer != null && startLayer.getSelectedIndex() != null) {
-                selectedContent.add(al);
+                selectedContent.add(startLayer);
             }
         }
         
@@ -518,16 +523,18 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             List<ApplicationLayer> als = l.getLayers();
             for (ApplicationLayer al : als) {
                 StartLayer startLayer = al.getStartLayers().get(application);
-                al.getStartLayers().remove(application);
+                startLayer.setSelectedIndex(-1);
+                /*al.getStartLayers().remove(application);
                 application.getStartLayers().remove(startLayer);
                 if (startLayer != null) {
                     em.remove(startLayer);
-                }
+                }*/
             }
-            l.getStartLevels().remove(application);
+           /* l.getStartLevels().remove(application);
             em.remove(sl);
             application.getStartLevels().remove(sl);
-
+            */
+           sl.setSelectedIndex(-1);
             List<Level> children = l.getChildren();
             for (Level child : children) {
                 removeStartLevel(child, em);

@@ -14,6 +14,7 @@
             <properties>
                 <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
                 <netbeans.deploy>true</netbeans.deploy>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </action>
         <action>
@@ -25,6 +26,9 @@
             <goals>
                 <goal>install</goal>
             </goals>
+            <properties>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
         </action>
         <action>
             <actionName>rebuild</actionName>
@@ -36,6 +40,9 @@
                 <goal>clean</goal>
                 <goal>install</goal>
             </goals>
+            <properties>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
         </action>
         <action>
             <actionName>debug.single.main</actionName>
@@ -97,6 +104,7 @@
             </goals>
             <properties>
                 <netbeans.deploy>true</netbeans.deploy>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </action>
     </actions>
