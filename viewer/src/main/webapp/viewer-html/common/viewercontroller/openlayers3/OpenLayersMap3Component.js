@@ -101,7 +101,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_UP]                               = "deactivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_CAPABILITIES]                       = "onGetCapabilities";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE]                        = "onConfigComplete";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]                          = "featureadded";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]                          = "addfeature";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CLICK]                                  = "click";
         this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                               = "activate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE]            = "onUpdateComplete";
@@ -291,7 +291,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
     createComponent : function (config){
         var type = config.type;
         var comp = null;
-        if(type === viewer.viewercontroller.controller.Component.COORDINATES){
+        if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
+            comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonitor",config);
+        
+        }else if(type === viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
                 options.target = this.contentBottom;
@@ -316,6 +319,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                 new ol.control.ScaleLine());
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
             comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",config,this.getMap());
+        }else if(type == viewer.viewercontroller.controller.Component.SNAPPING) {
+            comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3SnappingController", config);
         }
         
         return comp;
