@@ -447,7 +447,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      **/
     createTool : function (conf){
         var type = conf.type;
-        console.log(type);
         var id = conf.id;
         conf.viewerController=this.viewerController;
         var frameworkOptions={};
@@ -524,7 +523,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             frameworkOptions.displayClass ="olToggle_"+conf.id;
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
-            console.log('hier');
             frameworkOptions.type=OpenLayers.Control.TYPE_TOOL;
             if (conf.displayClass) {
                 frameworkOptions.displayClass = conf.displayClass;

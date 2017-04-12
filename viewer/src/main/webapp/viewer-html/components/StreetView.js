@@ -79,7 +79,6 @@ Ext.define ("viewer.components.tools.StreetView",{
         return this;
     },
     mapClicked : function (toolMapClick,comp){  
-        console.log(comp);
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;

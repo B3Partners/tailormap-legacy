@@ -305,7 +305,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Called when a feature is selected
      */
     activeFeatureChanged : function (object){
-        console.log('active');
         var feature = this.fromOpenLayersFeature (object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
@@ -314,7 +313,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Called when a feature is modified.
      */
     featureModified : function (evt){
-        console.log('modified');
         var featureObject = this.fromOpenLayersFeature(evt.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
@@ -323,7 +321,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Called when a feature is added to the vectorlayer. It deactivates all drawFeature controls, makes the added feature editable and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
      */
     featureAdded : function (object){
-        console.log('added');
         var feature = this.fromOpenLayersFeature (object.feature);
         for ( var i = 0 ; i < this.drawFeatureControls.length ; i++ ){
             var control = this.drawFeatureControls[i];

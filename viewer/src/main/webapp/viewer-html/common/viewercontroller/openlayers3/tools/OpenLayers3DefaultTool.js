@@ -69,7 +69,6 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3DefaultTool",{
       
       
       deactivate: function(){  
-        console.log("gg");
         this.active=false;
         this.mapClick.deactivateTool();
         //this.getFrameworkObject().deactivate();

@@ -19,11 +19,8 @@ Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",{
     constructor: function(conf,map){
         viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip.superclass.constructor.call(this,conf);
         this.map = map;
-        //console.log(conf);
         var me  = this;
-        this.frameworkObject = new ol.interaction.Pointer({handleMoveEvent:function(evt){console.log('');},
-        handleUpEvent:function(evt){console.log('pause');}
-        });
+        this.frameworkObject = new ol.interaction.Pointer();
         this.map.getFrameworkMap().on('pointermove', function(evt) {
             this.clearTimer();
             this.timerId = window.setTimeout(function(){me.onPause(evt); },this.delay);

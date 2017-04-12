@@ -19,7 +19,6 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.StreetViewButton",{
     },
 
     activate : function(tool){
-        console.log('dan pas deactivate');
         this.conf.actives =true;
         this.frameworkObject.setActive(true);
         tool.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);

@@ -131,7 +131,6 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
      },
      
      getResolution : function(){
-         
          return this.getFrameworkMap().getView().getResolution();
      },
      

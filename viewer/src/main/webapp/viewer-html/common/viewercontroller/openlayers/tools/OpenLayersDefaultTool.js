@@ -65,7 +65,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
         
-        console.log(this.events);
+        //console.log(this.events);
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);

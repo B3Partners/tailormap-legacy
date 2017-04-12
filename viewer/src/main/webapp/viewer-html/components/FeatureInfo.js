@@ -69,7 +69,6 @@ Ext.define ("viewer.components.FeatureInfo",{
      * @see event ON_LAYER_ADDED
      */
     onAddLayer: function(map,options){
-       //console.log(options);
         var mapLayer=options.layer;
         if (mapLayer==null)
             return;
@@ -140,7 +139,6 @@ Ext.define ("viewer.components.FeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
-        console.log('start');
         this.balloon.setContent("");
         this.balloon.hide();
         this.setMaptipEnabled(false);

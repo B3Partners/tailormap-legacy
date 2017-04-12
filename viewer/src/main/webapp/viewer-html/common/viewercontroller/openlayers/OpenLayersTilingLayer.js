@@ -161,7 +161,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
                     url: url
                     });
             }
-        }
+        } 
         return requests;
     },
     /******** overwrite functions to make use of the mixin functions **********/

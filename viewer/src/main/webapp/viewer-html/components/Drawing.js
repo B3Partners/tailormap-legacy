@@ -604,9 +604,7 @@ Ext.define ("viewer.components.Drawing",{
             this.vectorLayer.style.strokecolor = featureObject._color;
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
-            console.log(featureObject._label);
             this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
-            console.log('klaar');
         }
 
     },
