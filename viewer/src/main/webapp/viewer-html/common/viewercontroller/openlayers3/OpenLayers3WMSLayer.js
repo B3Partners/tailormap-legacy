@@ -34,7 +34,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         });
         this.frameworkLayer = new ol.layer.Tile({
             source: sources,
-            visible: this.options.visibility
+            visible: this.options.visibility,
+            preload:1
         });
         
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
@@ -68,6 +69,14 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
 
     },
     setAlpha: function (alpha){
-        this.mixins.openLayersLayer.setAlpha.call(this,alpha);
+        this.mixins.openLayers3Layer.setAlpha.call(this,alpha);
+    },
+    
+    reload: function (){
+        var source = this.frameworkLayer.getSource();
+        var params = source.getParams();
+        params.t = new Date().getMilliseconds();
+        source.updateParams(params);
+        this.mixins.openLayers3Layer.reload.call(this);
     }
 });
