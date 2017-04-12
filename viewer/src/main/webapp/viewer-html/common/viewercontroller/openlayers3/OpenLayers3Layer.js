@@ -14,7 +14,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
     type:null,
     alpha:100,
     constructor :function (config){       
-        //console.log(config);
         this.initConfig(config);
         this.enabledEvents = new Object();
         this.events = new Object();
@@ -30,6 +29,15 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
     
     reload : function (){
         this.getFrameworkLayer().getSource().refresh();
+        //this.viewerController.mapComponent.getMap().getFrameworkMap().removeLayer(this.getFrameworkLayer());
+        //this.viewerController.mapComponent.getMap().getFrameworkMap().addLayer(this.getFrameworkLayer());
+        //window.location.reload();
+        //var source = this.getFrameworkLayer().getSource();
+        //var params = source.getParams();
+        //params.t = new Date().getMilliseconds();
+        //source.updateParams(params);
+        //this.getFrameworkLayer().getSource().clear();
+        
     },
     getType: function(){
         return this.type;
@@ -44,7 +52,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{
             /* Add event to OpenLayers Layer only once, to prevent multiple fired events.    
              * count the events for removing the listener again.
              */
-            if(!olSpecificEvent == "featureadded"){
+            if(!olSpecificEvent == "addfeature"){
                 if(this.enabledEvents[olSpecificEvent]){
                     this.enabledEvents[olSpecificEvent]++;                
                 }else{
