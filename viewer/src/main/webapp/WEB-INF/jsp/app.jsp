@@ -205,7 +205,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3Measure.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3VectorLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3ArcServerLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers3SnappingController.js"></script>
+                        
                         <!-- The components -->
+                        <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers3LoadMonitor.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayers3Maptip.js"></script>
                         
                         <!-- The tools -->
