@@ -178,10 +178,15 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
     },
     
     getLastMapRequest : function(){
-        var requests=[];
-        var grid = this.getFrameworkLayer().getSource().getTileGrid();
-        console.log(grid);
-        return requests;
+        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+        var r = this.getFrameworkLayer().getSource().getTileUrlFunction();
+        var mapcenter =map.getView().getCenter();
+        var crd = this.getFrameworkLayer().getSource().getTileGrid().getTileCoordForCoordAndResolution(mapcenter,map.getView().getResolution());
+        var request=[{
+            extent: this.getFrameworkLayer().getSource().getTileGrid().getTileCoordExtent(crd),
+            url: r(crd,1, map.getView().getProjection())
+        }];
+        return request;
 
     },
     setAlpha: function (alpha){
