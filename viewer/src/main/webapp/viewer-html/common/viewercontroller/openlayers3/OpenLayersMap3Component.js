@@ -144,6 +144,18 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         return tmsLayer;  
     },
     
+    createImageLayer : function (name,url, bounds){
+        var imageLayer = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer",{
+            id: name,
+            url: url,
+            extent : bounds,
+            frameworkLayer : this.viewerObject,
+            viewerController: this.viewerController
+        });
+
+        return imageLayer;
+    },
+    
     createVectorLayer : function(options){
         if (options==undefined){
             options = new Object();
