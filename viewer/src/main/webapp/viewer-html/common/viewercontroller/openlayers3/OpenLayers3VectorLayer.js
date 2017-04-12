@@ -69,7 +69,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         features: this.select.getFeatures()
         });  
         
-      this.select.on('select',this.activeFeatureChanged,this);
+      this.select.getFeatures().on('add',this.activeFeatureChanged,this);
       this.source.on('addfeature',this.featureAdded,this );
       this.modify.on('modifyend',this.featureModified,this);
       
@@ -87,7 +87,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         });
         var featureStroke = new ol.style.Stroke({
             color: this.colorPrefix+ this.style['strokecolor'],
-            width: 3
+            width: 3,
+            opacity: 0.5
         });
         var featureStyle = new ol.style.Style({
             image: new ol.style.Circle({
@@ -101,6 +102,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         return featureStyle;   
     },
     removeAllFeatures : function(){
+        this.select.getFeatures().clear();
         this.source.clear();
         this.maps.removeInteraction(this.draw);
     },
@@ -108,9 +110,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         var olFeature = this.source.getFeatureById(feature.getId());
         this.select.getFeatures().clear();
         this.source.removeFeature(olFeature);
-    },
-    getActiveFeature : function(){
-        Ext.Error.raise({msg: "VectorLayer.getActiveFeature() Not implemented! Must be implemented in sub-class"});
     },
     getFeature : function(id){
         Ext.Error.raise({msg: "VectorLayer.getFeature() Not implemented! Must be implemented in sub-class"});
@@ -128,6 +127,17 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         }
         return features;
     },
+    
+    getActiveFeature : function(){        
+        var olFeature = this.select.getFeatures().item(0);
+        if (olFeature){
+            var feature = this.fromOpenLayersFeature(olFeature);
+            return feature;
+        }else{
+            return null;
+        }
+    },
+    
     addFeature : function(feature){
         var features = new Array();
         features.push(feature);
@@ -275,12 +285,12 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
      */
     
     featureAdded : function(object){
-
+        this.select.getFeatures().clear();
+        this.select.getFeatures().push(object.feature);
         var feature = this.fromOpenLayersFeature(object.feature);
         
         // If no stylehash is set for the feature, set it to the current settings
         if(!object.feature.getStyle()){
-            
             object.feature.setStyle(this.getCurrtentStyle());
         }
         this.editFeature(object.feature);
@@ -288,8 +298,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     editFeature : function(feature){
-        this.select.getFeatures().clear();
-        this.select.getFeatures().push(feature);
+        //this.select.getFeatures().clear();
+        //this.select.getFeatures().push(feature);
         var featureObject = this.fromOpenLayersFeature(feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
@@ -300,8 +310,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     activeFeatureChanged : function(object){
-        object.selected[0].setStyle(this.selectStyle);
-        var feature = this.fromOpenLayersFeature(object.selected[0]);
+        //object.element.setStyle(this.selectStyle);
+        var feature = this.fromOpenLayersFeature(object.element);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
     
@@ -309,8 +319,15 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
 
     },
     
+    getVisible: function(){
+        return this.mixins.openLayers3Layer.getVisible.call(this);
+    },
+    
     reload: function (){
         this.mixins.openLayers3Layer.reload.call(this);
+    },
+    getType : function (){
+        return this.mixins.openLayers3Layer.getType.call(this);
     }
     
     });
