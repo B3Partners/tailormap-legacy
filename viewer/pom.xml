@@ -389,7 +389,6 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Tool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/Utils.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Measure.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/ToolMapClick3.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Component.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3Component.js</param>

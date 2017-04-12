@@ -202,7 +202,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/ToolMapClick3.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3WMSLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3ArcLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Measure.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3VectorLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3ArcServerLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayers3SnappingController.js"></script>
