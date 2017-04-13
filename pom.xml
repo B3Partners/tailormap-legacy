@@ -56,8 +56,11 @@
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-dependency-updates
-            and check the output for any available updates
+            mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-dependency-updates > dependency-updates.log
+            and check the output for any available updates.
+            
+            To check for vulnarabilities in dependencies use the following command:
+            mvn org.owasp:dependency-check-maven:1.4.5:check > vuln-check.log
         -->
         <dependencies>
             <!-- viewer-->
@@ -440,7 +443,7 @@
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
-                <version>1.4.0</version>
+                <version>1.5.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -486,7 +489,7 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-plugin-updates -T1
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-plugin-updates -T1 > plugin-updates.log
                     and check the output for any available updates
                 -->
                 <plugin>
@@ -531,12 +534,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
