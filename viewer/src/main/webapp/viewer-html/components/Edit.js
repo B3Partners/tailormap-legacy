@@ -527,7 +527,7 @@ Ext.define("viewer.components.Edit", {
         };
         var input;
         if (attribute.editHeight) {
-            options.rows = attribute.editHeight;
+            options.height = attribute.editHeight;
             input = Ext.create("Ext.form.field.TextArea", options);
         } else {
             input = Ext.create("Ext.form.field.Text", options);
