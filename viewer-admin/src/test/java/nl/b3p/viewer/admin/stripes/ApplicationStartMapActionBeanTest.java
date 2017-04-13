@@ -5,21 +5,22 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.ArrayList;
+import java.util.List;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
-import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -40,7 +41,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         int a = 0;
     }
    
-   // @Test
+    //@Test
     public void testRemoveStartLayerFromMashup(){
         
         initData(true);
@@ -146,7 +147,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-      @Test
+    //@Test
     public void testRemoveStartLevelWithParent(){
         initData(true);
         application = entityManager.find(Application.class, 1L);
@@ -154,7 +155,13 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
            
             instance.setApplication(application);
             
-            // voeg level "Thema" (id = 4) toe aan startkaartbeeld
+            /*
+                Tree is:
+                    Thema (4)
+                        Groen (5)
+                        Woonplaatsen (6)
+            */
+            // voeg level "Thema" (id = 4) toe aan startkaartbeeld 
             String selectedContent = "[{\"id\":\"4\",\"type\":\"level\"}]";
             instance.setSelectedContent(selectedContent);
             instance.setRemovedRecordsString(null);
@@ -196,4 +203,126 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
+    //@Test
+    public void testWalkAppTreeForStartMapAfterRemovingSublevel(){
+        testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
+        List selectedObjects = new ArrayList();
+        Level rootlevel = application.getRoot();
+        instance.walkAppTreeForStartMap(selectedObjects, rootlevel, application);
+        selectedObjects.stream().map((selectedObject) -> {
+            Integer lhsIndex;
+            if (selectedObject instanceof StartLevel) {
+                lhsIndex = ((StartLevel) selectedObject).getSelectedIndex();
+            } else {
+                lhsIndex = ((StartLayer) selectedObject).getSelectedIndex();
+            }
+            return lhsIndex;
+        }).filter((lhsIndex) -> (lhsIndex.equals(-1))).forEachOrdered((_item) -> {
+            fail("selected index should never be -1 in the startMap");
+        });
+    }
+    
+   // @Test
+    public void testLoadSelectedLayersAfterRemovingSublevel(){
+        testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
+        instance.setLevelId("n4");
+        JSONArray ar = instance.loadSelectedLayers(entityManager);
+        for (Object object : ar) {
+            JSONObject ob = (JSONObject)object;
+            if(ob.getString("id").equals("n5")){
+                fail("Layer should not be in startmap");
+            }
+        }
+    }
+    
+   // @Test
+    public void testLoadSelectedLayersAfterRemovingSecondSublevel(){
+        testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
+        
+        JSONObject removeString = new JSONObject();
+        removeString.put("type", "level");
+        removeString.put("id", 6L);
+        JSONArray ar = new JSONArray();
+        ar.put(removeString);
+        instance = new ApplicationStartMapActionBean();
+        instance.setApplication(application);
+        instance.setRemovedRecordsString(ar.toString());
+
+        entityManager.getTransaction().begin();
+        String selectedContent = "[{\"id\":\"4\",\"type\":\"level\"}]";
+        instance.setSelectedContent(selectedContent);
+        instance.setCheckedLayersString("[]");
+        instance.saveStartMap(entityManager);
+            
+        instance.setLevelId("n4");
+        JSONArray selectedLayers = instance.loadSelectedLayers(entityManager);
+        for (Object object : selectedLayers) {
+            JSONObject ob = (JSONObject)object;
+            if(ob.getString("id").equals("n5")){
+                fail("Layer should not be in startmap");
+            }
+            if(ob.getString("id").equals("n6")){
+                fail("Layer should not be in startmap");
+            }
+        }
+    }
+    
+    @Test
+    public void testLoadResetSublayersAfterReaddingParent(){
+        /*
+        This test is for the situation when you have a tree:
+            A
+                B
+                C
+        First, removing b and c, save, then remove a, save, add a. Result: A, B, and C should be present in the selectedLayers
+            
+        */
+        // Verwijder b en c:
+        testLoadSelectedLayersAfterRemovingSecondSublevel();
+        
+        // Verwijder a
+         
+        entityManager.getTransaction().begin();
+        
+        JSONObject removeString = new JSONObject();
+        removeString.put("type", "level");
+        removeString.put("id", 4L);
+        JSONArray ar = new JSONArray();
+        ar.put(removeString);
+        instance = new ApplicationStartMapActionBean();
+        instance.setApplication(application);
+        instance.setRemovedRecordsString(ar.toString());
+        instance.setSelectedContent("[]");
+        instance.setCheckedLayersString("[]");
+        instance.saveStartMap(entityManager);
+        
+        entityManager.getTransaction().begin();
+        
+        // Voeg a weer toe
+        
+        String selectedContent = "[{\"id\":\"4\",\"type\":\"level\"}]";
+        instance.setSelectedContent(selectedContent);
+        instance.setCheckedLayersString("[]");
+        instance.saveStartMap(entityManager);
+
+        // Check of sublevels bestaan
+        instance = new ApplicationStartMapActionBean();
+        instance.setLevelId("n4");
+        instance.setApplication(application);
+        JSONArray selectedLayers = instance.loadSelectedLayers(entityManager);
+        boolean foundA = false;
+        boolean foundB = false;
+        for (Object object : selectedLayers) {
+            JSONObject ob = (JSONObject)object;
+            if(ob.getString("id").equals("n5")){
+                foundA = true;
+            }
+            if(ob.getString("id").equals("n6")){
+                foundB = true;
+            }
+        }
+         
+        assertTrue(foundA);
+        assertTrue(foundB);
+    }
 }
