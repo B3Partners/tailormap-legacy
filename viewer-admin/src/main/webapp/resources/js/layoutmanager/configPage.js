@@ -44,7 +44,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
         // Create the form for the Layout tab
         this.createLayoutTab();
         // Create the form for the Responsive tab
-        this.createResponsiveTab();
+        this.createResponsiveConfig();
         // Create the form for the Help tab
         if(this.showHelp()) {
             this.createHelpTab();
@@ -75,18 +75,11 @@ Ext.define("vieweradmin.components.ConfigPage", {
             contentEl:'rights',
             title: 'Rechten'
         }];
-        if((this.config.metadata.hasOwnProperty("type") && this.config.metadata.type == "popup") || this.showConfigureHeight()) {
-            tabs.push({
-                itemId: 'layout-tab',
-                contentEl:'layout',
-                title: 'Layout'
-            });
-        }
         tabs.push({
-            itemId: 'responsive-tab',
-            contentEl:'responsive',
-            title: 'Responsive'
-        })
+            itemId: 'layout-tab',
+            contentEl:'layout',
+            title: 'Layout'
+        });
         if(this.showHelp()){
             tabs.push({
                 itemId: 'help-tab',
@@ -471,7 +464,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
         }
     },
 
-    createResponsiveTab: function () {
+    createResponsiveConfig: function () {
         var minWidth = '';
         if(this.config.configObject.hasOwnProperty('requiredScreenWidth')) {
             minWidth = this.config.configObject.requiredScreenWidth;
@@ -499,7 +492,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     'Bij een lege waarde (of 0) wordt het component altijd getoond'
                 }]
             }],
-            renderTo: "responsive"
+            renderTo: "layout"
         });
     },
 

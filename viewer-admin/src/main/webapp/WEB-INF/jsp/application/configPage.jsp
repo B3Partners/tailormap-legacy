@@ -37,6 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden id="componentLayout" name="componentLayout"/>
             <stripes:hidden name="configObject" id="configObject"/>
             <stripes:hidden name="saveComponentConfig" value="Opslaan" />
+            <stripes:hidden name="currentRegion" value="${param.currentRegion}" />
 
             <div id="tabs" style="width: 100%; height: 100%;">
                 <div id ="config" style="width: 100%; height: 100%;" class="tabdiv">
@@ -53,7 +54,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="layout" class="tabdiv">
                     <a href="#Component_Layout_Tab_Help" title="Help" class="helplink"></a>
                 </div>
-                <div id="responsive" class="tabdiv"></div>
                 <div id="help" class="tabdiv">
                     <a href="#Component_Help_Tab_Help" title="Help" class="helplink"></a>
                 </div>
