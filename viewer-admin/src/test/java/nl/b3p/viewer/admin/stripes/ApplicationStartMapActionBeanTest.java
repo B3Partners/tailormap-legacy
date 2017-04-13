@@ -182,7 +182,9 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
                 JSONObject obj = (JSONObject)object;
                 if(obj.getString("id").equals("n6")){
                     found = true;
-                    break;
+                }
+                if(obj.getString("id").equals("n5")){
+                    fail("Level should be in startkaartbeeld");
                 }
             }
             assertTrue(found);
@@ -238,7 +240,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         instance.setRemovedRecordsString(ar.toString());
 
         entityManager.getTransaction().begin();
-        String selectedContent = "[{\"id\":\"4\",\"type\":\"level\"}]";
+        String selectedContent = "[]";
         instance.setSelectedContent(selectedContent);
         instance.setCheckedLayersString("[]");
         instance.saveStartMap(entityManager);
