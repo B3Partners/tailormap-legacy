@@ -36,6 +36,7 @@ Ext.define("viewer.AppLoader", {
      * @param {Object} config
      */
     constructor: function(config) {
+        this.initOverrides();
         this.initConfig(config);
         this.exposeGlobalVariables();
         this.loadApplication();
@@ -240,6 +241,25 @@ Ext.define("viewer.AppLoader", {
             steunkleur2: appConfig.details.steunkleur2,
             font: appConfig.details.font,
             globalLayout: globalLayout
+        });
+    },
+
+    initOverrides: function() {
+        Ext.define('viewer.overrides.dom.TouchAction', {
+            override: 'Ext.dom.TouchAction',
+            fixEvent: function(e) {
+                if(!e.touches) e.touches = [];
+                return e;
+            },
+            onTouchStart: function(e) {
+                this.callParent([this.fixEvent(e)]);
+            },
+            onTouchMove: function(e) {
+                this.callParent([this.fixEvent(e)]);
+            },
+            onTouchEnd: function(e) {
+                this.callParent([this.fixEvent(e)]);
+            }
         });
     }
 
