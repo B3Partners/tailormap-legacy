@@ -35,13 +35,11 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     public ApplicationStartMapActionBeanTest() {
         String sc = "[{ \"id\" : \"3\", \"type\" : \"level\"}, { \"id\" : \"4\", \"type\" : \"level\"}, { \"id\" : \"5\", \"type\" : \"level\"},{ \"id\" : \"6\", \"type\" : \"level\"}]";
         
-        
         instance.setSelectedContent(sc);
         instance.setCheckedLayersString("[]");
-        int a = 0;
     }
    
-    //@Test
+    @Test
     public void testRemoveStartLayerFromMashup(){
         
         initData(true);
@@ -49,7 +47,6 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         try {
             int expectedStartLayerSize = application.getStartLayers().size();
             int expectedStartLevelSize = application.getStartLevels().size();
-          //  int expectedRootStartLevelSize = application.getRoot().getStartLevels().size() * 2;
 
             ApplicationLayer al2 = entityManager.find(ApplicationLayer.class, testAppLayer.getId());
             
@@ -76,7 +73,6 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             assertTrue(sl.getSelectedIndex() == null || sl.getSelectedIndex() == -1);
             assertEquals(expectedStartLayerSize , mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
-         //   assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
             
             // test of moederapplicatie NIET is verandert
             StartLayer slOrig = al.getStartLayers().get(application);
@@ -84,17 +80,13 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             assertTrue(slOrig.getSelectedIndex() != null && slOrig.getSelectedIndex() >= 0);
             assertEquals(expectedStartLayerSize, application.getStartLayers().size());
             assertEquals(expectedStartLevelSize, application.getStartLevels().size());
-         //  assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
-            
-
-            int a = 0;
         }catch(Exception e){
             log.error ("fout",e);
             assert(false);
         }
     }
    
-   // @Test
+    @Test
     public void testRemoveStartLevelFromMashup(){
         
         initData(true);
@@ -120,7 +112,6 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             
             instance.saveStartMap(entityManager);
             
-            
             // test of mashup is verandert
             Level l = entityManager.find(Level.class, 3L);
             StartLevel slMashup = l.getStartLevels().get(mashup);
@@ -130,8 +121,6 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
 
             assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
-            
-            
             
             // test of moederapplicatie NIET is verandert
             StartLevel slOrig = l.getStartLevels().get(application);
@@ -147,7 +136,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-    //@Test
+    @Test
     public void testRemoveStartLevelWithParent(){
         initData(true);
         application = entityManager.find(Application.class, 1L);
@@ -203,7 +192,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-    //@Test
+    @Test
     public void testWalkAppTreeForStartMapAfterRemovingSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         List selectedObjects = new ArrayList();
@@ -222,7 +211,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         });
     }
     
-   // @Test
+    @Test
     public void testLoadSelectedLayersAfterRemovingSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         instance.setLevelId("n4");
@@ -235,7 +224,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-   // @Test
+    @Test
     public void testLoadSelectedLayersAfterRemovingSecondSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         
