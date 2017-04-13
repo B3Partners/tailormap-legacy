@@ -31,7 +31,13 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
     <logger name="org.apache.http.client">
         <level value="info" />
     </logger>
+    <logger name="org.apache.commons.httpclient">
+        <level value="info" />
+    </logger>
     <logger name="org.apache.http.wire">
+        <level value="info" />
+    </logger>
+    <logger name="httpclient.wire">
         <level value="info" />
     </logger>
     <root>
