@@ -619,6 +619,13 @@ Ext.define ("viewer.components.AttributeList",{
                     if(store.getProxy().getReader().rawData.hasOwnProperty('virtualtotal') && store.getProxy().getReader().rawData.virtualtotal && me.pagers[gridId]) {
                         // Kind of hack to disable 'last page' button, property will be used on 'afterlayout' event on pager, see below
                         me.pagers[gridId].hideLastButton = true;
+                        me.pagers[gridId].virtualtotal = true;
+                        /**
+                         * the number of results are less than the pageSize so we are at the end of the set
+                         */
+                        if(records.length < pageSize) {
+                            maxResults = (store.currentPage - 1) * pageSize + records.length;
+                        }
                     }
                     /**
                      * When the store hits the end of a resultset (total is unknown at the beginning)
@@ -627,6 +634,8 @@ Ext.define ("viewer.components.AttributeList",{
                     if(maxResults !== -1) {
                         store.totalCount = maxResults;
                         if(me.pagers[gridId]) {
+                            me.pagers[gridId].virtualtotal = false;
+                            me.pagers[gridId].hideLastButton = false;
                             me.pagers[gridId].onLoad();  // triggers correct total
                         }
                     }
@@ -640,12 +649,6 @@ Ext.define ("viewer.components.AttributeList",{
                             movingBack++;
                             store.loadPage(parseInt(store.totalCount / pageSize, 10));
                         }
-                    }
-                    /**
-                     * the number of results are less than the pageSize so we are at the end of the set
-                     */
-                    if(store.totalCount !== 0 && records.length < pageSize) {
-                        maxResults = store.totalCount;
                     }
 
                     setTimeout(function(){ Ext.getCmp(me.name + 'mainGridPanel').updateLayout(); }, 0);
@@ -713,15 +716,8 @@ Ext.define ("viewer.components.AttributeList",{
                 store: store,
                 displayInfo: true,
                 displayMsg: 'Feature {0} - {1} van {2}',
-                emptyMsg: "Geen features om weer te geven",
-                // height: 38,
-                listeners: {
-                    afterlayout: function() {
-                        if(this.hideLastButton) {
-                            this.child('#last').disable();
-                        }
-                    }
-                }
+                afterPageText : 'van {0}',
+                emptyMsg: "Geen features om weer te geven"
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
@@ -837,6 +833,29 @@ Ext.define('viewer.overrides.view.Table', {
             return false;
         } else {
             return this.callParent([record, row, rowIndex, e]);
+        }
+    }
+});
+
+/**
+ * Override the Paging toolbar to hide totals when we have a "virtual total" (total is unknown)
+ */
+Ext.define('viewer.overrides.toolbar.Paging', {
+    override: 'Ext.toolbar.Paging',
+    inputItemWidth: 45,
+    displayMsgVirtualTotal: 'Feature {0} - {1}',
+    afterPageTextVirtualTotal: '',
+    initComponent: function() {
+        this.callParent();
+        this.displayMsgOriginal = this.displayMsg;
+        this.afterPageTextOriginal = this.afterPageText;
+    },
+    onLoad: function() {
+        this.displayMsg = this.virtualtotal ? this.displayMsgVirtualTotal : this.displayMsgOriginal;
+        this.afterPageText = this.virtualtotal ? this.afterPageTextVirtualTotal : this.afterPageTextOriginal;
+        this.callParent();
+        if(this.virtualtotal) {
+            this.child('#last').disable();
         }
     }
 });

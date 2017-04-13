@@ -273,6 +273,11 @@ body > .legend {
     text-overflow: ellipsis;
 }
 
+/* center allign paging toolbar input */
+.x-tbar-page-number .x-form-text {
+    text-align: center;
+}
+
 /* End Override ExtJS style */
 
 /*
