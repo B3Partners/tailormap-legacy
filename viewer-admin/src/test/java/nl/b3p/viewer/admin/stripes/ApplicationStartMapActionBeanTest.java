@@ -12,6 +12,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -216,7 +217,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         });
     }
     
-    @Test
+    //@Test
     public void testLoadSelectedLayersAfterRemovingSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         instance.setLevelId("n4");
@@ -321,5 +322,52 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
          
         assertTrue(foundA);
         assertTrue(foundB);
+    }
+    
+    @Test
+    public void testSelectedContentCreationWithDeletedLevel(){
+        testRemoveStartLevelWithParent();
+        SelectedContentCache scc = new SelectedContentCache();
+        JSONObject selectedContent = scc.createSelectedContent(application, false, false, false, entityManager);
+        JSONObject levels = selectedContent.getJSONObject("levels");
+        JSONObject level5 = levels.getJSONObject("5");
+        assertTrue("Should have removed parameter in level in selectedContent", level5.optBoolean("removed",false));
+    }
+    
+    @Test
+    public void testSelectedContentCreationWithDeletedParent(){
+        
+        testLoadSelectedLayersAfterRemovingSecondSublevel();
+        // remove parent
+            
+        entityManager.getTransaction().begin();
+        
+        JSONObject removeObject = new JSONObject();
+        removeObject.put("type", "level");
+        removeObject.put("id", 4L);
+        JSONArray ar = new JSONArray();
+        ar.put(removeObject);
+        instance = new ApplicationStartMapActionBean();
+        instance.setApplication(application);
+        instance.setRemovedRecordsString(ar.toString());
+        instance.setSelectedContent("[]");
+        instance.setCheckedLayersString("[]");
+        instance.saveStartMap(entityManager);
+        
+        entityManager.getTransaction().begin();
+        
+        
+        SelectedContentCache scc = new SelectedContentCache();
+        JSONObject selectedContent = scc.createSelectedContent(application, false, false, false, entityManager);
+        JSONObject levels = selectedContent.getJSONObject("levels");
+        
+        JSONObject level4 = levels.getJSONObject("4");
+        assertTrue("Should have removed parameter in level3 in selectedContent", level4.optBoolean("removed",false));
+        
+        JSONObject level5 = levels.getJSONObject("5");
+        assertTrue("Should have removed parameter in level4 in selectedContent", level5.optBoolean("removed",false));
+        
+        JSONObject level6 = levels.getJSONObject("5");
+        assertTrue("Should have removed parameter in level5 in selectedContent", level6.optBoolean("removed",false));
     }
 }

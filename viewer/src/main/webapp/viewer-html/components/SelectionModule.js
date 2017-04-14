@@ -1101,7 +1101,9 @@ Ext.define ("viewer.components.SelectionModule",{
                 }
             } else if(contentItem.type === "appLayer"){
                 var layer = me.addLayer(contentItem.id);
-                nodes.push(layer);
+                if(layer){
+                    nodes.push(layer);
+                }
             }
         }
         me.insertTreeNode(nodes, rootNode);
@@ -1148,7 +1150,7 @@ Ext.define ("viewer.components.SelectionModule",{
             return null;
         }
         var level = levels[levelId];
-        if(level.background && !showBackgroundLayers) {
+        if(level.background && !showBackgroundLayers || level.removed) {
             return null;
         }
         var description = descriptions ? descriptions[level.id] : null;
@@ -1211,6 +1213,9 @@ Ext.define ("viewer.components.SelectionModule",{
             return null;
         }
         var appLayerObj = me.appLayers[layerId];
+        if(appLayerObj.removed){
+            return null;
+        }
         var service = me.services[appLayerObj.serviceId];
         var layerTitle = appLayerObj.alias;
         var treeNodeLayer = me.createNode('l' + appLayerObj.id, layerTitle, service.id, true);
