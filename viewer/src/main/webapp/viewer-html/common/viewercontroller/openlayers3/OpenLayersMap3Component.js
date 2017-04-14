@@ -305,7 +305,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         var comp = null;
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
             comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonitor",config);
-        
+        }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
+            comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",config);
         }else if(type === viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
