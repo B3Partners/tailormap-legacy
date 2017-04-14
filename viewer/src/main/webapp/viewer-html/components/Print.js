@@ -456,6 +456,8 @@ Ext.define ("viewer.components.Print",{
                                 xtype: "combobox",
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
+                                forceSelection: true,
+                                queryMode: 'local',
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
                                 store: [['a5','A5'],['a4','A4'],['a3','A3'],['a0','A0']],
                                 width: 100,

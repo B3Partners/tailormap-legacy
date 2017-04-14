@@ -238,6 +238,7 @@ Ext.define ("viewer.components.Search",{
                     triggers: me.searchFieldTriggers === null ? {} : me.searchFieldTriggers,
                     flex:1,
                     anchor: '100%',
+                    editable: true,
                     triggerAction: 'query',
                     queryParam: "searchText",
                     autoSelect:false,
