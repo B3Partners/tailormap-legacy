@@ -586,6 +586,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     hideExtraConfig: function(searchconfigId) {
         Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#simpleListConfig' + searchconfigId)[0].setVisible(false);
+        Ext.ComponentQuery.query('#pdokConfig' + searchconfigId)[0].setVisible(false);
         this.panel.updateLayout();
     },
     /**
