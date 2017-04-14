@@ -78,6 +78,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
 
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
 
         <c:if test="${actionBean.viewerType == 'flamingo'}">
