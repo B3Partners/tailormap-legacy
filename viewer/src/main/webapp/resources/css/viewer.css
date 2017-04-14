@@ -97,6 +97,21 @@ b {
     color: #7f7f00;
 }
 
+.ext-style {
+    border: 1px solid #cecece;
+    padding: 4px 6px 3px 6px;
+    color: #000;
+    font-size: 13px;
+    font-weight: 300;
+    font-family: 'Open Sans', 'Helvetica Neue', helvetica, arial, verdana, sans-serif;
+    line-height: 22px;
+    vertical-align: middle;
+    min-height: 22px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
 /* validation styles */
 
 input.error, textarea.error {
