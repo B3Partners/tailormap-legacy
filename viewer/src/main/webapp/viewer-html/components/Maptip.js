@@ -326,12 +326,6 @@ Ext.define ("viewer.components.Maptip",{
                     var feature = layer.features[index];
                     var featureDiv = new Ext.Element(document.createElement("div"));
                     featureDiv.addCls("feature_summary_feature");
-                    var id= "f";
-                    if (appLayer){
-                        id += appLayer.serviceId;
-                    }
-                    id += "_"+layerName+"_"+index;
-                    featureDiv.id= id;
                     //left column
                     var leftColumnDiv = new Ext.Element(document.createElement("div"));
                     leftColumnDiv.addCls("feature_summary_leftcolumn");
@@ -440,13 +434,17 @@ Ext.define ("viewer.components.Maptip",{
      */
     showDetails: function(appLayer,feature){
         var cDiv=Ext.get(this.getContentDiv());
+        var childs = cDiv.query('*', false);
+        var len = childs.length;
+        for(var i = len-1; i >= 0; i--) {
+            childs[i].destroy();
+        }
         cDiv.update("");
         /*
         cDiv.update(html);   */
         var featureDiv = new Ext.Element(document.createElement("div"));
         featureDiv.addCls("feature_detail_feature");
         featureDiv.setStyle("background-color", "white");
-        featureDiv.id="f_details_"+appLayer.serviceId+"_"+appLayer.layerName;
 
         var noHtmlEncode = "true" === appLayer.details['summary.noHtmlEncode'];
         var nl2br = "true" === appLayer.details['summary.nl2br'];
@@ -1156,6 +1154,11 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         var element=this.getContentElement();
         if (!element){
             return;
+        }
+        var childs = element.query('*', false);
+        var len = childs.length;
+        for(var i = len-1; i >= 0; i--) {
+            childs[i].destroy();
         }
         element.update(value);
     };
