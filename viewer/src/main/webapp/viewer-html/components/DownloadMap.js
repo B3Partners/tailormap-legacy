@@ -64,7 +64,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
     },
-    imageSuccess: function(imageUrl){        
+    imageSuccess: function(imageUrl){      
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
         if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
         else {
