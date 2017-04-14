@@ -1,37 +1,23 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
-/**
- * @class 
- * @constructor
- * @description
- */
-Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
+
+
+Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer",{
     extend: "viewer.viewercontroller.controller.ImageLayer",
     mixins: {
-        openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
+        openLayers3Layer: "viewer.viewercontroller.openlayers3.OpenLayers3Layer"
     },
     constructor : function (config){
-        viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.constructor.call(this, config);
-        this.mixins.openLayersLayer.constructor.call(this,config);
+        viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer.superclass.constructor.call(this, config);
+        this.mixins.openLayers3Layer.constructor.call(this,config);
         
-        this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
+        this.utils = Ext.create("viewer.viewercontroller.openlayers3.Utils");
         
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
-        
+        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         var width = this.config.viewerController.mapComponent.getMap().getWidth();
         var height = this.config.viewerController.mapComponent.getMap().getHeight();
         
@@ -48,36 +34,31 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         }
         //set the start visibility
         this.options.visibility = this.visible;
-        
         var me=this;
-        this.frameworkLayer = new OpenLayers.Layer.Image(
-             this.name,
-             this.url,
-             this.utils.createBounds(this.extent),
-             new OpenLayers.Size(width,height),
-             me.options
-         );     
+        console.log(this);
+        console.log(this.utils.createBounds);
+        var source = new ol.source.ImageStatic({
+                url:this.url,
+                imageSize: [width,height],
+                imageExtent:this.extent,
+                projection: map.getView().getProjection()
+                }
+        );
+        this.frameworkLayer = new ol.layer.Image({
+                source:source,
+                visible:this.options.visibility,
+            }
+         );
+         
+         //map.addLayer(this.frameworkLayer);
     },
-    /**
-     * @see viewer.viewercontroller.controller.ImageLayer#setExtent
-     */
+    
     setExtent: function (extent){
         this.extent=extent;
         if(this.frameworkLayer){
             this.frameworkLayer.extent=this.utils.createBounds(extent)
         }
     },
-    
-    setUrl: function(newUrl){
-        viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.setUrl.call(this,newUrl);
-        if (this.frameworkLayer){
-            this.frameworkLayer.setUrl(newUrl);
-        }
-        
-    },
-    /**
-     *@see viewer.viewercontroller.controller.Layer#getLastMapRequest
-     */
     getLastMapRequest: function(){
         return [{
             url: this.url,
@@ -89,48 +70,50 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
      *Get the type of the layer
      */
     getType : function (){
-        return this.mixins.openLayersLayer.getType.call(this);
+        return this.mixins.openLayers3Layer.getType.call(this);
     },
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
     setVisible: function(vis){
-        this.mixins.openLayersLayer.setVisible.call(this,vis);
+        this.mixins.openLayers3Layer.setVisible.call(this,vis);
     },
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
     getVisible: function(){        
-        return this.mixins.openLayersLayer.getVisible.call(this);
+        return this.mixins.openLayers3Layer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
      */
     setAlpha: function (alpha){
-        this.mixins.openLayersLayer.setAlpha.call(this,alpha);
+        this.mixins.openLayers3Layer.setAlpha.call(this,alpha);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#reload
      */
     reload: function (){
-        this.mixins.openLayersLayer.reload.call(this);
+        this.mixins.openLayers3Layer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
      */
     addListener: function (event,handler,scope){
-        this.mixins.openLayersLayer.addListener.call(this,event,handler,scope);
+        this.mixins.openLayers3Layer.addListener.call(this,event,handler,scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
      */
     removeListener: function (event,handler,scope){
-        this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
+        this.mixins.openLayers3Layer.removeListener.call(this,event,handler,scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#destroy
      */
     destroy: function (){
-        this.mixins.openLayersLayer.destroy.call(this);
+        this.mixins.openLayers3Layer.destroy.call(this);
     }
+    
 });
+
