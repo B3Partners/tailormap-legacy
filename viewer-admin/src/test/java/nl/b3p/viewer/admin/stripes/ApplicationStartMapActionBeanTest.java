@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -34,8 +35,8 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     
     public ApplicationStartMapActionBeanTest() {
         String sc = "[{ \"id\" : \"3\", \"type\" : \"level\"}, { \"id\" : \"4\", \"type\" : \"level\"}, { \"id\" : \"5\", \"type\" : \"level\"},{ \"id\" : \"6\", \"type\" : \"level\"}]";
-        
-        instance.setSelectedContent(sc);
+        instance.setSelectedContent("[]");
+    //    instance.setSelectedContent(sc);
         instance.setCheckedLayersString("[]");
     }
    
@@ -70,7 +71,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             ApplicationLayer al = entityManager.find(ApplicationLayer.class, testAppLayer.getId());
             StartLayer sl = al.getStartLayers().get(mashup);
             assertNotNull(sl);
-            assertTrue(sl.getSelectedIndex() == null || sl.getSelectedIndex() == -1);
+            assertTrue(sl.isRemoved());
             assertEquals(expectedStartLayerSize , mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
             
@@ -78,6 +79,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             StartLayer slOrig = al.getStartLayers().get(application);
             assertNotNull(slOrig);
             assertTrue(slOrig.getSelectedIndex() != null && slOrig.getSelectedIndex() >= 0);
+            assertTrue(!slOrig.isRemoved());
             assertEquals(expectedStartLayerSize, application.getStartLayers().size());
             assertEquals(expectedStartLevelSize, application.getStartLevels().size());
         }catch(Exception e){
@@ -116,7 +118,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             Level l = entityManager.find(Level.class, 3L);
             StartLevel slMashup = l.getStartLevels().get(mashup);
             assertNotNull(slMashup);
-            assertTrue(slMashup.getSelectedIndex() == -1);
+            assertTrue(slMashup.isRemoved());
             assertEquals(expectedStartLayerSize , mashup.getStartLayers().size());
             assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
 
@@ -126,6 +128,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             StartLevel slOrig = l.getStartLevels().get(application);
             assertNotNull(slOrig);
             assertTrue(slOrig.getSelectedIndex() >= 0);
+            assertFalse(slOrig.isRemoved());
             assertEquals(expectedStartLayerSize, application.getStartLayers().size());
             assertEquals(expectedStartLevelSize, application.getStartLevels().size());
             assertEquals(expectedRootStartLevelSize, application.getRoot().getStartLevels().size());
@@ -262,9 +265,9 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     public void testLoadResetSublayersAfterReaddingParent(){
         /*
         This test is for the situation when you have a tree:
-            A
-                B
-                C
+            A (4)
+                B(5)
+                C(6)
         First, removing b and c, save, then remove a, save, add a. Result: A, B, and C should be present in the selectedLayers
             
         */
@@ -275,11 +278,11 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
          
         entityManager.getTransaction().begin();
         
-        JSONObject removeString = new JSONObject();
-        removeString.put("type", "level");
-        removeString.put("id", 4L);
+        JSONObject removeObject = new JSONObject();
+        removeObject.put("type", "level");
+        removeObject.put("id", 4L);
         JSONArray ar = new JSONArray();
-        ar.put(removeString);
+        ar.put(removeObject);
         instance = new ApplicationStartMapActionBean();
         instance.setApplication(application);
         instance.setRemovedRecordsString(ar.toString());
@@ -291,8 +294,11 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         
         // Voeg a weer toe
         
+        instance = new ApplicationStartMapActionBean();
+        instance.setApplication(application);
         String selectedContent = "[{\"id\":\"4\",\"type\":\"level\"}]";
         instance.setSelectedContent(selectedContent);
+        instance.setRemovedRecordsString("[]");
         instance.setCheckedLayersString("[]");
         instance.saveStartMap(entityManager);
 

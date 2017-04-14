@@ -113,7 +113,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             }
         }
         
-        walkAppTreeForSave(rootlevel,em);
+        walkAppTreeForSave(rootlevel,em,false);
         SelectedContentCache.setApplicationCacheDirty(application, true,false,true,em);
         em.getTransaction().commit();
     }
@@ -225,7 +225,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         }
     }
     
-    protected void walkAppTreeForSave(Level l, EntityManager em) throws JSONException{
+    protected void walkAppTreeForSave(Level l, EntityManager em, boolean unremove) throws JSONException{
         
         if(shouldBeRemoved(l)){
             removeStartLevel(l, em);
@@ -239,17 +239,16 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 sl.setLevel(l);
                 l.getStartLevels().put(application, sl);
             }
-
+            
             sl.setSelectedIndex(getSelectedContentIndex(l));
-
+            boolean unremoveChilds = (sl.isRemoved() && sl.getSelectedIndex() != null) || unremove;
+            if(unremoveChilds){
+                sl.setRemoved(false);
+            }
             for(ApplicationLayer al: l.getLayers()) {
                 StartLayer startLayer = al.getStartLayers().get(application);
                 if(shouldBeRemoved(al)){
-                    al.getStartLayers().remove(application);
-                    application.getStartLayers().remove(startLayer);
-                    if(startLayer != null){
-                        em.remove(startLayer);
-                    }
+                    startLayer.setRemoved(true);
                 }else{
                     if(!wasNew && startLayer == null){
                         // if the startLevel was new, there is no startLayer. So if it wasn't new, and there isn't a startLayer, it means the startLayer was removed
@@ -265,12 +264,15 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                     startLayer.setSelectedIndex(getSelectedContentIndex(al));
                     startLayer.setChecked(getCheckedForLayerId(al.getId()));
+                    if(unremoveChilds){
+                        startLayer.setRemoved(false);
+                    }
                 }
                 
             }
 
             for(Level child: l.getChildren()) {
-                walkAppTreeForSave(child,em);
+                walkAppTreeForSave(child,em, unremoveChilds);
             }
         }
     }
@@ -455,6 +457,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 for (Level sub : l.getChildren()) {
                     StartLevel sl = sub.getStartLevels().get(application);
                     if(sl != null || !l.getStartLevels().containsKey(application)){
+                        if(sl != null && sl.isRemoved()){
+                            continue;
+                        }
                         JSONObject j = new JSONObject();
                         j.put("id", "n" + sub.getId());
                         j.put("name", sub.getName());
@@ -470,6 +475,11 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 for (ApplicationLayer layer : l.getLayers()) {
                     StartLayer startLayer = layer.getStartLayers().get(application);
                     if(startLayer != null || !l.getStartLevels().containsKey(application)){ 
+                        
+                        if(startLayer != null && startLayer.isRemoved()){
+                            continue;
+                        }
+                        
                         //if the startLevel doesn't exist, it's a new startLayer (so show it)
                         // if the startLayer doesn't exist, but the startLevel does, it's a removed startLayer, so don't show it.  
                         JSONObject j = new JSONObject();
@@ -489,13 +499,13 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     protected static void walkAppTreeForStartMap(List selectedContent, Level l, Application app){
         StartLevel sl = l.getStartLevels().get(app);
-        if(sl != null && sl.getSelectedIndex() != null) {
+        if(sl != null && sl.getSelectedIndex() != null && !sl.isRemoved()) {
             selectedContent.add(sl);
         }
         
         for(ApplicationLayer al: l.getLayers()) {
             StartLayer startLayer = al.getStartLayers().get(app);
-            if(startLayer != null && startLayer.getSelectedIndex() != null) {
+            if(startLayer != null && startLayer.getSelectedIndex() != null && !startLayer.isRemoved()) {
                 selectedContent.add(al);
             }
         }
@@ -523,15 +533,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             List<ApplicationLayer> als = l.getLayers();
             for (ApplicationLayer al : als) {
                 StartLayer startLayer = al.getStartLayers().get(application);
-                al.getStartLayers().remove(application);
-                application.getStartLayers().remove(startLayer);
-                if (startLayer != null) {
-                    em.remove(startLayer);
-                }
+                startLayer.setRemoved(true);
             }
-            l.getStartLevels().remove(application);
-            em.remove(sl);
-            application.getStartLevels().remove(sl);
+            sl.setRemoved(true);
 
             List<Level> children = l.getChildren();
             for (Level child : children) {
