@@ -303,6 +303,21 @@ Ext.define ("viewer.components.AttributeList",{
         delete this.featureService;
     },
     loadAttributes: function(appLayer) {
+        var me = this;
+        if(this.requestThresholdCounter){
+            clearTimeout(this.requestThresholdCounter);
+        }
+        if(this.grids.main){
+            this.grids.main.getView().setLoading("Bezig met laden...");
+        }
+        this.requestThresholdCounter =  setTimeout(function(){
+            me.requestThresholdCounter = null;
+            me.retrieveAttributes(appLayer);
+        }, this.config.requestThreshold);
+    },
+    
+    retrieveAttributes: function(appLayer){
+        
         this.clear();
 
         this.appLayer = appLayer;
@@ -347,17 +362,7 @@ Ext.define ("viewer.components.AttributeList",{
 
             if(selectedLayer){
                 if(selectedLayer.id == appLayer.id){
-                    var me = this;
-                    if(this.requestThresholdCounter){
-                        clearTimeout(this.requestThresholdCounter);
-                    }
-                    if(this.grids.main){
-                        this.grids.main.getView().setLoading("Bezig met laden...");
-                    }
-                    this.requestThresholdCounter =  setTimeout(function(){
-                        me.requestThresholdCounter = null;
-                        me.loadAttributes(appLayer);
-                    }, this.config.requestThreshold);
+                   this.loadAttributes(appLayer);
                 }
             }
         }
