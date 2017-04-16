@@ -26,6 +26,7 @@ Ext.define ("viewer.components.AttributeList",{
     attributeIndex: 0,
     expandedRows: [],
     downloadForm:null,
+    requestThresholdCounter:null,
     config: {
         layers:null,
         title:null,
@@ -39,6 +40,7 @@ Ext.define ("viewer.components.AttributeList",{
         zoomToBuffer: 10,
         showLayerSelectorTabs: false,
         showAttributelistLinkInFeatureInfo: false,
+        requestThreshold: 2000,
         details: {
             minWidth: 600,
             minHeight: 300
@@ -52,7 +54,7 @@ Ext.define ("viewer.components.AttributeList",{
     featureExtentService: null,
     constructor: function (conf){
         this.initConfig(conf);
-		viewer.components.AttributeList.superclass.constructor.call(this, this.config);
+	viewer.components.AttributeList.superclass.constructor.call(this, this.config);
         var me = this;
         this.grids={};
         this.pagers={};
@@ -301,6 +303,21 @@ Ext.define ("viewer.components.AttributeList",{
         delete this.featureService;
     },
     loadAttributes: function(appLayer) {
+        var me = this;
+        if(this.requestThresholdCounter){
+            clearTimeout(this.requestThresholdCounter);
+        }
+        if(this.grids.main){
+            this.grids.main.getView().setLoading("Bezig met laden...");
+        }
+        this.requestThresholdCounter =  setTimeout(function(){
+            me.requestThresholdCounter = null;
+            me.retrieveAttributes(appLayer);
+        }, this.config.requestThreshold);
+    },
+    
+    retrieveAttributes: function(appLayer){
+        
         this.clear();
 
         this.appLayer = appLayer;
@@ -345,7 +362,7 @@ Ext.define ("viewer.components.AttributeList",{
 
             if(selectedLayer){
                 if(selectedLayer.id == appLayer.id){
-                    this.loadAttributes(appLayer);
+                   this.loadAttributes(appLayer);
                 }
             }
         }

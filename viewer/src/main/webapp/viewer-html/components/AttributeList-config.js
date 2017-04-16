@@ -77,6 +77,16 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
 
         this.form.add({
+            xtype: 'numberfield',
+            fieldLabel: 'Wachttijd (in ms) voor ophalen features na maken filter (bijv. extent filter)',
+            name: 'requestThreshold',
+            value: this.configObject.requestThreshold || 2000,
+            minValue: 0,
+            step: 100,
+            labelWidth: this.labelWidth
+        });
+        
+        this.form.add({
             xtype: 'checkbox',
             fieldLabel: 'Lagen als tabbladen tonen',
             inputValue: 'true',
