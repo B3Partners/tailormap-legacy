@@ -347,7 +347,17 @@ Ext.define ("viewer.components.AttributeList",{
 
             if(selectedLayer){
                 if(selectedLayer.id == appLayer.id){
-                    this.loadAttributes(appLayer);
+                    var me = this;
+                    if(this.requestThresholdCounter){
+                        clearTimeout(this.requestThresholdCounter);
+                    }
+                    if(this.grids.main){
+                        this.grids.main.getView().setLoading("Bezig met laden...");
+                    }
+                    this.requestThresholdCounter =  setTimeout(function(){
+                        me.requestThresholdCounter = null;
+                        me.loadAttributes(appLayer);
+                    }, this.config.requestThreshold);
                 }
             }
         }
