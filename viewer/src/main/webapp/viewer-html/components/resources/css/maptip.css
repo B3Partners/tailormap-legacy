@@ -72,20 +72,26 @@
 .infoBalloon.minimized .balloonContent * {
     display: none;
 }
-.infoBalloon.minimized .balloonContent .balloonButton {
+.infoBalloon.minimized .balloonButton {
     display: block;
+}
+.infoBalloon .balloonButton.x-tool-close {
+    right: 22px;
+}
+.infoBalloon .balloonContent .x-tool-img {
+    opacity: 1;
 }
 .infoBalloon .balloonContent .balloonButton.x-tool-close {
     right: 12px;
 }
-.infoBalloon.minimized .balloonContent .balloonButton.x-tool-close {
-    right: 3px;
+.infoBalloon.minimized .balloonButton.x-tool-close {
+    right: 10px;
 }
-.infoBalloon .balloonContent .balloonButton.x-tool-minimize {
+.infoBalloon .balloonButton.x-tool-minimize {
+    right: 44px;
+}
+.infoBalloon .balloonButton.x-tool-maximize {
     right: 32px;
-}
-.infoBalloon .balloonContent .balloonButton.x-tool-maximize {
-    right: 24px;
 }
 .infoBalloon .balloonContent .x-tool-img {
     opacity: 1;
@@ -93,6 +99,7 @@
 .balloonButton{
     position: absolute;
     cursor: pointer;
+    top: 25px;
 }
 /*** Features (feature info and maptip) css ***/
 .extendedfeatureinfo-component-container{
@@ -114,6 +121,7 @@
 .feature_summary_feature{
     float: left;
     width: 100%;
+    height: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
     margin-left: 5px;
