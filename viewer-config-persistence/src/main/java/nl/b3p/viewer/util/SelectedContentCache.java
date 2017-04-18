@@ -331,13 +331,14 @@ public class SelectedContentCache {
             Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
             o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
             o.put("background", l.isBackground() || parentIsBackground);
+            o.put("removed", sl.isRemoved());
             String levelId = l.getId().toString();
             if (validXmlTags) {
                 levelId = "level_" + levelId;
             }
             levels.put(levelId, o);
 
-            if (sl != null && sl.getSelectedIndex() != null) {
+            if (sl != null && sl.getSelectedIndex() != null && !sl.isRemoved()) {
                 selectedContent.add(sl);
             }
 
@@ -346,6 +347,7 @@ public class SelectedContentCache {
                 if(startLayer != null){
                     JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, app);
                     p.put("background", l.isBackground() || parentIsBackground);
+                    p.put("removed", startLayer.isRemoved());
 
                     Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
                     p.put("editAuthorizations", rw != null ? rw.toJSON() : new JSONObject());
@@ -359,7 +361,7 @@ public class SelectedContentCache {
 
                     appLayers.put(alId, p);
 
-                    if (startLayer.getSelectedIndex() != null) {
+                    if (startLayer.getSelectedIndex() != null && !startLayer.isRemoved()) {
                         selectedContent.add(startLayer);
                     }
                 }

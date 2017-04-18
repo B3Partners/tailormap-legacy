@@ -11,11 +11,9 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
-import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -117,7 +115,6 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         app.setTreeCache(null);
         cache =app.loadTreeCache(entityManager);
         assertEquals(numAppLayers + 1, cache.getApplicationLayers().size());
-        
     }
     
     @Test
@@ -150,8 +147,5 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         StartLevel sl = reloadedLevel.getStartLevels().get(app);
         assertNotNull(sl);
         assertNull(sl.getSelectedIndex());
-        
-        int a = 0;
-        
     }
 }

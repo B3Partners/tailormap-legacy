@@ -40,6 +40,8 @@ public class StartLayer {
     private Integer selectedIndex;
     
     private boolean checked;
+    
+    private boolean removed;
 
     StartLayer deepCopy(ApplicationLayer appLayer , Application app) throws Exception{
 
@@ -47,7 +49,9 @@ public class StartLayer {
         copy.setId(null);
         copy.setApplicationLayer(appLayer);
         copy.setApplication(app);
+        //copy.setRemoved(removed);
         app.getStartLayers().add(copy);
+        
         return copy;
     }
 
@@ -82,6 +86,14 @@ public class StartLayer {
 
     public void setSelectedIndex(Integer selectedIndex) {
         this.selectedIndex = selectedIndex;
+    }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
     }
 
     public boolean isChecked() {
