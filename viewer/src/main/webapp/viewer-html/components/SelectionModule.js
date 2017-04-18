@@ -1074,7 +1074,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var rootLevel = me.originalLevels[me.rootLevel];
         if(Ext.isDefined(rootLevel.children)) {
             for(var i = 0 ; i < rootLevel.children.length; i++) {
-                var l = me.addLevel(rootLevel.children[i], true, true, this.config.showBackgroundLevels, null,null,me.originalLevels);
+                var l = me.addLevel(rootLevel.children[i], true, true, this.config.showBackgroundLevels, null,null,me.originalLevels,true);
                 if(l !== null) {
                     l.expanded = true; // Make top levels expand
                     levels.push(l);
@@ -1095,8 +1095,8 @@ Ext.define ("viewer.components.SelectionModule",{
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
             if(contentItem.type ===  "level") {
-                var level = me.addLevel(contentItem.id, true, true, this.config.showBackgroundLevels, null,null,me.levels);
-                if(level != null){
+                var level = me.addLevel(contentItem.id, true, true, this.config.showBackgroundLevels, null,null,me.levels,false);
+                if(level != null ){
                     nodes.push(level);
                 }
             } else if(contentItem.type === "appLayer"){
@@ -1137,22 +1137,23 @@ Ext.define ("viewer.components.SelectionModule",{
             });
         }
 
-        var node = this.addLevel (levelId, true, true, this.config.showBackgroundLevels,null,null, this.levels);
+        var node = this.addLevel (levelId, true, true, this.config.showBackgroundLevels,null,null, this.levels,false);
 
         this.addedLevels.push({id:levelId,status:'new'});
         node = this.insertTreeNode(node,rootNode);
         this.sortTreeAndContent(rootNode.childNodes, rootNode);
     },
 
-    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions,levels) {
+    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions,levels, showRemovedItems) {
         var me = this;
         if(!Ext.isDefined(levels[levelId])) {
             return null;
         }
         var level = levels[levelId];
-        if(level.background && !showBackgroundLayers || level.removed) {
+        if(level.background && !showBackgroundLayers || (!showRemovedItems && level.removed)) {
             return null;
         }
+        
         var description = descriptions ? descriptions[level.id] : null;
         var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false, false, description);
         treeNodeLayer.type = 'level';
@@ -1167,7 +1168,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 for(var i = 0 ; i < level.children.length; i++) {
                     var child = level.children[i];
                     if(!childrenIdsToShow || me.containsId(child,childrenIdsToShow)){
-                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow,descriptions,levels);
+                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow,descriptions,levels, showRemovedItems);
                         if(l !== null) {
                             nodes.push(l);
                         }
@@ -1213,9 +1214,6 @@ Ext.define ("viewer.components.SelectionModule",{
             return null;
         }
         var appLayerObj = me.appLayers[layerId];
-        if(appLayerObj.removed){
-            return null;
-        }
         var service = me.services[appLayerObj.serviceId];
         var layerTitle = appLayerObj.alias;
         var treeNodeLayer = me.createNode('l' + appLayerObj.id, layerTitle, service.id, true);
@@ -1709,6 +1707,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 });
             }
             var level = this.levels[recordOrigData.id];
+            this.processRemovedFlag(level);
             if(level && !level.background && this.autoCheck()) {
                 this.checkAllChildren(level, true);
             }
@@ -1739,6 +1738,23 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         if(objData !== null) {
             this.insertNode(rootNode, objData);
+        }
+    },
+    
+    processRemovedFlag: function (level){
+        this.levels[level.id].removed = false;
+        var l = this.levels[level.id];
+        if(level.children){
+            for(var i = 0 ; i < l.children.length; i++){
+                var child = this.levels[l.children[i]];
+                this.processRemovedFlag(child);
+            }
+        }
+        
+        if (l.layers) {
+            for (var i = 0; i < l.layers.length; i++) {
+                this.appLayers[l.layers[i]].removed = false;
+            }
         }
     },
     
