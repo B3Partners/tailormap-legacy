@@ -40,6 +40,8 @@ public class StartLevel {
     private Application application;
     
     private Integer selectedIndex;
+    
+    private boolean removed;
 
     StartLevel deepCopy(Application app, Level levelCopy) throws Exception{
         StartLevel copy = (StartLevel) BeanUtils.cloneBean(this);
@@ -47,6 +49,7 @@ public class StartLevel {
         copy.setSelectedIndex(selectedIndex);
         copy.setApplication(app);
         copy.setLevel(levelCopy);
+       // copy.setRemoved(removed);
         app.getStartLevels().add(copy);
         return copy;
         
@@ -85,5 +88,14 @@ public class StartLevel {
         this.selectedIndex = selectedIndex;
     }
 
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
+    }
     // </editor-fold>
+
+
 }
