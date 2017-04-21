@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext, actionBeans */
+
 /**
  * Part of DataSelection and Filter component
  * Creates a dialog where filter and selection settings can be set.
@@ -45,7 +47,7 @@ Ext.define ("viewer.components.Filter",{
     constructor: function(config){
         this.initConfig(config);
         this.id = Ext.id();
-		this.attributeFilters = [];
+        this.attributeFilters = [];
         this.attributeStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'title', 'value'],
             data : this.config.attributes
@@ -126,7 +128,7 @@ Ext.define ("viewer.components.Filter",{
         var appLayer = this.config.parentComponent.appLayer;
         if(appLayer && appLayer.attributes){
             for (var i=0; i < appLayer.attributes.length; i++){
-                var attribute = appLayer.attributes[i]
+                var attribute = appLayer.attributes[i];
                 if (attribute.name===name){
                     return attribute;
                 }
@@ -229,7 +231,7 @@ Ext.define ("viewer.components.Filter",{
 			width: 40,
 			listeners: {
 				click: function() {
-					me.removeAttributeFilter(attributeFilter, filterContainer)
+                                    me.removeAttributeFilter(attributeFilter, filterContainer);
 				}
 			}
         });
@@ -243,7 +245,7 @@ Ext.define ("viewer.components.Filter",{
     removeAttributeFilter : function (attributeFilter, filterContainer){
         for ( var i = 0 ; i < this.attributeFilters.length;i++){
             var af = this.attributeFilters[i];
-            if(af == attributeFilter){
+            if(af === attributeFilter){
                 this.attributeFilters.splice(i,1);
             }
         }
@@ -263,8 +265,8 @@ Ext.define ("viewer.components.Filter",{
             cql += " " + this.config.logicOperator.getValue() + " ";
         }
         cql += "(";
-		var attribute = this.attributeCombobox.getValue();
-		if(attribute === null) return "";
+	var attribute = this.attributeCombobox.getValue();
+	if(attribute === null) return "";
         for(var i = 0 ; i < this.attributeFilters.length;i++){
             var af = this.attributeFilters[i];
             var type = this.getAttributeType(attribute);
@@ -279,7 +281,7 @@ Ext.define ("viewer.components.Filter",{
     getAttributeType : function (name){
         for(var i = 0 ; i < this.config.attributes.length ;i++){
             var attr = this.config.attributes[i];
-            if(attr.value == name){
+            if(attr.value === name){
                 return attr.type;
             }
         }
