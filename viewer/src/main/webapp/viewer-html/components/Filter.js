@@ -66,7 +66,7 @@ Ext.define ("viewer.components.Filter",{
                 }
             }
         });
-		var attribuutFilter = Ext.create("viewer.components.AttributeFilter",{
+	var attribuutFilter = Ext.create("viewer.components.AttributeFilter",{
             first: true,
             id: this.id,
             number: 1
@@ -74,31 +74,31 @@ Ext.define ("viewer.components.Filter",{
         this.attributeFilters.push(attribuutFilter);
         var attributeFilterUI = attribuutFilter.getUI();
         attributeFilterUI.add({ 
-			xtype: 'button',
-			text : '+',
-			width: 40,
-			listeners: {
-				click:{
-					scope: this,
-					fn: this.addAttributeFilter
-				}
-			}
-		});
+            xtype: 'button',
+            text : '+',
+            width: 40,
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.addAttributeFilter
+                }
+            }
+        });
         var firstContainer =  Ext.create('Ext.container.Container', {
-			width: 400,
-			height: this.getRowHeight(),
-			layout: {
-				type: 'hbox',
-				align:'stretch'
-			},
-			items:  [
-				this.attributeCombobox,
-				attributeFilterUI
-			]
-		});
-		this.container = Ext.create("Ext.container.Container", {
-			width: '100%',
-			items: [ firstContainer ]
+                width: 400,
+                height: this.getRowHeight(),
+                layout: {
+                        type: 'hbox',
+                        align:'stretch'
+                },
+                items:  [
+                        this.attributeCombobox,
+                        attributeFilterUI
+                ]
+        });
+        this.container = Ext.create("Ext.container.Container", {
+            width: '100%',
+            items: [ firstContainer ]
         });
         return this;
     },
@@ -114,7 +114,7 @@ Ext.define ("viewer.components.Filter",{
     attributeComboboxChanged: function(el,val,prevVal){
         this.uniqueList=[];
         this.setUniqueListOnAttributeFilters([]);
-        if (val!=null){
+        if (val !== null){
             var applayerAttribute = this.getAppLayerAttributeByName(val);
             if (applayerAttribute && applayerAttribute.defaultValue==="filterList"){
                 this.getAttributeUniques(val,applayerAttribute.featureType);
@@ -207,19 +207,19 @@ Ext.define ("viewer.components.Filter",{
     //Add a new attributefilter (to expand this filter)
     addAttributeFilter : function (){
         var me = this;
-		var filterContainer = Ext.create('Ext.container.Container', {
-			width: 400,
-			height: this.getRowHeight(),
-			layout: {
-				type: 'hbox',
-				align:'stretch'
-			},
-			items:  [
-				// left = leftwidth - 50 (or/and combobox of attributefilter)
-				{ xtype: 'container', width: this.leftWidth - 50 }
-			]
-		});
-		var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
+        var filterContainer = Ext.create('Ext.container.Container', {
+            width: 400,
+            height: this.getRowHeight(),
+            layout: {
+                type: 'hbox',
+                align:'stretch'
+            },
+            items:  [
+                // left = leftwidth - 50 (or/and combobox of attributefilter)
+                { xtype: 'container', width: this.leftWidth - 50 }
+            ]
+        });
+        var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
             first: false,
             id: this.id,
             number: this.attributeFilters.length + 1
@@ -227,16 +227,16 @@ Ext.define ("viewer.components.Filter",{
         var attributeFilterUI = attributeFilter.getUI();
         attributeFilterUI.add({ 
             xtype: 'button',
-			text : '-',
-			width: 40,
-			listeners: {
-				click: function() {
-                                    me.removeAttributeFilter(attributeFilter, filterContainer);
-				}
-			}
+            text : '-',
+            width: 40,
+            listeners: {
+                    click: function() {
+                        me.removeAttributeFilter(attributeFilter, filterContainer);
+                    }
+            }
         });
-		filterContainer.add(attributeFilterUI);
-		filterContainer.updateLayout();
+        filterContainer.add(attributeFilterUI);
+        filterContainer.updateLayout();
         this.container.add(filterContainer);
         this.attributeFilters.push(attributeFilter);
         attributeFilter.setUniqueList(this.uniqueList);
@@ -249,9 +249,9 @@ Ext.define ("viewer.components.Filter",{
                 this.attributeFilters.splice(i,1);
             }
         }
-		// We have to remove all items from the attribute filter due to some weird Ext bug
-		attributeFilter.removeItems();
-		this.container.remove(filterContainer.getId());
+        // We have to remove all items from the attribute filter due to some weird Ext bug
+        attributeFilter.removeItems();
+        this.container.remove(filterContainer.getId());
     },
     getUI : function (){
         return this.container;
@@ -261,7 +261,7 @@ Ext.define ("viewer.components.Filter",{
      */
     getCQL : function (){
         var cql ="";
-        if(this.config.logicOperator != null){
+        if(this.config.logicOperator !== null){
             cql += " " + this.config.logicOperator.getValue() + " ";
         }
         cql += "(";
