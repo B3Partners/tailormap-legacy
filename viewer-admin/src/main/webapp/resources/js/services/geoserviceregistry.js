@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.onReady(function() {
 
     // Definition of the TreeNode model. Get function is overridden, so custom
