@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, FlamingoAppLoader, actionBeans */
+
 /**
  * Spatial Filter component
  * This component adds the functionality of creating a spatial filter: a filter based on a drawn geometry (polygon, rectangle, circle or freeform). All features must
@@ -49,7 +51,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             conf.multiGeometries = true;
         }
         this.initConfig(conf);     
-		viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
+	viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
         var me = this;
         this.features = new Array();
         this.renderButton({
