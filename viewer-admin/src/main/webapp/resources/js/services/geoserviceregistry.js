@@ -157,7 +157,6 @@ Ext.onReady(function() {
         scroll: 'both',
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
-                console.log(categoryMenu, editMenu);
                 if(record.get('type') == "category") {
                     categoryMenu.config.data.clickedItem = record;
                     categoryMenu.showAt(event.getXY());
@@ -226,6 +225,7 @@ function addNode(node, parentid) {
             // and expanding it will load the added childnode from backend
 
             record.set('isLeaf', false);
+            record.set('leaf', false);
             record.expand(false);
         } else {
             //console.log("addNode: record is expanded, appending child");
