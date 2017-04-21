@@ -85,16 +85,16 @@ Ext.define ("viewer.components.Filter",{
             }
         });
         var firstContainer =  Ext.create('Ext.container.Container', {
-                width: 400,
-                height: this.getRowHeight(),
-                layout: {
-                        type: 'hbox',
-                        align:'stretch'
-                },
-                items:  [
-                        this.attributeCombobox,
-                        attributeFilterUI
-                ]
+            width: 400,
+            height: this.getRowHeight(),
+            layout: {
+                type: 'hbox',
+                align:'stretch'
+            },
+            items:  [
+                this.attributeCombobox,
+                attributeFilterUI
+            ]
         });
         this.container = Ext.create("Ext.container.Container", {
             width: '100%',

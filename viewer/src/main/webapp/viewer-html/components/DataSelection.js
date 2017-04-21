@@ -346,6 +346,7 @@ Ext.define ("viewer.components.DataSelection",{
                 scope:this,
                 params: { 
                     attributes: this.uniqueValuesAttributes,
+                    maxFeatures:this.config.maxFeatures,
                     applicationLayer: appLayer.id
                 }, 
                 success: function ( result, request ) { 
