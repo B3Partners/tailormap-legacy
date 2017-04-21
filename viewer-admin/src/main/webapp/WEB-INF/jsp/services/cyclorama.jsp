@@ -35,7 +35,7 @@
                 </tr>
                 <tr>
                         <td>Wachtwoord</td>
-                        <td><stripes-dynattr:text autocomplete="new-password" name="account.password"/></td>
+                        <td><stripes-dynattr:password autocomplete="new-password" name="account.password"/></td>
                 </tr>
                 <tr>
                         <td>PFX-bestand</td>
