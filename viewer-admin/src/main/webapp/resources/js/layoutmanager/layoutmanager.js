@@ -249,9 +249,7 @@ Ext.define('LayoutManager', {
                 Ext.create('Ext.ux.b3p.ColorPickerButton', {
                     startColor: me.getConfigOptionValue(regionId, 'backgroundcolor'),
                     renderTo: 'colorpicker_' + regionId + '_backgroundcolor',
-                    textfield: regionId + '_backgroundcolor',
-                    openOnLeft: (regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom'),
-                    openOnTop: (regionId === 'footer')
+                    textfield: regionId + '_backgroundcolor'
                 });
             }
             
@@ -356,6 +354,7 @@ Ext.define('LayoutManager', {
                 height: 400,
                 layout: 'fit',
                 modal: true,
+                scrollable: true,
                 contentEl: 'regionconfig_' + regionId,
                 resizable: false,
                 bodyPadding: 10,
