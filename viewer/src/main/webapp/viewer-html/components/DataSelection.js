@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, actionBeans */
+
 /**
  * DataSelection and Filter component
  * Creates a dialog where filter and selection settings can be set.
@@ -68,7 +70,7 @@ Ext.define ("viewer.components.DataSelection",{
             tooltip: me.config.tooltip,
             label: me.config.label
         });
-        if(!this.config.layers || this.config.layers.length == 0){
+        if(!this.config.layers || this.config.layers.length === 0){
             this.allLayers = true;
             this.config.layers = [];
         }else{
@@ -193,7 +195,7 @@ Ext.define ("viewer.components.DataSelection",{
         });
         this.tabPanel = Ext.getCmp(this.config.name + 'TabPanel');
         this.dataTab = Ext.getCmp(this.config.name + 'DataTab');
-        this.filterTab = Ext.getCmp(this.config.name + 'FilterTab')
+        this.filterTab = Ext.getCmp(this.config.name + 'FilterTab');
         this.createFilterTab();
     },
     createDataTab : function (appLayer){
@@ -208,7 +210,7 @@ Ext.define ("viewer.components.DataSelection",{
                 var defaultVal = "";
                 if(attribute.defaultValue != undefined){
                     defaultVal = attribute.defaultValue; 
-                    if(defaultVal == "#MAX#" || defaultVal == "#MIN#"){
+                    if(defaultVal === "#MAX#" || defaultVal === "#MIN#"){
                         minMaxAttrs.push({
                             attribute : attribute,
                             operator: defaultVal
@@ -246,7 +248,7 @@ Ext.define ("viewer.components.DataSelection",{
             }
         }
         this.dataTab.removeAll();
-        if (dataSelectieAttributes.length==0){
+        if (dataSelectieAttributes.length===0){
             this.dataTab.hide();
             this.dataTab.tab.hide();
             this.tabPanel.setActiveTab(this.filterTab);
@@ -255,7 +257,7 @@ Ext.define ("viewer.components.DataSelection",{
             this.dataTab.tab.show();
         }
         var defaultText = 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie';
-        if(this.uniqueValuesAttributes.length == 0){
+        if(this.uniqueValuesAttributes.length === 0){
             defaultText = '';
         }
         this.dataTab.add({
@@ -290,7 +292,7 @@ Ext.define ("viewer.components.DataSelection",{
                 checked   : false,
                 width: 200
             }]
-        })
+        });
         // Add the first filter
         this.addFilter();
     },
@@ -408,7 +410,7 @@ Ext.define ("viewer.components.DataSelection",{
             }
         });
         var logicOperator = null;
-        if(this.filters.length != 0) {
+        if(this.filters.length !== 0) {
             logicOperator = Ext.create('Ext.form.ComboBox', {
                 store: [ ['OR', 'of'], ['AND', 'en'] ],
                 width: 75,
@@ -445,7 +447,7 @@ Ext.define ("viewer.components.DataSelection",{
         }
     },
     isDatatabLoaded : function(){
-        if(this.itemsLoaded == 0){
+        if(this.itemsLoaded === 0){
             return true;
         }else{
             return false;
@@ -467,7 +469,7 @@ Ext.define ("viewer.components.DataSelection",{
         cql += this.getDataTabCQL();
         var filterActive = Ext.getCmp(this.name + 'FilterActive');
         if(filterActive && filterActive.getValue()){
-            if(cql != ""){
+            if(cql !== ""){
                 cql += " AND ";
             }
             for ( var i = 0 ; i < this.filters.length;i++){
@@ -476,7 +478,7 @@ Ext.define ("viewer.components.DataSelection",{
             }
         
         }
-        if(cql != ""){
+        if(cql !== ""){
             cql = "(" + cql + ")";
         }
         var layer = this.layerSelector.getValue();
@@ -507,7 +509,7 @@ Ext.define ("viewer.components.DataSelection",{
         var cql = "";
         for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection.
             var item = items[i];
-            if(item.getValue() != ""){
+            if(item.getValue() !== ""){
                 if(i > 1 ){
                     cql += " AND ";
                 }
@@ -590,7 +592,7 @@ Ext.define ("viewer.components.DataSelection",{
     getExtComponents: function() {
         return [
         this.mainContent.getId()
-        ]
+        ];
     },
     resetForm :function(){
         this.dataTab.removeAll();
