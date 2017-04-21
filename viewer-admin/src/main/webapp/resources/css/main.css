@@ -252,7 +252,7 @@ input[type="submit"]:hover,
 }
 #grid-container {
   min-height: 395px;
-  height: 435px;
+  height: 500px;
   padding-top: 40px;
 }
 #grid-container + #form-container {
