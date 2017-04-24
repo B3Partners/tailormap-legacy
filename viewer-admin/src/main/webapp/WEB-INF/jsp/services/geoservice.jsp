@@ -249,6 +249,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:when test="${!edit}">
                 <stripes:submit name="add" value="Service inladen"/>
                 <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="Annuleren"/>
+                <script>function urlChanged(){}</script>
             </c:when>
             <c:otherwise>
                 <stripes:submit name="save" value="Opslaan" onclick="return saveConfirm();"/>

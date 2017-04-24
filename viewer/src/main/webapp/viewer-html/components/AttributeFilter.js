@@ -49,7 +49,7 @@ Ext.define ("viewer.components.AttributeFilter",{
             queryMode: 'local',
             displayField: 'id',
             value:'=',
-            width:50,
+            width:70,
             valueField: 'id',
             data: this.config.initData
         });

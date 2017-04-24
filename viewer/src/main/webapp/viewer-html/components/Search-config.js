@@ -113,6 +113,9 @@ Ext.define("viewer.components.SearchConfiguration",{
         var collapsed = true;
         if(nextId === 1) collapsed = false;
         me.panel.add(me.newSearchField(newconfig, collapsed));
+        if(!collapsed){
+            this.showExtraconfig(newconfig.type, newconfig.id);
+        }
         me.nextId++;
     },
     newSearchField: function(config, collapsed) {

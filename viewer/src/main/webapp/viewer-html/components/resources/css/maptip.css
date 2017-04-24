@@ -210,3 +210,8 @@
     white-space: nowrap;
     overflow: hidden;
 }
+.load-releated-features::before {
+    display: block;
+    float: left;
+    text-indent: 0;
+}

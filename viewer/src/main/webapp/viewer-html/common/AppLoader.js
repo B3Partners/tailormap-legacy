@@ -82,7 +82,7 @@ Ext.define("viewer.AppLoader", {
             alert("Cannot retrieve config");
         };
         Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
+            url: Ext.String.urlAppend(this.config.actionbeanUrl, "t=" + (new Date()).getTime()),
             scope:this,
             params: {
                 application: this.config.appId
