@@ -36,7 +36,12 @@ Ext.define("viewer.components.sf.Config", {
             items: items
         });
 
-        Ext.ComponentQuery.query(config.renderTo)[0].add(this.form);
+        if(config.renderTo) {
+            Ext.ComponentQuery.query(config.renderTo)[0].add(this.form);
+        }
+        if(config.container) {
+            config.container.add(this.form);
+        }
     },
     getFormItems: function () {
         var items = [{
@@ -170,7 +175,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
                 pluginId: 'celleditor'
             },
             columns: columns,
-            height: 130,
+            height: 150,
             width: 315
         });
         items.push(
