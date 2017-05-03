@@ -189,6 +189,10 @@ public class ApplicationActionBean implements ActionBean {
             try {
                 return (Application) em.createQuery(q).getSingleResult();
             } catch(NoResultException nre) {
+                String decodedName = StringUtil.urlDecode(name);
+                if(!decodedName.equals(name)){
+                    return findApplication(decodedName, version);
+                }
             }
         }
         return null;
