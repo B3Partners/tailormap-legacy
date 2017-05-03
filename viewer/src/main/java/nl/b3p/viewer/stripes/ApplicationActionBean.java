@@ -27,6 +27,7 @@ import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
+import net.sourceforge.stripes.util.StringUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
@@ -194,8 +195,8 @@ public class ApplicationActionBean implements ActionBean {
                 String decodedName = StringUtil.urlDecode(name);
                 if(!decodedName.equals(name)){
                     return findApplication(decodedName, version);
-                }
             }
+        }
         }
         return null;
     }
@@ -282,6 +283,7 @@ public class ApplicationActionBean implements ActionBean {
 
         buildComponentSourceHTML();
 
+        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
 
         //make hashmap for jsonobject.
