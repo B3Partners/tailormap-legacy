@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 B3Partners B.V.
+ * Copyright (C) 2011-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,7 @@ import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
+import net.sourceforge.stripes.util.StringUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
@@ -107,10 +108,12 @@ public class ApplicationActionBean implements ActionBean {
         this.application = application;
     }
 
+    @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
 
+    @Override
     public ActionBeanContext getContext() {
         return context;
     }
@@ -267,7 +270,7 @@ public class ApplicationActionBean implements ActionBean {
         this.viewerType = retrieveViewerType();
 
         //make hashmap for jsonobject.
-        this.globalLayout = new HashMap<String,Object>();
+        this.globalLayout = new HashMap<>();
         JSONObject layout = application.getGlobalLayout();
         Iterator<String> keys = layout.keys();
         while (keys.hasNext()){
@@ -320,7 +323,7 @@ public class ApplicationActionBean implements ActionBean {
             return 0;
         }
 
-        List<String> sorted = new ArrayList<String>(roles);
+        List<String> sorted = new ArrayList<>(roles);
         Collections.sort(sorted);
 
         int hash = 0;
@@ -332,7 +335,9 @@ public class ApplicationActionBean implements ActionBean {
     
     public Resolution uitloggen(){
         application = findApplication(name, version);
-
+        if(application == null){
+            application = findApplication(StringUtil.urlDecode(name), version);
+        }
         RedirectResolution login = new RedirectResolution(LoginActionBean.class)
                 .addParameter("name", application.getName())
                 .addParameter("version", application.getVersion());
@@ -345,12 +350,12 @@ public class ApplicationActionBean implements ActionBean {
         StringBuilder sb = new StringBuilder();
 
         // Sort components by classNames, so order is always the same for debugging
-        List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
+        List<ConfiguredComponent> comps = new ArrayList<>(application.getComponents());
         Collections.sort(comps);
 
         if(isDebug()) {
 
-            Set<String> classNamesDone = new HashSet<String>();
+            Set<String> classNamesDone = new HashSet<>();
             for(ConfiguredComponent cc: comps) {
 
                 if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
@@ -387,7 +392,7 @@ public class ApplicationActionBean implements ActionBean {
             // previous version from cache with other contents.
 
             int hash = 0;
-            Set<String> classNamesDone = new HashSet<String>();
+            Set<String> classNamesDone = new HashSet<>();
             for(ConfiguredComponent cc: comps) {
                 if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
                     continue;
