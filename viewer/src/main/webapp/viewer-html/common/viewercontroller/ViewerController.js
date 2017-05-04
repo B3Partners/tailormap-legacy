@@ -1099,16 +1099,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Receives an array with visible map layers ids
+     * @param castToStrings boolean An optional parameter to cast all ID's to strings.
      * @return a array of Layer id's (same as appLayerIds) objects
      **/
-    getVisibleLayers : function (){
+    getVisibleLayers: function(castToStrings) {
         var layers = this.layers;
         var layerArray = new Array();
         for (var i in layers){
             if (layers.hasOwnProperty(i)){
                 var layer = layers[i];
-                if(layer.getVisible()){
-                    layerArray.push(i);
+                if(layer.getVisible()) {
+                    // When castToStrings is specified all ID's are casted to strings.
+                    // This makes it easier to use indexOf (which uses strict === equality checks) on the result
+                    layerArray.push(castToStrings ? "" + i : i);
                 }
             }
         }

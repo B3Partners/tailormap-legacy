@@ -403,6 +403,11 @@ Ext.define("viewer.components.CustomConfiguration",{
          * updated when the application is copied, use indexes to this array
          */
         Ext.Array.each(config.filters, function(filter) {
+            if(!filter.appLayerId) {
+                // Allow for empty appLayerId's
+                // When no appLayer is selected (which is allowed for Tekst and Reset types) do not add to layers config
+                return true;
+            }
             var index = Ext.Array.indexOf(config.layers, filter.appLayerId);
             if(index === -1) {
                 config.layers.push(filter.appLayerId);
