@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.net.URL;
 import java.util.List;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.services.Category;
@@ -60,8 +59,8 @@ public class GeoServiceActionBeanTest extends TestUtil{
 
             List<Layer> layers = service.loadLayerTree(entityManager);
             // hmmmp PDOK weirdness v1.1.0 caps file has 3 layers, v1.3.0 has 6
-            //assertEquals("The number of layers should be the same", 6, layers.size());
-            assertEquals("The number of layers should be the same", 3, layers.size());
+            assertEquals("The number of layers should be the same", 6, layers.size());
+            //assertEquals("The number of layers should be the same", 3, layers.size());
             assertEquals("The url should be the same", url, service.getUrl());
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice:", ex);
