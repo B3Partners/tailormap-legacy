@@ -399,17 +399,45 @@ public class FeatureToJson {
         }
     }
 
+    /**
+     *
+     * Optimze and reformat filter. Delegates to
+     * {@link #reformatFilter(org.opengis.filter.Filter, nl.b3p.viewer.config.services.SimpleFeatureType, boolean)}
+     * with the {@code includeRelations} set to {@code true}.
+     *
+     * @param filter the filter to process
+     * @param ft featuretype to apply filter
+     * @return reformatted / optimised filter
+     * @throws Exception if any
+     * @see #reformatFilter(org.opengis.filter.Filter,
+     * nl.b3p.viewer.config.services.SimpleFeatureType, boolean)
+     */
     public static Filter reformatFilter(Filter filter, SimpleFeatureType ft) throws Exception {
-        if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)){
+        return reformatFilter(filter, ft, true);
+    }
+
+    /**
+     * Optimze and reformat filter.
+     *
+     * @param filter the filter to process
+     * @param ft featuretype to apply filter
+     * @param includeRelations whether to include related (joined) data
+     * @return reformatted / optimised filter
+     * @throws Exception if any
+     */
+    public static Filter reformatFilter(Filter filter, SimpleFeatureType ft, boolean includeRelations) throws Exception {
+        if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)) {
             return filter;
         }
-        for (FeatureTypeRelation rel : ft.getRelations()){
-            if (FeatureTypeRelation.JOIN.equals(rel.getType())){
-                filter= reformatFilter(filter, rel.getForeignFeatureType());
-                filter = (Filter) filter.accept(new ValidFilterExtractor(rel), filter);
+        if (includeRelations) {
+            for (FeatureTypeRelation rel : ft.getRelations()) {
+                if (FeatureTypeRelation.JOIN.equals(rel.getType())) {
+                    filter = reformatFilter(filter, rel.getForeignFeatureType(), includeRelations);
+                    filter = (Filter) filter.accept(new ValidFilterExtractor(rel), filter);
+                }
             }
         }
-        filter=(Filter) filter.accept(new SimplifyingFilterVisitor(),null);
+        filter = (Filter) filter.accept(new SimplifyingFilterVisitor(), null);
         return filter;
     }
 
