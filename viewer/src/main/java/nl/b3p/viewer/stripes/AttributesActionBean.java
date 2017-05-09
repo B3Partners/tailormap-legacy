@@ -101,10 +101,17 @@ public class AttributesActionBean implements ActionBean {
 
     /**
      * set to {@code false}/{@code 0} to get attributes without alias
-     * substitution.
+     * substitution. (default is {@code true})
      */
     @Validate
     private boolean aliases = true;
+
+    /**
+     * Flag to include joined attribute data in the response (default is
+     * {@code true})
+     */
+    @Validate
+    private boolean includeRelations = true;
 
     @Validate
     private boolean debug;
@@ -285,6 +292,14 @@ public class AttributesActionBean implements ActionBean {
         this.aliases = aliases;
     }
 
+    public boolean isIncludeRelations() {
+        return includeRelations;
+    }
+
+    public void setIncludeRelations(boolean includeRelations) {
+        this.includeRelations = includeRelations;
+    }
+
     //</editor-fold>
 
     @After(stages=LifecycleStage.BindingAndValidation)
@@ -410,7 +425,7 @@ public class AttributesActionBean implements ActionBean {
             Filter f = ECQL.toFilter(filter);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
             f = (Filter)f.accept(new ChangeMatchCase(false), null);
-            f = FeatureToJson.reformatFilter(f,ft);
+            f = FeatureToJson.reformatFilter(f, ft, includeRelations);
             q.setFilter(f);
         }
 
