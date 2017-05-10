@@ -209,9 +209,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         
                         
                         <!-- The components -->
+                        <script type="text/javascript" src="${scriptDir}/components/panZoomBar.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayers3LoadMonitor.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayers3Maptip.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers3Overview.js"></script>
                         
                         <!-- The tools -->
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayers3IdentifyTool.js"></script>
