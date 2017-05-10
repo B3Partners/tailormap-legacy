@@ -38,16 +38,14 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         }
  
         config.restrictedExtent = maxBounds;
-        
         this.frameworkMap = new ol.Map({
         target: config.domId,
         controls: [],
         interactions: [new ol.interaction.MouseWheelZoom()],
+        keyboardEventTarget: document,
         view: new ol.View({
             projection: config.projection,
             center: config.center,
-            minZoom: 5,
-            maxZoom: 12,
             resolution: config.resolution,
             minResolution:0.105,
             maxResolution:3440.64,
@@ -94,7 +92,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     return this;
      },
          
-     addLayer : function(layer){        
+     addLayer : function(layer){
         this.superclass.addLayer.call(this,layer);   
         //delete layer.getFrameworkLayer().id;
         var map = this.getFrameworkMap();
