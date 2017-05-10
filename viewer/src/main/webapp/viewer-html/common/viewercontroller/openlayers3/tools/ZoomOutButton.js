@@ -20,11 +20,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomOutButton",{
     },
 
     activate : function(){
-        if (this.mapComponent.maps[0].getFrameworkMap().getView().getZoom() <= 6){
-            return;
-        }else{
-            this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()-1);
-        }
+            this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()-1);        
     },
 
     deactivate : function() {
