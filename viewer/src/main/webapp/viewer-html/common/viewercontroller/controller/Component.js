@@ -47,7 +47,8 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         MAPTIP                     : 6,
         LOADMONITOR                : 7,
         OVERVIEW                   : 8,
-        SNAPPING                   : 9
+        SNAPPING                   : 9,
+        KEYBOARD                   :10
     },
     /**
      *Set the component visible/invisible or enabled/disabled
