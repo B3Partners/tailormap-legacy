@@ -35,8 +35,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer",{
         //set the start visibility
         this.options.visibility = this.visible;
         var me=this;
-        console.log(this);
-        console.log(this.utils.createBounds);
         var source = new ol.source.ImageStatic({
                 url:this.url,
                 imageSize: [width,height],

@@ -60,7 +60,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
         }
         if (this.getProtocol()=="TMS"){
             var t= this.url;
-            
             //fix the url: example: "http://tilecache.kaartenbalie.nl/tilecache.cgi/1.0.0/osm/"
             
             var version=null;
