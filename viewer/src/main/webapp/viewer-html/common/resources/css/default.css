@@ -13,7 +13,7 @@
     top: 0px;
     left: 0px;
     width: 100%;
-    background-color: #EEE;
+    background-color: transparent;
 }
 .olControlPanel div {
     float: left;
@@ -63,10 +63,10 @@
     background-image: url("../../openlayers/img/zoom-world-mini.png");
 }
 
-.olControlPanel .ol-DragPanItemActive {
+.olControlPanel .ol-DragPanItemActive{
     background-image: url("../../openlayers/theme/default/img/pan_on.png");
 }
-.olControlPanel .ol-DragPanItemInactive {
+.olControlPanel .ol-DragPanItemInactive{
     background-image: url("../../openlayers/theme/default/img/pan_off.png");
 }
 
@@ -111,4 +111,14 @@
 }
 .olControlIdentifyItemInactive{
     background-image: url("../../openlayers/theme/default/img/identify_off.png");
+}
+
+.olControlLoadingPanel {
+            background-image:url(../../openlayers/img/loading.gif);
+            position: relative;
+            width: 195px;
+            height: 11px;
+            background-position:center;
+            background-repeat:no-repeat;
+            display: none;
 }
