@@ -55,6 +55,11 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         return this.mixins.openLayers3Layer.getType.call(this);
     },
     
+    
+    setOGCParams: function(newParams){
+        var source = this.frameworkLayer.getSource();
+        source.updateParams(newParams);
+    },
     /**
     *Gets the last wms request-url of this layer
     *@returns the WMS getMap Reqeust.
@@ -68,6 +73,44 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         return request;
 
     },
+    
+    setQuery : function (filter, sldHash, sessionId){
+        if(filter && filter.getCQL() != ""){
+            var service = this.config.viewerController.app.services[this.serviceId];
+            var layer = service.layers[this.options.name];
+            if(layer.details != undefined){
+                var filterable =layer.details["filterable"];
+                if(filterable != undefined && filterable != null ){
+                    filterable = Ext.JSON.decode(filterable);
+                    if(filterable){
+                        var url;
+                        if(!sldHash){
+                            url = Ext.create(viewer.SLD).createURL(
+                                this.options["layers"],
+                                this.getOption("styles") || "default",
+                                null,
+                                layer.hasFeatureType ? layer.featureTypeName : null,
+                                this.config.sld ? this.config.sld.id : null,
+                                filter.getCQL());
+                        }else{
+                            url = Ext.create(viewer.SLD).createURLWithHash(
+                                sldHash,
+                                sessionId,
+                                this.options["layers"],
+                                this.getOption("styles") || "default");
+                        }
+                        this.setOGCParams({"SLD": url});
+                        this.reload();
+                    }
+                }
+            }
+        }else{
+            this.setOGCParams({
+                "SLD": this.config.originalSldUrl || null
+            });
+        }
+    },
+    
     setAlpha: function (alpha){
         this.mixins.openLayers3Layer.setAlpha.call(this,alpha);
     },
