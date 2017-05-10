@@ -28,6 +28,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
       me.conf = conf;  
       this.panelTool = document.createElement('div');
       this.panelTool.className = conf.class+'ItemInactive';
+      this.panelTool.title = (conf.tooltip) ? conf.tooltip : "";
       this.panelTool.id = conf.id;
       //if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
             //var me = this;
