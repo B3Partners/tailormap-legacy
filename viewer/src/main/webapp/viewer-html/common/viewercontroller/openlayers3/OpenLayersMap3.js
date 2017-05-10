@@ -97,6 +97,9 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         //delete layer.getFrameworkLayer().id;
         var map = this.getFrameworkMap();
         var l = layer.getFrameworkLayer();
+        if(layer.id==undefined){
+            layer.id=layer.name;
+        }
         try{
             l.set('id',layer.id,false);
             l.on("change:visible",function(evt){
