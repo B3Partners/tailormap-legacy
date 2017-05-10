@@ -42,12 +42,10 @@
         "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
         "extPropertyGridConfigs": {
             "propertyNames": {
-                "resolutions": "Resoluties (komma gescheiden)",
-                "theme": "Theme ('flamingo' or 'default')"
+                "resolutions": "Resoluties (komma gescheiden)"
             },
             "source": {
-                "resolutions": "",
-                "theme": "flamingo"
+                "resolutions": ""
             }
         }
     },
