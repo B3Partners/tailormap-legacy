@@ -46,7 +46,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             resolutions = [3440.64,1720.32,860.16,430.08,215.04,107.52,53.76,26.88,13.44,6.72,3.36,1.68,0.84,0.42,0.21,0.105];
         }
         var extentAr = [-285401.0,22598.0,595401.0,903401.0];
-        //  var extentAr = [7700,304000,280000,62000];
+        var maxExtent = [7700,304000,280000,62000];
     
         //Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
         proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
@@ -60,7 +60,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         //var extentAr = [7700,304000,280000,62000];
         this.mapOptions = {
           projection: projection,
-          maxExtent: extentAr,
+          maxExtent: maxExtent,
           resolution: 512,
           resolutions: resolutions
         };
@@ -307,7 +307,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonitor",config);
         }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
             comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",config);
-        }else if(type === viewer.viewercontroller.controller.Component.COORDINATES){
+        }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
+            var panZoomBar = new ol.control.panZoomBar({imgPath:"/openlayers/img/",
+            slider:true,
+            left:config.left,
+            top:config.top});
+            comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config,panZoomBar);
+        }
+        else if(type === viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
                 options.target = this.contentBottom;
@@ -327,13 +334,19 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             if(this.contentBottom){
                 frameworkOptions.target = this.contentBottom;
                 config.cssClass = "olControlScale";
-            }
+            }8
             comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config,
                 new ol.control.ScaleLine());
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
             comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",config,this.getMap());
         }else if(type == viewer.viewercontroller.controller.Component.SNAPPING) {
             comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3SnappingController", config);
+        }else if(type == viewer.viewercontroller.controller.Component.KEYBOARD){
+            this.getMap().getFrameworkMap().addInteraction(new ol.interaction.KeyboardPan());
+            this.getMap().getFrameworkMap().addInteraction(new ol.interaction.KeyboardZoom());
+            //comp = new ol.interaction.KeyboardZoom();
+        }else {
+            this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
         
         return comp;
@@ -426,6 +439,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool(conf));
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
             return Ext.create ("viewer.viewercontroller.openlayers3.ToolMapClick3",conf);
+        }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
+            return new viewer.viewercontroller.openlayers3.tools.OpenLayers3DefaultTool(conf);
         }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
             return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.StreetViewButton(conf));
         }
