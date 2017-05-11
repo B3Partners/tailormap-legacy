@@ -24,7 +24,9 @@ Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonit
             top:this.config.top
         });
         map.addControl(this.frameworkObject);
-        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,function(){
+            this.frameworkObject.registerLayersLoadEvents_();
+        },this);
        
         
         return this;
