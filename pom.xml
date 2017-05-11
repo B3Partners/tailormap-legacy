@@ -136,6 +136,13 @@
                 <artifactId>xercesImpl</artifactId>
                 <version>2.11.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.flamingo-mc</groupId>
+                <artifactId>viewer-config-persistence</artifactId>
+                <type>test-jar</type>
+                <scope>test</scope>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- nl b3p csw-->
             <dependency>
