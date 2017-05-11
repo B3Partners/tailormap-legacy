@@ -159,6 +159,12 @@
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
