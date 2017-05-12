@@ -16,7 +16,15 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.DragPan",{
         conf.onlyClick = false;
         conf.actives =false;
         this.mapComponent = conf.viewerController.mapComponent;
-        this.frameworkObject = new ol.interaction.DragPan();
+        this.kinec = undefined;
+        
+        if(conf.enableKinetic){
+            this.kinec = new ol.Kinetic(-0.01,0.1,200);
+        }
+        
+        this.frameworkObject = new ol.interaction.DragPan({
+            kinetic: this.kinec
+        });
         this.initTool();
     },
 

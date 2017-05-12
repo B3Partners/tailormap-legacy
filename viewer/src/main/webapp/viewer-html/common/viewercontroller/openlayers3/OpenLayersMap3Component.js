@@ -408,7 +408,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
           //return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf,new ol.interaction.DragPan( ));
           return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.DragPan(conf)); 
           
-      }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
+      }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
+            conf.enableKinetic=true;
+            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.DragPan(conf));
+        }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
           //conf.id = "measure";
           //conf.class = "ol-Measure";
           //conf.onlyClick = false;
