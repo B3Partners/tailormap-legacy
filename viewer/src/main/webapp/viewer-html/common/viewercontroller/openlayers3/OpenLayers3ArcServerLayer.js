@@ -39,12 +39,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",{
         crd[0]= map.getView().getZoom();
         crd[1] =map.getView().getCenter()[0];
         crd[2] = map.getView().getCenter()[1];
-        console.log(r(crd,1, map.getView().getProjection()));
-        //console.log(r);
         var request=[{
             url: r(crd,1, map.getView().getProjection())
         }];
-        //console.log(this.getFrameworkLayer().getSource().getUrls());
         return request;
     },
 

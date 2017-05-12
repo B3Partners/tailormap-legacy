@@ -67,9 +67,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3SnappingController", 
     },
     getLayer : function(name,map){
         var layers = map.getLayers();
-        console.log(layers);
+
         for(var i =0; i < layers.getLength();i++){
-            console.log(layers.item(i));
+
             if(name == layers.item(i).get('id')){
                 return layers.item(i); 
             }
@@ -79,7 +79,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3SnappingController", 
            // note the scope here! "this" is actually not "me" but a composite of "me" and "appLayer"
         var geometryAttributeIndex = this.appLayer.geometryAttributeIndex;
         var lName = this.me.getlayerName(this.appLayer);
-        console.log(lName);
+
         var rLyrs = this.me.getLayer(lName,this.me.frameworkMap);
         if (rLyrs.length > 0) {
             // there should only be one layer in the rLyr

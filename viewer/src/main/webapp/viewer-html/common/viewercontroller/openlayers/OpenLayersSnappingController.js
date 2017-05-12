@@ -205,7 +205,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
             olLyr.removeAllFeatures();
         } else {
             // create a primitive OL vector layer
-            console.log(this.me);
             olLyr = new OpenLayers.Layer.Vector(
                     lName, {
                         styleMap: new OpenLayers.StyleMap({

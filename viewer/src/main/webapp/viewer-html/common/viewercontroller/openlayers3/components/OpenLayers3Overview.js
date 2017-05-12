@@ -49,7 +49,7 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         //var projection = ol.proj.get('EPSG:28992');
         var projection = new ol.proj.get('EPSG:28992');
         projection.setExtent(extentAr);
-        console.log(this);
+
         var layer  = new ol.layer.Tile({
             source: new ol.source.XYZ({
               url:this.config.url,
