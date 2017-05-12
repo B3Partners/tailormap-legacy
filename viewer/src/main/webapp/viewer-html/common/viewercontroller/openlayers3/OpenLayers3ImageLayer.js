@@ -44,7 +44,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer",{
         );
         this.frameworkLayer = new ol.layer.Image({
                 source:source,
-                visible:this.options.visibility,
+                visible:this.options.visibility
             }
          );
          

@@ -378,13 +378,11 @@
                             </compilerOptions>
                             <externFiles />
                             <sourceFiles>
-                                <!-- OpenLayers3 -->
-                                
+                                <!-- OpenLayers3 -->                              
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/test.js</param>
+                                
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Layer.js</param>
-
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3WMSLayer.js</param>
-
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3TilingLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Tool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3.js</param>
@@ -394,10 +392,16 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3Component.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcServerLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3SnappingController.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3VectorLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ImageLayer.js</param>
 
                                 <!-- OpenLayers Components -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3Maptip.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/panZoomBar.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/LoadingPanel.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3LoadMonitor.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3Overview.js</param>
                                 
                                 <!-- OpenLayers Tools -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3IdentifyTool.js</param>
