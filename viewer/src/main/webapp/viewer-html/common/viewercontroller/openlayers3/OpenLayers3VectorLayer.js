@@ -34,6 +34,14 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         this.defColor = this.colorPrefix + config.style['fillcolor'];
         
         this.draw = new ol.interaction.Draw({type:'Point'});
+        this.drawBox =  new ol.interaction.DragBox({
+           condition: ol.events.condition.noModifierKeys,
+           style: new ol.style.Style({
+           stroke: new ol.style.Stroke({
+           color: [0, 0, 255, 1]
+           })
+           })
+       });
         this.maps = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         var index  = this.config.viewerController.mapComponent.getMap().getFrameworkMap().getLayers().getLength() +1;
         this.source = new ol.source.Vector();           
@@ -72,18 +80,31 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
       this.select.getFeatures().on('add',this.activeFeatureChanged,this);
       this.source.on('addfeature',this.featureAdded,this );
       this.modify.on('modifyend',this.featureModified,this);
-      
+      this.drawBox.on('boxend', function(evt){
+           var geom = evt.target.getGeometry();
+           var feat = new ol.Feature({geometry: geom});
+           console.log(feat);
+           this.source.addFeature(feat);
+           this.drawBox.setActive(false);
+       },this);
+     
+      this.maps.addInteraction(this.drawBox);
       this.maps.addInteraction(this.select);
       this.maps.addInteraction(this.modify);
       this.select.setActive(false);
+      this.drawBox.setActive(false);
         
       this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
         
     },
     
     getCurrtentStyle : function(){
+        var color = ol.color.asArray(this.colorPrefix+ this.style['strokecolor']);
+        color = color.slice();
+        color[3] = 0.2;
         var featureFill = new ol.style.Fill({
-            color: this.colorPrefix+ this.style['strokecolor']
+            //color: this.colorPrefix+ this.style['strokecolor']
+            color:color
         });
         var featureStroke = new ol.style.Stroke({
             color: this.colorPrefix+ this.style['strokecolor'],
@@ -105,6 +126,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
         this.select.getFeatures().clear();
         this.source.clear();
         this.maps.removeInteraction(this.draw);
+        this.drawBox.setActive(false);
     },
     removeFeature : function (feature){    
         var olFeature = this.source.getFeatureById(feature.getId());
@@ -182,31 +204,33 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
      *
      */
     drawFeature : function(type){
-        
+        this.drawBox.setActive(false);
         this.select.setActive(false);
         this.maps.removeInteraction(this.draw);
         
         this.superclass.drawFeature.call(this, type);
         if (type === "Point") {
-            this.addInteraction(type);
+            this.addInteraction(type,false);
         } else if (type === "LineString") {
-            this.addInteraction(type);
+            this.addInteraction(type,false);
         } else if (type === "Polygon") {
-            this.addInteraction(type);
+            this.addInteraction(type,false);
         } else if (type === "Circle") {
-            this.addInteraction(type);
+            this.addInteraction(type,false);
         } else if (type === "Box") {
-            this.addInteraction(type);
+            this.drawBox.setActive(true);
         } else if (type === "Freehand") {
-            this.addInteraction(type);
+            this.addInteraction("Polygon",true);
         } else {
            this.config.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
     },
     
-    addInteraction : function(type){
+    addInteraction : function(type,free){
         this.draw = new ol.interaction.Draw({type:type,
-        source:this.source});  
+        source:this.source,
+        freehand:free
+        });  
         this.maps.addInteraction(this.draw);
         this.draw.on('drawend',function(evt){
             this.select.setActive(true);
