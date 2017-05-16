@@ -56,4 +56,45 @@
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </action>
+        <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>war</packaging>
+                <packaging>ear</packaging>
+                <packaging>ejb</packaging>
+            </packagings>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <properties>
+                <netbeans.deploy>true</netbeans.deploy>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
+        </action>
+        <action>
+            <actionName>build-with-dependencies</actionName>
+            <reactor>also-make</reactor>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
+        </action>
+        <action>
+            <actionName>rebuild</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
+        </action>
     </actions>
