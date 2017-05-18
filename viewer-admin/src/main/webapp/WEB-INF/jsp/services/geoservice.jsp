@@ -214,6 +214,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:checkbox name="useProxy"/> Gebruik proxy om kaarten op te halen.
             </td>
         </tr>
+        <tr>
+            <td valign="top">
+                <h1>Beveiliging:</h1>                           
+                <table summary="Groepen">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="text-align:center" title="Lezen">Toegestaan</th>
+                            <th scope="col" style="text-align:left">groep</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="group" items="${actionBean.allGroups}">     
+                            <tr>
+                                <td><stripes:checkbox name="groupsRead" value="${group.name}"/></td>
+                                <th scope="row" style="text-align:left">${group.name}</th>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
         <c:if test="${!edit}">
             <tr>
                 <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service
