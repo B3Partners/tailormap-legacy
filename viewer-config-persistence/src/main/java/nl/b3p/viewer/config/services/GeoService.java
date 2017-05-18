@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 B3Partners B.V.
+ * Copyright (C) 2011-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -106,6 +106,11 @@ public abstract class GeoService implements Serializable {
     @OrderColumn(name="list_index")    
     private List<StyleLibrary> styleLibraries = new ArrayList();
     
+    
+    @ElementCollection
+    @Column(name="role_name")
+    private Set<String> readers = new HashSet<String>();
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
         return id;
@@ -209,7 +214,15 @@ public abstract class GeoService implements Serializable {
 
     public void setStyleLibraries(List<StyleLibrary> styleLibraries) {
         this.styleLibraries = styleLibraries;
-    }   
+    }
+
+    public Set<String> getReaders() {
+        return readers;
+    }
+
+    public void setReaders(Set<String> readers) {
+        this.readers = readers;
+    }
     //</editor-fold>
       
     @PreRemove
