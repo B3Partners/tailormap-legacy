@@ -221,7 +221,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <thead>
                         <tr>
                             <th scope="col" style="text-align:center" title="Lezen">Toegestaan</th>
-                            <th scope="col" style="text-align:left">groep</th>
+                            <th scope="col" style="text-align:left">Groep</th>
                         </tr>
                     </thead>
                     <tbody>
