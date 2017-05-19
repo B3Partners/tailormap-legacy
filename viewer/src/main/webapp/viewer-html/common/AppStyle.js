@@ -226,7 +226,7 @@ Ext.define("viewer.AppStyle", {
                 ".x-window-header-text-default, .x-window-header-title-default", /* Popup header */
                 "body div.olControlMousePosition" /* Coordinates component */
             ], [
-                "font-family: '[font]'"
+                "font-family: [font]"
             ]));
         }
         if(this.config.globalLayout.extraCss) {

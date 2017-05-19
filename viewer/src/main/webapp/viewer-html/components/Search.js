@@ -148,8 +148,8 @@ Ext.define ("viewer.components.Search",{
             items: [ this.form, this.resultPanel ]
         };
         if(!this.config.isPopup) {
-            options.title = this.config.title;
-            options.bodyPadding = '10 0 10 0';
+            options.title = !this.config.viewerController.layoutManager.isTabComponent(this.name) ? this.config.title : '';
+            options.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 0 10 0';
             options.renderTo = this.getContentDiv();
         } else {
             options.items.push({
