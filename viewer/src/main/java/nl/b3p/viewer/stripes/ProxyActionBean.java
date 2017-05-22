@@ -129,102 +129,22 @@ public class ProxyActionBean implements ActionBean {
         if(sess == null || url == null) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy requests forbidden");
         }
-        
-        // TODO maybe add some other checks against illegal proxy use
-        
-        // We don't do a host check because the user can add custom services
-        // using any URL. If the proxying viewer webapp is on a IP whitelist
-        // and an attacker knows the URL of the IP-whitelist protected service 
-        // this may allow the attacker to request maps from that service if that
-        // service does not verify IP using the X-Forwarded-For header we send.
-
-        if(ArcIMSService.PROTOCOL.equals(mode)) {
-            return proxyArcIMS();
-        } else if(WMSService.PROTOCOL.equals(mode)){
+                
+        if(WMSService.PROTOCOL.equals(mode)){
             return proxyWMS();
         }else{
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy mode unacceptable");
         }
     }
 
-    // Not public, proxy() performs proxy checks!
-    private Resolution proxyArcIMS() throws Exception {
-
-        HttpServletRequest request = getContext().getRequest();
-
-        if(!"POST".equals(request.getMethod())) {
-            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
-        }   
-        
-        Map params = new HashMap(getContext().getRequest().getParameterMap());
-        // Only allow these parameters in proxy request
-        params.keySet().retainAll(Arrays.asList(
-                "ClientVersion",
-                "Encode",
-                "Form",
-                "ServiceName"
-        ));
-        URL theUrl = new URL(url);
-        // Must not allow file / jar etc protocols, only HTTP:
-        String path = theUrl.getPath();
-        for(Map.Entry<String,String[]> param: (Set<Map.Entry<String,String[]>>)params.entrySet()) {
-            if(path.length() == theUrl.getPath().length()) {
-                path += "?";
-            } else {
-                path += "&";
-            }
-            path += URLEncoder.encode(param.getKey(), "UTF-8") + "=" + URLEncoder.encode(param.getValue()[0], "UTF-8");
-        }
-        theUrl = new URL("http", theUrl.getHost(), theUrl.getPort(), path);
-        
-        // TODO logging for inspecting malicious proxy use
-        
-        ByteArrayOutputStream post = new ByteArrayOutputStream();
-        IOUtils.copy(request.getInputStream(), post);
-        
-        // This check makes some assumptions on how browsers serialize XML
-        // created by OpenLayers' ArcXML.js write() function (whitespace etc.),
-        // but all major browsers pass this check
-        if(!post.toString("US-ASCII").startsWith("<ARCXML version=\"1.1\"><REQUEST><GET_IMAGE")) {
-            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
-        }
-
-        final HttpURLConnection connection = (HttpURLConnection)theUrl.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        connection.setAllowUserInteraction(false);
-        connection.setRequestProperty("X-Forwarded-For", request.getRemoteAddr());
-        
-        connection.connect();
-        try { 
-            IOUtils.copy(new ByteArrayInputStream(post.toByteArray()), connection.getOutputStream());
-        } finally {
-            connection.getOutputStream().flush();
-            connection.getOutputStream().close();        
-        }
-        
-        return new StreamingResolution(connection.getContentType()) {
-            @Override
-            protected void stream(HttpServletResponse response) throws IOException {
-                try {
-                    IOUtils.copy(connection.getInputStream(), response.getOutputStream());
-                } finally {
-                    connection.disconnect();
-                }
-                
-            }
-        };
-    }
-
     private Resolution proxyWMS() throws IOException, URISyntaxException{
-
         HttpServletRequest request = getContext().getRequest();
         
         if(!"GET".equals(request.getMethod())) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
 
-        URL theUrl = null;
+        URL theUrl;
         EntityManager em = Stripersist.getEntityManager();
         try{
              theUrl = getRequestRL(em);
@@ -235,9 +155,8 @@ public class ProxyActionBean implements ActionBean {
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
         
-        HttpResponse response = null;
+        HttpResponse response;
         try {
-            //TODO: Check if response is a getFeatureInfo or getmap response.
             response = client.execute(req);
 
             int statusCode = response.getStatusLine().getStatusCode();
@@ -261,7 +180,7 @@ public class ProxyActionBean implements ActionBean {
             } else {
                 return new ErrorResolution(statusCode, "Service returned: " + response.getStatusLine().getReasonPhrase());
             }
-        } catch(Exception e){
+        } catch(IOException e){
             log.error("Failed to write output:",e);
             return null;
         }
