@@ -5,12 +5,14 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.List;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ApplicationTest;
+import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -70,6 +72,38 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             assert (false);
         }
     }
+    
+    @Test
+    public void testMakeWorkVersionFromMashup() {
+        initData(true);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            ActionBeanContext context = new ActionBeanContext();
+            caab.setContext(context);
+
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(mashup, entityManager, version);
+
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();   
+          
+            List origStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", app).getResultList();
+            List workversionStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", workVersion).getResultList();
+            assertEquals(app.getRoot().getId(),workVersion.getRoot().getId());
+            assertEquals(origStartLayers.size(), workversionStartLayers.size());
+            int a = 0;
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+    
     
     @Test
     public void testMakeMashupFromAppWithWorkversion() {
