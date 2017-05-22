@@ -38,6 +38,8 @@ import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.commons.HttpClientConfigured;
+import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
@@ -45,7 +47,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -324,9 +325,24 @@ public class ProxyActionBean implements ActionBean {
         String password = null;
         if (mustLogin && serviceId != null) {
             GeoService gs = em.find(GeoService.class, serviceId);
-
-            username = gs.getUsername();
-            password = gs.getPassword();
+            Set<String> readers = gs.getReaders();
+            User  u = (User)context.getRequest().getUserPrincipal();
+            if(u != null){
+                Set<Group> groups = u.getGroups();
+                boolean allowed = false;
+                for (Group group : groups) {
+                    for (String reader : readers) {
+                        if (group.getName().equals(reader)) {
+                            allowed = true;
+                            break;
+                        }
+                    }
+                }
+                if (allowed) {
+                    username = gs.getUsername();
+                    password = gs.getPassword();
+                }
+            }
         }
 
         final HttpClientConfigured client = new HttpClientConfigured(username, password, theUrl.toString());

@@ -100,6 +100,25 @@ public class ProxyActionBeanTest extends TestUtil {
         assertNull(client.getUsername());
     }
     
+    // test of beveiligde service met gebruiker met onvoldoende rechten geen user/pass heeft
+    
+    @Test
+    public void testSecureServiceWrongRights() throws MalformedURLException{
+        User geb = entityManager.find(User.class, "pietje");;
+        String url = "http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&";
+        context = new TestActionBeanContext(geb);
+        ab = new ProxyActionBean();
+        ab.setContext(context);
+        ab.setUrl(url);
+        ab.setMustLogin(true);
+        ab.setServiceId(2L);
+        
+        HttpClientConfigured client = ab.getHttpClient(new URL(url), entityManager);
+        
+        assertNull(client.getPassword());
+        assertNull(client.getUsername());
+    }
+    
     
     // test of beveiligde service met voloende rechten wel user pass heeft
     @Test
