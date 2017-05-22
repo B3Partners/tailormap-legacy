@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -44,6 +45,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -249,7 +251,7 @@ public class ProxyActionBean implements ActionBean {
         //vendor
         allowedParams.add("MAP");
         
-        URL theUrl = new URL(url);
+        URL theUrl = getRequestRL();
         
         String query = theUrl.getQuery();
         Map paramsMap = new HashMap(getContext().getRequest().getParameterMap());
@@ -271,19 +273,9 @@ public class ProxyActionBean implements ActionBean {
 
         theUrl = new URL(theUrl.getProtocol(), theUrl.getHost(), theUrl.getPort(),
                 theUrl.getPath() + "?" + paramString);
-
-        String username = null;
-        String password = null;
-        if (mustLogin && serviceId != null) {
-            EntityManager em = Stripersist.getEntityManager();
-            GeoService gs = em.find(GeoService.class, serviceId);
-
-            username = gs.getUsername();
-            password = gs.getPassword();
-        }
-
-        final HttpClientConfigured client = new HttpClientConfigured(username, password, theUrl.toString());
-        HttpUriRequest req = new HttpGet(theUrl.toURI());
+        EntityManager em = Stripersist.getEntityManager();
+        HttpClientConfigured client = getHttpClient(theUrl, em);
+        HttpUriRequest req = getHttpRequest(theUrl);
         
         HttpResponse response = null;
         try {
@@ -316,6 +308,29 @@ public class ProxyActionBean implements ActionBean {
             return null;
         }
     }
+    
+    protected URL getRequestRL () throws MalformedURLException{
+        return new URL(url);
+    }
+    
+    protected HttpClientConfigured getHttpClient(URL theUrl, EntityManager em) {
+        String username = null;
+        String password = null;
+        if (mustLogin && serviceId != null) {
+            GeoService gs = em.find(GeoService.class, serviceId);
+
+            username = gs.getUsername();
+            password = gs.getPassword();
+        }
+
+        final HttpClientConfigured client = new HttpClientConfigured(username, password, theUrl.toString());
+        return client;
+    }
+    
+    protected HttpUriRequest getHttpRequest(URL url) throws URISyntaxException{
+        return new HttpGet(url.toURI());
+    }
+    
 
     private StringBuilder validateParams (String [] params,List<String> allowedParams) throws UnsupportedEncodingException{
         StringBuilder sb = new StringBuilder();

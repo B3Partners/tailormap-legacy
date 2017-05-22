@@ -172,11 +172,21 @@
             <exclusions>
                 <exclusion>
                     <!-- the F* vaadin team decided it would be a good idea to
-                        issue a lib packaged as org.json with incompatibe JSONArray -->
+                    issue a lib packaged as org.json with incompatibe JSONArray -->
                     <groupId>com.vaadin.external.google</groupId>
                     <artifactId>android-json</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

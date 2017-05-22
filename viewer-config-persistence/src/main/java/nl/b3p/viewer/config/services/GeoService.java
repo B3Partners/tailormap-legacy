@@ -48,8 +48,8 @@ public abstract class GeoService implements Serializable {
     public static final String DETAIL_USE_INTERSECT = "useIntersect";
     public static final String DETAIL_USE_PROXY = "useProxy";
 
-    /**
-     * HTTP Basic authentication username to use with pre-emptive
+    /** 
+    * HTTP Basic authentication username to use with pre-emptive
      * authentication.
      */
     public static final String PARAM_USERNAME = "username";
@@ -385,8 +385,7 @@ public abstract class GeoService implements Serializable {
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
-
-
+        o.put("readers",getReaders());
 
         if (details.containsKey(GeoService.DETAIL_USE_PROXY)) {
             ClobElement ce = details.get(GeoService.DETAIL_USE_PROXY);

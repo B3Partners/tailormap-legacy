@@ -46,12 +46,17 @@ public class HttpClientConfigured {
 
     private HttpClient httpClient;
     private HttpClientContext httpContext;
+    
+    private String username;
+    private String password;
 
     public HttpClientConfigured(String username, String password, String url) {
         this( username,  password,url, -1);
     }
 
     public HttpClientConfigured(String username, String password, String url, int timeout) {
+        this.password = password;
+        this.username = username;
         if (timeout < 0) {
             timeout = maxResponseTime;
         }
@@ -203,4 +208,11 @@ public class HttpClientConfigured {
         allowSelfSignedCerts = assc;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
