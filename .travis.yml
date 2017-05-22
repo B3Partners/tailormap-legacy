@@ -33,6 +33,8 @@ script:
   - mvn -e clean verify -B -Ptravis-ci -pl '!viewer-admin'
   # run integration tests on viewer-admin module only
   - mvn -e clean verify -B -Ptravis-ci -pl 'viewer-admin'
+  # run code coverage
+  - mvn cobertura:cobertura
   # on oracle java 8 run a javadoc build to check for errors
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
          mvn javadoc:javadoc;
@@ -42,6 +44,9 @@ script:
          mvn javadoc:test-javadoc;
     fi
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  
 jdk:
   - oraclejdk8
   - openjdk8
