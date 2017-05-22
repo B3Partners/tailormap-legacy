@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -245,7 +246,7 @@ public class ProxyActionBean implements ActionBean {
         if (mustLogin && serviceId != null) {
             GeoService gs = em.find(GeoService.class, serviceId);
             Set<String> readers = gs.getReaders();
-            User  u = (User)context.getRequest().getUserPrincipal();
+            User  u = getUser(em);
             if(u != null){
                 Set<Group> groups = u.getGroups();
                 boolean allowed = false;
@@ -267,7 +268,21 @@ public class ProxyActionBean implements ActionBean {
         final HttpClientConfigured client = new HttpClientConfigured(username, password, theUrl.toString());
         return client;
     }
-    
+
+    private User getUser(EntityManager em) {
+        String username = context.getRequest().getRemoteUser();
+        User u = null;
+        if (username != null) {
+            Principal p = context.getRequest().getUserPrincipal();
+            if (p instanceof User) {
+                u = (User) p;
+            } else {
+                u = em.find(User.class, p.getName());
+            }
+        }
+        return u;
+    }
+
     protected HttpUriRequest getHttpRequest(URL url) throws URISyntaxException{
         return new HttpGet(url.toURI());
     }
