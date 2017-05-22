@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -121,18 +122,19 @@ public class ProxyActionBeanTest extends TestUtil {
     // test of url van service uit db gebruikt wordt (en dus niet aangepast kan worden)
        
     @Test
-    public void testModifiedServiceUrl() throws MalformedURLException, URISyntaxException{
+    public void testModifiedServiceUrl() throws MalformedURLException, URISyntaxException, UnsupportedEncodingException, IllegalAccessException{
         User geb = entityManager.find(User.class, "admin");
         String url = "http://fakeurl.com?map=/srv/maps/solparc/groen_productie.map&";
+        String originalUrl = "http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&";
         context = new TestActionBeanContext(geb);
         ab = new ProxyActionBean();
         ab.setContext(context);
         ab.setUrl(url);
         ab.setMustLogin(true);
         ab.setServiceId(2L);
-        URL u = ab.getRequestRL();
+        URL u = ab.getRequestRL(entityManager);
         String real = u.toString();
-        assertTrue(real.contains("http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&"));
+        assertTrue(real.contains(originalUrl));
         int a = 0;
     }
 }

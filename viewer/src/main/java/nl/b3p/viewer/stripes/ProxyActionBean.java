@@ -223,57 +223,14 @@ public class ProxyActionBean implements ActionBean {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
 
-        List<String> allowedParams = new ArrayList<String>();
-        allowedParams.add("VERSION");
-        allowedParams.add("SERVICE");
-        allowedParams.add("REQUEST");
-        allowedParams.add("UPDATESEQUENCE");
-        allowedParams.add("LAYERS");
-        allowedParams.add("LAYER");
-        allowedParams.add("STYLES");
-        allowedParams.add("SRS");
-        allowedParams.add("BBOX");
-        allowedParams.add("FORMAT");
-        allowedParams.add("WIDTH");
-        allowedParams.add("HEIGHT");
-        allowedParams.add("TRANSPARENT");
-        allowedParams.add("BGCOLOR");
-        allowedParams.add("EXCEPTIONS");
-        allowedParams.add("TIME");
-        allowedParams.add("ELEVATION");
-        allowedParams.add("QUERY_LAYERS");
-        allowedParams.add("X");
-        allowedParams.add("Y");
-        allowedParams.add("INFO_FORMAT");
-        allowedParams.add("FEATURE_COUNT");
-        allowedParams.add("SLD");
-        allowedParams.add("SLD_BODY");
-        //vendor
-        allowedParams.add("MAP");
-        
-        URL theUrl = getRequestRL();
-        
-        String query = theUrl.getQuery();
-        Map paramsMap = new HashMap(getContext().getRequest().getParameterMap());
-        StringBuilder paramsFromRequest = validateParams(paramsMap,allowedParams);
-
-        if((query == null || query.length() == 0) && paramsFromRequest.length() == 0){
-            // Must have parameters, so when none are existent, it is possibly a malicious use of this proxy.
+        URL theUrl = null;
+        EntityManager em = Stripersist.getEntityManager();
+        try{
+             theUrl = getRequestRL(em);
+        }catch(IllegalAccessException ex){
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
-        //only WMS request param's allowed
-        String[] params = query != null ? query.split("&") : new String[0];
-        
-        StringBuilder paramsFromUrl = validateParams(params, allowedParams);
-        paramsFromUrl.append(paramsFromRequest);
-  
-        int index = paramsFromUrl.charAt(0) == '&' ? 1 : 0;
-        
-        String paramString = paramsFromUrl.substring(index);
-
-        theUrl = new URL(theUrl.getProtocol(), theUrl.getHost(), theUrl.getPort(),
-                theUrl.getPath() + "?" + paramString);
-        EntityManager em = Stripersist.getEntityManager();
+   
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
         
@@ -309,8 +266,57 @@ public class ProxyActionBean implements ActionBean {
         }
     }
     
-    protected URL getRequestRL () throws MalformedURLException{
-        return new URL(url);
+    protected URL getRequestRL(EntityManager em) throws MalformedURLException, UnsupportedEncodingException, IllegalAccessException {
+        URL theUrl = new URL(url);
+        List<String> allowedParams = new ArrayList<>();
+        allowedParams.add("VERSION");
+        allowedParams.add("SERVICE");
+        allowedParams.add("REQUEST");
+        allowedParams.add("UPDATESEQUENCE");
+        allowedParams.add("LAYERS");
+        allowedParams.add("LAYER");
+        allowedParams.add("STYLES");
+        allowedParams.add("SRS");
+        allowedParams.add("BBOX");
+        allowedParams.add("FORMAT");
+        allowedParams.add("WIDTH");
+        allowedParams.add("HEIGHT");
+        allowedParams.add("TRANSPARENT");
+        allowedParams.add("BGCOLOR");
+        allowedParams.add("EXCEPTIONS");
+        allowedParams.add("TIME");
+        allowedParams.add("ELEVATION");
+        allowedParams.add("QUERY_LAYERS");
+        allowedParams.add("X");
+        allowedParams.add("Y");
+        allowedParams.add("INFO_FORMAT");
+        allowedParams.add("FEATURE_COUNT");
+        allowedParams.add("SLD");
+        allowedParams.add("SLD_BODY");
+        //vendor
+        allowedParams.add("MAP");
+
+        String query = theUrl.getQuery();
+        Map paramsMap = new HashMap(getContext().getRequest().getParameterMap());
+        StringBuilder paramsFromRequest = validateParams(paramsMap, allowedParams);
+
+        if ((query == null || query.length() == 0) && paramsFromRequest.length() == 0) {
+            // Must have parameters, so when none are existent, it is possibly a malicious use of this proxy.
+            throw new IllegalAccessException();
+        }
+        //only WMS request param's allowed
+        String[] params = query != null ? query.split("&") : new String[0];
+
+        StringBuilder paramsFromUrl = validateParams(params, allowedParams);
+        paramsFromUrl.append(paramsFromRequest);
+
+        int index = paramsFromUrl.charAt(0) == '&' ? 1 : 0;
+
+        String paramString = paramsFromUrl.substring(index);
+        GeoService gs = em.find(GeoService.class, serviceId);
+
+        theUrl = new URL(gs.getUrl() + "?" + paramString);
+        return theUrl;
     }
     
     protected HttpClientConfigured getHttpClient(URL theUrl, EntityManager em) {
