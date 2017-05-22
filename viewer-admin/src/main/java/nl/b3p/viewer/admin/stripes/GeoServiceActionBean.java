@@ -695,8 +695,7 @@ public class GeoServiceActionBean implements ActionBean {
         if(service != null){
             groupsRead = new ArrayList(service.getReaders());
         }
-        allGroups = em.createQuery("from Group").getResultList();
-        
+        allGroups = em.createQuery("from Group").getResultList();        
     }
 
     public Resolution update() throws JSONException {
