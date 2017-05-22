@@ -688,12 +688,15 @@ public class GeoServiceActionBean implements ActionBean {
         }
     }
 
-    @Before
+    @After
     public void setUpdatable() {
         EntityManager em = Stripersist.getEntityManager();
         updatable = service instanceof Updatable;
+        if(service != null){
+            groupsRead = new ArrayList(service.getReaders());
+        }
         allGroups = em.createQuery("from Group").getResultList();
-        groupsRead = new ArrayList(service.getReaders());
+        
     }
 
     public Resolution update() throws JSONException {
