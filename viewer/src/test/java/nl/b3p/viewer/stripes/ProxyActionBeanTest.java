@@ -36,53 +36,17 @@ import org.junit.Test;
 /**
  *
  * @author Mark Prins
+ * @author Mark Prins
  */
 public class ProxyActionBeanTest extends TestUtil {
 
-    private static final Log LOG = LogFactory.getLog(ProxyActionBeanTest.class);
-
-    /*@Parameterized.Parameters(name = "{index}: test url: {0}")
-    public static Collection params() {
-        return Arrays.asList(new Object[][]{
-            // {"url", "layer", ... },
-            {"http://flamingo4.b3p.nl/geoserver/wms?SERVICE=WMS&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A28992&VERSION=1.1.1&LAYERS=martijn%3Agemeentes2015&STYLES=&FORMAT=image%2Fpng&TRANSPARENT=TRUE&NOCACHE=true&QUERY_LAYERS=martijn%3Agemeentes2015&REQUEST=GetMap&BBOX=-26569.6,349532.8,318569.6,548229.76&WIDTH=1605&HEIGHT=924", "layer1"}
-        //,{"next url", "next layer"}
-        //,{"next url", "next layer"}
-        });
-    }*/
-    
-    // maak service in db, geen user pass: id = 1
-        // url: http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd
-    // maar service in db, wel user pass, groep admin: id = 2
-        // url; http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&
-
     private ActionBeanContext context;
     private ProxyActionBean ab;
-    private final String url;
-    private final String layer;
-
-  /*  public ProxyActionBeanTest(String url, String layer) {
-        this.url = url;
-        this.layer = layer;
-    }*/
 
     public ProxyActionBeanTest(){
-        this.url = null;
-        this.layer = null;
     }
-    
-    @Before
-    public void prepareAB() {
-        context = new ActionBeanContext();
-        ab = new ProxyActionBean();
-        ab.setContext(context);
-        ab.setUrl(url);
-    }
-
-    
-    
+        
     // test of beveiligde service met gebruiker met onvoldoende rechten geen user/pass heeft
-    
     @Test
     public void testSecureServiceNoRights() throws MalformedURLException{
         User geb = null;
@@ -101,10 +65,9 @@ public class ProxyActionBeanTest extends TestUtil {
     }
     
     // test of beveiligde service met gebruiker met onvoldoende rechten geen user/pass heeft
-    
     @Test
     public void testSecureServiceWrongRights() throws MalformedURLException{
-        User geb = entityManager.find(User.class, "pietje");;
+        User geb = entityManager.find(User.class, "pietje");
         String url = "http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&";
         context = new TestActionBeanContext(geb);
         ab = new ProxyActionBean();
@@ -139,7 +102,6 @@ public class ProxyActionBeanTest extends TestUtil {
     }
     
     // test of url van service uit db gebruikt wordt (en dus niet aangepast kan worden)
-       
     @Test
     public void testModifiedServiceUrl() throws MalformedURLException, URISyntaxException, UnsupportedEncodingException, IllegalAccessException{
         User geb = entityManager.find(User.class, "admin");
@@ -154,6 +116,5 @@ public class ProxyActionBeanTest extends TestUtil {
         URL u = ab.getRequestRL(entityManager);
         String real = u.toString();
         assertTrue(real.contains(originalUrl));
-        int a = 0;
     }
 }
