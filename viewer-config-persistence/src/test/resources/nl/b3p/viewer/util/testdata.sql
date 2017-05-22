@@ -209,6 +209,7 @@ INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabl
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('wms', 2, '2015-09-15 16:34:14.961', false, true, 'Groen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&', 'B3P', NULL, 'Inimage', false, NULL, 2, 3);
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('wms', 3, '2015-09-15 16:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map&', 'B3P', NULL, 'Inimage', false, NULL, 2, 9);
 
+insert into geo_service_readers (geo_service, role_name) values (2, 'admin');
 
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (1, 'false', 'useIntersect');
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (2, 'false', 'useProxy');

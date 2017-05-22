@@ -44,6 +44,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <geotools.version>16.2</geotools.version>
         <hsqldb.version>2.3.4</hsqldb.version>
+        <powermock.version>1.7.0RC2</powermock.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.0.0</postgresql.version>
         <apache.poi.version>3.15</apache.poi.version>
@@ -210,6 +211,18 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>2.7.22</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito2</artifactId>
+                <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -608,6 +621,9 @@
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                     <skipTests>${test.skip.integrationtests}</skipTests>
+                    <systemPropertyVariables>
+                        <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
