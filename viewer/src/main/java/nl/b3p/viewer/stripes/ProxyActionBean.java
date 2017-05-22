@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,18 +16,14 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +37,8 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
-import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -56,6 +50,7 @@ import org.stripesstuff.stripersist.Stripersist;
 /**
  *
  * @author Matthijs Laan
+ * @author Meine Toonen
  */
 @UrlBinding("/action/proxy/{mode}")
 @StrictBinding
