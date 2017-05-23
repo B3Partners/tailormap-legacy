@@ -28,6 +28,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.util.SelectedContentCache;
@@ -198,40 +199,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     public Resolution deleteApplication() {
         EntityManager em = Stripersist.getEntityManager();
         try {
-            if (applicationToDelete.isMashup()) {
-                applicationToDelete.setRoot(null);
-                em.remove(applicationToDelete);
-                em.getTransaction().commit();
-
-                getContext().getMessages().add(new SimpleMessage("Mashup is verwijderd"));
-            } else if (applicationToDelete.getVersion() == null) {
-                Date nowDate = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
-                sdf.applyPattern("HH-mm_dd-MM-yyyy");
-                String now = sdf.format(nowDate);
-                String uniqueVersion = ApplicationSettingsActionBean.findUniqueVersion(applicationToDelete.getName(), "B_" + now);
-                applicationToDelete.setVersion(uniqueVersion);
-                em.getTransaction().commit();
-            } else {
-                List<Application> mashups = applicationToDelete.getMashups(em);
-                if(!mashups.isEmpty()) {
-                    List<String> list = new ArrayList();
-                    for(Application mashup: mashups) {
-                        list.add(mashup.getNameWithVersion());
-                    }
-                    String mashupList = StringUtils.join(list, ", ");
-                    getContext().getValidationErrors().addGlobalError(new SimpleError("Deze applicatie kan niet verwijderd worden, omdat de boomstructuur wordt gebruikt in de mashups " + mashupList));
-                } else {
-
-                    em.remove(applicationToDelete);
-                    em.getTransaction().commit();
-
-                    getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
-                }
-            }
-            if (applicationToDelete.equals(application)) {
-                setApplication(null);
-            }
+            deleteApplication(em);
         } catch (Exception e) {
             log.error(String.format("Error deleting application #%d named %s",
                     applicationToDelete.getId(),
@@ -247,6 +215,51 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij verwijderen applicatie: " + ex));
         }
         return new ForwardResolution(EDITJSP);
+    }
+    
+    protected void deleteApplication(EntityManager em) {
+        if (applicationToDelete.isMashup()) {
+            applicationToDelete.setRoot(null);
+            Set<ConfiguredComponent> comps = applicationToDelete.getComponents();
+            for (ConfiguredComponent comp : comps) {
+                List<ConfiguredComponent> linked = comp.getLinkedComponents();
+                for (ConfiguredComponent cc : linked) {
+                    cc.setMotherComponent(null);
+                    em.persist(cc);
+                }
+            }
+            em.remove(applicationToDelete);
+            em.getTransaction().commit();
+
+            getContext().getMessages().add(new SimpleMessage("Mashup is verwijderd"));
+        } else if (applicationToDelete.getVersion() == null) {
+            Date nowDate = new Date(System.currentTimeMillis());
+            SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+            sdf.applyPattern("HH-mm_dd-MM-yyyy");
+            String now = sdf.format(nowDate);
+            String uniqueVersion = ApplicationSettingsActionBean.findUniqueVersion(applicationToDelete.getName(), "B_" + now);
+            applicationToDelete.setVersion(uniqueVersion);
+            em.getTransaction().commit();
+        } else {
+            List<Application> mashups = applicationToDelete.getMashups(em);
+            if (!mashups.isEmpty()) {
+                List<String> list = new ArrayList();
+                for (Application mashup : mashups) {
+                    list.add(mashup.getNameWithVersion());
+                }
+                String mashupList = StringUtils.join(list, ", ");
+                getContext().getValidationErrors().addGlobalError(new SimpleError("Deze applicatie kan niet verwijderd worden, omdat de boomstructuur wordt gebruikt in de mashups " + mashupList));
+            } else {
+
+                em.remove(applicationToDelete);
+                em.getTransaction().commit();
+
+                getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+            }
+        }
+        if (applicationToDelete.equals(application)) {
+            setApplication(null);
+        }
     }
 
     public Resolution getGridData() throws JSONException {

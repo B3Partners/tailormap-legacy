@@ -43,7 +43,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
         }
     }
 
-   @Test
+    @Test
     public void testMakeWorkVersionFromAppWithMashup() {
         initData(true);
         try {
@@ -103,6 +103,41 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
         }
     }
     
+   @Test
+    public void testDeleteMashupWithWorkversion() {
+        initData(false);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            ActionBeanContext context = new ActionBeanContext();
+            caab.setContext(context);
+
+           // Application a = entityManager.find(Application.class, applicationId);
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            entityManager.flush();
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(mashup, entityManager, version);
+
+            
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            entityManager.flush();
+               
+            caab = new ChooseApplicationActionBean();
+            Application a = entityManager.find(Application.class, mashup.getId());
+            caab.setApplicationToDelete(a);
+            caab.setContext(context);
+             caab.deleteApplication(entityManager);
+           // entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+    
     @Test
     public void testPublishWorkVersionFromMashup() {
         initData(true);
@@ -150,7 +185,6 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             assert (false);
         }
     }
-    
     
     @Test
     public void testMakeMashupFromAppWithWorkversion() {
