@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* Modified: 2014, Eddy Scheper, ARIS B.V.
- *           - A5 and A0 pagesizes added.
-*/
 package nl.b3p.viewer.stripes;
 
 import java.io.*;
@@ -27,9 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
@@ -38,9 +32,7 @@ import nl.b3p.viewer.print.Legend;
 import nl.b3p.viewer.print.PrintExtraInfo;
 import nl.b3p.viewer.print.PrintGenerator;
 import nl.b3p.viewer.print.PrintInfo;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
+import nl.b3p.viewer.print.PrintUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
@@ -55,30 +47,25 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Roy Braam
  * @author Meine Toonen
  * @author Eddy Scheper
+ * @author Mark Prins
  */
 @UrlBinding("/action/print")
 @StrictBinding
 public class PrintActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
     public static final String A5_Landscape = "A5_Landscape.xsl";
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
     public static final String A5_Portrait = "A5_Portrait.xsl";
     public static final String A4_Landscape = "A4_Landscape.xsl";
     public static final String A4_Portrait = "A4_Portrait.xsl";
     public static final String A3_Landscape = "A3_Landscape.xsl";
     public static final String A3_Portrait = "A3_Portrait.xsl";
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
     public static final String A0_Landscape = "A0_Landscape.xsl";
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
     public static final String A0_Portrait = "A0_Portrait.xsl";
     public static final String DEFAULT_TEMPLATE_PATH = "/WEB-INF/xsl/print/";
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
     public static final String A5 = "a5";
     public static final String A4 = "a4";
     public static final String A3 = "a3";
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
     public static final String A0 = "a0";
     public static final String LANDSCAPE = "landscape";
     public static final String PORTRAIT = "portrait";
@@ -98,7 +85,7 @@ public class PrintActionBean implements ActionBean {
         Application app = Stripersist.getEntityManager().find(Application.class, appId);
         
         //get the image url:
-        String imageUrl= getImageUrl(params);
+        String imageUrl = PrintUtil.getImageUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId());
         
         //get the form settings
         final PrintInfo info = new PrintInfo();
@@ -115,7 +102,7 @@ public class PrintActionBean implements ActionBean {
         }
         
         if (jRequest.has("overview")){
-            String url = getOverviewUrl(params);
+            String url = PrintUtil.getOverviewUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId());
             info.setOverviewUrl(url);
         }
         if (jRequest.has("extraTekst")){
@@ -264,64 +251,7 @@ public class PrintActionBean implements ActionBean {
         };
         return res;
     }    
-    
-    private String getOverviewUrl(String params) throws JSONException, Exception{
-        JSONObject info = new JSONObject(params);
-        info.remove("requests"); // Remove old requests, to replace them with overview-only parameters
-        info.remove("geometries");
-        info.remove("quality");
-        
-        JSONObject overview = info.getJSONObject("overview");
-        info.put("bbox", overview.get("extent"));
-        JSONArray reqs = new JSONArray();
-        
-        JSONObject image = new JSONObject();
-        image.put("protocol", overview.optString("protocol", CombineImageActionBean.WMS));
-        image.put("url", overview.get("overviewUrl"));
-        image.put("extent", overview.get("extent"));
-        reqs.put(image);
-        info.put("requests", reqs);
-               
-        String overviewUrl = getImageUrl(info.toString());
-        return overviewUrl;
-    }
-    /**
-     * Get the image url from the CombineImageAction
-     * @param param the json as string with params needed to create the image
-     * @return url to (combined)image.
-     */
-    private String getImageUrl(String param) throws Exception {   
-        
-        RedirectResolution cia = new RedirectResolution(CombineImageActionBean.class);
-        RedirectResolution pa = new RedirectResolution(PrintActionBean.class);
-        //cia.addParameter("params", param);
-        String url= context.getRequest().getRequestURL().toString();
-        url=url.replace(pa.getUrl(new Locale("NL")), cia.getUrl(new Locale("NL")));
-        
-        HttpClient client = new HttpClient();
-        PostMethod method = null;
-        try {
-            method = new PostMethod(url);
-            method.addParameter("params", param);
-            method.addParameter("JSESSIONID", context.getRequest().getSession().getId());
-            int statusCode=client.executeMethod(method);            
-            if (statusCode != HttpStatus.SC_OK) {
-                throw new Exception("Error connecting to server. HTTP status code: " + statusCode);
-            }
-            JSONObject response = new JSONObject(method.getResponseBodyAsString());
-            if (!response.getBoolean("success")){
-                throw new Exception("Error getting image: "+response.getString("error"));
-            }
-            return response.getString("imageUrl");
-            //return json;
-        } finally {
-            if (method!=null){
-                method.releaseConnection();
-            }
-        }
-    }
-    
-    // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
+
     private String getTemplateName(String pageFormat, String orientation) {
         if (A5.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A5_Landscape;
@@ -359,15 +289,6 @@ public class PrintActionBean implements ActionBean {
     }
     //</editor-fold>
 
-    private String printInfoToString(PrintInfo info) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(PrintInfo.class);
-        Marshaller m = context.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        StringWriter sw = new StringWriter();
-        m.marshal(info, sw);
-        String s=sw.toString();
-        return s;
-    }
 
     
 

@@ -138,6 +138,31 @@
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
     },
     {
+        "className": "viewer.components.FeatureReport",
+        "notInCombinationWith": [
+            "viewer.mapcomponents.FlamingoMap"
+        ],
+        "name": "FeatureReport",
+        "group": "Map",
+        "shortName": "FR",
+        "sources": [
+            "FeatureReportLayerIdUtil.js",
+            "FeatureReport.js"
+        ],
+        "configSource": [
+            "ConfigObject.js",
+            "SelectionWindowConfig.js",
+            "FeatureReportLayerIdUtil.js",
+            "FeatureReport-config.js"
+        ],
+        "singleton": true,
+        "restrictions": [
+            "content"
+        ],
+        "showHelp": true
+    },
+
+    {
         "className": "viewer.components.tools.Identify",
         "name": "Identify",
         "shortName": "Id",

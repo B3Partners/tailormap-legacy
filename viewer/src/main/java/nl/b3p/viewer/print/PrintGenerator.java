@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -77,7 +76,7 @@ public class PrintGenerator  implements Runnable{
         try {
             mailPrint();
         } catch (Exception ex) {
-            log.error("Cannot creat print.");
+            log.error("Cannot create print.", ex);
             try {
                 Mailer.sendMail(fromName, fromMail,toMail, "Fout bij printen", "De print kon niet worden gemaakt. De foutmelding is: " + ex.getLocalizedMessage());
             } catch (Exception ex1) {
@@ -175,10 +174,7 @@ public class PrintGenerator  implements Runnable{
             JAXBSource src = new JAXBSource(jc, info);
             
             if (log.isDebugEnabled()) {
-                JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
-                StringWriter sw = new StringWriter();
-                jaxbContext.createMarshaller().marshal(info, sw);
-                log.debug("Print XML:\n" + sw.toString());
+                log.debug("Print XML:\n" + PrintUtil.printInfoToString(info));
             }
             /* Setup xslt */
             Source xsltSrc = new StreamSource(xslIs);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* Modified: 2014, Eddy Scheper ARIS B.V.
- *           - Support for extra info added.
-*/
 package nl.b3p.viewer.print;
 
 /**
  *
  * @author Roy Braam
+ * @author Eddy Scheper, ARIS B.V.
+ * @author Mark Prins
  */
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
@@ -37,8 +36,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-// 2014, Eddy Scheper, ARIS B.V. - Added.
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -46,10 +43,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opengis.geometry.BoundingBox;
 
 @XmlRootElement(name="info")
-// 2014, Eddy Scheper, ARIS B.V. - Modified.
-@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle","overviewUrl","extra"})
+@XmlType(propOrder = {"title", "subtitle", "date", "imageUrl", "legendUrls", "bbox", "remark", "quality", "angle", "overviewUrl", "extra"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
     
@@ -105,6 +102,13 @@ public class PrintInfo {
 
     public void setBbox(String bbox) {
         this.bbox = bbox;
+    }
+
+    public void setBbox(BoundingBox extent) {
+        this.bbox = extent.getMinX()
+                + "," + extent.getMinY()
+                + "," + extent.getMaxX()
+                + "," + extent.getMaxY();
     }
 
     @XmlElement(name="remark")
@@ -201,8 +205,7 @@ public class PrintInfo {
                         lp.setHeight((int)dim.getHeight());
                         log.debug(String.format("Dimensions: %d x %d", lp.getWidth(), lp.getHeight()));
                     }
-                    
-                } catch(Exception e) {
+                } catch (IOException e) {
                     log.warn("Exception loading legend dimensions from URL " + lp.getUrl(), e);
                 } finally {
                     if(in != null) {
@@ -253,12 +256,12 @@ public class PrintInfo {
             try {
                 tempFile.delete();
                 log.debug("Temporary file deleted: " + tempFile.getCanonicalPath());
-            } catch(Exception e) {
+            } catch (IOException e) {
                 try {
                     log.error("Error deleting temporary file " + tempFile.getCanonicalPath(), e);
                 } catch(IOException ex) {
                 }
             }
         }
-    }    
+    }
 }

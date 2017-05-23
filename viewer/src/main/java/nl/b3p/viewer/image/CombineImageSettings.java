@@ -17,10 +17,8 @@
 package nl.b3p.viewer.image;
 
 import java.awt.Color;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -73,7 +71,7 @@ public class CombineImageSettings {
     private List<CombineImageUrl> getCalculatedUrls(List<CombineImageUrl> oldList){
         List<CombineImageUrl> returnValue=new ArrayList();
         if (bbox == null || width == null || height == null) {
-            //log.info("Not all settings set (width,height and bbox must be set to recalculate). Return original urls");
+            log.warn("Not all settings set (width,height and bbox must be set to recalculate). Return original urls");
             return oldList;
         }else if(oldList==null){
             return returnValue;
