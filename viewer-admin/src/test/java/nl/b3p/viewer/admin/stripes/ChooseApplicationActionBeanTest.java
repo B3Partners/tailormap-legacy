@@ -89,7 +89,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             String version = "werkversie";
             Application workVersion = caab.createWorkversion(mashup, entityManager, version);
 
-            //entityManager.getTransaction().begin();
+            entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();   
           
@@ -120,7 +120,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             
             String version = "werkversie";
             Application workVersion = caab.createWorkversion(mashup, entityManager, version);
-
+            entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             

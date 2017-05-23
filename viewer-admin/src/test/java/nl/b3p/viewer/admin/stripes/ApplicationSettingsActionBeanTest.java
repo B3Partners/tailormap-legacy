@@ -103,6 +103,7 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
             String version = "werkversie";
             Application workVersion = caab.createWorkversion(mashup, entityManager, version);
 
+            entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
            
