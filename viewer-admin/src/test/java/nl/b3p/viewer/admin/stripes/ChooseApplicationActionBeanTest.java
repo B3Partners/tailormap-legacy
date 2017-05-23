@@ -43,7 +43,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
         }
     }
 
-    @Test
+   @Test
     public void testMakeWorkVersionFromAppWithMashup() {
         initData(true);
         try {
@@ -89,15 +89,62 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             String version = "werkversie";
             Application workVersion = caab.createWorkversion(mashup, entityManager, version);
 
-            entityManager.getTransaction().begin();
+            //entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();   
           
             List origStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", app).getResultList();
             List workversionStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", workVersion).getResultList();
-            assertEquals(app.getRoot().getId(),workVersion.getRoot().getId());
+            assertEquals("Rootlevel should be the same ", app.getRoot().getId(),workVersion.getRoot().getId());
             assertEquals(origStartLayers.size(), workversionStartLayers.size());
-            int a = 0;
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+    
+    @Test
+    public void testPublishWorkVersionFromMashup() {
+        initData(true);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            ActionBeanContext context = new ActionBeanContext();
+            caab.setContext(context);
+            Long oldRootId = app.getRoot().getId();
+            List origAppStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", app).getResultList();
+            
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(mashup, entityManager, version);
+
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            workVersion.setVersion(null);
+            entityManager.persist(workVersion);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            ApplicationSettingsActionBean asab = new ApplicationSettingsActionBean();
+            asab.setContext(context);
+            asab.setApplication(workVersion);
+            asab.setMashupMustPointToPublishedVersion(true);
+            asab.publish(entityManager);
+            
+            assertEquals("Rootlevel should be the same ", oldRootId, workVersion.getRoot().getId());
+            assertEquals("Rootlevel of original should remain the same", oldRootId, app.getRoot().getId());
+            
+            List newAppStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", app).getResultList();
+            
+            assertEquals(origAppStartLayers.size(), newAppStartLayers.size());
+            
+            List workversionStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", workVersion).getResultList();
+            
+            assertEquals(app.getRoot().getId(),workVersion.getRoot().getId());
         } catch (Exception e) {
             log.error("Fout", e);
             assert (false);

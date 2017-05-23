@@ -413,23 +413,33 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     }
 
     Application createWorkversion(Application base, EntityManager em, String version) throws Exception {
-        Application copy = base.deepCopy();
-        copy.setVersion(version);
-        // don't save changes to original app and it's mashups
+        if (base.isMashup()) {
+             Application mashup = base.createMashup(version, em, true);
+             String appName = mashup.getName();
+             appName = appName.substring(0, appName.lastIndexOf("_" + version));
+             mashup.setName(appName);
+             mashup.setVersion(version);
+             em.persist(mashup);
+             return mashup;
+        } else {
+            Application copy = base.deepCopy();
+            copy.setVersion(version);
+            // don't save changes to original app and it's mashups
 
-        Set<Application> apps = base.getRoot().findApplications(em);
-        for (Application app : apps) {
-            em.detach(app);
+            Set<Application> apps = base.getRoot().findApplications(em);
+            for (Application app : apps) {
+                em.detach(app);
+            }
+
+            em.persist(copy);
+            em.persist(copy);
+            em.flush();
+            Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
+            copy.processBookmarks(prev, context, em);
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
+            em.getTransaction().commit();
+            return copy;
         }
-
-        em.persist(copy);
-        em.persist(copy);
-        em.flush();
-        Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
-        copy.processBookmarks(prev, context, em);
-        SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
-        em.getTransaction().commit();
-        return copy;
     }
 
     public Resolution saveDefaultApplication() throws JSONException {
