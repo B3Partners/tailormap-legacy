@@ -139,6 +139,11 @@ public class GeoServiceActionBean implements ActionBean {
     private WaitPageStatus status;
     private JSONObject newService;
     private JSONObject updatedService;
+    
+    private List<Group> allGroups;
+    
+    @Validate
+    private List<String> groupsRead = new ArrayList<String>();
 
     @Validate
     @ValidateNestedProperties({
@@ -161,10 +166,12 @@ public class GeoServiceActionBean implements ActionBean {
     private boolean updatable;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
+    @Override
     public ActionBeanContext getContext() {
         return context;
     }
 
+    @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -401,6 +408,21 @@ public class GeoServiceActionBean implements ActionBean {
         this.layersInApplications = layersInApplications;
     }
 
+    public List<Group> getAllGroups() {
+        return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
+    }
+
+    public List<String> getGroupsRead() {
+        return groupsRead;
+    }
+
+    public void setGroupsRead(List<String> groupsRead) {
+        this.groupsRead = groupsRead;
+    }
     //</editor-fold>
 
     private JSONArray layersInApplications = new JSONArray();
@@ -591,8 +613,12 @@ public class GeoServiceActionBean implements ActionBean {
             service.setPassword(password);
         }
 
-        Stripersist.getEntityManager().persist(service);
-        Stripersist.getEntityManager().getTransaction().commit();
+        service.getReaders().clear();
+        
+        service.getReaders().addAll(groupsRead);
+        
+        em.persist(service);
+        em.getTransaction().commit();
 
         getContext().getMessages().add(new SimpleMessage("De service is opgeslagen"));
 
@@ -662,9 +688,14 @@ public class GeoServiceActionBean implements ActionBean {
         }
     }
 
-    @Before
+    @After
     public void setUpdatable() {
+        EntityManager em = Stripersist.getEntityManager();
         updatable = service instanceof Updatable;
+        if(service != null){
+            groupsRead = new ArrayList(service.getReaders());
+        }
+        allGroups = em.createQuery("from Group").getResultList();        
     }
 
     public Resolution update() throws JSONException {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 B3Partners B.V.
+ * Copyright (C) 2011-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -48,8 +48,8 @@ public abstract class GeoService implements Serializable {
     public static final String DETAIL_USE_INTERSECT = "useIntersect";
     public static final String DETAIL_USE_PROXY = "useProxy";
 
-    /**
-     * HTTP Basic authentication username to use with pre-emptive
+    /** 
+    * HTTP Basic authentication username to use with pre-emptive
      * authentication.
      */
     public static final String PARAM_USERNAME = "username";
@@ -105,6 +105,11 @@ public abstract class GeoService implements Serializable {
     @JoinTable(inverseJoinColumns=@JoinColumn(name="style_library"))
     @OrderColumn(name="list_index")    
     private List<StyleLibrary> styleLibraries = new ArrayList();
+    
+    
+    @ElementCollection
+    @Column(name="role_name")
+    private Set<String> readers = new HashSet<String>();
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
@@ -209,7 +214,15 @@ public abstract class GeoService implements Serializable {
 
     public void setStyleLibraries(List<StyleLibrary> styleLibraries) {
         this.styleLibraries = styleLibraries;
-    }   
+    }
+
+    public Set<String> getReaders() {
+        return readers;
+    }
+
+    public void setReaders(Set<String> readers) {
+        this.readers = readers;
+    }
     //</editor-fold>
       
     @PreRemove
@@ -372,8 +385,7 @@ public abstract class GeoService implements Serializable {
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
-
-
+        o.put("readers",getReaders());
 
         if (details.containsKey(GeoService.DETAIL_USE_PROXY)) {
             ClobElement ce = details.get(GeoService.DETAIL_USE_PROXY);

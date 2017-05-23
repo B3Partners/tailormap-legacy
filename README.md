@@ -14,3 +14,4 @@ Check out the [wiki](https://github.com/flamingo-geocms/flamingo/wiki) for more 
 [![GitHub release](https://img.shields.io/github/release/flamingo-geocms/flamingo.svg?maxAge=2592000)]()
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/flamingo-geocms/flamingo.svg)](http://isitmaintained.com/project/flamingo-geocms/flamingo "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/flamingo-geocms/flamingo.svg)](http://isitmaintained.com/project/flamingo-geocms/flamingo "Percentage of issues still open")
+[![codecov](https://codecov.io/gh/flamingo-geocms/flamingo/branch/master/graph/badge.svg)](https://codecov.io/gh/flamingo-geocms/flamingo)

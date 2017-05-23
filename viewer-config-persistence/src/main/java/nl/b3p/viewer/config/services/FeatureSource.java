@@ -31,6 +31,8 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Function;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.sort.SortOrder;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -169,7 +171,7 @@ public abstract class FeatureSource {
             org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), notNull);
             q.setMaxFeatures(maxFeatures);
             q.setPropertyNames(new String[]{key, label});
-
+        
             SimpleFeatureIterator iterator = fs.getFeatures(q).features();
             try {
                 while (iterator.hasNext()) {
