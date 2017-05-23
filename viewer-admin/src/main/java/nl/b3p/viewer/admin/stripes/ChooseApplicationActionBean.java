@@ -414,13 +414,14 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
 
     Application createWorkversion(Application base, EntityManager em, String version) throws Exception {
         if (base.isMashup()) {
-             Application mashup = base.createMashup(version, em, true);
-             String appName = mashup.getName();
-             appName = appName.substring(0, appName.lastIndexOf("_" + version));
-             mashup.setName(appName);
-             mashup.setVersion(version);
-             em.persist(mashup);
-             return mashup;
+            Application mashup = base.createMashup(version, em, true);
+            String appName = mashup.getName();
+            appName = appName.substring(0, appName.lastIndexOf("_" + version));
+            mashup.setName(appName);
+            mashup.setVersion(version);
+            em.persist(mashup);
+            em.getTransaction().commit();
+            return mashup;
         } else {
             Application copy = base.deepCopy();
             copy.setVersion(version);
