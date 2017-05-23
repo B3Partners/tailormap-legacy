@@ -433,7 +433,6 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             }
 
             em.persist(copy);
-            em.persist(copy);
             em.flush();
             Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
             copy.processBookmarks(prev, context, em);
