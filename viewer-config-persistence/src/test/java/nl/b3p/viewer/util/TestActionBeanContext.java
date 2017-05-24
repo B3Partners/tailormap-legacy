@@ -1,18 +1,17 @@
+package nl.b3p.viewer.util;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.b3p.viewer.util;
 
-import java.util.HashSet;
-import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.mock.MockHttpServletRequest;
 import net.sourceforge.stripes.mock.MockHttpSession;
 import net.sourceforge.stripes.mock.MockServletContext;
-import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 
 /**

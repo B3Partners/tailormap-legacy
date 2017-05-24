@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.util.TestActionBeanContext;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -133,6 +134,23 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
              caab.deleteApplication(entityManager);
            // entityManager.getTransaction().commit();
         } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+    
+    @Test
+    public void testDeleteApplication(){
+        initData(false);
+        try{
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            TestActionBeanContext context = new TestActionBeanContext();
+            caab.setApplicationToDelete(app);
+            caab.setContext(context);
+             caab.deleteApplication(entityManager);
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+        }catch(Exception e){
             log.error("Fout", e);
             assert (false);
         }
