@@ -30,6 +30,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
 
         this.options.visibility = this.visible;
         this.options.singleTile=true;
+        this.options.serviceId = config.serviceId;
         this.options.transitionEffect = "resize";
         this.options.attribution = this.config.attribution;
         this.frameworkLayer = new OpenLayers.Layer.WMS(this.options.name,this.url,this.ogcParams,this.options);
@@ -54,6 +55,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
 
     getLayers : function(){
         return this.getFrameworkLayer().options.layers;
+    },
+
+    getStyles : function(){
+        return this.getFrameworkLayer().options.styles;
     },
     /**
      * Implementation of setUrl in Layer

@@ -824,7 +824,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var options={
             id: id,
             ratio: 1,
-            visible: appLayer.checked
+            visible: appLayer.checked,
+            serviceId : service.id
         };
         if(appLayer.details && appLayer.details.transparency != undefined) {
             options.alpha = 100-appLayer.details.transparency;
