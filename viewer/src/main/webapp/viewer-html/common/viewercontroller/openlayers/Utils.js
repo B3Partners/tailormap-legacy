@@ -347,7 +347,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
     }
 });
 
-function handleResponse(xy, request, url,layerNames) {
+function handleResponse(xy, request, url,layerNames,styleNames) {
     if(!this.cache ){
         this.cache = new Object();
     }
@@ -366,10 +366,11 @@ function handleResponse(xy, request, url,layerNames) {
     this.cache[url].features = this.cache[url].features.concat(features);
     for ( var i = 0 ; i < features.length ;i++){
         features[i].layerNames = layerNames;
+        features[i].styleNames = styleNames;
         features[i].url = url;
     }
     if (this.drillDown === false) {
-        this.triggerGetFeatureInfo(request, xy, features,layerNames);
+        this.triggerGetFeatureInfo(request, xy, features,layerNames,styleNames);
     } else {
         this._requestCount++;
         if (this.output === "object") {
@@ -382,7 +383,7 @@ function handleResponse(xy, request, url,layerNames) {
         //if (this._requestCount === this._numRequests) {
         if (request._headers.total === this.cache[url].counter) {
             this.cache[url].counter = 0;
-            this.triggerGetFeatureInfo(request, xy, this.cache[url].features, layerNames);
+            this.triggerGetFeatureInfo(request, xy, this.cache[url].features, layerNames,styleNames);
             delete this._features;
             delete this._requestCount;
             delete this.cache[url];
@@ -469,7 +470,9 @@ function buildWMSOptions(url, layers, clickPosition, format) {
     for (var i = 0, len = layers.length; i < len; i++) {
         if (layers[i].params.LAYERS != null) {
             layerNames = layerNames.concat(layers[i].params.LAYERS);
-            styleNames = styleNames.concat(this.getStyleNames(layers[i]));
+            if(this.getStyleNames(layers[i]) !== null && this.getStyleNames(layers[i]) !== ""){
+                styleNames = styleNames.concat(this.getStyleNames(layers[i]));
+            }
         }
     }
     var firstLayer = layers[0];
@@ -517,8 +520,9 @@ function buildWMSOptions(url, layers, clickPosition, format) {
         params: OpenLayers.Util.upperCaseObject(params),
         extra: layerNames,
         callback: function(request) {
-            this.handleResponse(clickPosition, request, url, layerNames);
+            this.handleResponse(clickPosition, request, url, layerNames,styleNames);
         },
+        proxy: OpenLayers.ProxyHost + "serviceId=" + firstLayer.serviceId + "&url=",
         scope: this
     };
 }
