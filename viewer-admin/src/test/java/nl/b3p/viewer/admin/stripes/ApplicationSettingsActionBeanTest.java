@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
@@ -75,4 +76,44 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
             fail();
         }
     }
+    
+       
+    
+    @Test
+    public void testMakeWorkVersionFromMashupApp() {
+        /*
+        Have a motherapplication
+        One mashup (no workversion)
+        Create workversion of mashup
+        Publish workversion and let all mashups point to the newly published application.
+        */
+        initData(true);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            ActionBeanContext context = new ActionBeanContext();
+            caab.setContext(context);
+            app.setVersion(null);
+            entityManager.persist(app);
+
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(mashup, entityManager, version);
+
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+           
+            instance.setApplication(workVersion);
+            instance.publish(entityManager);
+            int a = 0;
+        } catch (Exception e) {
+            log.error("Fout", e);
+            assert (false);
+        }
+    }
+    
 }

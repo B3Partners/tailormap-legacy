@@ -248,7 +248,15 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             for(ApplicationLayer al: l.getLayers()) {
                 StartLayer startLayer = al.getStartLayers().get(application);
                 if(shouldBeRemoved(al)){
-                    startLayer.setRemoved(true);
+                    if (startLayer == null) {
+                        startLayer = new StartLayer();
+                        startLayer.setApplication(application);
+                        startLayer.setApplicationLayer(al);
+                        startLayer.setRemoved(true);
+                        al.getStartLayers().put(application, startLayer);
+                    }else{
+                        startLayer.setRemoved(true);
+                    }
                 }else{
                     if(!wasNew && startLayer == null){
                         // if the startLevel was new, there is no startLayer. So if it wasn't new, and there isn't a startLayer, it means the startLayer was removed
@@ -474,7 +482,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                 for (ApplicationLayer layer : l.getLayers()) {
                     StartLayer startLayer = layer.getStartLayers().get(application);
-                    if(startLayer != null || !l.getStartLevels().containsKey(application)){ 
+                    if(startLayer != null || l.getStartLevels().containsKey(application)){ 
                         
                         if(startLayer != null && startLayer.isRemoved()){
                             continue;
