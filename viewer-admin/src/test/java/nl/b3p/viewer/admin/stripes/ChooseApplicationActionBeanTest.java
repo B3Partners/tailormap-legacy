@@ -14,6 +14,7 @@ import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -40,7 +41,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             log.error("Fout", e);
-            assert (false);
+            fail(e.getLocalizedMessage());
         }
     }
 
@@ -70,7 +71,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
           //  objectsToRemove.add(workVersion);
         } catch (Exception e) {
             log.error("Fout", e);
-            assert (false);
+            fail(e.getLocalizedMessage());
         }
     }
     
@@ -100,7 +101,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             assertEquals(origStartLayers.size(), workversionStartLayers.size());
         } catch (Exception e) {
             log.error("Fout", e);
-            assert (false);
+            fail(e.getLocalizedMessage());
         }
     }
     
@@ -117,7 +118,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().commit();
         }catch(Exception e){
             log.error("Fout", e);
-            assert (false);
+            fail(e.getLocalizedMessage());
         }
     }
     
@@ -165,7 +166,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             assertEquals(app.getRoot().getId(),workVersion.getRoot().getId());
         } catch (Exception e) {
             log.error("Fout", e);
-            assert (false);
+            fail(e.getLocalizedMessage());
         }
     }
     
@@ -196,7 +197,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
 
         } catch (Exception e) {
             log.error("Fout", e);
-            assert (false);
+            fail(e.getLocalizedMessage());
         }
     }
 
