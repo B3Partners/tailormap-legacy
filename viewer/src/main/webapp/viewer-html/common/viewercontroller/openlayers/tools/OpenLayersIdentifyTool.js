@@ -95,7 +95,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
                 
                 //set proxy for getFeatureInfoRequests:
-                OpenLayers.ProxyHost = FlamingoAppLoader.get('contextPath')+"/action/proxy/wms?url=";
+                OpenLayers.ProxyHost = FlamingoAppLoader.get('contextPath')+"/action/proxy/wms?";
             }
             if (this.active){
                 this.wmsGetFeatureInfoControl.activate();
@@ -231,10 +231,11 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
 
             var feature = evt.features[i];
             var layerName = feature.type ? feature.type : feature.layerNames;
-            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url, layerName);
+            var styleName = feature.styleNames;
+            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url, layerName, styleName);
             if (appLayer === null) {
                 // If appLayer is null, perhaps the OpenLayersWMSLayers has multiple layerNames in the layers parameter, so try it again with the layerNames
-                appLayer = this.getAppLayerByOpenLayersLayer(feature.url, feature.layerNames);
+                appLayer = this.getAppLayerByOpenLayersLayer(feature.url, feature.layerNames, styleName);
             }
             if (!featuresByLayer.hasOwnProperty(appLayer.id)) {
                 featuresByLayer[appLayer.id] = new Object();
@@ -266,7 +267,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             appLayer.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
         }
     },
-    getAppLayerByOpenLayersLayer : function(url, layerNames){
+    getAppLayerByOpenLayersLayer : function(url, layerNames, styles){
         var layers = this.map.layers;
         for (var i = 0; i < layers.length; i++) {
             var layer = layers[i];
@@ -277,14 +278,29 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                     array.push(mapLayers);
                     mapLayers = array;
                 }
-                if (mapLayers.length === layerNames.length){
+                var mapStyles = layer.getStyles();
+                if (!(mapStyles instanceof Array)){
+                    var array = [];
+                    array.push(mapStyles);
+                    mapStyles = array;
+                }
+                if (mapLayers.length === layerNames.length ){
                     var allFound = true;
                     for (var j = 0; j < layerNames.length; j++) {
                         var found=false;
                         for (var l=0; l < mapLayers.length; l++){
                             if (mapLayers[l]=== layerNames[j]) {
-                                found=true;
+                                if(styles !== null && styles.length !== 0 ){
+                                    // check if style exists. If it exists, it should be equals to the styles on the layer. 
+                                    // If it doesn't exist, we have the correct layer.
+                                    if( mapStyles[l] !== styles[j]){
+                                        continue;
+                                    }
+                                }
+
+                                found = true;
                                 break;
+
                             }
                         }
                         if (!found){
