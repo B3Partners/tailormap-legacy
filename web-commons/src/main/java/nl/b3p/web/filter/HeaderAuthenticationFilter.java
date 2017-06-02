@@ -30,6 +30,10 @@ import org.apache.commons.logging.LogFactory;
  * end users (the webserver MUST be configured correctly to avoid security
  * problems).
  * <p>
+ * <b>WARNING: only enable when all requests to authPath are proxied via a webserver
+ * which overwrites the client request header configured as userHeader! If you
+ * use mod_proxy_ajp, DISABLE access through the Tomcat HTTP connector!</b>
+ * <p>
  * Note that if you only want to use SAML authentication, you can use Apache
  * authentication by setting the tomcatAuthentication attribute on the AJP
  * Connector to false in server.xml, and for authorization either use Apache
@@ -172,6 +176,15 @@ public class HeaderAuthenticationFilter implements Filter {
      */
     public static final String PARAM_SAVE_EXTRA_HEADERS = "saveExtraHeaders";
 
+    /**
+     * Filter only works when this init-param is set to true, which must only be
+     * done when the client cannot send the userHeader - meaning the Tomcat
+     * HTTP connector must be disabled as all requests must go through Apache
+     * mod_proxy_ajp configured as above to clear this header and only sets it
+     * when properly authenticated.
+     */
+    public static final String PARAM_ENABLED = "iHaveSecuredMyServerAndDisabledTheTomcatHttpConnector";
+
     private static final String ATTR_RETURN_TO = HeaderAuthenticationFilter.class.getName() + ".RETURN_TO";
     private static final String ATTR_PRINCIPAL = HeaderAuthenticationFilter.class.getName() + ".PRINCIPAL";
     private static final String ATTR_EXTRA_HEADERS = HeaderAuthenticationFilter.class.getName() + ".EXTRA_HEADERS";
@@ -184,6 +197,7 @@ public class HeaderAuthenticationFilter implements Filter {
     private boolean useRolesNSuffix;
     private String commonRole;
     private String saveExtraHeaders;
+    private boolean enabled;
 
     public HeaderAuthenticationFilter() {
     }
@@ -192,6 +206,7 @@ public class HeaderAuthenticationFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
 
+        this.enabled = "true".equals(filterConfig.getInitParameter(PARAM_ENABLED));
         this.userHeader = ObjectUtils.firstNonNull(filterConfig.getInitParameter(PARAM_USER_HEADER), "MELLON_uid");
         this.authPath = ObjectUtils.firstNonNull(filterConfig.getInitParameter(PARAM_AUTH_PATH), "auth/saml");
         this.authInitPath = ObjectUtils.firstNonNull(filterConfig.getInitParameter(PARAM_AUTH_PATH), "auth/init");
@@ -221,6 +236,11 @@ public class HeaderAuthenticationFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         HttpServletResponse response = (HttpServletResponse)servletResponse;
         HttpSession session = request.getSession();
+
+        if(!enabled) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if(request.getUserPrincipal() != null) {
             // Do nothing when using tomcatAuthentication=false or authenticated
