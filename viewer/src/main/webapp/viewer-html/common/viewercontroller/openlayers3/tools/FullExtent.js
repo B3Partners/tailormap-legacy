@@ -12,7 +12,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.FullExtent",{
         this.initConfig(conf);
         this.conf = conf;
         conf.tool = "max-extent";
-        conf.class = "ol-zoom-MaxExtent";
+        conf.class = "olControlZoomToMaxExtent";
         conf.id = "max-extent";
         conf.actives = false;
         conf.onlyClick =true;

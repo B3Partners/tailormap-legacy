@@ -9,8 +9,8 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.StreetViewButton",{
     constructor : function(conf){
         this.initConfig(conf);
         this.conf = conf;
-        conf.id = "ol-DragPan";
-        conf.class = "ol-DragPan";
+        conf.id = conf.name;
+        conf.class = conf.displayClass;
         conf.onlyClick = false;
         conf.actives =false;
         this.mapComponent = conf.viewerController.mapComponent;

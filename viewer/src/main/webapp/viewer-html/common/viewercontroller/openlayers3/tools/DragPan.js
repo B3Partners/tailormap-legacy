@@ -12,7 +12,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.DragPan",{
         this.initConfig(conf);
         this.conf = conf;
         conf.id = "ol-DragPan";
-        conf.class = "ol-DragPan";
+        conf.class = "olControlDragPan";
         conf.onlyClick = false;
         conf.actives =false;
         this.mapComponent = conf.viewerController.mapComponent;

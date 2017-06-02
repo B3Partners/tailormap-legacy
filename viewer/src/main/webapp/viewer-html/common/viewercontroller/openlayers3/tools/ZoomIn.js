@@ -13,7 +13,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
         this.initConfig(conf);
         this.conf = conf;
         conf.tool = "zoom-in";
-        conf.class = "ol-zoom-in";
+        conf.class = "olControlZoomBox";
         conf.id = "ol-zoom-in";
         conf.actives = false;
         conf.onlyClick =false;
@@ -29,6 +29,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
         
         this.tempKey = this.mapComponent.maps[0].getFrameworkMap().on('click',function(evt){  
             var crd = evt.coordinate;
+            console.log(" hallo");
             this.mapComponent.maps[0].getFrameworkMap().getView().setCenter(crd);
             this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()+1);
         },this);
@@ -44,6 +45,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
     initTool : function(tool){
         tool.on('boxend',function(evt){
             var x = tool.getGeometry().getExtent();
+            console.log(" hallo box");
             var center = [(x[0]+x[2])/2,(x[1]+x[3])/2];
             this.mapComponent.maps[0].getFrameworkMap().getView().setCenter(center);
             this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()+1);

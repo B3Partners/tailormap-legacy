@@ -13,7 +13,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ToolButton",{
         var frameworkOptions ={};
         frameworkOptions.type=conf.type;
         conf.id = "loc";
-        conf.class = "ol-Identify";
+        conf.class = conf.displayClass;
         conf.onlyClick = true;
             
         if(conf.displayClass){

@@ -422,6 +422,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             
           //return t;
           conf.typ =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'LineString' : 'Polygon');
+          conf.class =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'olControlMeasure' : 'olControlMeasureArea');
           var t = new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.Measure(conf));
           return t;
         }else if(conf.type == viewer.viewercontroller.controller.Tool.BUTTON){

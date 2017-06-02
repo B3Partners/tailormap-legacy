@@ -23,7 +23,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
         this.overlay =[];
         this.pan = null;
         conf.id = "measure";
-        conf.class = "ol-Measure";
+        //conf.class = "olControlMeasure";
         conf.onlyClick = false;
         conf.actives =false;
         //console.log(conf);

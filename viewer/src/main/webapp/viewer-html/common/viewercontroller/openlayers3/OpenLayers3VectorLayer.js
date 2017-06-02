@@ -99,7 +99,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     getCurrtentStyle : function(){
-        var color = ol.color.asArray(this.colorPrefix+ this.style['strokecolor']);
+        var color = ol.color.asArray(this.colorPrefix+ this.style['fillcolor']);
         color = color.slice();
         color[3] = 0.2;
         var featureFill = new ol.style.Fill({
@@ -107,7 +107,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
             color:color
         });
         var featureStroke = new ol.style.Stroke({
-            color: this.colorPrefix+ this.style['strokecolor'],
+            color: this.colorPrefix+ this.style['fillcolor'],
             width: 3,
             opacity: 0.5
         });

@@ -11,7 +11,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomOutButton",{
         this.initConfig(conf);
         this.conf = conf;
         conf.tool = "zoom-out";
-        conf.class = "ol-zoom-out";
+        conf.class = "olControlZoomOut";
         conf.id = "ol-zoom-out";
         conf.active = false;
         conf.onlyClick =true;
