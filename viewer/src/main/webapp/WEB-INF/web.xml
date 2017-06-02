@@ -126,7 +126,11 @@
         <filter-class>nl.b3p.viewer.util.IPAuthenticationFilter</filter-class>
     </filter>
     <filter>
-        <!-- See JavaDoc for documentation -->
+        <!-- See JavaDoc for documentation.
+
+        Add the following link to login.jsp to enable SAML login:
+        <p>Klik <a href="${contextPath}/auth/init?returnTo=${contextPath}/app?name=${param['name']}&version=${param['version']}&debug=${param['debug']}">hier</a> om in te loggen met uw externe account.</p> 
+        -->
         <filter-name>HeaderAuthenticationFilter</filter-name>
         <filter-class>nl.b3p.web.filter.HeaderAuthenticationFilter</filter-class>
         <init-param>
