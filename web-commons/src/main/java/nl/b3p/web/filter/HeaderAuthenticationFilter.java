@@ -243,11 +243,17 @@ public class HeaderAuthenticationFilter implements Filter {
         }
 
         if(request.getUserPrincipal() != null) {
+            if(request.getRequestURI().equals(request.getContextPath() + "/" + authInitPath)) {
+                log.warn("Login requested but already authenticated by servlet container!");
+                session.invalidate();
+            }
+
             // Do nothing when using tomcatAuthentication=false or authenticated
             // by other means such as standard servlet login-config
-            if(log.isDebugEnabled()) {
-                log.debug("HeaderAuthenticationFilter: already authenticated as user " + request.getRemoteUser() + " (principal " + request.getUserPrincipal() + "), passing through");
+            if(log.isTraceEnabled()) {
+                log.trace("HeaderAuthenticationFilter: already authenticated as user " + request.getRemoteUser() + " (principal " + request.getUserPrincipal() + "), passing through " + request.getRequestURI());
             }
+
             chain.doFilter(request, servletResponse);
             return;
         }
@@ -256,7 +262,7 @@ public class HeaderAuthenticationFilter implements Filter {
             // Save the returnTo parameter or the Referer header, only accept
             // relative path for returnTo parameter
             String returnTo = request.getParameter("returnTo");
-            String msg = "";
+            String msg;
             if(returnTo == null || !returnTo.startsWith(request.getContextPath())) {
                 // Try Referer header
                 returnTo = request.getHeader("Referer");
@@ -267,7 +273,6 @@ public class HeaderAuthenticationFilter implements Filter {
                 }
             } else {
                 msg = ", redirecting to returnTo parameter after successful login: " + returnTo;
-
             }
             session.setAttribute(ATTR_RETURN_TO, returnTo);
 
