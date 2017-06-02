@@ -688,13 +688,18 @@ public class GeoServiceActionBean implements ActionBean {
         }
     }
 
-    @After
+    @Before
     public void setUpdatable() {
         EntityManager em = Stripersist.getEntityManager();
         updatable = service instanceof Updatable;
         if(service != null){
             groupsRead = new ArrayList(service.getReaders());
-        }
+        } 
+    }
+    
+    @After
+    public void makeLists(){
+        EntityManager em = Stripersist.getEntityManager();
         allGroups = em.createQuery("from Group").getResultList();        
     }
 
