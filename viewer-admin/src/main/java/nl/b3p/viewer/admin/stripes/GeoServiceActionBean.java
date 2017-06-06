@@ -846,6 +846,7 @@ public class GeoServiceActionBean implements ActionBean {
         }
 
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
+        service.getReaders().addAll(groupsRead);
 
         category = em.find(Category.class, category.getId());
         service.setCategory(category);
