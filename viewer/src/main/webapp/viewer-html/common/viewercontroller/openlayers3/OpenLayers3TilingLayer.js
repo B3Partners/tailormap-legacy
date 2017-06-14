@@ -59,6 +59,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             options.maxResolution = this.resolutions[0];
         }
         if (this.getProtocol()=="TMS"){
+            console.log('hallo');
             var t= this.url;
             //fix the url: example: "http://tilecache.kaartenbalie.nl/tilecache.cgi/1.0.0/osm/"
             
@@ -76,19 +77,23 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             //set TMS tiling options.
             options.serviceVersion= version;
             options.layername= layerName;
+            console.log(options); 
             var openbasiskaartSource = new ol.source.XYZ({
-            crossOrigin: 'anonymous',
+            crossOrigin: null,
             attributions: options.attribution,
-            projection: config.viewerController.mapComponent.mapOptions.projection,
+            maxZoom:15,
+            minZoom:1,
+            projection: "EPSG:28992",
             url: t+'/{z}/{x}/{-y}.png'
         });
         this.frameworkLayer = new ol.layer.Tile({
             source: openbasiskaartSource,
             opacity: options.opacity,
             extent: options.maxExtent,
-            maxResolution: options.maxResolution,
-            visible: options.visibility,
-            preload: 1
+            //maxResolution: options.maxResolution,
+            visible: options.visibility
+            
+            
         },options); 
         }else if (this.getProtocol()==="WMTS"){
             var convertRatio = 1/0.00028;
@@ -120,9 +125,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             source: source,
             opacity: options.opacity,
             extent: options.maxExtent,
-            maxResolution: options.maxResolution,
-            visible: options.visibility,
-            preload: 1
+            //maxResolution: options.maxResolution,
+            visible: options.visibility
+            
         });   
 
         }

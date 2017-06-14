@@ -23,13 +23,16 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
     },
 
     activate : function(){
+        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getMaxResolution());
+        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getResolution());
+        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getMinResolution());
+        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getZoom());
         var pinch = new ol.interaction.PinchZoom();
         this.conf.actives = true;
         this.frameworkObject.setActive(true);
         
         this.tempKey = this.mapComponent.maps[0].getFrameworkMap().on('click',function(evt){  
             var crd = evt.coordinate;
-            console.log(" hallo");
             this.mapComponent.maps[0].getFrameworkMap().getView().setCenter(crd);
             this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()+1);
         },this);
@@ -45,7 +48,6 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
     initTool : function(tool){
         tool.on('boxend',function(evt){
             var x = tool.getGeometry().getExtent();
-            console.log(" hallo box");
             var center = [(x[0]+x[2])/2,(x[1]+x[3])/2];
             this.mapComponent.maps[0].getFrameworkMap().getView().setCenter(center);
             this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()+1);

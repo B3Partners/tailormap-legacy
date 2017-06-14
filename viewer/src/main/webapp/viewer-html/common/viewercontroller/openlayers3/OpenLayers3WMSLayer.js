@@ -69,9 +69,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         var request=[{
             url: this.getFrameworkLayer().getSource().getGetFeatureInfoUrl(map.getView().getCenter(),map.getView().getResolution(), map.getView().getProjection())
         }];
-
+        console.log(request[0].url);
         return request;
-
     },
     
     setQuery : function (filter, sldHash, sessionId){

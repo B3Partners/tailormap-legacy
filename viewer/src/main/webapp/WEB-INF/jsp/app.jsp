@@ -101,6 +101,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${actionBean.viewerType == 'openlayers3'}">
                <link href="${contextPath}/viewer-html/common/openlayers3/theme/openlayers3.css" rel="stylesheet">  
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
+               
                <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
                <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
                <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/OpenLayers.js"></script>

@@ -96,6 +96,12 @@ div.olControlMousePosition{
     font-size: small !important;
 }
 
+.ol-mouse-position {
+    right: 10px !important;
+    font-size: small !important;
+    bottom: 10px;
+    display: block;
+}
 /*.olControlPanel .olControlb_bufferItemInactive{
     background-image: url("img/buffer_tool.png");
 }

@@ -17,11 +17,13 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.FullExtent",{
         conf.actives = false;
         conf.onlyClick =true;
         this.mapComponent = conf.viewerController.mapComponent;
-        this.frameworkObject = new ol.control.ZoomToExtent();
+        this.frameworkObject = new ol.control.ZoomToExtent({extent:[12000,304000,280000,620000]});
     },
 
     activate : function(){
-        var extent = this.mapComponent.maps[0].getFrameworkMap().getView().getProjection().getExtent();
+        //console.log(this.mapComponent.getMap().getExtent());
+        //var extent = this.mapComponent.maps[0].getFrameworkMap().getView().getProjection().getExtent();
+        var extent = this.mapComponent.getMap().getRestrictedExtent();
         this.mapComponent.maps[0].getFrameworkMap().getView().fit(extent,this.mapComponent.maps[0].getFrameworkMap().getSize());
     },
 

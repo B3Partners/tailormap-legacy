@@ -44,7 +44,8 @@ SOFTWARE.
 		
 		var options = opt_options || {};
                 
-
+                this.ownmap = options.ownmap ? options.ownmap : null;
+                
                 this.className_ = options.className ? options.className : 'ol-panzoom';
                 
                 this.pixelDelta_ = options.pixelDelta !== undefined ? options.pixelDelta : 128;
@@ -266,7 +267,13 @@ SOFTWARE.
         }else if(direction == 'north') {
             deltaY = mapUnitsDelta;
         }else if(direction == 'zoomMax'){
-            var extent = map.getView().getProjection().getExtent();
+            var extent = null;
+            if(this.ownmap){
+                extent = this.ownmap.getMap().getRestrictedExtent();
+            }
+            else{
+                extent = map.getView().getProjection().getExtent();
+            }
             map.getView().fit(extent,map.getSize());
             return;
         }else if(direction == 'zoomIn'){

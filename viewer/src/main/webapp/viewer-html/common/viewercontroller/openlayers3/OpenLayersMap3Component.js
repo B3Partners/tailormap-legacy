@@ -48,13 +48,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         var extentAr = [-285401.0,22598.0,595401.0,903401.0];
         var maxExtent = [7700,304000,280000,62000];
     
-        //Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
-        proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
+        //proj4.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
+        proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs ");
         //Proj4js.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
-        proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', proj4.defs('EPSG:28992'));
+        //proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', proj4.defs('EPSG:28992'));
+        //proj4('EPSG:28992');
 
-        //var projection = ol.proj.get('EPSG:28992');
-        var projection = new ol.proj.get('EPSG:28992');
+        var projection = ol.proj.get('EPSG:28992');
+       
         projection.setExtent(extentAr);
 
         //var extentAr = [7700,304000,280000,62000];
@@ -62,7 +63,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
           projection: projection,
           maxExtent: maxExtent,
           resolution: 512,
-          resolutions: resolutions
+          resolutions: resolutions,
+          extentAr: extentAr
         };
         
         var me =this;
@@ -310,6 +312,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
             var panZoomBar = new ol.control.panZoomBar({imgPath:"/openlayers/img/",
             slider:true,
+            ownmap:this,
             left:config.left,
             top:config.top});
             comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config,panZoomBar);
@@ -321,9 +324,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                 config.cssClass = "ol-mouse-position";
             }
             comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config, new ol.control.MousePosition({projection: config.projection,
-            //target:options.target,
+            target:options.target,
             undefinedHTML: 'outside',
-            coordinateFormat: ol.coordinate.createStringXY(2)}));
+            coordinateFormat: ol.coordinate.createStringXY(options.numDigits)}));
         } else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
             var frameworkOptions={};
             frameworkOptions.bottomOutUnits='';

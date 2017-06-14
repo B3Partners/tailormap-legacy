@@ -26,8 +26,8 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         this.width = 300;
         
         viewer.viewercontroller.openlayers3.components.OpenLayers3Overview.superclass.constructor.call(this, conf);
-        var map = this.frameworkMap = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
-        var view = map.getView();
+        var map = this.config.viewerController.mapComponent.getMap().frameworkMap;
+        this.map = map;
         if (Ext.isEmpty(this.config.url)) {
             throw new Error("No URL set for Overview component, unable to load component");
         }
@@ -49,19 +49,35 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         //var projection = ol.proj.get('EPSG:28992');
         var projection = new ol.proj.get('EPSG:28992');
         projection.setExtent(extentAr);
-
+        
+        
+        
         var layer  = new ol.layer.Tile({
             source: new ol.source.XYZ({
-              url:this.config.url,
-              projection:projection
+              url:this.config.url+'/{z}/{x}/{-y}.png',
+              projection:"EPSG:28992"
             })
           });
-
+        console.log(map.getView().calculateExtent());
         this.frameworkObject = new ol.control.OverviewMap({
-            layers:[layer]
+            
+            layers:[layer],
+            view: new ol.View({
+                projection: projection,
+                center: map.getView().getCenter(),
+                extent: conf.viewerController.mapComponent.mapOptions.maxExtent,
+                resolutions: map.getView().getResolutions()
+            })
         });
-        //map.addControl(this.frameworkObject);
-        
+        console.log(this.frameworkObject.getOverviewMap().getView().getCenter())
+        //this.frameworkObject.getOverviewMap().addInteraction(new ol.interaction.DragPan);
+        //this.frameworkObject.setMap(map);
+        //this.frameworkObject = new ol.control.OverviewMap();
+        map.addControl(this.frameworkObject);
+        map.on('click',function(){
+            console.log("main map"+this.map.getView().getCenter());
+            console.log(this.frameworkObject.getOverviewMap().getView().getCenter());
+        },this);
         return this;
     }
     

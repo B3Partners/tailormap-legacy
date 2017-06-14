@@ -11,6 +11,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
     layersLoading : null,
     utils:null,
     markerIcons:null,
+    restrictedExtent:null,
     /**
      * @constructor
      * @see viewer.viewercontroller.controller.Map#constructor
@@ -47,12 +48,12 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
             projection: config.projection,
             center: config.center,
             resolution: config.resolution,
-            minResolution:0.105,
-            maxResolution:3440.64,
             resolutions: config.resolutions,
             extent: config.restrictedExtent
         })
     });
+    
+        this.restrictedExtent = config.restrictedExtent;
         this.group = new ol.layer.Group();
         this.frameworkMap.setLayerGroup(this.group);
         
@@ -148,17 +149,11 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         if(this.markers[markerName]=== undefined){
         var positionFeature = new ol.Feature();
         positionFeature.setStyle(new ol.style.Style({
-            image: new ol.style.Circle({
-                radius: 10,
-                fill: new ol.style.Fill({
-                    color: '#3399CC'
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#fff',
-                    width: 4
-                })
+            image: new ol.style.Icon({
+                   src:this.markerIcons.default
             })
         }));
+        
         var center = [x,y];
         positionFeature.setGeometry(new ol.geom.Point(center));
         this.markers[markerName] = positionFeature;   
@@ -309,6 +304,9 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
         //var extent = this.getFrameworkMap().getView().getProjection().getExtent();
         var extent = this.getFrameworkMap().getView().calculateExtent(this.getFrameworkMap().getSize());
         return extent;
-    }
+    },
     
+    getRestrictedExtent : function(){
+        return this.restrictedExtent;
+    }
     });
