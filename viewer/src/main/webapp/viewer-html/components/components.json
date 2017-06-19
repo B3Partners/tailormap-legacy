@@ -146,13 +146,13 @@
         "group": "Map",
         "shortName": "FR",
         "sources": [
-            "FeatureReportLayerIdUtil.js",
+            "FeatureReportUtil.js",
             "FeatureReport.js"
         ],
         "configSource": [
             "ConfigObject.js",
             "SelectionWindowConfig.js",
-            "FeatureReportLayerIdUtil.js",
+            "FeatureReportUtil.js",
             "FeatureReport-config.js"
         ],
         "singleton": true,
