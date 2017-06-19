@@ -372,8 +372,10 @@ Ext.define ("viewer.components.Maptip",{
                         extraDiv.addCls("feature_callback_link");
                         for (var i = 0; i < this.extraLinkCallbacks.length; i++) {
                             var entry = this.extraLinkCallbacks[i];
-                            if (entry.appLayers && !Ext.Array.contains(entry.appLayers, appLayer)) {
-                                // looking at an unspecified appLayer, skip adding the link
+                            if (entry.appLayers && !((entry.appLayers).filter(function (l) {
+                                return l.id === appLayer.id;
+                            })).length > 0) {
+                                // console.debug("looking at an unspecified appLayer, skip adding the link");
                                 continue;
                             }
                             extraDiv.appendChild(this.createCallbackLink(entry, feature, appLayer, options.coord));
