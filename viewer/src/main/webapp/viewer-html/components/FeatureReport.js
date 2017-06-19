@@ -30,7 +30,7 @@ Ext.define("viewer.components.FeatureReport", {
     legendLayerList: null,
     activatedLayerList: null,
     subTitle: null,
-
+    mixins: ['viewer.components.FeatureReportUtil'],
 
     /**
      * @constructor
@@ -38,11 +38,9 @@ Ext.define("viewer.components.FeatureReport", {
     constructor: function (conf) {
         viewer.components.FeatureReport.superclass.constructor.call(this, conf);
 
-        FeatureReport__layersArrayIndexesToAppLayerIds(this.config);
-
+        this.layersArrayIndexesToAppLayerIds(this.config);
 
         var me = this;
-
         var requestParams = {};
         requestParams[this.config.restriction] = true;
         requestParams["appId"] = FlamingoAppLoader.get('appId');
@@ -67,14 +65,11 @@ Ext.define("viewer.components.FeatureReport", {
             params: requestParams,
             success: function (result, request) {
                 me.activatedLayerList = Ext.JSON.decode(result.responseText);
-                // console.debug('activatedLayerList', me.activatedLayerList);
+                console.debug('activatedLayerList', me.activatedLayerList);
 
                 // register with featureinfo components
                 var infoComponents = me.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
-
                 for (var i = 0; i < infoComponents.length; i++) {
-                    // console.debug('register feature info report with ', infoComponents[i]);
-
                     infoComponents[i].registerExtraLink(
                             me,
                             function (feature, appLayer) {
@@ -204,8 +199,20 @@ Ext.define("viewer.components.FeatureReport", {
         Ext.getCmp(this.name + 'formappLayer').setValue(appLayer.id);
         Ext.getCmp(this.name + 'formFid').setValue(feature.__fid);
 
-        // TODO something smart with square brackets maybe
-        this.subTitle = this.config.subTitle + ' feature id:' + feature.__fid;
+        // use the summary title of the featureinfo
+        if (appLayer.details['summary.title']) {
+            for (var key in feature) {
+                if (!feature.hasOwnProperty(key)) {
+                    continue;
+                }
+                var regex = new RegExp("\\[" + key + "\\]", "g");
+                var value = String(feature[key]);
+                value = appLayer.details['summary.title'].replace(regex, value);
+            }
+            this.subTitle = this.config.subTitle + ' ' + value;
+        } else {
+            this.subTitle = this.config.subTitle + ' feature id:' + feature.__fid;
+        }
 
         var mapvalues = this.getMapValues();
         var properties = this.getAllProperties("savePDF");
@@ -223,6 +230,7 @@ Ext.define("viewer.components.FeatureReport", {
 
     /**
      * Called when the PDF request can be submitted.
+     *
      * @param {Object} mapvalues an object containg data for the form to be posted to the printservice
      * @override
      */

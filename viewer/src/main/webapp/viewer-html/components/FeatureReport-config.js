@@ -21,6 +21,7 @@
  */
 Ext.define("viewer.components.CustomConfiguration", {
     extend: "viewer.components.SelectionWindowConfig",
+    mixins: ['viewer.components.FeatureReportUtil'],
 
     legendCheckBoxes: null,
     legendCheckPanel: null,
@@ -37,11 +38,10 @@ Ext.define("viewer.components.CustomConfiguration", {
         configObject.showPrintRtf = false;
 
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-
         this.form.add([
             {
                 xtype: 'textfield',
-                fieldLabel: 'Subtitel',
+                fieldLabel: 'Subtitel (wordt samengevoegd met featureinfo titel)',
                 name: 'subTitle',
                 value: this.configObject.subTitle = this.configObject.subTitle || "",
                 labelWidth: this.labelWidth
@@ -58,7 +58,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 boxLabel: "Neem de overzichtskaart op als de overzichtskaart aanwezig is"
             }]);
 
-        FeatureReport__layersArrayIndexesToAppLayerIds(this.configObject);
+        this.layersArrayIndexesToAppLayerIds(this.configObject);
 
         this.createCheckBoxes(this.configObject.reportLayers, {
             appId: this.getApplicationId(),
@@ -117,8 +117,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         }
         Ext.apply(config, this.getValuesFromContainer(this.form));
 
-        FeatureReport__appLayerIdToLayerIndex(config);
+        this.appLayerIdToLayerIndex(config);
         return config;
     }
-
 });

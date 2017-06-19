@@ -47,6 +47,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.visitor.BoundsVisitor;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.geometry.jts.JTS;
@@ -55,6 +56,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Expression;
 import org.opengis.geometry.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -79,11 +81,6 @@ public class FeatureReportActionBean implements ActionBean {
     @Validate
     private ApplicationLayer appLayer;
 
-//    /**
-//     * WKT of point clicked for featureinfo.
-//     */
-//    @Validate
-//    private String wktClicked;
     /**
      * feature id for report.
      */
@@ -95,21 +92,6 @@ public class FeatureReportActionBean implements ActionBean {
 //     */
 //    @Validate
 //    private String template;
-//    /**
-//     * overview json object.
-//     */
-//    @Validate
-//    private String overview;
-//    /**
-//     * view json object.
-//     */
-//    @Validate
-//    private String view;
-//    /**
-//     * legends json
-//     */
-//    @Validate
-//    private String legends;
     /**
      * printparams json
      */
@@ -133,8 +115,11 @@ public class FeatureReportActionBean implements ActionBean {
     }
 
     /**
-     * Create a PDF print for the given feature. This forwards to
-     * {@link PrintActionBean} after modifying the params object.
+     * Create a PDF print for the given feature. This method forwards to
+     * {@link PrintActionBean} after modifying the params object; modifications
+     * include setting a proper bbox for the selected object, add a highlighted
+     * version of the object as an overlay, add feature data and add releted
+     * feature data.
      *
      * @throws URISyntaxException if getting the image fails in the
      * printgenerator
@@ -186,9 +171,11 @@ public class FeatureReportActionBean implements ActionBean {
             q.setHandle("FeatureReportActionBean_attributes");
 
             FeatureToJson ftjson = new FeatureToJson(false, false, false, attributesToInclude);
-            JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, null, null);
-            // remove __fid and geometry from json and add to extra data
+            JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
+
+            // if there are more than one something is very wrong in datamodel or datasource
             JSONObject jFeat = features.getJSONObject(0);
+            // remove __fid and geometry from json and add to extra data
             jFeat.remove(FID);
             jFeat.remove(geomAttribute);
 
@@ -196,25 +183,38 @@ public class FeatureReportActionBean implements ActionBean {
             extra.put("className", "feature").put("componentName", "report").put("info", jFeat);
             params.getJSONArray("extra").put(extra);
 
-            // related
+            // related features
             if (layer.getFeatureType().hasRelations()) {
+                String label;
+                Filter filter;
+                Query relQ;
                 for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
-                    SimpleFeatureType f = rel.getForeignFeatureType();
-                    LOG.debug("related featuretype: " + f.getTypeName());
-                    List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
-                    LOG.debug(keys);
-                    JSONObject jRel = rel.toJSONObject();
-                    LOG.debug(jRel);
+                    if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
+
+                        SimpleFeatureType fType = rel.getForeignFeatureType();
+                        LOG.debug("related featuretype: " + fType.getTypeName());
+                        label = fType.getDescription() != null ? fType.getDescription() : fType.getTypeName();
+                        List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
+                        LOG.debug(keys);
+                        JSONObject jRel = rel.toJSONObject();
+                        LOG.debug(jRel);
+
+                        filter = ff.equals(Expression.NIL, Expression.NIL);
+
+                        // collect related feature attributes
+                        q = new Query(fType.getFeatureSource().getName());
+                        q.setFilter(filter);
+                        q.setMaxFeatures(10);
+                        q.setHandle("FeatureReportActionBean_related_attributes");
+
+                        features = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+
+                        extra = new JSONObject();
+                        extra.put("className", "related").put("componentName", label).put("info", features);
+                        params.getJSONArray("extra").put(extra);
+                    }
                 }
             }
-
-            extra = new JSONObject();
-            extra.put("className", "related").put("componentName", "report A" /*replace with related FT name*/).put("info", jFeat);
-            params.getJSONArray("extra").put(extra);
-
-            extra = new JSONObject();
-            extra.put("className", "related").put("componentName", "report B" /*replace with related FT name*/).put("info", jFeat);
-            params.getJSONArray("extra").put(extra);
 
             fs.getDataStore().dispose();
 
@@ -240,23 +240,11 @@ public class FeatureReportActionBean implements ActionBean {
         q.setMaxFeatures(1);
         q.setPropertyNames(new String[]{fs.getSchema().getGeometryDescriptor().getName().toString()});
 
-        // HACK
-        // we would like to use:
-        //    BoundingBox extent = feats.getBounds();
-        // but this fails for WFS because
-        // org.geotools.data.wfs.v1_0_0.WFSFeatureStore actually returns the bounds of the
-        // org.geotools.data.wfs.v1_0_0.FeatureSetDescription thus igoring the query
-        // so use a visitor instead (GT-WFS-NG may handle this better than the deprecated 
-        // and no longer used GT-WFS that this code was written for initially)
-        // SimpleFeatureCollection feats = (SimpleFeatureCollection) fs.getFeatures(q);
-        // BoundsVisitor bounds = new BoundsVisitor();
-        // feats.accepts(bounds, null);
-        // BoundingBox extent = bounds.getBounds();
-        BoundingBox extent = fs.getBounds(q);
-        // from the API: It is possible that this method will return null if the calculation 
-        // of bounds is judged to be too costly by the implementing class. In this case,
-        // you might call getFeatures(query).getBounds() instead.
-        LOG.debug("feature extent " + extent);
+        SimpleFeatureCollection feats = (SimpleFeatureCollection) fs.getFeatures(q);
+        BoundsVisitor bounds = new BoundsVisitor();
+        feats.accepts(bounds, null);
+        BoundingBox extent = bounds.getBounds();
+        LOG.debug("feature extent: " + extent);
 
 //        if (extent.getSpan(0) < 5 || extent.getSpan(1) < 5) {
 //            // enlarge the extent if smaller than the limit of 5 (meter) eg. a single point or line
@@ -334,44 +322,12 @@ public class FeatureReportActionBean implements ActionBean {
         this.printparams = printparams;
     }
 
-//    public String getWktClicked() {
-//        return wktClicked;
-//    }
-//
-//    public void setWktClicked(String wktClicked) {
-//        this.wktClicked = wktClicked;
-//    }
-//
 //    public String getTemplate() {
 //        return template;
 //    }
 //
 //    public void setTemplate(String template) {
 //        this.template = template;
-//    }
-//
-//    public String getOverview() {
-//        return overview;
-//    }
-//
-//    public void setOverview(String overview) {
-//        this.overview = overview;
-//    }
-//
-//    public String getView() {
-//        return view;
-//    }
-//
-//    public void setView(String view) {
-//        this.view = view;
-//    }
-//
-//    public String getLegends() {
-//        return legends;
-//    }
-//
-//    public void setLegends(String legends) {
-//        this.legends = legends;
 //    }
     //</editor-fold>
 }
