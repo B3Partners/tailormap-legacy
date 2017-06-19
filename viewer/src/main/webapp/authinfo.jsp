@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta http-equiv="refresh" content="2">
+        <%--meta http-equiv="refresh" content="2"--%>
         <title>Autorisatie info</title>
     </head>
     <body>
@@ -37,16 +37,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         Lijst met roles:
         <ol>
             <c:if test="${pageContext.request.userPrincipal != null}" >
-                <c:forEach var="r" items="${pageContext.request.userPrincipal.groups}">
-                    <li><c:out value="${r.name}"/></li>
-                </c:forEach>
+                <c:catch>
+                    <c:forEach var="r" items="${pageContext.request.userPrincipal.groups}">
+                        <li><c:out value="${r.name}"/></li>
+                    </c:forEach>
+                </c:catch>
+                <c:catch>
+                    <c:forEach var="r" items="${pageContext.request.userPrincipal.roles}">
+                        <li><c:out value="${r}"/></li>
+                    </c:forEach>
+                </c:catch>
             </c:if>
         </ol>
         <p>
         Test HttpServletRequest.isUserInRole():
         <p>
         <c:if test="${!empty param.role}">
-            Rol <b><c:out value="${param.role}"/>: <b><%= request.isUserInRole(request.getParameter("role")) %></b>
+            Rol <b><c:out value="${param.role}"/>: <%= request.isUserInRole(request.getParameter("role")) %></b>
             <p>
         </c:if>
         <form action="${pageContext.request.pathInfo}" method="get">
@@ -59,5 +66,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 document.forms[0].role.focus();
             }
         </script>
+
+        <p>Headers:</p>
+        <c:catch>
+            <table style="font-family: monospace">
+                <c:forEach var="h" items="${header}">
+                    <tr><td><c:out value="${h.key}"/></td><td><c:out value="${h.value}"/></td></tr>
+                </c:forEach>
+            </table>
+        </c:catch>   
+
+        <p>Request attributes: </p>
+        <table style="font-family: monospace">
+            <c:forEach var="a" items="${requestScope}">
+                <tr><td><c:out value="${a.key}"/></td><td><c:out value="${a.value}"/></td></tr>
+            </c:forEach>
+        </table>
+
+        <p>Page context: </p>
+        <table style="font-family: monospace">
+            <c:forEach var="a" items="${pageScope}">
+                <tr><td><c:out value="${a.key}"/></td><td><c:out value="${a.value}"/></td></tr>
+            </c:forEach>
+        </table>
     </body>
 </html>
