@@ -33,6 +33,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool",{
         conf.onlyClick = false;
         conf.actives =false;
 
+
         this.mapComponent = conf.viewerController.mapComponent;
         viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool.superclass.constructor.call(this,conf,this);
         this.map=this.config.viewerController.mapComponent.getMap();
