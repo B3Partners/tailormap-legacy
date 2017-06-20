@@ -83,7 +83,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
       this.drawBox.on('boxend', function(evt){
            var geom = evt.target.getGeometry();
            var feat = new ol.Feature({geometry: geom});
-           console.log(feat);
            this.source.addFeature(feat);
            this.drawBox.setActive(false);
        },this);

@@ -15,11 +15,11 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
     constructor : function(config){
         viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer.superclass.constructor.call(this, config);
         
-        if(!Ext.Array.contains(["TMS", "ArcGisRest","WMTS"], this.getProtocol())) {
+        if(!Ext.Array.contains(["TMS", "ArcGisRest","WMTS"/*,"OSM"*/], this.getProtocol())) {
             throw new Error("OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
         
-         this.mixins.openLayers3Layer.constructor.call(this,config);
+        this.mixins.openLayers3Layer.constructor.call(this,config);
          
         this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
         this.utils = Ext.create("viewer.viewercontroller.openlayers3.Utils");
@@ -59,7 +59,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             options.maxResolution = this.resolutions[0];
         }
         if (this.getProtocol()=="TMS"){
-            console.log('hallo');
             var t= this.url;
             //fix the url: example: "http://tilecache.kaartenbalie.nl/tilecache.cgi/1.0.0/osm/"
             
@@ -77,7 +76,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             //set TMS tiling options.
             options.serviceVersion= version;
             options.layername= layerName;
-            console.log(options); 
             var openbasiskaartSource = new ol.source.XYZ({
             crossOrigin: null,
             attributions: options.attribution,
@@ -130,6 +128,10 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
             
         });   
 
+        }else if (this.getProtocol() == 'OSM'){
+            this.frameworkLayer = new ol.layer.Tile({
+                source: new ol.source.OSM()
+            });
         }
     },
     

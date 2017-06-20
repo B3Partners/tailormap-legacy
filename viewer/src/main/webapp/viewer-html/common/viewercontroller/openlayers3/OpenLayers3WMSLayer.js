@@ -14,12 +14,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer.superclass.constructor.call(this,config);
         this.mixins.openLayers3Layer.constructor.call(this,config);
 
-        this.options.visibility = this.visible;
-        this.options.singleTile=true;
-        this.options.transitionEffect = "resize";
-        this.options.attribution = this.config.attribution;
+        
         var sources = new ol.source.TileWMS({
-            
+            attributions: this.config.attribution,
             url:config.options.url,
             projection: config.viewerController.mapComponent.mapOptions.projection,
             params :{ LAYERS: config.options.layers,
@@ -34,8 +31,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         });
         this.frameworkLayer = new ol.layer.Tile({
             source: sources,
-            visible: this.options.visibility,
-            preload:1
+            visible: this.visible
         });
         
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
@@ -69,7 +65,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         var request=[{
             url: this.getFrameworkLayer().getSource().getGetFeatureInfoUrl(map.getView().getCenter(),map.getView().getResolution(), map.getView().getProjection())
         }];
-        console.log(request[0].url);
         return request;
     },
     

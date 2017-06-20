@@ -23,10 +23,6 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
     },
 
     activate : function(){
-        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getMaxResolution());
-        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getResolution());
-        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getMinResolution());
-        console.log(this.conf.viewerController.mapComponent.getMap().frameworkMap.getView().getZoom());
         var pinch = new ol.interaction.PinchZoom();
         this.conf.actives = true;
         this.frameworkObject.setActive(true);

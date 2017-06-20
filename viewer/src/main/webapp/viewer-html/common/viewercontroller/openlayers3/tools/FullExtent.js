@@ -21,7 +21,6 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.FullExtent",{
     },
 
     activate : function(){
-        //console.log(this.mapComponent.getMap().getExtent());
         //var extent = this.mapComponent.maps[0].getFrameworkMap().getView().getProjection().getExtent();
         var extent = this.mapComponent.getMap().getRestrictedExtent();
         this.mapComponent.maps[0].getFrameworkMap().getView().fit(extent,this.mapComponent.maps[0].getFrameworkMap().getSize());

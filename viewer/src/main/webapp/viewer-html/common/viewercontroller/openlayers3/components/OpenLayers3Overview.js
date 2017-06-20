@@ -21,6 +21,7 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         rby: null,
         followZoom: null
     },
+    layer:null,
     constructor: function (conf) {
         this.height = 300;
         this.width = 300;
@@ -28,6 +29,7 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         viewer.viewercontroller.openlayers3.components.OpenLayers3Overview.superclass.constructor.call(this, conf);
         var map = this.config.viewerController.mapComponent.getMap().frameworkMap;
         this.map = map;
+        console.log(conf);
         if (Ext.isEmpty(this.config.url)) {
             throw new Error("No URL set for Overview component, unable to load component");
         }
@@ -44,40 +46,33 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
             bounds = maxBounds;
         }
         
-       var extentAr = [-285401.0,22598.0,595401.0,903401.0];
+        var extentAr = [-285401.0,22598.0,595401.0,903401.0];
             
-        //var projection = ol.proj.get('EPSG:28992');
         var projection = new ol.proj.get('EPSG:28992');
         projection.setExtent(extentAr);
         
         
         
-        var layer  = new ol.layer.Tile({
+        
+        this.layer  = new ol.layer.Tile({
             source: new ol.source.XYZ({
               url:this.config.url+'/{z}/{x}/{-y}.png',
               projection:"EPSG:28992"
             })
           });
-        console.log(map.getView().calculateExtent());
-        this.frameworkObject = new ol.control.OverviewMap({
-            
-            layers:[layer],
+      
+        this.frameworkObject = new ol.control.OverviewMap({  
+            layers:[this.layer],
             view: new ol.View({
                 projection: projection,
                 center: map.getView().getCenter(),
-                extent: conf.viewerController.mapComponent.mapOptions.maxExtent,
+                extent: bounds,
                 resolutions: map.getView().getResolutions()
             })
         });
-        console.log(this.frameworkObject.getOverviewMap().getView().getCenter())
-        //this.frameworkObject.getOverviewMap().addInteraction(new ol.interaction.DragPan);
-        //this.frameworkObject.setMap(map);
-        //this.frameworkObject = new ol.control.OverviewMap();
+
         map.addControl(this.frameworkObject);
-        map.on('click',function(){
-            console.log("main map"+this.map.getView().getCenter());
-            console.log(this.frameworkObject.getOverviewMap().getView().getCenter());
-        },this);
+
         return this;
     }
     

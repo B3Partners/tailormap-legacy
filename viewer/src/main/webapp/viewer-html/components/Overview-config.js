@@ -143,6 +143,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "followZoom",
                 fieldLabel: "Volg zoomen",
                 labelWidth:me.labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'WMTS',
+                name: 'LAYERTYPE_WMTS',
+                checked: me.config.type = 'WMTS',
+                labelWidth:me.labelWidth,
+                value: false
             },{ 
                 xtype:'container',
                 margin: 5,

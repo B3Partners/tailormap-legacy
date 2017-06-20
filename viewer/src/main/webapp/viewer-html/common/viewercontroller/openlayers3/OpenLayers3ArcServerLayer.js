@@ -23,11 +23,9 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",{
         this.frameworkLayer = new ol.layer.Tile({
             source:source,
             visible:config.visible,
-            opacity: this.config.opacity != undefined ? this.config.opacity : 1,
-            preload: 1
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1
           
         });
-        
         
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE;
     },

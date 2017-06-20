@@ -1,0 +1,1212 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007ff7b52587e0, pid=3879, tid=0x00007ff7b5d0f700
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_101-b13) (build 1.8.0_101-b13)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.101-b13 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# C  [libc.so.6+0x1557e0]
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007ff7ac009800):  JavaThread "main" [_thread_in_native, id=3883, stack(0x00007ff7b5c0f000,0x00007ff7b5d10000)]
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x00007ff79c01eb0b
+
+Registers:
+RAX=0x00007ff7ad421620, RBX=0x000000000000616d, RCX=0x00007ff7ad421620, RDX=0x000000000000616d
+RSP=0x00007ff7b5d0b278, RBP=0x00007ff7b5d0b2d0, RSI=0x00007ff79c0189ae, RDI=0x00007ff7ad421620
+R8 =0x00007ff7ac000088, R9 =0x0000000000000000, R10=0x00007ff7ad421610, R11=0x00007ff7ac000078
+R12=0x00007ff79c018980, R13=0x00007ff7ad41edd0, R14=0x0000000000006c69, R15=0x00007ff7ac56fe20
+RIP=0x00007ff7b52587e0, EFLAGS=0x0000000000010216, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007ff7b5d0b278)
+0x00007ff7b5d0b278:   00007ff7b2d54bb4 00007ff7ac00a488
+0x00007ff7b5d0b288:   4d2f690000000000 000000000000616d
+0x00007ff7b5d0b298:   0000000050737361 00007ff7ad41edd0
+0x00007ff7b5d0b2a8:   00007ff7ac5703e0 00007ff7ad0f6020
+0x00007ff7b5d0b2b8:   00007ff7ac56fe20 00000000ac186dbb
+0x00007ff7b5d0b2c8:   0000000000000037 00007ff7b5d0b330
+0x00007ff7b5d0b2d8:   00007ff7b2d5518f 00007ff7ac009800
+0x00007ff7b5d0b2e8:   01007ff7323f1230 00007ff7b5d0b350
+0x00007ff7b5d0b2f8:   00007ff7b5d0b388 00007ff7b5d0b386
+0x00007ff7b5d0b308:   00007ff7b5d0b350 0000000000000037
+0x00007ff7b5d0b318:   00007ff7ac0099f8 00007ff7b5d0b7a8
+0x00007ff7b5d0b328:   0000000000000001 00007ff7b5d0b790
+0x00007ff7b5d0b338:   00007ff7b2d46ec0 00007ff7ac008800
+0x00007ff7b5d0b348:   00007ff7ac56fe20 672f7033622f6c6e
+0x00007ff7b5d0b358:   2f736c6f6f746f65 762f7265746c6966
+0x00007ff7b5d0b368:   522f726f74697369 73694465766f6d65
+0x00007ff7b5d0b378:   696e5565636e6174 007373616c632e74
+0x00007ff7b5d0b388:   00007ff7b5d0b500 00007ff7ac0099f8
+0x00007ff7b5d0b398:   00007ff7b4803f60 00007ff7ac0071f0
+0x00007ff7b5d0b3a8:   00007ff7ac007200 00007ff7ac0075d8
+0x00007ff7b5d0b3b8:   00000000000003d8 0000000000000000
+0x00007ff7b5d0b3c8:   000000077210ada8 00000006c4defc60
+0x00007ff7b5d0b3d8:   00007ff7b5d0b9f0 00007ff7b5d0b400
+0x00007ff7b5d0b3e8:   00007ff7b5d0b4b8 00007ff7b5d0b4a8
+0x00007ff7b5d0b3f8:   00007ff700000000 746c694600000000
+0x00007ff7b5d0b408:   00007ff7b50101c0 64206e6f00000000
+0x00007ff7b5d0b418:   00007ff7b5d0b3c8 00007ff7b5d0b409
+0x00007ff7b5d0b428:   0000000800000002 00007ff700000000
+0x00007ff7b5d0b438:   00007ff700000000 00007ff7b506fa10
+0x00007ff7b5d0b448:   00007ff7b5b6b700 0000000000000000
+0x00007ff7b5d0b458:   00007ff70000003f 0000000000000000
+0x00007ff7b5d0b468:   00007ff70000003f 00007ff7b048e3d8 
+
+Instructions: (pc=0x00007ff7b52587e0)
+0x00007ff7b52587c0:   e1 0f 74 7c 48 8b 0d 2d da 26 00 4c 8d 1d fe f2
+0x00007ff7b52587d0:   03 00 4f 63 0c 8b 4f 8d 0c 0b 41 ff e1 0f 0b 90
+0x00007ff7b52587e0:   f3 0f 6f 44 16 f0 48 01 d6 4c 8d 44 17 f0 48 01
+0x00007ff7b52587f0:   d7 48 89 f9 48 83 e1 0f 48 31 cf 48 29 ca 48 29 
+
+Register to memory mapping:
+
+RAX=0x00007ff7ad421620 is an unknown value
+RBX=0x000000000000616d is an unknown value
+RCX=0x00007ff7ad421620 is an unknown value
+RDX=0x000000000000616d is an unknown value
+RSP=0x00007ff7b5d0b278 is pointing into the stack for thread: 0x00007ff7ac009800
+RBP=0x00007ff7b5d0b2d0 is pointing into the stack for thread: 0x00007ff7ac009800
+RSI=0x00007ff79c0189ae is an unknown value
+RDI=0x00007ff7ad421620 is an unknown value
+R8 =0x00007ff7ac000088 is an unknown value
+R9 =0x0000000000000000 is an unknown value
+R10=0x00007ff7ad421610 is an unknown value
+R11=0x00007ff7ac000078 is an unknown value
+R12=0x00007ff79c018980 is an unknown value
+R13=0x00007ff7ad41edd0 is an unknown value
+R14=0x0000000000006c69 is an unknown value
+R15=0x00007ff7ac56fe20 is an unknown value
+
+
+Stack: [0x00007ff7b5c0f000,0x00007ff7b5d10000],  sp=0x00007ff7b5d0b278,  free space=1008k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libc.so.6+0x1557e0]
+C  [libzip.so+0x1218f]  ZIP_GetEntry2+0xff
+C  [libzip.so+0x3ec0]  Java_java_util_zip_ZipFile_getEntry+0xf0
+J 190  java.util.zip.ZipFile.getEntry(J[BZ)J (0 bytes) @ 0x00007ff79d1737ce [0x00007ff79d173700+0xce]
+J 451 C2 java.util.zip.ZipFile.getEntry(Ljava/lang/String;)Ljava/util/zip/ZipEntry; (86 bytes) @ 0x00007ff79d2403bc [0x00007ff79d2400a0+0x31c]
+J 681 C2 sun.misc.URLClassPath$JarLoader.getResource(Ljava/lang/String;Z)Lsun/misc/Resource; (85 bytes) @ 0x00007ff79d2fb0c8 [0x00007ff79d2fb040+0x88]
+J 523 C2 sun.misc.URLClassPath.getResource(Ljava/lang/String;Z)Lsun/misc/Resource; (83 bytes) @ 0x00007ff79d29ee48 [0x00007ff79d29ecc0+0x188]
+J 418 C1 java.net.URLClassLoader$1.run()Ljava/lang/Class; (63 bytes) @ 0x00007ff79d21ce3c [0x00007ff79d21cc20+0x21c]
+J 417 C1 java.net.URLClassLoader$1.run()Ljava/lang/Object; (5 bytes) @ 0x00007ff79d21c50c [0x00007ff79d21c480+0x8c]
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68f6b6]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1056
+V  [libjvm.so+0x72851c]  JVM_DoPrivileged+0x27c
+J 416  java.security.AccessController.doPrivileged(Ljava/security/PrivilegedExceptionAction;Ljava/security/AccessControlContext;)Ljava/lang/Object; (0 bytes) @ 0x00007ff79d21c195 [0x00007ff79d21c0c0+0xd5]
+J 389 C1 java.net.URLClassLoader.findClass(Ljava/lang/String;)Ljava/lang/Class; (47 bytes) @ 0x00007ff79d20fb94 [0x00007ff79d20fa00+0x194]
+J 356 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (122 bytes) @ 0x00007ff79d1faf64 [0x00007ff79d1fa600+0x964]
+J 461 C1 sun.misc.Launcher$AppClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (85 bytes) @ 0x00007ff79d245fe4 [0x00007ff79d245640+0x9a4]
+J 460 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class; (7 bytes) @ 0x00007ff79d23ea04 [0x00007ff79d23e900+0x104]
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68f6b6]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1056
+V  [libjvm.so+0x68fbc1]  JavaCalls::call_virtual(JavaValue*, KlassHandle, Symbol*, Symbol*, JavaCallArguments*, Thread*)+0x321
+V  [libjvm.so+0x690016]  JavaCalls::call_virtual(JavaValue*, Handle, KlassHandle, Symbol*, Symbol*, Handle, Thread*)+0x56
+V  [libjvm.so+0xa3a560]  SystemDictionary::load_instance_class(Symbol*, Handle, Thread*)+0x3f0
+V  [libjvm.so+0xa394ac]  SystemDictionary::resolve_instance_class_or_null(Symbol*, Handle, Handle, Thread*)+0x7cc
+V  [libjvm.so+0xa3a983]  SystemDictionary::resolve_or_fail(Symbol*, Handle, Handle, bool, Thread*)+0x33
+V  [libjvm.so+0x4f2ed8]  ConstantPool::klass_at_impl(constantPoolHandle, int, Thread*)+0x158
+V  [libjvm.so+0x683c31]  InterpreterRuntime::_new(JavaThread*, ConstantPool*, int)+0x71
+j  nl.b3p.viewer.stripes.AttributesActionBean.setFilter(Lorg/geotools/data/Query;Lnl/b3p/viewer/config/services/SimpleFeatureType;Lnl/b3p/viewer/config/app/ApplicationLayer;)V+31
+j  nl.b3p.viewer.stripes.AttributesActionBean.executeStore()Lorg/json/JSONObject;+163
+j  nl.b3p.viewer.stripes.AttributesActionBeanTest.testGetJSONFeaturesRelatedFeaturetypeMain()V+79
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68f6b6]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1056
+V  [libjvm.so+0x99a4a7]  Reflection::invoke(instanceKlassHandle, methodHandle, Handle, bool, objArrayHandle, BasicType, objArrayHandle, bool, Thread*)+0x5d7
+V  [libjvm.so+0x99dbb7]  Reflection::invoke_method(oopDesc*, Handle, objArrayHandle, Thread*)+0x147
+V  [libjvm.so+0x71e2eb]  JVM_InvokeMethod+0x26b
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.InvokeMethod.evaluate()V+12
+j  org.junit.internal.runners.statements.RunBefores.evaluate()V+49
+j  org.junit.internal.runners.statements.RunAfters.evaluate()V+12
+j  org.junit.runners.ParentRunner.runLeaf(Lorg/junit/runners/model/Statement;Lorg/junit/runner/Description;Lorg/junit/runner/notification/RunNotifier;)V+17
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+30
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$3.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+44
+j  org.junit.runners.ParentRunner.access$000(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+20
+j  org.apache.maven.surefire.junit4.JUnit4Provider.execute(Ljava/lang/Class;Lorg/apache/maven/surefire/common/junit4/Notifier;Lorg/junit/runner/manipulation/Filter;)V+58
+j  org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(Ljava/lang/Class;Lorg/apache/maven/surefire/common/junit4/Notifier;)V+61
+j  org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(Ljava/lang/Class;Lorg/apache/maven/surefire/report/RunListener;Lorg/apache/maven/surefire/common/junit4/Notifier;)V+31
+j  org.apache.maven.surefire.junit4.JUnit4Provider.invoke(Ljava/lang/Object;)Lorg/apache/maven/surefire/suite/RunResult;+197
+j  org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(Ljava/lang/Object;Ljava/lang/Object;Lorg/apache/maven/surefire/booter/ProviderConfiguration;ZLorg/apache/maven/surefire/booter/StartupConfiguration;Z)Lorg/apache/maven/surefire/suite/RunResult;+19
+j  org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(Ljava/lang/Object;Lorg/apache/maven/surefire/booter/StartupConfiguration;Lorg/apache/maven/surefire/booter/ProviderConfiguration;Ljava/io/PrintStream;)Lorg/apache/maven/surefire/suite/RunResult;+14
+j  org.apache.maven.surefire.booter.ForkedBooter.main([Ljava/lang/String;)V+194
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68f6b6]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1056
+V  [libjvm.so+0x6d0d42]  jni_invoke_static(JNIEnv_*, JavaValue*, _jobject*, JNICallType, _jmethodID*, JNI_ArgumentPusher*, Thread*)+0x362
+V  [libjvm.so+0x6ed5aa]  jni_CallStaticVoidMethod+0x17a
+C  [libjli.so+0x7bdf]  JavaMain+0x81f
+C  [libpthread.so.0+0x76ba]  start_thread+0xca
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+J 190  java.util.zip.ZipFile.getEntry(J[BZ)J (0 bytes) @ 0x00007ff79d173758 [0x00007ff79d173700+0x58]
+J 451 C2 java.util.zip.ZipFile.getEntry(Ljava/lang/String;)Ljava/util/zip/ZipEntry; (86 bytes) @ 0x00007ff79d2403bc [0x00007ff79d2400a0+0x31c]
+J 681 C2 sun.misc.URLClassPath$JarLoader.getResource(Ljava/lang/String;Z)Lsun/misc/Resource; (85 bytes) @ 0x00007ff79d2fb0c8 [0x00007ff79d2fb040+0x88]
+J 523 C2 sun.misc.URLClassPath.getResource(Ljava/lang/String;Z)Lsun/misc/Resource; (83 bytes) @ 0x00007ff79d29ee48 [0x00007ff79d29ecc0+0x188]
+J 418 C1 java.net.URLClassLoader$1.run()Ljava/lang/Class; (63 bytes) @ 0x00007ff79d21ce3c [0x00007ff79d21cc20+0x21c]
+J 417 C1 java.net.URLClassLoader$1.run()Ljava/lang/Object; (5 bytes) @ 0x00007ff79d21c50c [0x00007ff79d21c480+0x8c]
+v  ~StubRoutines::call_stub
+J 416  java.security.AccessController.doPrivileged(Ljava/security/PrivilegedExceptionAction;Ljava/security/AccessControlContext;)Ljava/lang/Object; (0 bytes) @ 0x00007ff79d21c123 [0x00007ff79d21c0c0+0x63]
+J 389 C1 java.net.URLClassLoader.findClass(Ljava/lang/String;)Ljava/lang/Class; (47 bytes) @ 0x00007ff79d20fb94 [0x00007ff79d20fa00+0x194]
+J 356 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (122 bytes) @ 0x00007ff79d1faf64 [0x00007ff79d1fa600+0x964]
+J 461 C1 sun.misc.Launcher$AppClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (85 bytes) @ 0x00007ff79d245fe4 [0x00007ff79d245640+0x9a4]
+J 460 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class; (7 bytes) @ 0x00007ff79d23ea04 [0x00007ff79d23e900+0x104]
+v  ~StubRoutines::call_stub
+j  nl.b3p.viewer.stripes.AttributesActionBean.setFilter(Lorg/geotools/data/Query;Lnl/b3p/viewer/config/services/SimpleFeatureType;Lnl/b3p/viewer/config/app/ApplicationLayer;)V+31
+j  nl.b3p.viewer.stripes.AttributesActionBean.executeStore()Lorg/json/JSONObject;+163
+j  nl.b3p.viewer.stripes.AttributesActionBeanTest.testGetJSONFeaturesRelatedFeaturetypeMain()V+79
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  org.junit.runners.model.FrameworkMethod$1.runReflectiveCall()Ljava/lang/Object;+15
+j  org.junit.internal.runners.model.ReflectiveCallable.run()Ljava/lang/Object;+1
+j  org.junit.runners.model.FrameworkMethod.invokeExplosively(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+10
+j  org.junit.internal.runners.statements.InvokeMethod.evaluate()V+12
+j  org.junit.internal.runners.statements.RunBefores.evaluate()V+49
+j  org.junit.internal.runners.statements.RunAfters.evaluate()V+12
+j  org.junit.runners.ParentRunner.runLeaf(Lorg/junit/runners/model/Statement;Lorg/junit/runner/Description;Lorg/junit/runner/notification/RunNotifier;)V+17
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Lorg/junit/runners/model/FrameworkMethod;Lorg/junit/runner/notification/RunNotifier;)V+30
+j  org.junit.runners.BlockJUnit4ClassRunner.runChild(Ljava/lang/Object;Lorg/junit/runner/notification/RunNotifier;)V+6
+j  org.junit.runners.ParentRunner$3.run()V+12
+j  org.junit.runners.ParentRunner$1.schedule(Ljava/lang/Runnable;)V+1
+j  org.junit.runners.ParentRunner.runChildren(Lorg/junit/runner/notification/RunNotifier;)V+44
+j  org.junit.runners.ParentRunner.access$000(Lorg/junit/runners/ParentRunner;Lorg/junit/runner/notification/RunNotifier;)V+2
+j  org.junit.runners.ParentRunner$2.evaluate()V+8
+j  org.junit.runners.ParentRunner.run(Lorg/junit/runner/notification/RunNotifier;)V+20
+j  org.apache.maven.surefire.junit4.JUnit4Provider.execute(Ljava/lang/Class;Lorg/apache/maven/surefire/common/junit4/Notifier;Lorg/junit/runner/manipulation/Filter;)V+58
+j  org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(Ljava/lang/Class;Lorg/apache/maven/surefire/common/junit4/Notifier;)V+61
+j  org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(Ljava/lang/Class;Lorg/apache/maven/surefire/report/RunListener;Lorg/apache/maven/surefire/common/junit4/Notifier;)V+31
+j  org.apache.maven.surefire.junit4.JUnit4Provider.invoke(Ljava/lang/Object;)Lorg/apache/maven/surefire/suite/RunResult;+197
+j  org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(Ljava/lang/Object;Ljava/lang/Object;Lorg/apache/maven/surefire/booter/ProviderConfiguration;ZLorg/apache/maven/surefire/booter/StartupConfiguration;Z)Lorg/apache/maven/surefire/suite/RunResult;+19
+j  org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(Ljava/lang/Object;Lorg/apache/maven/surefire/booter/StartupConfiguration;Lorg/apache/maven/surefire/booter/ProviderConfiguration;Ljava/io/PrintStream;)Lorg/apache/maven/surefire/suite/RunResult;+14
+j  org.apache.maven.surefire.booter.ForkedBooter.main([Ljava/lang/String;)V+194
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007ff7ad3ba800 JavaThread "WeakCollectionCleaner" daemon [_thread_blocked, id=4195, stack(0x00007ff7717ea000,0x00007ff7718eb000)]
+  0x00007ff7ad368800 JavaThread "GT authority factory disposer" daemon [_thread_blocked, id=4176, stack(0x00007ff7716e9000,0x00007ff7717ea000)]
+  0x00007ff7ace0d800 JavaThread "Keep-Alive-Timer" daemon [_thread_blocked, id=3942, stack(0x00007ff7713b5000,0x00007ff7714b6000)]
+  0x00007ff7ac256000 JavaThread "surefire-forkedjvm-command-thread" daemon [_thread_in_native, id=3903, stack(0x00007ff77286a000,0x00007ff77296b000)]
+  0x00007ff7ac249800 JavaThread "last-ditch-daemon-shutdown-thread-30sec" daemon [_thread_blocked, id=3902, stack(0x00007ff77296b000,0x00007ff772a6c000)]
+  0x00007ff7ac212000 JavaThread "Service Thread" daemon [_thread_blocked, id=3900, stack(0x00007ff772b6d000,0x00007ff772c6e000)]
+  0x00007ff7ac20f800 JavaThread "C1 CompilerThread3" daemon [_thread_blocked, id=3899, stack(0x00007ff772c6e000,0x00007ff772d6f000)]
+  0x00007ff7ac20d800 JavaThread "C2 CompilerThread2" daemon [_thread_in_native, id=3898, stack(0x00007ff772d6f000,0x00007ff772e70000)]
+  0x00007ff7ac20b800 JavaThread "C2 CompilerThread1" daemon [_thread_in_native, id=3897, stack(0x00007ff772e70000,0x00007ff772f71000)]
+  0x00007ff7ac208800 JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=3896, stack(0x00007ff772f71000,0x00007ff773072000)]
+  0x00007ff7ac207800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=3895, stack(0x00007ff773072000,0x00007ff773173000)]
+  0x00007ff7ac1d3000 JavaThread "Finalizer" daemon [_thread_blocked, id=3894, stack(0x00007ff773452000,0x00007ff773553000)]
+  0x00007ff7ac1ce800 JavaThread "Reference Handler" daemon [_thread_blocked, id=3893, stack(0x00007ff773553000,0x00007ff773654000)]
+=>0x00007ff7ac009800 JavaThread "main" [_thread_in_native, id=3883, stack(0x00007ff7b5c0f000,0x00007ff7b5d10000)]
+
+Other Threads:
+  0x00007ff7ac1c7000 VMThread [stack: 0x00007ff773654000,0x00007ff773755000] [id=3892]
+  0x00007ff7ac215000 WatcherThread [stack: 0x00007ff772a6c000,0x00007ff772b6d000] [id=3901]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap:
+ PSYoungGen      total 265728K, used 108188K [0x000000076c400000, 0x0000000782280000, 0x00000007c0000000)
+  eden space 254976K, 38% used [0x000000076c400000,0x000000077232c370,0x000000077bd00000)
+  from space 10752K, 99% used [0x000000077bd00000,0x000000077c77b060,0x000000077c780000)
+  to   space 20992K, 0% used [0x0000000780e00000,0x0000000780e00000,0x0000000782280000)
+ ParOldGen       total 104960K, used 18908K [0x00000006c4c00000, 0x00000006cb280000, 0x000000076c400000)
+  object space 104960K, 18% used [0x00000006c4c00000,0x00000006c5e771f8,0x00000006cb280000)
+ Metaspace       used 30549K, capacity 30896K, committed 31232K, reserved 1077248K
+  class space    used 3890K, capacity 3980K, committed 4096K, reserved 1048576K
+
+Card table byte_map: [0x00007ff7b21a8000,0x00007ff7b2983000] byte_map_base: 0x00007ff7aeb82000
+
+Marking Bits: (ParMarkBitMap*) 0x00007ff7b50d4120
+ Begin Bits: [0x00007ff774260000, 0x00007ff778130000)
+ End Bits:   [0x00007ff778130000, 0x00007ff77c000000)
+
+Polling page: 0x00007ff7b5d35000
+
+CodeCache: size=245760Kb used=14109Kb max_used=14130Kb free=231650Kb
+ bounds [0x00007ff79d000000, 0x00007ff79dde0000, 0x00007ff7ac000000]
+ total_blobs=4038 nmethods=3531 adapters=419
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 8,841 Thread 0x00007ff7ac20f800 3823       2       java.lang.Package::<init> (56 bytes)
+Event: 8,841 Thread 0x00007ff7ac20f800 nmethod 3823 0x00007ff79ddcbe10 code [0x00007ff79ddcbf60, 0x00007ff79ddcc190]
+Event: 8,850 Thread 0x00007ff7ac20d800 nmethod 3687 0x00007ff79ddd2290 code [0x00007ff79ddd2760, 0x00007ff79ddd5a50]
+Event: 8,851 Thread 0x00007ff7ac20d800 3781       4       org.eclipse.emf.common.notify.impl.BasicNotifierImpl::eNotify (44 bytes)
+Event: 8,853 Thread 0x00007ff7ac20d800 nmethod 3781 0x00007ff79ddcef90 code [0x00007ff79ddcf100, 0x00007ff79ddcf2c8]
+Event: 8,853 Thread 0x00007ff7ac20d800 3786       4       org.eclipse.xsd.impl.XSDSchemaImpl::resolveSchema (244 bytes)
+Event: 8,860 Thread 0x00007ff7ac20f800 3824       2       java.lang.Character::isSurrogate (18 bytes)
+Event: 8,860 Thread 0x00007ff7ac20f800 nmethod 3824 0x00007ff79ddcec90 code [0x00007ff79ddcede0, 0x00007ff79ddcef30]
+Event: 8,860 Thread 0x00007ff7ac20f800 3825       2       java.util.regex.Pattern::isSupplementary (20 bytes)
+Event: 8,860 Thread 0x00007ff7ac20f800 nmethod 3825 0x00007ff79ddce950 code [0x00007ff79ddceaa0, 0x00007ff79ddcec30]
+
+GC Heap History (10 events):
+Event: 2,164 GC heap before
+{Heap before GC invocations=2 (full 0):
+ PSYoungGen      total 75264K, used 69915K [0x000000076c400000, 0x0000000775700000, 0x00000007c0000000)
+  eden space 64512K, 100% used [0x000000076c400000,0x0000000770300000,0x0000000770300000)
+  from space 10752K, 50% used [0x0000000770300000,0x0000000770846d98,0x0000000770d80000)
+  to   space 10752K, 0% used [0x0000000774c80000,0x0000000774c80000,0x0000000775700000)
+ ParOldGen       total 172032K, used 80K [0x00000006c4c00000, 0x00000006cf400000, 0x000000076c400000)
+  object space 172032K, 0% used [0x00000006c4c00000,0x00000006c4c14028,0x00000006cf400000)
+ Metaspace       used 19372K, capacity 19562K, committed 19968K, reserved 1067008K
+  class space    used 2415K, capacity 2491K, committed 2560K, reserved 1048576K
+Event: 2,199 GC heap after
+Heap after GC invocations=2 (full 0):
+ PSYoungGen      total 139776K, used 10751K [0x000000076c400000, 0x0000000775700000, 0x00000007c0000000)
+  eden space 129024K, 0% used [0x000000076c400000,0x000000076c400000,0x0000000774200000)
+  from space 10752K, 99% used [0x0000000774c80000,0x00000007756ffce0,0x0000000775700000)
+  to   space 10752K, 0% used [0x0000000774200000,0x0000000774200000,0x0000000774c80000)
+ ParOldGen       total 172032K, used 4433K [0x00000006c4c00000, 0x00000006cf400000, 0x000000076c400000)
+  object space 172032K, 2% used [0x00000006c4c00000,0x00000006c50546b0,0x00000006cf400000)
+ Metaspace       used 19372K, capacity 19562K, committed 19968K, reserved 1067008K
+  class space    used 2415K, capacity 2491K, committed 2560K, reserved 1048576K
+}
+Event: 2,594 GC heap before
+{Heap before GC invocations=3 (full 0):
+ PSYoungGen      total 139776K, used 24022K [0x000000076c400000, 0x0000000775700000, 0x00000007c0000000)
+  eden space 129024K, 10% used [0x000000076c400000,0x000000076d0f5e80,0x0000000774200000)
+  from space 10752K, 99% used [0x0000000774c80000,0x00000007756ffce0,0x0000000775700000)
+  to   space 10752K, 0% used [0x0000000774200000,0x0000000774200000,0x0000000774c80000)
+ ParOldGen       total 172032K, used 4433K [0x00000006c4c00000, 0x00000006cf400000, 0x000000076c400000)
+  object space 172032K, 2% used [0x00000006c4c00000,0x00000006c50546b0,0x00000006cf400000)
+ Metaspace       used 20872K, capacity 21034K, committed 21248K, reserved 1067008K
+  class space    used 2685K, capacity 2747K, committed 2816K, reserved 1048576K
+Event: 2,644 GC heap after
+Heap after GC invocations=3 (full 0):
+ PSYoungGen      total 139776K, used 10734K [0x000000076c400000, 0x000000077d500000, 0x00000007c0000000)
+  eden space 129024K, 0% used [0x000000076c400000,0x000000076c400000,0x0000000774200000)
+  from space 10752K, 99% used [0x0000000774200000,0x0000000774c7bb28,0x0000000774c80000)
+  to   space 10752K, 0% used [0x000000077ca80000,0x000000077ca80000,0x000000077d500000)
+ ParOldGen       total 172032K, used 5174K [0x00000006c4c00000, 0x00000006cf400000, 0x000000076c400000)
+  object space 172032K, 3% used [0x00000006c4c00000,0x00000006c510dad8,0x00000006cf400000)
+ Metaspace       used 20872K, capacity 21034K, committed 21248K, reserved 1067008K
+  class space    used 2685K, capacity 2747K, committed 2816K, reserved 1048576K
+}
+Event: 2,644 GC heap before
+{Heap before GC invocations=4 (full 1):
+ PSYoungGen      total 139776K, used 10734K [0x000000076c400000, 0x000000077d500000, 0x00000007c0000000)
+  eden space 129024K, 0% used [0x000000076c400000,0x000000076c400000,0x0000000774200000)
+  from space 10752K, 99% used [0x0000000774200000,0x0000000774c7bb28,0x0000000774c80000)
+  to   space 10752K, 0% used [0x000000077ca80000,0x000000077ca80000,0x000000077d500000)
+ ParOldGen       total 172032K, used 5174K [0x00000006c4c00000, 0x00000006cf400000, 0x000000076c400000)
+  object space 172032K, 3% used [0x00000006c4c00000,0x00000006c510dad8,0x00000006cf400000)
+ Metaspace       used 20872K, capacity 21034K, committed 21248K, reserved 1067008K
+  class space    used 2685K, capacity 2747K, committed 2816K, reserved 1048576K
+Event: 2,720 GC heap after
+Heap after GC invocations=4 (full 1):
+ PSYoungGen      total 139776K, used 0K [0x000000076c400000, 0x000000077d500000, 0x00000007c0000000)
+  eden space 129024K, 0% used [0x000000076c400000,0x000000076c400000,0x0000000774200000)
+  from space 10752K, 0% used [0x0000000774200000,0x0000000774200000,0x0000000774c80000)
+  to   space 10752K, 0% used [0x000000077ca80000,0x000000077ca80000,0x000000077d500000)
+ ParOldGen       total 104960K, used 11233K [0x00000006c4c00000, 0x00000006cb280000, 0x000000076c400000)
+  object space 104960K, 10% used [0x00000006c4c00000,0x00000006c56f8448,0x00000006cb280000)
+ Metaspace       used 20872K, capacity 21034K, committed 21248K, reserved 1067008K
+  class space    used 2685K, capacity 2747K, committed 2816K, reserved 1048576K
+}
+Event: 4,522 GC heap before
+{Heap before GC invocations=5 (full 1):
+ PSYoungGen      total 139776K, used 129024K [0x000000076c400000, 0x000000077d500000, 0x00000007c0000000)
+  eden space 129024K, 100% used [0x000000076c400000,0x0000000774200000,0x0000000774200000)
+  from space 10752K, 0% used [0x0000000774200000,0x0000000774200000,0x0000000774c80000)
+  to   space 10752K, 0% used [0x000000077ca80000,0x000000077ca80000,0x000000077d500000)
+ ParOldGen       total 104960K, used 11233K [0x00000006c4c00000, 0x00000006cb280000, 0x000000076c400000)
+  object space 104960K, 10% used [0x00000006c4c00000,0x00000006c56f8448,0x00000006cb280000)
+ Metaspace       used 22452K, capacity 22588K, committed 22912K, reserved 1069056K
+  class space    used 2833K, capacity 2878K, committed 2944K, reserved 1048576K
+Event: 4,545 GC heap after
+Heap after GC invocations=5 (full 1):
+ PSYoungGen      total 212480K, used 7335K [0x000000076c400000, 0x000000077d200000, 0x00000007c0000000)
+  eden space 204800K, 0% used [0x000000076c400000,0x000000076c400000,0x0000000778c00000)
+  from space 7680K, 95% used [0x000000077ca80000,0x000000077d1a9ce0,0x000000077d200000)
+  to   space 10752K, 0% used [0x000000077bd00000,0x000000077bd00000,0x000000077c780000)
+ ParOldGen       total 104960K, used 11241K [0x00000006c4c00000, 0x00000006cb280000, 0x000000076c400000)
+  object space 104960K, 10% used [0x00000006c4c00000,0x00000006c56fa448,0x00000006cb280000)
+ Metaspace       used 22452K, capacity 22588K, committed 22912K, reserved 1069056K
+  class space    used 2833K, capacity 2878K, committed 2944K, reserved 1048576K
+}
+Event: 7,323 GC heap before
+{Heap before GC invocations=6 (full 1):
+ PSYoungGen      total 212480K, used 212135K [0x000000076c400000, 0x000000077d200000, 0x00000007c0000000)
+  eden space 204800K, 100% used [0x000000076c400000,0x0000000778c00000,0x0000000778c00000)
+  from space 7680K, 95% used [0x000000077ca80000,0x000000077d1a9ce0,0x000000077d200000)
+  to   space 10752K, 0% used [0x000000077bd00000,0x000000077bd00000,0x000000077c780000)
+ ParOldGen       total 104960K, used 11241K [0x00000006c4c00000, 0x00000006cb280000, 0x000000076c400000)
+  object space 104960K, 10% used [0x00000006c4c00000,0x00000006c56fa448,0x00000006cb280000)
+ Metaspace       used 28475K, capacity 28810K, committed 29184K, reserved 1075200K
+  class space    used 3679K, capacity 3755K, committed 3840K, reserved 1048576K
+Event: 7,368 GC heap after
+Heap after GC invocations=6 (full 1):
+ PSYoungGen      total 265728K, used 10732K [0x000000076c400000, 0x0000000782280000, 0x00000007c0000000)
+  eden space 254976K, 0% used [0x000000076c400000,0x000000076c400000,0x000000077bd00000)
+  from space 10752K, 99% used [0x000000077bd00000,0x000000077c77b060,0x000000077c780000)
+  to   space 20992K, 0% used [0x0000000780e00000,0x0000000780e00000,0x0000000782280000)
+ ParOldGen       total 104960K, used 18908K [0x00000006c4c00000, 0x00000006cb280000, 0x000000076c400000)
+  object space 104960K, 18% used [0x00000006c4c00000,0x00000006c5e771f8,0x00000006cb280000)
+ Metaspace       used 28475K, capacity 28810K, committed 29184K, reserved 1075200K
+  class space    used 3679K, capacity 3755K, committed 3840K, reserved 1048576K
+}
+
+Deoptimization events (10 events):
+Event: 8,650 Thread 0x00007ff7ac009800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007ff79db418bc method=java.util.TimSort.sort([Ljava/lang/Object;IILjava/util/Comparator;[Ljava/lang/Object;II)V @ 53
+Event: 8,653 Thread 0x00007ff7ac009800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007ff79db41c94 method=java.util.TimSort.sort([Ljava/lang/Object;IILjava/util/Comparator;[Ljava/lang/Object;II)V @ 53
+Event: 8,707 Thread 0x00007ff7ac009800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007ff79dadbb74 method=org.eclipse.xsd.impl.XSDFeatureImpl.analyze()Z @ 73
+Event: 8,712 Thread 0x00007ff7ac009800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007ff79dadbb74 method=org.eclipse.xsd.impl.XSDFeatureImpl.analyze()Z @ 73
+Event: 8,736 Thread 0x00007ff7ac009800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007ff79dadbb74 method=org.eclipse.xsd.impl.XSDFeatureImpl.analyze()Z @ 73
+Event: 8,753 Thread 0x00007ff7ac009800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007ff79d679e0c method=org.eclipse.emf.common.notify.impl.BasicNotifierImpl.eNotify(Lorg/eclipse/emf/common/notify/Notification;)V @ 10
+Event: 8,765 Thread 0x00007ff7ac009800 Uncommon trap: reason=null_check action=make_not_entrant pc=0x00007ff79dd63440 method=org.eclipse.xsd.impl.XSDSchemaImpl.resolveNamedComponent(Lorg/eclipse/emf/ecore/EReference;Ljava/lang/String;Ljava/lang/String;)Lorg/eclipse/xsd/XSDNamedComponent; @ 4
+Event: 8,765 Thread 0x00007ff7ac009800 Uncommon trap: reason=null_check action=make_not_entrant pc=0x00007ff79d188ed8 method=org.eclipse.xsd.impl.XSDSchemaImpl.resolveSchema(Ljava/lang/String;)Ljava/util/Collection; @ 4
+Event: 8,771 Thread 0x00007ff7ac009800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007ff79dd80914 method=org.eclipse.xsd.impl.XSDElementDeclarationImpl.patch()V @ 320
+Event: 8,840 Thread 0x00007ff7ac009800 Uncommon trap: reason=predicate action=maybe_recompile pc=0x00007ff79d9f7820 method=java.util.Arrays$ArrayList.indexOf(Ljava/lang/Object;)I @ 42
+
+Internal exceptions (10 events):
+Event: 1,367 Thread 0x00007ff7ac009800 Exception <a 'java/io/FileNotFoundException'> (0x000000076e097cf0) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u101/7261/hotspot/src/share/vm/prims/jni.cpp, line 709]
+Event: 1,844 Thread 0x00007ff7ac009800 Exception <a 'java/lang/NoClassDefFoundError': org/eclipse/core/runtime/Platform> (0x000000076f5730c0) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u101/7261/hotspot/src/share/vm/classfile/systemDictionary.cpp, line 199]
+Event: 1,863 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79d197a35 to 0x00007ff79d197d89
+Event: 2,409 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79d242af5 to 0x00007ff79d242d05
+Event: 3,307 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79d736ba2 to 0x00007ff79d736cb1
+Event: 3,641 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79d8ac445 to 0x00007ff79d8ade5d
+Event: 5,826 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79db4dfd6 to 0x00007ff79db4e1c9
+Event: 6,959 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79d75ff3e to 0x00007ff79d760411
+Event: 8,765 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79dd5b2f6 to 0x00007ff79dd6342d
+Event: 8,765 Thread 0x00007ff7ac009800 Implicit null exception at 0x00007ff79d185768 to 0x00007ff79d188ec9
+
+Events (10 events):
+Event: 8,867 loading class org/geotools/filter/AbstractFilter
+Event: 8,867 loading class org/geotools/filter/AbstractFilter done
+Event: 8,867 loading class org/geotools/filter/FilterType
+Event: 8,867 loading class org/geotools/filter/FilterType done
+Event: 8,867 loading class org/geotools/filter/FilterAbstract
+Event: 8,867 loading class org/geotools/filter/FilterAbstract done
+Event: 8,868 loading class org/opengis/filter/MultiValuedFilter$MatchAction
+Event: 8,868 loading class org/opengis/filter/MultiValuedFilter$MatchAction done
+Event: 8,868 loading class nl/b3p/geotools/filter/visitor/RemoveDistanceUnit
+Event: 8,868 loading class nl/b3p/geotools/filter/visitor/RemoveDistanceUnit done
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 fc:00 12463832                           /usr/lib/jvm/java-8-oracle/jre/bin/java
+00600000-00601000 rw-p 00000000 fc:00 12463832                           /usr/lib/jvm/java-8-oracle/jre/bin/java
+00e03000-00e24000 rw-p 00000000 00:00 0                                  [heap]
+6c4c00000-6cb280000 rw-p 00000000 00:00 0 
+6cb280000-76c400000 ---p 00000000 00:00 0 
+76c400000-782280000 rw-p 00000000 00:00 0 
+782280000-7c0000000 ---p 00000000 00:00 0 
+7c0000000-7c0400000 rw-p 00000000 00:00 0 
+7c0400000-800000000 ---p 00000000 00:00 0 
+7ff73239b000-7ff73241b000 rw-p 00000000 00:00 0 
+7ff73241b000-7ff73259b000 ---p 00000000 00:00 0 
+7ff73259b000-7ff73279b000 rw-p 00000000 00:00 0 
+7ff73279b000-7ff73299b000 rw-p 00000000 00:00 0 
+7ff73299b000-7ff732b9b000 rw-p 00000000 00:00 0 
+7ff732b9b000-7ff732bb2000 r-xp 00000000 fc:00 8395059                    /lib/x86_64-linux-gnu/libresolv-2.23.so
+7ff732bb2000-7ff732db2000 ---p 00017000 fc:00 8395059                    /lib/x86_64-linux-gnu/libresolv-2.23.so
+7ff732db2000-7ff732db3000 r--p 00017000 fc:00 8395059                    /lib/x86_64-linux-gnu/libresolv-2.23.so
+7ff732db3000-7ff732db4000 rw-p 00018000 fc:00 8395059                    /lib/x86_64-linux-gnu/libresolv-2.23.so
+7ff732db4000-7ff732db6000 rw-p 00000000 00:00 0 
+7ff732dbb000-7ff732dc0000 r-xp 00000000 fc:00 8395067                    /lib/x86_64-linux-gnu/libnss_dns-2.23.so
+7ff732dc0000-7ff732fc0000 ---p 00005000 fc:00 8395067                    /lib/x86_64-linux-gnu/libnss_dns-2.23.so
+7ff732fc0000-7ff732fc1000 r--p 00005000 fc:00 8395067                    /lib/x86_64-linux-gnu/libnss_dns-2.23.so
+7ff732fc1000-7ff732fc2000 rw-p 00006000 fc:00 8395067                    /lib/x86_64-linux-gnu/libnss_dns-2.23.so
+7ff732fc3000-7ff732fc5000 r-xp 00000000 fc:00 8394299                    /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7ff732fc5000-7ff7331c4000 ---p 00002000 fc:00 8394299                    /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7ff7331c4000-7ff7331c5000 r--p 00001000 fc:00 8394299                    /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7ff7331c5000-7ff7331c6000 rw-p 00002000 fc:00 8394299                    /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7ff7331cb000-7ff7333cb000 rw-p 00000000 00:00 0 
+7ff7333cb000-7ff7335cb000 rw-p 00000000 00:00 0 
+7ff7335cb000-7ff7337cb000 rw-p 00000000 00:00 0 
+7ff7337cb000-7ff7339cb000 rw-p 00000000 00:00 0 
+7ff7339cb000-7ff7339d0000 r-xp 00000000 fc:00 11541625                   /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7ff7339d0000-7ff733bcf000 ---p 00005000 fc:00 11541625                   /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7ff733bcf000-7ff733bd0000 r--p 00004000 fc:00 11541625                   /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7ff733bd0000-7ff733bd1000 rw-p 00005000 fc:00 11541625                   /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7ff733bd3000-7ff733bd5000 r-xp 00000000 fc:00 11542329                   /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7ff733bd5000-7ff733dd5000 ---p 00002000 fc:00 11542329                   /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7ff733dd5000-7ff733dd6000 r--p 00002000 fc:00 11542329                   /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7ff733dd6000-7ff733dd7000 rw-p 00003000 fc:00 11542329                   /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7ff733ddb000-7ff733dfc000 r-xp 00000000 fc:00 11542789                   /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7ff733dfc000-7ff733ffb000 ---p 00021000 fc:00 11542789                   /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7ff733ffb000-7ff733ffc000 r--p 00020000 fc:00 11542789                   /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7ff733ffc000-7ff733ffd000 rw-p 00021000 fc:00 11542789                   /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7ff734000000-7ff734021000 rw-p 00000000 00:00 0 
+7ff734021000-7ff738000000 ---p 00000000 00:00 0 
+7ff738000000-7ff738021000 rw-p 00000000 00:00 0 
+7ff738021000-7ff73c000000 ---p 00000000 00:00 0 
+7ff73c000000-7ff73c021000 rw-p 00000000 00:00 0 
+7ff73c021000-7ff740000000 ---p 00000000 00:00 0 
+7ff740000000-7ff740021000 rw-p 00000000 00:00 0 
+7ff740021000-7ff744000000 ---p 00000000 00:00 0 
+7ff744000000-7ff744021000 rw-p 00000000 00:00 0 
+7ff744021000-7ff748000000 ---p 00000000 00:00 0 
+7ff748000000-7ff748021000 rw-p 00000000 00:00 0 
+7ff748021000-7ff74c000000 ---p 00000000 00:00 0 
+7ff74c000000-7ff74d0ba000 rw-p 00000000 00:00 0 
+7ff74d0ba000-7ff750000000 ---p 00000000 00:00 0 
+7ff750000000-7ff750021000 rw-p 00000000 00:00 0 
+7ff750021000-7ff754000000 ---p 00000000 00:00 0 
+7ff754000000-7ff755009000 rw-p 00000000 00:00 0 
+7ff755009000-7ff758000000 ---p 00000000 00:00 0 
+7ff758000000-7ff75934b000 rw-p 00000000 00:00 0 
+7ff75934b000-7ff75c000000 ---p 00000000 00:00 0 
+7ff75c000000-7ff75c021000 rw-p 00000000 00:00 0 
+7ff75c021000-7ff760000000 ---p 00000000 00:00 0 
+7ff760000000-7ff7611ea000 rw-p 00000000 00:00 0 
+7ff7611ea000-7ff764000000 ---p 00000000 00:00 0 
+7ff764000000-7ff764021000 rw-p 00000000 00:00 0 
+7ff764021000-7ff768000000 ---p 00000000 00:00 0 
+7ff768000000-7ff768021000 rw-p 00000000 00:00 0 
+7ff768021000-7ff76c000000 ---p 00000000 00:00 0 
+7ff76c000000-7ff76c021000 rw-p 00000000 00:00 0 
+7ff76c021000-7ff770000000 ---p 00000000 00:00 0 
+7ff7700cb000-7ff7700da000 r-xp 00000000 fc:00 11538776                   /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7ff7700da000-7ff7702d9000 ---p 0000f000 fc:00 11538776                   /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7ff7702d9000-7ff7702da000 r--p 0000e000 fc:00 11538776                   /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7ff7702da000-7ff7702db000 rw-p 0000f000 fc:00 11538776                   /usr/lib/x86_64-linux-gnu/libXi.so.6.1.0
+7ff7702db000-7ff7702e0000 r-xp 00000000 fc:00 11542370                   /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7ff7702e0000-7ff7704df000 ---p 00005000 fc:00 11542370                   /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7ff7704df000-7ff7704e0000 r--p 00004000 fc:00 11542370                   /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7ff7704e0000-7ff7704e1000 rw-p 00005000 fc:00 11542370                   /usr/lib/x86_64-linux-gnu/libXtst.so.6.1.0
+7ff7704e3000-7ff7704ec000 r-xp 00000000 fc:00 11543261                   /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7ff7704ec000-7ff7706eb000 ---p 00009000 fc:00 11543261                   /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7ff7706eb000-7ff7706ec000 r--p 00008000 fc:00 11543261                   /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7ff7706ec000-7ff7706ed000 rw-p 00009000 fc:00 11543261                   /usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0
+7ff7706f3000-7ff770828000 r-xp 00000000 fc:00 11543707                   /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7ff770828000-7ff770a28000 ---p 00135000 fc:00 11543707                   /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7ff770a28000-7ff770a29000 r--p 00135000 fc:00 11543707                   /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7ff770a29000-7ff770a2d000 rw-p 00136000 fc:00 11543707                   /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7ff770a33000-7ff770a44000 r-xp 00000000 fc:00 11539052                   /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7ff770a44000-7ff770c43000 ---p 00011000 fc:00 11539052                   /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7ff770c43000-7ff770c44000 r--p 00010000 fc:00 11539052                   /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7ff770c44000-7ff770c45000 rw-p 00011000 fc:00 11539052                   /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0
+7ff770c50000-7ff770c63000 r--s 00345000 fc:00 12463936                   /usr/lib/jvm/java-8-oracle/jre/lib/resources.jar
+7ff770c65000-7ff770c68000 r--s 0001a000 fc:00 12463856                   /usr/lib/jvm/java-8-oracle/jre/lib/jce.jar
+7ff770c6a000-7ff770c6e000 r--s 00097000 fc:00 12463932                   /usr/lib/jvm/java-8-oracle/jre/lib/jsse.jar
+7ff770c73000-7ff770cc7000 r-xp 00000000 fc:00 12463970                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libawt_xawt.so
+7ff770cc7000-7ff770ec7000 ---p 00054000 fc:00 12463970                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libawt_xawt.so
+7ff770ec7000-7ff770ecb000 rw-p 00054000 fc:00 12463970                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libawt_xawt.so
+7ff770ecb000-7ff770ecc000 rw-p 00000000 00:00 0 
+7ff770ed3000-7ff7710d3000 rw-p 00000000 00:00 0 
+7ff7710d3000-7ff771175000 r-xp 00000000 fc:00 12463951                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libawt.so
+7ff771175000-7ff771375000 ---p 000a2000 fc:00 12463951                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libawt.so
+7ff771375000-7ff771381000 rw-p 000a2000 fc:00 12463951                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libawt.so
+7ff771381000-7ff7713a5000 rw-p 00000000 00:00 0 
+7ff7713ac000-7ff7713b1000 r--s 002f9000 fc:00 12463915                   /usr/lib/jvm/java-8-oracle/jre/lib/charsets.jar
+7ff7713b5000-7ff7713b8000 ---p 00000000 00:00 0 
+7ff7713b8000-7ff7716b6000 rw-p 00000000 00:00 0 
+7ff7716b6000-7ff7716d2000 r--s 00393000 fc:00 12463867                   /usr/lib/jvm/java-8-oracle/jre/lib/ext/cldrdata.jar
+7ff7716d9000-7ff7716e3000 r--s 00116000 fc:00 12463859                   /usr/lib/jvm/java-8-oracle/jre/lib/ext/localedata.jar
+7ff7716e9000-7ff7716ec000 ---p 00000000 00:00 0 
+7ff7716ec000-7ff7717ea000 rw-p 00000000 00:00 0 
+7ff7717ea000-7ff7717ed000 ---p 00000000 00:00 0 
+7ff7717ed000-7ff7718eb000 rw-p 00000000 00:00 0 
+7ff7718eb000-7ff7718fc000 r-xp 00000000 fc:00 12463971                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7ff7718fc000-7ff771afb000 ---p 00011000 fc:00 12463971                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7ff771afb000-7ff771afc000 rw-p 00010000 fc:00 12463971                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7ff771b02000-7ff771e03000 rw-p 00000000 00:00 0 
+7ff771e03000-7ff771e19000 r-xp 00000000 fc:00 12463953                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7ff771e19000-7ff772019000 ---p 00016000 fc:00 12463953                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7ff772019000-7ff77201a000 rw-p 00016000 fc:00 12463953                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7ff77201b000-7ff77201e000 r--s 00010000 fc:00 11410438                   /home/tariq/.m2/repository/org/apache/maven/surefire/surefire-junit4/2.19.1/surefire-junit4-2.19.1.jar
+7ff772020000-7ff772029000 r--s 0002d000 fc:00 11407261                   /home/tariq/.m2/repository/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar
+7ff772030000-7ff772049000 r--s 00135000 fc:00 12589951                   /home/tariq/.m2/repository/xerces/xercesImpl/2.11.0/xercesImpl-2.11.0.jar
+7ff77204e000-7ff772054000 r--s 00033000 fc:00 1966704                    /home/tariq/.m2/repository/jaxen/jaxen/1.1.6/jaxen-1.1.6.jar
+7ff772054000-7ff77205b000 r--s 00051000 fc:00 12847976                   /home/tariq/.m2/repository/org/eclipse/emf/org.eclipse.emf.common/2.12.0/org.eclipse.emf.common-2.12.0.jar
+7ff772061000-7ff772065000 r--s 0002e000 fc:00 11407099                   /home/tariq/.m2/repository/javax/mail/javax.mail-api/1.5.6/javax.mail-api-1.5.6.jar
+7ff77206b000-7ff77207b000 r--s 000a8000 fc:00 1583                       /home/tariq/.m2/repository/org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar
+7ff77207f000-7ff7720a9000 r--s 0024c000 fc:00 1841840                    /home/tariq/.m2/repository/org/apache/poi/poi/3.15/poi-3.15.jar
+7ff7720b0000-7ff7720b4000 r--s 00015000 fc:00 11808018                   /home/tariq/.m2/repository/com/github/virtuald/curvesapi/1.04/curvesapi-1.04.jar
+7ff7720b8000-7ff7720ba000 r--s 00005000 fc:00 11297755                   /home/tariq/.m2/repository/stax/stax-api/1.0.1/stax-api-1.0.1.jar
+7ff7720c0000-7ff7720fe000 r--s 0025d000 fc:00 11297756                   /home/tariq/.m2/repository/org/apache/xmlbeans/xmlbeans/2.6.0/xmlbeans-2.6.0.jar
+7ff772100000-7ff7721ba000 r--s 004dd000 fc:00 1841852                    /home/tariq/.m2/repository/org/apache/poi/poi-ooxml-schemas/3.15/poi-ooxml-schemas-3.15.jar
+7ff7721c1000-7ff7721d2000 r--s 00136000 fc:00 1841853                    /home/tariq/.m2/repository/org/apache/poi/poi-ooxml/3.15/poi-ooxml-3.15.jar
+7ff7721d4000-7ff7721db000 r--s 00079000 fc:00 11145696                   /home/tariq/.m2/repository/org/codehaus/woodstox/wstx-asl/3.2.7/wstx-asl-3.2.7.jar
+7ff7721e0000-7ff7721e1000 r--s 00005000 fc:00 11046077                   /home/tariq/.m2/repository/org/noggit/noggit/0.5/noggit-0.5.jar
+7ff7721e6000-7ff7721f2000 r--s 000b3000 fc:00 11046083                   /home/tariq/.m2/repository/org/apache/zookeeper/zookeeper/3.4.5/zookeeper-3.4.5.jar
+7ff7721f6000-7ff7721fe000 r--s 0005b000 fc:00 11046081                   /home/tariq/.m2/repository/org/apache/solr/solr-solrj/4.6.0/solr-solrj-4.6.0.jar
+7ff772204000-7ff772206000 r--s 00009000 fc:00 11410406                   /home/tariq/.m2/repository/org/apache/httpcomponents/httpmime/4.5.3/httpmime-4.5.3.jar
+7ff77220b000-7ff772213000 r--s 00048000 fc:00 11410421                   /home/tariq/.m2/repository/org/apache/httpcomponents/httpcore/4.4.6/httpcore-4.4.6.jar
+7ff772215000-7ff772222000 r--s 000aa000 fc:00 11410403                   /home/tariq/.m2/repository/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.jar
+7ff772226000-7ff77226b000 r--s 004bb000 fc:00 11145691                   /home/tariq/.m2/repository/org/apache/hadoop/hadoop-hdfs/2.2.0/hadoop-hdfs-2.2.0.jar
+7ff77226f000-7ff772273000 r--s 00014000 fc:00 5898375                    /home/tariq/.m2/repository/org/tukaani/xz/1.0/xz-1.0.jar
+7ff772279000-7ff77227e000 r--s 00036000 fc:00 5898372                    /home/tariq/.m2/repository/org/apache/commons/commons-compress/1.4.1/commons-compress-1.4.1.jar
+7ff772284000-7ff7722af000 r--s 00271000 fc:00 11145692                   /home/tariq/.m2/repository/org/apache/hadoop/hadoop-common/2.2.0/hadoop-common-2.2.0.jar
+7ff7722b6000-7ff7722b8000 r--s 0000b000 fc:00 11145694                   /home/tariq/.m2/repository/org/apache/hadoop/hadoop-auth/2.2.0/hadoop-auth-2.2.0.jar
+7ff7722b8000-7ff772331000 r--s 010e5000 fc:00 12069539                   /usr/lib/jvm/java-8-oracle/lib/tools.jar
+7ff772336000-7ff772338000 r--s 00003000 fc:00 11046071                   /home/tariq/.m2/repository/org/apache/hadoop/hadoop-annotations/2.2.0/hadoop-annotations-2.2.0.jar
+7ff772338000-7ff772348000 r--s 0007d000 fc:00 11046016                   /home/tariq/.m2/repository/joda-time/joda-time/2.2/joda-time-2.2.jar
+7ff77234c000-7ff77234e000 r--s 00009000 fc:00 1053010                    /home/tariq/.m2/repository/commons-cli/commons-cli/1.2/commons-cli-1.2.jar
+7ff772354000-7ff77235b000 r--s 00039000 fc:00 11407125                   /home/tariq/.m2/repository/commons-codec/commons-codec/1.7/commons-codec-1.7.jar
+7ff77235e000-7ff772360000 r--s 0000b000 fc:00 12190854                   /home/tariq/.m2/repository/com/googlecode/concurrentlinkedhashmap/concurrentlinkedhashmap-lru/1.2/concurrentlinkedhashmap-lru-1.2.jar
+7ff772366000-7ff77237e000 r--s 00123000 fc:00 11407115                   /home/tariq/.m2/repository/com/carrotsearch/hppc/0.5.2/hppc-0.5.2.jar
+7ff772381000-7ff772387000 r--s 0002e000 fc:00 393346                     /home/tariq/.m2/repository/org/apache/lucene/lucene-queries/4.6.0/lucene-queries-4.6.0.jar
+7ff77238b000-7ff77238e000 r--s 00018000 fc:00 393333                     /home/tariq/.m2/repository/org/apache/lucene/lucene-grouping/4.6.0/lucene-grouping-4.6.0.jar
+7ff772395000-7ff772399000 r--s 0002a000 fc:00 393360                     /home/tariq/.m2/repository/org/apache/lucene/lucene-suggest/4.6.0/lucene-suggest-4.6.0.jar
+7ff77239a000-7ff77239c000 r--s 0000f000 fc:00 11407105                   /home/tariq/.m2/repository/com/spatial4j/spatial4j/0.3/spatial4j-0.3.jar
+7ff7723a0000-7ff7723a2000 r--s 00015000 fc:00 393359                     /home/tariq/.m2/repository/org/apache/lucene/lucene-spatial/4.6.0/lucene-spatial-4.6.0.jar
+7ff7723a8000-7ff7723b1000 r--s 00055000 fc:00 393356                     /home/tariq/.m2/repository/org/apache/lucene/lucene-queryparser/4.6.0/lucene-queryparser-4.6.0.jar
+7ff7723b1000-7ff7723b3000 r--s 0000e000 fc:00 393350                     /home/tariq/.m2/repository/org/apache/lucene/lucene-join/4.6.0/lucene-join-4.6.0.jar
+7ff7723b8000-7ff7723bb000 r--s 00015000 fc:00 393362                     /home/tariq/.m2/repository/org/apache/lucene/lucene-misc/4.6.0/lucene-misc-4.6.0.jar
+7ff7723bb000-7ff7723bc000 r--s 00008000 fc:00 393353                     /home/tariq/.m2/repository/org/apache/lucene/lucene-memory/4.6.0/lucene-memory-4.6.0.jar
+7ff7723bf000-7ff7723c3000 r--s 0001c000 fc:00 393341                     /home/tariq/.m2/repository/org/apache/lucene/lucene-highlighter/4.6.0/lucene-highlighter-4.6.0.jar
+7ff7723c8000-7ff7723c9000 r--s 00005000 fc:00 393337                     /home/tariq/.m2/repository/org/apache/lucene/lucene-analyzers-phonetic/4.6.0/lucene-analyzers-phonetic-4.6.0.jar
+7ff7723cb000-7ff7723ce000 r--s 00460000 fc:00 393336                     /home/tariq/.m2/repository/org/apache/lucene/lucene-analyzers-kuromoji/4.6.0/lucene-analyzers-kuromoji-4.6.0.jar
+7ff7723cf000-7ff7723e0000 r--s 00174000 fc:00 393339                     /home/tariq/.m2/repository/org/apache/lucene/lucene-analyzers-common/4.6.0/lucene-analyzers-common-4.6.0.jar
+7ff7723e0000-7ff7723e7000 r--s 0004d000 fc:00 393331                     /home/tariq/.m2/repository/org/apache/lucene/lucene-codecs/4.6.0/lucene-codecs-4.6.0.jar
+7ff7723ec000-7ff77240e000 r--s 00231000 fc:00 11046075                   /home/tariq/.m2/repository/org/apache/solr/solr-core/4.6.0/solr-core-4.6.0.jar
+7ff772412000-7ff772439000 r--s 00217000 fc:00 393361                     /home/tariq/.m2/repository/org/apache/lucene/lucene-core/4.6.0/lucene-core-4.6.0.jar
+7ff77243e000-7ff772440000 r--s 00023000 fc:00 11410404                   /home/tariq/.m2/repository/nl/geozet/openls-databinding/1.0/openls-databinding-1.0.jar
+7ff772447000-7ff772451000 r--s 0005c000 fc:00 1968592                    /home/tariq/.m2/repository/jstl/jstl/1.2/jstl-1.2.jar
+7ff772453000-7ff772455000 r--s 00018000 fc:00 11405753                   /home/tariq/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar
+7ff77245b000-7ff77245c000 r--s 00000000 fc:00 11407102                   /home/tariq/.m2/repository/com/google/jsinterop/jsinterop-annotations/1.0.0/jsinterop-annotations-1.0.0.jar
+7ff77245e000-7ff772460000 r--s 00003000 fc:00 11407110                   /home/tariq/.m2/repository/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1.jar
+7ff772467000-7ff77246c000 r--s 00034000 fc:00 11407107                   /home/tariq/.m2/repository/com/google/code/gson/gson/2.7/gson-2.7.jar
+7ff772473000-7ff772482000 r--s 00130000 fc:00 12063485                   /home/tariq/.m2/repository/com/google/protobuf/protobuf-java/3.0.2/protobuf-java-3.0.2.jar
+7ff772489000-7ff7724b8000 r--s 00226000 fc:00 11931137                   /home/tariq/.m2/repository/com/google/guava/guava/20.0/guava-20.0.jar
+7ff7724bd000-7ff7724c1000 r--s 00022000 fc:00 2098146                    /home/tariq/.m2/repository/args4j/args4j/2.33/args4j-2.33.jar
+7ff7724c1000-7ff7724c2000 r--s 00026000 fc:00 11410402                   /home/tariq/.m2/repository/com/google/javascript/closure-compiler-externs/v20161201/closure-compiler-externs-v20161201.jar
+7ff7724c4000-7ff77252f000 r--s 00659000 fc:00 11931136                   /home/tariq/.m2/repository/com/google/javascript/closure-compiler/v20161201/closure-compiler-v20161201.jar
+7ff772531000-7ff772539000 r--s 0006e000 fc:00 11407130                   /home/tariq/.m2/repository/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar
+7ff77253e000-7ff772552000 r--s 00343000 fc:00 393329                     /home/tariq/.m2/repository/nl/b3p/b3p-commons-csw/2.0/b3p-commons-csw-2.0.jar
+7ff772552000-7ff77255b000 r--s 0006f000 fc:00 11406240                   /home/tariq/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar
+7ff772562000-7ff772566000 r--s 0002f000 fc:00 12326470                   /home/tariq/.m2/repository/commons-io/commons-io/2.5/commons-io-2.5.jar
+7ff772568000-7ff77256a000 r--s 0000d000 fc:00 11406238                   /home/tariq/.m2/repository/org/apache/avalon/framework/avalon-framework-impl/4.3.1/avalon-framework-impl-4.3.1.jar
+7ff772571000-7ff772574000 r--s 00006000 fc:00 11406235                   /home/tariq/.m2/repository/org/apache/avalon/framework/avalon-framework-api/4.3.1/avalon-framework-api-4.3.1.jar
+7ff772575000-7ff772576000 r--s 00002000 fc:00 11407354                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-ext/1.8/batik-ext-1.8.jar
+7ff772576000-7ff772579000 r--s 0000b000 fc:00 11407344                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-extension/1.8/batik-extension-1.8.jar
+7ff77257a000-7ff77257f000 r--s 00027000 fc:00 11407340                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-svggen/1.8/batik-svggen-1.8.jar
+7ff77257f000-7ff772582000 r--s 00014000 fc:00 11407360                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-transcoder/1.8/batik-transcoder-1.8.jar
+7ff772583000-7ff772587000 r--s 00020000 fc:00 11407337                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-gvt/1.8/batik-gvt-1.8.jar
+7ff77258e000-7ff772595000 r--s 00043000 fc:00 11407343                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-awt-util/1.8/batik-awt-util-1.8.jar
+7ff77259b000-7ff77259f000 r--s 00040000 fc:00 11407267                   /home/tariq/.m2/repository/xalan/serializer/2.7.2/serializer-2.7.2.jar
+7ff7725a1000-7ff7725c6000 r--s 002de000 fc:00 11407364                   /home/tariq/.m2/repository/xalan/xalan/2.7.2/xalan-2.7.2.jar
+7ff7725c9000-7ff7725ca000 r--s 00006000 fc:00 11407266                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-xml/1.8/batik-xml-1.8.jar
+7ff7725ce000-7ff7725d0000 r--s 00003000 fc:00 11407269                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-script/1.8/batik-script-1.8.jar
+7ff7725d4000-7ff7725e0000 r--s 00051000 fc:00 11407265                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-anim/1.8/batik-anim-1.8.jar
+7ff7725e1000-7ff7725ed000 r--s 00076000 fc:00 11407370                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-bridge/1.8/batik-bridge-1.8.jar
+7ff7725f3000-7ff7725f8000 r--s 00010000 fc:00 11406210                   /home/tariq/.m2/repository/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar
+7ff7725fb000-7ff7725fe000 r--s 00018000 fc:00 11407270                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-util/1.8/batik-util-1.8.jar
+7ff7725fe000-7ff772601000 r--s 0000b000 fc:00 11407334                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-parser/1.8/batik-parser-1.8.jar
+7ff772602000-7ff772606000 r--s 0001f000 fc:00 11407268                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-dom/1.8/batik-dom-1.8.jar
+7ff77260b000-7ff772612000 r--s 00038000 fc:00 11407342                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-css/1.8/batik-css-1.8.jar
+7ff772614000-7ff772619000 r--s 00031000 fc:00 11407347                   /home/tariq/.m2/repository/org/apache/xmlgraphics/batik-svg-dom/1.8/batik-svg-dom-1.8.jar
+7ff77261d000-7ff772629000 r--s 00092000 fc:00 11407263                   /home/tariq/.m2/repository/org/apache/xmlgraphics/xmlgraphics-commons/2.1/xmlgraphics-commons-2.1.jar
+7ff772629000-7ff77266b000 r--s 003ae000 fc:00 11407259                   /home/tariq/.m2/repository/org/apache/xmlgraphics/fop/2.1/fop-2.1.jar
+7ff77266d000-7ff772678000 r--s 0008a000 fc:00 11046064                   /home/tariq/.m2/repository/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar
+7ff77267b000-7ff772685000 r--s 00098000 fc:00 1966701                    /home/tariq/.m2/repository/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar
+7ff772686000-7ff772687000 r--s 00003000 fc:00 11277996                   /home/tariq/b3partners/Flamingo 4/flamingo/solr-commons/target/solr-commons-4.8.1-SNAPSHOT.jar
+7ff772687000-7ff772696000 r--s 00164000 fc:00 12326684                   /home/tariq/.m2/repository/org/hsqldb/hsqldb/2.3.4/hsqldb-2.3.4.jar
+7ff77269d000-7ff77269e000 r--s 0000a000 fc:00 13246605                   /home/tariq/.m2/repository/asm/asm/3.1/asm-3.1.jar
+7ff7726a1000-7ff7726a8000 r--s 0003e000 fc:00 13246603                   /home/tariq/.m2/repository/cglib/cglib/2.2/cglib-2.2.jar
+7ff7726aa000-7ff7726b4000 r--s 0005f000 fc:00 13111514                   /home/tariq/.m2/repository/org/hibernate/hibernate-entitymanager/3.6.8.Final/hibernate-entitymanager-3.6.8.Final.jar
+7ff7726b6000-7ff7726b7000 r--s 00003000 fc:00 12324951                   /home/tariq/.m2/repository/javax/transaction/jta/1.1/jta-1.1.jar
+7ff7726b8000-7ff7726bd000 r--s 00015000 fc:00 13111482                   /home/tariq/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.1.Final/hibernate-jpa-2.0-api-1.0.1.Final.jar
+7ff7726c2000-7ff7726c5000 r--s 0000f000 fc:00 13115557                   /home/tariq/.m2/repository/org/hibernate/hibernate-commons-annotations/3.2.0.Final/hibernate-commons-annotations-3.2.0.Final.jar
+7ff7726cb000-7ff7726d0000 r--s 00048000 fc:00 13115561                   /home/tariq/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar
+7ff7726d7000-7ff7726e4000 r--s 0007c000 fc:00 12870417                   /home/tariq/.m2/repository/commons-collections/commons-collections/3.1/commons-collections-3.1.jar
+7ff7726ea000-7ff7726f0000 r--s 00067000 fc:00 11674857                   /home/tariq/.m2/repository/antlr/antlr/2.7.6/antlr-2.7.6.jar
+7ff7726f3000-7ff772725000 r--s 002c8000 fc:00 12456556                   /home/tariq/.m2/repository/org/hibernate/hibernate-core/3.6.8.Final/hibernate-core-3.6.8.Final.jar
+7ff772725000-7ff77272f000 r--s 000aa000 fc:00 11300300                   /home/tariq/.m2/repository/org/javassist/javassist/3.22.0-CR1/javassist-3.22.0-CR1.jar
+7ff772736000-7ff772738000 r--s 0000b000 fc:00 656012                     /home/tariq/.m2/repository/org/geotools/jdbc/gt-jdbc-postgis/16.2/gt-jdbc-postgis-16.2.jar
+7ff77273f000-7ff772741000 r--s 00014000 fc:00 917666                     /home/tariq/.m2/repository/org/geotools/jdbc/gt-jdbc-oracle/16.2/gt-jdbc-oracle-16.2.jar
+7ff772748000-7ff77274b000 r--s 00015000 fc:00 11300685                   /home/tariq/.m2/repository/xmlunit/xmlunit/1.3/xmlunit-1.3.jar
+7ff772750000-7ff772752000 r--s 00005000 fc:00 919957                     /home/tariq/.m2/repository/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar
+7ff772758000-7ff772768000 r--s 0011d000 fc:00 12870414                   /home/tariq/.m2/repository/org/eclipse/emf/ecore/2.6.1/ecore-2.6.1.jar
+7ff77276b000-7ff77276f000 r--s 00030000 fc:00 12870411                   /home/tariq/.m2/repository/org/eclipse/emf/common/2.6.0/common-2.6.0.jar
+7ff772770000-7ff772774000 r--s 00035000 fc:00 917664                     /home/tariq/.m2/repository/org/geotools/ogc/net.opengis.fes/16.2/net.opengis.fes-16.2.jar
+7ff772777000-7ff772778000 r--s 0000c000 fc:00 917662                     /home/tariq/.m2/repository/org/geotools/ogc/org.w3.xlink/16.2/org.w3.xlink-16.2.jar
+7ff77277e000-7ff772784000 r--s 00063000 fc:00 917660                     /home/tariq/.m2/repository/org/geotools/ogc/net.opengis.wfs/16.2/net.opengis.wfs-16.2.jar
+7ff772785000-7ff77278d000 r--s 0007a000 fc:00 917659                     /home/tariq/.m2/repository/org/geotools/ogc/net.opengis.ows/16.2/net.opengis.ows-16.2.jar
+7ff77278e000-7ff772791000 r--s 0001b000 fc:00 917658                     /home/tariq/.m2/repository/org/geotools/xsd/gt-xsd-ows/16.2/gt-xsd-ows-16.2.jar
+7ff772792000-7ff772795000 r--s 0000f000 fc:00 917657                     /home/tariq/.m2/repository/org/geotools/xsd/gt-xsd-fes/16.2/gt-xsd-fes-16.2.jar
+7ff77279a000-7ff77279e000 r--s 00017000 fc:00 12326308                   /home/tariq/.m2/repository/org/geotools/xsd/gt-xsd-filter/16.2/gt-xsd-filter-16.2.jar
+7ff7727a4000-7ff7727a8000 r--s 00021000 fc:00 917654                     /home/tariq/.m2/repository/org/geotools/xsd/gt-xsd-wfs/16.2/gt-xsd-wfs-16.2.jar
+7ff7727ad000-7ff7727b0000 r--s 0001a000 fc:00 12847985                   /home/tariq/.m2/repository/org/geotools/xsd/gt-xsd-gml2/16.2/gt-xsd-gml2-16.2.jar
+7ff7727b7000-7ff7727be000 r--s 000ec000 fc:00 12324933                   /home/tariq/.m2/repository/org/eclipse/xsd/xsd/2.6.0/xsd-2.6.0.jar
+7ff7727bf000-7ff7727c5000 r--s 00044000 fc:00 12870419                   /home/tariq/.m2/repository/commons-jxpath/commons-jxpath/1.3/commons-jxpath-1.3.jar
+7ff7727cb000-7ff7727cf000 r--s 00018000 fc:00 12870407                   /home/tariq/.m2/repository/picocontainer/picocontainer/1.2/picocontainer-1.2.jar
+7ff7727d0000-7ff7727d5000 r--s 00025000 fc:00 12847984                   /home/tariq/.m2/repository/org/geotools/gt-graph/16.2/gt-graph-16.2.jar
+7ff7727d9000-7ff7727e0000 r--s 00046000 fc:00 12454938                   /home/tariq/.m2/repository/org/geotools/xsd/gt-xsd-core/16.2/gt-xsd-core-16.2.jar
+7ff7727e6000-7ff7727ff000 r--s 00163000 fc:00 12976311                   /home/tariq/.m2/repository/org/geotools/xsd/gt-xsd-gml3/16.2/gt-xsd-gml3-16.2.jar
+7ff772806000-7ff772807000 r--s 00003000 fc:00 11931556                   /home/tariq/.m2/repository/org/geotools/gt-app-schema-resolver/16.2/gt-app-schema-resolver-16.2.jar
+7ff772808000-7ff77280a000 r--s 0000d000 fc:00 11931560                   /home/tariq/.m2/repository/org/geotools/gt-complex/16.2/gt-complex-16.2.jar
+7ff77280b000-7ff772810000 r--s 00038000 fc:00 11931553                   /home/tariq/.m2/repository/org/geotools/gt-wfs-ng/16.2/gt-wfs-ng-16.2.jar
+7ff772816000-7ff772818000 r--s 00013000 fc:00 919956                     /home/tariq/.m2/repository/org/apache/xml/xml-commons-resolver/1.2/xml-commons-resolver-1.2.jar
+7ff772819000-7ff772823000 r--s 00096000 fc:00 917653                     /home/tariq/.m2/repository/org/geotools/gt-xml/16.2/gt-xml-16.2.jar
+7ff772828000-7ff77282e000 r--s 00045000 fc:00 919959                     /home/tariq/.m2/repository/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar
+7ff77282f000-7ff772834000 r--s 00034000 fc:00 1836127                    /home/tariq/.m2/repository/org/geotools/gt-wms/16.2/gt-wms-16.2.jar
+7ff772837000-7ff77283a000 r--s 00014000 fc:00 12071545                   /home/tariq/.m2/repository/net/java/dev/jsr-275/jsr-275/1.0-beta-2/jsr-275-1.0-beta-2.jar
+7ff77283b000-7ff772849000 r--s 00048000 fc:00 11931129                   /home/tariq/.m2/repository/org/geotools/gt-opengis/16.2/gt-opengis-16.2.jar
+7ff772850000-7ff772859000 r--s 00075000 fc:00 11931128                   /home/tariq/.m2/repository/org/geotools/gt-metadata/16.2/gt-metadata-16.2.jar
+7ff77285d000-7ff77285f000 r--s 00002000 fc:00 11016593                   /home/tariq/b3partners/Flamingo 4/flamingo/web-commons/target/web-commons-4.8.1-SNAPSHOT.jar
+7ff77285f000-7ff772862000 r--s 00024000 fc:00 11410423                   /home/tariq/.m2/repository/org/apache/httpcomponents/httpclient-cache/4.5.3/httpclient-cache-4.5.3.jar
+7ff772862000-7ff772863000 r--s 00007000 fc:00 11410422                   /home/tariq/.m2/repository/org/apache/httpcomponents/fluent-hc/4.5.3/fluent-hc-4.5.3.jar
+7ff77286a000-7ff77286d000 ---p 00000000 00:00 0 
+7ff77286d000-7ff77296b000 rw-p 00000000 00:00 0 
+7ff77296b000-7ff77296e000 ---p 00000000 00:00 0 
+7ff77296e000-7ff772a6c000 rw-p 00000000 00:00 0 
+7ff772a6c000-7ff772a6d000 ---p 00000000 00:00 0 
+7ff772a6d000-7ff772b6d000 rw-p 00000000 00:00 0 
+7ff772b6d000-7ff772b70000 ---p 00000000 00:00 0 
+7ff772b70000-7ff772c6e000 rw-p 00000000 00:00 0 
+7ff772c6e000-7ff772c71000 ---p 00000000 00:00 0 
+7ff772c71000-7ff772d6f000 rw-p 00000000 00:00 0 
+7ff772d6f000-7ff772d72000 ---p 00000000 00:00 0 
+7ff772d72000-7ff772e70000 rw-p 00000000 00:00 0 
+7ff772e70000-7ff772e73000 ---p 00000000 00:00 0 
+7ff772e73000-7ff772f71000 rw-p 00000000 00:00 0 
+7ff772f71000-7ff772f74000 ---p 00000000 00:00 0 
+7ff772f74000-7ff773072000 rw-p 00000000 00:00 0 
+7ff773072000-7ff773075000 ---p 00000000 00:00 0 
+7ff773075000-7ff773173000 rw-p 00000000 00:00 0 
+7ff773173000-7ff77344c000 r--p 00000000 fc:00 11538463                   /usr/lib/locale/locale-archive
+7ff773452000-7ff773455000 ---p 00000000 00:00 0 
+7ff773455000-7ff773553000 rw-p 00000000 00:00 0 
+7ff773553000-7ff773556000 ---p 00000000 00:00 0 
+7ff773556000-7ff773654000 rw-p 00000000 00:00 0 
+7ff773654000-7ff773655000 ---p 00000000 00:00 0 
+7ff773655000-7ff77c000000 rw-p 00000000 00:00 0 
+7ff77c000000-7ff77c021000 rw-p 00000000 00:00 0 
+7ff77c021000-7ff780000000 ---p 00000000 00:00 0 
+7ff780000000-7ff780021000 rw-p 00000000 00:00 0 
+7ff780021000-7ff784000000 ---p 00000000 00:00 0 
+7ff784000000-7ff784021000 rw-p 00000000 00:00 0 
+7ff784021000-7ff788000000 ---p 00000000 00:00 0 
+7ff788000000-7ff788021000 rw-p 00000000 00:00 0 
+7ff788021000-7ff78c000000 ---p 00000000 00:00 0 
+7ff78c000000-7ff78c021000 rw-p 00000000 00:00 0 
+7ff78c021000-7ff790000000 ---p 00000000 00:00 0 
+7ff790000000-7ff790021000 rw-p 00000000 00:00 0 
+7ff790021000-7ff794000000 ---p 00000000 00:00 0 
+7ff794000000-7ff794021000 rw-p 00000000 00:00 0 
+7ff794021000-7ff798000000 ---p 00000000 00:00 0 
+7ff798000000-7ff798021000 rw-p 00000000 00:00 0 
+7ff798021000-7ff79c000000 ---p 00000000 00:00 0 
+7ff79c007000-7ff79c008000 r--s 00034000 fc:00 11931140                   /home/tariq/.m2/repository/org/geotools/gt-epsg-wkt/16.2/gt-epsg-wkt-16.2.jar
+7ff79c008000-7ff79c00b000 r--s 00025000 fc:00 658698                     /home/tariq/.m2/repository/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4.jar
+7ff79c00e000-7ff79c011000 r--s 00033000 fc:00 656004                     /home/tariq/.m2/repository/org/geotools/gt-jdbc/16.2/gt-jdbc-16.2.jar
+7ff79c017000-7ff79c019000 r--s 00014000 fc:00 11029864                   /home/tariq/b3partners/Flamingo 4/flamingo/viewer-commons/target/viewer-commons-4.8.1-SNAPSHOT.jar
+7ff79c01a000-7ff79c01e000 r--s 0002f000 fc:00 11407134                   /home/tariq/.m2/repository/commons-beanutils/commons-beanutils-core/1.8.3/commons-beanutils-core-1.8.3.jar
+7ff79c021000-7ff79c026000 r--s 00036000 fc:00 11277967                   /home/tariq/b3partners/Flamingo 4/flamingo/viewer-config-persistence/target/viewer-config-persistence-4.8.1-SNAPSHOT.jar
+7ff79c027000-7ff79c029000 r--s 00004000 fc:00 11046065                   /home/tariq/.m2/repository/org/stripesstuff/stripersist/1.0.3/stripersist-1.0.3.jar
+7ff79c029000-7ff79c02b000 r--s 0000e000 fc:00 12194333                   /home/tariq/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
+7ff79c031000-7ff79c03a000 r--s 0007e000 fc:00 11407121                   /home/tariq/.m2/repository/net/sourceforge/stripes/stripes/1.6.0/stripes-1.6.0.jar
+7ff79c03f000-7ff79c041000 r--s 0000c000 fc:00 13243178                   /home/tariq/.m2/repository/org/json/json/20160810/json-20160810.jar
+7ff79c047000-7ff79c04a000 r--s 00014000 fc:00 12326093                   /home/tariq/.m2/repository/org/geotools/gt-data/16.2/gt-data-16.2.jar
+7ff79c04d000-7ff79c051000 r--s 00032000 fc:00 12326091                   /home/tariq/.m2/repository/org/geotools/gt-shapefile/16.2/gt-shapefile-16.2.jar
+7ff79c055000-7ff79c056000 r--s 00002000 fc:00 11544762                   /home/tariq/.m2/repository/org/slf4j/slf4j-log4j12/1.5.6/slf4j-log4j12-1.5.6.jar
+7ff79c057000-7ff79c059000 r--s 00004000 fc:00 11408758                   /home/tariq/.m2/repository/org/slf4j/slf4j-api/1.5.6/slf4j-api-1.5.6.jar
+7ff79c05f000-7ff79c061000 r--s 0001c000 fc:00 11145705                   /home/tariq/.m2/repository/eu/medsea/mimeutil/mime-util/2.1.3/mime-util-2.1.3.jar
+7ff79c064000-7ff79c069000 r--s 00041000 fc:00 5903473                    /home/tariq/.m2/repository/commons-lang/commons-lang/2.6/commons-lang-2.6.jar
+7ff79c070000-7ff79c071000 r--s 00005000 fc:00 12190852                   /home/tariq/.m2/repository/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar
+7ff79c071000-7ff79c073000 r--s 0000e000 fc:00 11931132                   /home/tariq/.m2/repository/org/geotools/gt-geojson/16.2/gt-geojson-16.2.jar
+7ff79c079000-7ff79c07c000 r--s 0002e000 fc:00 12326089                   /home/tariq/.m2/repository/org/geotools/gt-cql/16.2/gt-cql-16.2.jar
+7ff79c07f000-7ff79c080000 r--s 00004000 fc:00 12847971                   /home/tariq/.m2/repository/it/geosolutions/jaiext/vectorbin/jt-vectorbin/1.0.12/jt-vectorbin-1.0.12.jar
+7ff79c087000-7ff79c088000 r--s 00004000 fc:00 12847969                   /home/tariq/.m2/repository/it/geosolutions/jaiext/rlookup/jt-rlookup/1.0.12/jt-rlookup-1.0.12.jar
+7ff79c08f000-7ff79c090000 r--s 00004000 fc:00 12847968                   /home/tariq/.m2/repository/it/geosolutions/jaiext/classifier/jt-classifier/1.0.12/jt-classifier-1.0.12.jar
+7ff79c093000-7ff79c094000 r--s 00008000 fc:00 12847965                   /home/tariq/.m2/repository/it/geosolutions/jaiext/piecewise/jt-piecewise/1.0.12/jt-piecewise-1.0.12.jar
+7ff79c095000-7ff79c097000 r--s 00002000 fc:00 12847962                   /home/tariq/.m2/repository/it/geosolutions/jaiext/imagefunction/jt-imagefunction/1.0.12/jt-imagefunction-1.0.12.jar
+7ff79c09b000-7ff79c09d000 r--s 00008000 fc:00 12847961                   /home/tariq/.m2/repository/it/geosolutions/jaiext/colorindexer/jt-colorindexer/1.0.12/jt-colorindexer-1.0.12.jar
+7ff79c0a0000-7ff79c0a2000 r--s 00005000 fc:00 12847959                   /home/tariq/.m2/repository/it/geosolutions/jaiext/orderdither/jt-orderdither/1.0.12/jt-orderdither-1.0.12.jar
+7ff79c0a7000-7ff79c0a8000 r--s 00004000 fc:00 12847958                   /home/tariq/.m2/repository/it/geosolutions/jaiext/errordiffusion/jt-errordiffusion/1.0.12/jt-errordiffusion-1.0.12.jar
+7ff79c0aa000-7ff79c0ab000 r--s 0000f000 fc:00 12847957                   /home/tariq/.m2/repository/it/geosolutions/jaiext/colorconvert/jt-colorconvert/1.0.12/jt-colorconvert-1.0.12.jar
+7ff79c0ac000-7ff79c0ad000 r--s 00001000 fc:00 12716261                   /home/tariq/.m2/repository/it/geosolutions/jaiext/format/jt-format/1.0.12/jt-format-1.0.12.jar
+7ff79c0ae000-7ff79c0af000 r--s 00003000 fc:00 12716260                   /home/tariq/.m2/repository/it/geosolutions/jaiext/binarize/jt-binarize/1.0.12/jt-binarize-1.0.12.jar
+7ff79c0b2000-7ff79c0b4000 r--s 00007000 fc:00 12716258                   /home/tariq/.m2/repository/it/geosolutions/jaiext/zonal/jt-zonal/1.0.12/jt-zonal-1.0.12.jar
+7ff79c0ba000-7ff79c0bb000 r--s 0000f000 fc:00 12716257                   /home/tariq/.m2/repository/it/geosolutions/jaiext/warp/jt-warp/1.0.12/jt-warp-1.0.12.jar
+7ff79c0be000-7ff79c0c1000 r--s 0001b000 fc:00 12593695                   /home/tariq/.m2/repository/it/geosolutions/jaiext/utilities/jt-utilities/1.0.12/jt-utilities-1.0.12.jar
+7ff79c0c5000-7ff79c0c6000 r--s 00002000 fc:00 12593693                   /home/tariq/.m2/repository/it/geosolutions/jaiext/translate/jt-translate/1.0.12/jt-translate-1.0.12.jar
+7ff79c0ca000-7ff79c0cc000 r--s 00007000 fc:00 12716253                   /home/tariq/.m2/repository/it/geosolutions/jaiext/stats/jt-stats/1.0.12/jt-stats-1.0.12.jar
+7ff79c0d0000-7ff79c0d1000 r--s 00015000 fc:00 12593692                   /home/tariq/.m2/repository/it/geosolutions/jaiext/scale/jt-scale/1.0.12/jt-scale-1.0.12.jar
+7ff79c0d7000-7ff79c0d8000 r--s 00004000 fc:00 12716251                   /home/tariq/.m2/repository/it/geosolutions/jaiext/rescale/jt-rescale/1.0.12/jt-rescale-1.0.12.jar
+7ff79c0dc000-7ff79c0dd000 r--s 00001000 fc:00 12716250                   /home/tariq/.m2/repository/it/geosolutions/jaiext/nullop/jt-nullop/1.0.12/jt-nullop-1.0.12.jar
+7ff79c0e2000-7ff79c0e3000 r--s 00007000 fc:00 12716248                   /home/tariq/.m2/repository/it/geosolutions/jaiext/mosaic/jt-mosaic/1.0.12/jt-mosaic-1.0.12.jar
+7ff79c0e4000-7ff79c0e5000 r--s 00009000 fc:00 12716245                   /home/tariq/.m2/repository/it/geosolutions/jaiext/lookup/jt-lookup/1.0.12/jt-lookup-1.0.12.jar
+7ff79c0e8000-7ff79c0e9000 r--s 00005000 fc:00 12593690                   /home/tariq/.m2/repository/it/geosolutions/jaiext/iterators/jt-iterators/1.0.12/jt-iterators-1.0.12.jar
+7ff79c0ed000-7ff79c0ee000 r--s 00002000 fc:00 12716243                   /home/tariq/.m2/repository/it/geosolutions/jaiext/crop/jt-crop/1.0.12/jt-crop-1.0.12.jar
+7ff79c0ef000-7ff79c0f0000 r--s 00004000 fc:00 12716045                   /home/tariq/.m2/repository/it/geosolutions/jaiext/buffer/jt-buffer/1.0.12/jt-buffer-1.0.12.jar
+7ff79c0f1000-7ff79d000000 rw-p 00000000 00:00 0 
+7ff79d000000-7ff79dde0000 rwxp 00000000 00:00 0 
+7ff79dde0000-7ff7ac000000 ---p 00000000 00:00 0 
+7ff7ac000000-7ff7ad6e5000 rw-p 00000000 00:00 0 
+7ff7ad6e5000-7ff7b0000000 ---p 00000000 00:00 0 
+7ff7b0006000-7ff7b0007000 r--s 00003000 fc:00 12716043                   /home/tariq/.m2/repository/it/geosolutions/jaiext/border/jt-border/1.0.12/jt-border-1.0.12.jar
+7ff7b000e000-7ff7b000f000 r--s 00003000 fc:00 12716042                   /home/tariq/.m2/repository/it/geosolutions/jaiext/bandcombine/jt-bandcombine/1.0.12/jt-bandcombine-1.0.12.jar
+7ff7b0014000-7ff7b0016000 r--s 00001000 fc:00 12593686                   /home/tariq/.m2/repository/it/geosolutions/jaiext/bandselect/jt-bandselect/1.0.12/jt-bandselect-1.0.12.jar
+7ff7b001a000-7ff7b001c000 r--s 00007000 fc:00 12593685                   /home/tariq/.m2/repository/it/geosolutions/jaiext/bandmerge/jt-bandmerge/1.0.12/jt-bandmerge-1.0.12.jar
+7ff7b001e000-7ff7b0020000 r--s 0000b000 fc:00 12593684                   /home/tariq/.m2/repository/it/geosolutions/jaiext/algebra/jt-algebra/1.0.12/jt-algebra-1.0.12.jar
+7ff7b0027000-7ff7b0028000 r--s 0001c000 fc:00 12593682                   /home/tariq/.m2/repository/it/geosolutions/jaiext/affine/jt-affine/1.0.12/jt-affine-1.0.12.jar
+7ff7b0029000-7ff7b002d000 r--s 0002e000 fc:00 12597129                   /home/tariq/.m2/repository/org/jaitools/jt-utils/1.4.0/jt-utils-1.4.0.jar
+7ff7b002f000-7ff7b0030000 r--s 00004000 fc:00 12457299                   /home/tariq/.m2/repository/org/jaitools/jt-zonalstats/1.4.0/jt-zonalstats-1.4.0.jar
+7ff7b0037000-7ff7b003b000 r--s 0003c000 fc:00 12457297                   /home/tariq/.m2/repository/javax/media/jai_codec/1.1.3/jai_codec-1.1.3.jar
+7ff7b003e000-7ff7b0040000 r--s 0000b000 fc:00 12456373                   /home/tariq/.m2/repository/it/geosolutions/imageio-ext/imageio-ext-streams/1.1.17/imageio-ext-streams-1.1.17.jar
+7ff7b0040000-7ff7b0042000 r--s 00005000 fc:00 12456371                   /home/tariq/.m2/repository/it/geosolutions/imageio-ext/imageio-ext-geocore/1.1.17/imageio-ext-geocore-1.1.17.jar
+7ff7b0044000-7ff7b0045000 r--s 00009000 fc:00 12456365                   /home/tariq/.m2/repository/it/geosolutions/imageio-ext/imageio-ext-utilities/1.1.17/imageio-ext-utilities-1.1.17.jar
+7ff7b0045000-7ff7b004e000 r--s 0004a000 fc:00 12456368                   /home/tariq/.m2/repository/it/geosolutions/imageio-ext/imageio-ext-tiff/1.1.17/imageio-ext-tiff-1.1.17.jar
+7ff7b0051000-7ff7b0062000 r--s 00106000 fc:00 12457287                   /home/tariq/.m2/repository/javax/media/jai_imageio/1.1/jai_imageio-1.1.jar
+7ff7b0064000-7ff7b006c000 r--s 00089000 fc:00 12454930                   /home/tariq/.m2/repository/org/geotools/gt-coverage/16.2/gt-coverage-16.2.jar
+7ff7b0073000-7ff7b007b000 r--s 00088000 fc:00 13369650                   /home/tariq/.m2/repository/org/geotools/gt-render/16.2/gt-render-16.2.jar
+7ff7b0080000-7ff7b0094000 r--s 001bd000 fc:00 12194311                   /home/tariq/.m2/repository/javax/media/jai_core/1.1.3/jai_core-1.1.3.jar
+7ff7b0096000-7ff7b0098000 r--s 00023000 fc:00 12324937                   /home/tariq/.m2/repository/org/jdom/jdom/1.1.3/jdom-1.1.3.jar
+7ff7b009d000-7ff7b00ae000 r--s 000b2000 fc:00 11407328                   /home/tariq/.m2/repository/com/vividsolutions/jts/1.13/jts-1.13.jar
+7ff7b00b0000-7ff7b00b3000 r--s 00015000 fc:00 12071547                   /home/tariq/.m2/repository/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4.jar
+7ff7b00b7000-7ff7b00c6000 r--s 00114000 fc:00 12191662                   /home/tariq/.m2/repository/org/geotools/gt-referencing/16.2/gt-referencing-16.2.jar
+7ff7b00c6000-7ff7b00e1000 r--s 00193000 fc:00 12191621                   /home/tariq/.m2/repository/org/geotools/gt-main/16.2/gt-main-16.2.jar
+7ff7b00e4000-7ff7b0234000 rw-p 00000000 00:00 0 
+7ff7b0234000-7ff7b040d000 r--s 03d29000 fc:00 12463874                   /usr/lib/jvm/java-8-oracle/jre/lib/rt.jar
+7ff7b0414000-7ff7b1464000 rw-p 00000000 00:00 0 
+7ff7b1464000-7ff7b1465000 ---p 00000000 00:00 0 
+7ff7b1465000-7ff7b1565000 rw-p 00000000 00:00 0 
+7ff7b1565000-7ff7b1566000 ---p 00000000 00:00 0 
+7ff7b1566000-7ff7b1666000 rw-p 00000000 00:00 0 
+7ff7b1666000-7ff7b1667000 ---p 00000000 00:00 0 
+7ff7b1667000-7ff7b1767000 rw-p 00000000 00:00 0 
+7ff7b1767000-7ff7b1768000 ---p 00000000 00:00 0 
+7ff7b1768000-7ff7b1868000 rw-p 00000000 00:00 0 
+7ff7b1868000-7ff7b1869000 ---p 00000000 00:00 0 
+7ff7b1869000-7ff7b1969000 rw-p 00000000 00:00 0 
+7ff7b1969000-7ff7b196a000 ---p 00000000 00:00 0 
+7ff7b196a000-7ff7b1a6a000 rw-p 00000000 00:00 0 
+7ff7b1a6a000-7ff7b1a6b000 ---p 00000000 00:00 0 
+7ff7b1a6b000-7ff7b1b6b000 rw-p 00000000 00:00 0 
+7ff7b1b6b000-7ff7b1b6c000 ---p 00000000 00:00 0 
+7ff7b1b6c000-7ff7b1ca0000 rw-p 00000000 00:00 0 
+7ff7b1ca0000-7ff7b21a8000 ---p 00000000 00:00 0 
+7ff7b21a8000-7ff7b21dc000 rw-p 00000000 00:00 0 
+7ff7b21dc000-7ff7b26e4000 ---p 00000000 00:00 0 
+7ff7b26e4000-7ff7b2794000 rw-p 00000000 00:00 0 
+7ff7b2794000-7ff7b2982000 ---p 00000000 00:00 0 
+7ff7b2982000-7ff7b29bb000 rw-p 00000000 00:00 0 
+7ff7b29bb000-7ff7b2d43000 ---p 00000000 00:00 0 
+7ff7b2d43000-7ff7b2d5d000 r-xp 00000000 fc:00 12463962                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7ff7b2d5d000-7ff7b2f5d000 ---p 0001a000 fc:00 12463962                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7ff7b2f5d000-7ff7b2f5e000 rw-p 0001a000 fc:00 12463962                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7ff7b2f63000-7ff7b2f6e000 r-xp 00000000 fc:00 8388882                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7ff7b2f6e000-7ff7b316d000 ---p 0000b000 fc:00 8388882                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7ff7b316d000-7ff7b316e000 r--p 0000a000 fc:00 8388882                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7ff7b316e000-7ff7b316f000 rw-p 0000b000 fc:00 8388882                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7ff7b316f000-7ff7b3175000 rw-p 00000000 00:00 0 
+7ff7b317b000-7ff7b3186000 r-xp 00000000 fc:00 8388854                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7ff7b3186000-7ff7b3385000 ---p 0000b000 fc:00 8388854                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7ff7b3385000-7ff7b3386000 r--p 0000a000 fc:00 8388854                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7ff7b3386000-7ff7b3387000 rw-p 0000b000 fc:00 8388854                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7ff7b338b000-7ff7b33a1000 r-xp 00000000 fc:00 8388862                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7ff7b33a1000-7ff7b35a0000 ---p 00016000 fc:00 8388862                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7ff7b35a0000-7ff7b35a1000 r--p 00015000 fc:00 8388862                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7ff7b35a1000-7ff7b35a2000 rw-p 00016000 fc:00 8388862                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7ff7b35a2000-7ff7b35a4000 rw-p 00000000 00:00 0 
+7ff7b35ab000-7ff7b35b3000 r-xp 00000000 fc:00 8388890                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7ff7b35b3000-7ff7b37b2000 ---p 00008000 fc:00 8388890                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7ff7b37b2000-7ff7b37b3000 r--p 00007000 fc:00 8388890                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7ff7b37b3000-7ff7b37b4000 rw-p 00008000 fc:00 8388890                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7ff7b37bb000-7ff7b37e5000 r-xp 00000000 fc:00 12463952                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7ff7b37e5000-7ff7b39e5000 ---p 0002a000 fc:00 12463952                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7ff7b39e5000-7ff7b39e7000 rw-p 0002a000 fc:00 12463952                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7ff7b39eb000-7ff7b39f8000 r-xp 00000000 fc:00 12463982                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7ff7b39f8000-7ff7b3bf8000 ---p 0000d000 fc:00 12463982                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7ff7b3bf8000-7ff7b3bfa000 rw-p 0000d000 fc:00 12463982                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7ff7b3bfb000-7ff7b3c02000 r-xp 00000000 fc:00 8393024                    /lib/x86_64-linux-gnu/librt-2.23.so
+7ff7b3c02000-7ff7b3e01000 ---p 00007000 fc:00 8393024                    /lib/x86_64-linux-gnu/librt-2.23.so
+7ff7b3e01000-7ff7b3e02000 r--p 00006000 fc:00 8393024                    /lib/x86_64-linux-gnu/librt-2.23.so
+7ff7b3e02000-7ff7b3e03000 rw-p 00007000 fc:00 8393024                    /lib/x86_64-linux-gnu/librt-2.23.so
+7ff7b3e03000-7ff7b3f0b000 r-xp 00000000 fc:00 8388858                    /lib/x86_64-linux-gnu/libm-2.23.so
+7ff7b3f0b000-7ff7b410a000 ---p 00108000 fc:00 8388858                    /lib/x86_64-linux-gnu/libm-2.23.so
+7ff7b410a000-7ff7b410b000 r--p 00107000 fc:00 8388858                    /lib/x86_64-linux-gnu/libm-2.23.so
+7ff7b410b000-7ff7b410c000 rw-p 00108000 fc:00 8388858                    /lib/x86_64-linux-gnu/libm-2.23.so
+7ff7b4113000-7ff7b4dde000 r-xp 00000000 fc:00 12588015                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7ff7b4dde000-7ff7b4fdd000 ---p 00ccb000 fc:00 12588015                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7ff7b4fdd000-7ff7b50b6000 rw-p 00cca000 fc:00 12588015                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7ff7b50b6000-7ff7b5101000 rw-p 00000000 00:00 0 
+7ff7b5103000-7ff7b52c2000 r-xp 00000000 fc:00 8388866                    /lib/x86_64-linux-gnu/libc-2.23.so
+7ff7b52c2000-7ff7b54c2000 ---p 001bf000 fc:00 8388866                    /lib/x86_64-linux-gnu/libc-2.23.so
+7ff7b54c2000-7ff7b54c6000 r--p 001bf000 fc:00 8388866                    /lib/x86_64-linux-gnu/libc-2.23.so
+7ff7b54c6000-7ff7b54c8000 rw-p 001c3000 fc:00 8388866                    /lib/x86_64-linux-gnu/libc-2.23.so
+7ff7b54c8000-7ff7b54cc000 rw-p 00000000 00:00 0 
+7ff7b54d3000-7ff7b54d6000 r-xp 00000000 fc:00 8388851                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7ff7b54d6000-7ff7b56d5000 ---p 00003000 fc:00 8388851                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7ff7b56d5000-7ff7b56d6000 r--p 00002000 fc:00 8388851                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7ff7b56d6000-7ff7b56d7000 rw-p 00003000 fc:00 8388851                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7ff7b56db000-7ff7b56f0000 r-xp 00000000 fc:00 12719630                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7ff7b56f0000-7ff7b58f0000 ---p 00015000 fc:00 12719630                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7ff7b58f0000-7ff7b58f1000 rw-p 00015000 fc:00 12719630                   /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7ff7b58f3000-7ff7b590b000 r-xp 00000000 fc:00 8395053                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7ff7b590b000-7ff7b5b0a000 ---p 00018000 fc:00 8395053                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7ff7b5b0a000-7ff7b5b0b000 r--p 00017000 fc:00 8395053                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7ff7b5b0b000-7ff7b5b0c000 rw-p 00018000 fc:00 8395053                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7ff7b5b0c000-7ff7b5b10000 rw-p 00000000 00:00 0 
+7ff7b5b13000-7ff7b5b39000 r-xp 00000000 fc:00 8388870                    /lib/x86_64-linux-gnu/ld-2.23.so
+7ff7b5b3a000-7ff7b5b3b000 r--s 00007000 fc:00 12324941                   /home/tariq/.m2/repository/net/sf/geographiclib/GeographicLib-Java/1.44/GeographicLib-Java-1.44.jar
+7ff7b5b42000-7ff7b5b47000 r--s 0004f000 fc:00 12194321                   /home/tariq/.m2/repository/com/googlecode/efficient-java-matrix-library/core/0.26/core-0.26.jar
+7ff7b5b49000-7ff7b5b4e000 r--s 0002e000 fc:00 12191660                   /home/tariq/.m2/repository/org/geotools/gt-api/16.2/gt-api-16.2.jar
+7ff7b5b4e000-7ff7b5b51000 r--s 00023000 fc:00 11407331                   /home/tariq/.m2/repository/jdom/jdom/1.0/jdom-1.0.jar
+7ff7b5b52000-7ff7b5b55000 r--s 0000f000 fc:00 11407091                   /home/tariq/.m2/repository/commons-fileupload/commons-fileupload/1.3.2/commons-fileupload-1.3.2.jar
+7ff7b5b58000-7ff7b5b60000 r--s 00045000 fc:00 13376548                   /home/tariq/.m2/repository/junit/junit/4.12/junit-4.12.jar
+7ff7b5b65000-7ff7b5c0f000 rw-p 00000000 00:00 0 
+7ff7b5c0f000-7ff7b5c12000 ---p 00000000 00:00 0 
+7ff7b5c12000-7ff7b5d13000 rw-p 00000000 00:00 0 
+7ff7b5d15000-7ff7b5d16000 r--s 00002000 fc:00 12194319                   /home/tariq/.m2/repository/jgridshift/jgridshift/1.0/jgridshift-1.0.jar
+7ff7b5d1c000-7ff7b5d1e000 r--s 00009000 fc:00 13376550                   /home/tariq/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+7ff7b5d1e000-7ff7b5d23000 r--s 0002b000 fc:00 11407520                   /home/tariq/.m2/repository/org/apache/maven/surefire/surefire-api/2.19.1/surefire-api-2.19.1.jar
+7ff7b5d25000-7ff7b5d27000 r--s 0000a000 fc:00 11407518                   /home/tariq/.m2/repository/org/apache/maven/surefire/surefire-booter/2.19.1/surefire-booter-2.19.1.jar
+7ff7b5d27000-7ff7b5d28000 r--s 00004000 fc:00 11278453                   /home/tariq/b3partners/Flamingo 4/flamingo/viewer/target/surefire/surefirebooter6395466456936741101.jar
+7ff7b5d2b000-7ff7b5d33000 rw-s 00000000 fc:00 4719857                    /tmp/hsperfdata_tariq/3879
+7ff7b5d34000-7ff7b5d35000 rw-p 00000000 00:00 0 
+7ff7b5d35000-7ff7b5d36000 r--p 00000000 00:00 0 
+7ff7b5d36000-7ff7b5d38000 rw-p 00000000 00:00 0 
+7ff7b5d38000-7ff7b5d39000 r--p 00025000 fc:00 8388870                    /lib/x86_64-linux-gnu/ld-2.23.so
+7ff7b5d39000-7ff7b5d3a000 rw-p 00026000 fc:00 8388870                    /lib/x86_64-linux-gnu/ld-2.23.so
+7ff7b5d3a000-7ff7b5d3c000 rw-p 00000000 00:00 0 
+7ffde0fb5000-7ffde0fd6000 rw-p 00000000 00:00 0                          [stack]
+7ffde0fe3000-7ffde0fe5000 r--p 00000000 00:00 0                          [vvar]
+7ffde0fe5000-7ffde0fe7000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+java_command: /home/tariq/b3partners/Flamingo 4/flamingo/viewer/target/surefire/surefirebooter6395466456936741101.jar /home/tariq/b3partners/Flamingo 4/flamingo/viewer/target/surefire/surefire9190777741921715752tmp /home/tariq/b3partners/Flamingo 4/flamingo/viewer/target/surefire/surefire_37264796433251803914tmp
+java_class_path (initial): /home/tariq/b3partners/Flamingo 4/flamingo/viewer/target/surefire/surefirebooter6395466456936741101.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/lib/jvm/java-8-oracle
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/opt/apache-maven-3.3.9/bin:/opt/apache-ant-1.9.6/bin
+LD_LIBRARY_PATH=/usr/lib/jvm/java-8-oracle/jre/lib/amd64:/usr/lib/jvm/java-8-oracle/jre/lib/i386:
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xac4790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xac4790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x920770], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x921b70], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: SIG_IGN, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGTERM: [libjvm.so+0x921b70], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x921b70], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.2 LTS"
+
+uname:Linux 4.4.0-72-generic #93-Ubuntu SMP Fri Mar 31 14:07:41 UTC 2017 x86_64
+libc:glibc 2.23 NPTL 2.23 
+rlimit: STACK 8192k, CORE 0k, NPROC 63138, NOFILE 65536, AS infinity
+load average:4,79 3,01 2,00
+
+/proc/meminfo:
+MemTotal:       16458240 kB
+MemFree:         3157668 kB
+MemAvailable:    9586528 kB
+Buffers:          708668 kB
+Cached:          5374020 kB
+SwapCached:         1864 kB
+Active:          8458328 kB
+Inactive:        3679152 kB
+Active(anon):    5836260 kB
+Inactive(anon):   413712 kB
+Active(file):    2622068 kB
+Inactive(file):  3265440 kB
+Unevictable:         400 kB
+Mlocked:             400 kB
+SwapTotal:      16736252 kB
+SwapFree:       16733576 kB
+Dirty:              6188 kB
+Writeback:             0 kB
+AnonPages:       6057608 kB
+Mapped:          2011052 kB
+Shmem:            195060 kB
+Slab:             936772 kB
+SReclaimable:     878584 kB
+SUnreclaim:        58188 kB
+KernelStack:       16880 kB
+PageTables:        69580 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    24965372 kB
+Committed_AS:   15372924 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:   2748416 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      289912 kB
+DirectMap2M:    13301760 kB
+DirectMap1G:     3145728 kB
+
+
+CPU:total 8 (8 cores per cpu, 1 threads per core) family 21 model 2 stepping 0, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, clmul, mmxext, 3dnowpref, lzcnt, sse4a, tsc, tscinvbit, tscinv, bmi1
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 16
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+processor	: 1
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 17
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+processor	: 2
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 18
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+processor	: 3
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 19
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+processor	: 4
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 4
+cpu cores	: 4
+apicid		: 20
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+processor	: 5
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 5
+cpu cores	: 4
+apicid		: 21
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+processor	: 6
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 6
+cpu cores	: 4
+apicid		: 22
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+processor	: 7
+vendor_id	: AuthenticAMD
+cpu family	: 21
+model		: 2
+model name	: AMD FX(tm)-8350 Eight-Core Processor
+stepping	: 0
+microcode	: 0x6000803
+cpu MHz		: 4000.000
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 8
+core id		: 7
+cpu cores	: 4
+apicid		: 23
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 popcnt aes xsave avx f16c lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs xop skinit wdt lwp fma4 tce nodeid_msr tbm topoext perfctr_core perfctr_nb cpb hw_pstate vmmcall bmi1 arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold
+bugs		: fxsave_leak sysret_ss_attrs
+bogomips	: 8036.77
+TLB size	: 1536 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 48 bits physical, 48 bits virtual
+power management: ts ttp tm 100mhzsteps hwpstate cpb eff_freq_ro
+
+
+
+Memory: 4k page, physical 16458240k(3157668k free), swap 16736252k(16733576k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.101-b13) for linux-amd64 JRE (1.8.0_101-b13), built on Jun 22 2016 02:59:44 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
+
+time: Wed Jun 14 14:23:16 2017
+elapsed time: 8 seconds (0d 0h 0m 8s)
+

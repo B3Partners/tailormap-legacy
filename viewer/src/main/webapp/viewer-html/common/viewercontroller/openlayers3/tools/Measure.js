@@ -26,7 +26,6 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
         //conf.class = "olControlMeasure";
         conf.onlyClick = false;
         conf.actives =false;
-        //console.log(conf);
         this.mapComponent = conf.viewerController.mapComponent;
         this.frameworkObject = this.initTool(conf.typ);
         this.initEvents();
@@ -181,7 +180,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
         var length;
         length = Math.round(line.getLength() * 100) / 100;
         var output;
-        if (length > 100) {
+        if (length > 1000) {
           output = (Math.round(length / 1000 * 100) / 100) +
               ' ' + 'km';
         } else {
