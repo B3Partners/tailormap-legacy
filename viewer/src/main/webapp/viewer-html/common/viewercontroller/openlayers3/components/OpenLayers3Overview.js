@@ -29,7 +29,6 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         viewer.viewercontroller.openlayers3.components.OpenLayers3Overview.superclass.constructor.call(this, conf);
         var map = this.config.viewerController.mapComponent.getMap().frameworkMap;
         this.map = map;
-        console.log(conf);
         if (Ext.isEmpty(this.config.url)) {
             throw new Error("No URL set for Overview component, unable to load component");
         }
@@ -53,15 +52,28 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         
         
         
-        
+        if(conf.rb == '1')// 1 = tms button in viewer-admin
+        {
         this.layer  = new ol.layer.Tile({
             source: new ol.source.XYZ({
               url:this.config.url+'/{z}/{x}/{-y}.png',
               projection:"EPSG:28992"
             })
           });
-      
+        
+        }
+        else if(conf.rb == '2') // 2 = wms/image button in viewer-admin
+        {
+            this.layer = new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+               url: this.config.url,
+               imageExtent:extentAr,
+               projection: "EPSG:28992"
+            })
+        });
+        }
         this.frameworkObject = new ol.control.OverviewMap({  
+            className: 'ol-overviewmap ol-custom-overviewmap',
             layers:[this.layer],
             view: new ol.View({
                 projection: projection,
@@ -70,7 +82,7 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
                 resolutions: map.getView().getResolutions()
             })
         });
-
+        
         map.addControl(this.frameworkObject);
 
         return this;
