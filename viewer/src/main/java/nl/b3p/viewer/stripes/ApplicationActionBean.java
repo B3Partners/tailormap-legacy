@@ -57,7 +57,7 @@ public class ApplicationActionBean implements ActionBean {
 
     @Validate
     private String name;
-    
+
     @Validate
     private boolean unknown;
 
@@ -236,9 +236,9 @@ public class ApplicationActionBean implements ActionBean {
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         response.put("config", appConfigJSON);
         response.put("success", true);
-        return new StreamingResolution("application/json", new StringReader(response.toString()));    
-    } 
-    
+        return new StreamingResolution("application/json", new StringReader(response.toString()));
+    }
+
     @DefaultHandler
     public Resolution view() throws JSONException, IOException {
         if(unknown){
@@ -349,15 +349,21 @@ public class ApplicationActionBean implements ActionBean {
         }
         return hash;
     }
-    
+
     public Resolution uitloggen(){
         application = findApplication(name, version);
 
-        RedirectResolution login = new RedirectResolution(LoginActionBean.class)
-                .addParameter("name", application.getName())
-                .addParameter("version", application.getVersion());
         context.getRequest().getSession().invalidate();
-        return login;
+
+        if("true".equals(context.getRequest().getParameter("logout"))) {
+            return new RedirectResolution(ApplicationActionBean.class)
+                    .addParameter("name", application.getName())
+                    .addParameter("version", application.getVersion());
+        } else {
+            return new RedirectResolution(LoginActionBean.class)
+                    .addParameter("name", application.getName())
+                    .addParameter("version", application.getVersion());
+        }
     }
 
     private void buildComponentSourceHTML() throws IOException {
@@ -366,7 +372,7 @@ public class ApplicationActionBean implements ActionBean {
 
         // Sort components by classNames, so order is always the same for debugging
         ComponentRegistry cr = ComponentRegistryInitializer.getInstance();
-        
+
         Collection<ViewerComponent> comps = cr.getComponentList();
 
         if(isDebug()) {
@@ -449,7 +455,7 @@ public class ApplicationActionBean implements ActionBean {
         }
         return type;
     }
-    
+
     private void getDefaultViewer(){
         EntityManager em = Stripersist.getEntityManager();
         try {
