@@ -28,27 +28,32 @@ public class ApplicationTreeActionBeanTest extends TestUtil{
     
     @Test
     public void testMoveLevels(){
-        String levelId = "5";
-        String targetId = "6";
+        long themaIdLng = 4;
+        long levelIdLng = 5;
+        long targetIdLng = 6;
+        String levelId = "" + levelIdLng;
+        String targetId = "" + targetIdLng;
         
-        Level thema = entityManager.find(Level.class, 4L);
-        Level groen = entityManager.find(Level.class, 5L);
-        Level woonplaatsen = entityManager.find(Level.class, 6L);
+        Level thema = entityManager.find(Level.class, themaIdLng);
+        Level groen = entityManager.find(Level.class, levelIdLng);
+        Level woonplaatsen = entityManager.find(Level.class, targetIdLng);
         
-        assertEquals((Long)4L, groen.getParent().getId());
-        assertEquals((Long)4L, woonplaatsen.getParent().getId());
+        assertEquals((Long)themaIdLng, groen.getParent().getId());
+        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
         assertEquals(2, thema.getChildren().size());
         
-        instance.moveLevel(levelId, targetId);
+        instance.moveLevel(levelId, targetId,entityManager);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
         
-        thema = entityManager.find(Level.class, 4L);
-        groen = entityManager.find(Level.class, 5L);
-        woonplaatsen = entityManager.find(Level.class, 6L);
+        thema = entityManager.find(Level.class, themaIdLng);
+        groen = entityManager.find(Level.class, levelIdLng);
+        woonplaatsen = entityManager.find(Level.class, targetIdLng);
         
-        assertEquals((Long)4L, woonplaatsen.getParent().getId());
-        assertEquals((Long)6L, groen.getParent().getId());
+        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
+        assertEquals("Level not moved. id ", (Long)targetIdLng, groen.getParent().getId());
         assertEquals(1, thema.getChildren().size());
-        assertEquals(1, groen.getChildren().size());
+        assertEquals(1, woonplaatsen.getChildren().size());
         
     }
 
