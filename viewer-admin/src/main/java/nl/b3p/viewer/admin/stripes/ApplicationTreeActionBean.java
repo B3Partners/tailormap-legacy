@@ -309,7 +309,25 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         };
     }
     
-    protected void moveLevel(String levelToMove, String targetLevel){
+    protected void moveLevel(String levelToMove, String targetLevel, EntityManager em){
+        if(levelToMove == null || targetLevel == null){
+            throw new IllegalArgumentException("level to move, or target level is null.");
+        }
+        Level l = em.find(Level.class, Long.parseLong(levelToMove));
+        Level target = em.find(Level.class, Long.parseLong(targetLevel));
         
+        Level oldParent = l.getParent();
+        target.getChildren().add(l);
+        l.setParent(target);
+        List<Level> newChilds = new ArrayList<>();
+        for (Level level : oldParent.getChildren()) {
+            if(!level.getId().equals(l.getId())){
+                newChilds.add(level);
+            }
+        }
+        oldParent.setChildren(newChilds);
+        em.persist(l);
+        em.persist(target);
+        em.persist(oldParent);
     }
 }
