@@ -122,7 +122,30 @@ Ext.onReady(function() {
         renderTo: 'tree-container',
         width: 325,
         height: 600,
+        viewConfig:{
+          plugins: {
+                ptype: 'treeviewdragdrop',
+                appendOnly: false,
+                allowContainerDrops: false,
+                allowParentInserts: false,
+                sortOnDrop: false
+            },
+                listeners: {
+
+                    drop: function (a) {
+                        var b = 0;
+                    }
+                }
+        },
         listeners: {
+            viewready: function (tree) {
+                var view = tree.getView();
+                var dd = view.findPlugin('treeviewdragdrop');
+                dd.dragZone.onBeforeDrag = function (data, e) {
+                    var rec = view.getRecord(e.getTarget(view.itemSelector));
+                    return !rec.isLeaf();
+                };
+            },
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
                 if(record.get('type') === "level") {
                     levelMenu.config.data.clickedItem = record;
