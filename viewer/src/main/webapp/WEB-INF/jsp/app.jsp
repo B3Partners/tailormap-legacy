@@ -274,6 +274,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 user: <c:choose><c:when test="${actionBean.user != null}">${actionBean.user}</c:when><c:otherwise>null</c:otherwise></c:choose>,
                 loginUrl: <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"/></js:quote>,
                 logoutUrl: <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"><stripes:param name="logout" value="true"/></stripes:url></js:quote>,
+                logoutAndReturnUrl: <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"><stripes:param name="logout" value="true"/><stripes:param name="returnAfterLogout" value="true"/></stripes:url></js:quote>,
                 contextPath: "${contextPath}",
                 absoluteURIPrefix: "${absoluteURIPrefix}",
                 actionbeanUrl: actionBeans["appConfig"]

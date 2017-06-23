@@ -89,7 +89,7 @@ Ext.define("viewer.AppLoader", {
             },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
+
                 if(response.success) {
                     this.processAppConfig(Ext.JSON.decode(response.config));
                 } else {
@@ -105,7 +105,7 @@ Ext.define("viewer.AppLoader", {
             }
         });
     },
-    
+
     /**
      * Load a Flamingo application (create styles, load ViewerController
      * @param {Object} appConfig
@@ -178,7 +178,12 @@ Ext.define("viewer.AppLoader", {
      * Redirect to logout page
      */
     logout: function() {
-        window.location.href = this.config.logoutUrl;
+        var details = this.config.viewerController.app.details;
+        if(details.returnAfterLogout && "true" === details.returnAfterLogout) {
+            window.location.href = this.config.logoutAndReturnUrl;
+        } else {
+            window.location.href = this.config.logoutUrl;
+        }
     },
 
     /**

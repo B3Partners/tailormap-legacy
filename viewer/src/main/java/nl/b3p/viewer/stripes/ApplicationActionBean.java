@@ -355,7 +355,8 @@ public class ApplicationActionBean implements ActionBean {
 
         context.getRequest().getSession().invalidate();
 
-        if("true".equals(context.getRequest().getParameter("logout"))) {
+        if("true".equals(context.getRequest().getParameter("logout"))
+        && "true".equals(context.getRequest().getParameter("returnAfterLogout"))) {
             return new RedirectResolution(ApplicationActionBean.class)
                     .addParameter("name", application.getName())
                     .addParameter("version", application.getVersion());
