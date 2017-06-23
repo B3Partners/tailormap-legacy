@@ -48,6 +48,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     
     @Validate
     private String levelId;
+    
+    @Validate(on="moveLevel",required=true)
+    private String targetLevelId;
 
     @Validate(on="addLevel",required=true)
     private String name;
@@ -95,6 +98,15 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
+
+    public String getTargetLevelId() {
+        return targetLevelId;
+    }
+
+    public void setTargetLevelId(String targetLevelId) {
+        this.targetLevelId = targetLevelId;
+    }
+    
     //</editor-fold>
     
     @DefaultHandler
@@ -285,5 +297,19 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                response.getWriter().print(j.toString());
            }
         };
+    }
+    
+    public Resolution moveLevel() {
+        final JSONObject j = new JSONObject();
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(j.toString());
+            }
+        };
+    }
+    
+    protected void moveLevel(String levelToMove, String targetLevel){
+        
     }
 }
