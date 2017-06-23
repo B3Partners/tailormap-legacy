@@ -317,6 +317,10 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         Level target = em.find(Level.class, Long.parseLong(targetLevel));
         
         Level oldParent = l.getParent();
+        if(l == null || target == null || oldParent == null){
+            throw new IllegalArgumentException("Passed ids yield no levels, or level doesn't have a parent (do not try to move the application level. No. Don't.)");
+        }
+        
         target.getChildren().add(l);
         l.setParent(target);
         List<Level> newChilds = new ArrayList<>();
