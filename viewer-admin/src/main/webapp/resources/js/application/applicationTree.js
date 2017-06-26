@@ -130,12 +130,29 @@ Ext.onReady(function() {
                 allowParentInserts: false,
                 sortOnDrop: false
             },
-                listeners: {
-
-                    drop: function (a) {
-                        var b = 0;
+            listeners: {
+                drop: {
+                    fn: function (target, data) {
+                        var record = this.getRecord(target);
+                        var targetId =record.id;
+                        var nodeToMove = data.records[0].id;
+                        Ext.Ajax.request({
+                            url: actionBeans.appTree,
+                            params: {
+                                moveLevel:true,
+                                targetLevelId: targetId,
+                                levelId: nodeToMove
+                            },
+                            method: 'POST',
+                            success: function (result, request) {
+                            },
+                            failure: function (result, request) {
+                                Ext.MessageBox.alert('Failed', result.responseText);
+                            }
+                        });
                     }
                 }
+            }
         },
         listeners: {
             viewready: function (tree) {
