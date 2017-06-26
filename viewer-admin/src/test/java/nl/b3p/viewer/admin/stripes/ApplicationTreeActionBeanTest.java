@@ -31,8 +31,8 @@ public class ApplicationTreeActionBeanTest extends TestUtil{
         long themaIdLng = 4;
         long levelIdLng = 5;
         long targetIdLng = 6;
-        String levelId = "" + levelIdLng;
-        String targetId = "" + targetIdLng;
+        String levelId = "n" + levelIdLng;
+        String targetId = "n" + targetIdLng;
         
         Level thema = entityManager.find(Level.class, themaIdLng);
         Level groen = entityManager.find(Level.class, levelIdLng);
@@ -54,6 +54,39 @@ public class ApplicationTreeActionBeanTest extends TestUtil{
         assertEquals("Level not moved. id ", (Long)targetIdLng, groen.getParent().getId());
         assertEquals(1, thema.getChildren().size());
         assertEquals(1, woonplaatsen.getChildren().size());
+        
+    }
+    @Test
+    public void testMoveLevelToSame(){
+        long themaIdLng = 4;
+        long levelIdLng = 5;
+        long targetIdLng = 6;
+        String levelId = "n" + levelIdLng;
+        String targetId = "n" + targetIdLng;
+        
+        Level thema = entityManager.find(Level.class, themaIdLng);
+        Level groen = entityManager.find(Level.class, levelIdLng);
+        Level woonplaatsen = entityManager.find(Level.class, targetIdLng);
+        
+        assertEquals((Long)themaIdLng, groen.getParent().getId());
+        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
+        assertEquals(2, thema.getChildren().size());
+        
+        instance.moveLevel(levelId, "n" + themaIdLng ,entityManager);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        
+        thema = entityManager.find(Level.class, themaIdLng);
+        groen = entityManager.find(Level.class, levelIdLng);
+        woonplaatsen = entityManager.find(Level.class, targetIdLng);
+        
+        assertEquals((Long)themaIdLng, groen.getParent().getId());
+        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
+        assertEquals(2, thema.getChildren().size());
+        
+        assertEquals(2, thema.getChildren().size());
+        assertEquals(0, woonplaatsen.getChildren().size());
+        assertEquals(0, groen.getChildren().size());
         
     }
 

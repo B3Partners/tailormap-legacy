@@ -507,7 +507,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     protected static void walkAppTreeForStartMap(List selectedContent, Level l, Application app){
         StartLevel sl = l.getStartLevels().get(app);
+        boolean selected = false;
         if(sl != null && sl.getSelectedIndex() != null && !sl.isRemoved()) {
+            selected = true;
             selectedContent.add(sl);
         }
         
@@ -518,8 +520,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             }
         }
         
-        for(Level child: l.getChildren()) {
-            walkAppTreeForStartMap(selectedContent, child,app);
+        if (!selected) {
+            for (Level child : l.getChildren()) {
+                walkAppTreeForStartMap(selectedContent, child, app);
+            }
         }
     }
     
