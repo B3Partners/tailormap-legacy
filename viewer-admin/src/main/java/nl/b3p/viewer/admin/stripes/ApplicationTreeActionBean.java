@@ -301,6 +301,18 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     
     public Resolution moveLevel() {
         final JSONObject j = new JSONObject();
+        j.put("success", false);
+        try{
+            EntityManager em = Stripersist.getEntityManager();
+            moveLevel(levelId, targetLevelId, em);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
+            application.authorizationsModified();
+            em.getTransaction().commit(); 
+           j.put("success", true);
+        }catch(Exception e){
+            j.put("message", e.getLocalizedMessage());
+            
+        }
         return new StreamingResolution("application/json") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
@@ -313,6 +325,13 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         if(levelToMove == null || targetLevel == null){
             throw new IllegalArgumentException("level to move, or target level is null.");
         }
+        if(levelToMove.contains("n")){
+            levelToMove = levelToMove.substring(1);
+        }
+        if(targetLevel.contains("n")){
+            targetLevel = targetLevel.substring(1);
+        }
+        
         Level l = em.find(Level.class, Long.parseLong(levelToMove));
         Level target = em.find(Level.class, Long.parseLong(targetLevel));
         
@@ -321,17 +340,19 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             throw new IllegalArgumentException("Passed ids yield no levels, or level doesn't have a parent (do not try to move the application level. No. Don't.)");
         }
         
-        target.getChildren().add(l);
-        l.setParent(target);
-        List<Level> newChilds = new ArrayList<>();
-        for (Level level : oldParent.getChildren()) {
-            if(!level.getId().equals(l.getId())){
-                newChilds.add(level);
+        if (!oldParent.getId().equals(target.getId())) {
+            target.getChildren().add(l);
+            l.setParent(target);
+            List<Level> newChilds = new ArrayList<>();
+            for (Level level : oldParent.getChildren()) {
+                if (!level.getId().equals(l.getId())) {
+                    newChilds.add(level);
+                }
             }
+            oldParent.setChildren(newChilds);
+            em.persist(l);
+            em.persist(target);
+            em.persist(oldParent);
         }
-        oldParent.setChildren(newChilds);
-        em.persist(l);
-        em.persist(target);
-        em.persist(oldParent);
     }
 }

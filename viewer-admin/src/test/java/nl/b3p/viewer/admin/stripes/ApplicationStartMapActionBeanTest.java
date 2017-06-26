@@ -41,7 +41,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         instance.setCheckedLayersString("[]");
     }
    
-    @Test
+    //@Test
     public void testRemoveStartLayerFromMashup(){
         
         initData(true);
@@ -89,7 +89,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
    
-    @Test
+    //@Test
     public void testRemoveStartLevelFromMashup(){
         
         initData(true);
@@ -140,7 +140,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-    @Test
+    //@Test
     public void testRemoveStartLevelWithParent(){
         initData(true);
         application = entityManager.find(Application.class, 1L);
@@ -198,7 +198,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-    @Test
+    //@Test
     public void testWalkAppTreeForStartMapAfterRemovingSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         List selectedObjects = new ArrayList();
@@ -218,6 +218,56 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
     }
     
     //@Test
+    public void testWalkAppTreeForStartMap(){
+        Application application = entityManager.find(Application.class, applicationId);
+        List selectedObjects = new ArrayList();
+        Level rootlevel = application.getRoot();
+        instance.walkAppTreeForStartMap(selectedObjects, rootlevel, application);
+        selectedObjects.stream().map((selectedObject) -> {
+            Integer lhsIndex;
+            if (selectedObject instanceof StartLevel) {
+                lhsIndex = ((StartLevel) selectedObject).getSelectedIndex();
+            } else {
+                lhsIndex = ((StartLayer) selectedObject).getSelectedIndex();
+            }
+            return lhsIndex;
+        }).filter((lhsIndex) -> (lhsIndex.equals(-1))).forEachOrdered((_item) -> {
+            fail("selected index should never be -1 in the startMap");
+        });
+        assertEquals(3,selectedObjects.size());
+    }
+    
+    @Test
+    public void testWalkAppTreeForStartMapAfterMovingLevelIntoLevel(){
+        Application application = entityManager.find(Application.class, applicationId);
+        List selectedObjects = new ArrayList();
+        Level rootlevel = application.getRoot();
+        
+        
+        long themaIdLng = 6;
+        String levelId = "n5";
+        ApplicationTreeActionBean instance2 = new ApplicationTreeActionBean();
+        instance2.moveLevel(levelId, "n" + themaIdLng ,entityManager); 
+        
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        
+        ApplicationStartMapActionBean.walkAppTreeForStartMap(selectedObjects, rootlevel, application);
+        selectedObjects.stream().map((selectedObject) -> {
+            Integer lhsIndex;
+            if (selectedObject instanceof StartLevel) {
+                lhsIndex = ((StartLevel) selectedObject).getSelectedIndex();
+            } else {
+                lhsIndex = ((StartLayer) selectedObject).getSelectedIndex();
+            }
+            return lhsIndex;
+        }).filter((lhsIndex) -> (lhsIndex.equals(-1))).forEachOrdered((_item) -> {
+            fail("selected index should never be -1 in the startMap");
+        }); 
+       assertEquals(2,selectedObjects.size());
+    }
+    
+    //@Test
     public void testLoadSelectedLayersAfterRemovingSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         instance.setLevelId("n4");
@@ -230,7 +280,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-    @Test
+    //@Test
     public void testLoadSelectedLayersAfterRemovingSecondSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         
@@ -262,7 +312,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         }
     }
     
-    @Test
+    //@Test
     public void testLoadResetSublayersAfterReaddingParent(){
         /*
         This test is for the situation when you have a tree:
@@ -324,7 +374,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         assertTrue(foundB);
     }
     
-    @Test
+    //@Test
     public void testSelectedContentCreationWithDeletedLevel(){
         testRemoveStartLevelWithParent();
         SelectedContentCache scc = new SelectedContentCache();
@@ -334,7 +384,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         assertTrue("Should have removed parameter in level in selectedContent", level5.optBoolean("removed",false));
     }
     
-    @Test
+    //@Test
     public void testSelectedContentCreationWithDeletedParent(){
         
         testLoadSelectedLayersAfterRemovingSecondSublevel();
