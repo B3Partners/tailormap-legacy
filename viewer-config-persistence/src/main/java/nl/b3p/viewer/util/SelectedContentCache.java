@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 B3Partners B.V.
+ * Copyright (C) 2013-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -271,7 +271,7 @@ public class SelectedContentCache {
             o.put("selectedContent", selectedContent);
 
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em, false);
 
             Collections.sort(selectedObjects, new Comparator() {
                 @Override
@@ -322,7 +322,7 @@ public class SelectedContentCache {
         return o;
     }
 
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em) throws JSONException {
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em, boolean previouslySelected) throws JSONException {
         
         StartLevel sl = l.getStartLevels().get(app);
         if(sl != null){
@@ -337,9 +337,11 @@ public class SelectedContentCache {
                 levelId = "level_" + levelId;
             }
             levels.put(levelId, o);
-
-            if (sl != null && sl.getSelectedIndex() != null && !sl.isRemoved()) {
+            boolean selected = false || previouslySelected;
+            
+            if (sl != null && sl.getSelectedIndex() != null && !sl.isRemoved() && !previouslySelected) {
                 selectedContent.add(sl);
+                selected = true;
             }
 
             for (ApplicationLayer al : l.getLayers()) {
@@ -382,7 +384,7 @@ public class SelectedContentCache {
                     Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
                     childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                     jsonChildren.put(childObject);
-                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em, selected);
                 }
             }
         }

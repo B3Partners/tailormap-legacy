@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext, actionBeans, rootId, rootName, imagesPath */
+
 Ext.onReady(function() {
 
     // Definition of the TreeNode model. Get function is overridden, so custom
@@ -32,8 +34,8 @@ Ext.onReady(function() {
             {name: 'text', type: 'string', mapping: 'name'},
             {name: 'icon', type: 'string', convert: function(fieldName, record) {
                 var nodeType = record.get('type');
-                if(nodeType == "level") return imagesPath + "folder.png";
-                if(nodeType == "layer") return imagesPath + "map.png";
+                if(nodeType === "level") return imagesPath + "folder.png";
+                if(nodeType === "layer") return imagesPath + "map.png";
             }},
             {name: 'leaf', type: 'boolean', mapping: 'isLeaf'}
         ]
@@ -78,7 +80,7 @@ Ext.onReady(function() {
             text: 'Naam wijzigen',
             listeners: {
                 click: function(item, e, eOpts) {
-                    changeLevelName(item.ownerCt.config.data.clickedItem)
+                    changeLevelName(item.ownerCt.config.data.clickedItem);
                 }
             }
         },{
@@ -124,9 +126,49 @@ Ext.onReady(function() {
         renderTo: 'tree-container',
         width: 325,
         height: 600,
+        viewConfig:{
+          plugins: {
+                ptype: 'treeviewdragdrop',
+                appendOnly: false,
+                allowContainerDrops: false,
+                allowParentInserts: false,
+                sortOnDrop: false
+            },
+            listeners: {
+                drop: {
+                    fn: function (target, data) {
+                        var record = this.getRecord(target);
+                        var targetId =record.id;
+                        var nodeToMove = data.records[0].id;
+                        Ext.Ajax.request({
+                            url: actionBeans.appTree,
+                            params: {
+                                moveLevel:true,
+                                targetLevelId: targetId,
+                                levelId: nodeToMove
+                            },
+                            method: 'POST',
+                            success: function (result, request) {
+                            },
+                            failure: function (result, request) {
+                                Ext.MessageBox.alert('Failed', result.responseText);
+                            }
+                        });
+                    }
+                }
+            }
+        },
         listeners: {
+            viewready: function (tree) {
+                var view = tree.getView();
+                var dd = view.findPlugin('treeviewdragdrop');
+                dd.dragZone.onBeforeDrag = function (data, e) {
+                    var rec = view.getRecord(e.getTarget(view.itemSelector));
+                    return !rec.isLeaf();
+                };
+            },
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
-                if(record.get('type') == "level") {
+                if(record.get('type') === "level") {
                     levelMenu.config.data.clickedItem = record;
                     levelMenu.showAt(event.getXY());
                 } else {
@@ -145,10 +187,10 @@ Ext.onReady(function() {
             itemclick: function(view, record, item, index, event, eOpts) {
                 var recordType = record.get('type');
                 var id = record.get('id').substr(1);
-                if(recordType == "level") {
+                if(recordType === "level") {
                     Ext.get('editFrame').dom.src = actionBeans.appTreeLevel + '?edit=t&level=' + id;
                 }
-                if(recordType == "layer") {
+                if(recordType === "layer") {
                     Ext.get('editFrame').dom.src = actionBeans.appTreeLayer + '?edit=t&applicationLayer=' + id; //+ '&parentId=' + record.parentNode.get('id');
                 }
 
@@ -170,7 +212,7 @@ Ext.onReady(function() {
 function addNode(node, parentid, callback) {
     var record = null;
     var tree = Ext.getCmp('applicationtree');
-    if(parentid == rootId || parentid == 'n'+rootId) {
+    if(parentid === rootId || parentid === 'n'+rootId) {
         record = tree.getRootNode();
     } else {
         record = tree.getRootNode().findChild('id', parentid, true);
@@ -196,13 +238,13 @@ function addNode(node, parentid, callback) {
                 if(record.findChild("id", node.data.id) == null) {
 
                     // New layer always added at bottom
-                    if(node.data.id.charAt(0) == "s") {
+                    if(node.data.id.charAt(0) === "s") {
                         record.appendChild(node);
                     } else {
                         // Add as last level before services
                         var firstAppLayer = null;
                         record.eachChild(function(child) {
-                            if(firstAppLayer == null && child.data.id.charAt(0) == "s") {
+                            if(firstAppLayer == null && child.data.id.charAt(0) === "s") {
                                 firstAppLayer = child;
                             }
                         });
@@ -233,7 +275,7 @@ function addSublevel(record) {
         buttons: Ext.MessageBox.OKCANCEL,
         prompt: true,
         fn: function(btn, text, cBoxes){
-            if(btn=='ok' && text){
+            if(btn === 'ok' && text){
                 Ext.Ajax.request({
                     url: actionBeans.appTree + "?addLevel=t",
                     params: {
@@ -268,7 +310,7 @@ function changeLevelName(record) {
         prompt:true,
         value: record.data.text,
         fn: function(btn, text, cBoxes){
-            if(btn=='ok' && text){
+            if(btn === 'ok' && text){
 
                 Ext.Ajax.request({
                     url: actionBeans.appTreeLevel,
@@ -351,7 +393,7 @@ function renameNode(nodeid, newname) {
 function refreshNode(nodeid) {
     var tree = Ext.getCmp('applicationtree');
     var treeStore = tree.getStore();
-    var record = treeStore.getNodeById(nodeid)
+    var record = treeStore.getNodeById(nodeid);
     // Set isLeaf false so if node did not have children before, it would
     // correctly expand when children are added
     record.set('leaf', false);

@@ -217,7 +217,57 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         });
     }
     
-    //@Test
+    @Test
+    public void testWalkAppTreeForStartMap(){
+        Application application = entityManager.find(Application.class, applicationId);
+        List selectedObjects = new ArrayList();
+        Level rootlevel = application.getRoot();
+        instance.walkAppTreeForStartMap(selectedObjects, rootlevel, application);
+        selectedObjects.stream().map((selectedObject) -> {
+            Integer lhsIndex;
+            if (selectedObject instanceof StartLevel) {
+                lhsIndex = ((StartLevel) selectedObject).getSelectedIndex();
+            } else {
+                lhsIndex = ((StartLayer) selectedObject).getSelectedIndex();
+            }
+            return lhsIndex;
+        }).filter((lhsIndex) -> (lhsIndex.equals(-1))).forEachOrdered((_item) -> {
+            fail("selected index should never be -1 in the startMap");
+        });
+        assertEquals(3,selectedObjects.size());
+    }
+    
+    @Test
+    public void testWalkAppTreeForStartMapAfterMovingLevelIntoLevel(){
+        Application application = entityManager.find(Application.class, applicationId);
+        List selectedObjects = new ArrayList();
+        Level rootlevel = application.getRoot();
+        
+        
+        long themaIdLng = 6;
+        String levelId = "n5";
+        ApplicationTreeActionBean instance2 = new ApplicationTreeActionBean();
+        instance2.moveLevel(levelId, "n" + themaIdLng ,entityManager); 
+        
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        
+        ApplicationStartMapActionBean.walkAppTreeForStartMap(selectedObjects, rootlevel, application);
+        selectedObjects.stream().map((selectedObject) -> {
+            Integer lhsIndex;
+            if (selectedObject instanceof StartLevel) {
+                lhsIndex = ((StartLevel) selectedObject).getSelectedIndex();
+            } else {
+                lhsIndex = ((StartLayer) selectedObject).getSelectedIndex();
+            }
+            return lhsIndex;
+        }).filter((lhsIndex) -> (lhsIndex.equals(-1))).forEachOrdered((_item) -> {
+            fail("selected index should never be -1 in the startMap");
+        }); 
+       assertEquals(2,selectedObjects.size());
+    }
+    
+    @Test
     public void testLoadSelectedLayersAfterRemovingSublevel(){
         testRemoveStartLevelWithParent(); // ok, maybe not that nice to call a different testmethod, but it creates the exact state we need.
         instance.setLevelId("n4");

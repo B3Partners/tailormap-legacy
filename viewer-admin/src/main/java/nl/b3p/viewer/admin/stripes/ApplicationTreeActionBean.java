@@ -48,6 +48,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     
     @Validate
     private String levelId;
+    
+    @Validate(on="moveLevel",required=true)
+    private String targetLevelId;
 
     @Validate(on="addLevel",required=true)
     private String name;
@@ -95,6 +98,15 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
+
+    public String getTargetLevelId() {
+        return targetLevelId;
+    }
+
+    public void setTargetLevelId(String targetLevelId) {
+        this.targetLevelId = targetLevelId;
+    }
+    
     //</editor-fold>
     
     @DefaultHandler
@@ -285,5 +297,62 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                response.getWriter().print(j.toString());
            }
         };
+    }
+    
+    public Resolution moveLevel() {
+        final JSONObject j = new JSONObject();
+        j.put("success", false);
+        try{
+            EntityManager em = Stripersist.getEntityManager();
+            moveLevel(levelId, targetLevelId, em);
+            SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
+            application.authorizationsModified();
+            em.getTransaction().commit(); 
+           j.put("success", true);
+        }catch(Exception e){
+            j.put("message", e.getLocalizedMessage());
+            
+        }
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(j.toString());
+            }
+        };
+    }
+    
+    protected void moveLevel(String levelToMove, String targetLevel, EntityManager em){
+        if(levelToMove == null || targetLevel == null){
+            throw new IllegalArgumentException("level to move, or target level is null.");
+        }
+        if(levelToMove.contains("n")){
+            levelToMove = levelToMove.substring(1);
+        }
+        if(targetLevel.contains("n")){
+            targetLevel = targetLevel.substring(1);
+        }
+        
+        Level l = em.find(Level.class, Long.parseLong(levelToMove));
+        Level target = em.find(Level.class, Long.parseLong(targetLevel));
+        
+        Level oldParent = l.getParent();
+        if(l == null || target == null || oldParent == null){
+            throw new IllegalArgumentException("Passed ids yield no levels, or level doesn't have a parent (do not try to move the application level. No. Don't.)");
+        }
+        
+        if (!oldParent.getId().equals(target.getId())) {
+            target.getChildren().add(l);
+            l.setParent(target);
+            List<Level> newChilds = new ArrayList<>();
+            for (Level level : oldParent.getChildren()) {
+                if (!level.getId().equals(l.getId())) {
+                    newChilds.add(level);
+                }
+            }
+            oldParent.setChildren(newChilds);
+            em.persist(l);
+            em.persist(target);
+            em.persist(oldParent);
+        }
     }
 }
