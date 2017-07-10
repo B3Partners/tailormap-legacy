@@ -160,10 +160,9 @@ public class PrintActionBean implements ActionBean {
         }
         
         final String mimeType;
-//        if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
-//            mimeType=MimeConstants.MIME_RTF;
-//        }else
-        if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("savePDF")) {
+        if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
+            mimeType=MimeConstants.MIME_RTF;
+        } else if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("savePDF")) {
             mimeType=MimeConstants.MIME_PDF;
         }else if(jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("mailPDF")){
             mimeType=MimeConstants.MIME_PDF;
@@ -228,9 +227,9 @@ public class PrintActionBean implements ActionBean {
                     case MimeConstants.MIME_PDF:
                         filename += ".pdf";
                         break;
-//                    case MimeConstants.MIME_RTF:
-//                        filename += ".rtf";
-//                        break;
+                    case MimeConstants.MIME_RTF:
+                        filename += ".rtf";
+                        break;
                 }
                 if (templateUrl.toLowerCase().startsWith("http://") || templateUrl.toLowerCase().startsWith("ftp://")){
                     PrintGenerator.createOutput(info,mimeType, new URL(templateUrl),true,response,filename);

@@ -46,6 +46,7 @@ import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -102,13 +103,13 @@ public class PrintGenerator  implements Runnable{
     
     
     public static void createOutput(PrintInfo info, String mimeType, File xslFile,
-            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException {
+            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException, SAXException {
 
         String path = new File(xslFile.getParent()).toURI().toString();
         createOutput(info, mimeType, new FileInputStream(xslFile), path, addJavascript, response,filename);
     }
     public static void createOutput(PrintInfo info, String mimeType, URL xslUrl,
-            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException {
+            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException, SAXException {
 
         String path = xslUrl.toString().substring(0, xslUrl.toString().lastIndexOf("/")+1);
         createOutput(info, mimeType, xslUrl.openStream(), path, addJavascript, response,filename);
@@ -126,7 +127,7 @@ public class PrintGenerator  implements Runnable{
      * @throws IOException if saving the image fails
      */
     public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath,
-            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException {
+            boolean addJavascript, HttpServletResponse response, String filename) throws URISyntaxException, IOException, SAXException {
 
   
         /* Setup output stream */
@@ -153,10 +154,11 @@ public class PrintGenerator  implements Runnable{
     
     
     public static void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream out, String filename)
-            throws URISyntaxException, IOException {
+            throws URISyntaxException, IOException, SAXException {
         
         /* Setup fopfactory */
-        FopFactory fopFactory = FopFactory.newInstance(new URI(basePath));
+        FopFactory fopFactory = FopFactory.newInstance(new URI(basePath),
+                PrintGenerator.class.getClassLoader().getResourceAsStream("fop.xconf"));
 
         try {
             /* Construct fop */
