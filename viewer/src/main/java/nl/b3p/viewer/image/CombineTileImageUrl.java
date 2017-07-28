@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public abstract class CombineTileImageUrl extends CombineImageUrl{
 
-    private Bbox serviceBbox = null;
+    protected Bbox serviceBbox = null;
     private Double[] resolutions = null;
     private Integer tileWidth = 256;
     private Integer tileHeight = 256;
@@ -70,8 +70,9 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         return zoomlevel;
     }
 
+    @Override
     public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox){
-        List<CombineImageUrl> tileImages = new ArrayList<CombineImageUrl>();
+        List<CombineImageUrl> tileImages = new ArrayList<>();
 
         //get closest res
         Integer zoomlevel = getClosestZoomlevel(imbbox);
@@ -139,7 +140,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
      * @param zoomlevel
      * @return
      */
-    public CombineStaticImageUrl createTile(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY,int zoomlevel, int numX, int numY) {
+    public CombineStaticImageUrl createTile(ImageBbox imageBbox, Bbox tileBbox, int tileIndexX, int tileIndexY,int zoomlevel, int imgIndexX, int imgIndexY) {
 
         CombineStaticImageUrl tile = new CombineStaticImageUrl();
         tile.setBbox(tileBbox);
@@ -154,13 +155,13 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         Double width = Math.floor( (tileBbox.getMaxx() - tileBbox.getMinx()) / msx );
         Double height = Math.floor( (tileBbox.getMaxy() - tileBbox.getMiny()) / msy );
 
-        tile.setX(posX.intValue() - numX);
-        tile.setY(posY.intValue() + numY);
+        tile.setX(posX.intValue() - imgIndexX);
+        tile.setY(posY.intValue() + imgIndexY);
 
         tile.setWidth(width.intValue());
         tile.setHeight(height.intValue());
 
-        tile.setUrl(createUrl(imageBbox, tileBbox, indexX, indexY,zoomlevel));
+        tile.setUrl(createUrl(imageBbox, tileBbox, tileIndexX, tileIndexY,zoomlevel));
 
         return tile;
     }

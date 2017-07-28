@@ -386,7 +386,7 @@ public class TileService extends GeoService {
         return tms;
     }
     
-    protected double metersPerUnit(String crs){
+    public static double metersPerUnit(String crs){
         return 1;
     }
     

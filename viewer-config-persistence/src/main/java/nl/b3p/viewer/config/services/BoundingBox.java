@@ -93,6 +93,16 @@ public class BoundingBox implements Cloneable {
         setMaxx(Double.parseDouble(bboxTokens[2].trim()));
         setMaxy(Double.parseDouble(bboxTokens[3].trim()));
     }
+    
+    public static BoundingBox fromJSONObject(JSONObject obj){
+        BoundingBox bbox = new BoundingBox();
+        bbox.setMaxx(obj.getDouble("maxx"));
+        bbox.setMaxy(obj.getDouble("maxy"));
+        bbox.setMinx(obj.getDouble("minx"));
+        bbox.setMiny(obj.getDouble("miny"));
+        return bbox;
+    }
+    
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();
         if(crs != null) {

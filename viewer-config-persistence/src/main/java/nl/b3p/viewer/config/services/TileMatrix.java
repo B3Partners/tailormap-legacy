@@ -46,6 +46,20 @@ public class TileMatrix {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TileMatrixSet matrixSet;
 
+    public static TileMatrix fromJSONObject(JSONObject tilematrix){
+        TileMatrix tm = new TileMatrix();
+        tm.setDescription(tilematrix.getString("description"));
+        tm.setMatrixHeight(tilematrix.getInt("matrixHeight"));
+        tm.setMatrixWidth(tilematrix.getInt("matrixWidth"));
+        tm.setScaleDenominator(tilematrix.getString("scaleDenominator"));
+        tm.setTopLeftCorner(tilematrix.getString("topLeftCorner"));
+        tm.setTileHeight(tilematrix.getInt("tileHeight"));
+        tm.setTileWidth(tilematrix.getInt("tileWidth"));
+        tm.setIdentifier(tilematrix.getString("identifier"));
+        tm.setTitle(tilematrix.getString("title"));
+        return tm;
+    }
+    
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
