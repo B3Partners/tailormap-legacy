@@ -34,9 +34,13 @@ Ext.define ("viewer.components.LayerSelector",{
         viewerController: {},
         restriction : null,
         layers: null,
-        useTabs: false
+        useTabs: false,
+        label: null
     }, 
     constructor: function (conf){
+        if(!conf.label){
+            conf.label = 'Kies kaartlaag';
+        }
         this.initConfig(conf);
         viewer.components.LayerSelector.superclass.constructor.call(this, this.config);
         
@@ -81,7 +85,7 @@ Ext.define ("viewer.components.LayerSelector",{
 
     createCombobox: function() {
         var comboboxConfig = {
-            fieldLabel: 'Kies kaartlaag',
+            fieldLabel: this.config.label,
             emptyText:'Maak uw keuze',
             store: this.layerstore,
             queryMode: 'local',
