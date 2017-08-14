@@ -52,9 +52,10 @@ Ext.define ("viewer.components.AttributeList",{
     topContainer: null,
     schema: null,
     featureExtentService: null,
+    
     constructor: function (conf){
         this.initConfig(conf);
-	viewer.components.AttributeList.superclass.constructor.call(this, this.config);
+        viewer.components.AttributeList.superclass.constructor.call(this, this.config);
         var me = this;
         this.grids={};
         this.pagers={};
@@ -148,7 +149,7 @@ Ext.define ("viewer.components.AttributeList",{
                 layout: 'fit'
             },{
                 id: this.name + 'mainPagerPanel',
-                xtype: "container",
+                    xtype: "container"
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
