@@ -1,3 +1,5 @@
+/* global Ext */
+
 /**
  * @class 
  * @param id The id of the Feature
@@ -18,10 +20,9 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
      */
     constructor: function (config){
         this.initConfig(config);
-        if(this.label == null){
+        if(!this.label){
             this.label = "";
         }
-       // this.wktParser = new OpenLayers.Format.WKT();
     },
     
     /**
