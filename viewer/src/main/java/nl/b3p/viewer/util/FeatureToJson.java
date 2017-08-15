@@ -106,7 +106,9 @@ public class FeatureToJson {
     }
 
     /**
-     * Get the features, optionally sorted, as JSONArray with the given params
+     * Get the features, optionally sorted, as JSONArray with the given params.
+     * <strong>Note</strong> that the FeatureSource fs will be closed and
+     * disposed.
      *
      * @param al The application layer(if there is a application layer)
      * @param ft The featuretype that must be used to get the features
@@ -140,19 +142,16 @@ public class FeatureToJson {
         
         if (sort!=null){
             setSortBy(q, propertyNames, sort, dir);
-        }
-        /* Use the first property as sort field, otherwise geotools while give a error when quering
-         * a JDBC featureType without a primary key.
-         */
-        else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
-            setSortBy(q, propertyNames.get(0),dir);
+        } else if ((fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore) && !propertyNames.isEmpty()) {
+            // Use the first property as sort field, otherwise geotools will give a error when quering a JDBC featureType without a primary key.
+            setSortBy(q, propertyNames.get(0), dir);
         }
         Integer start = q.getStartIndex();
         if (start==null){
             start=0;
         }
         boolean offsetSupported = fs.getQueryCapabilities().isOffsetSupported();
-        //if offSet is not supported, get more features (start + the wanted features)
+        // if offSet is not supported, get more features (start + the wanted features)
         if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES || fs.getDataStore() instanceof WFSDataStore){
             q.setMaxFeatures(q.getMaxFeatures()+start);
         }

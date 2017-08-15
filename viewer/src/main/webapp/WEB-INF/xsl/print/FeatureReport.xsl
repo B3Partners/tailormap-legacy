@@ -10,7 +10,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
-    
+
     <xsl:output method="xml" version="1.0" omit-xml-declaration="no" indent="yes"/>
 
     <xsl:import href="legend.xsl"/>
@@ -63,20 +63,18 @@
                             <xsl:value-of select="title"/>
                         </fo:block>
                     </fo:block-container>
-                    
+
                     <fo:block-container width="20.0cm" height="0.75cm" top="1.6cm" left="0cm" background-color="#FFFFFF" xsl:use-attribute-sets="column-block">
                         <fo:block margin-left="0.2cm" margin-top="0.2cm" xsl:use-attribute-sets="subtitle-font">
                             <xsl:value-of select="subtitle"/>
                         </fo:block>
                     </fo:block-container>
-                    
-                    <!-- -->
+
                     <fo:block-container width="13.1cm" height="7.9cm" top="2.6cm" margin-top="0cm" margin-left="0cm" left="0cm" xsl:use-attribute-sets="column-block-border">
                         <xsl:call-template name="map-block"/>
                     </fo:block-container>
-                    
 
-                    <fo:block-container width="6.5cm" height="23.0cm" top="2.6cm" left="13.5cm" xsl:use-attribute-sets="column-block-border">
+                    <fo:block-container width="6.5cm" height="23.0cm" top="2.6cm" left="13.6cm" xsl:use-attribute-sets="column-block-border">
                         <xsl:call-template name="info-block"/>
                     </fo:block-container>
 
@@ -93,10 +91,10 @@
                             <fo:block xsl:use-attribute-sets="subtitle-font">
                                 <xsl:value-of select="ancestor::info[1]/@componentname"/>
                             </fo:block>
-                            <xsl:call-template name="table-2column"/>
+                            <xsl:call-template name="table-related"/>
                         </xsl:for-each>
                     </fo:block-container>
-                    
+
                     <!-- footer -->
                     <fo:block-container width="12.0cm" height="2.3cm" top="26.5cm" left="0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="disclaimer-block"/>
@@ -105,7 +103,7 @@
                     <fo:block-container width="7.6cm" height="2.3cm" top="26.5cm" left="12.0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="logo-block"/>
                     </fo:block-container>
-                    
+
                 </fo:flow>
             </fo:page-sequence>
         </fo:root>
@@ -118,13 +116,9 @@
         </fo:block>
 
         <!-- TODO
-        overflow="hidden" -->
-        <!--
         <fo:block-container margin-left="0.2cm" margin-top="2.6cm" width="6.5cm" height="4.9cm">
             <xsl:call-template name="legend" />
-        </fo:block-container>
-        -->
-
+        </fo:block-container> -->
 
         <!-- TODO
         <fo:block-container width="4.0cm" height="2.9cm" top="1.6cm" left="13.2cm" margin-left="0cm" xsl:use-attribute-sets="column-block">
@@ -135,8 +129,7 @@
                 <xsl:with-param name="height" select="'80px'" />
             </xsl:call-template>
         </fo:block-container>
-        -->       
-
+        -->
 
         <fo:block margin-left="0.2cm" margin-top="4cm" xsl:use-attribute-sets="default-font">
             <!-- create scalebar -->
@@ -154,18 +147,11 @@
                     <xsl:with-param name="px-width" select="$map-width-px"/>
                 </xsl:call-template>
             </fo:block>
-            
-
 
             <fo:block margin-left="0.2cm" margin-top="0.5cm" font-size="10pt">
                 <xsl:text>datum: </xsl:text>
                 <xsl:value-of select="date"/>
             </fo:block>
-            <!--
-            <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="8pt" font-style="italic">
-                <xsl:value-of select="remark"/>
-            </fo:block>
-            -->
 
         </fo:block>
     </xsl:template>
@@ -223,7 +209,9 @@
                         <fo:table-row>
                             <fo:table-cell>
                                 <fo:block>
-                                    <xsl:value-of select="local-name()" />
+                                    <xsl:call-template name="string-remove-underscores">
+                                        <xsl:with-param name="text" select="local-name()" />
+                                    </xsl:call-template>
                                 </fo:block>
                             </fo:table-cell>
                             <fo:table-cell>
@@ -238,4 +226,69 @@
         </fo:block>
     </xsl:template>
 
+    <xsl:template name="table-related">
+        <!-- create a simple multi-column table with auto sizing-->
+        <fo:block font-size="9pt">
+            <xsl:variable name="numOfCols" select="colCount" as="xs:integer"/>
+            <xsl:variable name="numOfrows" select="rowCount" as="xs:integer"/>
+
+            <fo:table table-layout="auto" inline-progression-dimension="auto">
+                <fo:table-header font-weight="bold">
+                    <xsl:comment>header rij</xsl:comment>
+                    <fo:table-row>
+                        <xsl:for-each select="features/*">
+                            <xsl:if test ="true() and not(../following-sibling::features)">
+                                <fo:table-cell>
+                                    <fo:block>
+                                        <xsl:call-template name="string-remove-underscores">
+                                            <xsl:with-param name="text" select="local-name()" />
+                                        </xsl:call-template>
+                                    </fo:block>
+                                </fo:table-cell>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </fo:table-row>
+                </fo:table-header>
+
+                <fo:table-body>
+                    <xsl:for-each select="features">
+                        <fo:table-row>
+                            <xsl:comment>data rij</xsl:comment>
+                            <xsl:for-each select="*">
+                                <fo:table-cell>
+                                    <fo:block>
+                                        <xsl:value-of select="normalize-space(.)" />
+                                    </fo:block>
+                                </fo:table-cell>
+                            </xsl:for-each>
+                        </fo:table-row>
+                    </xsl:for-each>
+                </fo:table-body>
+            </fo:table>
+
+        </fo:block>
+        <fo:block font-size="10pt" font-style="italic">
+            <xsl:value-of select="moreMessage" />
+        </fo:block>
+    </xsl:template>
+
+
+    <!-- strip a prefix like o_ from o_internet and remove any understcores from result -->
+    <xsl:template name="string-remove-underscore-prefix">
+        <xsl:param name="text" />
+        <xsl:choose>
+            <xsl:when test="contains(substring($text, 2,1), '_')" >
+                <xsl:value-of select="translate(substring($text, 3),'_', ' ')" />
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="translate($text,'_', ' ')" />
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- remove any understcores from result -->
+    <xsl:template name="string-remove-underscores">
+        <xsl:param name="text" />
+        <xsl:value-of select="translate($text,'_', ' ')" />
+    </xsl:template>
 </xsl:stylesheet>

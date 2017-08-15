@@ -25,7 +25,9 @@ Ext.define("viewer.components.FeatureReport", {
         legendLayers: null,
         reportLayers: null,
         template: "FeatureReport.xsl",
-        subTitle: ""
+        subTitle: "",
+        clickLabel: "",
+        numOfRelatedFeatures: 10
     },
     legendLayerList: null,
     activatedLayerList: null,
@@ -51,7 +53,6 @@ Ext.define("viewer.components.FeatureReport", {
             params: requestParams,
             success: function (result, request) {
                 me.legendLayerList = Ext.JSON.decode(result.responseText);
-                console.debug('legendLayerList', me.legendLayerList);
             },
             failure: function (a, b, c) {
                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden opgehaald");
@@ -65,7 +66,6 @@ Ext.define("viewer.components.FeatureReport", {
             params: requestParams,
             success: function (result, request) {
                 me.activatedLayerList = Ext.JSON.decode(result.responseText);
-                console.debug('activatedLayerList', me.activatedLayerList);
 
                 // register with featureinfo components
                 var infoComponents = me.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
@@ -133,20 +133,9 @@ Ext.define("viewer.components.FeatureReport", {
             includeLegend: true,
             legendUrl: this.getLegendsToPrint(),
             quality: this.getMapQuality(),
-            appId: appId
+            appId: FlamingoAppLoader.get('appId'),
+            extra: []
         };
-        // Process registered extra info callbacks
-        //        var extraInfos = [];
-        //        for (var i = 0; i < this.extraInfoCallbacks.length; i++) {
-        //            var entry = this.extraInfoCallbacks[i];
-        //            var extraInfo = {
-        //                className: Ext.getClass(entry.component).getName() + '.' + entry.callback.$name,
-        //                componentName: entry.component.name,
-        //                info: entry.callback(this.factsheetFeature)
-        //            };
-        //            extraInfos.push(extraInfo);
-        //        }
-        properties.extra = [];
 
         if (this.shouldAddOverview()) {
             var overviews = this.getOverviews();
@@ -184,6 +173,10 @@ Ext.define("viewer.components.FeatureReport", {
                     xtype: "hidden",
                     name: "fid",
                     id: this.name + 'formFid'
+                }, {
+                    xtype: "hidden",
+                    name: "maxrelatedfeatures",
+                    id: this.name + 'maxFeats'
                 }
             ]
         });
@@ -198,18 +191,19 @@ Ext.define("viewer.components.FeatureReport", {
     handleAction: function (feature, appLayer) {
         Ext.getCmp(this.name + 'formappLayer').setValue(appLayer.id);
         Ext.getCmp(this.name + 'formFid').setValue(feature.__fid);
+        Ext.getCmp(this.name + 'maxFeats').setValue(this.config.numOfRelatedFeatures);
 
         // use the summary title of the featureinfo
         if (appLayer.details['summary.title']) {
+            var t = appLayer.details['summary.title'];
             for (var key in feature) {
                 if (!feature.hasOwnProperty(key)) {
                     continue;
                 }
                 var regex = new RegExp("\\[" + key + "\\]", "g");
-                var value = String(feature[key]);
-                value = appLayer.details['summary.title'].replace(regex, value);
+                t = t.replace(regex, String(feature[key]));
             }
-            this.subTitle = this.config.subTitle + ' ' + value;
+            this.subTitle = this.config.subTitle + ' ' + t;
         } else {
             this.subTitle = this.config.subTitle + ' feature id:' + feature.__fid;
         }
@@ -220,7 +214,7 @@ Ext.define("viewer.components.FeatureReport", {
         mapvalues.geometries.push({
             _wktgeom: 'POINT(' + this.featureInfoClick.coord.x + ' ' + this.featureInfoClick.coord.y + ')',
             color: 'FF00FF',
-            label: 'klik lokatie',
+            label: this.config.clickLabel,
             strokeWidth: 2
         });
 
@@ -236,7 +230,7 @@ Ext.define("viewer.components.FeatureReport", {
      */
     submitSettings: function (mapvalues) {
         Ext.getCmp(this.name + 'formParams').setValue(Ext.JSON.encode(mapvalues));
-        console.debug("submitting form values: ", this.printForm.getValues());
+        // console.debug("submitting form values: ", this.printForm.getValues());
         this.printForm.submit({
             // target: '_self'
             target: '_blank'
