@@ -50,18 +50,17 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.visitor.BoundsVisitor;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
 import org.opengis.geometry.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
- *
  * @author Mark Prins
  */
 @UrlBinding("/action/featurereport")
@@ -72,34 +71,30 @@ public class FeatureReportActionBean implements ActionBean {
 
     public static final String FID = FeatureInfoActionBean.FID;
 
-    private static final String DEFAULT_REPORT_TEMPLATE = "FeatureReport.xsl";
-
     private static final int TIMEOUT = 5000;
-
-    private ActionBeanContext context;
 
     @Validate
     private ApplicationLayer appLayer;
-
+    private Layer layer = null;
+    private boolean unauthorized;
+    private ActionBeanContext context;
     /**
-     * feature id for report.
+     * feature id to report.
      */
     @Validate
     private String fid;
 
-//    /**
-//     * xsl template.
-//     */
-//    @Validate
-//    private String template;
     /**
-     * printparams json
+     * max. number of related features to retrieve.
+     */
+    @Validate
+    private int maxrelatedfeatures = 10;
+
+    /**
+     * printparams json.
      */
     @Validate
     private String printparams;
-
-    private boolean unauthorized;
-    private Layer layer = null;
 
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
@@ -130,7 +125,7 @@ public class FeatureReportActionBean implements ActionBean {
      */
     @DefaultHandler
     public Resolution print() throws URISyntaxException, IOException, Exception {
-        LOG.debug("start processing print request");
+        LOG.debug("Start processing feature report request voor FID: " + this.fid);
         if (appLayer == null) {
             return new ErrorResolution(500, "Invalid parameters");
         } else if (unauthorized) {
@@ -158,15 +153,14 @@ public class FeatureReportActionBean implements ActionBean {
                 params.getJSONArray("geometries").put(wktGeom);
             }
 
-            List<Long> attributesToInclude = new ArrayList<>();
             // get feature data
+            List<Long> attributesToInclude = new ArrayList<>();
             List<ConfiguredAttribute> attrs = appLayer.getAttributes(layer.getFeatureType(), true);
             attrs.forEach((attr) -> {
                 attributesToInclude.add(attr.getId());
             });
 
-            Query q = new Query(fs.getName().toString());
-            q.setFilter(fidFilter);
+            Query q = new Query(fs.getName().toString(), fidFilter);
             q.setMaxFeatures(1);
             q.setHandle("FeatureReportActionBean_attributes");
 
@@ -175,51 +169,74 @@ public class FeatureReportActionBean implements ActionBean {
 
             // if there are more than one something is very wrong in datamodel or datasource
             JSONObject jFeat = features.getJSONObject(0);
-            // remove __fid and geometry from json and add to extra data
+            // remove __fid, related_featuretypes and geometry nodes from json and add feature attrs to extra data
             jFeat.remove(FID);
             jFeat.remove(geomAttribute);
+            jFeat.remove("related_featuretypes");
 
             JSONObject extra = new JSONObject();
             extra.put("className", "feature").put("componentName", "report").put("info", jFeat);
             params.getJSONArray("extra").put(extra);
+            fs.getDataStore().dispose();
 
-            // related features
+            // get related features and add to extra data
             if (layer.getFeatureType().hasRelations()) {
                 String label;
-                Filter filter;
-                Query relQ;
                 for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
                     if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
-
                         SimpleFeatureType fType = rel.getForeignFeatureType();
-                        LOG.debug("related featuretype: " + fType.getTypeName());
-                        label = fType.getDescription() != null ? fType.getDescription() : fType.getTypeName();
-                        List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
-                        LOG.debug(keys);
-                        JSONObject jRel = rel.toJSONObject();
-                        LOG.debug(jRel);
+                        label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
+                        LOG.debug("Processing related featuretype: " + label);
 
-                        filter = ff.equals(Expression.NIL, Expression.NIL);
+                        List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
+                        String leftSide = keys.get(0).getLeftSide().getName();
+                        String rightSide = keys.get(0).getRightSide().getName();
 
                         // collect related feature attributes
-                        q = new Query(fType.getFeatureSource().getName());
-                        q.setFilter(filter);
-                        q.setMaxFeatures(10);
+                        q = new Query(fType.getTypeName(), ECQL.toFilter(rightSide + "=" + jFeat.get(leftSide)));
+                        q.setMaxFeatures(this.maxrelatedfeatures + 1);
                         q.setHandle("FeatureReportActionBean_related_attributes");
+                        LOG.debug("Related features query: " + q);
 
+                        fs = fType.openGeoToolsFeatureSource(TIMEOUT);
                         features = ftjson.getJSONFeatures(appLayer, fType, fs, q);
 
-                        extra = new JSONObject();
-                        extra.put("className", "related").put("componentName", label).put("info", features);
+                        JSONArray jsonFeats = new JSONArray();
+                        int featureCount;
+                        int colCount = 0;
+                        int numFeats = features.length();
+                        int maxFeatures = Math.min(numFeats, this.maxrelatedfeatures);
+                        for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
+                            // remove FID
+                            features.getJSONObject(featureCount).remove(FID);
+                            colCount = features.getJSONObject(featureCount).length();
+                            jsonFeats.put(features.getJSONObject(featureCount));
+                        }
+                        JSONObject info = new JSONObject()
+                                .put("features", jsonFeats)
+                                .putOnce("colCount", colCount)
+                                .putOnce("rowCount", featureCount);
+
+                        if (numFeats > this.maxrelatedfeatures) {
+                            info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                        }
+
+                        extra = new JSONObject()
+                                .put("className", "related")
+                                .put("componentName", label)
+                                .put("info", info);
+
                         params.getJSONArray("extra").put(extra);
+                        LOG.debug("extra data: " + extra);
+
+                        fs.getDataStore().dispose();
                     }
                 }
             }
 
-            fs.getDataStore().dispose();
-
-            LOG.debug("JSON params to be passed to printing: " + params);
-            return new ForwardResolution(PrintActionBean.class, "print").addParameter("params", params.toString());
+            LOG.debug("Forwarding feature report request to print using params: " + params);
+            return new ForwardResolution(PrintActionBean.class, "print")
+                    .addParameter("params", params.toString());
         }
     }
 
@@ -234,8 +251,7 @@ public class FeatureReportActionBean implements ActionBean {
      * @throws IOException if retrieving the data fails
      */
     private BoundingBox getExtent(FeatureSource fs, Filter f) throws CQLException, IOException {
-        Query q = new Query(fs.getName().toString());
-        q.setFilter(f);
+        Query q = new Query(fs.getName().toString(), f);
         q.setHandle("FeatureReportActionBean_extent-query");
         q.setMaxFeatures(1);
         q.setPropertyNames(new String[]{fs.getSchema().getGeometryDescriptor().getName().toString()});
@@ -272,8 +288,7 @@ public class FeatureReportActionBean implements ActionBean {
     private Geometry getGeometry(FeatureSource fs, Filter f) throws CQLException, IOException {
         Geometry geom = null;
 
-        Query q = new Query(fs.getName().toString());
-        q.setFilter(f);
+        Query q = new Query(fs.getName().toString(), f);
         q.setHandle("FeatureReportActionBean_geom-query");
         q.setMaxFeatures(1);
         q.setPropertyNames(new String[]{fs.getSchema().getGeometryDescriptor().getName().toString()});
@@ -322,12 +337,12 @@ public class FeatureReportActionBean implements ActionBean {
         this.printparams = printparams;
     }
 
-//    public String getTemplate() {
-//        return template;
-//    }
-//
-//    public void setTemplate(String template) {
-//        this.template = template;
-//    }
+    public int getMaxrelatedfeatures() {
+        return maxrelatedfeatures;
+    }
+
+    public void setMaxrelatedfeatures(int maxrelatedfeatures) {
+        this.maxrelatedfeatures = maxrelatedfeatures;
+    }
     //</editor-fold>
 }

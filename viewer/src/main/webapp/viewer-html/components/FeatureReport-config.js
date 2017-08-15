@@ -47,6 +47,20 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'textfield',
+                fieldLabel: 'Klik locatie label (mag leeg zijn)',
+                name: 'clickLabel',
+                value: this.configObject.clickLabel = this.configObject.clickLabel || "Klik punt",
+                labelWidth: this.labelWidth
+            }, {
+                xtype: 'numberfield',
+                fieldLabel: 'Maximum aantal related features',
+                name: 'numOfRelatedFeatures',
+                value: this.configObject.numOfRelatedFeatures = this.configObject.numOfRelatedFeatures || 10,
+                minValue: 1,
+                maxValue: 100,
+                labelWidth: this.labelWidth
+            }, {
+                xtype: 'textfield',
                 fieldLabel: 'XSL Template',
                 name: 'template',
                 value: this.configObject.template = this.configObject.template || "FeatureReport.xsl",
