@@ -19,29 +19,21 @@ package nl.b3p.viewer.util;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.WKTReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.image.CombineImageWkt;
 import static nl.b3p.viewer.util.FeatureToJson.MAX_FEATURES;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
-import org.geotools.geometry.jts.WKTReader2;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
 
 /**
  *
@@ -71,7 +63,8 @@ public class FlamingoCQL {
         // ga naar rechts in de string tot einde string of foundOpenBrackets == foundClosingBrackets
             // tel alle openhaakjes op
             // zoek alle sluithaakjes
-        int startIndex = filter.indexOf(BEGIN_PART) + BEGIN_PART.length();
+        int begin = filter.indexOf(BEGIN_PART);
+        int startIndex = begin + BEGIN_PART.length();
         int closingBrackets = 0;
         int openBrackets = 1;
         int endIndex = 0;
@@ -89,18 +82,24 @@ public class FlamingoCQL {
                 break;
             }
         }
+        // Part with the APPLAYER filter, possibly with nested APPLAYER/GEOMETRY/ATTRIBUTE filters
         String appLayerPart = filter.substring(startIndex,endIndex);
-        // call recursively to parse out all the applayer filters
-        //appLayerPart = processFilter(appLayerPart);
-        String f = rewriteAppLayerFilter(appLayerPart, em);
-        return f;
+        
+        // call recursively to parse out all the nested applayer filters
+        appLayerPart = processFilter(appLayerPart, em);
+        
+        // Rewrite APPLAYER filter to GEOMETRY filter, so it can be used for filtering other features
+        String geometryFilter = rewriteAppLayerFilter(appLayerPart, em);
+        
+        String beginpart = filter.substring(0, begin);
+        String result =  beginpart +  geometryFilter;
+        return result;
     }
     
     protected String rewriteAppLayerFilter(String applayerfilter, EntityManager em ) throws CQLException{
-        
-        //String input = "the_geom, 6,''";
         int firstIndex = applayerfilter.indexOf(", ");
         int secondIndex = applayerfilter.indexOf(",", firstIndex +1);
+        
         String attribute=  applayerfilter.substring(0, firstIndex);
         String appLayerId = applayerfilter.substring(firstIndex + 1, secondIndex);
         appLayerId = appLayerId.trim();
@@ -108,7 +107,6 @@ public class FlamingoCQL {
         
         String filter = applayerfilter.substring(secondIndex + 1);
         String geom =getUnionedFeatures(filter, id, em);
-        //String geom = "MULTIPOLYGON(((150218.522352941 432398.543058824,142036.882823529 432504.798117647,142355.648 437923.806117647,150218.522352941 432398.543058824)),((156487.570823529 452161.984,156912.591058823 442917.793882353,191870.505411764 441111.457882353,191870.505411764 454712.105411765,191870.505411764 454712.105411765,156487.570823529 452161.984)),((137467.915294117 453543.299764706,137680.425411764 443130.304,144693.259294117 443874.089411765,145437.044705882 451418.198588236,145437.044705882 451418.198588236,137467.915294117 453543.299764706)))";// getUnionedFeatures(filter, id, em);
         String nieuwFilter = "intersects (" + attribute + ", " + geom + ")";
         return nieuwFilter;
     }
@@ -121,7 +119,7 @@ public class FlamingoCQL {
             Layer l = gs.getLayer(al.getLayerName(), em);
             
             if (l.getFeatureType() == null) {
-                // throw new Exception("Layer has no feature type");
+                 throw new Exception("Layer has no feature type");
             }
             
             FeatureSource fs = l.getFeatureType().openGeoToolsFeatureSource();
@@ -129,7 +127,7 @@ public class FlamingoCQL {
             GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
             
             Query q = new Query(fs.getName().toString());
-            if(filter != null){
+            if(filter != null && ! filter.isEmpty()){
                 Filter attributeFilter = ECQL.toFilter(filter);
                 attributeFilter = (Filter)attributeFilter.accept(new ChangeMatchCase(false), null);
                 
