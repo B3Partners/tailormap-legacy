@@ -30,6 +30,7 @@ Ext.define("viewer.components.SpatialFilter", {
     vectorLayer: null,
     iconPath: null,
     features: null,
+    onlySourceGeometry:null,
     config: {
         title: "",
         iconUrl: "",
@@ -54,6 +55,7 @@ Ext.define("viewer.components.SpatialFilter", {
         this.initConfig(conf);
         viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
         var me = this;
+        this.onlySourceGeometry = true;
         this.features = new Array();
         this.renderButton({
             handler: function () {
@@ -85,6 +87,7 @@ Ext.define("viewer.components.SpatialFilter", {
     },
 
     drawGeometry: function (type) {
+        this.onlySourceGeometry = false;
         var appendFilter = Ext.getCmp(this.config.name + 'AppendFilter');
         if (!appendFilter.getValue()) {
             this.vectorLayer.removeAllFeatures();
@@ -93,22 +96,39 @@ Ext.define("viewer.components.SpatialFilter", {
         this.vectorLayer.drawFeature(type);
     },
     applyFilter: function () {
-        var features = this.features;
-        var multi = "";
-        if (features.length > 0) {
-            multi += "MULTIPOLYGON (";
-            for (var i = 0; i < features.length; i++) {
-                var feature = features[i];
-                var coords = feature.replace("POLYGON", "");
-                if (i > 0) {
-                    multi += ",";
+        if (this.onlySourceGeometry) {
+
+            var sourceAppLayer = this.sourceLayerSelector.getValue();
+            var appLayer = this.layerSelector.getValue();
+            //var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].name;
+            var geomAttr = appLayer.geometryAttribute;
+            var cql = "APPLAYER(" + geomAttr + ", " + sourceAppLayer.id + ", " + (sourceAppLayer.filter ? sourceAppLayer.filter.getCQL() : "") + ")"
+            this.config.viewerController.setFilter(
+                    Ext.create("viewer.components.CQLFilterWrapper", {
+                        id: "filter_" + this.getName(),
+                        cql: cql,
+                        operator: "AND",
+                        type: "APPLAYER"
+                    }), appLayer);
+            
+        }else{
+            var features = this.features;
+            var multi = "";
+            if (features.length > 0) {
+                multi += "MULTIPOLYGON (";
+                for (var i = 0; i < features.length; i++) {
+                    var feature = features[i];
+                    var coords = feature.replace("POLYGON", "");
+                    if (i > 0) {
+                        multi += ",";
+                    }
+                    multi += coords;
                 }
-                multi += coords;
+                multi += ")";
             }
-            multi += ")";
+            var appLayer = this.layerSelector.getValue();
+            this.setFilter(multi, appLayer);
         }
-        var appLayer = this.layerSelector.getValue();
-        this.setFilter(multi, appLayer);
     },
     setFilter: function (geometry, appLayer) {
         var me = this;
@@ -181,7 +201,29 @@ Ext.define("viewer.components.SpatialFilter", {
 
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     showFeatures: function(){
-        var a = 0;
+        var appLayer = this.sourceLayerSelector.getValue();
+        var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].id;
+        var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
+        var me = this;
+        me.appLayer = appLayer;
+        featureService.loadFeatures(appLayer, function(features){
+            var fts = [];
+            for(var i = 0; i < features.length ; i++){
+                var feature = features[i];
+                
+                var featureObject = Ext.create("viewer.viewercontroller.controller.Feature", {
+                    wktgeom: feature[me.appLayer.geometryAttribute],
+                    id:feature.__fid
+                });
+                fts.push(featureObject);
+            }
+            this.vectorLayer.addFeatures(fts);
+        },Ext.emptyFn,{
+            start:0,
+            limit:5000,
+            graph: true,
+            attributesToInclude: [geomAttr]
+        }, this);
     },
     
     layerChanged: function (appLayer, previousAppLayer, scope) {
@@ -374,6 +416,8 @@ Ext.define("viewer.components.SpatialFilter", {
                     xtype: "button",
                     label: "Laat features zien",
                     text: "Laat zien",
+                   // disabled:true,
+                    id: this.config.name + 'RetrieveFeaturesButton',
                     listeners: {
                         click: {
                             scope: this,
@@ -443,6 +487,7 @@ Ext.define("viewer.components.SpatialFilter", {
 
         this.sourceLayerSelector = Ext.create("viewer.components.LayerSelector", config);
         this.sourceLayerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, function (a, b, c) {
+            Ext.getCmp(this.config.name + 'RetrieveFeaturesButton').setDisabled(false);
             console.log(a, b, c);
         }, this);
         this.sourceLayerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, function (a, b, c) {
