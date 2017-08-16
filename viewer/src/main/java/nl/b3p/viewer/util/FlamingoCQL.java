@@ -50,22 +50,22 @@ public class FlamingoCQL {
 
     private static final Log LOG = LogFactory.getLog(FlamingoCQL.class);
 
-    private final String BEGIN_PART = "APPLAYER(";
+    private final static String BEGIN_PART = "APPLAYER(";
 
-    public Filter toFilter(String filter, EntityManager em) throws CQLException {
+    public static Filter toFilter(String filter, EntityManager em) throws CQLException {
         filter = processFilter(filter, em);
 
         return ECQL.toFilter(filter);
     }
 
-    public String processFilter(String filter, EntityManager em) throws CQLException {
+    public static String processFilter(String filter, EntityManager em) throws CQLException {
         if (filter.contains(BEGIN_PART)) {
             filter = replaceApplayerFilter(filter, em);
         }
         return filter;
     }
 
-    protected String replaceApplayerFilter(String filter, EntityManager em) throws CQLException {
+    protected static String replaceApplayerFilter(String filter, EntityManager em) throws CQLException {
         //String input = "APPLAYER(the_geom, 1,'')";
         // zoek index op van APPLAYER(
         // ga naar rechts in de string tot einde string of foundOpenBrackets == foundClosingBrackets
@@ -105,22 +105,24 @@ public class FlamingoCQL {
         return result;
     }
 
-    protected String rewriteAppLayerFilter(String applayerfilter, EntityManager em) throws CQLException {
+    protected static String rewriteAppLayerFilter(String applayerfilter, EntityManager em) throws CQLException {
         int firstIndex = applayerfilter.indexOf(", ");
         int secondIndex = applayerfilter.indexOf(",", firstIndex + 1);
 
         String attribute = applayerfilter.substring(0, firstIndex);
         String appLayerId = applayerfilter.substring(firstIndex + 1, secondIndex);
+        String filter = applayerfilter.substring(secondIndex + 1);
+        
+        filter = filter.trim();
         appLayerId = appLayerId.trim();
         Long id = Long.parseLong(appLayerId);
-
-        String filter = applayerfilter.substring(secondIndex + 1);
+        
         String geom = getUnionedFeatures(filter, id, em);
         String nieuwFilter = "intersects (" + attribute + ", " + geom + ")";
         return nieuwFilter;
     }
 
-    private String getUnionedFeatures(String filter, Long appLayerId, EntityManager em) throws CQLException {
+    private static String getUnionedFeatures(String filter, Long appLayerId, EntityManager em) throws CQLException {
         try {
             ApplicationLayer al = em.find(ApplicationLayer.class, appLayerId);
 
