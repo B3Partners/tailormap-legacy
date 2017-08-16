@@ -29,7 +29,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         id:null,
         cql:null,
         operator:null,
-        // Possible values: ATTRIBUTE/GEOMETRY
+        // Possible values: ATTRIBUTE/GEOMETRY/APPLAYER
         type: null
     },
     constructor : function (config){
