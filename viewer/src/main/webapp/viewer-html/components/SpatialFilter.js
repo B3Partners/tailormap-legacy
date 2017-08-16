@@ -96,13 +96,13 @@ Ext.define("viewer.components.SpatialFilter", {
         this.vectorLayer.drawFeature(type);
     },
     applyFilter: function () {
-        if (this.onlySourceGeometry) {
+        var sourceAppLayer = this.sourceLayerSelector.getValue();
+        if (this.onlySourceGeometry && sourceAppLayer) {
 
-            var sourceAppLayer = this.sourceLayerSelector.getValue();
             var appLayer = this.layerSelector.getValue();
             //var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].name;
             var geomAttr = appLayer.geometryAttribute;
-            var cql = "APPLAYER(" + geomAttr + ", " + sourceAppLayer.id + ", " + (sourceAppLayer.filter ? sourceAppLayer.filter.getCQL() : "") + ")"
+            var cql = "APPLAYER(" + geomAttr + ", " + sourceAppLayer.id + ", " + (sourceAppLayer.filter ? sourceAppLayer.filter.getCQL() : "") + ")";
             this.config.viewerController.setFilter(
                     Ext.create("viewer.components.CQLFilterWrapper", {
                         id: "filter_" + this.getName(),
@@ -532,6 +532,8 @@ Ext.define("viewer.components.SpatialFilter", {
         if (!appLayer) {
             return;
         }
+        
+        this.sourceLayerSelector.setValue(null);
         this.features = [];
         this.vectorLayer.removeAllFeatures();
         this.applyFilter();
