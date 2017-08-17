@@ -34,9 +34,13 @@ Ext.define ("viewer.components.LayerSelector",{
         viewerController: {},
         restriction : null,
         layers: null,
-        useTabs: false
+        useTabs: false,
+        label: null
     }, 
     constructor: function (conf){
+        if(!conf.label){
+            conf.label = 'Kies kaartlaag';
+        }
         this.initConfig(conf);
         viewer.components.LayerSelector.superclass.constructor.call(this, this.config);
         
@@ -55,7 +59,7 @@ Ext.define ("viewer.components.LayerSelector",{
         var requestPath= actionBeans["layerlist"];
         var requestParams = {};
         requestParams[this.config.restriction]= true;
-        requestParams["appId"]= appId;
+        requestParams["appId"]= FlamingoAppLoader.get("appId");
         var me = this;
         if(this.config.layers != null && this.config.layers.length > 0){
             requestParams["layers"]= this.config.layers;
@@ -81,7 +85,7 @@ Ext.define ("viewer.components.LayerSelector",{
 
     createCombobox: function() {
         var comboboxConfig = {
-            fieldLabel: 'Kies kaartlaag',
+            fieldLabel: this.config.label,
             emptyText:'Maak uw keuze',
             store: this.layerstore,
             queryMode: 'local',

@@ -97,6 +97,21 @@ b {
     color: #7f7f00;
 }
 
+.ext-style {
+    border: 1px solid #cecece;
+    padding: 4px 6px 3px 6px;
+    color: #000;
+    font-size: 13px;
+    font-weight: 300;
+    font-family: 'Open Sans', 'Helvetica Neue', helvetica, arial, verdana, sans-serif;
+    line-height: 22px;
+    vertical-align: middle;
+    min-height: 22px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
 /* validation styles */
 
 input.error, textarea.error {
@@ -109,8 +124,24 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     border: 2px solid red;
 }
 
-.tristatenode .x-tree-checkbox {
+.theme-crisp .tristatenode .x-tree-checkbox {
     background-position: 0 -30px;
+}
+
+.theme-triton .x-tree-checkbox, .theme-triton .x-tree-checkbox-checked {
+    font-family: FontAwesome;
+}
+
+.theme-triton .x-tree-checkbox:before {
+    content: "\f096";
+}
+
+.theme-triton .x-tree-checkbox-checked:before {
+    content: "\f046";
+}
+
+.theme-triton .tristatenode .x-tree-checkbox:before {
+    content: "\f0c8";
 }
 
 .toc-outofscale {
@@ -150,6 +181,10 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .layout-left_menu{
     z-index: 15000;
 }
+.layout-left_menu .viewer-component-block {
+     overflow: auto;
+     -webkit-overflow-scrolling: touch;
+ }
 
 .direct-search-result {
     position: absolute;
@@ -183,6 +218,13 @@ body > .legend {
 .x-tab-active.x-tab-default {
     background-color: #E5E5E5 !important;
     border-color: #C8C8C8 !important;
+}
+/* Fixes style of Cycle buttons, because of background-color override above */
+.x-btn-wrap-default-small.x-btn-split-right::after {
+    color: #444444;
+}
+.x-btn-wrap-default-small.x-btn-split-right > .x-btn-button::after {
+    border-right-color: #C8C8C8;
 }
 /* Add border in IE */
 .x-nlg .x-btn-default, .x-nlg .x-btn-default-large, .x-nlg .x-btn-default-small, .x-nlg .x-tab-default {
@@ -222,18 +264,33 @@ body > .legend {
     background-image: none;
     background-color: #f5f5f5;
 }
-.x-tree-checkbox {
+
+.theme-crisp .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/crisp/checkbox.png);
 }
-.x-btn-wrap-default-small.x-btn-split-right:after {
+.theme-crisp .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
 
-/* makes (editable) field labels overflow into ellipsis*/
+.x-fieldset {
+    border-top: 0 none !important;
+    background: #FFFFFF;
+}
+
+.edit-component-container .x-fieldset {
+    border-top: 1px solid #bbb !important;
+}
+
+/*/ makes (editable) field labels overflow into ellipsis*/
 .x-form-item-label-inner {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+/* center allign paging toolbar input */
+.x-tbar-page-number .x-form-text {
+    text-align: center;
 }
 
 /* End Override ExtJS style */
@@ -249,20 +306,23 @@ body > .legend {
     }
 }
 
-.mobile-mode, .mobile-mode * {
+html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-.mobile-mode .tristatenode .x-tree-checkbox {
+
+.theme-crisp-touch .tristatenode .x-tree-checkbox {
     background-position: 0 -44px;
 }
 /* ExtJS override images */
-.mobile-mode .x-tree-checkbox {
+.theme-crisp-touch .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/touch-crisp/checkbox.png);
 }
-.mobile-mode .x-btn-wrap-default-small.x-btn-split-right:after {
+.theme-crisp-touch .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
 }
-
+.x-grid-item-container {
+    overflow: visible;
+}
 /* Remove IE10/11 clear button for fields with clear trigger */
 .x-form-has-clear-trigger input::-ms-clear {
   width : 0;
@@ -283,4 +343,243 @@ body > .legend {
     -webkit-box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
     -moz-box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
     box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
+}
+
+/** Make clickable area of close button bigger */
+.x-window-header-default-horizontal .x-tool-after-title:after{
+    content:"";
+    padding: 25px;
+    position: absolute;
+    left: -18px;
+    top: -16px;
+}
+
+/* Main background colors */
+.x-border-layout-ct {
+    background-color: #FFFFFF !important;
+}
+
+#wrapper {
+    width: 100%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    background-color: transparent;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+/**
+Make contents of popups scrollable on mobile devices
+TODO: check if we always need to do this, not only mobile, only on mobile are we setting min widths/heights on
+*/
+.flamingo-mobile .screen-popup .x-window-bodyWrap {
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.applicationSpriteClass .x-mask-msg {
+    width: 100%;
+    height: 100%;
+    background: rgba(208, 208, 208, .5);
+}
+
+.applicationSpriteClass .x-mask-msg-inner,
+.applicationSpriteClass .x-mask-msg-inner:after {
+    border-radius: 50%;
+    width: 80%;
+    height: 80%;
+    margin: 10%;
+}
+
+.applicationSpriteClass .x-mask-msg-inner {
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: 0.5em solid #FFFFFF;
+    border-right: 0.5em solid #FFFFFF;
+    border-bottom: 0.5em solid #FFFFFF;
+    border-left: 0.5em solid rgba(255, 255, 255, 0.2);
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 1.1s infinite linear;
+    animation: load8 1.1s infinite linear;
+}
+
+.applicationSpriteClass .x-mask-msg-text {
+    display: none;
+}
+
+/** LOADING Spinner */
+#appLoader {
+    font-size: 13px;
+    position: fixed;
+    width: 12em;
+    height: 12em;
+    left: 50%;
+    top: 50%;
+    margin-top: -6em;
+    margin-left: -6em;
+    background-color: rgba(0, 0, 0, .7);
+    padding: 2em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    z-index: 9999999;
+
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+#appLoader.hide {
+    display: none;
+}
+#appLoader .spinner{
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+    border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+    border-left: 1.1em solid #ffffff;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 1.1s infinite linear;
+    animation: load8 1.1s infinite linear;
+}
+#appLoader .spinner,
+#appLoader .spinner:after {
+    border-radius: 50%;
+    width: 10em;
+    height: 10em;
+}
+@-webkit-keyframes load8 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes load8 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+/* Override font-face declarations form Ext to fix IE errors (embedded-opentype) */
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-Light.eot');
+    src: url('fonts/OpenSans-Light.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Light.woff') format('woff'),
+         url('fonts/OpenSans-Light.ttf') format('truetype'),
+         url('fonts/OpenSans-Light.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-LightItalic.eot');
+    src: url('fonts/OpenSans-LightItalic.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-LightItalic.woff') format('woff'),
+         url('fonts/OpenSans-LightItalic.ttf') format('truetype'),
+         url('fonts/OpenSans-LightItalic.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 300;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-Regular.eot');
+    src: url('fonts/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Regular.woff') format('woff'),
+         url('fonts/OpenSans-Regular.ttf') format('truetype'),
+         url('fonts/OpenSans-Regular.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-Italic.eot');
+    src: url('fonts/OpenSans-Italic.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Italic.woff') format('woff'),
+         url('fonts/OpenSans-Italic.ttf') format('truetype'),
+         url('fonts/OpenSans-Italic.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-Semibold.eot');
+    src: url('fonts/OpenSans-Semibold.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Semibold.woff') format('woff'),
+         url('fonts/OpenSans-Semibold.ttf') format('truetype'),
+         url('fonts/OpenSans-Semibold.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-SemiboldItalic.eot');
+    src: url('fonts/OpenSans-SemiboldItalic.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-SemiboldItalic.woff') format('woff'),
+         url('fonts/OpenSans-SemiboldItalic.ttf') format('truetype'),
+         url('fonts/OpenSans-SemiboldItalic.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 600;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-Bold.eot');
+    src: url('fonts/OpenSans-Bold.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-Bold.woff') format('woff'),
+         url('fonts/OpenSans-Bold.ttf') format('truetype'),
+         url('fonts/OpenSans-Bold.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-BoldItalic.eot');
+    src: url('fonts/OpenSans-BoldItalic.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-BoldItalic.woff') format('woff'),
+         url('fonts/OpenSans-BoldItalic.ttf') format('truetype'),
+         url('fonts/OpenSans-BoldItalic.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 700;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-ExtraBold.eot');
+    src: url('fonts/OpenSans-ExtraBold.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-ExtraBold.woff') format('woff'),
+         url('fonts/OpenSans-ExtraBold.ttf') format('truetype'),
+         url('fonts/OpenSans-ExtraBold.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/OpenSans-ExtraBoldItalic.eot');
+    src: url('fonts/OpenSans-ExtraBoldItalic.eot?#iefix') format('embedded-opentype'),
+         url('fonts/OpenSans-ExtraBoldItalic.woff') format('woff'),
+         url('fonts/OpenSans-ExtraBoldItalic.ttf') format('truetype'),
+         url('fonts/OpenSans-ExtraBoldItalic.svg#open_sanssemibold_italic') format('svg');
+    font-weight: 800;
+    font-style: italic;
 }

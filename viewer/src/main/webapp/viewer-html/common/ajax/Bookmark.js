@@ -32,7 +32,7 @@ Ext.define("viewer.Bookmark", {
             url: this.config.actionbeanUrl,
             params: {
                 create: true,
-                application: appId,
+                application: FlamingoAppLoader.get("appId"),
                 "bookmark.params": params
             },
             success: function(result) {
@@ -59,7 +59,7 @@ Ext.define("viewer.Bookmark", {
             url: this.config.actionbeanUrl,
             params: {
                 load: true,
-                application: appId,
+                application: FlamingoAppLoader.get("appId"),
                 "bookmark.code": bookmark
             },
             success: function(result) {

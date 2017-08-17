@@ -16,10 +16,37 @@
  */
 /* global Ext, actionBeans */
 
-Ext.define("viewer.components.sf.SimpleFilterBase",{
+Ext.define("viewer.components.sf.SimpleFilterBase", {
+    filterID: null,
+    visible: true,
+    /**
+     * @param visible boolean
+     */
+    setVisible: function(visible) {
+        if(!this.filterID) {
+            return;
+        }
+        var container = document.getElementById(this.filterID);
+        if(visible && !this.visible) {
+            container.style.display = 'block';
+            this.visible = true;
+            if(this.applyFilterWhenReady) {
+                this.applyFilterWhenReady();
+            }
+        } else if(!visible && this.visible) {
+            this.visible = false;
+            container.style.display = 'none';
+            if(this.reset && !(this instanceof viewer.components.sf.Reset)) {
+                // Call reset to remove filter
+                // Skip in case of Reset buttons or this would reset all filters
+                this.reset();
+            }
+        }
+    },
     wrapSimpleFilter: function(label, contents, className) {
+        this.filterID = Ext.id();
         var contentBefore = [
-            "<div class=\"simple-filter-container steunkleur1 steunkleur2", (className ? " " + className : "") ,"\">",
+            "<div id=\"", this.filterID, "\" class=\"simple-filter-container steunkleur1 steunkleur2", (className ? " " + className : "") ,"\">",
                 "<div class=\"simple-filter-inner\">",
                     "<table>",
                         "<tbody>"
@@ -55,7 +82,6 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         autoStart: null,
         viewerController:null
     },
-
     constructor : function(conf){
         this.ready = false;
         this.minRetrieved = false;
@@ -67,15 +93,14 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     layersInitialized: function(){
         this.layersLoaded = true;
         this.config.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.layersInitialized, this);
-        this.isReady();
+        this.applyFilterWhenReady();
     },
-    isReady : function(){
+    applyFilterWhenReady : function(){
         if(this.attributesLoaded && this.layersLoaded){
             this.ready = true;
             this.applyFilter();
         }
     },
-
     applyFilter : function(){
         this.config.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
     },
@@ -84,8 +109,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     },
     setFilter : function(cql){
         var layer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
-
-        if (!layer) {
+        if (!layer || !layer.checked) {
             return;
         }
         this.config.viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
@@ -160,11 +184,11 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             if(appLayer.attributes === undefined) {
                 featureService.loadAttributes(appLayer, function(attributes) {
                     me.attributesLoaded = true;
-                    me.isReady();
+                    me.applyFilterWhenReady();
                 },this);
             } else {
                 this.attributesLoaded = true;
-                this.isReady();
+                this.applyFilterWhenReady();
             }
         }
     },
@@ -264,7 +288,7 @@ Ext.define("viewer.components.sf.Checkbox", {
             },
             layout: {
                 type: 'vbox',
-                align: "left"
+                align: "stretch"
             },
             renderTo: this.config.name + "_checkbox",
             items: items

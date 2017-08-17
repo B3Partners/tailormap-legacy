@@ -26,9 +26,9 @@ Ext.define('Maps', {
         // Added convert function to icon
         {name: 'icon', type: 'string', convert: function(fieldName, record) {
             if(record.get('leaf')) {
-                return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
+                return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
             }
-            return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
+            return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/folder.png';
         }}
     ]
 });
@@ -154,7 +154,7 @@ Ext.define ("viewer.components.TOC",{
         this.panel =Ext.create('Ext.tree.Panel', {
             title: title,
             height: "100%",
-            autoScroll: true,
+            scrollable: true,
             useArrows: true,
             rootVisible: false,
             floating: false,
@@ -699,7 +699,8 @@ Ext.define ("viewer.components.TOC",{
     // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
         if(e.target.nodeName.toUpperCase() === "INPUT" ||
-            e.target.className === "toc-zoomtoscale-text"){
+            e.target.className === "toc-zoomtoscale-text" ||
+            e.target.className.indexOf("tree-checkbox") !== -1){
             return;
         }
         var node = record.raw;

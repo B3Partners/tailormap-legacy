@@ -1,3 +1,5 @@
+/* global Ext, actionBeans */
+
 /**
  * ViewerController
  * @class Controller for a GIS application
@@ -41,12 +43,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * layers that have been registered by controls that wish to benefit from snapping.
      */
     registeredSnappingLayers: [],
+    spriteUrl: null,
     /**
      * List of layers for this application and whether the user has them checked/unchecked
      */
     savedCheckedState: {},
+        // Debouce resize events
+    resizeDebounce: null,
     // Debounce applyFilter calls
     filterDebounce: {},
+    // List of elements that are "anchored" to a container. After resizing the element is re-aligned
+    anchors: [],
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -145,6 +152,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(viewerType == "openlayers") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
+
+        // Listen for orientation changes
+        if(window.onorientationchange && window.addEventListener) {
+            window.addEventListener("orientationchange", (function() {
+                this.resizeComponents(true);
+            }).bind(this), false);
+        }
+        Ext.on('resize', function () {
+            this.resizeComponents(true);
+        }, this);
     },
 
     showLoading: function(msg) {
@@ -1085,16 +1102,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Receives an array with visible map layers ids
+     * @param castToStrings boolean An optional parameter to cast all ID's to strings.
      * @return a array of Layer id's (same as appLayerIds) objects
      **/
-    getVisibleLayers : function (){
+    getVisibleLayers: function(castToStrings) {
         var layers = this.layers;
         var layerArray = new Array();
         for (var i in layers){
             if (layers.hasOwnProperty(i)){
                 var layer = layers[i];
-                if(layer.getVisible()){
-                    layerArray.push(i);
+                if(layer.getVisible()) {
+                    // When castToStrings is specified all ID's are casted to strings.
+                    // This makes it easier to use indexOf (which uses strict === equality checks) on the result
+                    layerArray.push(castToStrings ? "" + i : i);
                 }
             }
         }
@@ -1433,7 +1453,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
     applyFilter : function(appLayer){
         var mapLayer = this.getLayer(appLayer);
-
+        if(!mapLayer) {
+            return;
+        }
         if (appLayer.relations && appLayer.relations.length > 0 && appLayer.filter && appLayer.filter.getCQL()){
             if(this.filterDebounce[appLayer.id]) {
                 window.clearTimeout(this.filterDebounce[appLayer.id]);
@@ -1841,9 +1863,59 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // uses - replace by generic app config details access function
         // or if sprite is used more widely provide it outside Component.js
         if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
+            if(this.hasSvgSprite()) {
+                return this.checkSvgSupport(this.app.details.iconSprite);
+            }
             return this.app.details.iconSprite;
         }
         return null;
+    },
+    /**
+     * Checks is the sprite URL is using a SVG sprite
+     * @param {String} sprite
+     * @returns {Boolean}
+     */
+    hasSvgSprite: function() {
+        // Check if extension is SVG
+        var sprite = this.app.details.iconSprite || "";
+        return sprite.substring(sprite.length - 4, sprite.length) === ".svg";
+    },
+    /**
+     * Check support for External Content for SVG
+     * If not supported, get SVG using Ajax and add to body
+     * @param {String} sprite
+     * @returns {String}
+     */
+    checkSvgSupport: function(sprite) {
+        // Check already executed, return spriteUrl
+        if(this.spriteUrl !== null) {
+            return this.spriteUrl;
+        }
+        // Unfortunately it is not easy to detect support for external content
+        // This check is borrowed from https://github.com/jonathantneal/svg4everybody
+        var noExternalContentSupport = /\bEdge\/12\b|\bTrident\/[567]\b|\bVersion\/7.0 Safari\b/.test(navigator.userAgent) || (navigator.userAgent.match(/AppleWebKit\/(\d+)/) || [])[1] < 537;
+        if(!noExternalContentSupport) {
+            // External content is supported, return full sprite URL
+            this.spriteUrl = sprite;
+            return this.spriteUrl;
+        }
+        // Versions of IE/Edge and Safari do not support external content in xlink:href
+        // This can be solved by adding the SVG document to the body
+        // The SVG is fetched using Ajax and then appended to the body
+        Ext.Ajax.request({
+            url: sprite,
+            success: function(result) {
+                var svgsprite = result.responseText;
+                var body = document.querySelector('body');
+                var svgcontainer = document.createElement('div');
+                svgcontainer.style.display = 'none';
+                svgcontainer.innerHTML = svgsprite;
+                body.insertBefore(svgcontainer, body.firstChild);
+            }
+        });
+        // Return empty sprite url so the SVG inside the body is used
+        this.spriteUrl = "";
+        return this.spriteUrl;
     },
     /**
      * Gets the layout height for a layout container
@@ -1880,6 +1952,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return this.layoutManager.getMapId();
     },
 
+    getWrapperId: function() {
+        return this.layoutManager.getWrapperId();
+    },
+
+    /**
+     *
+     */
+    anchorTo: function(element, container, position, offsets) {
+        this.anchors.push({ element: element, container: container, position: position, offsets: offsets });
+    },
+    doAlignAnchors: function() {
+        for(var i = 0; i < this.anchors.length; i++) {
+            this.anchors[i].element.alignTo(this.anchors[i].container, this.anchors[i].position, this.anchors[i].offsets);
+        }
+    },
     /**
      * Get the application name
      * @returns string
@@ -1930,19 +2017,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
       /**
        * Entrypoint for updating the components.
-       * @param Boolean informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will
+       * @param {boolean} informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will
        * not be updated). Used to prevent endless calling of functions
        *  @returns {boolean} Always true
        */
     resizeComponents: function(informLayoutmanager) {
         var me = this;
-        if(informLayoutmanager){
-            me.layoutManager.resizeLayout(function(){
-                return me.resizeComponentsImpl();
-            });
-        }else{
-            return this.resizeComponentsImpl();
+        if(this.resizeDebounce !== null) {
+            window.clearTimeout(this.resizeDebounce);
         }
+        this.resizeDebounce = window.setTimeout(function() {
+            if(informLayoutmanager){
+                me.layoutManager.resizeLayout(function(){
+                    me.doAlignAnchors();
+                    return me.resizeComponentsImpl();
+                });
+            }else{
+                me.doAlignAnchors();
+                return me.resizeComponentsImpl();
+            }
+        }, 50);
     },
     /**
      * Actual calling the resize functions of all the components
@@ -1954,6 +2048,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(me.mapComponent.doResize) {
             me.mapComponent.doResize();
         }
+        me.mapComponent.getMap().updateSize();
         // We are execturing the doResize function manually on all components, instead of
         // firing an event, because all components are required execute this function
         for(var name in me.components) {
@@ -1974,5 +2069,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         return true;
+    },
+
+    destroyComponents: function() {
+        for(var name in this.components) {
+            if(this.components.hasOwnProperty(name)) {
+                this.components[name].instance.destroy();
+            }
+        }
+        delete this.components;
     }
 });

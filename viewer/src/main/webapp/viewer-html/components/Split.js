@@ -161,12 +161,14 @@ Ext.define("viewer.components.Split", {
         Ext.getCmp(this.name + "drawButton").setDisabled(false);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
         Ext.getCmp(this.name + "geomLabel").setText("Teken een lijn om mee te splitsen");
+        this.showMobilePopup();
     },
     splitFeatureAdded: function (vecLayer, feature) {
         this.splitFeature = feature;
         Ext.getCmp(this.name + "drawButton").setDisabled(true);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
         Ext.getCmp(this.name + "geomLabel").setText("");
+        this.showMobilePopup();
     },
     showWindow: function () {
         if (this.vectorLayer == null) {
@@ -189,7 +191,8 @@ Ext.define("viewer.components.Split", {
             height: '100%',
             autoScroll: true,
             layout: {
-                type: 'vbox'
+                type: 'vbox',
+                align: "stretch"
             },
             style: {
                 backgroundColor: 'White'
@@ -200,8 +203,6 @@ Ext.define("viewer.components.Split", {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
                     padding: "4px",
-                    width: '280px',
-                    height: MobileManager.isMobile() ? 60 : 36,
                     items: [
                         {
                             xtype: 'button',
@@ -209,8 +210,7 @@ Ext.define("viewer.components.Split", {
                             disabled: true,
                             tooltip: "Te Splitsen geometrie selecteren",
                             text: "Selecteer",
-                            componentCls: 'mobileLarge',
-                            listeners: {
+                                        listeners: {
                                 click: {
                                     scope: me,
                                     fn: me.select
@@ -223,8 +223,7 @@ Ext.define("viewer.components.Split", {
                             disabled: true,
                             tooltip: "Splitslijn tekenen",
                             text: "Splitslijn",
-                            componentCls: 'mobileLarge',
-                            listeners: {
+                                        listeners: {
                                 click: {
                                     scope: me,
                                     fn: me.splitLijn
@@ -244,20 +243,16 @@ Ext.define("viewer.components.Split", {
                     border: 0,
                     xtype: "form",
                     autoScroll: true,
-                    width: '100%',
                     flex: 1
                 }, {
                     id: this.name + 'savePanel',
                     xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 30,
                     layout: {
                         type: 'hbox',
                         pack: 'end'
                     },
                     defaults: {
-                        xtype: 'button',
-                        componentCls: 'mobileLarge'
+                        xtype: 'button'
                     },
                     items: [
                         {
@@ -503,6 +498,7 @@ Ext.define("viewer.components.Split", {
     splitLijn: function () {
         this.drawLayer.removeAllFeatures();
         this.mode = "split";
+        this.hideMobilePopup();
         if (this.newGeomType != null && this.geometryEditable) {
             this.drawLayer.drawFeature("LineString");
         }
@@ -584,6 +580,7 @@ Ext.define("viewer.components.Split", {
                 this.toSplitFeature = feat;
             }
         }
+        this.showMobilePopup();
         Ext.get(this.getContentDiv()).unmask();
     },
     /**
@@ -600,6 +597,16 @@ Ext.define("viewer.components.Split", {
      */
     allowedEditable: function (attribute) {
         return true;
+    },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.show();
+        }
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
@@ -756,11 +763,13 @@ Ext.define("viewer.components.Split", {
         this.vectorLayer.removeAllFeatures();
         this.mode = "select";
         this.activateMapClick();
+        this.hideMobilePopup();
     },
     cancelSelectFeature: function () {
         this.resetForm();
         Ext.get(this.getContentDiv()).unmask();
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
+        this.showMobilePopup();
     },
     indexFeatureToNamedFeature: function (feature) {
         var map = this.makeConversionMap();

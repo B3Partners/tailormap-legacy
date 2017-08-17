@@ -253,7 +253,7 @@ public class GroupActionBean implements ActionBean {
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
          */
-        if (sort != null && dir != null) {
+        if (sort != null && dir != null && sort.equals("name")) {
             Order order = null;
             if (dir.equals("ASC")) {
                 order = Order.asc(sort);

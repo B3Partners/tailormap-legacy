@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.onReady(function() {
 
     // Definition of the TreeNode model. Get function is overridden, so custom
@@ -74,7 +76,7 @@ Ext.onReady(function() {
         },
         items: [{
             text: 'Subcategorie toevoegen',
-            icon: imagesPath + "add.png",
+            iconCls: 'x-fa fa-plus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
                     addSubcategory(item.ownerCt.config.data.clickedItem);
@@ -83,7 +85,7 @@ Ext.onReady(function() {
         },
         {
             text: 'Categorie verwijderen',
-            icon: imagesPath + "delete.png",
+            iconCls: 'x-fa fa-minus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
                     removeCategory(item.ownerCt.config.data.clickedItem);
@@ -102,7 +104,7 @@ Ext.onReady(function() {
         { xtype: "menuseparator"},
         {
             text: 'Service toevoegen',
-            icon: imagesPath + "serviceok.png",
+            iconCls: 'x-fa fa-cog',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.clickedItem;
@@ -112,7 +114,7 @@ Ext.onReady(function() {
         },
         {
             text: 'CSW service doorzoeken',
-            icon: imagesPath + "serviceok.png",
+            iconCls: 'x-fa fa-cog',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.clickedItem;
@@ -130,7 +132,7 @@ Ext.onReady(function() {
         },
         items: [{
             text: 'Bewerken',
-            icon: imagesPath + "wrench.png",
+            iconCls: 'x-fa fa-wrench',
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.config.data.record;
@@ -155,7 +157,6 @@ Ext.onReady(function() {
         scroll: 'both',
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
-                console.log(categoryMenu, editMenu);
                 if(record.get('type') == "category") {
                     categoryMenu.config.data.clickedItem = record;
                     categoryMenu.showAt(event.getXY());
@@ -224,6 +225,7 @@ function addNode(node, parentid) {
             // and expanding it will load the added childnode from backend
 
             record.set('isLeaf', false);
+            record.set('leaf', false);
             record.expand(false);
         } else {
             //console.log("addNode: record is expanded, appending child");

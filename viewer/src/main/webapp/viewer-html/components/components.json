@@ -854,7 +854,7 @@
         "shortName": "Gr",
         "group": "Component",
         "singleton": true,
-        "sources": ["../../extjs/packages/sencha-charts/sencha-charts.js", "Graph.js", "GraphLayerIds.js"],
+        "sources": ["../../extjs/packages/charts/charts.js", "Graph.js", "GraphLayerIds.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js", "GraphLayerIds.js"],
         "restrictions": ["left_menu"],
         "type": "popup",
@@ -867,7 +867,7 @@
         "group": "Component",
         "sources": ["SpatialFilter.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","SpatialFilter-config.js"],
-        "restrictions": ["left_menu"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],
         "type": "popup",
         "singleton": true,
         "showHelp": true

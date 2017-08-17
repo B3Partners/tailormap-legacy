@@ -17,183 +17,110 @@
 
 Ext.define('vieweradmin.components.ChooseApplication', {
 
-    requires: [
-        'Ext.grid.*',
-        'Ext.data.*',
-        'Ext.util.*',
-        'Ext.ux.grid.GridHeaderFilters',
-        'Ext.toolbar.Paging'
-    ],
+    extend: "Ext.ux.b3p.CrudGrid",
 
     config: {
         gridurl: "",
         editurl: "",
         deleteurl: "",
+        itemname: "applicaties",
         setDefaultApplication: ""
     },
 
-    grid: null,
-
     constructor: function(config) {
         this.initConfig(config);
+        vieweradmin.components.ChooseApplication.superclass.constructor.call(this, this.config);
         vieweradmin.components.Menu.setActiveLink('menu_kiesapplicatie');
-        this.grid = this.createGrid();
         this.convertDefaultApplicationSelect();
     },
 
-    createGrid: function() {
-        var store = this.getStore();
-        return Ext.create('Ext.grid.Panel', Ext.merge(vieweradmin.components.DefaultConfgurations.getDefaultGridConfig(), {
-            id: 'editGrid',
-            store: store,
-            columns: [
-                {
-                    id: 'name',
-                    text: "Naam",
-                    dataIndex: 'name',
-                    flex: 1,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                },{
-                    id: 'published',
-                    text: "Gepubliceerd",
-                    dataIndex: 'published',
-                    width: 120,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                },{
-                    id: 'mashup',
-                    text: "Mashup",
-                    dataIndex: 'mashup',
-                    width: 120,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                },{
-                    id: 'motherapplication',
-                    text: "Moederapplicatie",
-                    dataIndex: 'motherapplication',
-                    width: 200,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                },{
-                    id: 'owner',
-                    text: "Eigenaar",
-                    dataIndex: 'owner',
-                    width: 160,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                },{
-                    id: 'edit',
-                    header: '',
-                    dataIndex: 'id',
-                    width: 350,
-                    sortable: false,
-                    hideable: false,
-                    menuDisabled: true,
-                    renderer: (function(value, metadata, record) {
-                        return [
-                            Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">Open viewer</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
-                            Ext.String.format('<a href="#" class="makeworkversion">Maak werkversie</a>', value),
-                            Ext.String.format('<a href="{0}&application={1}">Activeren</a>', this.config.editurl, value),
-                            Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>', value)
-                        ].join(" | ");
-                    }).bind(this)
+    getGridColumns: function() {
+        return [
+            {
+                id: 'name',
+                text: "Naam",
+                dataIndex: 'name',
+                flex: 1,
+                minWidth: 130,
+                filter: {
+                    xtype: 'textfield'
                 }
-            ],
-            listeners: {
-                cellclick: {
-                    fn: function(grid, td, cellIndex, record, tr, rowIndex, e) {
-                        var target = e.getTarget();
-                        if(!target || !target.className) {
-                            return;
-                        }
-                        if(target.className.indexOf("makeworkversion") !== -1) {
-                            e.preventDefault();
-                            this.makeWorkVersion(record);
-                        }
-                        if(target.className.indexOf("removeobject") !== -1) {
-                            e.preventDefault();
-                            this.removeObject(record);
-                        }
-                    },
-                    scope: this
+            }, {
+                id: 'published',
+                text: "Gepubliceerd",
+                dataIndex: 'published',
+                width: 120,
+                filter: {
+                    xtype: 'textfield'
                 }
-            },
-            bbar: Ext.create('Ext.PagingToolbar', {
-                store: store,
-                displayInfo: true,
-                displayMsg: 'Applicaties {0} - {1} of {2}',
-                emptyMsg: "Geen applicaties weer te geven"
-            }),
-            plugins: [
-                Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                    enableTooltip: false
-                })
-            ],
-            renderTo: 'grid-container'
-        }));
-    },
-
-    getStore: function() {
-        Ext.define('TableRow', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'id', type: 'int' },
-                {name: 'name', type: 'string'},
-                {name: 'published', type: 'string'},
-                {name: 'mashup', type: 'string'},
-                {name: 'motherapplication', type: 'string'},
-                {name: 'owner', type: 'string'}
-            ]
-        });
-        return Ext.create('Ext.data.Store', {
-            pageSize: 10,
-            model: 'TableRow',
-            remoteSort: true,
-            remoteFilter: true,
-            sorters: 'name',
-            autoLoad: true,
-            proxy: {
-                type: 'ajax',
-                url: this.config.gridurl,
-                reader: {
-                    type: 'json',
-                    root: 'gridrows',
-                    totalProperty: 'totalCount'
-                },
-                simpleSortMode: true
-            },
-            listeners: {
-                load: {
-                    fn: function () {
-                        this.grid.doLayout(); // Fix to apply filters
-                    },
-                    scope: this
+            }, {
+                id: 'mashup',
+                text: "Mashup",
+                dataIndex: 'mashup',
+                width: 120,
+                filter: {
+                    xtype: 'textfield'
                 }
+            },{
+                id: 'motherapplication',
+                text: "Moederapplicatie",
+                dataIndex: 'motherapplication',
+                width: 200,
+                filter: {
+                    xtype: 'textfield'
+                }
+            },{
+                id: 'owner',
+                text: "Eigenaar",
+                dataIndex: 'owner',
+                width: 160,
+                filter: {
+                    xtype: 'textfield'
+                }
+            }, {
+                id: 'edit',
+                header: '',
+                dataIndex: 'id',
+                width: 375,
+                sortable: false,
+                hideable: false,
+                menuDisabled: true,
+                renderer: (function (value, metadata, record) {
+                    return [
+                        Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">Open viewer</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
+                        Ext.String.format('<a href="#" class="makeworkversion">Maak werkversie</a>', value),
+                        Ext.String.format('<a href="{0}&application={1}">Activeren</a>', this.config.editurl, value),
+                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>', value)
+                    ].join(" | ");
+                }).bind(this)
             }
-        });
+        ];
     },
 
-    removeObject: function(record) {
-        Ext.MessageBox.show({
-            title: "Bevestiging",
-            msg: "Weet u zeker dat u de applicatie " + record.get("name") + " wilt verwijderen?",
-            buttons: Ext.MessageBox.OKCANCEL,
-            fn: function(btn){
-                if(btn === 'ok') {
-                    Ext.get('editFrame').dom.src = this.config.deleteurl + '?applicationToDelete=' + record.get('id');
-                    this.grid.getSelectionModel().select(record);
-                }
-            },
-            scope: this
-        });
+    cellClickListener: function(e, target, record) {
+        if (target.className.indexOf("makeworkversion") !== -1) {
+            e.preventDefault();
+            this.makeWorkVersion(record);
+        }
+    },
 
-        return false;
+    getGridModel: function() {
+        return [
+            {name: 'id', type: 'int' },
+            {name: 'name', type: 'string'},
+            {name: 'published', type: 'string'},
+            {name: 'mashup', type: 'string'},
+            {name: 'motherapplication', type: 'string'},
+            {name: 'owner', type: 'string'}
+        ];
+    },
+
+    removeConfirmMessage: function(record) {
+        return ["Weet u zeker dat u de applicatie ", record.get("name"), " wilt verwijderen?"].join("");
+    },
+
+    getRemoveUrl: function(record) {
+        return this.createUrl(this.config.deleteurl, { applicationToDelete: record.get('id') });
     },
 
     makeWorkVersion: function(record){
@@ -214,17 +141,6 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             }
         });
         return false;
-    },
-
-    reloadGrid: function(){
-        Ext.getCmp('editGrid').getStore().load();
-    },
-
-    removeActiveAppMenu: function() {
-        var a = document.getElementById("activeAppMenu");
-        if(a) {
-            Ext.removeNode(a);
-        }
     },
 
     convertDefaultApplicationSelect: function() {

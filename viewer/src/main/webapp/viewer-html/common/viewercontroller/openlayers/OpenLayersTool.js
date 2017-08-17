@@ -35,7 +35,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             var me = this;
             frameworkObject.trigger= function(){
                 me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);
-            }
+            };
         }
         return this;
     },
@@ -52,6 +52,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             this.iconUrl_dis = conf.iconUrl;
         }
         if (this.iconUrl_up!= null || this.iconUrl_sel!=null){
+            this.frameworkObject.flamingoIconDefined = true;
             var html="";
             if (this.iconUrl_up!= null){
                 html += ".olControlPanel ."+this.frameworkObject.displayClass+"ItemInactive";
@@ -72,7 +73,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             Ext.util.CSS.createStyleSheet(html);            
         }
 
-    },            
+    },
     
     /**
      * @see viewer.viewercontroller.controller.Tool#setToolVisible

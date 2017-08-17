@@ -19,6 +19,21 @@
  * A generic component to which can render itself
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
+
+Ext.define ("viewer.components.SvgHeader", {
+    extend: "Ext.panel.Header",
+    xtype: 'svgpanelheader',
+    constructor: function (conf) {
+        conf.iconCls = 'svg-icon-header';
+        viewer.components.SvgHeader.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        this.addListener('afterrender', function(cmp, eOpts) {
+            var icon = cmp.el.dom.querySelector('.svg-icon-header');
+            icon.innerHTML = conf.svgIcon;
+        });
+    }
+});
+
 Ext.define ("viewer.components.ScreenPopup",{
     extend: "Ext.util.Observable",
     popupWin:null,
@@ -58,33 +73,49 @@ Ext.define ("viewer.components.ScreenPopup",{
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
-            autoScroll: true,
-            constrainHeader: true
+            scrollable: true,
+            constrainHeader: true,
+            iconCls: this.config.iconCls || "",
+            bodyStyle: {},
+            cls: "screen-popup"
         };
-
-        if(MobileManager.isMobile()) {
-            config.modal = true;
-            config.width = '90%';
-            config.height = '90%';
-            config.draggable = false;
-            config.resizable = false;
-            this.currentOrientation = MobileManager.getOrientation();
+        
+        if(this.config.popupIcon) {
+            config.header = {
+                xtype: 'svgpanelheader',
+                svgIcon: this.config.popupIcon
+            };
         }
 
-        if(this.config.details.minWidth) {
+        var isMobile = viewer.components.MobileManager.isMobile();
+        if(isMobile) {
+            config.modal = true;
+            config.width = '100%';
+            config.height = '100%';
+            config.draggable = false;
+            config.resizable = false;
+            if(this.config.details.minWidth) {
+                config.bodyStyle.minWidth = this.config.details.minWidth + "px";
+            }
+            if(this.config.details.minHeight) {
+                config.bodyStyle.minHeight = this.config.details.minHeight + "px";
+            }
+            this.currentOrientation = viewer.components.MobileManager.getOrientation();
+        }
+
+        if(this.config.details.minWidth && !isMobile) {
             config.minWidth = this.config.details.minWidth;
             if(!conf.details.width) {
                 config.width = this.config.details.minWidth;
             }
         }
-        if(this.config.details.minHeight) {
+        if(this.config.details.minHeight && !isMobile) {
             config.minHeight = this.config.details.minHeight;
             if(!conf.details.height) {
                 config.height = this.config.details.minHeight;
             }
         }
 
-        config.bodyStyle = {};
         if(this.config.details && this.config.details.items){
             config.items = this.config.details.items;
             config.bodyStyle.background = '#fff';
@@ -156,14 +187,11 @@ Ext.define ("viewer.components.ScreenPopup",{
             if(this.component) {
                 this.component.setButtonState('click', true);
             }
-            if(MobileManager.isMobile()) {
-                if(MobileManager.getOrientation() !== this.currentOrientation) {
-                    this.currentOrientation = MobileManager.getOrientation();
+            if(viewer.components.MobileManager.isMobile()) {
+                if(viewer.components.MobileManager.getOrientation() !== this.currentOrientation) {
+                    this.currentOrientation = viewer.components.MobileManager.getOrientation();
                     setTimeout(function() { this.component.resizeScreenComponent() }, 0);
                 }
-                this.popupWin.mon(Ext.getBody(), 'click', function(el, e){
-                    this.popupWin.close();
-                }, this, { delegate: '.x-mask' });
             } else if(this.config.details.position === 'fixed' && !positionChanged) {
                 // Align popupWindow
                 var pos = [parseInt(this.config.details.x), parseInt(this.config.details.y)];
@@ -180,6 +208,11 @@ Ext.define ("viewer.components.ScreenPopup",{
                 this.popupWin.alignTo(Ext.get('wrapper'), [alignment, alignment].join('-'), pos);
             }
         }, this);
+
+        // IOS fix, see http://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+        // This is especially an issue when loading Flamingo in an iframe
+        this.popupWin.getEl().dom.addEventListener('touchstart', function(){});
+
         return this;
     },
     parseBooleanValue: function(val) {
@@ -197,14 +230,17 @@ Ext.define ("viewer.components.ScreenPopup",{
     getContentContainer: function() {
         return this.popupWin;
     },
-    show : function(){
+    show : function() {
         this.popupWin.show();
+        this.popupWin.zIndexManager.bringToFront(this.popupWin);
     },
     hide : function(){
         this.popupWin.hide();
     },
     disableBody : function (){
-        Ext.getBody().mask();
+        var mask = Ext.getBody().mask();
+        mask.on('click', this.enableBody, this);
+        mask.setZIndex(this.popupWin.getEl().getZIndex() - 1);
     },
     enableBody : function(){
         Ext.getBody().unmask();
@@ -216,15 +252,15 @@ Ext.define ("viewer.components.ScreenPopup",{
         return this.popupWin.isVisible();
     },
     resizePopup: function() {
-        if(MobileManager.isMobile() && this.isVisible()) {
-            // Set size in pixels to 90%/90% of the viewportwidth / height
-            this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
+        if(viewer.components.MobileManager.isMobile() && this.isVisible()) {
+            // Set size in pixels to 100% of the viewportwidth / height
+            this.popupWin.setSize(Ext.Element.getViewportWidth(), Ext.Element.getViewportHeight());
             // Reset position so popup remains centered
-            this.popupWin.setPosition(Ext.Element.getViewportWidth() * .05, Ext.Element.getViewportHeight() * .05);
+            this.popupWin.setPosition(0, 0);
             // doLayout on the window
             this.popupWin.updateLayout();
             // Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
-            this.currentOrientation = MobileManager.getOrientation();
+            this.currentOrientation = viewer.components.MobileManager.getOrientation();
         }
     },
     setWindowTitle : function(title){

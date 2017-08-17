@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2013 B3Partners B.V.
+/*
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,74 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.define('vieweradmin.components.FeaturetypeRelation', {
 
-/* 
- * Copyright (C) 2012-2013 B3Partners B.V.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+    extend: "Ext.ux.b3p.CrudGrid",
 
-Ext.Loader.setConfig({enabled: true});
-Ext.Loader.setPath('Ext.ux', uxpath);
-Ext.require([
-    'Ext.grid.*',
-    'Ext.data.*',
-    'Ext.util.*',
-    'Ext.ux.grid.GridHeaderFilters',
-    'Ext.toolbar.Paging'
-]);
+    config: {
+        gridurl: "",
+        editurl: "",
+        deleteurl: "",
+        itemname: "relaties",
+        editattributesurl: ""
+    },
 
-Ext.onReady(function(){
+    constructor: function(config) {
+        this.initConfig(config);
+        vieweradmin.components.FeaturetypeRelation.superclass.constructor.call(this, this.config);
+        vieweradmin.components.Menu.setActiveLink('menu_relation');
+    },
 
-    Ext.define('TableRow', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name: 'id', type: 'int' },
-            {name: 'featuretype', type: 'string'},
-            {name: 'foreignFeaturetype', type: 'string'}
-        ]
-    });
-
-    var store = Ext.create('Ext.data.Store', {
-        pageSize: 10,
-        model: 'TableRow',
-        remoteSort: true,
-        remoteFilter: true,
-        sorters: 'featuretype',
-        autoLoad: true,
-        proxy: {
-            type: 'ajax',
-            url: gridurl,
-            reader: {
-                type: 'json',
-                root: 'gridrows',
-                totalProperty: 'totalCount'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function() {
-                // Fix to apply filters
-                Ext.getCmp('editGrid').doLayout();
-            }
-        }
-    });
-
-    var grid = Ext.create('Ext.grid.Panel', Ext.merge(vieweradmin.components.DefaultConfgurations.getDefaultGridConfig(), {
-        id: 'editGrid',
-        store: store,
-        columns: [
+    getGridColumns: function() {
+        return [
             {
                 id: 'featuretype',
                 text: "Feature type",
@@ -102,54 +54,38 @@ Ext.onReady(function(){
                 id: 'edit',
                 header: '',
                 dataIndex: 'id',
-                flex: 1,
+                width: 200,
                 sortable: false,
                 hideable: false,
                 menuDisabled: true,
-                renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
-                }
+                renderer: (function(value) {
+                    return [
+                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                    ].join(" | ");
+                }).bind(this)
             }
-        ],
-        bbar: Ext.create('Ext.PagingToolbar', {
-            store: store,
-            displayInfo: true,
-            displayMsg: 'Relaties {0} - {1} of {2}',
-            emptyMsg: "Geen relaties weer te geven"
-        }),
-        plugins: [ 
-            Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                enableTooltip: false
-            })
-        ],
-        renderTo: 'grid-container'
-    }));
-    
-});
+        ];
+    },
 
-function editObject(objId) {
-    Ext.get('editFrame').dom.src = editurl + '?relation=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
-}
+    getGridModel: function() {
+        return [
+            {name: 'id', type: 'int' },
+            {name: 'featuretype', type: 'string'},
+            {name: 'foreignFeaturetype', type: 'string'}
+        ];
+    },
 
-function removeObject(objId) {
-    if(deleteConfirm()){
-        // How are we going to remove items? In the iframe or directly trough ajax?
-        Ext.get('editFrame').dom.src = deleteurl + '?relation=' + objId;
-        var gridCmp = Ext.getCmp('editGrid')
-        gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-        return false;
+    removeConfirmMessage: function(record) {
+        return ["Weet u zeker dat u deze relatie wilt verwijderen?"].join("");
+    },
+
+    getEditUrl: function(record) {
+        return this.createUrl(this.config.editurl, { relation: record.get('id') });
+    },
+
+    getRemoveUrl: function(record) {
+        return this.createUrl(this.config.deleteurl, { relation: record.get('id') });
     }
-}
 
-function deleteConfirm() {
-    return confirm('Weet u zeker dat u deze relatie wilt verwijderen?');
-}
-
-function reloadGrid(){
-    Ext.getCmp('editGrid').getStore().load();
-}
+});

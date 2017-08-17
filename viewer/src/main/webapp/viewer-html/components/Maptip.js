@@ -326,12 +326,6 @@ Ext.define ("viewer.components.Maptip",{
                     var feature = layer.features[index];
                     var featureDiv = new Ext.Element(document.createElement("div"));
                     featureDiv.addCls("feature_summary_feature");
-                    var id= "f";
-                    if (appLayer){
-                        id += appLayer.serviceId;
-                    }
-                    id += "_"+layerName+"_"+index;
-                    featureDiv.id= id;
                     //left column
                     var leftColumnDiv = new Ext.Element(document.createElement("div"));
                     leftColumnDiv.addCls("feature_summary_leftcolumn");
@@ -442,13 +436,17 @@ Ext.define ("viewer.components.Maptip",{
      */
     showDetails: function(appLayer,feature){
         var cDiv=Ext.get(this.getContentDiv());
+        var childs = cDiv.query('*', false);
+        var len = childs.length;
+        for(var i = len-1; i >= 0; i--) {
+            childs[i].destroy();
+        }
         cDiv.update("");
         /*
         cDiv.update(html);   */
         var featureDiv = new Ext.Element(document.createElement("div"));
         featureDiv.addCls("feature_detail_feature");
         featureDiv.setStyle("background-color", "white");
-        featureDiv.id="f_details_"+appLayer.serviceId+"_"+appLayer.layerName;
 
         var noHtmlEncode = "true" === appLayer.details['summary.noHtmlEncode'];
         var nl2br = "true" === appLayer.details['summary.nl2br'];
@@ -866,8 +864,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     //because click events still needs to be handled by the map, move the balloon a bit
     this.offsetX=1;
     this.offsetY=0;
-    this.roundImgPath=contextPath+"/viewer-html/components/resources/images/maptip/round.png";
-    this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";
+    this.roundImgPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/maptip/round.png";
+    this.arrowImgPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/maptip/arrow.png";
 
     //the balloon jquery dom element.
     this.balloon=null;
@@ -1015,6 +1013,15 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             //pop up is top right of the point
             this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"}).addCls('arrowVisible');
         }
+
+        // Update z-indexes
+        this.balloon.applyStyles({
+            'z-index': this.zIndex
+        });
+        this.balloon.select(".balloonArrowTopLeft").applyStyles({"z-index": this.zIndex+2});
+        this.balloon.select(".balloonArrowTopRight").applyStyles({"z-index": this.zIndex+2});
+        this.balloon.select(".balloonArrowBottomRight").applyStyles({"z-index": this.zIndex+2});
+        this.balloon.select(".balloonArrowBottomLeft").applyStyles({"z-index": this.zIndex+2});
     };
     /**
      *called by internal elements if the mouse is moved in 1 of the maptip element
@@ -1061,6 +1068,18 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //new maptip position so update the maptipId
         this.maptipId++;
 
+        var updatedZIndex = this.zIndex;
+        try {
+            Ext.WindowManager.eachTopDown(function(comp){
+                var zIndex = comp.getEl().getZIndex();
+                if(zIndex > updatedZIndex) {
+                    updatedZIndex = zIndex;
+                }
+            });
+        } catch(e) {}
+        if(updatedZIndex) {
+            this.zIndex = updatedZIndex + 1;
+        }
         if (!this.balloon){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){
@@ -1137,6 +1156,11 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         var element=this.getContentElement();
         if (!element){
             return;
+        }
+        var childs = element.query('*', false);
+        var len = childs.length;
+        for(var i = len-1; i >= 0; i--) {
+            childs[i].destroy();
         }
         element.update(value);
     };
