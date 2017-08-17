@@ -123,7 +123,17 @@ public class FeatureToJson {
          * a JDBC featureType without a primary key.
          */
         else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
-            setSortBy(q, propertyNames.get(0),dir);
+            int index = 0;
+            if(fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0)) ){
+                if(propertyNames.size() > 1){
+                    index = 1;
+                }else {
+                    index = -1;
+                }
+            }
+            if(index != -1){
+                setSortBy(q, propertyNames.get(index),dir);
+            }
         }
         Integer start = q.getStartIndex();
         if (start==null){

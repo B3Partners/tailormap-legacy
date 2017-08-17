@@ -27,17 +27,13 @@ import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
-import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.TestActionBeanContext;
-import org.geotools.data.Query;
-import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.opengis.filter.Filter;
 
 /**
  *

@@ -1,3 +1,5 @@
+/* global Ext, actionBeans */
+
 /**
  * ViewerController
  * @class Controller for a GIS application

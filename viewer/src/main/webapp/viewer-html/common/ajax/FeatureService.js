@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext, actionBeans */
+
 Ext.define("viewer.DirectFeatureService", {
     config: {
         actionbeanUrl: null,
@@ -27,7 +29,6 @@ Ext.define("viewer.DirectFeatureService", {
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["feature"];
         }
-        //console.log("DirectFeatureService init", this.config);
     },
     loadAttributes: function(successFunction, failureFunction) {
 
