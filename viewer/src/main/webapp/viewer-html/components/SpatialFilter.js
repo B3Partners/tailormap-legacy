@@ -510,6 +510,11 @@ Ext.define("viewer.components.SpatialFilter", {
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
 
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.featureAdded, this);
+        
+        this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, function (sd){
+            var a = 0;
+        },this);
+       // this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
     },
 
     //</editor-fold>
