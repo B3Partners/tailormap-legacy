@@ -111,8 +111,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                         <script type="text/javascript">
                             var frameParent = getParent();
-                            if(frameParent && frameParent.reloadGrid) {
-                                frameParent.reloadGrid();
+                            if(frameParent && frameParent.vieweradmin_components_User) {
+                                frameParent.vieweradmin_components_User.reloadGrid();
                             }
                         </script>
                         <stripes:submit name="edit" value="Nieuwe gebruiker"/>

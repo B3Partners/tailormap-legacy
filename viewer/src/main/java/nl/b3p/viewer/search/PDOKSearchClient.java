@@ -58,6 +58,8 @@ public class PDOKSearchClient extends SearchClient {
         try {
             JSONArray respDocs = new JSONArray();
             SolrQuery query = new SolrQuery();
+            // add asterisk to make it match partial queries (for autosuggest)
+            term += "*";
             if(this.filter != null){
                 term += " " + this.filter;
             }

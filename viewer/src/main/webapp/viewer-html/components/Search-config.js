@@ -65,7 +65,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 "->",
                 {
                     xtype:'button',
-                    iconCls: 'addbutton-icon',
+                    iconCls: 'x-fa fa-plus-circle',
                     text: 'Zoekingang toevoegen',
                     listeners: {
                         click: function() {
@@ -113,6 +113,9 @@ Ext.define("viewer.components.SearchConfiguration",{
         var collapsed = true;
         if(nextId === 1) collapsed = false;
         me.panel.add(me.newSearchField(newconfig, collapsed));
+        if(!collapsed){
+            this.showExtraconfig(newconfig.type, newconfig.id);
+        }
         me.nextId++;
     },
     newSearchField: function(config, collapsed) {
@@ -126,7 +129,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             animCollapse: false,
             collapsible: true,
             collapsed: collapsed,
-            iconCls: "edit-icon-bw",
+            iconCls: "x-fa fa-wrench",
             titleCollapse: true,
             hideCollapseTool: true,
             items: [
@@ -187,7 +190,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         { xtype: 'container', itemId: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', layout: { type: 'vbox', align: 'stretch' } },
                         {
                             xtype:'button',
-                            iconCls: 'savebutton-icon',
+                            iconCls: 'x-fa fa-floppy-o',
                             text: 'Zoekingang opslaan',
                             listeners: {
                                 click: function(button) {
@@ -200,7 +203,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             ],
             tbar: this.maxSearchConfigs === 1 ? null : ["->", {
                 xtype:'button',
-                iconCls: 'removebutton-icon',
+                iconCls: 'x-fa fa-minus-circle',
                 text: 'Zoekingang verwijderen',
                 listeners: {
                     click: function() {
@@ -586,6 +589,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     hideExtraConfig: function(searchconfigId) {
         Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#simpleListConfig' + searchconfigId)[0].setVisible(false);
+        Ext.ComponentQuery.query('#pdokConfig' + searchconfigId)[0].setVisible(false);
         this.panel.updateLayout();
     },
     /**

@@ -102,7 +102,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     checked: this.configObject.detailShowTitle !== undefined ? this.configObject.detailShowTitle : true,
                     labelWidth:this.labelWidth,
                     style: {
-                        marginRight: "70px"
+                        marginRight: "40px"
                     }
                 },{
                     xtype: 'checkbox',
@@ -121,7 +121,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     checked: this.configObject.detailShowDesc !== undefined ? this.configObject.detailShowDesc : true,
                     labelWidth:this.labelWidth,
                     style: {
-                        marginRight: "70px"
+                        marginRight: "40px"
                     }
                 },{
                     xtype: 'checkbox',

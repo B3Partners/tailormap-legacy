@@ -39,6 +39,8 @@ Ext.define("viewer.components.Edit", {
     editLinkInFeatureInfoCreated: false,
     afterLoadAttributes: null,
     filterFeature: null,
+    // Boolean to check if window is hidden temporarily for mobile mode
+    mobileHide: false,
     config: {
         title: "",
         iconUrl: "",
@@ -135,6 +137,7 @@ Ext.define("viewer.components.Edit", {
         if (this.vectorLayer == null) {
             this.createVectorLayer();
         }
+        this.mobileHide = false;
         this.layerSelector.initLayers();
         this.popup.popupWin.setTitle(this.config.title);
         this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
@@ -157,24 +160,23 @@ Ext.define("viewer.components.Edit", {
             height: '100%',
             autoScroll: true,
             layout: {
-                type: 'vbox'
+                type: 'vbox',
+                align: 'stretch'
             },
             style: {
                 backgroundColor: 'White'
             },
+            padding: 10,
             renderTo: this.getContentDiv(),
             items: [this.layerSelector.getLayerSelector(),
                 {
                     itemId: 'buttonPanel',
                     xtype: "container",
-                    padding: "4px",
-                    width: '280px',
-                    height: MobileManager.isMobile() ? 60 : 36,
                     items: this.createActionButtons()
                 },
                 {
                     itemId: "geomLabel",
-                    margin: 5,
+                    margin: '5 0',
                     text: '',
                     xtype: "label"
                 },
@@ -183,22 +185,18 @@ Ext.define("viewer.components.Edit", {
                     border: 0,
                     xtype: "form",
                     autoScroll: true,
-                    width: '100%',
                     flex: 1,
                     layout: this.config.formLayout,
                     hidden: true
                 }, {
                     itemId: 'savePanel',
                     xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 30,
                     layout: {
                         type: 'hbox',
                         pack: 'end'
                     },
                     defaults: {
-                        xtype: 'button',
-                        componentCls: 'mobileLarge'
+                        xtype: 'button'
                     },
                     items: [
                         {
@@ -254,7 +252,7 @@ Ext.define("viewer.components.Edit", {
             xtype: 'button',
             itemId: itemid,
             tooltip: tooltip || label,
-            componentCls: 'mobileLarge button-toggle',
+            componentCls: 'button-toggle',
             disabled: true,
             text: label,
             listeners: {
@@ -286,6 +284,7 @@ Ext.define("viewer.components.Edit", {
             button.setDisabled(disabled);
     },
     showAndFocusForm: function () {
+        this.showMobilePopup();
         this.setFormVisible(true);
         this.inputContainer.down("field").focus();
         this.geomlabel.setText("");
@@ -470,6 +469,8 @@ Ext.define("viewer.components.Edit", {
             }
             this.geomlabel.setText(tekst);
 
+            var groupedInputs = {};
+            var nonGrouped = [];
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
                 if (appLayer.featureType && attribute.featureType === appLayer.featureType && attribute.editable) {
@@ -483,9 +484,26 @@ Ext.define("viewer.components.Edit", {
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         input = this.createDynamicInput(attribute, values);
                     }
-                    this.inputContainer.add(input);
+                    if(attribute.folder_label) {
+                        if(!groupedInputs.hasOwnProperty(attribute.folder_label)) {
+                            groupedInputs[attribute.folder_label] = Ext.create('Ext.form.FieldSet', {
+                                title: attribute.folder_label,
+                                collapsible: true,
+                                collapsed: true,
+                                bodyPadding: 10,
+                                items: []
+                            });
+                        }
+                        groupedInputs[attribute.folder_label].add(input);
+                    } else {
+                        nonGrouped.push(input);
+                    }
                     this.setButtonDisabled("editButton", false);
                 }
+            }
+            this.inputContainer.add(nonGrouped);
+            for(var label in groupedInputs) if(groupedInputs.hasOwnProperty(label)) {
+                this.inputContainer.add(groupedInputs[label]);
             }
         } else {
             this.geomlabel.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
@@ -509,7 +527,7 @@ Ext.define("viewer.components.Edit", {
         };
         var input;
         if (attribute.editHeight) {
-            options.rows = attribute.editHeight;
+            options.height = attribute.editHeight;
             input = Ext.create("Ext.form.field.TextArea", options);
         } else {
             input = Ext.create("Ext.form.field.Text", options);
@@ -649,6 +667,7 @@ Ext.define("viewer.components.Edit", {
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
+        this.showMobilePopup();
         if (this.mode === "new") {
             return;
         }
@@ -728,6 +747,7 @@ Ext.define("viewer.components.Edit", {
         this.setFormVisible(false);
     },
     createNew: function () {
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Voeg een nieuw " + this.tekstGeom + " toe op de kaart");
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
@@ -740,6 +760,7 @@ Ext.define("viewer.components.Edit", {
 
     },
     edit: function () {
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Selecteer een te bewerken " + this.tekstGeom + " in de kaart");
         this.mode = "edit";
@@ -748,6 +769,7 @@ Ext.define("viewer.components.Edit", {
         this.untoggleButtons("editButton");
     },
     copy: function () {
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Selecteer een te kopieren " + this.tekstGeom + " in de kaart");
         this.mode = "copy";
@@ -759,6 +781,7 @@ Ext.define("viewer.components.Edit", {
         if (!this.config.allowDelete) {
             return;
         }
+        this.hideMobilePopup();
         this.clearFeatureAndForm();
         this.geomlabel.setText("Selecteer een te verwijderen " + this.tekstGeom + " in de kaart");
         this.mode = "delete";
@@ -793,6 +816,18 @@ Ext.define("viewer.components.Edit", {
         this.deActivatedTools = [];
         this.toolMapClick.deactivateTool();
         this.showAndFocusForm();
+    },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = true;
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = false;
+            this.popup.show();
+        }
     },
     save: function () {
         if (this.mode === "delete") {
@@ -892,6 +927,9 @@ Ext.define("viewer.components.Edit", {
         Ext.Msg.alert('Mislukt', msg);
     },
     cancel: function () {
+        if(this.mobileHide) {
+            return;
+        }
         this.resetForm();
         this.popup.hide();
     },

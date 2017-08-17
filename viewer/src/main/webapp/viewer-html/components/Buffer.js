@@ -36,7 +36,7 @@ Ext.define ("viewer.components.Buffer",{
         label: "",
         details: {
             minWidth: 300,
-            minHeight: 175
+            minHeight: 225
         }
     },
     constructor: function (conf){
@@ -97,7 +97,6 @@ Ext.define ("viewer.components.Buffer",{
             name: "buffer" ,
             id: this.name + "BufferButton",
             text: "Buffer",
-            componentCls: 'mobileLarge',
             margin: '10px 0px 0px 0px',
             listeners: {
                 click:{
@@ -111,14 +110,13 @@ Ext.define ("viewer.components.Buffer",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
             text: "Huidige buffer verwijderen", 
-            componentCls: 'mobileLarge',
             margin: '10px 0px 0px 10px',           
             listeners: {
                 click:{
                     scope: this,
                     fn: function(){
                         me.removeBuffer();
-                        if(MobileManager.isMobile()) {
+                        if(viewer.components.MobileManager.isMobile()) {
                             me.popup.hide();
                         }
                     }
@@ -157,7 +155,7 @@ Ext.define ("viewer.components.Buffer",{
             var bbox = this.config.viewerController.mapComponent.getMap().getExtent();
             var width = this.config.viewerController.mapComponent.getMap().getWidth();
             var height = this.config.viewerController.mapComponent.getMap().getHeight();
-            var url = absoluteURIPrefix + contextPath + "/action/Buffer";
+            var url = FlamingoAppLoader.get('absoluteURIPrefix') + FlamingoAppLoader.get('contextPath') + "/action/Buffer";
             var attrs ="?bbox="+ bbox.toString() + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.config.maxFeatures;
             if(this.color != null){
                     attrs += "&color="+this.color;
@@ -173,7 +171,7 @@ Ext.define ("viewer.components.Buffer",{
             var imageLayer = this.config.viewerController.mapComponent.createImageLayer(this.name + "_" + layer.id, url, bbox);
             this.imageLayers.push(imageLayer);
             this.config.viewerController.mapComponent.getMap().addLayer(imageLayer);
-            if(MobileManager.isMobile()) {
+            if(viewer.components.MobileManager.isMobile()) {
                 this.popup.hide();
             }            
         }

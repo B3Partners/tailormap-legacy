@@ -4,8 +4,13 @@ nb-configuration.xml
 /solr-commons/target/
 /target/
 /viewer-admin/nbproject/
+viewer/src/main/webapp/viewer-html/node_modules
 /viewer-config-persistence/nbproject/
 dependency-updates.log
 plugin-updates.log
+<<<<<<< HEAD
 vuln-check.log
 /viewer/nbproject/
+=======
+vuln-check.log
+>>>>>>> impr/ext-620

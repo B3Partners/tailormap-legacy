@@ -249,6 +249,9 @@ Ext.define ("viewer.components.Cyclorama",{
      * @param object the options.        
      */
     buttonDown: function (button, object) {
+        if(!this.toolMapClick) {
+            return;
+        }
         this.toolMapClick.activateTool();
 
         this.config.viewerController.mapComponent.setCursor(true, "crosshair");
@@ -260,6 +263,9 @@ Ext.define ("viewer.components.Cyclorama",{
         this.config.viewerController.mapComponent.setCursor(false);
         if (this.config.useMarker) {
             this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
+        if(!this.toolMapClick) {
+            return;
         }
         this.toolMapClick.deactivateTool();
     }

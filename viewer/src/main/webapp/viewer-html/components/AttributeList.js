@@ -59,9 +59,11 @@ Ext.define ("viewer.components.AttributeList",{
         this.grids={};
         this.pagers={};
         this.renderButton({
-            handler: function(){
+            handler: function() {
+                var deferred = me.createDeferred();
                 me.showWindow();
                 me.layerSelector.initLayers();
+                return deferred.promise;
             },
             text: me.config.title,
             icon: me.config.iconUrl,
@@ -122,11 +124,19 @@ Ext.define ("viewer.components.AttributeList",{
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
+            listeners: {
+                afterrender: {
+                    fn: function() {
+                        this.resolveDeferred();
+                    },
+                    scope: this
+                }
+            },
             items: [{
                 id: this.name + 'LayerSelectorPanel',
                 xtype: "container",
                 padding: this.config.showLayerSelectorTabs ? 0 : "4px",
-                height: this.config.showLayerSelectorTabs ? 38 : 36,
+                height: this.config.showLayerSelectorTabs ? 44 : 40,
                 items: [
                     this.layerSelector.getLayerSelector()
                 ]
@@ -139,14 +149,11 @@ Ext.define ("viewer.components.AttributeList",{
             },{
                 id: this.name + 'mainPagerPanel',
                 xtype: "container",
-                height: 43
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
-                height: MobileManager.isMobile() ? 45 : 32,
                 style: {
-                    marginTop: '10px',
-                    marginRight: '10px'
+                    margin: '5px'
                 },
                 layout: {
                     type:'hbox'
@@ -154,7 +161,6 @@ Ext.define ("viewer.components.AttributeList",{
                 items: [
                     {
                         xtype: 'button',
-                        style: { marginLeft: '5px' },
                         itemId: 'zoomToAll',
                             text: 'Zoom naar alle features',
                         disabled: true,
@@ -163,7 +169,7 @@ Ext.define ("viewer.components.AttributeList",{
                         hidden: !this.config.addZoomTo
                     },
                     { xtype: 'container', flex: 1 },
-                    {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
+                    {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, scope:this, handler:function(){
                              this.download();
                     }},
                     {
@@ -180,7 +186,7 @@ Ext.define ("viewer.components.AttributeList",{
                                 fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"GEOJSON", label:"GeoJSON" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
                             })
                     },
-                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                    {xtype: 'button', text: 'Sluiten', handler: function() {
                         me.popup.hide();
                     }}
                 ]
@@ -273,6 +279,9 @@ Ext.define ("viewer.components.AttributeList",{
             this.loadWindow();
         }
         this.popup.show();
+        if(this.layerSelector.getVisibleLayerCount() === 0) {
+            this.resolveDeferred();
+        }
     },
     showWindowForLayer: function(layer) {
         this.showWindow();
@@ -475,7 +484,6 @@ Ext.define ("viewer.components.AttributeList",{
                     id: name +'PagerPanel',
                     xtype: "container",
                     width: '100%',
-                    height: 38,
                     renderTo: renderToEl.id
                 });
             }
@@ -573,7 +581,8 @@ Ext.define ("viewer.components.AttributeList",{
                 reader: {
                     type: 'json',
                     rootProperty: 'features',
-                    totalProperty: 'total'
+                    totalProperty: 'total',
+                    keepRawData: true
                 },
                 simpleSortMode: true,
                 listeners: {
@@ -627,6 +636,13 @@ Ext.define ("viewer.components.AttributeList",{
                     if(store.getProxy().getReader().rawData.hasOwnProperty('virtualtotal') && store.getProxy().getReader().rawData.virtualtotal && me.pagers[gridId]) {
                         // Kind of hack to disable 'last page' button, property will be used on 'afterlayout' event on pager, see below
                         me.pagers[gridId].hideLastButton = true;
+                        me.pagers[gridId].virtualtotal = true;
+                        /**
+                         * the number of results are less than the pageSize so we are at the end of the set
+                         */
+                        if(records.length < pageSize) {
+                            maxResults = (store.currentPage - 1) * pageSize + records.length;
+                        }
                     }
                     /**
                      * When the store hits the end of a resultset (total is unknown at the beginning)
@@ -635,6 +651,8 @@ Ext.define ("viewer.components.AttributeList",{
                     if(maxResults !== -1) {
                         store.totalCount = maxResults;
                         if(me.pagers[gridId]) {
+                            me.pagers[gridId].virtualtotal = false;
+                            me.pagers[gridId].hideLastButton = false;
                             me.pagers[gridId].onLoad();  // triggers correct total
                         }
                     }
@@ -649,14 +667,9 @@ Ext.define ("viewer.components.AttributeList",{
                             store.loadPage(parseInt(store.totalCount / pageSize, 10));
                         }
                     }
-                    /**
-                     * the number of results are less than the pageSize so we are at the end of the set
-                     */
-                    if(store.totalCount !== 0 && records.length < pageSize) {
-                        maxResults = store.totalCount;
-                    }
 
                     setTimeout(function(){ Ext.getCmp(me.name + 'mainGridPanel').updateLayout(); }, 0);
+                    me.resolveDeferred();
                 }
             },
             autoLoad: true
@@ -720,15 +733,8 @@ Ext.define ("viewer.components.AttributeList",{
                 store: store,
                 displayInfo: true,
                 displayMsg: 'Feature {0} - {1} van {2}',
-                emptyMsg: "Geen features om weer te geven",
-                height: 38,
-                listeners: {
-                    afterlayout: function() {
-                        if(this.hideLastButton) {
-                            this.child('#last').disable();
-                        }
-                    }
-                }
+                afterPageText : 'van {0}',
+                emptyMsg: "Geen features om weer te geven"
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
@@ -795,7 +801,7 @@ Ext.define ("viewer.components.AttributeList",{
         var url =  actionBeans["download"];
 
         url += '?appLayer=' + appLayer.id;
-        url += '&application=' + appId;
+        url += '&application=' + FlamingoAppLoader.get("appId");
         url += '&filter=' + encodeURIComponent(filter);
         url += '&type=' + Ext.getCmp("downloadType").getValue();
         url += '&params=' + this.config.downloadParams;
@@ -844,6 +850,29 @@ Ext.define('viewer.overrides.view.Table', {
             return false;
         } else {
             return this.callParent([record, row, rowIndex, e]);
+        }
+    }
+});
+
+/**
+ * Override the Paging toolbar to hide totals when we have a "virtual total" (total is unknown)
+ */
+Ext.define('viewer.overrides.toolbar.Paging', {
+    override: 'Ext.toolbar.Paging',
+    inputItemWidth: 45,
+    displayMsgVirtualTotal: 'Feature {0} - {1}',
+    afterPageTextVirtualTotal: '',
+    initComponent: function() {
+        this.callParent();
+        this.displayMsgOriginal = this.displayMsg;
+        this.afterPageTextOriginal = this.afterPageText;
+    },
+    onLoad: function() {
+        this.displayMsg = this.virtualtotal ? this.displayMsgVirtualTotal : this.displayMsgOriginal;
+        this.afterPageText = this.virtualtotal ? this.afterPageTextVirtualTotal : this.afterPageTextOriginal;
+        this.callParent();
+        if(this.virtualtotal) {
+            this.child('#last').disable();
         }
     }
 });

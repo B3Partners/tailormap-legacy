@@ -30,7 +30,7 @@ Ext.define ("viewer.components.LayerSwitch",{
     selectedBackgroundLevels: null,
     control: null,
     container: null,
-    
+
     config: {
         top:null,
         left:null
@@ -96,6 +96,9 @@ Ext.define ("viewer.components.LayerSwitch",{
     },
     
     alignContainer: function() {
+        if(!this.container) {
+            return;
+        }
         var pos = [Number(this.config.left), Number(this.config.top)];
         var align = 'tl';
         if(this.config.alignposition) {
@@ -107,8 +110,9 @@ Ext.define ("viewer.components.LayerSwitch",{
         if(align.substr(1) === 'r') {
             pos[0] = pos[0] * -1;
         }
-        this.container.alignTo(this.config.viewerController.getMapId(), [align, align].join('-'), pos);
-        this.container.anchorTo(this.config.viewerController.getMapId(), [align, align].join('-'), pos);
+        var mapContainer = Ext.get(this.config.viewerController.getMapId());
+        this.container.alignTo(mapContainer, [align, align].join('-'), pos);
+        this.config.viewerController.anchorTo(this.container, mapContainer, [align, align].join('-'), pos);
     },
     
     levelItemId: function(level) {

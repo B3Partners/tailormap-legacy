@@ -126,6 +126,14 @@ Ext.define('LayoutManager', {
         this.initRegions();
         this.initGlobalLayout();
         this.createToolbox();
+
+        // Use setTimeout to make sure height is calculated after all items have rendered
+        // setTimeout(0) moves execution to the end of the call stack
+        setTimeout((function() {
+            this.layoutRegionsStore.each(function(layoutRegion){
+                this.resetWidthHeight(layoutRegion.regionContainer, layoutRegion.get('floatComponents'));
+            }, this);
+        }).bind(this), 0);
         
         var me = this;
         Ext.get('savebutton').on('click', function() {
@@ -241,9 +249,7 @@ Ext.define('LayoutManager', {
                 Ext.create('Ext.ux.b3p.ColorPickerButton', {
                     startColor: me.getConfigOptionValue(regionId, 'backgroundcolor'),
                     renderTo: 'colorpicker_' + regionId + '_backgroundcolor',
-                    textfield: regionId + '_backgroundcolor',
-                    openOnLeft: (regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom'),
-                    openOnTop: (regionId === 'footer')
+                    textfield: regionId + '_backgroundcolor'
                 });
             }
             
@@ -348,6 +354,7 @@ Ext.define('LayoutManager', {
                 height: 400,
                 layout: 'fit',
                 modal: true,
+                scrollable: true,
                 contentEl: 'regionconfig_' + regionId,
                 resizable: false,
                 bodyPadding: 10,
@@ -569,11 +576,11 @@ Ext.define('LayoutManager', {
         return Ext.create('Ext.view.View', {
             cls: 'component-view',
             tpl: '<tpl for=".">' +
-            '<div class="component-block">' +
-            '<div class="icon remove"></div>' +
-            '<div class="icon wrangler"></div>' +
+            '<div class="component-block x-unselectable">' +
+            '<div class="icon remove fa fa-minus-circle"></div>' +
+            '<div class="icon wrangler fa fa-wrench"></div>' +
             '<span class="title">{name}</span>' +
-            '<div class="icon draghandle"></div>' +
+            '<div class="icon draghandle fa fa-arrows"></div>' +
             '</div>' +
             '</tpl>',
             itemSelector: 'div.component-block',
@@ -603,6 +610,7 @@ Ext.define('LayoutManager', {
                         },
                         onStartDrag: function() {
                             var data = v.dragData;
+                            me.disableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 if(me.checkDropAllowed(region, data)) {
                                     Ext.get(region.get('htmlId')).addCls('dropallowed');
@@ -610,6 +618,7 @@ Ext.define('LayoutManager', {
                             });
                         },
                         endDrag: function() {
+                            me.enableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 Ext.get(region.get('htmlId')).removeCls('dropallowed');
                             });
@@ -622,7 +631,15 @@ Ext.define('LayoutManager', {
             }
         });
     },
-    
+
+    disableTextSelection: function() {
+        Ext.getBody().addCls('disable-selection');
+    },
+
+    enableTextSelection: function() {
+        Ext.getBody().removeCls('disable-selection');
+    },
+
     checkDropAllowed: function(layoutRegion, data) {
         var restrictions = data.componentData.restrictions;
         var notInCombinationWith = data.componentData.notInCombinationWith;
@@ -746,6 +763,7 @@ Ext.define('LayoutManager', {
                             var dragHandle = e.getTarget('.draghandle', 10);
                             var sourceEl;
                             if (dragHandle) {
+                                e.stopPropagation();
                                 sourceEl = dragHandle.parentNode;
                                 var d = sourceEl.cloneNode(true);
                                 d.id = Ext.id();
@@ -767,6 +785,7 @@ Ext.define('LayoutManager', {
                         },
                         onStartDrag: function() {
                             var data = v.dragData;
+                            me.disableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 if(me.checkDropAllowed(region, data)) {
                                     Ext.get(region.get('htmlId')).addCls('dropallowed');
@@ -774,6 +793,7 @@ Ext.define('LayoutManager', {
                             });
                         },
                         endDrag: function() {
+                            me.enableTextSelection();
                             me.layoutRegionsStore.each(function(region) {
                                 Ext.get(region.get('htmlId')).removeCls('dropallowed');
                             });

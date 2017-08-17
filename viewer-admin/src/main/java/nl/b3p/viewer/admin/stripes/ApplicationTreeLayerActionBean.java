@@ -412,15 +412,22 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         
         for (Iterator it = appAttributes.iterator(); it.hasNext();) {
             ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
+
+            JSONObject orderConfigObject = attributeOrderMap.get(appAttribute.getLongName());
+
             //save visible
-            if (attributeOrderMap.containsKey(appAttribute.getLongName()) ) {
-                appAttribute.setVisible(attributeOrderMap.get(appAttribute.getLongName()).getBoolean("checked"));
+            if (orderConfigObject != null && orderConfigObject.has("checked")) {
+                appAttribute.setVisible(orderConfigObject.getBoolean("checked"));
             } else {
                 appAttribute.setVisible(false);
             }
 
+            // save folder label
+            if(orderConfigObject != null && orderConfigObject.has("folder_label")) {
+                appAttribute.setLabel(orderConfigObject.getString("folder_label"));
+            }
+
             //save editable
-            
             JSONObject configObject = attributeConfigMap.get(appAttribute.getLongName());
             if(configObject != null){
 

@@ -44,7 +44,7 @@ Ext.define("viewer.components.Merge", {
     constructor: function (conf) {
         this.initConfig(conf);
 		viewer.components.Merge.superclass.constructor.call(this, this.config);
-        this.config.actionbeanUrl = contextPath + '/action/feature/merge';
+        this.config.actionbeanUrl = FlamingoAppLoader.get('contextPath') + '/action/feature/merge';
 
         var me = this;
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
@@ -144,6 +144,7 @@ Ext.define("viewer.components.Merge", {
         if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
             this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         }
+        this.hideMobilePopup();
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {
@@ -156,6 +157,16 @@ Ext.define("viewer.components.Merge", {
     cancel: function () {
         this.resetForm();
         this.popup.hide();
+    },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.popup.show();
+        }
     },
     /**
      * Can be overridden to add some extra data before sending the split
@@ -253,7 +264,8 @@ Ext.define("viewer.components.Merge", {
             height: '100%',
             autoScroll: true,
             layout: {
-                type: 'vbox'
+                type: 'vbox',
+                align: 'stretch'
             },
             style: {
                 backgroundColor: 'White'
@@ -264,8 +276,6 @@ Ext.define("viewer.components.Merge", {
                     id: this.name + 'ButtonPanel',
                     xtype: "container",
                     padding: "4px",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 60 : 36,
                     items: [
                         {
                             xtype: 'button',
@@ -273,8 +283,7 @@ Ext.define("viewer.components.Merge", {
                             disabled: true,
                             tooltip: "Kies geometrie " + this.labelA,
                             text: "Selecteer " + this.labelA,
-                            componentCls: 'mobileLarge',
-                            listeners: {
+                                        listeners: {
                                 click: {
                                     scope: me,
                                     fn: me.selectA
@@ -287,8 +296,7 @@ Ext.define("viewer.components.Merge", {
                             disabled: true,
                             tooltip: "Kies geometrie " + this.labelB,
                             text: "Selecteer " + this.labelB,
-                            componentCls: 'mobileLarge',
-                            listeners: {
+                                        listeners: {
                                 click: {
                                     scope: me,
                                     fn: me.selectB
@@ -306,15 +314,12 @@ Ext.define("viewer.components.Merge", {
                 {
                     id: this.name + 'savePanel',
                     xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 30,
                     layout: {
                         type: 'hbox',
                         pack: 'end'
                     },
                     defaults: {
-                        xtype: 'button',
-                        componentCls: 'mobileLarge'
+                        xtype: 'button'
                     },
                     items: [
                         {
@@ -387,7 +392,7 @@ Ext.define("viewer.components.Merge", {
                 Ext.getCmp(this.name + "selectAButton").setDisabled(false);
                 Ext.getCmp(this.name + "selectBButton").setDisabled(true);
 
-                Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelB + " en " + this.labelB + " geometrie");
+                Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelA + " en " + this.labelB + " geometrie");
             } else {
                 Ext.getCmp(this.name + "geomLabel").setText('Geometrie mag niet bewerkt worden.');
             }
@@ -429,6 +434,7 @@ Ext.define("viewer.components.Merge", {
                 this.vectorLayer.addFeature(feat);
             }
         }
+        this.showMobilePopup();
         Ext.get(this.getContentDiv()).unmask();
     },
     indexFeatureToNamedFeature: function (feature) {

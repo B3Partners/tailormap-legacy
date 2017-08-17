@@ -62,7 +62,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             tbar: [
                 {
                     xtype: 'button',
-                    iconCls: 'addbutton-icon',
+                    iconCls: 'x-fa fa-plus-circle',
                     text: 'Grafiekconfiguratie toevoegen',
                     listeners: {
                         click: function() {
@@ -130,7 +130,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             animCollapse: false,
             collapsible: true,
             collapsed: collapsed,
-            iconCls: "edit-icon-bw",
+            iconCls: "x-fa fa-wrench",
             titleCollapse: true,
             hideCollapseTool: false,
             defaultType: 'textfield',
@@ -216,7 +216,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             ],
             tbar: ["->", {
                 xtype:'button',
-                iconCls: 'removebutton-icon',
+                iconCls: 'x-fa fa-minus-circle',
                 text: 'Grafiekconfiguratie verwijderen',
                 listeners: {
                     click: function() {

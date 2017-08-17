@@ -78,7 +78,6 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                     }
                 }
             },
-            /*
             listeners: {
                 itemcontextmenu: {
                     fn: function(view, record, item, index, event, eOpts) { this.handleContextmenu(event, record); },
@@ -89,7 +88,6 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                     scope: this
                 }
             },
-            */
             dockedItems: [
                 {
                     xtype: 'toolbar',

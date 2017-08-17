@@ -74,10 +74,10 @@ Ext.define("viewer.components.SpatialFilter", {
             'freehand': Ext.id()
 
         };
-        this.iconPath = contextPath + "/viewer-html/components/resources/images/drawing/";
-
-        this.loadWindow();
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
+        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
+     
+        this.loadWindow(); 
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
 
@@ -258,72 +258,68 @@ Ext.define("viewer.components.SpatialFilter", {
         var me = this;
         var formItems = [];
         var formButtons = [
-            {
-                xtype: 'container',
-                html: 'Teken: ',
-                padding: '3 0 0 0',
-                width: 105
-            },
-            {
-                xtype: 'button',
-                id: this.drawingButtonIds.polygon,
-                icon: this.iconPath + "shape_polygon_red.png",
-                componentCls: 'mobileLarge',
-                tooltip: "Teken een polygoon",
-                enableToggle: true,
-                toggleGroup: 'drawingTools',
-                margin: '0 3 0 0',
-                listeners: {
-                    click: {
-                        scope: me,
-                        fn: function () {
-                            me.drawGeometry("Polygon");
-                        }
+        {
+            xtype: 'container',
+            html: 'Teken: ',
+            padding: '3 0 0 0',
+            width: 105
+        },
+        {
+            xtype: 'button',
+            id: this.drawingButtonIds.polygon,
+            icon: this.iconPath+"shape_polygon_red.png",
+            tooltip: "Teken een polygoon",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            margin: '0 3 0 0',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: function(){
+                        me.drawGeometry("Polygon");
                     }
                 }
-            },
-            {
-                xtype: 'button',
-                id: this.drawingButtonIds.box,
-                icon: this.iconPath + "shape_square_red.png",
-                componentCls: 'mobileLarge',
-                tooltip: "Teken een vierkant",
-                enableToggle: true,
-                toggleGroup: 'drawingTools',
-                margin: '0 3 0 0',
-                listeners: {
-                    click: {
-                        scope: me,
-                        fn: function () {
-                            me.drawGeometry("Box");
-                        }
+            }
+        },
+        {
+            xtype: 'button',
+            id: this.drawingButtonIds.box,
+            icon: this.iconPath+"shape_square_red.png",
+            tooltip: "Teken een vierkant",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            margin: '0 3 0 0',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: function(){
+                        me.drawGeometry("Box");
                     }
                 }
-            },
-            {
-                xtype: 'button',
-                id: this.drawingButtonIds.freehand,
-                icon: this.iconPath + "freehand.png",
-                componentCls: 'mobileLarge',
-                tooltip: "Teken een vrije vorm",
-                enableToggle: true,
-                toggleGroup: 'drawingTools',
-                margin: '0 3 0 0',
-                listeners: {
-                    click: {
-                        scope: me,
-                        fn: function () {
-                            me.drawGeometry("Freehand");
-                        }
+            }
+        },
+        {
+            xtype: 'button',
+            id: this.drawingButtonIds.freehand,
+            icon: this.iconPath+"freehand.png",
+            tooltip: "Teken een vrije vorm",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            margin: '0 3 0 0',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: function(){
+                        me.drawGeometry("Freehand");
                     }
                 }
-            }];
-        if (!MobileManager.isMobile()) {
+            }
+        }];
+        if(!viewer.components.MobileManager.isMobile()) {
             formButtons.push({
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
-                icon: this.iconPath + "shape_circle_red.png",
-                componentCls: 'mobileLarge',
+                icon: this.iconPath+"shape_circle_red.png",
                 tooltip: "Teken een cirkel",
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
@@ -340,7 +336,6 @@ Ext.define("viewer.components.SpatialFilter", {
         }
         formItems.push({
             xtype: 'container',
-            width: "100%",
             layout: {
                 type: 'hbox'
             },
@@ -425,46 +420,45 @@ Ext.define("viewer.components.SpatialFilter", {
                     }
                 },
                 {
-                    id: this.config.name + 'filterButtons',
-                    xtype: "container",
-                    disabled: true,
-                    autoScroll: true,
-                    width: '100%',
-                    layout: {
-                        type: "vbox"
-                    },
-                    flex: 1,
-                    items: formItems
-                }, {
-                    id: this.config.name + 'ClosingPanel',
-                    xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 25,
-                    style: {
-                        marginTop: '10px'
-                    },
-                    layout: {
-                        type: 'hbox',
-                        pack: 'end'
-                    },
-                    items: [
-                        {xtype: 'button', text: 'Reset', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function () {
-                                me.resetForm();
-                            }},
-                        {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function () {
-                                me.applyFilter();
-                            }},
-                        {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function () {
-                                me.resetForm();
-                                me.popup.hide();
-                            }}
-                    ]
-                }]
-        });        
+                id: this.config.name + 'filterButtons',
+                xtype: "container",
+                disabled:true,
+                autoScroll: true,
+                layout:{
+                    type: "vbox",
+                    align: "stretch"
+                },
+                flex: 1,
+                items: formItems
+            },{
+                id: this.config.name + 'ClosingPanel',
+                xtype: "container",
+                style: {
+                    marginTop: '10px'
+                },
+                layout: {
+                    type:'hbox',
+                    pack:'end'
+                },
+                items: [
+                    {xtype: 'button', text: 'Reset', margin: '0 1 0 0', handler: function(){
+                        me.resetForm();
+                    }},
+                    {xtype: 'button', text: 'Toepassen', margin: '0 1 0 0', handler: function(){
+                        me.applyFilter();
+                    }},
+                    {xtype: 'button', text: 'Sluiten', handler: function() {
+                        me.resetForm();
+                        me.popup.hide();
+                    }}
+                ]
+            }]
+        });
         if (this.vectorLayer === null) {
             this.createVectorLayer();
         }
         this.layerSelector.initLayers();
+            
     },
     createLayerSelector: function () {
         var config = {

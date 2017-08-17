@@ -27,6 +27,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     iconUrl_up: null,
     iconUrl_over: null,
     button: null,
+    lastImageUrl: "",
     constructor: function (conf){        
         this.hasButton = false;
         this.initConfig(conf);   
@@ -62,14 +63,40 @@ Ext.define ("viewer.components.tools.DownloadMap",{
      */
     buttonDown : function(button,object){        
         var properties = this.getProperties();
-        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
+        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess.bind(this),this.imageFailure);
     },
     imageSuccess: function(imageUrl){        
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
         if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
         else {
-            window.open(imageUrl, '_blank');
+            this.lastImageUrl = imageUrl;
+            var result = window.open(imageUrl, '_blank');
+            if(!result) {
+                // Popup is probably blocked, show message box to show URL and button to open image
+                this.showDownloadWindow();
+            }
         }
+    },
+    showDownloadWindow: function() {
+        var imageUrl = this.lastImageUrl;
+        Ext.Msg.show({
+            title:'Afbeelding van de kaart downloaden',
+            message: [
+                'De afbeelding van de kaart is beschikbaar via',
+                '<br /><br />',
+                '<input type="text" value="', imageUrl, '" style="width: 100%;" class="ext-style" />',
+                '<br /><br />',
+                'Klik op "Openen" om de afbeelding in een nieuw venster te openen'
+            ].join(''),
+            buttonText: { ok: "Openen", cancel: "Sluiten" },
+            icon: Ext.Msg.INFO,
+            fn: function(btn) {
+                if (btn === 'ok') {
+                    window.open(imageUrl, '_blank');
+                }
+            }
+        });
+
     },
     getProperties: function() {
         var properties = {};
