@@ -362,6 +362,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * @return The generic feature
      */
     fromOpenLayersFeature : function(openLayersFeature){
+        if(!openLayersFeature){
+            return null;
+        }
         var feature = new viewer.viewercontroller.controller.Feature(
         {
             id:openLayersFeature.id,
