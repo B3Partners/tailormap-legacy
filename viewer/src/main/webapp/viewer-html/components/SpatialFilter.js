@@ -100,8 +100,7 @@ Ext.define("viewer.components.SpatialFilter", {
         if (this.onlySourceGeometry && sourceAppLayer) {
 
             var appLayer = this.layerSelector.getValue();
-            //var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].name;
-            var geomAttr = appLayer.geometryAttribute;
+            var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].name;
             var cql = "APPLAYER(" + geomAttr + ", " + sourceAppLayer.id + ", " + (sourceAppLayer.filter ? sourceAppLayer.filter.getCQL() : "") + ")";
             this.config.viewerController.setFilter(
                     Ext.create("viewer.components.CQLFilterWrapper", {
@@ -486,12 +485,12 @@ Ext.define("viewer.components.SpatialFilter", {
         };
 
         this.sourceLayerSelector = Ext.create("viewer.components.LayerSelector", config);
-        this.sourceLayerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, function (a, b, c) {
+        this.sourceLayerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, function (appLayer, b, c) {
             Ext.getCmp(this.config.name + 'RetrieveFeaturesButton').setDisabled(false);
-            console.log(a, b, c);
-        }, this);
-        this.sourceLayerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, function (a, b, c) {
-            console.log(a, b, c);
+                if (appLayer !== null && !appLayer.attributes) {
+                 var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
+                   featureService.loadAttributes(appLayer);
+            }
         }, this);
     },
     createVectorLayer: function () {
