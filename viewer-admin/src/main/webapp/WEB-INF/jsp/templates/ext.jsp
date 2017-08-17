@@ -21,14 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-definition>
 
 <!DOCTYPE html>
-<html class="x-border-box">
+<html class="x-border-box theme-triton">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/crisp/ext-theme-crisp-all.css">
+        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all.css">
         <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css">
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
-        <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>
+        <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript">
             var uxpath = '${contextPath}/resources/js/ux';
             var csspath = '${contextPath}/resources/css/';

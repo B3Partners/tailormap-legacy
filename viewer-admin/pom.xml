@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.8.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
     </parent>
     <name>viewer-admin</name>
 
@@ -211,7 +211,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
                 <configuration>
                     <skipTests>${test.skip.integrationtests}</skipTests>
                     <systemPropertyVariables>

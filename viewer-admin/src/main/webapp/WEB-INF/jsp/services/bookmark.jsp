@@ -44,20 +44,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 -->
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
             </div>
-
-            <script type="text/javascript">
-                var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="getGridData"/>';
-                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="deleteBookmark"/>';
-                vieweradmin.components.Menu.setActiveLink('menu_bookmarks');
-
-                function removeActiveAppMenu() {
-                    var a = document.getElementById("activeAppMenu");
-                    if(a) {
-                        Ext.removeNode(a);
-                    }
-                }
-            </script>
             <script type="text/javascript" src="${contextPath}/resources/js/services/bookmark.js"></script>
+            <script type="text/javascript">
+                Ext.onReady(function() {
+                    // Expose vieweradmin_components_Bookmark to global scope to be able to access the component from the iframe
+                    window.vieweradmin_components_Bookmark = Ext.create('vieweradmin.components.Bookmark', {
+                        gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="getGridData"/>',
+                        deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="deleteBookmark"/>'
+                    });
+                });
+            </script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>

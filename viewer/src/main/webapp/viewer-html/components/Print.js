@@ -49,7 +49,7 @@ Ext.define ("viewer.components.Print",{
         fromName:null,
         details: {
             minWidth: 550,
-            minHeight: 515
+            minHeight: 575
         }
     },
     /**
@@ -220,6 +220,7 @@ Ext.define ("viewer.components.Print",{
             height: "100%",
             border: 0,
             renderTo: me.getContentDiv(),
+            scrollable: true,
             layout: {
                 type: 'vbox',
                 align: 'stretch',
@@ -230,7 +231,10 @@ Ext.define ("viewer.components.Print",{
                 //top container (1)
                 xtype: 'container',
                 height: 200,
-                layout: 'hbox',
+                layout: {
+                    type: 'box',
+                    vertical: false
+                },
                 width: '100%',
                 items: [/*{
                     xtype: "label",
@@ -242,7 +246,7 @@ Ext.define ("viewer.components.Print",{
                     flex: 0.4,
                     hideMode: "offsets",
                     hidden: !this.getLegend(),
-                    items: [{}],
+                    items: [],
                     autoScroll: true,
                     margin: '0 5 0 0'
                 },{
@@ -256,16 +260,33 @@ Ext.define ("viewer.components.Print",{
                 //bottom container (2)
                 xtype: 'container',
                 layout: {
-                    type: 'column'
+                    type: 'box',
+                    vertical: false
                 },
                 style: {
                     marginTop: '15px'
+                },
+                plugins: ['responsive'],
+                responsiveConfig: {
+                    'width < 550': {
+                        layout: {
+                            type: 'box',
+                            vertical: true,
+                            align: 'stretch'
+                        }
+                    },
+                    'width >= 550': {
+                        layout: {
+                            type: 'box',
+                            vertical: false
+                        }
+                    }
                 },
                 width: '100%',
                 items: [{
                     //bottom left (3)
                     xtype: 'container',
-                    columnWidth: 0.4,
+                    flex: 0.4,
                     items: [{
                         xtype: "label",
                         text: "Titel"
@@ -292,7 +313,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     //bottom right (4)
                     xtype: 'container',
-                    columnWidth: 0.6,
+                    flex: 0.6,
                     items: [{
                         //kwality row (5)
                         xtype: 'container',
@@ -326,9 +347,8 @@ Ext.define ("viewer.components.Print",{
                             },{
                                 xtype: 'button',
                                 text: '<',
-                                width: MobileManager.isMobile() ? 50 : 30,
-                                componentCls: 'mobileLarge',
-                                listeners: {
+                                width: /*MobileManager.isMobile() ? 50 : */30,
+                                                listeners: {
                                     click:{
                                         scope: this,
                                         fn: function (){
@@ -342,18 +362,37 @@ Ext.define ("viewer.components.Print",{
                     },{
                         // (6)
                         xtype: 'container',
-                        layout: {type: 'column'},
+                        layout: {
+                            type: 'box',
+                            vertical: false
+                        },
+                        plugins: ['responsive'],
+                        responsiveConfig: {
+                            'width < 550': {
+                                layout: {
+                                    type: 'box',
+                                    vertical: true,
+                                    align: 'stretch'
+                                }
+                            },
+                            'width >= 550': {
+                                layout: {
+                                    type: 'box',
+                                    vertical: false
+                                }
+                            }
+                        },
                         items: [{
                             //(7)
                             xtype: 'container',
-                            columnWidth: 0.5,
+                            flex: 0.5,
                             items: [{
                                 xtype: 'label',
                                 text: 'Orientatie'
                             },{
                                 xtype: 'radiogroup',
                                 name: "orientation",
-                                width: MobileManager.isMobile() ? 185 : 125,
+                                width: 150,
                                 items: [{
                                     boxLabel: 'Liggend',
                                     name: 'orientation',
@@ -389,7 +428,27 @@ Ext.define ("viewer.components.Print",{
                         },{
                             //(8)
                             xtype: 'container',
-                            columnWidth: 0.5,
+                            flex: 0.5,
+                            layout: {
+                                type: 'box',
+                                vertical: true
+                            },
+                            plugins: ['responsive'],
+                            responsiveConfig: {
+                                'width < 550': {
+                                    layout: {
+                                        type: 'box',
+                                        vertical: true,
+                                        align: 'stretch'
+                                    }
+                                },
+                                'width >= 550': {
+                                    layout: {
+                                        type: 'box',
+                                        vertical: true
+                                    }
+                                }
+                            },
                             items: [{
                                 xtype: 'label',
                                 text: "Pagina formaat"
@@ -397,6 +456,8 @@ Ext.define ("viewer.components.Print",{
                                 xtype: "combobox",
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
+                                forceSelection: true,
+                                queryMode: 'local',
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
                                 store: [['a5','A5'],['a4','A4'],['a3','A3'],['a0','A0']],
                                 width: 100,
@@ -440,7 +501,7 @@ Ext.define ("viewer.components.Print",{
             },{
                  xtype: 'label',
                  style: {
-                     marginTop: "15px"
+                     marginTop: "5px"
                  },
                  text: "* Door het draaien van de kaart kan niet de maximale kwaliteit worden opgehaald."
             },{
@@ -448,13 +509,12 @@ Ext.define ("viewer.components.Print",{
                 xtype: 'container',
                 frame: false,
                 style: {
-                    marginTop: "15px"
+                    marginTop: "5px"
                 },
                 items: [{
                     xtype: 'button',
                     text: 'Sluiten',
-                    componentCls: 'mobileLarge',
-                    style: {
+                        style: {
                         "float": "right",
                         marginLeft: '5px'
                     },
@@ -470,7 +530,6 @@ Ext.define ("viewer.components.Print",{
 //                    xtype: 'button',
 //                    text: 'Opslaan als RTF'  ,
 //                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
-//                    componentCls: 'mobileLarge',
 //                    style: {
 //                        "float": "right",
 //                        marginLeft: '5px'
@@ -487,8 +546,7 @@ Ext.define ("viewer.components.Print",{
                     xtype: 'button',
                     text: 'Printen via PDF'  ,
                     hidden: this.config.mailPrint === "canOnlyMail",
-                    componentCls: 'mobileLarge',
-                    style: {
+                        style: {
                         "float": "right",
                         marginLeft: '5px'
                     },
@@ -503,8 +561,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Verstuur per mail',
-                    componentCls: 'mobileLarge',
-                    hidden:this.config.mailPrint === "cantMail",
+                        hidden:this.config.mailPrint === "cantMail",
                     style: {
                         "float": "right",
                         marginLeft: '5px'

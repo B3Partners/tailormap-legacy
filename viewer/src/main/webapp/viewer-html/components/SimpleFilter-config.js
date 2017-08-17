@@ -64,10 +64,13 @@ Ext.define("viewer.components.CustomConfiguration",{
         var me = this;
 
         Ext.create('Ext.panel.Panel', {
-            width: '95%',
-            height: '95%',
             border: 0,
-            layout: 'vbox',
+            width: 730,
+            height: 800,
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             renderTo: Ext.get(parentId),
             items: [{
                 xtype: 'textfield',
@@ -79,21 +82,22 @@ Ext.define("viewer.components.CustomConfiguration",{
                 width: 500
             }, {
                 xtype: 'panel',
-                width: '100%',
                 padding: '5 5 15 0',
                 border: 0,
                 html: 'Met een simpel filter kunt u een gebruiker laten filteren op een voorgedefinieerde laag een attribuut. Kies eerst het soort filtergereedschap, stel de gegevens in en voeg het filtergereedschap toe aan de lijst met de plus-knop.'
             },{
                 xtype: 'panel',
                 border: 0,
-                width: '100%',
-                //flex: 1,
-                layout: 'column',
+                flex: 1,
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
                 items: [{
                     xtype: 'form',
                     border: 0,
                     height: '100%',
-                    columnWidth: 0.5,
+                    flex: 0.6,
                     fieldDefaults: {
                         msgTarget: 'side',
                         labelWidth: 150
@@ -108,9 +112,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                         editable: false,
                         valueField: "type",
                         listeners: {
-                            select: function (combo, records, eOpts) {
+                            select: function (combo, record, eOpts) {
                                 me.resetConfig();
-                                var type = records[0].get("type");
+                                var type = record.get("type");
                                 me.createFilterConfig(type,me);
                             }
                         }
@@ -121,9 +125,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                         collapsible: false,
                         defaultType: "textfield",
                         layout: "anchor",
-                        defaults: {
-                            anchor: '100%'
-                        },
                         items: [{
                             xtype: "combo",
                             itemId: "layerCombo",
@@ -173,8 +174,8 @@ Ext.define("viewer.components.CustomConfiguration",{
                             editable: false,
                             valueField: "name",
                             listeners: {
-                                select: function(combo, records, eOpts) {
-                                    Ext.ComponentQuery.query("#attributeInfo")[0].setValue("Type: " + records[0].get("type"));
+                                select: function(combo, record, eOpts) {
+                                    Ext.ComponentQuery.query("#attributeInfo")[0].setValue("Type: " + record.get("type"));
                                 }
                             }
                         },{
@@ -189,13 +190,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                         title: "Instellingen voor filtergereedschap",
                         collapsible: false,
                         defaultType: "textfield",
-                        layout: "anchor",
-                        height: 300,
-                        autoScroll: true,
-                        defaults: {
-                            anchor: '100%',
-                            width: 500
-                        },
+                        layout: "fit",
+                        height: 400,
+                        scrollable: true,
+                        // defaults: {
+                        //     anchor: '100%',
+                        //     width: 500
+                        // },
                         items: []
                     }]
                 },{
@@ -273,7 +274,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     itemId: 'configuredFiltersGrid',
                     title: 'Toegevoegde filters',
                     height: 430,
-                    columnWidth: 0.48,
+                    flex: 0.4,
                     store: this.filterStore,
                     columns: [
                         {header: 'Soort', dataIndex: 'soort', sortable: false, hideable: false},
@@ -295,7 +296,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.filterConfigurer = Ext.create(configurerClass, {
             configObject: config,
-            renderTo: "#filterConfigFieldset"
+            container: Ext.ComponentQuery.query("#filterConfigFieldset")[0]
         });
         Ext.ComponentQuery.query("#filterConfigFieldset")[0].updateLayout();
     },
@@ -402,6 +403,11 @@ Ext.define("viewer.components.CustomConfiguration",{
          * updated when the application is copied, use indexes to this array
          */
         Ext.Array.each(config.filters, function(filter) {
+            if(!filter.appLayerId) {
+                // Allow for empty appLayerId's
+                // When no appLayer is selected (which is allowed for Tekst and Reset types) do not add to layers config
+                return true;
+            }
             var index = Ext.Array.indexOf(config.layers, filter.appLayerId);
             if(index === -1) {
                 config.layers.push(filter.appLayerId);

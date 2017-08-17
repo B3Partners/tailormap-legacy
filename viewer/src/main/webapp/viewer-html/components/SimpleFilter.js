@@ -25,10 +25,14 @@ Ext.define("viewer.components.SimpleFilter", {
         title: ""
     },
     simpleFilters:null,
-    constructor: function (conf){
+    allFilters:null,
+    constructor: function (conf) {
         this.initConfig(conf);
 		viewer.components.SimpleFilter.superclass.constructor.call(this, this.config);
         this.simpleFilters = [];
+        this.allFilters = [];
+
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.layersInitialized, this);
 
         var containerContentId = Ext.id();
         this.container = Ext.create('Ext.container.Container', {
@@ -41,8 +45,9 @@ Ext.define("viewer.components.SimpleFilter", {
         var me = this;
         Ext.Array.each(this.config.filters, function(filter, index) {
             var className = filter["class"];
+            var appLayerId = me.config.layers[filter.appLayerId];
             var newFilter = Ext.create(className, {
-                appLayerId: me.config.layers[filter.appLayerId], // convert from index to actual appLayerId
+                appLayerId: appLayerId, // convert from index to actual appLayerId
                 attributeName: filter.attributeName,
                 filterConfig: filter.config,
                 container: containerContentId,
@@ -53,10 +58,38 @@ Ext.define("viewer.components.SimpleFilter", {
             if(newFilter instanceof viewer.components.sf.SimpleFilter){
                 me.simpleFilters.push(newFilter);
             }
+            me.allFilters.push({
+                filter: newFilter,
+                appLayerId: appLayerId
+            });
         });
         return this;
     },
-    
+
+    layersInitialized: function() {
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED, this.layerVisibilityChanged,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED, this.layerVisibilityChanged,this);
+        this.layerVisibilityChanged();
+    },
+
+    // Handler for changes to the visibility of layers
+    layerVisibilityChanged: function() {
+        var visibleLayers = this.config.viewerController.getVisibleLayers(true);
+        for(var i = 0; i < this.allFilters.length; i++) {
+            var appLayerId = this.allFilters[i].appLayerId;
+            // Always set visible when there is no appLayerId
+            var visible = true;
+            if(appLayerId) {
+                // Cast to appLayerId to string
+                appLayerId = "" + appLayerId;
+                // Set visible when the appLayerId is in the visibile layers array
+                visible =  visibleLayers.indexOf(appLayerId) !== -1;
+            }
+            this.allFilters[i].filter.setVisible(visible);
+        }
+    },
+
     getDiv: function() {
         return this.container;
     },

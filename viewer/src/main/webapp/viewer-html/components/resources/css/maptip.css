@@ -39,9 +39,12 @@
     bottom: 0px;
 }
 .balloonContentWrapper {
-    height: 100%;
     overflow: auto;
     position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
 }
 /*Balloon Content*/
 .balloonContent{
@@ -73,19 +76,24 @@
     display: none;
 }
 .infoBalloon.minimized .balloonContent .balloonButton {
+    top: 0;
     display: block;
 }
+.infoBalloon .balloonContent .balloonButton {
+    top: 5px;
+    padding: 5px;
+}
 .infoBalloon .balloonContent .balloonButton.x-tool-close {
-    right: 12px;
+    right: 7px;
 }
 .infoBalloon.minimized .balloonContent .balloonButton.x-tool-close {
-    right: 3px;
+    right: 0px;
 }
 .infoBalloon .balloonContent .balloonButton.x-tool-minimize {
-    right: 32px;
+    right: 28px;
 }
 .infoBalloon .balloonContent .balloonButton.x-tool-maximize {
-    right: 24px;
+    right: 20px;
 }
 .infoBalloon .balloonContent .x-tool-img {
     opacity: 1;
@@ -116,7 +124,6 @@
     width: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
-    margin-left: 5px;
     border-bottom: 1px solid #C7C7C7;
     overflow: auto;
 }
@@ -159,7 +166,8 @@
     clear: none;
     text-align: right;
 }
-.feature_summary_feature:first-child .feature_callback_link {
+.feature_summary_feature:first-child .feature_callback_link,
+.feature_summary_feature:first-child .feature_summary_description {
     padding-right: 50px;
 }
 .feature_callback_link a {
@@ -201,4 +209,9 @@
     text-indent: 100%;
     white-space: nowrap;
     overflow: hidden;
+}
+.load-releated-features::before {
+    display: block;
+    float: left;
+    text-indent: 0;
 }

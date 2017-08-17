@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:1.41421;">
+    <g>
+        <path d="M12.567,16.957c-0.832,0.41 -1.766,0.641 -2.752,0.641c-3.485,0 -6.315,-2.878 -6.315,-6.424c0,-3.546 2.83,-6.424 6.315,-6.424c2.626,0 4.88,1.634 5.832,3.956c1.342,-1.576 3.324,-2.573 5.533,-2.573c4.04,0 7.32,3.336 7.32,7.446c0,3.127 -1.899,5.806 -4.587,6.909c0.006,0.112 0.009,0.225 0.009,0.338c0,3.546 -2.83,6.424 -6.315,6.424c-3.485,0 -6.315,-2.878 -6.315,-6.424c0,-1.452 0.475,-2.793 1.275,-3.869Z" style="fill:currentColor;stroke-width:1px;stroke-dasharray:2.38,2.38"/>
+        <ellipse cx="9.815" cy="11.174" rx="1.794" ry="1.825"/>
+        <ellipse cx="21.18" cy="13.579" rx="2.727" ry="2.774"/>
+        <ellipse cx="17.607" cy="20.826" rx="1.866" ry="1.898"/>
+    </g>
+</svg>

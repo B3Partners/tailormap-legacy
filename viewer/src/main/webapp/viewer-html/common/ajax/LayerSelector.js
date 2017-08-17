@@ -59,7 +59,7 @@ Ext.define ("viewer.components.LayerSelector",{
         var requestPath= actionBeans["layerlist"];
         var requestParams = {};
         requestParams[this.config.restriction]= true;
-        requestParams["appId"]= appId;
+        requestParams["appId"]= FlamingoAppLoader.get("appId");
         var me = this;
         if(this.config.layers != null && this.config.layers.length > 0){
             requestParams["layers"]= this.config.layers;

@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,30 +15,76 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIX EXT JS 4.0.7 BUG ON COMBO LIST (Y POSITION FIX, SEE http://www.sencha.com/forum/showthread.php?152001-4.0.7-ComboBox-list-position-Incorrect-in-IE7)
-// PROPABLY FIXED IN EXT JS 4.1
-Ext.override(Ext.form.field.Picker, {
-    expand: function() {
-        var me = this;
-        me.callOverridden();
-        // FOR WHY SETTIMEOUT(FN, 0) WORKS SEE: http://stackoverflow.com/questions/1360238/myfunction-vs-window-settimeoutmyfunction-0
-        window.setTimeout(function() {
-            me.getPicker().el.alignTo(me.inputEl, 'tl-bl?');
-        }, 0);
-    }
-});
-if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
-    Ext.override(Ext.form.field.ComboBox, {
-        editable: false 
-    });
-    Ext.override(Ext.form.field.Trigger, {
-        editable: false 
-    });
-}
-
 Ext.override(Ext.form.field.HtmlEditor, 
     // Fix upside down question mark appearing
     // http://www.sencha.com/forum/showthread.php?79190-Mysterious-postdata-from-htmleditor
     { defaultValue: "" }
 );
 
+/*
+ This fixes an issue where Ext logs errors when using the map on touch enabled devices
+ */
+Ext.define('viewer.overrides.dom.TouchAction', {
+    override: 'Ext.dom.TouchAction',
+    fixEvent: function(e) {
+        if(!e.touches) e.touches = [];
+        return e;
+    },
+    onTouchStart: function(e) {
+        this.callParent([this.fixEvent(e)]);
+    },
+    onTouchMove: function(e) {
+        this.callParent([this.fixEvent(e)]);
+    },
+    onTouchEnd: function(e) {
+        this.callParent([this.fixEvent(e)]);
+    }
+});
+/*
+ Fixes an issue in Chrome since default settings for passive have changed since Chrome 56, see
+ - https://www.chromestatus.com/features/5093566007214080
+ - https://www.sencha.com/forum/showthread.php?337938-6-2-1-classic-ComboBox-useless-since-Chrome-56-on-touch
+ In the future this might also be implemented by other browsers, for now we only execute this for Chrome
+ */
+if(Ext.browser.is.Chrome || Ext.browser.is.ChromeMobile) {
+    Ext.define('Ext.overrides.event.publisher.Dom', {
+        override: 'Ext.event.publisher.Dom'
+    }, function(DomPublisher) {
+        var hasListenerOptions = false;
+        try {
+            // Check if browser supports options object for addEventListener
+            window.addEventListener('options-test', null, Object.defineProperty({}, 'capture', {
+                get: function() {
+                    hasListenerOptions = true;
+                }
+            }));
+        } catch(e) {}
+        DomPublisher.override({
+            addDelegatedListener: function(eventName) {
+                if (hasListenerOptions && /^touch(start|end|move)$/.test(eventName) && this.target instanceof Window) {
+                    this.delegatedListeners[eventName] = 1;
+                    this.target.addEventListener(
+                        eventName, this.onDelegatedEvent, {
+                            passive: false, // override default value for Chrome 56
+                            capture: !!this.captureEvents[eventName]
+                        }
+                    );
+                    return;
+                }
+                this.callParent([eventName]);
+            }
+        });
+    });
+}
+/*
+ For mobile devices it makes more sense to disable editable comboboxes so the user does not get a virtual
+ keyboard everytime the user interacts with a combobox
+ */
+if(Ext.os.deviceType !== "Desktop") {
+    // Manually set the prototype value. Using Ext.override seems to break comboboxes
+    if(Ext.form.field.ComboBox
+        && Ext.form.field.ComboBox.prototype
+        && Ext.form.field.ComboBox.prototype.defaultConfig) {
+        Ext.form.field.ComboBox.prototype.defaultConfig.editable = false;
+    }
+}

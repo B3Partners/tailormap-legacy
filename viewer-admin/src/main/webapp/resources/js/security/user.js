@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+/*
+ * Copyright (C) 2012-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,57 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.Loader.setConfig({enabled: true});
-Ext.Loader.setPath('Ext.ux', uxpath);
-Ext.require([
-    'Ext.grid.*',
-    'Ext.data.*',
-    'Ext.util.*',
-    'Ext.ux.grid.GridHeaderFilters',
-    'Ext.toolbar.Paging'
-]);
+Ext.define('vieweradmin.components.User', {
 
-Ext.onReady(function(){
+    extend: "Ext.ux.b3p.CrudGrid",
 
-    Ext.define('TableRow', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name: 'id', type: 'string'},
-            {name: 'username', type: 'string'},
-            {name: 'organization', type: 'string'},
-            {name: 'position', type: 'string'}
-        ]
-    });
+    config: {
+        gridurl: "",
+        editurl: "",
+        deleteurl: "",
+        itemname: "gebruikers"
+    },
 
-    var store = Ext.create('Ext.data.Store', {
-        pageSize: 10,
-        model: 'TableRow',
-        remoteSort: true,
-        remoteFilter: true,
-        sorters: 'username',
-        autoLoad: true,
-        proxy: {
-            type: 'ajax',
-            url: gridurl,
-            reader: {
-                type: 'json',
-                root: 'gridrows',
-                totalProperty: 'totalCount'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function() {
-                // Fix to apply filters
-                Ext.getCmp('editGrid').doLayout();
-            }
-        }
-    });
+    constructor: function(config) {
+        this.initConfig(config);
+        vieweradmin.components.User.superclass.constructor.call(this, this.config);
+        vieweradmin.components.Menu.setActiveLink('menu_gebruikers');
+    },
 
-    var grid = Ext.create('Ext.grid.Panel', Ext.merge(vieweradmin.components.DefaultConfgurations.getDefaultGridConfig(), {
-        id: 'editGrid',
-        store: store,
-        columns: [
+    getGridColumns: function() {
+        return [
             {
                 id: 'username',
                 text: "Naam",
@@ -96,57 +64,39 @@ Ext.onReady(function(){
                 id: 'edit',
                 header: '',
                 dataIndex: 'id',
-                flex: 1,
+                width: 200,
                 sortable: false,
                 hideable: false,
                 menuDisabled: true,
-                renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', Ext.String.escape(value)) +
-                           ' | ' +
-                            Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', Ext.String.escape(value));
-                },
-                sortable: false
+                renderer: function(value, obj, record) {
+                    return [
+                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                    ].join(" | ");
+                }
             }
-        ],
-        bbar: Ext.create('Ext.PagingToolbar', {
-            store: store,
-            displayInfo: true,
-            displayMsg: 'Gebruikers {0} - {1} of {2}',
-            emptyMsg: "Geen gebruikers weer te geven"
-        }),
-        plugins: [ 
-            Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                enableTooltip: false
-            })
-        ],
-        renderTo: 'grid-container'
-    }));
-    
-});
+        ];
+    },
 
+    getGridModel: function() {
+        return [
+            {name: 'id', type: 'string'},
+            {name: 'username', type: 'string'},
+            {name: 'organization', type: 'string'},
+            {name: 'position', type: 'string'}
+        ];
+    },
 
+    removeConfirmMessage: function(record) {
+        return ["Weet u zeker dat u de gebruiker ", record.get("username"), " wilt verwijderen?"].join("");
+    },
 
-function editObject(objId) {
-    Ext.get('editFrame').dom.src = editurl + '?user=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
-}
+    getEditUrl: function(record) {
+        return this.createUrl(this.config.editurl, { user: record.get('id') });
+    },
 
-function removeObject(objId) {
-    if(deleteConfirm()){
-        // How are we going to remove items? In the iframe or directly trough ajax?
-        Ext.get('editFrame').dom.src = deleteurl + '?user=' + objId;
-        var gridCmp = Ext.getCmp('editGrid')
-        gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-        return false;
+    getRemoveUrl: function(record) {
+        return this.createUrl(this.config.deleteurl, { user: record.get('id') });
     }
-}
 
-function deleteConfirm() {
-    return confirm('Weet u zeker dat u deze gebruiker wilt verwijderen?');
-}
-
-function reloadGrid(){
-    Ext.getCmp('editGrid').getStore().load();
-}
+});

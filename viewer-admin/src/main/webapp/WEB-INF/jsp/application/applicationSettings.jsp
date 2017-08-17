@@ -121,7 +121,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table class="formtable">
                             <tr>
                                 <td colspan="2">
-                                    <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht
+                                    <label><stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label><stripes:checkbox name="details['returnAfterLogout']"/> Na uitloggen direct terugkeren naar de applicatie (niet loginscherm tonen)</label>
                                 </td>
                             </tr>
                             <tr>
