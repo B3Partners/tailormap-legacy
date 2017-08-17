@@ -64,10 +64,11 @@ public class FlamingoCQLTest extends TestUtil{
     @Test
     public void testToFilterSingleApplayerWithoutFilter() throws CQLException {
         initData(true);
-        String input = "APPLAYER(the_geom, " + testAppLayer.getId() + ", )";
+        String input = "APPLAYER(the_geom, " + testAppLayer.getId() + ",)";
         Filter output = cql.toFilter(input, entityManager);
-        
-        assertEquals("[ the_geom intersects MULTIPOLYGON (((156487.5708 452161.984, 191870.5054 454712.1054, 191870.5054 441111.4579, 156912.5911 442917.7939, 156487.5708 452161.984)), ((137467.9153 453543.2998, 145437.0447 451418.1986, 144693.2593 443874.0894, 137680.4254 443130.304, 137467.9153 453543.2998)), ((150218.5224 432398.5431, 142036.8828 432504.7981, 142355.648 437923.8061, 150218.5224 432398.5431))) ]", output.toString());
+        String result = output.toString();
+        String expected = "[ the_geom intersects MULTIPOLYGON (((156487.5708 452161.984, 191870.5054 454712.1054, 191870.5054 441111.4579, 156912.5911 442917.7939, 156487.5708 452161.984)), ((137467.9153 453543.2998, 145437.0447 451418.1986, 144693.2593 443874.0894, 137680.4254 443130.304, 137467.9153 453543.2998)), ((150218.5224 432398.5431, 142036.8828 432504.7981, 142355.648 437923.8061, 150218.5224 432398.5431)), ((156328.1882 390534.0499, 163766.0424 389099.6066, 162278.4715 386390.1026, 156912.5911 386868.2504, 156328.1882 390534.0499))) ]";
+        assertEquals(expected, result);
     }
     
     
