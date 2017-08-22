@@ -28,7 +28,7 @@ import org.hibernate.transform.BasicTransformerAdapter;
  * Transform the clob in application details to a string. Avoid using with very
  * large values.
  *
- * @author Mark Prins <mark@b3partners.nl>
+ * @author Mark Prins
  */
 public class ApplicationDetailsValueTransformer extends BasicTransformerAdapter {
 

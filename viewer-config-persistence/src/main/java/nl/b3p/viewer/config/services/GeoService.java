@@ -517,6 +517,7 @@ public abstract class GeoService implements Serializable {
      * with the same name, a random non-virtual layer is returned.
      *
      * @param layerName the name of the layer to find
+     * @param em the EntityManager to use
      * @return the named layer
      */
     public Layer getSingleLayer(final String layerName, EntityManager em) {
