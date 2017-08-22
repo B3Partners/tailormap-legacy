@@ -79,7 +79,6 @@ public class Application {
 
     @ElementCollection
     @JoinTable(joinColumns = @JoinColumn(name = "application"))
-    @Basic(fetch = FetchType.LAZY)
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String, ClobElement> details = new HashMap<String, ClobElement>();
 
@@ -539,12 +538,11 @@ public class Application {
      * @see #isMashup(org.hibernate.Session)
      */
     public Boolean isMashup() {
-        if (this.isMashup_cached == null) {
-        this.isMashup_cached = Boolean.FALSE;
-            if (this.getDetails().containsKey(Application.DETAIL_IS_MASHUP)) {
-                String mashupValue = this.getDetails().get(Application.DETAIL_IS_MASHUP).getValue();
-                this.isMashup_cached = Boolean.valueOf(mashupValue);
-            }
+        if (this.getDetails().containsKey(Application.DETAIL_IS_MASHUP)) {
+            String mashupValue = this.getDetails().get(Application.DETAIL_IS_MASHUP).getValue();
+            this.isMashup_cached = Boolean.valueOf(mashupValue);
+        } else {
+            this.isMashup_cached = Boolean.FALSE;
         }
         return this.isMashup_cached;
     }
@@ -553,7 +551,7 @@ public class Application {
      * fast access to determine if we are mashup.
      *
      * @param sess the hibernate session
-     * @return {@code true} if we are a mashup
+     * @return {@code true} if we are a mashup, this may be a cached value
      *
      * @see #isMashup()
      */
