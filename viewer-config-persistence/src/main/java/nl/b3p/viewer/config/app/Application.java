@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 B3Partners B.V.
+ * Copyright (C) 2011-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,26 +25,29 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.util.ApplicationDetailsValueTransformer;
 import nl.b3p.viewer.util.DB;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
  * @author Matthijs Laan
+ * @author mprins
  */
 @Entity
 @Table(
-        uniqueConstraints=
-            @UniqueConstraint(columnNames={"name", "version"})
+        uniqueConstraints
+        = @UniqueConstraint(columnNames = {"name", "version"})
 )
 public class Application {
+
     private static final Log log = LogFactory.getLog(Application.class);
 
     // Details keys
@@ -52,11 +55,11 @@ public class Application {
     public static final String DETAIL_GLOBAL_LAYOUT = "globalLayout";
     public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
 
-    private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[] {
+    private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[]{
         "opmerking"
     }));
 
-    public static final Set<String> preventClearDetails = new HashSet<String>(Arrays.asList(new String[] {
+    public static final Set<String> preventClearDetails = new HashSet<String>(Arrays.asList(new String[]{
         DETAIL_IS_MASHUP,
         DETAIL_GLOBAL_LAYOUT
     }));
@@ -64,53 +67,54 @@ public class Application {
     @Id
     private Long id;
 
-    @Basic(optional=false)
+    @Basic(optional = false)
     private String name;
 
-    @Column(length=30)
+    @Column(length = 30)
     private String version;
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @org.hibernate.annotations.Type(type = "org.hibernate.type.StringClobType")
     private String layout;
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name="application"))
+    @JoinTable(joinColumns = @JoinColumn(name = "application"))
+    @Basic(fetch = FetchType.LAZY)
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
-    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
+    private Map<String, ClobElement> details = new HashMap<String, ClobElement>();
 
     @ManyToOne
     private User owner;
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "crs.name", column = @Column(name="start_crs")),
-        @AttributeOverride(name = "minx", column = @Column(name="start_minx")),
-        @AttributeOverride(name = "maxx", column = @Column(name="start_maxx")),
-        @AttributeOverride(name = "miny", column = @Column(name="start_miny")),
-        @AttributeOverride(name = "maxy", column = @Column(name="start_maxy"))
+        @AttributeOverride(name = "crs.name", column = @Column(name = "start_crs")),
+        @AttributeOverride(name = "minx", column = @Column(name = "start_minx")),
+        @AttributeOverride(name = "maxx", column = @Column(name = "start_maxx")),
+        @AttributeOverride(name = "miny", column = @Column(name = "start_miny")),
+        @AttributeOverride(name = "maxy", column = @Column(name = "start_maxy"))
     })
     private BoundingBox startExtent;
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "crs.name", column = @Column(name="max_crs")),
-        @AttributeOverride(name = "minx", column = @Column(name="max_minx")),
-        @AttributeOverride(name = "maxx", column = @Column(name="max_maxx")),
-        @AttributeOverride(name = "miny", column = @Column(name="max_miny")),
-        @AttributeOverride(name = "maxy", column = @Column(name="max_maxy"))
+        @AttributeOverride(name = "crs.name", column = @Column(name = "max_crs")),
+        @AttributeOverride(name = "minx", column = @Column(name = "max_minx")),
+        @AttributeOverride(name = "maxx", column = @Column(name = "max_maxx")),
+        @AttributeOverride(name = "miny", column = @Column(name = "max_miny")),
+        @AttributeOverride(name = "maxy", column = @Column(name = "max_maxy"))
     })
     private BoundingBox maxExtent;
 
-    private boolean authenticatedRequired ;
+    private boolean authenticatedRequired;
 
-    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Level root;
 
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
     private Set<ConfiguredComponent> components = new HashSet<ConfiguredComponent>();
 
-    @Basic(optional=false)
+    @Basic(optional = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date authorizationsModified = new Date();
 
@@ -122,17 +126,17 @@ public class Application {
     @Transient
     Map originalToCopy;
 
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
     private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
-    @OneToMany( orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
     private List<StartLayer> startLayers = new ArrayList<StartLayer>();
 
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
     private List<StartLevel> startLevels = new ArrayList<StartLevel>();
 
     @ElementCollection
-    @Column(name="role_name")
+    @Column(name = "role_name")
     private Set<String> readers = new HashSet<String>();
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -267,32 +271,33 @@ public class Application {
 
     public String getNameWithVersion() {
         String n = getName();
-        if(getVersion() != null) {
+        if (getVersion() != null) {
             n += " v" + getVersion();
         }
         return n;
     }
 
-    public TreeCache getTreeCache(){
+    public TreeCache getTreeCache() {
         return treeCache;
     }
 
     public static class TreeCache {
+
         List<Level> levels;
-        Map<Level,List<Level>> childrenByParent;
+        Map<Level, List<Level>> childrenByParent;
         List<ApplicationLayer> applicationLayers;
 
         public List<ApplicationLayer> getApplicationLayers() {
             return applicationLayers;
         }
 
-        public Map<Level,List<Level>> getChildrenByParent(){
+        public Map<Level, List<Level>> getChildrenByParent() {
             return childrenByParent;
         }
 
         public List<Level> getChildren(Level l) {
             List<Level> children = childrenByParent.get(l);
-            if(children == null) {
+            if (children == null) {
                 return Collections.EMPTY_LIST;
             } else {
                 return children;
@@ -307,14 +312,14 @@ public class Application {
             // Prevent n+1 queries for each level
             int i = 0;
             do {
-                List<Level> subList = levels.subList(i, Math.min(levels.size(), i+DB.MAX_LIST_EXPRESSIONS));
+                List<Level> subList = levels.subList(i, Math.min(levels.size(), i + DB.MAX_LIST_EXPRESSIONS));
                 em.createQuery("from Level l "
                         + leftJoins + " "
                         + "where l in (:levels) ")
                         .setParameter("levels", subList)
                         .getResultList();
                 i += subList.size();
-            } while(i < levels.size());
+            } while (i < levels.size());
         }
 
         public void initializeApplicationLayers(String leftJoins, EntityManager em) {
@@ -322,14 +327,14 @@ public class Application {
                 // Prevent n+1 queries for each ApplicationLayer
                 int i = 0;
                 do {
-                    List<ApplicationLayer> subList = applicationLayers.subList(i, Math.min(applicationLayers.size(), i+DB.MAX_LIST_EXPRESSIONS));
+                    List<ApplicationLayer> subList = applicationLayers.subList(i, Math.min(applicationLayers.size(), i + DB.MAX_LIST_EXPRESSIONS));
                     em.createQuery("from ApplicationLayer al "
                             + leftJoins + " "
                             + "where al in (:alayers) ")
                             .setParameter("alayers", subList)
                             .getResultList();
                     i += subList.size();
-                } while(i < applicationLayers.size());
+                } while (i < applicationLayers.size());
             }
         }
     }
@@ -337,29 +342,29 @@ public class Application {
     @Transient
     private TreeCache treeCache;
 
-    public void setTreeCache (TreeCache treeCache){
+    public void setTreeCache(TreeCache treeCache) {
         this.treeCache = treeCache;
     }
 
     public TreeCache loadTreeCache(EntityManager em) {
-        if(treeCache == null) {
+        if (treeCache == null) {
 
             treeCache = new TreeCache();
 
             // Retrieve level tree structure in single query
             treeCache.levels = em.createNamedQuery("getLevelTree")
-                .setParameter("rootId", root.getId())
-                .getResultList();
+                    .setParameter("rootId", root.getId())
+                    .getResultList();
 
             treeCache.childrenByParent = new HashMap();
             treeCache.applicationLayers = new ArrayList();
 
-            for(Level l: treeCache.levels) {
+            for (Level l : treeCache.levels) {
                 treeCache.applicationLayers.addAll(l.getLayers());
 
-                if(l.getParent() != null) {
+                if (l.getParent() != null) {
                     List<Level> parentChildren = treeCache.childrenByParent.get(l.getParent());
-                    if(parentChildren == null) {
+                    if (parentChildren == null) {
                         parentChildren = new ArrayList<Level>();
                         treeCache.childrenByParent.put(l.getParent(), parentChildren);
                     }
@@ -376,7 +381,7 @@ public class Application {
     }
 
     public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
-        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false,em);
+        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false, em);
     }
 
     /**
@@ -397,34 +402,34 @@ public class Application {
     public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
         JSONObject o = null;
         SelectedContentCache cache = new SelectedContentCache();
-        o = cache.getSelectedContent(request, this, validXmlTags, includeAppLayerAttributes, includeRelations,em);
+        o = cache.getSelectedContent(request, this, validXmlTags, includeAppLayerAttributes, includeRelations, em);
 
         o.put("id", id);
         o.put("name", name);
-        if(!onlyServicesAndLayers && layout != null) {
+        if (!onlyServicesAndLayers && layout != null) {
             o.put("layout", new JSONObject(layout));
         }
-        o.put("version",version);
+        o.put("version", version);
 
-        if (!onlyServicesAndLayers){
+        if (!onlyServicesAndLayers) {
             JSONObject d = new JSONObject();
             o.put("details", d);
-            for(Map.Entry<String,ClobElement> e: details.entrySet()) {
-                if(!adminOnlyDetails.contains(e.getKey())) {
+            for (Map.Entry<String, ClobElement> e : details.entrySet()) {
+                if (!adminOnlyDetails.contains(e.getKey())) {
                     d.put(e.getKey(), e.getValue());
                 }
             }
         }
-        if (!onlyServicesAndLayers){
-            if(startExtent != null) {
+        if (!onlyServicesAndLayers) {
+            if (startExtent != null) {
                 o.put("startExtent", startExtent.toJSONObject());
             }
-            if(maxExtent != null) {
+            if (maxExtent != null) {
                 o.put("maxExtent", maxExtent.toJSONObject());
             }
         }
 
-        if (!onlyServicesAndLayers){
+        if (!onlyServicesAndLayers) {
             // Prevent n+1 query for ConfiguredComponent.details
             em.createQuery(
                     "from ConfiguredComponent cc left join fetch cc.details where application = :this")
@@ -433,8 +438,8 @@ public class Application {
 
             JSONObject c = new JSONObject();
             o.put("components", c);
-            for(ConfiguredComponent comp: components) {
-                if(Authorizations.isConfiguredComponentAuthorized(comp, request)) {
+            for (ConfiguredComponent comp : components) {
+                if (Authorizations.isConfiguredComponentAuthorized(comp, request)) {
                     c.put(comp.getName(), comp.toJSON());
                 }
             }
@@ -446,88 +451,125 @@ public class Application {
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
         JSONObject o = l.toJSONObject(false, this, request, em);
         o.put("background", l.isBackground() || parentIsBackground);
-        String levelId= l.getId().toString();
-        if (validXmlTags){
-            levelId="level_"+levelId;
+        String levelId = l.getId().toString();
+        if (validXmlTags) {
+            levelId = "level_" + levelId;
         }
         levels.put(levelId, o);
 
         StartLevel sl = l.getStartLevels().get(this);
-        if(sl != null && sl.getSelectedIndex() != null) {
+        if (sl != null && sl.getSelectedIndex() != null) {
             selectedContent.add(l);
         }
 
-        for(ApplicationLayer al: l.getLayers()) {
-            if(!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
+        for (ApplicationLayer al : l.getLayers()) {
+            if (!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
                 //System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
                 continue;
             }
-            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em,this);
+            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, this);
             p.put("background", l.isBackground() || parentIsBackground);
             p.put("editAuthorized", Authorizations.isAppLayerWriteAuthorized(this, al, request, em));
             String alId = al.getId().toString();
-            if (validXmlTags){
-                alId="appLayer_"+alId;
+            if (validXmlTags) {
+                alId = "appLayer_" + alId;
             }
             appLayers.put(alId, p);
             StartLayer startLayer = al.getStartLayers().get(this);
-            if(startLayer != null && startLayer.getSelectedIndex() != null) {
+            if (startLayer != null && startLayer.getSelectedIndex() != null) {
                 selectedContent.add(al);
             }
         }
 
         List<Level> children = treeCache.childrenByParent.get(l);
-        if(children != null) {
+        if (children != null) {
             Collections.sort(children);
             JSONArray jsonChildren = new JSONArray();
             o.put("children", jsonChildren);
-            for(Level child: children) {
-                if (Authorizations.isLevelReadAuthorized(this, child, request, em)){
+            for (Level child : children) {
+                if (Authorizations.isLevelReadAuthorized(this, child, request, em)) {
                     String childId = child.getId().toString();
-                    if (validXmlTags){
-                        childId="level_"+childId;
+                    if (validXmlTags) {
+                        childId = "level_" + childId;
                     }
                     jsonChildren.put(childId);
-                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request,validXmlTags, includeAppLayerAttributes, includeRelations, em);
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request, validXmlTags, includeAppLayerAttributes, includeRelations, em);
                 }
             }
         }
     }
 
-    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService, HttpServletRequest request, EntityManager em) {
-        if(!Authorizations.isLevelReadAuthorized(this, l, request, em)) {
+    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService, Set<String>> usedLayersByService, HttpServletRequest request, EntityManager em) {
+        if (!Authorizations.isLevelReadAuthorized(this, l, request, em)) {
             return;
         }
 
-        for(ApplicationLayer al: l.getLayers()) {
-            if(!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
+        for (ApplicationLayer al : l.getLayers()) {
+            if (!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
                 continue;
             }
             GeoService gs = al.getService();
 
             Set<String> usedLayers = usedLayersByService.get(gs);
-            if(usedLayers == null) {
+            if (usedLayers == null) {
                 usedLayers = new HashSet<String>();
                 usedLayersByService.put(gs, usedLayers);
             }
             usedLayers.add(al.getLayerName());
         }
         List<Level> children = treeCache.childrenByParent.get(l);
-        if(children != null) {
-            for(Level child: children) {
+        if (children != null) {
+            for (Level child : children) {
                 visitLevelForUsedServicesLayers(child, usedLayersByService, request, em);
             }
         }
     }
 
-    public Boolean isMashup(){
-         if(this.getDetails().containsKey(Application.DETAIL_IS_MASHUP)){
-             String mashupValue = this.getDetails().get(Application.DETAIL_IS_MASHUP).getValue();
-             Boolean mashup = Boolean.valueOf(mashupValue);
-             return mashup;
-         }else{
-             return false;
-         }
+    /**
+     * keep a cached copy of our mashup status.
+     */
+    @Transient
+    private Boolean isMashup_cached;
+
+    /**
+     * slow method -especially on Oracle- because it will need all keys and
+     * Oracle lazy loading sucks so clob's get pulled in as well.
+     *
+     * @return {@code true} if we are a mashup
+     * @see #isMashup(org.hibernate.Session)
+     */
+    public Boolean isMashup() {
+        if (this.isMashup_cached == null) {
+        this.isMashup_cached = Boolean.FALSE;
+            if (this.getDetails().containsKey(Application.DETAIL_IS_MASHUP)) {
+                String mashupValue = this.getDetails().get(Application.DETAIL_IS_MASHUP).getValue();
+                this.isMashup_cached = Boolean.valueOf(mashupValue);
+            }
+        }
+        return this.isMashup_cached;
+    }
+
+    /**
+     * fast access to determine if we are mashup.
+     *
+     * @param sess the hibernate session
+     * @return {@code true} if we are a mashup
+     *
+     * @see #isMashup()
+     */
+    public Boolean isMashup(Session sess) {
+        if (this.isMashup_cached == null) {
+            this.isMashup_cached = Boolean.FALSE;
+            List<Map<String, Object>> items = sess.createSQLQuery("select d.value from application_details d where d.details_key = '" + Application.DETAIL_IS_MASHUP + "' and d.application =  :appId")
+                    .setLong("appId", this.getId())
+                    .setResultTransformer(ApplicationDetailsValueTransformer.INSTANCE)
+                    .list();
+            if (items.size() > 0) {
+                String mashupValue = items.get(0).get("value").toString();
+                this.isMashup_cached = Boolean.valueOf(mashupValue);
+            }
+        }
+        return this.isMashup_cached;
     }
 
     public Application createMashup(String mashupName, EntityManager em, boolean linkComponents) throws Exception {
@@ -539,32 +581,33 @@ public class Application {
         Application mashup = source.deepCopyAllButLevels(linkComponents);
         mashup.setName(mashup.getName() + "_" + mashupName);
         em.persist(mashup);
-        if(mashup.getRoot() != null){
+        if (mashup.getRoot() != null) {
             mashup.getRoot().processForMashup(mashup, source);
         }
 
-        mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
+        this.isMashup_cached = Boolean.TRUE;
+        mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(this.isMashup_cached + ""));
         return mashup;
     }
 
     public List<Application> getMashups(EntityManager em) {
         return em.createQuery(
-            "from Application where root = :level and id <> :oldId")
-            .setParameter("level", getRoot()).setParameter("oldId", getId()).getResultList();
+                "from Application where root = :level and id <> :oldId")
+                .setParameter("level", getRoot()).setParameter("oldId", getId()).getResultList();
     }
 
     public Application deepCopy() throws Exception {
         Application copy = deepCopyAllButLevels(false);
 
         copy.originalToCopy = new HashMap();
-        if(root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy,copy));
+        if (root != null) {
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy));
         }
 
         return copy;
     }
 
-    private Application deepCopyAllButLevels( boolean linkComponents) throws Exception{
+    private Application deepCopyAllButLevels(boolean linkComponents) throws Exception {
         Application copy = (Application) BeanUtils.cloneBean(this);
         copy.setId(null);
         copy.setBookmarks(null);
@@ -574,19 +617,19 @@ public class Application {
         copy.setReaders(new HashSet<String>());
         // user reference is not deep copied, of course
 
-        copy.setDetails(new HashMap<String,ClobElement>(details));
-        if(startExtent != null) {
+        copy.setDetails(new HashMap<String, ClobElement>(details));
+        if (startExtent != null) {
             copy.setStartExtent(startExtent.clone());
         }
-        if(maxExtent != null) {
+        if (maxExtent != null) {
             copy.setMaxExtent(maxExtent.clone());
         }
 
         copy.setComponents(new HashSet<ConfiguredComponent>());
-        for(ConfiguredComponent cc: components) {
+        for (ConfiguredComponent cc : components) {
             ConfiguredComponent componentCopy = cc.deepCopy(copy);
             copy.getComponents().add(componentCopy);
-            if(linkComponents){
+            if (linkComponents) {
                 componentCopy.setMotherComponent(cc);
                 cc.getLinkedComponents().add(componentCopy);
             }
@@ -599,62 +642,64 @@ public class Application {
     }
 
     /**
-     * When a workversion of an application is published, sometimes (determined by the user) the mashups should "follow" the
-     * published version: the mashup should always point to the published version. When this occurs, the mashup should update
-     * the layerIds in the components (because otherwise the layerIds point to the previous published version).
-     * In this method an Map is created in the same way as deepCopy creates. This Map is used for converting the layerIds in the
-     * component configuration.
+     * When a workversion of an application is published, sometimes (determined
+     * by the user) the mashups should "follow" the published version: the
+     * mashup should always point to the published version. When this occurs,
+     * the mashup should update the layerIds in the components (because
+     * otherwise the layerIds point to the previous published version). In this
+     * method an Map is created in the same way as deepCopy creates. This Map is
+     * used for converting the layerIds in the component configuration.
+     *
      * @param old The Application to which the layerIds should be matched.
      * @param em the entity manager to use
      */
-    public void transferMashup (Application old, EntityManager em){
+    public void transferMashup(Application old, EntityManager em) {
         originalToCopy = new HashMap();
         loadTreeCache(em);
         visitLevelForMashuptransfer(old.getRoot(), originalToCopy);
         processCopyMap();
         // Loop alle levels af van de oude applicatie
-            // Per level alle children
-            // Per level,
-                //zoek voor elke appLayer (uit oude applicatie) de bijbehorende NIEUWE applayer
-                    // sla in originalToCopy de ids op van de appLayer
-                //zoek voor elke level (uit oude applicatie) de bijbehorende NIEUWE level
-                    // sla in originalToCopy de ids op van de level
+        // Per level alle children
+        // Per level,
+        //zoek voor elke appLayer (uit oude applicatie) de bijbehorende NIEUWE applayer
+        // sla in originalToCopy de ids op van de appLayer
+        //zoek voor elke level (uit oude applicatie) de bijbehorende NIEUWE level
+        // sla in originalToCopy de ids op van de level
         // Roep postPersist aan.
     }
 
-    private void visitLevelForMashuptransfer(Level oldLevel, Map originalToCopy){
+    private void visitLevelForMashuptransfer(Level oldLevel, Map originalToCopy) {
         Level newLevel = findLevel(oldLevel);
-        if(newLevel != null){
+        if (newLevel != null) {
             originalToCopy.put(oldLevel, newLevel);
         }
 
         for (ApplicationLayer oldLayer : oldLevel.getLayers()) {
             ApplicationLayer newLayer = findLayer(oldLayer);
-            if(newLayer != null){
+            if (newLayer != null) {
                 originalToCopy.put(oldLayer, newLayer);
             }
         }
-
 
         for (Level oldChild : oldLevel.getChildren()) {
             visitLevelForMashuptransfer(oldChild, originalToCopy);
         }
     }
 
-    private ApplicationLayer findLayer(ApplicationLayer oldLayer){
+    private ApplicationLayer findLayer(ApplicationLayer oldLayer) {
         List<ApplicationLayer> appLayers = treeCache.applicationLayers;
         for (ApplicationLayer appLayer : appLayers) {
-            if(appLayer.getService().equals(oldLayer.getService()) && appLayer.getLayerName().equals(oldLayer.getLayerName())){
+            if (appLayer.getService().equals(oldLayer.getService()) && appLayer.getLayerName().equals(oldLayer.getLayerName())) {
                 return appLayer;
             }
         }
         return null;
     }
 
-    private Level findLevel(Level oldLevel){
+    private Level findLevel(Level oldLevel) {
         List<Level> levels = treeCache.levels;
         for (Level level : levels) {
-            if(level.getName().equals(oldLevel.getName())){
+            if (level.getName().equals(oldLevel.getName())) {
                 return level;
             }
         }
@@ -663,7 +708,7 @@ public class Application {
 
     @PostPersist
     public void postPersist() {
-        if(isMashup()) {
+        if (isMashup()) {
             log.debug("postPersist(): mashup");
             return;
         }
@@ -671,10 +716,10 @@ public class Application {
     }
 
     @Transient
-    public Map<String,Long> idMap;
+    public Map<String, Long> idMap;
 
-    private void processCopyMap(){
-        if(originalToCopy == null) {
+    private void processCopyMap() {
+        if (originalToCopy == null) {
             log.debug("postPersist(): not a copy");
             return;
         }
@@ -683,19 +728,19 @@ public class Application {
         originalToCopy = null;
 
         log.debug("Updating component configs");
-        for(ConfiguredComponent comp: components) {
-            if(comp.getConfig() == null) {
+        for (ConfiguredComponent comp : components) {
+            if (comp.getConfig() == null) {
                 continue;
             }
             log.debug(String.format("Checking component class %s, name %s", comp.getClassName(), comp.getName()));
             boolean changed = false;
             try {
                 JSONObject cfg = new JSONObject(comp.getConfig());
-                if(cfg.has("layers")) {
+                if (cfg.has("layers")) {
                     JSONArray layers = cfg.getJSONArray("layers");
-                    for(int i = 0; i < layers.length(); i++) {
+                    for (int i = 0; i < layers.length(); i++) {
                         Long newId = idMap.get(ApplicationLayer.class + "_" + layers.getInt(i));
-                        if(newId != null) {
+                        if (newId != null) {
                             log.debug(String.format("Index %d: new id for application layer %d is %d", i, layers.getInt(i), newId));
                             layers.put(i, newId.longValue());
                         } else {
@@ -705,11 +750,11 @@ public class Application {
                         changed = true;
                     }
                 }
-                if(cfg.has("levels")) {
+                if (cfg.has("levels")) {
                     JSONArray levels = cfg.getJSONArray("levels");
-                    for(int i = 0; i < levels.length(); i++) {
+                    for (int i = 0; i < levels.length(); i++) {
                         Long newId = idMap.get(Level.class + "_" + levels.getInt(i));
-                        if(newId != null) {
+                        if (newId != null) {
                             log.debug(String.format("Index %d: new id for level %d is %d", i, levels.getInt(i), newId));
                             levels.put(i, newId.longValue());
                         } else {
@@ -719,13 +764,13 @@ public class Application {
                         changed = true;
                     }
                 }
-                if(changed) {
+                if (changed) {
                     log.debug("Old config: " + comp.getConfig());
                     comp.setConfig(cfg.toString());
                     log.debug("New config: " + comp.getConfig());
                 }
 
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 log.error(String.format("Cannot update persistent object id's "
                         + "in component config on application copy, "
                         + "copied application=%s, component class=%s, component name=%s",
@@ -736,8 +781,8 @@ public class Application {
         }
     }
 
-    private Map<String,Long> getIdMap(){
-        Map<String,Long> idMap = new HashMap();
+    private Map<String, Long> getIdMap() {
+        Map<String, Long> idMap = new HashMap();
         for (Object e : originalToCopy.entrySet()) {
             Map.Entry<Object, Object> entry = (Map.Entry<Object, Object>) e;
             Object original = entry.getKey();
@@ -756,24 +801,23 @@ public class Application {
         return idMap;
     }
 
-    public void processBookmarks(Application previousApplication, ActionBeanContext context, EntityManager em){
+    public void processBookmarks(Application previousApplication, ActionBeanContext context, EntityManager em) {
         // bookmark krijgt een appId kolom
-            // bij maken werkversie
-                // check of bookmarkcomponent de configuratie: followsApplication
-                // zo ja
-                        //haal alle bookmarks voor vorige applicatie op
-                            // maak clone
-                                // Zet referentie naar vorige bookmark
-                                // vervang layer ids
-                                // vervang level ids
-                                // vervang ids in selectedcontent
-                                // set id van nieuwe applicatie in bookmark
-                                // set id van oude applicatie als referentie in bookmark
-                                // persist bookmark
-                // zo nee, doe niks
-            // Bij ophalen bookmark
-                // Gebruik ook applicatienaam en versienummer om bookmark op te halen
-
+        // bij maken werkversie
+        // check of bookmarkcomponent de configuratie: followsApplication
+        // zo ja
+        //haal alle bookmarks voor vorige applicatie op
+        // maak clone
+        // Zet referentie naar vorige bookmark
+        // vervang layer ids
+        // vervang level ids
+        // vervang ids in selectedcontent
+        // set id van nieuwe applicatie in bookmark
+        // set id van oude applicatie als referentie in bookmark
+        // persist bookmark
+        // zo nee, doe niks
+        // Bij ophalen bookmark
+        // Gebruik ook applicatienaam en versienummer om bookmark op te halen
 
         List<ConfiguredComponent> bookmarkComponents = em.createQuery("FROM ConfiguredComponent where application.id = :app and className = :className", ConfiguredComponent.class)
                 .setParameter("app", previousApplication.getId()).setParameter("className", "viewer.components.Bookmark").getResultList();
@@ -783,13 +827,13 @@ public class Application {
             if (config != null && !config.isEmpty()) {
                 try {
                     JSONObject conf = new JSONObject(config);
-                    if(conf.optBoolean("copyBookmarkForWorkversion", false)){
+                    if (conf.optBoolean("copyBookmarkForWorkversion", false)) {
                         List<Bookmark> bookmarks = em.createQuery("FROM Bookmark where application = :app", Bookmark.class).setParameter("app", previousApplication).getResultList();
                         for (Bookmark bookmark : bookmarks) {
                             Bookmark clone = bookmark.clone();
                             clone.setCreatedBy(clone.createCreatedBy(context));
                             clone.setApplication(this);
-                            processBookmark(clone,idMap);
+                            processBookmark(clone, idMap);
                             em.persist(clone);
                             clone.setCode(bookmark.getCode());
                             em.persist(clone);
@@ -803,14 +847,14 @@ public class Application {
         previousApplication = null;
     }
 
-    private void processBookmark(Bookmark bookmark,Map<String,Long> idMap) throws JSONException{
+    private void processBookmark(Bookmark bookmark, Map<String, Long> idMap) throws JSONException {
         JSONObject bm = new JSONObject(bookmark.getParams());
         JSONArray params = bm.getJSONArray("params");
         JSONArray newParams = new JSONArray();
         for (int i = 0; i < params.length(); i++) {
             JSONObject param = params.getJSONObject(i);
             JSONArray value = param.optJSONArray("value");
-            if(param.getString("name").equals("layers")){
+            if (param.getString("name").equals("layers")) {
                 JSONArray newLayers = new JSONArray();
                 for (int j = 0; j < value.length(); j++) {
                     Integer layerId = value.getInt(j);
@@ -818,18 +862,18 @@ public class Application {
                     newLayers.put(newId);
                 }
                 param.put("value", newLayers);
-            }else if(param.getString("name").equals("levelOrder")){
+            } else if (param.getString("name").equals("levelOrder")) {
                 JSONArray newLevels = new JSONArray();
                 for (int j = 0; j < value.length(); j++) {
                     Integer levelId = value.getInt(j);
                     Long newId = idMap.get(Level.class + "_" + levelId);
                     newLevels.put(newId);
                 }
-                param.put("value",newLevels);
-            }else if(param.getString("name").equals("selectedContent")){
+                param.put("value", newLevels);
+            } else if (param.getString("name").equals("selectedContent")) {
                 for (int j = 0; j < value.length(); j++) {
                     JSONObject content = value.getJSONObject(j);
-                    if(content.optString("type", "level").equals("level")){
+                    if (content.optString("type", "level").equals("level")) {
                         Long newId = idMap.get(Level.class + "_" + content.getString("id"));
                         content.put("id", newId);
                     }
@@ -849,10 +893,10 @@ public class Application {
         // In previous versions maxHeight and maxWidth where assigned to details directly
         // Now these settings are saved in globalLayout. We are removing these settings from
         // details (when present) to migrate from old layout to new layout
-        if(this.details.containsKey("maxWidth")) {
+        if (this.details.containsKey("maxWidth")) {
             this.details.remove("maxWidth");
         }
-        if(this.details.containsKey("maxHeight")) {
+        if (this.details.containsKey("maxHeight")) {
             this.details.remove("maxHeight");
         }
     }
@@ -863,14 +907,14 @@ public class Application {
 
     public JSONObject getGlobalLayout() throws JSONException {
         JSONObject globalLayout = new JSONObject();
-        if(this.getDetails().containsKey("globalLayout")) {
+        if (this.getDetails().containsKey("globalLayout")) {
             globalLayout = new JSONObject(this.getDetails().get("globalLayout").getValue());
         }
         // Legacy properties
-        if(!globalLayout.has("maxWidth") && this.getDetails().containsKey("maxWidth")) {
+        if (!globalLayout.has("maxWidth") && this.getDetails().containsKey("maxWidth")) {
             globalLayout.put("maxWidth", this.getDetails().get("maxWidth").getValue());
         }
-        if(!globalLayout.has("maxHeight") && this.getDetails().containsKey("maxHeight")) {
+        if (!globalLayout.has("maxHeight") && this.getDetails().containsKey("maxHeight")) {
             globalLayout.put("maxHeight", this.getDetails().get("maxHeight").getValue());
         }
         return globalLayout;
