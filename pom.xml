@@ -42,7 +42,7 @@
         <project.build.targetVersion>1.8</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>16.4</geotools.version>
+        <geotools.version>16.5</geotools.version>
         <hsqldb.version>2.3.4</hsqldb.version>
         <powermock.version>1.7.0RC2</powermock.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -56,7 +56,7 @@
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-dependency-updates > dependency-updates.log
+            mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-dependency-updates > dependency-updates.log
             and check the output for any available updates.
             
             To check for vulnarabilities in dependencies use the following command:
@@ -495,7 +495,7 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-plugin-updates -T1 > plugin-updates.log
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-plugin-updates -T1 > plugin-updates.log
                     and check the output for any available updates
                 -->
                 <plugin>
@@ -526,7 +526,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.6.2</version>
                     <configuration>
                         <source>${project.build.sourceVersion}</source>
                         <target>${project.build.targetVersion}</target>
@@ -555,12 +555,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
