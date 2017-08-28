@@ -65,7 +65,7 @@ public class FlamingoCQL {
         return filter;
     }
 
-    protected static String replaceApplayerFilter(String filter, EntityManager em) throws CQLException {
+    private static String replaceApplayerFilter(String filter, EntityManager em) throws CQLException {
         //String input = "APPLAYER(the_geom, 1,'')";
         // zoek index op van APPLAYER(
         // ga naar rechts in de string tot einde string of foundOpenBrackets == foundClosingBrackets
@@ -105,7 +105,7 @@ public class FlamingoCQL {
         return result;
     }
 
-    protected static String rewriteAppLayerFilter(String applayerfilter, EntityManager em) throws CQLException {
+    private static String rewriteAppLayerFilter(String applayerfilter, EntityManager em) throws CQLException {
         int firstIndex = applayerfilter.indexOf(", ");
         int secondIndex = applayerfilter.indexOf(",", firstIndex + 1);
 
@@ -158,7 +158,7 @@ public class FlamingoCQL {
                     }
                 }
 
-                return gc.toText();
+                return gc.union().toText();
 
             } finally {
                 it.close();
