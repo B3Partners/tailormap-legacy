@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2017 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.b3p.viewer.util;
 
@@ -67,7 +78,7 @@ public class FlamingoCQLTest extends TestUtil{
         String input = "APPLAYER(the_geom, " + testAppLayer.getId() + ",)";
         Filter output = cql.toFilter(input, entityManager);
         String result = output.toString();
-        String expected = "[ the_geom intersects MULTIPOLYGON (((156487.5708 452161.984, 191870.5054 454712.1054, 191870.5054 441111.4579, 156912.5911 442917.7939, 156487.5708 452161.984)), ((137467.9153 453543.2998, 145437.0447 451418.1986, 144693.2593 443874.0894, 137680.4254 443130.304, 137467.9153 453543.2998)), ((150218.5224 432398.5431, 142036.8828 432504.7981, 142355.648 437923.8061, 150218.5224 432398.5431)), ((156328.1882 390534.0499, 163766.0424 389099.6066, 162278.4715 386390.1026, 156912.5911 386868.2504, 156328.1882 390534.0499))) ]";
+        String expected = "[ the_geom intersects MULTIPOLYGON (((156328.1882 390534.0499, 163766.0424 389099.6066, 162278.4715 386390.1026, 156912.5911 386868.2504, 156328.1882 390534.0499)), ((150218.5224 432398.5431, 142036.8828 432504.7981, 142355.648 437923.8061, 150218.5224 432398.5431)), ((156487.5708 452161.984, 191870.5054 454712.1054, 191870.5054 441111.4579, 156912.5911 442917.7939, 156487.5708 452161.984)), ((137467.9153 453543.2998, 145437.0447 451418.1986, 144693.2593 443874.0894, 137680.4254 443130.304, 137467.9153 453543.2998))) ]";
         assertEquals(expected, result);
     }
     
