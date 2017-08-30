@@ -27,6 +27,8 @@ install:
   - mvn install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -q
 
 script:
+  - ulimit -a
+  - free -m
   # execute unit tests
   - mvn -e clean test -B
   # run integration tests on all modules except viewer-admin
