@@ -33,7 +33,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     // all pages
     wizardPages: [],
     // keep track of wizard page
-    currentPage: null,
+    currentPage: 0,
     // config
     config:{},
 
@@ -77,7 +77,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     /**
      * Create the GUI
      */
-    loadWindow : function(){
+    loadWindow : function() {
+        Ext.create('Ext.data.Store', {
+            storeId: 'zoneDistanceStore',
+            fields: ['distance','label'],
+            data: [
+                { "distance": 10, "label": "10 meter" },
+                { "distance": 20, "label": "20 meter" },
+                { "distance": 30, "label": "30 meter" },
+                { "distance": 40, "label": "40 meter" },
+                { "distance": "other", "label": "Anders, namelijk..." }
+            ]
+        });
         this.wizardPages = [
             this.createWizardPage("Nieuwe of bestaande aanvraag", [
                 "Via dit formulier kunt u een ontbrandingsaanvraag tekeken om vervolgens in te dienen.",
@@ -119,16 +130,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                                     buttonText: 'Bladeren',
                                     itemId: 'featureFile',
                                     flex: 1
-                                },
-                                {
-                                    xtype: 'button',
-                                    text: 'Aanvraag inladen',
-                                    listeners: {
-                                        click: this.loadFile,
-                                        scope: this
-                                    }
                                 }
                             ]
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'Aanvraag inladen',
+                            listeners: {
+                                click: this.loadFile,
+                                scope: this
+                            }
                         }
                     ]
                 }
@@ -143,7 +154,117 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'container',
                     layout: 'fit',
-                    itemId: 'ignitionLocationsContainer'
+                    itemId: 'ignitionLocationsContainer',
+                    flex: 1,
+                    minHeight: 100
+                },
+                {
+                    xtype: 'form',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    defaults: {
+                        labelAlign: 'top'
+                    },
+                    border: 0,
+                    hidden: true,
+                    itemId: 'ignitionLocationForm',
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            fieldLabel: 'Label',
+                            name: 'label',
+                            itemId: 'label'
+                        },
+                        {
+                            xtype: 'combobox',
+                            fieldLabel: 'Zoneafstanden',
+                            queryMode: 'local',
+                            store: Ext.StoreManager.lookup('zoneDistanceStore'),
+                            displayField: 'label',
+                            valueField: 'distance',
+                            name: 'zonedistance',
+                            itemId: 'zonedistance',
+                            listeners: {
+                                change: function(combo, val) {
+                                    this.getContentContainer().query('#custom_zonedistance')[0].setVisible(val === "other");
+                                },
+                                scope: this
+                            }
+                        },
+                        {
+                            xtype: 'numberfield',
+                            fieldLabel: 'Handmatige zoneafstand',
+                            hidden: true,
+                            name: 'custom_zonedistance',
+                            itemId: 'custom_zonedistance'
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            fieldLabel: 'Fan uitworp (elipsevormig gebied)',
+                            defaultType: 'radiofield',
+                            defaults: {
+                                flex: 1
+                            },
+                            layout: 'hbox',
+                            items: [
+                                {
+                                    boxLabel: 'Ja',
+                                    name: 'fan',
+                                    inputValue: 'ja',
+                                    listeners: {
+                                        change: function(radio, val) {
+                                            this.getContentContainer().query('#zonedistance_fan')[0].setVisible(val);
+                                        },
+                                        scope: this
+                                    }
+                                    }, {
+                                        boxLabel: 'Nee',
+                                        name: 'fan',
+                                        inputValue: 'nee',
+                                        listeners: {
+                                        change: function(radio, val) {
+                                            if(val) {
+                                                this.getContentContainer().query('#zonedistance_fan')[0].setVisible(false);
+                                                this.getContentContainer().query('#custom_zonedistance_fan')[0].setVisible(false);
+                                            }
+                                        },
+                                        scope: this
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'combobox',
+                            fieldLabel: 'Zoneafstanden fan',
+                            queryMode: 'local',
+                            store: Ext.StoreManager.lookup('zoneDistanceStore'),
+                            displayField: 'label',
+                            hidden: true,
+                            valueField: 'distance',
+                            name: 'zonedistance_fan',
+                            itemId: 'zonedistance_fan',
+                            listeners: {
+                                change: function(combo, val) {
+                                    this.getContentContainer().query('#custom_zonedistance_fan')[0].setVisible(val === "other");
+                                },
+                                scope: this
+                            }
+                        },
+                        {
+                            xtype: 'numberfield',
+                            fieldLabel: 'Handmatige zoneafstand fan',
+                            hidden: true,
+                            name: 'custom_zonedistance_fan',
+                            itemId: 'custom_zonedistance_fan'
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'Opslaan',
+                            listeners: { click: this.saveIgnitionLocation, scope: this }
+                        }
+                    ]
                 }
             ]),
             this.createWizardPage("locaties van publiek", [
@@ -163,17 +284,52 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
         this.mainContainer = Ext.create('Ext.panel.Panel', {
             layout: {
-                type: 'accordion'
+                type: 'fit'
             },
             defaults: {
-                bodyStyle: 'padding: 10px',
-                disabled: true
+                bodyStyle: 'padding: 10px'
             },
-            items: this.wizardPages
+            items: this.wizardPages,
+            fbar: [
+                { type: 'button', itemId: 'prev_button', text: 'Vorige', handler: function() { this.previousPage() }.bind(this) },
+                { type: 'button', itemId: 'next_button', text: 'Volgende', handler: function() { this.nextPage(); }.bind(this) }
+            ]
         });
         this.getContentContainer().add(this.mainContainer);
         this.createIgnitionLocationsGrid();
-        this.enablePage(0);
+        this.movePage(0);
+    },
+
+    previousPage: function() {
+        this.movePage(-1);
+    },
+
+    nextPage: function() {
+        this.movePage(1);
+    },
+
+    movePage: function(direction) {
+        this.wizardPages[this.currentPage].setVisible(false);
+        this.currentPage += direction;
+        var next_button = this.getContentContainer().query('#next_button')[0];
+        var prev_button = this.getContentContainer().query('#prev_button')[0];
+        next_button.setDisabled(false);
+        prev_button.setDisabled(false);
+        if(this.currentPage < 0) {
+            this.currentPage = 0;
+            prev_button.setDisabled(true);
+        }
+        if(this.currentPage >= this.wizardPages.length) {
+            this.currentPage = this.wizardPages.length - 1;
+            next_button.setDisabled(true);
+        }
+        if(this.currentPage === 0) {
+            prev_button.setDisabled(true);
+        }
+        if(this.currentPage === this.wizardPages.length - 1) {
+            next_button.setDisabled(true);
+        }
+        this.wizardPages[this.currentPage].setVisible(true);
     },
 
     createIgnitionLocationsGrid: function() {
@@ -184,9 +340,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         });
         this.ignitionLocationsGrid = Ext.create('Ext.grid.Panel', {
             title: 'Afsteeklocaties',
+            header: false,
             store: Ext.data.StoreManager.lookup('ignitionLocations'),
             columns: [
-                { text: 'Label', dataIndex: 'label', flex: 1 },
+                { dataIndex: 'label', flex: 1 },
                 { xtype: 'actioncolumn', width: 30, sortable:false, hidable:false, items: [
                     { iconCls: 'x-fa fa-pencil', tooltip: 'Bewerken', handler: this.editIgnitionLocation.bind(this) }
                 ]},
@@ -202,34 +359,43 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     createIgnitionLocation: function() {
         this.isDrawing = 'ignitionLocation';
         this.vectorLayer.drawFeature("Polygon");
+        var form = this.getContentContainer().query('#ignitionLocationForm')[0];
+        this.editingIgnitionLocation = null;
+        form.setVisible(false);
     },
 
     addIgnitionLocation: function(id, label) {
-        label = label || "Afsteeklocatie " + (this.ignitionLocationsGrid.getStore().count() + 1);
-        this.ignitionLocationsGrid.getStore().add({'fid': id, 'label': label});
+        var store = this.ignitionLocationsGrid.getStore();
+        var next_number = store.count() + 1;
+        label = label || "Afsteeklocatie " + (next_number);
+        store.add({ 'fid': id, 'label': label });
+        this.vectorLayer.setLabel(id, label);
+        this.editIgnitionLocation(this.ignitionLocationsGrid, next_number - 1);
     },
 
     editIgnitionLocation: function(grid, rowIndex) {
         var location = grid.getStore().getAt(rowIndex);
-        console.log(location);
+        var form = this.getContentContainer().query('#ignitionLocationForm')[0];
+        this.editingIgnitionLocation = rowIndex;
+        form.setVisible(true);
+        form.getForm().setValues(location.getData());
+    },
+
+    saveIgnitionLocation: function() {
+        var location = this.ignitionLocationsGrid.getStore().getAt(this.editingIgnitionLocation);
+        var data = this.getContentContainer().query('#ignitionLocationForm')[0].getForm().getFieldValues();
+        location.set(data);
+        this.vectorLayer.setLabel(location.get('fid'), location.get('label'));
     },
 
     removeIgnitionLocation: function(grid, rowIndex) {
+        var record = grid.getStore().getAt(rowIndex);
+        this.vectorLayer.removeFeature(this.vectorLayer.getFeatureById(record.get('fid')));
         grid.getStore().removeAt(rowIndex);
     },
 
-    enablePage: function(pageIdx, enablePrev) {
-        this.currentPage = pageIdx;
-        this.wizardPages[pageIdx].setDisabled(false).expand();
-        if(enablePrev && pageIdx > 0) {
-            for(var i = 0; i < pageIdx; i++) {
-                if(this.wizardPages[i].isDisabled()) this.wizardPages[i].setDisabled(false);
-            }
-        }
-    },
-
     newRequest: function() {
-        this.enablePage(1);
+        this.nextPage();
     },
 
     loadRequest: function() {
@@ -252,7 +418,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                         var extent = o.result.extent;
                         this.config.viewerController.mapComponent.getMap().zoomToExtent(extent);
                     }
-                    this.enablePage(3, /*enablePrev=*/true)
+                    this.movePage(3, /*enablePrev=*/true)
                 },
                 failure: function (){
                     Ext.Msg.alert('Mislukt', 'Uw bestand kon niet gelezen worden.');
@@ -272,7 +438,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.vectorLayer.style.strokecolor = featureObject._color;
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
-            this.vectorLayer.setLabel(this.activeFeature.getId(), featureObject._label);
             this.addIgnitionLocation(this.activeFeature.getId(), featureObject._label);
         }
     },
@@ -307,6 +472,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return Ext.create('Ext.panel.Panel', {
             title: title,
             items: items,
+            hidden: true,
+            hideMode: 'offsets',
+            scrollable: true,
             layout: {
                 type: 'vbox',
                 align: 'stretch'
