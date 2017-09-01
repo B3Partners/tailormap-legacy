@@ -482,7 +482,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                 for (ApplicationLayer layer : l.getLayers()) {
                     StartLayer startLayer = layer.getStartLayers().get(application);
-                    if(startLayer != null || l.getStartLevels().containsKey(application)){ 
+                    if(startLayer != null){ 
                         
                         if(startLayer != null && startLayer.isRemoved()){
                             continue;
