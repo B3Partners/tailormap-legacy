@@ -14,6 +14,7 @@ import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -115,6 +116,37 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         app.setTreeCache(null);
         cache =app.loadTreeCache(entityManager);
         assertEquals(numAppLayers + 1, cache.getApplicationLayers().size());
+    }
+    
+    @Test
+    public void testAddLayerToExistingLevelUsedInMashup() throws Exception{
+         /*
+         This test is for the situation:
+         
+        Motherapp:
+            Level A
+                Layer B
+        Create mashup
+        
+        In motherapp, add Layer C to Level A
+        Mashup shouldn't be affected
+        */
+        initData(true);
+        
+        Application mashup = app.createMashup("mashup", entityManager, false);
+        entityManager.persist(mashup);
+     
+        
+        instance.setApplication(app);
+        instance.setLevel(testLevel);
+        instance.setSelectedlayers("l8");
+        instance.saveLevel(entityManager);
+        
+        ApplicationStartMapActionBean asm = new ApplicationStartMapActionBean();
+        asm.setLevelId("n" + testLevel.getId());
+        asm.setApplication(mashup);
+        JSONArray children = asm.loadSelectedLayers(entityManager);
+        assertEquals(0, children.length());
     }
     
     @Test
