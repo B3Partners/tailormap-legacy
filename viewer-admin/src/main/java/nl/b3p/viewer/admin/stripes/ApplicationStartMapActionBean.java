@@ -272,7 +272,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                     startLayer.setSelectedIndex(getSelectedContentIndex(al));
                     startLayer.setChecked(getCheckedForLayerId(al.getId()));
-                    if(unremoveChilds){
+                    if(unremoveChilds || startLayer.getSelectedIndex() != null){
                         startLayer.setRemoved(false);
                     }
                 }
@@ -516,7 +516,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         for(ApplicationLayer al: l.getLayers()) {
             StartLayer startLayer = al.getStartLayers().get(app);
             if(startLayer != null && startLayer.getSelectedIndex() != null && !startLayer.isRemoved()) {
-                selectedContent.add(al);
+                selectedContent.add(startLayer);
             }
         }
         
