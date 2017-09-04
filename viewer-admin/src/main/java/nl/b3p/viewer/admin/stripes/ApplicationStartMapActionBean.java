@@ -258,11 +258,11 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         startLayer.setRemoved(true);
                     }
                 }else{
-                   /* if(!wasNew && !unremoveChilds){
+                    if(!wasNew && !unremoveChilds && startLayer == null){
                         // if the startLevel was new, there is no startLayer. So if it wasn't new, and there isn't a startLayer, it means the startLayer was removed
                         // in a previous session, so don't create a new one.
                         continue;
-                    }*/
+                    }
                     if(startLayer == null){
                         startLayer = new StartLayer();
                         startLayer.setApplication(application);
