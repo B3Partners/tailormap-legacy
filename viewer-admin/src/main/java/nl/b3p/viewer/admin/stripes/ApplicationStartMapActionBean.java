@@ -57,6 +57,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     private JSONArray allCheckedLayers = new JSONArray();
     
     @Validate
+    private String readdedLayersString;
+    private JSONArray readdedLayers;
+    
+    @Validate
     private String nodeId;
     @Validate
     private String levelId;
@@ -98,6 +102,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         jsonContent = new JSONArray(selectedContent);
         jsonCheckedLayers = new JSONArray(checkedLayersString);
+        readdedLayers = new JSONArray(readdedLayersString);
         
         JSONArray objToRemove = new JSONArray();
         if(removedRecordsString != null){
@@ -134,93 +139,57 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             String message = null;
 
             String id = o.getString("id");
-            if(o.get("type").equals("layer")) {
-                
-                message = "Kaartlagen kunnen niet los worden geselecteerd, alleen als onderdeel van een kaart of kaartlaaggroep";
+          
+            Level level = Stripersist.getEntityManager().find(Level.class, new Long(id));
+            if(level == null) {
                 result = false;
-                /*
-                ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(id));
-                if(appLayer == null) {
-                    message = "Kaartlaag met id " + id + " is onbekend!";
+                message = "Niveau met id " + id + " is onbekend!";
+            } else {
+                if(!level.hasLayerInSubtree()) {
+                    message = "Niveau is geen kaart";
                     result = false;
-                } else {
-                    /* An appLayer can not be selected if:
-                     * - selectedContent contains the appLayer
-                     * - the appLayer is a layer of any level or its children in selectedContent 
-                     * /
 
+                } else {
+                    /* A level can not be selected if:
+                    * any level in selectedContent is the level is a sublevel of the level
+                    * any level in selectedContent is a parent (recursive) of the level
+                    */
                     for(int i = 0; i < jsonContent.length(); i++) {
                         JSONObject content = jsonContent.getJSONObject(i);
 
-                        if(content.getString("type").equals("layer")) {
+                        if(content.getString("type").equals("level")) {
                             if(id.equals(content.getString("id"))) {
                                 result = false;
-                                message = "Kaartlaag is al geselecteerd";
+                                message = "Niveau is al geselecteerd";
                                 break;
                             }
-                        } else {
+
                             Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
                             if(l != null) {
-                                if(l.containsLayerInSubtree(appLayer)) {
+                                if(l.isInSubtreeOf(level)) {
                                     result = false;
-                                    message = "Kaartlaag is al geselecteerd als onderdeel van een niveau";
+                                    message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
                                     break;
                                 }
                             }
-                        }
-                    }
-                }*/
-            } else {
-                Level level = Stripersist.getEntityManager().find(Level.class, new Long(id));
-                if(level == null) {
-                    result = false;
-                    message = "Niveau met id " + id + " is onbekend!";
-                } else {
-                    if(!level.hasLayerInSubtree()) {
-                        message = "Niveau is geen kaart";
-                        result = false;
-                        
-                    } else {
-                        /* A level can not be selected if:
-                        * any level in selectedContent is the level is a sublevel of the level
-                        * any level in selectedContent is a parent (recursive) of the level
-                        */
-                        for(int i = 0; i < jsonContent.length(); i++) {
-                            JSONObject content = jsonContent.getJSONObject(i);
-
-                            if(content.getString("type").equals("level")) {
-                                if(id.equals(content.getString("id"))) {
-                                    result = false;
-                                    message = "Niveau is al geselecteerd";
-                                    break;
-                                }
-
-                                Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
-                                if(l != null) {
-                                    if(l.isInSubtreeOf(level)) {
-                                        result = false;
-                                        message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
-                                        break;
-                                    }
-                                }
-                            } else {
-                                ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(content.getString("id")));
-                                if(level.containsLayerInSubtree(appLayer)) {
-                                    result = false;
-                                    message = "Niveau kan niet worden geselecteerd omdat een kaartlaag uit dit (of onderliggend) niveau al is geselecteerd";
-                                    break;
-                                }
+                        } else {
+                            ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(content.getString("id")));
+                            if(level.containsLayerInSubtree(appLayer)) {
+                                result = false;
+                                message = "Niveau kan niet worden geselecteerd omdat een kaartlaag uit dit (of onderliggend) niveau al is geselecteerd";
+                                break;
                             }
                         }
                     }
                 }
             }
+            
             JSONObject obj = new JSONObject();
             obj.put("result", result);
             obj.put("message", message);
             return new StreamingResolution("application/json", new StringReader(obj.toString()));
 
-        } catch(Exception e) {
+        } catch(NumberFormatException | JSONException e) {
             return new ErrorMessageResolution("Exception " + e.getClass() + ": " + e.getMessage());
         }
     }
@@ -258,7 +227,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         startLayer.setRemoved(true);
                     }
                 }else{
-                    if(!wasNew && !unremoveChilds && startLayer == null){
+                    if(!wasNew && !unremoveChilds && startLayer == null && !layerExistsInJSONArray(al)){
                         // if the startLevel was new, there is no startLayer. So if it wasn't new, and there isn't a startLayer, it means the startLayer was removed
                         // in a previous session, so don't create a new one.
                         continue;
@@ -402,6 +371,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         final JSONArray children = new JSONArray();
         rootlevel = application.getRoot();
+        readdedLayers = new JSONArray(readdedLayersString);
 
         if(levelId != null && levelId.substring(1).equals(rootlevel.getId().toString())){
             List selectedObjects = new ArrayList();
@@ -482,12 +452,11 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
                 for (ApplicationLayer layer : l.getLayers()) {
                     StartLayer startLayer = layer.getStartLayers().get(application);
-                    if(startLayer != null){ 
-                        
-                        if(startLayer != null && startLayer.isRemoved()){
+                    if (startLayer != null) {
+                        if (startLayer.isRemoved()) {
                             continue;
                         }
-                        
+
                         //if the startLevel doesn't exist, it's a new startLayer (so show it)
                         // if the startLayer doesn't exist, but the startLevel does, it's a removed startLayer, so don't show it.  
                         JSONObject j = new JSONObject();
@@ -496,13 +465,34 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         j.put("type", "layer");
                         j.put("isLeaf", true);
                         j.put("parentid", levelId);
-                        j.put("checked", startLayer != null ? startLayer.isChecked() : false);
+                        j.put("checked", startLayer.isChecked());
+                        children.put(j);
+                    } else if (layerExistsInJSONArray(layer)) {
+                        JSONObject j = new JSONObject();
+                        j.put("id", "s" + layer.getId());
+                        j.put("name", layer.getDisplayName(em));
+                        j.put("type", "layer");
+                        j.put("isLeaf", true);
+                        j.put("parentid", levelId);
+                        j.put("checked", false);
                         children.put(j);
                     }
                 }
             }
         }
         return children;
+    }
+    
+    private boolean layerExistsInJSONArray(ApplicationLayer layer){
+        for (Object l : readdedLayers) {
+            JSONObject obj = (JSONObject)l;
+            int id = obj.getInt("id");
+            if(layer.getId() == id){
+                return true;
+            }
+            
+        }
+        return false;
     }
     
     protected static void walkAppTreeForStartMap(List selectedContent, Level l, Application app){
@@ -512,11 +502,13 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             selected = true;
             selectedContent.add(sl);
         }
-        
-        for(ApplicationLayer al: l.getLayers()) {
-            StartLayer startLayer = al.getStartLayers().get(app);
-            if(startLayer != null && startLayer.getSelectedIndex() != null && !startLayer.isRemoved()) {
-                selectedContent.add(startLayer);
+       
+        if (!selected) {
+            for (ApplicationLayer al : l.getLayers()) {
+                StartLayer startLayer = al.getStartLayers().get(app);
+                if (startLayer != null && startLayer.getSelectedIndex() != null && !startLayer.isRemoved()) {
+                    selectedContent.add(startLayer);
+                }
             }
         }
         
@@ -622,6 +614,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     public void setRemovedRecordsString(String removedRecordsString) {
         this.removedRecordsString = removedRecordsString;
+    }
+    
+    public String getReaddedLayersString() {
+        return readdedLayersString;
+    }
+
+    public void setReaddedLayersString(String readdedLayersString) {
+        this.readdedLayersString = readdedLayersString;
     }
     //</editor-fold>
 

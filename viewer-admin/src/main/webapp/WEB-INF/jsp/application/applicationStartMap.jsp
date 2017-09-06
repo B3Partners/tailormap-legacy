@@ -46,6 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div id="layermove-buttons" class="tree-selection-buttons"></div>
                     <div style="clear: both;"></div>
                     <stripes:hidden id="selectedlayersinput" name="selectedContent" />
+                    <stripes:hidden id="readdedLayersinput" name="readdedLayersString" />
                     <stripes:hidden id="checkedlayersinput" name="checkedLayersString" />
                     <stripes:hidden id="removedrecordsinput" name="removedRecordsString" />
 
