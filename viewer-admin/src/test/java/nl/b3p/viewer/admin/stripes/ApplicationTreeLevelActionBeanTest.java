@@ -118,7 +118,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         assertEquals(numAppLayers + 1, cache.getApplicationLayers().size());
     }
     
-   // @Test
+    @Test
     public void testAddLayerToExistingLevelUsedInMashup() throws Exception{
          /*
          This test is for the situation:
@@ -139,11 +139,13 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         
         instance.setApplication(app);
         instance.setLevel(testLevel);
+        
         instance.setSelectedlayers("l8," + "al" + testAppLayer.getId()); //begroeid_terreinvakonderdeel_plan
         instance.saveLevel(entityManager);
         
         ApplicationStartMapActionBean asm = new ApplicationStartMapActionBean();
         asm.setLevelId("n" + testLevel.getId());
+        asm.setReaddedLayersString("[]");
         asm.setApplication(mashup);
         JSONArray children = asm.loadSelectedLayers(entityManager);
         assertEquals(1, children.length());
@@ -182,6 +184,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         ApplicationStartMapActionBean asm = new ApplicationStartMapActionBean();
         asm.setLevelId("n" + testLevel.getId());
         asm.setApplication(mashup);
+        asm.setReaddedLayersString("[]");
         JSONArray children = asm.loadSelectedLayers(entityManager);
         assertEquals(1, children.length()); 
         
@@ -193,11 +196,13 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         asm.setRemovedRecordsString(" [{\"id\":"+ testLevel.getId() + ",\"type\":\"level\"}]");
         asm.setSelectedContent(" []");
         asm.setCheckedLayersString("[]");
+        asm.setReaddedLayersString("[]");
         asm.saveStartMap(entityManager);
         
         // check if still allright
         asm = new ApplicationStartMapActionBean();
         asm.setLevelId("n" + testLevel.getId());
+        asm.setReaddedLayersString("[]");
         asm.setApplication(mashup);
         children = asm.loadSelectedLayers(entityManager);
         assertEquals(0, children.length());
@@ -209,10 +214,12 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         asm.setCheckedLayersString("[]");
         asm.setSelectedContent(" [{\"id\":"+ testLevel.getId() + ",\"type\":\"level\"}]");
         asm.setRemovedRecordsString(null);
+        asm.setReaddedLayersString("[]");
         asm.saveStartMap(entityManager);
         
         
         asm = new ApplicationStartMapActionBean();
+        asm.setReaddedLayersString("[]");
         asm.setApplication(mashup);
         asm.setLevelId("n" + testLevel.getId());
         children = asm.loadSelectedLayers(entityManager);
