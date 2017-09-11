@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, FlamingoAppLoader, actionBeans */
-
-/**
+/* global Ext, contextPath, actionBeans, FlamingoAppLoader, MobileManager */
+/**.
  * Spatial Filter component
  * This component adds the functionality of creating a spatial filter: a filter based on a drawn geometry (polygon, rectangle, circle or freeform). All features must
  * be in or partly in the drawn geometry (ie. intersects).
@@ -25,10 +24,12 @@
 Ext.define ("viewer.components.SpatialFilter",{
     extend: "viewer.components.Component",
     layerSelector:null,
+    sourceLayerSelector: null,
     drawingButtonIds:null,
     vectorLayer:null,
     iconPath:null,
     features:null,
+    onlySourceGeometry:null,
     config:{
         title: "",
         iconUrl: "",
@@ -51,8 +52,9 @@ Ext.define ("viewer.components.SpatialFilter",{
             conf.multiGeometries = true;
         }
         this.initConfig(conf);     
-	viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
+		viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
         var me = this;
+        this.onlySourceGeometry = true;
         this.features = new Array();
         this.renderButton({
             handler: function(){
@@ -88,6 +90,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     drawGeometry: function(type){
+        this.onlySourceGeometry = false;
         var appendFilter = Ext.getCmp (this.config.name + 'AppendFilter');
         if(!appendFilter.getValue()){
             this.vectorLayer.removeAllFeatures();
@@ -96,6 +99,21 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.vectorLayer.drawFeature(type);
     },
     applyFilter : function(){
+        var sourceAppLayer = this.sourceLayerSelector.getValue();
+        if (this.onlySourceGeometry && sourceAppLayer) {
+
+            var appLayer = this.layerSelector.getValue();
+            var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].name;
+            var cql = "APPLAYER(" + geomAttr + ", " + sourceAppLayer.id + ", " + (sourceAppLayer.filter ? sourceAppLayer.filter.getCQL() : "") + ")";
+            this.config.viewerController.setFilter(
+                    Ext.create("viewer.components.CQLFilterWrapper", {
+                        id: "filter_" + this.getName(),
+                        cql: cql,
+                        operator: "AND",
+                        type: "APPLAYER"
+                    }), appLayer);
+            
+        }else{
         var features = this.features;
         var multi = "";
         if (features.length > 0) {
@@ -112,6 +130,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
         var appLayer = this.layerSelector.getValue();
         this.setFilter(multi, appLayer);
+        }
     },
     setFilter: function(geometry, appLayer){
         var me = this;          
@@ -183,6 +202,31 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
+    showFeatures: function(){
+        var appLayer = this.sourceLayerSelector.getValue();
+        var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].id;
+        var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
+        var me = this;
+        me.appLayer = appLayer;
+        featureService.loadFeatures(appLayer, function(features){
+            var fts = [];
+            for(var i = 0; i < features.length ; i++){
+                var feature = features[i];
+                
+                var featureObject = Ext.create("viewer.viewercontroller.controller.Feature", {
+                    wktgeom: feature[me.appLayer.geometryAttribute],
+                    id:feature.__fid
+                });
+                fts.push(featureObject);
+            }
+            this.vectorLayer.addFeatures(fts);
+        },Ext.emptyFn,{
+            start:0,
+            limit:5000,
+            graph: true,
+            attributesToInclude: [geomAttr]
+        }, this);
+    },
     layerChanged: function (appLayer, previousAppLayer, scope) {
         var buttons = Ext.getCmp(this.config.name +"filterButtons");
         if(appLayer !== null){
@@ -226,6 +270,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
             icon: this.iconPath+"shape_polygon_red.png",
+            componentCls: 'mobileLarge',
             tooltip: "Teken een polygoon",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -243,6 +288,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: 'button',
             id: this.drawingButtonIds.box,
             icon: this.iconPath+"shape_square_red.png",
+            componentCls: 'mobileLarge',
             tooltip: "Teken een vierkant",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -260,6 +306,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: 'button',
             id: this.drawingButtonIds.freehand,
             icon: this.iconPath+"freehand.png",
+            componentCls: 'mobileLarge',
             tooltip: "Teken een vrije vorm",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -273,11 +320,12 @@ Ext.define ("viewer.components.SpatialFilter",{
                 }
             }
         }];
-        if(!viewer.components.MobileManager.isMobile()) {
+        if(!MobileManager.isMobile()) {
             formButtons.push({
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
+                componentCls: 'mobileLarge',
                 tooltip: "Teken een cirkel",
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
@@ -294,6 +342,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
         formItems.push({
             xtype: 'container',
+            width: "100%",
             layout: {
                 type: 'hbox'
             },
@@ -305,6 +354,8 @@ Ext.define ("viewer.components.SpatialFilter",{
             id: this.config.name + "BufferContainer",
             name: this.config.name + "BufferContainer",
             xtype: "container",
+            width: "100%",
+            height: 30,
             layout: {
                 type: 'hbox'
             },
@@ -361,11 +412,26 @@ Ext.define ("viewer.components.SpatialFilter",{
             renderTo: this.getContentDiv(),
             items: [
             this.layerSelector.getLayerSelector(),
+                this.sourceLayerSelector.getLayerSelector(),
+                {
+                    xtype: "button",
+                    label: "Laat features zien",
+                    text: "Laat zien",
+                   // disabled:true,
+                    id: this.config.name + 'RetrieveFeaturesButton',
+                    listeners: {
+                        click: {
+                            scope: this,
+                            fn: this.showFeatures
+                        }
+                    }
+                },
             {
                 id: this.config.name + 'filterButtons',
                 xtype: "container",
                 disabled:true,
                 autoScroll: true,
+                width: '100%',
                 layout:{
                     type: "vbox",
                     align: "stretch"
@@ -375,6 +441,8 @@ Ext.define ("viewer.components.SpatialFilter",{
             },{
                 id: this.config.name + 'ClosingPanel',
                 xtype: "container",
+                width: '100%',
+                height: MobileManager.isMobile() ? 45 : 25,
                 style: {
                     marginTop: '10px'
                 },
@@ -383,19 +451,23 @@ Ext.define ("viewer.components.SpatialFilter",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Reset', margin: '0 1 0 0', handler: function(){
+                    {xtype: 'button', text: 'Reset', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
                         me.resetForm();
                     }},
-                    {xtype: 'button', text: 'Toepassen', margin: '0 1 0 0', handler: function(){
+                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
                         me.applyFilter();
                     }},
-                    {xtype: 'button', text: 'Sluiten', handler: function() {
+                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
                         me.resetForm();
                         me.popup.hide();
                     }}
                 ]
             }]
         });
+        if (this.vectorLayer === null) {
+            this.createVectorLayer();
+        }
+        this.layerSelector.initLayers();
     },
     createLayerSelector: function(){
         var config = {
@@ -407,6 +479,21 @@ Ext.define ("viewer.components.SpatialFilter",{
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        var config = {
+            viewerController: this.config.viewerController,
+            restriction: "attribute",
+            layers: this.config.layers,
+            label: "Bron kaartlaag"
+        };
+
+        this.sourceLayerSelector = Ext.create("viewer.components.LayerSelector", config);
+        this.sourceLayerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, function (appLayer, b, c) {
+            Ext.getCmp(this.config.name + 'RetrieveFeaturesButton').setDisabled(false);
+                if (appLayer !== null && !appLayer.attributes) {
+                 var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
+                   featureService.loadAttributes(appLayer);
+            }
+        }, this);
     },
     createVectorLayer : function (){
          this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
@@ -446,6 +533,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         if(!appLayer) {
             return;
         }
+        this.sourceLayerSelector.setValue(null);
         this.features = [];
         this.vectorLayer.removeAllFeatures();
         this.applyFilter();

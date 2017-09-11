@@ -19,20 +19,14 @@ package nl.b3p.viewer.util;
 import java.util.ArrayList;
 import java.util.List;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.ConfiguredAttribute;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
-import nl.b3p.viewer.config.services.FeatureTypeRelation;
-import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
 import org.geotools.data.Query;
-import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.opengis.filter.Filter;
 
 /**
  *

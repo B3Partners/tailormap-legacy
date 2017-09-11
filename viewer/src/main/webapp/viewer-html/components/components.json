@@ -892,7 +892,7 @@
         "group": "Component",
         "sources": ["SpatialFilter.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","SpatialFilter-config.js"],
-        "restrictions": ["left_menu"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],
         "type": "popup",
         "singleton": true,
         "showHelp": true

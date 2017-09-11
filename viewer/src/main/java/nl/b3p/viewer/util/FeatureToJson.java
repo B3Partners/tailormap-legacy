@@ -142,16 +142,29 @@ public class FeatureToJson {
         
         if (sort!=null){
             setSortBy(q, propertyNames, sort, dir);
-        } else if ((fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore) && !propertyNames.isEmpty()) {
-            // Use the first property as sort field, otherwise geotools will give a error when quering a JDBC featureType without a primary key.
-            setSortBy(q, propertyNames.get(0), dir);
+        }
+        /* Use the first property as sort field, otherwise geotools while give a error when quering
+         * a JDBC featureType without a primary key.
+         */
+        else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
+            int index = 0;
+            if(fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0)) ){
+                if(propertyNames.size() > 1){
+                    index = 1;
+                }else {
+                    index = -1;
+                }
+            }
+            if(index != -1){
+                setSortBy(q, propertyNames.get(index),dir);
+            }
         }
         Integer start = q.getStartIndex();
         if (start==null){
             start=0;
         }
         boolean offsetSupported = fs.getQueryCapabilities().isOffsetSupported();
-        // if offSet is not supported, get more features (start + the wanted features)
+        //if offSet is not supported, get more features (start + the wanted features)
         if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES || fs.getDataStore() instanceof WFSDataStore){
             q.setMaxFeatures(q.getMaxFeatures()+start);
         }

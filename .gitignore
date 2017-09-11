@@ -9,3 +9,4 @@ viewer/src/main/webapp/viewer-html/node_modules
 dependency-updates.log
 plugin-updates.log
 vuln-check.log
+/viewer/nbproject/

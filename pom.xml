@@ -636,6 +636,7 @@
                     <systemPropertyVariables>
                         <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>
+                    <argLine>-Xmx1g -Xms1g -XX:+TieredCompilation -XX:TieredStopAtLevel=1</argLine>
                 </configuration>
             </plugin>
             <plugin>
