@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global Ext */
 
 Ext.define('vieweradmin.components.Bookmark', {
 
@@ -38,6 +40,14 @@ Ext.define('vieweradmin.components.Bookmark', {
                 id: 'applicationname',
                 text: "Applicatie",
                 dataIndex: 'application.name',
+                flex: 1,
+                filter: {
+                    xtype: 'textfield'
+                }
+            },{
+                id: 'code',
+                text: "Code",
+                dataIndex: 'code',
                 flex: 1,
                 filter: {
                     xtype: 'textfield'
@@ -71,6 +81,7 @@ Ext.define('vieweradmin.components.Bookmark', {
         return [
             {name: 'id', type: 'int'},
             {name: 'application.name', type: 'string'},
+            {name: 'code', type: 'string'},
             {name: 'createdAt', type: 'string'}
         ];
     },
