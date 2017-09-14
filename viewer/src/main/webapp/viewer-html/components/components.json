@@ -138,6 +138,31 @@
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
     },
     {
+        "className": "viewer.components.FeatureReport",
+        "notInCombinationWith": [
+            "viewer.mapcomponents.FlamingoMap"
+        ],
+        "name": "FeatureReport",
+        "group": "Map",
+        "shortName": "FR",
+        "sources": [
+            "FeatureReportUtil.js",
+            "FeatureReport.js"
+        ],
+        "configSource": [
+            "ConfigObject.js",
+            "SelectionWindowConfig.js",
+            "FeatureReportUtil.js",
+            "FeatureReport-config.js"
+        ],
+        "singleton": true,
+        "restrictions": [
+            "content"
+        ],
+        "showHelp": true
+    },
+
+    {
         "className": "viewer.components.tools.Identify",
         "name": "Identify",
         "shortName": "Id",
@@ -877,7 +902,7 @@
         "group": "Component",
         "sources": ["SpatialFilter.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","SpatialFilter-config.js"],
-        "restrictions": ["left_menu"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],
         "type": "popup",
         "singleton": true,
         "showHelp": true

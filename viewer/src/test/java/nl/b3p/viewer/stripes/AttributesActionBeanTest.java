@@ -27,23 +27,20 @@ import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
-import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.TestActionBeanContext;
-import org.geotools.data.Query;
-import org.geotools.filter.text.ecql.ECQL;
+import nl.b3p.viewer.util.TestUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.opengis.filter.Filter;
 
 /**
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-public class AttributesActionBeanTest {
+public class AttributesActionBeanTest extends TestUtil{
     private AttributesActionBean instance = new AttributesActionBean();
     private ApplicationLayer applayerGS = new ApplicationLayer();
     private ApplicationLayer applayerDG = new ApplicationLayer();
@@ -80,7 +77,7 @@ public class AttributesActionBeanTest {
     
     
     @Before
-    public void setUp() {
+    public void setupResources() {
         ftGeoserver.setFeatureSource(fsGeoserver);
         ftGeoserver.setTypeName(typenameGeoserver);
         fsGeoserver.setUrl(urlGeoserver);
@@ -186,7 +183,7 @@ public class AttributesActionBeanTest {
         instance.setLimit(10);
         instance.setAppLayer(applayerGS);
         
-        JSONObject result = instance.executeStore();
+        JSONObject result = instance.executeStore(entityManager);
         
         JSONArray features = result.getJSONArray("features");
         assertEquals(10, features.length());
@@ -201,7 +198,7 @@ public class AttributesActionBeanTest {
         instance.setLimit(10);
         instance.setAppLayer(applayerGS);
         
-        JSONObject result = instance.executeStore();
+        JSONObject result = instance.executeStore(entityManager);
         
         JSONArray features = result.getJSONArray("features");
         assertEquals(10, features.length());
@@ -219,7 +216,7 @@ public class AttributesActionBeanTest {
         instance.setLimit(10);
         instance.setAppLayer(applayerDG);
         
-        JSONObject result = instance.executeStore();
+        JSONObject result = instance.executeStore(entityManager);
         
         JSONArray features = result.getJSONArray("features");
         assertEquals(10, features.length());
@@ -234,7 +231,7 @@ public class AttributesActionBeanTest {
         instance.setLimit(10);
         instance.setAppLayer(applayerDG);
         
-        JSONObject result = instance.executeStore();
+        JSONObject result = instance.executeStore(entityManager);
         
         JSONArray features = result.getJSONArray("features");
         assertEquals(10, features.length());
@@ -252,7 +249,7 @@ public class AttributesActionBeanTest {
         instance.setDebug(true);
         instance.layer = relatedLayer;
         
-        JSONObject result = instance.executeStore();
+        JSONObject result = instance.executeStore(entityManager);
         
         JSONArray features = result.getJSONArray("features");
         assertEquals(10, features.length());
@@ -260,6 +257,7 @@ public class AttributesActionBeanTest {
     
     @Test
     public void testGetJSONFeaturesRelatedFeaturetypeMain() throws Exception {
+        initData(false);
         System.out.println("store");
         
         instance.setStart(0);
@@ -270,7 +268,7 @@ public class AttributesActionBeanTest {
         instance.setDebug(true);
         instance.layer = relatedLayer;
         
-        JSONObject result = instance.executeStore();
+        JSONObject result = instance.executeStore(entityManager);
         
         JSONArray features = result.getJSONArray("features");
         assertEquals(1, features.length());

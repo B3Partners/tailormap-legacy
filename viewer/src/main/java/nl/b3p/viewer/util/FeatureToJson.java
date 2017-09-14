@@ -85,7 +85,31 @@ public class FeatureToJson {
     }
 
     /**
-     * Get the features as JSONArray with the given params
+     * Get the features, unsorted, as JSONArray with the given params.
+     *
+     * @param al The application layer(if there is a application layer)
+     * @param ft The featuretype that must be used to get the features
+     * @param fs The featureSource
+     * @param q The query
+     * @return JSONArray with features.
+     * @throws IOException if any
+     * @throws JSONException if transforming to json fails
+     * @throws Exception if any
+     *
+     * @see #getJSONFeatures(nl.b3p.viewer.config.app.ApplicationLayer,
+     * nl.b3p.viewer.config.services.SimpleFeatureType,
+     * org.geotools.data.FeatureSource, org.geotools.data.Query,
+     * java.lang.String, java.lang.String)
+     */
+    public JSONArray getJSONFeatures(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q) throws IOException, JSONException, Exception {
+        return this.getJSONFeatures(al, ft, fs, q, null, null);
+    }
+
+    /**
+     * Get the features, optionally sorted, as JSONArray with the given params.
+     * <strong>Note</strong> that the FeatureSource fs will be closed and
+     * disposed.
+     *
      * @param al The application layer(if there is a application layer)
      * @param ft The featuretype that must be used to get the features
      * @param fs The featureSource
@@ -123,7 +147,17 @@ public class FeatureToJson {
          * a JDBC featureType without a primary key.
          */
         else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
-            setSortBy(q, propertyNames.get(0),dir);
+            int index = 0;
+            if(fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0)) ){
+                if(propertyNames.size() > 1){
+                    index = 1;
+                }else {
+                    index = -1;
+                }
+            }
+            if(index != -1){
+                setSortBy(q, propertyNames.get(index),dir);
+            }
         }
         Integer start = q.getStartIndex();
         if (start==null){

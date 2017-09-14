@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.Loader.setConfig({enabled:true});
 Ext.require([
     'Ext.tree.*',
@@ -84,12 +86,16 @@ Ext.onReady(function() {
         checkedLayers: checkedLayers,
         onlyMoveRootLevels: true,
         // useDeleteButton: true,
-        useArrowLeftAsDelete: true
+        useArrowLeftAsDelete: true,
+        
+        forceRealParent:true,
+        allowReadLayer:true
     }));
 
     Ext.get('startmapform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('checkedlayersinput').set({value:kaartSelectie.getCheckedLayers()});
         Ext.fly('removedrecordsinput').set({value:kaartSelectie.getRemovedRecords()});
+        Ext.fly('readdedLayersinput').set({value:Ext.JSON.encode(kaartSelectie.readdedLayers)});
     });
 });

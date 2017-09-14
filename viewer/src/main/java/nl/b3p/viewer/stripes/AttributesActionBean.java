@@ -35,6 +35,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.codehaus.httpcache4j.cache.HTTPCache;
@@ -46,7 +47,6 @@ import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -420,16 +420,16 @@ public class AttributesActionBean implements ActionBean {
         }
     }
 
-    private void setFilter(Query q,SimpleFeatureType ft, ApplicationLayer al) throws Exception {
+    private void setFilter(Query q,SimpleFeatureType ft, ApplicationLayer al, EntityManager em) throws Exception {
         if(filter != null && filter.trim().length() > 0) {
-            Filter f = ECQL.toFilter(filter);
+            Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
             f = (Filter)f.accept(new ChangeMatchCase(false), null);
             f = FeatureToJson.reformatFilter(f, ft, includeRelations);
             q.setFilter(f);
         }
 
-        setAttributesNotNullFilters(q, al, ft);
+        setAttributesNotNullFilters(q, al, ft, em);
     }
 
     private static final int MAX_CACHE_SIZE = 50;
@@ -472,12 +472,12 @@ public class AttributesActionBean implements ActionBean {
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
-        json = executeStore();
+        json = executeStore(Stripersist.getEntityManager());
 
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
     
-    protected JSONObject executeStore(){
+    protected JSONObject executeStore(EntityManager em){
         JSONObject json = new JSONObject();
         try {
             int total = 0;
@@ -511,7 +511,7 @@ public class AttributesActionBean implements ActionBean {
                 final Query q = new Query(fs.getName().toString());
                 //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
-                setFilter(q,ft, appLayer);
+                setFilter(q,ft, appLayer, em);
 
                 final FeatureSource fs2 = fs;
                 total = lookupTotalCountCache(new Callable<Integer>() {
@@ -559,14 +559,14 @@ public class AttributesActionBean implements ActionBean {
     }
     
     
-    private void setAttributesNotNullFilters(Query q, ApplicationLayer al, SimpleFeatureType ft) throws CQLException {
+    private void setAttributesNotNullFilters(Query q, ApplicationLayer al, SimpleFeatureType ft, EntityManager em) throws CQLException {
         FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         List<ConfiguredAttribute> attrs = al.getAttributes(ft);
         List<Filter> filters = new ArrayList<Filter>();
         for (ConfiguredAttribute attr : attrs) {
             if (attributesNotNull.contains(attr.getId())) {
-                Filter f = ECQL.toFilter(attr.getAttributeName() + " is not null");
+                Filter f = FlamingoCQL.toFilter(attr.getAttributeName() + " is not null", em);
                 filters.add(f);
             }
         }

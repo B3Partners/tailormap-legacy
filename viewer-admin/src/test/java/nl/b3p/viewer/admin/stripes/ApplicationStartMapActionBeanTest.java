@@ -65,6 +65,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             JSONArray ar = new JSONArray();
             ar.put(removeString);
             instance.setRemovedRecordsString(ar.toString());
+            instance.setReaddedLayersString("[]");
             
             instance.saveStartMap(entityManager);
             
@@ -112,7 +113,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             JSONArray ar = new JSONArray();
             ar.put(removeString);
             instance.setRemovedRecordsString(ar.toString());
-            
+            instance.setReaddedLayersString("[]");
             instance.saveStartMap(entityManager);
             
             // test of mashup is verandert
@@ -158,6 +159,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             String selectedContent = "[{\"id\":\"4\",\"type\":\"level\"}]";
             instance.setSelectedContent(selectedContent);
             instance.setRemovedRecordsString(null);
+            instance.setReaddedLayersString("[]");
             instance.setApplication(application);
             instance.saveStartMap(entityManager);
             
@@ -170,6 +172,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             JSONArray ar = new JSONArray();
             ar.put(removeString);
             instance = new ApplicationStartMapActionBean();
+            instance.setReaddedLayersString("[]");
             instance.setApplication(application);
             instance.setRemovedRecordsString(ar.toString());
             
@@ -297,6 +300,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         String selectedContent = "[]";
         instance.setSelectedContent(selectedContent);
         instance.setCheckedLayersString("[]");
+        instance.setReaddedLayersString("[]");
         instance.saveStartMap(entityManager);
             
         instance.setLevelId("n4");
@@ -339,6 +343,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         instance.setRemovedRecordsString(ar.toString());
         instance.setSelectedContent("[]");
         instance.setCheckedLayersString("[]");
+        instance.setReaddedLayersString("[]");
         instance.saveStartMap(entityManager);
         
         entityManager.getTransaction().begin();
@@ -351,12 +356,14 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         instance.setSelectedContent(selectedContent);
         instance.setRemovedRecordsString("[]");
         instance.setCheckedLayersString("[]");
+        instance.setReaddedLayersString("[]");
         instance.saveStartMap(entityManager);
 
         // Check of sublevels bestaan
         instance = new ApplicationStartMapActionBean();
         instance.setLevelId("n4");
         instance.setApplication(application);
+        instance.setReaddedLayersString("[]");
         JSONArray selectedLayers = instance.loadSelectedLayers(entityManager);
         boolean foundA = false;
         boolean foundB = false;
@@ -401,6 +408,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
         instance.setApplication(application);
         instance.setRemovedRecordsString(ar.toString());
         instance.setSelectedContent("[]");
+        instance.setReaddedLayersString("[]");
         instance.setCheckedLayersString("[]");
         instance.saveStartMap(entityManager);
         

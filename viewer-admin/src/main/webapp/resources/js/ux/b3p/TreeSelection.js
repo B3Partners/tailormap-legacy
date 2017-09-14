@@ -41,11 +41,14 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     checkBackendOnMove: false,
     backendCheckUrl: '',
     checkedLayers: [],
+    readdedLayers: [],
     deletedRecords: [],
     onlyMoveRootLevels: false,
     useDeleteButton: false,
     useArrowLeftAsDelete: false,
-
+    forceRealParent: false,
+    allowReadLayer:false,
+    
     constructor: function(config) {
         Ext.apply(this, config || {});
         Ext.apply(this, {
@@ -81,7 +84,12 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             },
             defaultRootId: me.defaultRootIdSelectedLayers,
             defaultRootProperty: 'children',
-            nodeParam: me.nodeParamSelectedLayers
+            nodeParam: me.nodeParamSelectedLayers,
+            listeners: {
+                beforeload: function(store, op, opts){
+                    store.getProxy().setExtraParams({readdedLayersString :Ext.JSON.encode(me.readdedLayers)});
+                }
+            }
         });
 
         me.tree = Ext.create('Ext.tree.Panel', {
@@ -268,7 +276,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             });
         }
     },
-    
     getViewConfig: function(treeType) {
         var me = this;
         return {
@@ -573,17 +580,38 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
                 var objData = this.copyNode(record);
+                if (nodeType === "layer") {
+                    this.readdedLayers.push({
+                        'id': objData.id.substring(1),
+                        'type': objData.type
+                        }
+                    );
+                }
                 var expandAfter = objData.children && objData.children.length && !objData.isLeaf;
                 var newNode = Ext.create('TreeNode', objData);
-                var treenode = me.selectedlayers.getRootNode();
-                if(treenode) {
+                var treenode = this.getTreeNode(record);
+
+                if (treenode) {
+                    if (!treenode.isExpanded()) {
+                        treenode.expand();
+                    }
                     treenode.appendChild(newNode);
-                    if(expandAfter) {
+                    if (expandAfter) {
                         newNode.expand();
                     }
                 }
+                
             }
         }
+    },
+    
+    getTreeNode: function(record){
+        var node = this.selectedlayers.getRootNode();
+        if(this.forceRealParent &&  record.get('type') === 'layer'){
+            var parent = record.parentNode;
+            node = this.selectedlayers.getRootNode().findChild('id', parent.get('id'));
+        }
+        return node;
     },
     
     copyNode: function(record) {
@@ -650,12 +678,26 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 });
             }
         });
+        if(me.allowReadLayer){
+            if(me.readdedLayers.length > 0){
+                if(me.returnJson) {
+                    addedLayers = addedLayers.concat(me.readdedLayers);
+                }else{
+                    if(addedLayers !== '') {
+                        addedLayers += ',';
+                    }
+                    for(var i = 0 ; i < me.readdedLayers.length;i++){
+                        addedLayers += me.readdedLayers[i].id;
+                    }
+                }            
+            }
+        }
         if(me.returnJson) {
             addedLayers = Ext.JSON.encode(addedLayers);
         }
         return addedLayers;
     },
-
+    
     getCheckedLayers: function() {
         var me = this;
         return Ext.JSON.encode(me.checkedLayers);

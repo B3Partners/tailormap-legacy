@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 B3Partners B.V.
+ * Copyright (C) 2015-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -221,8 +221,8 @@ public class BookmarkActionBean implements ActionBean{
         c.setFirstResult(start);
 
         List<Bookmark> bookmarks = c.list();
-        for (Bookmark bookmark : bookmarks) {
-            Application app = bookmark.getApplication();
+        for (Bookmark bm : bookmarks) {
+            Application app = bm.getApplication();
             String appName = null;
             if (app != null) {
                 appName = app.getName();
@@ -231,9 +231,9 @@ public class BookmarkActionBean implements ActionBean{
                 }
             }
 
-            Date dateCreated = bookmark.getCreatedAt();
+            Date dateCreated = bm.getCreatedAt();
 
-            JSONObject j = getGridRow(bookmark.getId(), appName, dateCreated);
+            JSONObject j = getGridRow(bm.getId(), appName, bm.getCode(), dateCreated);
             gridrows.put(j);
         }
 
@@ -249,10 +249,11 @@ public class BookmarkActionBean implements ActionBean{
         };
     }
 
-    private JSONObject getGridRow(long id, String appName, Date createdDate) throws JSONException{
+    private JSONObject getGridRow(long id, String appName, String code, Date createdDate) throws JSONException{
         JSONObject row = new JSONObject();
         row.put("id", id);
         row.put("application.name", appName);
+        row.put("code", code);
         SimpleDateFormat sdf = new SimpleDateFormat("HH-mm dd-MM-yyyy");
         String date = sdf.format(createdDate);
         row.put("createdAt", date);
