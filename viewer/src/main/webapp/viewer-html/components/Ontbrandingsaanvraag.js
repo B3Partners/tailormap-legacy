@@ -24,6 +24,7 @@
 Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     extend: "viewer.components.Component",
     vectorLayer: null,
+    extraObjectsLayer: null,
     // Current active feature
     activeFeature: null,
     // All features
@@ -41,6 +42,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     IGNITION_LOCATION_FORM: 'ignitionLocationForm',
     AUDIENCE_LOCATION_TYPE: 'audienceLocation',
     AUDIENCE_LOCATION_FORM: 'audienceLocationForm',
+    EXTRA_OJBECT_TYPE: 'extraObject',
+    EXTRA_OBJECT_FORM: 'extraObjectForm',
 
     constructor: function (conf){
         this.initConfig(conf);
@@ -58,6 +61,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createVectorLayer();
         } else {
             this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         }
     },
 
@@ -74,11 +78,30 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 'strokeopacity': 50
             }
         });
-        this.config.viewerController.registerSnappingLayer(this.vectorLayer);
+        this.extraObjectsLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: 'ontbrandingsAanvraagLabelVectorLayer',
+            geometrytypes: ["Point", "Circle"],
+            showmeasures: false,
+            viewerController: this.config.viewerController,
+            styleMap: new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                    fontColor: "#000000",
+                    fontSize: "16px",
+                    labelOutlineColor: "#ffffff",
+                    labelOutlineWidth: 2,
+                    labelAlign: "cb"
+                }),
+                "select": new OpenLayers.StyleMap({
+                    strokeColor: "FF0000"
+                })
+            })
+        });
+        this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, this.activeFeatureChanged, this);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.activeFeatureFinished, this);
     },
+
     /**
      * Create the GUI
      */
@@ -194,9 +217,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     margin: this.defaultMargin
                 }
             ]),
-            this.createWizardPage("toevoegen aanvullende objecten", [
-                "Op de pagina komt een lijst met aanvullende objecten (hulplijnen) met een min-teken voor verwijderen.\n" +
-                "Daaronder komt een plus teken voor het toevoegen van een nieuwe hulplijn. Het toevoegen bestaat uit het tekenen op de kaart. Deze hulplijnen kunnen een kleur hebben, doorgetrokken of gestippeld zijn, pijlpunten bevatten en een label hebben."
+            this.createWizardPage("Toevoegen aanvullende objecten", [
+                {
+                    xtype: 'button',
+                    html: 'Object toevoegen',
+                    margin: this.defaultMargin,
+                    listeners: { click: this.createExtraObject, scope: this }
+                },
+                {
+                    xtype: 'container',
+                    layout: 'fit',
+                    itemId: 'extraObjectsContainer',
+                    flex: 1,
+                    minHeight: 100
+                },
+                this.createExtraObjectsForm()
             ]),
             this.createWizardPage("Opslaan en printen", [
                 "Net zoals de huidige redlining tool van Flamingo kunnen de getekende objecten (maar niet de berekende veiligheidszone) worden bewaard in een bestand dat lokaal op de computer van de aanvrager kan worden opgeslagen. Op deze manier kan een aanvrager gemakkelijk een aanvraag van vorig jaar hergebruiken."
@@ -219,6 +254,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.getContentContainer().add(this.mainContainer);
         this.createIgnitionLocationsGrid();
         this.createAudienceLocationsGrid();
+        this.createExtraObjectsGrid();
         this.movePage(0);
     },
 
@@ -298,9 +334,29 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return this.audienceLocationsGrid;
     },
 
-    _createGrid: function(storeId, title, columns) {
-        columns.push(
-            { dataIndex: 'area', renderer: function(value) {
+    createExtraObjectsGrid: function() {
+        Ext.create('Ext.data.Store', {
+            storeId: 'extraObject',
+            fields: [
+                { name: 'fid', type: 'string' },
+                { name: 'type', type: 'string', defaultValue: this.EXTRA_OJBECT_TYPE },
+                { name: 'label', type: 'string' },
+                { name: 'color', type: 'string', defaultValue: 'FF0000' },
+                { name: 'dashStyle', type: 'string', defaultValue: 'solid' },
+                { name: 'arrow', type: 'string', defaultValue: 'none' }
+            ],
+            data: []
+        });
+        this.extraObjectsGrid = this._createGrid('extraObject', "Extra objecten", [
+            { dataIndex: 'label', flex: 1 }
+        ], /*skipArea=*/true);
+        this.getContentContainer().query('#extraObjectsContainer')[0].add(this.extraObjectsGrid);
+        return this.extraObjectsGrid;
+    },
+
+    _createGrid: function(storeId, title, columns, skipArea) {
+        if(!skipArea) {
+            columns.push({ dataIndex: 'area', renderer: function(value) {
                 var area = value.toFixed(2);
                 var unit = 'm2';
                 if(area > 100000) {
@@ -308,7 +364,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     unit = 'km2';
                 }
                 return value ? area.toFixed(2) + ' ' + unit : ''
-            }},
+            }});
+        }
+        columns.push(
             { xtype: 'actioncolumn', width: 30, sortable:false, hidable:false, items: [
                 { iconCls: 'x-fa fa-pencil', tooltip: 'Bewerken', handler: this._editLocation.bind(this) }
             ]},
@@ -477,6 +535,64 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         };
     },
 
+    createExtraObjectsForm: function() {
+        var setColorHandler = this.setExtraObjectColor.bind(this);
+        return {
+            xtype: 'form',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            defaults: {
+                labelAlign: 'top'
+            },
+            border: 0,
+            hidden: true,
+            itemId: this.EXTRA_OBJECT_FORM,
+            items: [
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Label',
+                    name: 'label',
+                    itemId: 'extra_object_label'
+                },
+                {
+                    xtype: 'colorfield',
+                    fieldLabel: 'Lijnkleur',
+                    showText: false,
+                    itemId: 'lineColor',
+                    listeners: {
+                        select: function(color) {
+                            this.blur();
+                            setColorHandler(color);
+                        }
+                    }
+                },
+                {
+                    xtype: 'combobox',
+                    fieldLabel: 'Lijntype',
+                    queryMode: 'local',
+                    store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
+                    name: 'dashStyle',
+                    itemId: 'dashStyle'
+                },
+                {
+                    xtype: 'combobox',
+                    fieldLabel: 'Pijlen',
+                    queryMode: 'local',
+                    store: [['none', 'Geen'], ['begin', 'Begin van de lijn'], ['end', 'Eind van de lijn'], ['both', 'Beide kanten van de lijn']],
+                    name: 'arrow',
+                    itemId: 'arrow'
+                },
+                {
+                    xtype: 'button',
+                    text: 'Opslaan',
+                    listeners: { click: this.saveExtraObject, scope: this }
+                }
+            ]
+        };
+    },
+
     createIgnitionLocation: function() {
         this._createLocation(this.IGNITION_LOCATION_TYPE, this.IGNITION_LOCATION_FORM);
         this.editingIgnitionLocation = null;
@@ -522,6 +638,121 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
     },
 
+    createExtraObject: function() {
+        this._createLocation(this.EXTRA_OJBECT_TYPE, this.EXTRA_OBJECT_FORM);
+        this.editingExtraObject = null;
+    },
+
+    addExtraObject: function(id, label) {
+        var added_index = this._addLocation(this.extraObjectsGrid, id, label, "Aanvullend object ");
+        var extraObject = this.extraObjectsGrid.getStore().getAt(added_index);
+        this.updateExtraObjectFeature(extraObject);
+    },
+
+    saveExtraObject: function() {
+        var extraObject = this._saveLocation(this.extraObjectsGrid, this.editingExtraObject, this.EXTRA_OBJECT_FORM);
+        this.updateExtraObjectFeature(extraObject);
+    },
+
+    updateExtraObjectFeature: function(extraObject) {
+        if(!extraObject) {
+            return;
+        }
+        var feature = this.getOpenlayersFeature(extraObject.get('fid'));
+        feature.style.strokeColor = '#' + extraObject.get('color');
+        feature.style.strokeDashstyle = extraObject.get('dashStyle');
+        feature.style.labelAlign = 'cm';
+        feature.style.label = '';
+        this.updateExtraObjectLabel(extraObject, feature);
+        this.refreshOpenLayers();
+    },
+
+    updateExtraObjectLabel: function(extraObject, feature) {
+        var longest_component = 0;
+        var start = null;
+        var end = null;
+        var components = feature.geometry.components;
+        for(var i = 0; i < components.length-1; i++) {
+            var xy = [components[i], components[i+1]];
+            var distance = xy[0].distanceTo(xy[1]);
+            if(distance > longest_component) {
+                longest_component = distance;
+                start = xy[0];
+                end = xy[1];
+            }
+        }
+        var midx = start.x + (end.x - start.x)/2;
+        var midy = start.y + (end.y - start.y)/2;
+        var opposite = (end.y - start.y);
+        var adjacent = (end.x - start.x);
+        var theta = Math.atan2(opposite, adjacent);
+        var angle = -theta * (180/Math.PI);
+        this.removeExtraObjects(extraObject);
+        var features = [
+            new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(midx, midy), {
+                "object_fid": extraObject.get('fid')
+            }, {
+                label: extraObject.get('label'),
+                fontColor: "#000000",
+                labelOutlineColor: "#FFFFFF",
+                labelOutlineWidth: 3,
+                labelAlign: "cb",
+                // Required fields for Flamingo OL wrapper
+                fillColor: 'transparent',
+                strokeColor: 'transparent'
+            })
+        ];
+        var arrow = extraObject.get('arrow');
+        if(arrow === 'begin' || arrow === 'both') {
+            features.push(this.createArrow(components[0], components[1], extraObject));
+        }
+        if(arrow === 'end' || arrow === 'both') {
+            features.push(this.createArrow(components[components.length-1], components[components.length-2], extraObject));
+        }
+        this.extraObjectsLayer.getFrameworkLayer().addFeatures(features);
+    },
+
+    createArrow: function(arrow_start, arrow_end, extraObject) {
+        var dx = arrow_end.x - arrow_start.x;
+        var dy = arrow_end.y - arrow_start.y;
+        var arrow_angle  = Math.atan(dy/dx)*180/Math.PI;
+        arrow_angle = this.getQuadrantAngle(arrow_angle, dx, dy) + 180;
+        return new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(arrow_start.x, arrow_start.y), {
+            "object_fid": extraObject.get('fid')
+        }, {
+            graphicName: 'triangle',
+            rotation: arrow_angle,
+            pointRadius: 7,
+            fillColor: '#' + extraObject.get('color'),
+            strokeColor: '#' + extraObject.get('color')
+        });
+    },
+
+    getQuadrantAngle: function(angle, dx, dy) {
+        var qAngle = [-1, 90, -90, 270, 90];
+        var Quadrant = 0;
+        if(dx>=0 && dy>=0)
+            Quadrant = 1;
+        else if(dx>=0 && dy<0)
+            Quadrant = 4;
+        else if(dx<=0 && dy>=0)
+            Quadrant = 2;
+        else if(dx<=0 && dy<0)
+            Quadrant = 3;
+        return (-angle + qAngle[Quadrant]);
+    },
+
+    removeExtraObjects: function(extraObject) {
+        var id = extraObject.get('fid');
+        var objects = this.extraObjectsLayer.getFrameworkLayer().getFeaturesByAttribute('object_fid', id);
+        this.extraObjectsLayer.getFrameworkLayer().removeFeatures(objects);
+    },
+
+    setExtraObjectColor: function(color) {
+        var extraObject = this.extraObjectsGrid.getStore().getAt(this.editingExtraObject);
+        extraObject.set('color', color);
+    },
+
     _createLocation: function(drawType, formQuery) {
         this.isDrawing = drawType;
         var drawingColor = ['000000', '00FF00'];
@@ -530,7 +761,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         this.vectorLayer.style.fillcolor = drawingColor[0];
         this.vectorLayer.style.strokecolor = drawingColor[1];
-        this.vectorLayer.drawFeature("Polygon");
+        if(drawType === this.EXTRA_OJBECT_TYPE) {
+            this.vectorLayer.drawFeature("LineString");
+        } else {
+            this.vectorLayer.drawFeature("Polygon");
+        }
         var form = this.getContentContainer().query(this.toId(formQuery))[0];
         form.setVisible(false);
     },
@@ -569,6 +804,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(location.get('type') === this.AUDIENCE_LOCATION_TYPE) {
             this.editingAudienceLocation = rowIndex;
         }
+        if(location.get('type') === this.EXTRA_OJBECT_TYPE) {
+            this.editingExtraObject = rowIndex;
+            this.getContentContainer().query('#lineColor')[0].setValue(location.get('color'));
+        }
         return location;
     },
 
@@ -583,10 +822,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     _removeLocation: function(grid, rowIndex) {
         var record = grid.getStore().getAt(rowIndex);
         this.vectorLayer.removeFeature(this.vectorLayer.getFeatureById(record.get('fid')));
+        if(record.get('type') === this.EXTRA_OJBECT_TYPE) {
+            this.removeExtraObjects(record);
+        }
         grid.getStore().removeAt(rowIndex);
     },
 
-    editActiveFeature: function(area) {
+    editActiveFeature: function(area, olFeature) {
         var grid = this.getGridForType(this.activeFeature.locationType);
         var formQuery = this.getFormForType(this.activeFeature.locationType);
         if(!grid) {
@@ -600,7 +842,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(!location) {
             return;
         }
-        location.set('area', area);
+        if(area !== null) {
+            location.set('area', area);
+        }
+        if(location.get('type') === this.EXTRA_OJBECT_TYPE) {
+            this.updateExtraObjectLabel(location, olFeature);
+        }
         grid.setSelection(location);
         this._showEditForm(grid, rowIndex, formQuery);
     },
@@ -608,11 +855,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     getGridForType: function(type) {
         if(type === this.IGNITION_LOCATION_TYPE) {
             return this.ignitionLocationsGrid;
-            formQuery = this.IGNITION_LOCATION_FORM;
         }
         if(type === this.AUDIENCE_LOCATION_TYPE) {
             return this.audienceLocationsGrid;
-            formQuery = this.AUDIENCE_LOCATION_FORM;
+        }
+        if(type === this.EXTRA_OJBECT_TYPE) {
+            return this.extraObjectsGrid;
         }
         return null;
     },
@@ -623,6 +871,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         if(type === this.AUDIENCE_LOCATION_TYPE) {
             return this.AUDIENCE_LOCATION_FORM;
+        }
+        if(type === this.EXTRA_OJBECT_TYPE) {
+            return this.EXTRA_OBJECT_FORM;
         }
         return null;
     },
@@ -685,10 +936,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.features[feature.config.id] = feature;
         }
         this.activeFeature = this.features[feature.config.id];
+        var area = null;
         var ol_feature = this.getOpenlayersFeature(feature.config.id);
-        var projection = this.config.viewerController.mapComponent.getMap().config.projection;
-        var area = ol_feature.geometry.getGeodesicArea(projection);
-        this.editActiveFeature(area);
+        if(ol_feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Polygon") {
+            var projection = this.config.viewerController.mapComponent.getMap().config.projection;
+            area = ol_feature.geometry.getGeodesicArea(projection);
+        }
+        this.editActiveFeature(area, ol_feature);
     },
 
     activeFeatureFinished : function (vectorLayer, feature) {
@@ -700,6 +954,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             }
             if(this.isDrawing === this.AUDIENCE_LOCATION_TYPE) {
                 this.addAudienceLocation(this.activeFeature.getId());
+            }
+            if(this.isDrawing === this.EXTRA_OJBECT_TYPE) {
+                this.addExtraObject(this.activeFeature.getId());
             }
             this.isDrawing = false;
         }
@@ -722,12 +979,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }, this);
     },
 
-    getOpenlayersFeature: function(id) {
-        return this.vectorLayer.getFrameworkLayer().getFeatureById(id)
+    getOpenlayersFeature: function(id, layer) {
+        return (layer || this.vectorLayer).getFrameworkLayer().getFeatureById(id)
     },
 
-    refreshOpenLayers: function() {
-        this.vectorLayer.getFrameworkLayer().redraw();
+    refreshOpenLayers: function(layer) {
+        (layer || this.vectorLayer).getFrameworkLayer().redraw();
     },
 
     createWizardPage: function(title, items) {

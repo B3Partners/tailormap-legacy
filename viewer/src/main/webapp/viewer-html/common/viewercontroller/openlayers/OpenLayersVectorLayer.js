@@ -38,14 +38,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
    
-        var styleMap = new OpenLayers.StyleMap (
+        var styleMap = config.styleMap || new OpenLayers.StyleMap (
         {
             "default" :this.getCurrentStyleHash(),
             "temporary": this.getCurrentStyleHash(),
             "select":{
                 'strokeColor' : '#FF0000',
                 'strokeWidth': 2,
-                'fillColor' : this.colorPrefix + config.style['fillcolor'],
+                'fillColor' : config.style ? this.colorPrefix + config.style['fillcolor'] : 'transparent',
                 'fillOpacity': 0.4,
                 'strokeOpacity':0.8,
                 'pointRadius': 6
@@ -118,13 +118,20 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     getCurrentStyleHash : function(){
           var hash = {
-            'strokeColor' : this.colorPrefix+ this.style['strokecolor'],
+            'strokeColor' : this.colorPrefix+ this.getStyleConfig('strokecolor'),
             'strokeWidth': 3,
             'pointRadius': 6,
-            'fillColor' : this.colorPrefix + this.style['fillcolor'],
-            'fillOpacity': this.style['fillopacity'] / 100
+            'fillColor' : this.colorPrefix + this.getStyleConfig('fillcolor'),
+            'fillOpacity': this.getStyleConfig('fillopacity') / 100
         };
         return hash;
+    },
+
+    getStyleConfig: function(property) {
+        if(!this.style || !this.style.hasOwnProperty(property)) {
+            return  "";
+        }
+        return this.style[property];
     },
     
     /**
