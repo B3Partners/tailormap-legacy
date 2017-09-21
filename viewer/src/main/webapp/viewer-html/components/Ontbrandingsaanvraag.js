@@ -44,6 +44,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     AUDIENCE_LOCATION_FORM: 'audienceLocationForm',
     EXTRA_OJBECT_TYPE: 'extraObject',
     EXTRA_OBJECT_FORM: 'extraObjectForm',
+    MEASURE_LINE_TYPE: 'measureObject',
+    MEASURE_LINE_COLOR: 'AAAAAA',
 
     constructor: function (conf){
         this.initConfig(conf);
@@ -219,10 +221,26 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ]),
             this.createWizardPage("Toevoegen aanvullende objecten", [
                 {
-                    xtype: 'button',
-                    html: 'Object toevoegen',
+                    xtype: 'container',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
                     margin: this.defaultMargin,
-                    listeners: { click: this.createExtraObject, scope: this }
+                    defaults: {
+                        xtype: 'button',
+                        flex: 1
+                    },
+                    items: [
+                        {
+                            html: 'Object toevoegen',
+                            listeners: { click: this.createExtraObject, scope: this }
+                        },
+                        {
+                            html: 'Afstandslijn toevoegen',
+                            listeners: { click: this.createMeasureLine, scope: this }
+                        }
+                    ]
                 },
                 {
                     xtype: 'container',
@@ -302,7 +320,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'fan', type: 'boolean', defaultValue: false },
                 { name: 'zonedistance_fan', type: 'number' },
                 { name: 'custom_zonedistance_fan', type: 'number' },
-                { name: 'area', type: 'number' }
+                { name: 'size', type: 'number' }
             ],
             data: []
         });
@@ -321,7 +339,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'type', type: 'string', defaultValue: this.AUDIENCE_LOCATION_TYPE },
                 { name: 'label', type: 'string' },
                 { name: 'mainLocation', type: 'boolean', defaultValue: false },
-                { name: 'area', type: 'number' }
+                { name: 'size', type: 'number' }
             ],
             data: []
         });
@@ -349,22 +367,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         });
         this.extraObjectsGrid = this._createGrid('extraObject', "Extra objecten", [
             { dataIndex: 'label', flex: 1 }
-        ], /*skipArea=*/true);
+        ], /*skipSize=*/true);
         this.getContentContainer().query('#extraObjectsContainer')[0].add(this.extraObjectsGrid);
         return this.extraObjectsGrid;
     },
 
-    _createGrid: function(storeId, title, columns, skipArea) {
-        if(!skipArea) {
-            columns.push({ dataIndex: 'area', renderer: function(value) {
-                var area = value.toFixed(2);
-                var unit = 'm2';
-                if(area > 100000) {
-                    area = area / 1000000;
-                    unit = 'km2';
-                }
-                return value ? area.toFixed(2) + ' ' + unit : ''
-            }});
+    _createGrid: function(storeId, title, columns, skipSize) {
+        if(!skipSize) {
+            columns.push({ dataIndex: 'size', renderer: function(value) {
+                return this.createSizeLabel(value, /*squareMeters=*/true);
+            }, scope: this });
         }
         columns.push(
             { xtype: 'actioncolumn', width: 30, sortable:false, hidable:false, items: [
@@ -593,13 +605,25 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         };
     },
 
+    createSizeLabel: function(size, squareMeters) {
+        if(!size) {
+            return '';
+        }
+        var unit = squareMeters ? 'm2' : 'm';
+        if(size > (squareMeters ? 100000 : 100)) {
+            size = size / (squareMeters ? 1000000 : 1000);
+            unit = squareMeters ? 'km2' : 'km';
+        }
+        return size.toFixed(2) + ' ' + unit;
+    },
+
     createIgnitionLocation: function() {
         this._createLocation(this.IGNITION_LOCATION_TYPE, this.IGNITION_LOCATION_FORM);
         this.editingIgnitionLocation = null;
     },
 
-    addIgnitionLocation: function(id, label) {
-        this._addLocation(this.ignitionLocationsGrid, id, label, "Afsteeklocatie ");
+    addIgnitionLocation: function(id) {
+        this._addLocation(this.ignitionLocationsGrid, id, null, "Afsteeklocatie ");
     },
 
     saveIgnitionLocation: function() {
@@ -611,8 +635,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.editingAudienceLocation = null;
     },
 
-    addAudienceLocation: function(id, label) {
-        var added_index = this._addLocation(this.audienceLocationsGrid, id, label, "Publiekslocatie ");
+    addAudienceLocation: function(id) {
+        var added_index = this._addLocation(this.audienceLocationsGrid, id, null, "Publiekslocatie ");
         if(added_index === 0) {
             var location = this.audienceLocationsGrid.getStore().getAt(added_index);
             location.set('mainLocation', true);
@@ -643,9 +667,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.editingExtraObject = null;
     },
 
-    addExtraObject: function(id, label) {
-        var added_index = this._addLocation(this.extraObjectsGrid, id, label, "Aanvullend object ");
+    createMeasureLine: function() {
+        this._createLocation(this.MEASURE_LINE_TYPE, this.EXTRA_OBJECT_FORM);
+        this.editingExtraObject = null;
+    },
+
+    addExtraObject: function(id, type) {
+        var default_label = type === this.MEASURE_LINE_TYPE ? 'Afstandslijn ' : "Aanvullend object ";
+        var override_type = type === this.MEASURE_LINE_TYPE ? this.MEASURE_LINE_TYPE : null;
+        var added_index = this._addLocation(this.extraObjectsGrid, id, null, default_label, override_type);
         var extraObject = this.extraObjectsGrid.getStore().getAt(added_index);
+        if(type === this.MEASURE_LINE_TYPE) {
+            extraObject.set('arrow', 'both');
+            extraObject.set('color', this.MEASURE_LINE_COLOR);
+            extraObject.set('dashStyle', 'dash');
+        }
         this.updateExtraObjectFeature(extraObject);
     },
 
@@ -661,7 +697,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var feature = this.getOpenlayersFeature(extraObject.get('fid'));
         feature.style.strokeColor = '#' + extraObject.get('color');
         feature.style.strokeDashstyle = extraObject.get('dashStyle');
-        feature.style.labelAlign = 'cm';
         feature.style.label = '';
         this.updateExtraObjectLabel(extraObject, feature);
         this.refreshOpenLayers();
@@ -688,15 +723,23 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var theta = Math.atan2(opposite, adjacent);
         var angle = -theta * (180/Math.PI);
         this.removeExtraObjects(extraObject);
+        var label = extraObject.get('label');
+        if(extraObject.get('type') === this.MEASURE_LINE_TYPE) {
+            label = this.createSizeLabel(extraObject.get('size'));
+        }
         var features = [
             new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(midx, midy), {
                 "object_fid": extraObject.get('fid')
             }, {
-                label: extraObject.get('label'),
+                label: label,
                 fontColor: "#000000",
                 labelOutlineColor: "#FFFFFF",
                 labelOutlineWidth: 3,
                 labelAlign: "cb",
+                // Rotating labels does not seem to work
+                // rotation: angle,
+                // labelXOffset: Math.cos(theta + Math.PI/2) * 5,
+                // labelYOffset: Math.sin(theta + Math.PI/2) * 5,
                 // Required fields for Flamingo OL wrapper
                 fillColor: 'transparent',
                 strokeColor: 'transparent'
@@ -759,9 +802,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(drawType === this.AUDIENCE_LOCATION_TYPE) {
             drawingColor = ['FF0000', '0000FF'];
         }
+        if(drawType === this.MEASURE_LINE_TYPE) {
+            drawingColor = ['000000', this.MEASURE_LINE_COLOR];
+        }
         this.vectorLayer.style.fillcolor = drawingColor[0];
         this.vectorLayer.style.strokecolor = drawingColor[1];
-        if(drawType === this.EXTRA_OJBECT_TYPE) {
+        if(drawType === this.EXTRA_OJBECT_TYPE || drawType === this.MEASURE_LINE_TYPE) {
             this.vectorLayer.drawFeature("LineString");
         } else {
             this.vectorLayer.drawFeature("Polygon");
@@ -770,13 +816,20 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         form.setVisible(false);
     },
 
-    _addLocation: function(grid, id, label, default_label) {
+    _addLocation: function(grid, id, label, default_label, overrideType) {
         var store = grid.getStore();
         var next_number = store.count() + 1;
         label = label || default_label + (next_number);
-        var added_feature = store.add({ 'fid': id, 'label': label });
-        this.vectorLayer.setLabel(id, label);
-        this.activeFeature.locationType = added_feature[0].get('type');
+        var data = { 'fid': id, 'label': label };
+        if(overrideType) {
+            data.type = overrideType;
+        }
+        var added_feature = store.add(data);
+        var locationType = added_feature[0].get('type');
+        this.activeFeature.locationType = locationType;
+        if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
+            this.vectorLayer.setLabel(id, label);
+        }
         var rowIndex = next_number - 1;
         window.setTimeout((function() {
             this._editLocation(grid, rowIndex)
@@ -794,17 +847,24 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     _showEditForm: function(grid, rowIndex) {
         var location = grid.getStore().getAt(rowIndex);
-        var formQuery = this.getFormForType(location.get('type'));
+        var location_type = location.get('type');
+        var formQuery = this.getFormForType(location_type);
+        if(!formQuery) {
+            if(location_type === this.MEASURE_LINE_TYPE) {
+                this.getContentContainer().query(this.toId(this.EXTRA_OBJECT_FORM))[0].setVisible(false);
+            }
+            return location;
+        }
         var form = this.getContentContainer().query(this.toId(formQuery))[0];
         form.setVisible(true);
         form.getForm().setValues(location.getData());
-        if(location.get('type') === this.IGNITION_LOCATION_TYPE) {
+        if(location_type === this.IGNITION_LOCATION_TYPE) {
             this.editingIgnitionLocation = rowIndex;
         }
-        if(location.get('type') === this.AUDIENCE_LOCATION_TYPE) {
+        if(location_type === this.AUDIENCE_LOCATION_TYPE) {
             this.editingAudienceLocation = rowIndex;
         }
-        if(location.get('type') === this.EXTRA_OJBECT_TYPE) {
+        if(location_type === this.EXTRA_OJBECT_TYPE) {
             this.editingExtraObject = rowIndex;
             this.getContentContainer().query('#lineColor')[0].setValue(location.get('color'));
         }
@@ -822,13 +882,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     _removeLocation: function(grid, rowIndex) {
         var record = grid.getStore().getAt(rowIndex);
         this.vectorLayer.removeFeature(this.vectorLayer.getFeatureById(record.get('fid')));
-        if(record.get('type') === this.EXTRA_OJBECT_TYPE) {
+        if(record.get('type') === this.EXTRA_OJBECT_TYPE || record.get('type') === this.MEASURE_LINE_TYPE) {
             this.removeExtraObjects(record);
         }
         grid.getStore().removeAt(rowIndex);
     },
 
-    editActiveFeature: function(area, olFeature) {
+    editActiveFeature: function(size, olFeature) {
         var grid = this.getGridForType(this.activeFeature.locationType);
         var formQuery = this.getFormForType(this.activeFeature.locationType);
         if(!grid) {
@@ -842,10 +902,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(!location) {
             return;
         }
-        if(area !== null) {
-            location.set('area', area);
+        if(size !== null) {
+            location.set('size', size);
         }
-        if(location.get('type') === this.EXTRA_OJBECT_TYPE) {
+        if(location.get('type') === this.EXTRA_OJBECT_TYPE || location.get('type') === this.MEASURE_LINE_TYPE) {
             this.updateExtraObjectLabel(location, olFeature);
         }
         grid.setSelection(location);
@@ -860,6 +920,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             return this.audienceLocationsGrid;
         }
         if(type === this.EXTRA_OJBECT_TYPE) {
+            return this.extraObjectsGrid;
+        }
+        if(type === this.MEASURE_LINE_TYPE) {
             return this.extraObjectsGrid;
         }
         return null;
@@ -936,13 +999,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.features[feature.config.id] = feature;
         }
         this.activeFeature = this.features[feature.config.id];
-        var area = null;
+        var size = null;
         var ol_feature = this.getOpenlayersFeature(feature.config.id);
+        var projection = this.config.viewerController.mapComponent.getMap().config.projection;
         if(ol_feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Polygon") {
-            var projection = this.config.viewerController.mapComponent.getMap().config.projection;
-            area = ol_feature.geometry.getGeodesicArea(projection);
+            size = ol_feature.geometry.getGeodesicArea(projection);
         }
-        this.editActiveFeature(area, ol_feature);
+        if(ol_feature.geometry.CLASS_NAME === "OpenLayers.Geometry.LineString") {
+            size = ol_feature.geometry.getGeodesicLength(projection);
+        }
+        this.editActiveFeature(size, ol_feature);
     },
 
     activeFeatureFinished : function (vectorLayer, feature) {
@@ -955,8 +1021,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             if(this.isDrawing === this.AUDIENCE_LOCATION_TYPE) {
                 this.addAudienceLocation(this.activeFeature.getId());
             }
-            if(this.isDrawing === this.EXTRA_OJBECT_TYPE) {
-                this.addExtraObject(this.activeFeature.getId());
+            if(this.isDrawing === this.EXTRA_OJBECT_TYPE || this.isDrawing === this.MEASURE_LINE_TYPE) {
+                this.addExtraObject(this.activeFeature.getId(), this.isDrawing);
             }
             this.isDrawing = false;
         }
