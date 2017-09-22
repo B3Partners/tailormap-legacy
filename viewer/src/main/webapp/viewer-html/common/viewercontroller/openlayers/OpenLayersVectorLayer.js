@@ -45,34 +45,42 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         delete config.style;
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
-        
+
+        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+        if(config.showmeasures) {
+            this.pathMeasureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Path);
+            this.polygonMeasureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon);
+            map.addControl(this.pathMeasureControl);
+            map.addControl(this.polygonMeasureControl);
+        }
+
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
-        this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
+        this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
         });
-        this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, {
+        this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath'
-        });
-        this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
+        }));
+        this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon'
-        });
-        this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon,{
+        }));
+        this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon,OpenLayers.Handler.RegularPolygon, {
             handlerOptions: {
                 sides: 40}
         });
-        this.box = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.RegularPolygon, {
+        this.box = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.RegularPolygon, OpenLayers.Handler.RegularPolygon, {
             handlerOptions: {
                 sides: 4,
                 irregular: true
             }
         });
         
-        this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
+        this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon',
             handlerOptions: {
               freehand: true
             }
-        });
+        }));
             
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
@@ -84,8 +92,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         
         // The modifyfeature control allows us to edit and select features.
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : true,vertexRenderIntent: "select"});
-        
-        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+
         map.addControl(this.point);
         map.addControl(this.line);
         map.addControl(this.polygon);
@@ -100,6 +107,28 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
         
         this.modifyFeature.activate();
+    },
+
+    addMeasureListener: function(handler, conf) {
+        if(this.config.showmeasures) {
+            var measureTool = handler === OpenLayers.Handler.Path ? this.pathMeasureControl : this.polygonMeasureControl;
+            var containerPrefix = this.config.name || 'vectorMeasure';
+            conf.callbacks = {
+                modify: function(evt) {
+                    viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.modifyHandler(measureTool, {
+                        containerPrefix: containerPrefix
+                    }, evt);
+                }
+            }
+        }
+        return conf;
+    },
+
+    removeMeasures: function() {
+        if(this.config.showmeasures) {
+            var containerPrefix = this.config.name || 'vectorMeasure';
+            viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.removeMeasure(containerPrefix);
+        }
     },
 
     mapStyleConfigToFeatureStyle: function() {
@@ -350,6 +379,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     featureModified : function (evt){
         var featureObject = this.fromOpenLayersFeature(evt.feature);
+        this.removeMeasures();
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
     
@@ -366,6 +396,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if(!object.feature.style){
             object.feature.style = this.getCurrentStyleHash();
         }
+        this.removeMeasures();
         this.editFeature(object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
     },
@@ -479,12 +510,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if(!olFeature) {
             return size;
         }
-        var projection = this.config.viewerController.mapComponent.getMap().config.projection;
         if(olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.Polygon" || olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.MultiPolygon" ||  olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LinearRing") {
-            size = olFeature.geometry.getGeodesicArea(projection);
+            size = olFeature.geometry.getArea();
         }
         if(olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LineString" || olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.MultiLineString") {
-            size = olFeature.geometry.getGeodesicLength(projection);
+            size = olFeature.geometry.getLength();
         }
         return size;
     },

@@ -99,7 +99,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: 'ontbrandingsAanvraagVectorLayer',
             geometrytypes: ["Circle","Polygon","Point","LineString"],
-            showmeasures: false,
+            showmeasures: true,
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.defaultStyle,
             addAttributesToFeature: true,
@@ -290,9 +290,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.createAudienceLocationsGrid();
         this.createExtraObjectsGrid();
         this.movePage(0);
-        this.nextPage();
-        this.nextPage();
-        this.nextPage();
         this.nextPage();
     },
 
