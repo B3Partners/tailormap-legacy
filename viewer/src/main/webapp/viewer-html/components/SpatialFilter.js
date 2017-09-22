@@ -115,18 +115,20 @@ Ext.define ("viewer.components.SpatialFilter",{
 
         } else {
             var features = this.features;
-            var multi = "";
-            if (features.length > 0) {
-                multi += "MULTIPOLYGON (";
-                for (var i = 0; i < features.length; i++) {
-                    var feature = features[i];
-                    var coords = feature.replace("POLYGON", "");
-                    if (i > 0) {
-                        multi += ",";
-                    }
-                    multi += coords;
+            var multi = "MULTIPOLYGON (";
+            var i = 0;
+            for (var key in features){
+                var feature = features[key].config.wktgeom;
+                var coords = feature.replace("POLYGON", "");
+                if (i > 0) {
+                    multi += ",";
                 }
-                multi += ")";
+                multi += coords;
+                i++;
+            }
+            multi += ")";
+            if(i ===0){
+                multi = "";
             }
             var appLayer = this.layerSelector.getValue();
             this.setFilter(multi, appLayer);
@@ -240,7 +242,7 @@ Ext.define ("viewer.components.SpatialFilter",{
       
     featureAdded : function (obj, feature){
         var applyDirect = Ext.getCmp (this.config.name + 'ApplyDirect');
-        this.features.push(feature.config.wktgeom);
+        this.features[feature.getId()] = feature;
         if(applyDirect.getValue()){
             this.applyFilter();
         }
@@ -512,6 +514,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
                 
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.featureAdded,this);
+        this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.featureAdded,this);
     },
     
     //</editor-fold>
