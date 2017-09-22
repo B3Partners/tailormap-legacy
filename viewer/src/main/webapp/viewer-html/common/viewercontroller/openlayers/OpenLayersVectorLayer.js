@@ -89,7 +89,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.point);
         this.drawFeatureControls.push(this.box);
         this.drawFeatureControls.push(this.freehand);
-        
+
         // The modifyfeature control allows us to edit and select features.
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : true,vertexRenderIntent: "select"});
 
@@ -100,12 +100,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.box);
         map.addControl(this.freehand);
         map.addControl(this.modifyFeature);
-        
+
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
-        
+
         this.modifyFeature.activate();
     },
 
@@ -449,11 +449,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
             feature.color = color;
         }
-        if(this.config.addAttributesToFeature) {
-            feature.attributes = openLayersFeature.config;
-        }
         if(this.config.addStyleToFeature) {
             feature.style = this.fromOpenLayersStyle(openLayersFeature);
+        }
+        if(this.config.addAttributesToFeature) {
+            feature.attributes = openLayersFeature.attributes;
         }
         return feature;
     },
@@ -464,7 +464,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
 
     fromOpenLayersStyle: function(openLayersFeature) {
         var styleProps = openLayersFeature.style || {};
-        Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
+        return Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
     },
     
     setLabel : function (id, label){
@@ -498,10 +498,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if(!olFeature) {
             return;
         }
-        this.modifyFeature.selectControl.unselectAll();
-        this.modifyFeature.selectControl.select(olFeature);
-        var featureObject = this.fromOpenLayersFeature (olFeature);
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
+        this.editFeature(olFeature);
     },
 
     getFeatureSize: function(id) {

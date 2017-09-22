@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, contextPath, MobileManager, actionBeans */
+/* global Ext, contextPath, MobileManager, actionBeans, saveAs */
 
 /**
  * Ontbrandingsaanvraag component
@@ -46,6 +46,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     EXTRA_OBJECT_FORM: 'extraObjectForm',
     MEASURE_LINE_TYPE: 'measureObject',
     MEASURE_LINE_COLOR: 'AAAAAA',
+
+    COMPONENT_VERSION: '1.0',
+    COMPONENT_NAME: 'Ontbrandingsaanvraag',
 
     constructor: function (conf){
         this.initConfig(conf);
@@ -81,15 +84,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
         this.ingnitionLocationStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
-            'fillColor': "#000000",
+            'fillColor': "#009900",
             'strokeColor': "#00FF00"
         }));
         this.mainAudienceLocationStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
-            'fillColor': "#FF0000",
+            'fillColor': "#0000FF",
             'strokeColor': "#0000FF"
         }));
         this.defaultAudienceLocation = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
-            'fillColor': "#FF0000",
+            'fillColor': "#00FFFF",
             'strokeColor': "#00FFFF"
         }));
         this.measureLineStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
@@ -102,8 +105,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             showmeasures: true,
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.defaultStyle,
-            addAttributesToFeature: true,
-            addStyleToFeature: true
+            addStyleToFeature: true,
+            addAttributesToFeature: true
         });
         this.extraObjectsLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: 'ontbrandingsAanvraagLabelVectorLayer',
@@ -111,7 +114,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             showmeasures: false,
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.defaultStyle,
-            addAttributesToFeature: true,
             addStyleToFeature: true
         });
         this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
@@ -186,6 +188,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                                 click: this.loadFile,
                                 scope: this
                             }
+                        },
+                        {
+                            xtype: 'container',
+                            margin: this.defaultMargin,
+                            itemId: 'fileLoadMessages',
+                            html: ''
                         }
                     ]
                 }
@@ -232,7 +240,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'container',
                     itemId: 'calculation_messages',
-                    margin: this.defaultMargin
+                    margin: this.defaultMargin,
+                    html: ''
                 }
             ]),
             this.createWizardPage("Toevoegen hulp- en afstandslijnen", [
@@ -268,7 +277,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 this.createExtraObjectsForm()
             ]),
             this.createWizardPage("Opslaan en printen", [
-                "Net zoals de huidige redlining tool van Flamingo kunnen de getekende objecten (maar niet de berekende veiligheidszone) worden bewaard in een bestand dat lokaal op de computer van de aanvrager kan worden opgeslagen. Op deze manier kan een aanvrager gemakkelijk een aanvraag van vorig jaar hergebruiken."
+                {
+                    xtype: 'button',
+                    html: 'Aanvraag opslaan',
+                    margin: this.defaultMargin,
+                    listeners: { click: this.saveFile, scope: this }
+                },
+                {
+                    xtype: 'button',
+                    html: 'Aanvraag printen',
+                    margin: this.defaultMargin,
+                    listeners: { click: this.printRequest, scope: this }
+                }
             ])
         ];
 
@@ -290,7 +310,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.createAudienceLocationsGrid();
         this.createExtraObjectsGrid();
         this.movePage(0);
-        this.nextPage();
     },
 
     previousPage: function() {
@@ -756,12 +775,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             label: label
         });
         var features = [
-            Ext.create('viewer.viewercontroller.controller.Feature', {
-                wktgeom: this.getPointWkt(midx, midy),
-                style: labelStyle,
-                attributes: {
-                    "object_fid": extraObject.get('fid')
-                }
+            this.createFeature(this.getPointWkt(midx, midy), labelStyle, {
+                "object_fid": extraObject.get('fid')
             })
         ];
         var arrow = extraObject.get('arrow');
@@ -787,12 +802,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             strokeColor: '#' + extraObject.get('color'),
             fillOpacity: 1
         });
-        return Ext.create('viewer.viewercontroller.controller.Feature', {
-            wktgeom: this.getPointWkt(arrow_start.x, arrow_start.y),
-            style: arrowStyle,
-            attributes: {
-                "object_fid": extraObject.get('fid')
-            }
+        return this.createFeature(this.getPointWkt(arrow_start.x, arrow_start.y), arrowStyle, {
+            "object_fid": extraObject.get('fid')
         });
     },
 
@@ -849,13 +860,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(overrideType) {
             data.type = overrideType;
         }
+        if(this.isImporting) {
+            data = this.activeFeature.attributes;
+            delete data.id;
+            data.fid = id;
+        }
         var added_feature = store.add(data);
         var locationType = added_feature[0].get('type');
-        this.activeFeature.locationType = locationType;
+        this.activeFeature.config.attributes.locationType = locationType;
         if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
             this.vectorLayer.setLabel(id, label);
         }
         var rowIndex = next_number - 1;
+        if(this.isImporting) {
+            return rowIndex;
+        }
         window.setTimeout((function() {
             this._editLocation(grid, rowIndex)
         }).bind(this), 0);
@@ -863,6 +882,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     _editLocation: function(grid, rowIndex, skipSetSelection) {
+        if(this.isImporting) {
+            return;
+        }
+        if(rowIndex < 0) {
+            return;
+        }
         var location = this._showEditForm(grid, rowIndex);
         if(!skipSetSelection) {
             grid.setSelection(location);
@@ -917,8 +942,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     editActiveFeature: function(size) {
-        var grid = this.getGridForType(this.activeFeature.locationType);
-        var formQuery = this.getFormForType(this.activeFeature.locationType);
+        var grid = this.getGridForType(this.activeFeature.config.attributes.locationType);
+        var formQuery = this.getFormForType(this.activeFeature.config.attributes.locationType);
         if(!grid) {
             return;
         }
@@ -978,39 +1003,119 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     loadFile: function() {
+        if(!(window.File && window.FileReader && window.FileList && window.Blob)) {
+            return;
+        }
         var form = this.getContentContainer().query('#formopen')[0].getForm();
         if(form.isValid()) {
-            form.submit({
-                scope: this,
-                url: actionBeans["drawing"],
-                waitMsg: 'Bezig met uploaden...',
-                waitTitle: "Even wachten...",
-                success: function(fp, o) {
-                    var json = Ext.JSON.decode(o.result.content);
-                    var features = Ext.JSON.decode(json.features);
-                    this.loadFeatures(features);
-                    if(features.length > 0) {
-                        var extent = o.result.extent;
-                        this.config.viewerController.mapComponent.getMap().zoomToExtent(extent);
-                    }
-                    this.movePage(3, /*enablePrev=*/true)
-                },
-                failure: function (){
-                    Ext.Msg.alert('Mislukt', 'Uw bestand kon niet gelezen worden.');
-                }
-            });
+            this.readFile(this.getContentContainer().query('#featureFile')[0].fileInputEl.dom);
         }
     },
 
-    loadFeatures: function(features){
-        if (features.length > 0 && this.vectorLayer === null) {
-            this.createVectorLayer();
+    readFile: function(input) {
+        var files = input.files; // FileList object
+        // Loop through the FileList and render image files as thumbnails.
+        for (var i = 0, file; file = files[i]; i++) {
+            if(file.size > 1000000) { // approx 1MB
+                this.showMessageInContainer("#fileLoadMessages", "Bestand is te groot om in te laden");
+                continue;
+            }
+            var reader = new FileReader();
+            // Closure to capture the file information.
+            reader.onload = this.fileLoaded.bind(this);
+            // Read in the image file as a data URL.
+            reader.readAsText(file);
         }
-        for(var i = 0 ; i < features.length; i++) {
-            var feature = features[i];
-            var featureObject = Ext.create("viewer.viewercontroller.controller.Feature", feature);
-            this.vectorLayer.addFeature(featureObject);
+    },
+
+    fileLoaded: function(e) {
+        this.showMessageInContainer("#fileLoadMessages", "");
+        try {
+            var json = Ext.JSON.decode(e.target.result);
+            if(json.hasOwnProperty('type') && json.hasOwnProperty('features') && json.type === this.COMPONENT_NAME) {
+                this.importFeatures(json);
+            } else {
+                this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
+            }
+        } catch(e) {
+            this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
         }
+    },
+
+    importFeatures: function(json) {
+        var feature;
+        var features = [];
+        for(var i = 0; i < json.features.length; i++) {
+            feature = json.features[i];
+            features.push(
+                this.createFeature(feature.wktgeom, this.createFeatureStyle(feature.style), feature.attributes)
+            );
+        }
+        this.isImporting = true;
+        this.vectorLayer.addFeatures(features);
+        this.isImporting = false;
+    },
+
+    createFeatureStyle: function(style) {
+        return Ext.create('viewer.viewercontroller.controller.FeatureStyle', style);
+    },
+
+    createFeature: function(wkt, style, attributes) {
+        return Ext.create('viewer.viewercontroller.controller.Feature', {
+            wktgeom: wkt,
+            style: style,
+            attributes: attributes || {}
+        });
+    },
+
+    showMessageInContainer: function(query, message) {
+        var container = this.getContentContainer().query(query);
+        if(container.length > 0) {
+            container[0].setStyle('color', 'red');
+            container[0].update(message);
+        }
+    },
+
+    saveFile: function() {
+        var data = {
+            version: this.COMPONENT_VERSION,
+            type: this.COMPONENT_NAME,
+            features: this.getAllFeatures()
+        };
+        var blob = new Blob([ Ext.JSON.encode(data) ], { type: "application/json;charset=utf-8" });
+        var date = Ext.Date.format(new Date(), 'd-m-Y-H-i-s');
+        saveAs(blob, "ontbrandingsaanvraag-" + date + ".json");
+    },
+
+    getAllFeatures: function() {
+        var features = [];
+        this.ignitionLocationsGrid.getStore().each(function(item) {
+            features.push(this.getFeatureForItem(item));
+        }, this);
+        this.audienceLocationsGrid.getStore().each(function(item) {
+            features.push(this.getFeatureForItem(item));
+        }, this);
+        this.extraObjectsGrid.getStore().each(function(item) {
+            features.push(this.getFeatureForItem(item));
+        }, this);
+        return features;
+    },
+
+    getFeatureForItem: function(item) {
+        var featureId = item.get('fid');
+        var feature = this.vectorLayer.getFeatureById(featureId);
+        var raw_data = feature.toJsonObject();
+        raw_data.attributes = item.getData();
+        raw_data.style = feature.style.getProperties();
+        delete raw_data.id;
+        delete raw_data.attributes.id;
+        delete raw_data.attributes.fid;
+        return raw_data;
+    },
+
+    printRequest: function() {
+        var features = this.getAllFeatures();
+        // Print the features!
     },
 
     /**
@@ -1019,6 +1124,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      * Event handlers
      **/
     activeFeatureChanged : function (vectorLayer, feature){
+        if(this.isImporting) {
+            return;
+        }
         if(typeof this.features[feature.config.id] === "undefined") {
             this.features[feature.config.id] = feature;
         }
@@ -1027,17 +1135,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     activeFeatureFinished : function (vectorLayer, feature) {
-        this.activeFeature.config.wktgeom = feature.config.wktgeom;
-        if(this.isDrawing) {
-            feature.config.locationType = this.isDrawing;
-            if(this.isDrawing === this.IGNITION_LOCATION_TYPE) {
+        this.activeFeature = feature;
+        if(this.isDrawing || this.isImporting) {
+            var locationType = !!this.isDrawing ? this.isDrawing : feature.attributes.type;
+            this.activeFeature.config.attributes.locationType = locationType;
+            if(locationType === this.IGNITION_LOCATION_TYPE) {
                 this.addIgnitionLocation(this.activeFeature.getId());
             }
-            if(this.isDrawing === this.AUDIENCE_LOCATION_TYPE) {
+            if(locationType === this.AUDIENCE_LOCATION_TYPE) {
                 this.addAudienceLocation(this.activeFeature.getId());
             }
-            if(this.isDrawing === this.EXTRA_OJBECT_TYPE || this.isDrawing === this.MEASURE_LINE_TYPE) {
-                this.addExtraObject(this.activeFeature, this.isDrawing);
+            if(locationType === this.EXTRA_OJBECT_TYPE || locationType === this.MEASURE_LINE_TYPE) {
+                this.addExtraObject(this.activeFeature, locationType);
             }
             this.isDrawing = false;
         }
@@ -1046,13 +1155,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     calculateSafetyZone: function() {
         var store = this.ignitionLocationsGrid.getStore();
         var main_location = this.audienceLocationsGrid.getStore().find('mainLocation', true);
-        var message_container = this.getContentContainer().query('#calculation_messages')[0];
         if(main_location.length === 0) {
-            message_container.setHtml('U dient een publiekslocatie toe te voegen en als hoofdlocatie aan te merken');
+            this.showMessageInContainer('#calculation_messages', 'U dient een publiekslocatie toe te voegen en als hoofdlocatie aan te merken');
             return;
         }
         if(store.count() === 0) {
-            message_container.setHtml('U dient minimaal één afsteeklocatie toe te voegen');
+            this.showMessageInContainer('#calculation_messages', 'U dient minimaal één afsteeklocatie toe te voegen');
             return;
         }
         store.each(function(location) {
