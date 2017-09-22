@@ -324,6 +324,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/VectorLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/ArcLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Feature.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/controller/FeatureStyle.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/MapTip.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Extent.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Event.js</param>

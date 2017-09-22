@@ -426,6 +426,7 @@ Ext.define("viewer.components.Merge", {
                 var wkt = feature[this.appLayer.geometryAttribute];
                 var color = (this.mode === "selectA") ? "FF0000" : "00FF00";
                 this.vectorLayer.style.fillcolor = color;
+                this.vectorLayer.adjustStyle();
                 var feat = Ext.create("viewer.viewercontroller.controller.Feature", {
                     wktgeom: wkt,
                     id: feature.__fid,

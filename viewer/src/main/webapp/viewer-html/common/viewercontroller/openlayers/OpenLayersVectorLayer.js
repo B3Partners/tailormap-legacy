@@ -37,21 +37,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         config.colorPrefix = '#';
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
-   
-        var styleMap = config.styleMap || new OpenLayers.StyleMap (
-        {
-            "default" :this.getCurrentStyleHash(),
-            "temporary": this.getCurrentStyleHash(),
-            "select":{
-                'strokeColor' : '#FF0000',
-                'strokeWidth': 2,
-                'fillColor' : config.style ? this.colorPrefix + config.style['fillcolor'] : 'transparent',
-                'fillOpacity': 0.4,
-                'strokeOpacity':0.8,
-                'pointRadius': 6
-            }
-        },{extendDefault:false});
-        config.styleMap = styleMap;
+
+        this.defaultFeatureStyle = config.defaultFeatureStyle || this.mapStyleConfigToFeatureStyle();
+        config.styleMap = this.getStylemapFromFeatureStyle(this.defaultFeatureStyle);
         
         // Delete style from config, because it messes up the styling in the vectorlayer.
         delete config.style;
@@ -113,18 +101,55 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         
         this.modifyFeature.activate();
     },
+
+    mapStyleConfigToFeatureStyle: function() {
+        var featureStyle = {
+            fillColor: this.colorPrefix + (this.getStyleConfig('fillcolor') || 'FF0000'),
+            fillOpacity: (this.getStyleConfig('fillopacity') || 100) / 100,
+            strokeColor: this.colorPrefix + (this.getStyleConfig('strokecolor') || 'FF0000'),
+            strokeOpacity: (this.getStyleConfig('strokeopacity') || 100) / 100
+        };
+        return Ext.create('viewer.viewercontroller.controller.FeatureStyle', featureStyle);
+    },
+
+    getStylemapFromFeatureStyle: function(featureStyle) {
+        return new OpenLayers.StyleMap({
+            "default": this.getCurrentStyleHash(featureStyle),
+            "temporary": this.getCurrentStyleHash(featureStyle),
+            "select": this.getSelectedStyleHash(featureStyle)
+        }, {
+            extendDefault: false
+        });
+    },
+
     /**
      * Get the current hash with all the stylesettings. To be used in olFeature.style
      */
-    getCurrentStyleHash : function(){
-          var hash = {
-            'strokeColor' : this.colorPrefix+ this.getStyleConfig('strokecolor'),
+    getCurrentStyleHash : function(featureStyle) {
+        if(!featureStyle) {
+            featureStyle = this.defaultFeatureStyle;
+        }
+        var featureStyleProps = featureStyle.getProperties();
+        return Ext.Object.merge({}, {
             'strokeWidth': 3,
-            'pointRadius': 6,
-            'fillColor' : this.colorPrefix + this.getStyleConfig('fillcolor'),
-            'fillOpacity': this.getStyleConfig('fillopacity') / 100
-        };
-        return hash;
+            'pointRadius': 6
+        }, featureStyleProps);
+    },
+
+    getSelectedStyleHash: function(featureStyle) {
+        if(!featureStyle) {
+            featureStyle = this.defaultFeatureStyle;
+        }
+        var featureStyleProps = featureStyle.getProperties();
+        var fillColor = this.getStyleConfig('fillcolor');
+        return Ext.Object.merge({}, {
+            'strokeColor' : '#FF0000',
+            'strokeWidth': 2,
+            'fillColor' : fillColor ? this.colorPrefix + fillColor : 'transparent',
+            'fillOpacity': 0.4,
+            'strokeOpacity':0.8,
+            'pointRadius': 6
+        }, featureStyleProps);
     },
 
     getStyleConfig: function(property) {
@@ -137,7 +162,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     /**
      * Does nothing, but is needed for API compliance
      */
-    adjustStyle : function(){
+    adjustStyle : function() {
+        this.defaultFeatureStyle = this.mapStyleConfigToFeatureStyle();
     },
     /**
      * Removes all features and all 'sketches' (not finished geometries)
@@ -195,6 +221,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.modifyFeature.unselectFeature(olFeature);
         this.getFrameworkLayer().removeFeatures([olFeature]);
     },
+
+    removeFeaturesByAttribute: function(attribute, val) {
+        var objects = this.getFrameworkLayer().getFeaturesByAttribute(attribute, val);
+        this.getFrameworkLayer().removeFeatures(objects);
+    },
     
     addFeatures : function(features){
         var olFeatures = new Array();
@@ -202,7 +233,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             var feature = features[i];
             var olFeature = this.toOpenLayersFeature(feature);
             olFeatures.push(olFeature);
-            olFeature.style = this.getCurrentStyleHash();
             // Check if framework independed feature has a label. If so, set it to the style
             if (feature.config.label) {
                 olFeature.style['label'] = feature.config.label;
@@ -357,10 +387,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     toOpenLayersFeature : function(feature){
         var geom = OpenLayers.Geometry.fromWKT(feature.config.wktgeom);
-        var style = this.frameworkLayer.styleMap.styles["default"];    
+        var style = this.getCurrentStyleHash();
         style.label = feature.config.label;
-        var olFeature = new OpenLayers.Feature.Vector(geom, {id: feature.config.id}, {style: style});
-        return olFeature;
+        var featureStyle = feature.getStyle();
+        if(featureStyle) {
+            style = Ext.Object.merge({}, style, this.toOpenLayersStyle(featureStyle));
+        }
+        var attributes = Ext.Object.merge({}, { id: feature.config.id }, feature.getAttributes());
+        return new OpenLayers.Feature.Vector(geom, attributes, style);
     },
 
     /**
@@ -372,9 +406,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if(!openLayersFeature){
             return null;
         }
-        var feature = new viewer.viewercontroller.controller.Feature(
-        {
-            id:openLayersFeature.id,
+        var feature = new viewer.viewercontroller.controller.Feature({
+            id: openLayersFeature.id,
             wktgeom: openLayersFeature.geometry.toString()
         });
         if(openLayersFeature.style){
@@ -385,8 +418,23 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
             feature.color = color;
         }
+        if(this.config.addAttributesToFeature) {
+            feature.attributes = openLayersFeature.config;
+        }
+        if(this.config.addStyleToFeature) {
+            feature.style = this.fromOpenLayersStyle(openLayersFeature);
+        }
         return feature;
-    }, 
+    },
+
+    toOpenLayersStyle: function(featureStyle) {
+        return featureStyle.getProperties();
+    },
+
+    fromOpenLayersStyle: function(openLayersFeature) {
+        var styleProps = openLayersFeature.style || {};
+        Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
+    },
     
     setLabel : function (id, label){
         var olFeature = this.getFrameworkLayer().getFeatureById(id);
@@ -394,6 +442,51 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             olFeature.style.label = label;
             this.reload();
         }
+    },
+
+    setFeatureStyle: function (id, featureStyle, noUpdate){
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(olFeature) {
+            olFeature.style = Ext.Object.merge({}, olFeature.style, featureStyle.getProperties());
+            if(!noUpdate) {
+                this.reload();
+            }
+        }
+    },
+
+    getFeatureGeometry: function(id) {
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(olFeature) {
+            return olFeature.geometry;
+        }
+        return {};
+    },
+
+    editFeatureById: function (id){
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(!olFeature) {
+            return;
+        }
+        this.modifyFeature.selectControl.unselectAll();
+        this.modifyFeature.selectControl.select(olFeature);
+        var featureObject = this.fromOpenLayersFeature (olFeature);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
+    },
+
+    getFeatureSize: function(id) {
+        var size = null;
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(!olFeature) {
+            return size;
+        }
+        var projection = this.config.viewerController.mapComponent.getMap().config.projection;
+        if(olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.Polygon" || olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.MultiPolygon" ||  olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LinearRing") {
+            size = olFeature.geometry.getGeodesicArea(projection);
+        }
+        if(olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LineString" || olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.MultiLineString") {
+            size = olFeature.geometry.getGeodesicLength(projection);
+        }
+        return size;
     },
     
     /******** overwrite functions to make use of the mixin functions **********/    
