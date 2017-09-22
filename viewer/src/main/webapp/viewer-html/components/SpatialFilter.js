@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, contextPath, actionBeans, FlamingoAppLoader, MobileManager */
+/* global Ext, contextPath, actionBeans, FlamingoAppLoader */
 /**.
  * Spatial Filter component
  * This component adds the functionality of creating a spatial filter: a filter based on a drawn geometry (polygon, rectangle, circle or freeform). All features must
@@ -98,7 +98,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
         this.vectorLayer.drawFeature(type);
     },
-    applyFilter : function(){
+    applyFilter: function () {
         var sourceAppLayer = this.sourceLayerSelector.getValue();
         if (this.onlySourceGeometry && sourceAppLayer) {
 
@@ -112,24 +112,24 @@ Ext.define ("viewer.components.SpatialFilter",{
                         operator: "AND",
                         type: "APPLAYER"
                     }), appLayer);
-            
-        }else{
-        var features = this.features;
-        var multi = "";
-        if (features.length > 0) {
-            multi += "MULTIPOLYGON (";
-            for (var i = 0; i < features.length; i++) {
-                var feature = features[i];
-                var coords = feature.replace("POLYGON", "");
-                if (i > 0) {
-                    multi += ",";
+
+        } else {
+            var features = this.features;
+            var multi = "";
+            if (features.length > 0) {
+                multi += "MULTIPOLYGON (";
+                for (var i = 0; i < features.length; i++) {
+                    var feature = features[i];
+                    var coords = feature.replace("POLYGON", "");
+                    if (i > 0) {
+                        multi += ",";
+                    }
+                    multi += coords;
                 }
-                multi += coords;
+                multi += ")";
             }
-            multi += ")";
-        }
-        var appLayer = this.layerSelector.getValue();
-        this.setFilter(multi, appLayer);
+            var appLayer = this.layerSelector.getValue();
+            this.setFilter(multi, appLayer);
         }
     },
     setFilter: function(geometry, appLayer){
@@ -320,7 +320,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 }
             }
         }];
-        if(!MobileManager.isMobile()) {
+        if(!viewer.components.MobileManager.isMobile()) {
             formButtons.push({
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
@@ -442,7 +442,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 id: this.config.name + 'ClosingPanel',
                 xtype: "container",
                 width: '100%',
-                height: MobileManager.isMobile() ? 45 : 25,
+                height: viewer.components.MobileManager.isMobile() ? 45 : 25,
                 style: {
                     marginTop: '10px'
                 },
