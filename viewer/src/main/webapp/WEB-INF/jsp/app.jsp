@@ -77,8 +77,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
-
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
 
         <c:if test="${actionBean.viewerType == 'flamingo'}">
@@ -94,7 +92,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </c:if>
-
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
 
         <c:choose>
             <c:when test="${!(param.debug == true)}">
@@ -143,6 +141,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${scriptDir}/VectorLayer.js"></script>
                 <script type="text/javascript" src="${scriptDir}/ArcLayer.js"></script>
                 <script type="text/javascript" src="${scriptDir}/Feature.js"></script>
+                <script type="text/javascript" src="${scriptDir}/FeatureStyle.js"></script>
                 <script type="text/javascript" src="${scriptDir}/MapTip.js"></script>
                 <script type="text/javascript" src="${scriptDir}/Extent.js"></script>
                 <script type="text/javascript" src="${scriptDir}/Event.js"></script>
