@@ -50,6 +50,28 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     COMPONENT_VERSION: '1.0',
     COMPONENT_NAME: 'Ontbrandingsaanvraag',
 
+    ZONE_DISTANCES: {
+        "Vuurpijlen (schietrichting schuin van het publiek af)": 125,
+        "Vuurpijlen (schietrichting overig)": 200,
+        "Tekstborden": 15,
+        "Grondvuurwerk": 30,
+        "Romeinse kaarsen met kaliber tot en met 2 inch": 75,
+        "Mines tot en met een kaliber van 4 inch": 60,
+        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": 100,
+        "Dagbommen kleiner dan 21 cm diameter": 75
+    },
+    ZONE_DISTANCES_FAN: {
+        "Vuurpijlen (schietrichting schuin van het publiek af)": 125,
+        "Vuurpijlen (schietrichting overig)": 200,
+        "Tekstborden": 15,
+        "Grondvuurwerk": 30,
+        "Romeinse kaarsen met kaliber tot en met 2 inch": 75,
+        "Mines tot en met een kaliber van 4 inch": 60,
+        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": 100,
+        "Dagbommen kleiner dan 21 cm diameter": 75
+    },
+    OTHER_LABEL: "Anders, namelijk...",
+
     constructor: function (conf){
         this.initConfig(conf);
 	    viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
@@ -57,20 +79,41 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         this.iconPath = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
-        this.createVectorLayer();
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, this.createLayers, this);
         return this;
     },
 
     selectedContentChanged : function (){
         if(this.vectorLayer === null) {
-            this.createVectorLayer();
+            this.createLayers();
         } else {
             this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
             this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         }
     },
 
-    createVectorLayer : function () {
+    getVectorLayer: function() {
+        if(this.vectorLayer === null) {
+            this.createLayers();
+        }
+        return this.vectorLayer;
+    },
+
+    getExtraObjectsLayer: function() {
+        if(this.extraObjectsLayer === null) {
+            this.createLayers();
+        }
+        return this.extraObjectsLayer;
+    },
+
+    getCalculationResultLayer: function() {
+        if(this.calculationResultLayer === null) {
+            this.createLayers();
+        }
+        return this.calculationResultLayer;
+    },
+
+    createLayers : function () {
         var defaultProps = {
             'fontColor': "#000000",
             'fontSize': "13px",
@@ -83,6 +126,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             'strokeOpacity': 0.5
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
+        this.safetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
+            'fillColor': '#ffe19b',
+            'strokeColor': "#ffba37"
+        }));
         this.ingnitionLocationStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
             'fillColor': "#009900",
             'strokeColor': "#00FF00"
@@ -116,6 +163,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             defaultFeatureStyle: this.defaultStyle,
             addStyleToFeature: true
         });
+        this.calculationResultLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: 'calculationResultLayer',
+            geometrytypes: ["Polygon", "Circle"],
+            showmeasures: false,
+            viewerController: this.config.viewerController,
+            defaultFeatureStyle: this.safetyZoneStyle
+        });
+        this.config.viewerController.mapComponent.getMap().addLayer(this.calculationResultLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, this.activeFeatureChanged, this);
@@ -126,17 +181,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      * Create the GUI
      */
     loadWindow : function() {
-        Ext.create('Ext.data.Store', {
-            storeId: 'zoneDistanceStore',
-            fields: ['distance','label'],
-            data: [
-                { "distance": 10, "label": "10 meter" },
-                { "distance": 20, "label": "20 meter" },
-                { "distance": 30, "label": "30 meter" },
-                { "distance": 40, "label": "40 meter" },
-                { "distance": "other", "label": "Anders, namelijk..." }
-            ]
-        });
         this.wizardPages = [
             this.createWizardPage("Nieuwe of bestaande aanvraag", [
                 "Via dit formulier kunt u een ontbrandingsaanvraag tekeken om vervolgens in te dienen.",
@@ -351,10 +395,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'fid', type: 'string' },
                 { name: 'label', type: 'string' },
                 { name: 'type', type: 'string', defaultValue: this.IGNITION_LOCATION_TYPE },
-                { name: 'zonedistance', type: 'number' },
+                { name: 'zonedistance', type: 'string' },
                 { name: 'custom_zonedistance', type: 'number' },
                 { name: 'fan', type: 'boolean', defaultValue: false },
-                { name: 'zonedistance_fan', type: 'number' },
+                { name: 'zonedistance_fan', type: 'string' },
                 { name: 'custom_zonedistance_fan', type: 'number' },
                 { name: 'size', type: 'number' }
             ],
@@ -438,6 +482,26 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     createIgnitionLocationForm: function() {
+        var keys = Ext.Object.getKeys(this.ZONE_DISTANCES);
+        var store_items = Ext.Array.map(keys, function(item) {
+            return { "label": item };
+        });
+        store_items.push({ "label": this.OTHER_LABEL });
+        Ext.create('Ext.data.Store', {
+            storeId: 'zoneDistanceStore',
+            fields: ['label'],
+            data: store_items
+        });
+        var fan_keys = Ext.Object.getKeys(this.ZONE_DISTANCES_FAN);
+        var fan_store_items = Ext.Array.map(fan_keys, function(item) {
+            return { "label": item };
+        });
+        fan_store_items.push({ "label": this.OTHER_LABEL });
+        Ext.create('Ext.data.Store', {
+            storeId: 'zoneDistanceFanStore',
+            fields: ['label'],
+            data: fan_store_items
+        });
         return {
             xtype: 'form',
             layout: {
@@ -463,12 +527,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('zoneDistanceStore'),
                     displayField: 'label',
-                    valueField: 'distance',
+                    valueField: 'label',
                     name: 'zonedistance',
                     itemId: 'zonedistance',
                     listeners: {
                         change: function(combo, val) {
-                            this.getContentContainer().query('#custom_zonedistance')[0].setVisible(val === "other");
+                            this.getContentContainer().query('#custom_zonedistance')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         scope: this
                     }
@@ -519,15 +583,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     xtype: 'combobox',
                     fieldLabel: 'Zoneafstanden fan',
                     queryMode: 'local',
-                    store: Ext.StoreManager.lookup('zoneDistanceStore'),
+                    store: Ext.StoreManager.lookup('zoneDistanceFanStore'),
                     displayField: 'label',
                     hidden: true,
-                    valueField: 'distance',
+                    valueField: 'label',
                     name: 'zonedistance_fan',
                     itemId: 'zonedistance_fan',
                     listeners: {
                         change: function(combo, val) {
-                            this.getContentContainer().query('#custom_zonedistance_fan')[0].setVisible(val === "other");
+                            this.getContentContainer().query('#custom_zonedistance_fan')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         scope: this
                     }
@@ -1103,9 +1167,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     getFeatureForItem: function(item) {
         var featureId = item.get('fid');
-        var feature = this.vectorLayer.getFeatureById(featureId);
+        var feature = this.getVectorLayer().getFeatureById(featureId);
         var raw_data = feature.toJsonObject();
         raw_data.attributes = item.getData();
+        if(raw_data.attributes.type === this.IGNITION_LOCATION_TYPE) {
+            raw_data.attributes.zonedistance_m = raw_data.attributes.zonedistance === this.OTHER_LABEL
+                ? raw_data.attributes.custom_zonedistance
+                : this.ZONE_DISTANCES[raw_data.attributes.zonedistance];
+            raw_data.attributes.zonedistance_fan_m = raw_data.attributes.zonedistance_fan === this.OTHER_LABEL
+                ? raw_data.attributes.custom_zonedistance_fan
+                : this.ZONE_DISTANCES_FAN[raw_data.attributes.zonedistance_fan];
+        }
         raw_data.style = feature.style.getProperties();
         delete raw_data.id;
         delete raw_data.attributes.id;
