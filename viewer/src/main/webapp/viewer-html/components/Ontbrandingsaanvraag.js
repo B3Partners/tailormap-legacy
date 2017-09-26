@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     extend: "viewer.components.Component",
     vectorLayer: null,
     extraObjectsLayer: null,
+    calculationResultLayer: null,
     // Current active feature
     activeFeature: null,
     // All features
@@ -1251,19 +1252,80 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     calculateSafetyZone: function() {
-        var store = this.ignitionLocationsGrid.getStore();
-        var main_location = this.audienceLocationsGrid.getStore().find('mainLocation', true);
-        if(main_location.length === 0) {
-            this.showMessageInContainer('#calculation_messages', 'U dient een publiekslocatie toe te voegen en als hoofdlocatie aan te merken');
-            return;
+        var complete = true;
+        this.clearMessagesInContainer('#calculation_messages');
+        if(!this.checkIgnitionLocations()) {
+            complete = false;
         }
-        if(store.count() === 0) {
-            this.showMessageInContainer('#calculation_messages', 'U dient minimaal één afsteeklocatie toe te voegen');
-            return;
+        if(!this.checkAudienceLocations()) {
+            complete = false;
         }
-        store.each(function(location) {
+        if(complete) {
+            var features = this.getAllFeatures();
+            this.drawSafetyZone('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[19096.32,567100.16],[33288.96,591184.64],[35439.36,613978.88],[69845.76,598496],[89199.36,607957.76],[105112.32,586453.76],[117154.56,567530.24],[80597.76,553337.6],[87479.04,524952.32],[50922.24,529683.2],[33719.04,487105.28],[15225.6,525812.48],[8344.32,543015.68],[19096.32,567100.16]]]}},{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[57803.52,487535.36],[51352.32,514200.32],[65544.96,544736],[105972.48,539575.04],[115864.32,501297.92],[153281.28,514200.32],[164033.28,481944.32],[121455.36,461300.48],[114144,420442.88],[68125.44,438506.24],[24687.36,415281.92],[15655.68,456139.52],[52642.56,464311.04],[40170.24,489255.68],[32428.8,525812.48],[57803.52,487535.36]]]}}]}');
+            Ext.Ajax.request({
+                url: '',
+                params: {
+                    features: features
+                },
+                method: 'POST',
+                success: function(response, options) {
+                    this.drawSafetyZone(response);
+                },
+                failure: function(response, options) {
+                    this.addMessageInContainer('#calculation_messages', 'Er is iets mis gegaan met het berekenen van de veiligheidszone');
+                },
+                scope: this
+            })
+        }
+    },
 
+    drawSafetyZone: function(result) {
+        this.getCalculationResultLayer().readGeoJSON(result);
+    },
+
+    checkAudienceLocations: function() {
+        var store = this.audienceLocationsGrid.getStore();
+        if(store.count() === 0) {
+            this.addMessageInContainer('#calculation_messages', 'U dient minimaal één publiekslocatie toe te voegen');
+            return false;
+        }
+        if(store.find('mainLocation', true).length === 0) {
+            this.addMessageInContainer('#calculation_messages', 'U dient één publiekslocatie toe te voegen en als hoofdlocatie aan te merken');
+            return false;
+        }
+        return true;
+    },
+
+    checkIgnitionLocations: function() {
+        var store = this.ignitionLocationsGrid.getStore();
+        if(store.count() === 0) {
+            this.addMessageInContainer('#calculation_messages', 'U dient minimaal één afsteeklocatie toe te voegen');
+            return false;
+        }
+        var complete = true;
+        store.each(function(location) {
+            if(!this.checkZoneDistance(location)) {
+                complete = false;
+            }
+            if(location.get('fan') && !this.checkZoneDistance(location, /*fan=*/true)) {
+                complete = false;
+            }
         }, this);
+        return complete;
+    },
+
+    checkZoneDistance: function(location, fan) {
+        var zone_distance = location.get(fan ? 'zonedistance_fan' : 'zonedistance');
+        var zone_distances = fan ? this.ZONE_DISTANCES : this.ZONE_DISTANCES;
+        if(!zone_distances.hasOwnProperty(zone_distance) && zone_distance !== this.OTHER_LABEL) {
+            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd voor Zoneafstanden' + (fan ? ' fan' : '') + ' voor afsteeklocatie ' + location.get('label'));
+            return false;
+        } else if(zone_distance === this.OTHER_LABEL && !location.get('custom_zonedistance')) {
+            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen voor Handmatige zoneafstand' + (fan ? ' fan' : '') + ' anders voor afsteeklocatie ' + location.get('label'));
+            return false;
+        }
+        return true;
     },
 
     createWizardPage: function(title, items) {
