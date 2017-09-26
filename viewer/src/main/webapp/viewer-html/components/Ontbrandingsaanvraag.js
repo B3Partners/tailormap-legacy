@@ -932,7 +932,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var added_feature = store.add(data);
         var locationType = added_feature[0].get('type');
-        this.activeFeature.config.attributes.locationType = locationType;
+        this.activeFeature.attributes.locationType = locationType;
         if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
             this.getVectorLayer().setLabel(id, label);
         }
@@ -1012,8 +1012,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     editActiveFeature: function(size) {
-        var grid = this.getGridForType(this.activeFeature.config.attributes.locationType);
-        var formQuery = this.getFormForType(this.activeFeature.config.attributes.locationType);
+        var grid = this.getGridForType(this.activeFeature.attributes.locationType);
+        var formQuery = this.getFormForType(this.activeFeature.attributes.locationType);
         if(!grid) {
             return;
         }
@@ -1121,9 +1121,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 this.createFeature(feature.wktgeom, this.createFeatureStyle(feature.style), feature.attributes)
             );
         }
+        this.removeAllFeatures();
         this.isImporting = true;
         this.getVectorLayer().addFeatures(features);
         this.isImporting = false;
+        this.getVectorLayer().unselectAll();
+        this.nextPage();
     },
 
     createFeatureStyle: function(style) {
@@ -1212,6 +1215,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return raw_data;
     },
 
+    removeAllFeatures: function() {
+        this.removeAllForGrid(this.ignitionLocationsGrid);
+        this.removeAllForGrid(this.audienceLocationsGrid);
+        this.removeAllForGrid(this.extraObjectsGrid);
+    },
+
+    removeAllForGrid: function(grid) {
+        var count = grid.getStore().getCount();
+        for(var i = count - 1; i >= 0; i--) {
+            this._removeLocation(grid, i);
+        }
+    },
+
     printRequest: function() {
         var features = this.getAllFeatures();
         // Print the features!
@@ -1223,7 +1239,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      * Event handlers
      **/
     activeFeatureChanged : function (vectorLayer, feature) {
-        if(this.isImporting) {
+        if(this.isImporting || this.isDrawing) {
             return;
         }
         if(typeof this.features[feature.config.id] === "undefined") {
@@ -1237,7 +1253,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.activeFeature = feature;
         if(this.isDrawing || this.isImporting) {
             var locationType = !!this.isDrawing ? this.isDrawing : feature.attributes.type;
-            this.activeFeature.config.attributes.locationType = locationType;
+            this.activeFeature.attributes.locationType = locationType;
             if(locationType === this.IGNITION_LOCATION_TYPE) {
                 this.addIgnitionLocation(this.activeFeature.getId());
             }
