@@ -235,7 +235,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                         },
                         {
                             xtype: 'container',
-                            margin: this.defaultMargin,
                             itemId: 'fileLoadMessages',
                             html: ''
                         }
@@ -284,7 +283,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'container',
                     itemId: 'calculation_messages',
-                    margin: this.defaultMargin,
                     html: ''
                 }
             ]),
@@ -557,6 +555,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             boxLabel: 'Ja',
                             name: 'fan',
                             inputValue: 'ja',
+                            itemId: 'fan_choice_yes',
                             listeners: {
                                 change: function(radio, val) {
                                     this.getContentContainer().query('#zonedistance_fan')[0].setVisible(val);
@@ -567,6 +566,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             boxLabel: 'Nee',
                             name: 'fan',
                             inputValue: 'nee',
+                            itemId: 'fan_choice_no',
                             listeners: {
                                 change: function(radio, val) {
                                     if(val) {
@@ -740,21 +740,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(added_index === 0) {
             var location = this.audienceLocationsGrid.getStore().getAt(added_index);
             location.set('mainLocation', true);
-            this.vectorLayer.setFeatureStyle(id, this.mainAudienceLocationStyle);
+            this.getVectorLayer().setFeatureStyle(id, this.mainAudienceLocationStyle);
         }
     },
 
     saveAudienceLocation: function() {
         var location = this._saveLocation(this.audienceLocationsGrid, this.editingAudienceLocation, this.AUDIENCE_LOCATION_FORM);
         if(location.get('mainLocation') === true) {
-            this.vectorLayer.setFeatureStyle(location.get('fid'), this.mainAudienceLocationStyle, true);
+            this.getVectorLayer().setFeatureStyle(location.get('fid'), this.mainAudienceLocationStyle, true);
             this.audienceLocationsGrid.getStore().each(function(loc) {
                 if(loc !== location) {
                     loc.set('mainLocation', false);
-                    this.vectorLayer.setFeatureStyle(loc.get('fid'), this.defaultAudienceLocation, true);
+                    this.getVectorLayer().setFeatureStyle(loc.get('fid'), this.defaultAudienceLocation, true);
                 }
             }, this);
-            this.vectorLayer.reload();
+            this.getVectorLayer().reload();
         }
     },
 
@@ -790,7 +790,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(!extraObject) {
             return;
         }
-        var feature = this.vectorLayer.getFeatureById(extraObject.get('fid'));
+        var feature = this.getVectorLayer().getFeatureById(extraObject.get('fid'));
         var featureStyle = feature.getStyle();
         if(!featureStyle) {
             featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', {});
@@ -798,7 +798,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         featureStyle.set('strokeColor', '#' + extraObject.get('color'));
         featureStyle.set('strokeDashstyle', extraObject.get('dashStyle'));
         featureStyle.set('label', '');
-        this.vectorLayer.setFeatureStyle(extraObject.get('fid'), featureStyle);
+        this.getVectorLayer().setFeatureStyle(extraObject.get('fid'), featureStyle);
         this.updateExtraObjectLabel(extraObject);
     },
 
@@ -806,7 +806,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var longest_component = 0;
         var start = null;
         var end = null;
-        var components = this.vectorLayer.getFeatureGeometry(extraObject.get('fid')).components;
+        var components = this.getVectorLayer().getFeatureGeometry(extraObject.get('fid')).components;
         if(!components) {
             return;
         }
@@ -850,7 +850,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(arrow === 'end' || arrow === 'both') {
             features.push(this.createArrow(components[components.length-1], components[components.length-2], extraObject));
         }
-        this.extraObjectsLayer.addFeatures(features);
+        this.getExtraObjectsLayer().addFeatures(features);
     },
 
     createArrow: function(arrow_start, arrow_end, extraObject) {
@@ -890,7 +890,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     removeExtraObjects: function(extraObject) {
-        this.extraObjectsLayer.removeFeaturesByAttribute('object_fid', extraObject.get('fid'));
+        this.getExtraObjectsLayer().removeFeaturesByAttribute('object_fid', extraObject.get('fid'));
     },
 
     setExtraObjectColor: function(color) {
@@ -900,17 +900,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     _createLocation: function(drawType, formQuery) {
         this.isDrawing = drawType;
-        this.vectorLayer.defaultFeatureStyle = this.ingnitionLocationStyle;
+        this.getVectorLayer().defaultFeatureStyle = this.ingnitionLocationStyle;
         if(drawType === this.AUDIENCE_LOCATION_TYPE) {
-            this.vectorLayer.defaultFeatureStyle = this.defaultAudienceLocation;
+            this.getVectorLayer().defaultFeatureStyle = this.defaultAudienceLocation;
         }
         if(drawType === this.MEASURE_LINE_TYPE) {
-            this.vectorLayer.defaultFeatureStyle = this.measureLineStyle;
+            this.getVectorLayer().defaultFeatureStyle = this.measureLineStyle;
         }
         if(drawType === this.EXTRA_OJBECT_TYPE || drawType === this.MEASURE_LINE_TYPE) {
-            this.vectorLayer.drawFeature("LineString");
+            this.getVectorLayer().drawFeature("LineString");
         } else {
-            this.vectorLayer.drawFeature("Polygon");
+            this.getVectorLayer().drawFeature("Polygon");
         }
         var form = this.getContentContainer().query(this.toId(formQuery))[0];
         form.setVisible(false);
@@ -926,14 +926,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         if(this.isImporting) {
             data = this.activeFeature.attributes;
-            delete data.id;
+            // delete data.id;
             data.fid = id;
         }
         var added_feature = store.add(data);
         var locationType = added_feature[0].get('type');
         this.activeFeature.config.attributes.locationType = locationType;
         if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
-            this.vectorLayer.setLabel(id, label);
+            this.getVectorLayer().setLabel(id, label);
         }
         var rowIndex = next_number - 1;
         if(this.isImporting) {
@@ -956,7 +956,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(!skipSetSelection) {
             grid.setSelection(location);
         }
-        this.vectorLayer.editFeatureById(location.get('fid'));
+        this.getVectorLayer().editFeatureById(location.get('fid'));
     },
 
     _showEditForm: function(grid, rowIndex) {
@@ -974,6 +974,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         form.getForm().setValues(location.getData());
         if(location_type === this.IGNITION_LOCATION_TYPE) {
             this.editingIgnitionLocation = rowIndex;
+            if(location.get('fan')) {
+                this.getContentContainer().query('#fan_choice_yes')[0].setValue('ja');
+            } else {
+                this.getContentContainer().query('#fan_choice_no')[0].setValue('nee');
+            }
         }
         if(location_type === this.AUDIENCE_LOCATION_TYPE) {
             this.editingAudienceLocation = rowIndex;
@@ -991,14 +996,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         location.set(data);
         var locationType = location.get('type');
         if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
-            this.vectorLayer.setLabel(location.get('fid'), location.get('label'));
+            this.getVectorLayer().setLabel(location.get('fid'), location.get('label'));
         }
         return location;
     },
 
     _removeLocation: function(grid, rowIndex) {
         var record = grid.getStore().getAt(rowIndex);
-        this.vectorLayer.removeFeature(this.vectorLayer.getFeatureById(record.get('fid')));
+        this.getVectorLayer().removeFeature(this.getVectorLayer().getFeatureById(record.get('fid')));
         if(record.get('type') === this.EXTRA_OJBECT_TYPE || record.get('type') === this.MEASURE_LINE_TYPE) {
             this.removeExtraObjects(record);
         }
@@ -1116,7 +1121,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             );
         }
         this.isImporting = true;
-        this.vectorLayer.addFeatures(features);
+        this.getVectorLayer().addFeatures(features);
         this.isImporting = false;
     },
 
@@ -1125,6 +1130,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     createFeature: function(wkt, style, attributes) {
+        if(attributes.id) {
+            delete attributes.id;
+        }
         return Ext.create('viewer.viewercontroller.controller.Feature', {
             wktgeom: wkt,
             style: style,
@@ -1133,10 +1141,28 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     showMessageInContainer: function(query, message) {
+        this.clearMessagesInContainer(query);
+        this.addMessageInContainer(query, message);
+    },
+
+    clearMessagesInContainer: function(query) {
         var container = this.getContentContainer().query(query);
         if(container.length > 0) {
-            container[0].setStyle('color', 'red');
-            container[0].update(message);
+            container[0].removeAll();
+        }
+    },
+
+    addMessageInContainer: function(query, message) {
+        var container = this.getContentContainer().query(query);
+        if(container.length > 0) {
+            container[0].add({
+                xtype: 'container',
+                style: {
+                    color: 'red'
+                },
+                margin: this.defaultMargin,
+                html: message
+            });
         }
     },
 
@@ -1195,7 +1221,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      * @param feature the feature which has been activated
      * Event handlers
      **/
-    activeFeatureChanged : function (vectorLayer, feature){
+    activeFeatureChanged : function (vectorLayer, feature) {
         if(this.isImporting) {
             return;
         }
@@ -1203,7 +1229,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.features[feature.config.id] = feature;
         }
         this.activeFeature = this.features[feature.config.id];
-        this.editActiveFeature(this.vectorLayer.getFeatureSize(feature.config.id));
+        this.editActiveFeature(this.getVectorLayer().getFeatureSize(feature.config.id));
     },
 
     activeFeatureFinished : function (vectorLayer, feature) {
