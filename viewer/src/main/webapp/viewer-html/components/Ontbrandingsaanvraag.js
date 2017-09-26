@@ -51,30 +51,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     COMPONENT_VERSION: '1.0',
     COMPONENT_NAME: 'Ontbrandingsaanvraag',
 
-    ZONE_DISTANCES: {
-        "Vuurpijlen (schietrichting schuin van het publiek af)": 125,
-        "Vuurpijlen (schietrichting overig)": 200,
-        "Tekstborden": 15,
-        "Grondvuurwerk": 30,
-        "Romeinse kaarsen met kaliber tot en met 2 inch": 75,
-        "Mines tot en met een kaliber van 4 inch": 60,
-        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": 100,
-        "Dagbommen kleiner dan 21 cm diameter": 75
-    },
-    ZONE_DISTANCES_FAN: {
-        "Vuurpijlen (schietrichting schuin van het publiek af)": 125,
-        "Vuurpijlen (schietrichting overig)": 200,
-        "Tekstborden": 15,
-        "Grondvuurwerk": 30,
-        "Romeinse kaarsen met kaliber tot en met 2 inch": 75,
-        "Mines tot en met een kaliber van 4 inch": 60,
-        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": 100,
-        "Dagbommen kleiner dan 21 cm diameter": 75
-    },
+    ZONE_DISTANCES: {},
+    ZONE_DISTANCES_FAN: {},
     OTHER_LABEL: "Anders, namelijk...",
 
     constructor: function (conf){
         this.initConfig(conf);
+        this.zoneDistanceConfigToObject(conf.zonedistances, this.ZONE_DISTANCES);
+        this.zoneDistanceConfigToObject(conf.zonedistances_fan, this.ZONE_DISTANCES_FAN);
 	    viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
         this.features = {};
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
@@ -82,6 +66,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, this.createLayers, this);
         return this;
+    },
+
+    zoneDistanceConfigToObject: function(conf, obj) {
+        if(!conf || conf.length === 0) return;
+        for(var i = 0; i < conf.length; i++) {
+            obj[conf[i].label] = conf[i].distance;
+        }
     },
 
     selectedContentChanged : function (){
