@@ -40,6 +40,8 @@ Ext.define ("viewer.components.Drawing",{
     // Current active feature
     activeFeature:null,
     features:null,
+    // Boolean to check if window is hidden temporarily for mobile mode
+    mobileHide: false,
     config:{
         title: "",
         reactivateTools:null,
@@ -49,7 +51,7 @@ Ext.define ("viewer.components.Drawing",{
         label: "",
         details: {
             minWidth: 340,
-            minHeight: 415
+            minHeight: 450
         }
     },
     constructor: function (conf){
@@ -80,7 +82,7 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
-        this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
+        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
             this.popup.addListener("hide", this.hideWindow, this);
@@ -92,9 +94,13 @@ Ext.define ("viewer.components.Drawing",{
             this.createVectorLayer();
         }
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        this.mobileHide = false;
         this.popup.show();
     },
     hideWindow: function () {
+        if(this.mobileHide) {
+            return;
+        }
         for (var i = 0; i < this.deActivatedTools.length; i++) {
             this.deActivatedTools[i].activate();
         }
@@ -133,13 +139,13 @@ Ext.define ("viewer.components.Drawing",{
         var me=this;
 
         this.colorPicker = Ext.create("Ext.ux.ColorField",{
-            width: 40,
+            width: 70,
             showText: false,
-            style: {
+            /*style: {
                 marginTop: MobileManager.isMobile() ? '8px' : '0px',
                 marginLeft: MobileManager.isMobile() ? '8px' : '0px',
                 marginRight: MobileManager.isMobile() ? '8px' : '0px'
-            },
+            },*/
             name: 'color',
             id:'color',
             value: this.config.color ? this.config.color : 'FF0000',
@@ -154,10 +160,10 @@ Ext.define ("viewer.components.Drawing",{
         this.labelField = Ext.create("Ext.form.field.Text",{
             name: 'labelObject',
             fieldLabel: 'Label geselecteerd object',
-            labelWidth: MobileManager.isMobile() ? 200 : 150,
+            labelWidth: 150,///*MobileManager.isMobile() ? 200 : */150,
             style: {
-                marginRight: MobileManager.isMobile() ? '15px' : '5px',
-                marginTop: MobileManager.isMobile() ? '8px': '0px'
+                marginRight: /*MobileManager.isMobile() ? '15px' : */'5px',
+                //marginTop: MobileManager.isMobile() ? '8px': '0px'
             },
             id: 'labelObject' + this.name,
             listeners:{
@@ -171,7 +177,6 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.point,
             icon: this.iconPath+"bullet_red.png",
-            componentCls: 'mobileLarge',
             tooltip: "Teken een punt",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -186,7 +191,6 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.line,
             icon: this.iconPath+"line_red.png",
-            componentCls: 'mobileLarge',
             tooltip: "Teken een lijn",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -201,7 +205,6 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
             icon: this.iconPath+"shape_square_red.png",
-            componentCls: 'mobileLarge',
             tooltip: "Teken een polygoon",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -212,12 +215,11 @@ Ext.define ("viewer.components.Drawing",{
                 }
             }
         }];
-        if(!MobileManager.isMobile()) {
+        if(!viewer.components.MobileManager.isMobile()) {
             drawingItems.push({
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
-                componentCls: 'mobileLarge',
                 tooltip: "Teken een cirkel",
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
@@ -234,7 +236,6 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             icon: this.iconPath+"delete.png",
             tooltip: "Verwijder alle objecten",
-            componentCls: 'mobileLarge',
             listeners: {
                 click:{
                     scope: me,
@@ -245,9 +246,6 @@ Ext.define ("viewer.components.Drawing",{
 
         this.formdraw = new Ext.form.FormPanel({
             border: 0,
-            style: {
-                marginBottom: '10px'
-            },
             items: [{
                 xtype: 'fieldset',
                 defaultType: 'textfield',
@@ -283,7 +281,7 @@ Ext.define ("viewer.components.Drawing",{
         this.formselect = new Ext.form.FormPanel({
             border: 0,
             style: {
-                marginBottom: '25px'
+                marginBottom: '10px'
             },
             items: [
             {
@@ -302,8 +300,7 @@ Ext.define ("viewer.components.Drawing",{
                     xtype: 'button',
                     icon: this.iconPath+"delete.png",
                     tooltip: "Verwijder geselecteerd object",
-                    componentCls: 'mobileLarge',
-                    listeners: {
+                        listeners: {
                         click:{
                             scope: me,
                             fn: me.deleteObject
@@ -335,7 +332,7 @@ Ext.define ("viewer.components.Drawing",{
             standardSubmit: true,
             url: actionBeans["drawing"] + "?save",
             style: {
-                marginBottom: '25px'
+                marginBottom: '10px'
             },
             items: [
                 {
@@ -374,7 +371,7 @@ Ext.define ("viewer.components.Drawing",{
         this.formopen = new Ext.form.FormPanel({
             border: 0,
             style: {
-                marginBottom: '25px'
+                marginBottom: '10px'
             },
             items: [
             {
@@ -396,7 +393,7 @@ Ext.define ("viewer.components.Drawing",{
         });
 
         var items = [ this.formdraw, this.formselect ];
-        if(!MobileManager.isMobile()) {
+        if(!viewer.components.MobileManager.isMobile()) {
             items.push(this.formsave); items.push(this.formopen);
         }
         this.mainContainer = Ext.create('Ext.container.Container', {
@@ -416,7 +413,6 @@ Ext.define ("viewer.components.Drawing",{
                     id: this.name + 'ContentPanel',
                     xtype: "container",
                     autoScroll: true,
-                    width: '100%',
                     style: {
                         marginLeft: '10px',
                         marginRight: '10px'
@@ -426,10 +422,8 @@ Ext.define ("viewer.components.Drawing",{
                 }, {
                     id: this.name + 'ClosingPanel',
                     xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 25,
                     style: {
-                        marginTop: '10px',
+                        marginTop: '5px',
                         marginRight: '5px'
                     },
                     layout: {
@@ -437,7 +431,7 @@ Ext.define ("viewer.components.Drawing",{
                         pack:'end'
                     },
                     items: [
-                        {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                        {xtype: 'button', text: 'Sluiten', handler: function() {
                             me.popup.hide();
                         }}
                     ]
@@ -474,6 +468,7 @@ Ext.define ("viewer.components.Drawing",{
             var button = Ext.getCmp(id);
             if(button) button.toggle(false);
         });
+        this.showMobilePopup();
     },
     colorChanged : function (hexColor){
         this.config.color = hexColor;
@@ -498,16 +493,32 @@ Ext.define ("viewer.components.Drawing",{
     toggleSelectForm : function(visible){
         this.formselect.setVisible(visible);
     },
+    hideMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = true;
+            this.popup.hide();
+        }
+    },
+    showMobilePopup: function() {
+        if(viewer.components.MobileManager.isMobile()) {
+            this.mobileHide = false;
+            this.popup.show();
+        }
+    },
     drawPoint: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("Point");
     },
     drawLine: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("LineString");
     },
     drawPolygon: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("Polygon");
     },
     drawCircle: function(){
+        this.hideMobilePopup();
         this.vectorLayer.drawFeature("Circle");
     },
     deleteAll: function() {
@@ -644,7 +655,7 @@ Ext.define ("viewer.components.Drawing",{
             this.titleField.getId(),
             this.description.getId()
         ];
-        if(!MobileManager.isMobile()) {
+        if(!viewer.components.MobileManager.isMobile()) {
             compIds.push(this.formsave.getId());
             compIds.push(this.file.getId());
             compIds.push(this.formopen.getId());

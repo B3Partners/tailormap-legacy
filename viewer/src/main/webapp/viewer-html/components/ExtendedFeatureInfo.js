@@ -23,7 +23,7 @@
  */
 Ext.define ("viewer.components.ExtendedFeatureInfo",{
     extend: "viewer.components.FeatureInfo",
-    currentdata:null,
+    totalPages: 0,
     currentOptions:null,
     currentIndex:null,
     pagination:null,
@@ -37,7 +37,6 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
         this.config.moreLink = null;
 
-        this.content = new Ext.Element(document.createElement("div"));
         this.navigateBackButton = this.createButton('left', 'Vorige');
         this.navigateForwardButton = this.createButton('right', 'Volgende');
         this.buttons = Ext.create('Ext.toolbar.Toolbar', {
@@ -56,7 +55,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         }
         this.panel = Ext.create('Ext.panel.Panel', {
             title: title,
-            contentEl: this.content,
+            items: [],
             autoScroll: true,
             dockedItems: [this.buttons]
         });
@@ -91,8 +90,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
-        this.content.setHtml("");
-        this.currentData = [];
+        this.panel.removeAll(true);
+        this.totalPages = 0;
         this.setMaptipEnabled(false);
     },
     /**
@@ -119,7 +118,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
                     requestId: d.requestId,
                     request: d.request
                 };
-                this.currentData.push(newData);
+                this.addPage(newData);
+                this.totalPages++;
             }
         }
         this.currentOptions = options;
@@ -133,7 +133,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         }
     },
     activateResultsDiv: function(){
-        if(this.popup) {
+        if(this.popup && this.totalPages > 0) {
             this.popup.show();
         }
         if(!this.config.isPopup) {
@@ -141,28 +141,52 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             this.config.viewerController.layoutManager.expandRegion(this.config.name);
         }
     },
+    addPage: function(data) {
+        var components = this.createInfoHtmlElements([data], this.currentOptions);
+        var contentEl = new Ext.Element(document.createElement('div'));
+        contentEl.append(components);
+        var container = Ext.create('Ext.container.Container', {
+            contentEl: contentEl,
+            hidden: false,
+            listeners: {
+                beforedestroy: function() {
+                    // Manually destroy element: solves errors from Ext's garbage collector
+                    contentEl.destroy();
+                    this.setHtml('');
+                }
+            }
+        });
+        this.panel.add(container);
+    },
     showPage: function(index){
         this.currentIndex = index;
         if(this.currentIndex < 0) {
             this.currentIndex = 0;
         }
-        this.content.setHtml("");
-        var data = this.currentData[index];
-        if(data) {
-            var components = this.createInfoHtmlElements([data], this.currentOptions);
-            this.content.append(components);
+        var pages = this.panel.query('container');
+        for(var i = 0; i < pages.length; i++) {
+            if(i === index && pages[i].isHidden()) {
+                pages[i].setHidden(false);
+            } else if(i !== index) {
+                pages[i].setHidden(true);
+            }
         }
         this.createPagination();
     },
     createPagination: function(){
-        var data = this.currentData;
-        var numPages = data.length;
-        if(numPages <= 1) {
+        if(this.totalPages <= 1) {
             if(!this.buttons.isHidden()) this.buttons.hide();
         } else {
             if(this.buttons.isHidden()) this.buttons.show();
-            this.navigateBackButton.setDisabled(this.currentIndex === 0);
-            this.navigateForwardButton.setDisabled(this.currentIndex >= (numPages - 1));
+            this.enableDisableButton(this.navigateBackButton, this.currentIndex === 0);
+            this.enableDisableButton(this.navigateForwardButton, this.currentIndex >= (this.totalPages - 1));
+        }
+    },
+    enableDisableButton: function(btn, disable) {
+        if(disable && !btn.isDisabled()) {
+            btn.setDisabled(true);
+        } else if(!disable && btn.isDisabled()) {
+            btn.setDisabled(false);
         }
     },
     navigate: function(direction) {

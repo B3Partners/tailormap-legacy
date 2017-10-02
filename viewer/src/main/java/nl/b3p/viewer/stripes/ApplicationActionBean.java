@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2017 B3Partners B.V.
+ * Copyright (C) 2011-2016 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,7 @@ package nl.b3p.viewer.stripes;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.security.Principal;
 import java.util.*;
 import javax.persistence.EntityManager;
@@ -30,6 +31,9 @@ import net.sourceforge.stripes.util.StringUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.components.ComponentRegistry;
+import nl.b3p.viewer.components.ComponentRegistryInitializer;
+import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.ClobElement;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
@@ -53,7 +57,7 @@ public class ApplicationActionBean implements ActionBean {
 
     @Validate
     private String name;
-    
+
     @Validate
     private boolean unknown;
 
@@ -63,6 +67,7 @@ public class ApplicationActionBean implements ActionBean {
     @Validate
     private boolean debug;
 
+    @Validate(on = "retrieveAppConfigJSON")
     private Application application;
 
     private String componentSourceHTML;
@@ -108,12 +113,10 @@ public class ApplicationActionBean implements ActionBean {
         this.application = application;
     }
 
-    @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
 
-    @Override
     public ActionBeanContext getContext() {
         return context;
     }
@@ -192,8 +195,8 @@ public class ApplicationActionBean implements ActionBean {
                 String decodedName = StringUtil.urlDecode(name);
                 if(!decodedName.equals(name)){
                     return findApplication(decodedName, version);
-                }
             }
+        }
         }
         return null;
     }
@@ -224,6 +227,16 @@ public class ApplicationActionBean implements ActionBean {
         ClobElement el = application.getDetails().get("selected_content_cache");
         appConfigJSON = el.getValue();
         return view;
+    }
+
+    public Resolution retrieveAppConfigJSON(){
+        EntityManager em = Stripersist.getEntityManager();
+        JSONObject response = new JSONObject();
+        response.put("success", false);
+        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
+        response.put("config", appConfigJSON);
+        response.put("success", true);
+        return new StreamingResolution("application/json", new StringReader(response.toString()));
     }
 
     @DefaultHandler
@@ -274,7 +287,7 @@ public class ApplicationActionBean implements ActionBean {
         this.viewerType = retrieveViewerType();
 
         //make hashmap for jsonobject.
-        this.globalLayout = new HashMap<>();
+        this.globalLayout = new HashMap<String,Object>();
         JSONObject layout = application.getGlobalLayout();
         Iterator<String> keys = layout.keys();
         while (keys.hasNext()){
@@ -327,7 +340,7 @@ public class ApplicationActionBean implements ActionBean {
             return 0;
         }
 
-        List<String> sorted = new ArrayList<>(roles);
+        List<String> sorted = new ArrayList<String>(roles);
         Collections.sort(sorted);
 
         int hash = 0;
@@ -336,17 +349,22 @@ public class ApplicationActionBean implements ActionBean {
         }
         return hash;
     }
-    
+
     public Resolution uitloggen(){
         application = findApplication(name, version);
-        if(application == null){
-            application = findApplication(StringUtil.urlDecode(name), version);
-        }
-        RedirectResolution login = new RedirectResolution(LoginActionBean.class)
-                .addParameter("name", application.getName())
-                .addParameter("version", application.getVersion());
+
         context.getRequest().getSession().invalidate();
-        return login;
+
+        if("true".equals(context.getRequest().getParameter("logout"))
+        && "true".equals(context.getRequest().getParameter("returnAfterLogout"))) {
+            return new RedirectResolution(ApplicationActionBean.class)
+                    .addParameter("name", application.getName())
+                    .addParameter("version", application.getVersion());
+        } else {
+            return new RedirectResolution(LoginActionBean.class)
+                    .addParameter("name", application.getName())
+                    .addParameter("version", application.getVersion());
+        }
     }
 
     private void buildComponentSourceHTML() throws IOException {
@@ -354,23 +372,20 @@ public class ApplicationActionBean implements ActionBean {
         StringBuilder sb = new StringBuilder();
 
         // Sort components by classNames, so order is always the same for debugging
-        List<ConfiguredComponent> comps = new ArrayList<>(application.getComponents());
-        Collections.sort(comps);
+        ComponentRegistry cr = ComponentRegistryInitializer.getInstance();
+
+        Collection<ViewerComponent> comps = cr.getComponentList();
 
         if(isDebug()) {
 
-            Set<String> classNamesDone = new HashSet<>();
-            for(ConfiguredComponent cc: comps) {
-
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
-                    continue;
-                }
+            Set<String> classNamesDone = new HashSet<String>();
+            for(ViewerComponent cc: comps) {
 
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
 
-                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
-                        for(File f: cc.getViewerComponent().getSources()) {
+                    if(cc.getSources() != null) {
+                        for(File f: cc.getSources()) {
                             String url = new ForwardResolution(ComponentActionBean.class, "source")
                                     .addParameter("app", name)
                                     .addParameter("version", version)
@@ -396,12 +411,8 @@ public class ApplicationActionBean implements ActionBean {
             // previous version from cache with other contents.
 
             int hash = 0;
-            Set<String> classNamesDone = new HashSet<>();
-            for(ConfiguredComponent cc: comps) {
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
-                    continue;
-                }
-
+            Set<String> classNamesDone = new HashSet<String>();
+            for(ViewerComponent cc: comps) {
                 if(!classNamesDone.contains(cc.getClassName())) {
                     hash = hash ^ cc.getClassName().hashCode();
                 } else {
@@ -445,7 +456,7 @@ public class ApplicationActionBean implements ActionBean {
         }
         return type;
     }
-    
+
     private void getDefaultViewer(){
         EntityManager em = Stripersist.getEntityManager();
         try {

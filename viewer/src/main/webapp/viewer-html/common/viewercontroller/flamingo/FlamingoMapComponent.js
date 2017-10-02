@@ -778,11 +778,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
 */
 function dispatchEventJS(event, comp) {
     if(comp [0]== null){
-            comp[0] = viewerController.mapComponent.getId();
+            comp[0] = FlamingoAppLoader.get("viewerController").mapComponent.getId();
         comp[1] = new Object();
     }
     try{
-        viewerController.mapComponent.handleEvents(event,comp);    
+        FlamingoAppLoader.get("viewerController").mapComponent.handleEvents(event,comp);
     }catch(e){
         if (window.console && console.log)
             console.log(e);

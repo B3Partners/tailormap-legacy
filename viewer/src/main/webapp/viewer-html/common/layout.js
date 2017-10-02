@@ -81,10 +81,27 @@ Ext.define('viewer.LayoutManager', {
 
     filterComponentList: function(components) {
         var me = this;
+        var screenWidth = Ext.Element.getViewportWidth();
         var result = Ext.Array.filter(components, function(comp) {
+            // Filter out components that do not meet responsive configuration
+            var responsiveWidth = me.getRequiredScreenWidth(comp.name);
+            if(screenWidth < responsiveWidth) {
+                return false;
+            }
             return me.configuredComponents[comp.name] != undefined;
         });
         return result;
+    },
+
+    getRequiredScreenWidth: function(component) {
+        if(!this.componentsConfig.hasOwnProperty(component)) {
+            return 0;
+        }
+        var compConfig = this.componentsConfig[component];
+        if(!compConfig.hasOwnProperty("config") || !compConfig.config.hasOwnProperty("requiredScreenWidth")) {
+            return 0;
+        }
+        return compConfig.config.requiredScreenWidth ? compConfig.config.requiredScreenWidth : 0;
     },
 
     createRegionList: function() {
@@ -712,6 +729,10 @@ Ext.define('viewer.LayoutManager', {
         return this.mapId;
     },
 
+    getWrapperId: function() {
+        return this.wrapperId;
+    },
+
     getComponentList: function() {
         return this.componentList;
     },
@@ -796,11 +817,11 @@ Ext.define('viewer.LayoutManager', {
             me.alignFloatingPanel(panel);
         });
         setTimeout(function(){
-            if(continueFunction != undefined){
+            if(continueFunction){
                 continueFunction();
+                return;
             }
-            viewerController.resizeComponents(false);
-            viewerController.mapComponent.getMap().updateSize();
+            FlamingoAppLoader.get("viewerController").resizeComponents(false);
         },200);
     }
 });

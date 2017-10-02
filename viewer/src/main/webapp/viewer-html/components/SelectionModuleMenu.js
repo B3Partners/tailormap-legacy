@@ -40,7 +40,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
             items: [
                 {
                     text: 'Nieuwe map aanmaken',
-                    icon: contextPath + "/resources/images/add.png",
+                    icon: FlamingoAppLoader.get('contextPath') + "/resources/images/add.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
@@ -56,7 +56,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                 },
                 {
                     text: 'Map verwijderen',
-                    icon: contextPath + "/resources/images/delete.png",
+                    icon: FlamingoAppLoader.get('contextPath') + "/resources/images/delete.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
@@ -81,7 +81,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                 },
                 {
                     text: 'Naam wijzigen',
-                    icon: contextPath + "/resources/images/wrench.png",
+                    icon: FlamingoAppLoader.get('contextPath') + "/resources/images/wrench.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
@@ -109,7 +109,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
             items: [
                 {
                     text: 'Kaartlaag verwijderen',
-                    icon: contextPath + "/resources/images/delete.png",
+                    icon: FlamingoAppLoader.get('contextPath') + "/resources/images/delete.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {
@@ -134,7 +134,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                 },
                 {
                     text: 'Naam wijzigen',
-                    icon: contextPath + "/resources/images/wrench.png",
+                    icon: FlamingoAppLoader.get('contextPath') + "/resources/images/wrench.png",
                     listeners: {
                         click: {
                             fn: function (item, e, eOpts) {

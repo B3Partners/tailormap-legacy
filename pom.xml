@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.8.2-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -37,17 +37,17 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>4.8.2-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.0.0-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.8</project.build.sourceVersion>
         <project.build.targetVersion>1.8</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>16.5</geotools.version>
-        <hsqldb.version>2.3.4</hsqldb.version>
+        <geotools.version>17.2</geotools.version>
         <powermock.version>1.7.0RC2</powermock.version>
+        <hsqldb.version>2.4.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.0.0</postgresql.version>
-        <apache.poi.version>3.15</apache.poi.version>
+        <postgresql.version>42.1.1</postgresql.version>
+        <apache.poi.version>3.16</apache.poi.version>
         <apache.httpcomponents.version>4.5.3</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
@@ -114,7 +114,19 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.1</version>
+                <version>2.2</version>
+            </dependency>
+            <dependency>
+                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-i18n</artifactId>
+                <version>1.9</version>
+            </dependency>
+            <dependency>
+                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-constants</artifactId>
+                <version>1.9</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -282,7 +294,7 @@
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
-                <version>2.2.3</version>
+                <version>2.3.0</version>
             </dependency>
             <dependency>
                 <!-- override the version provided by hibernate -->

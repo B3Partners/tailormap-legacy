@@ -28,13 +28,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript">
                     var frameParent = getParent();
                 <c:if test="${actionBean.context.eventName == 'deleteBookmark'}">
-                    if(frameParent && frameParent.reloadGrid) {
-                        frameParent.reloadGrid();
+                    if(frameParent && frameParent.vieweradmin_components_Bookmark) {
+                        frameParent.vieweradmin_components_Bookmark.reloadGrid();
                     }   
                 </c:if>
                 <c:if test="${empty sessionScope['applicationId']}">
-                    if(frameParent && frameParent.removeActiveAppMenu) {
-                        frameParent.removeActiveAppMenu();
+                    if(frameParent && frameParent.vieweradmin_components_Bookmark) {
+                        frameParent.vieweradmin_components_Bookmark.removeActiveAppMenu();
                     }
                 </c:if>
             </script>

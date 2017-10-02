@@ -43,15 +43,14 @@ Ext.define ("viewer.components.Bookmark",{
         showLabels: true,
         details: {
             minWidth: 450,
-            minHeight: 250
+            minHeight: 330
         }
     },
     constructor: function (conf){
         if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true; 
         this.initConfig(conf);
 		viewer.components.Bookmark.superclass.constructor.call(this, this.config);
-       
-        imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/";
+
         this.shareUrls ={
             email: "mailto:%20?subject=[title]&body=[text]%20[url]",
             twitter: "http://twitter.com/share?url=[url]&text=[text]",
@@ -79,6 +78,7 @@ Ext.define ("viewer.components.Bookmark",{
     },
     loadWindow : function(){
         var socialButtons=[];
+        var imagePath = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/bookmark/";
         if(this.config.shareEmail){
             socialButtons.push({
                 xtype: 'button',                
@@ -162,8 +162,7 @@ Ext.define ("viewer.components.Bookmark",{
                 xtype: 'textarea',
                 fieldLabel: this.config.showLabels ? 'Bookmark' : '',
                 name: 'bookmark',
-                anchor: '100%',
-                height: 50,
+                height: 80,
                 id: 'bookmark',
                 readOnly:true,
                 value: this.url
@@ -174,8 +173,7 @@ Ext.define ("viewer.components.Bookmark",{
                 xtype: 'textarea',
                 fieldLabel:this.config.showLabels ? 'Compact link' : '',
                 name: 'compactlink',
-                anchor: '100%',
-                height: 50,
+                height: 80,
                 readOnly:true,
                 id: 'compactlink'
             });
@@ -183,14 +181,14 @@ Ext.define ("viewer.components.Bookmark",{
         formItems.push({
             xtype: 'container',
             layout: {
-                type: 'hbox'
+                type: 'hbox',
+                pack: "end"
             },
             items: socialButtons
         });
         if(Ext.browser.is.IE){
             formItems.push({ 
                 xtype: 'button',
-                componentCls: 'mobileLarge',
                 margin: '10px 0px 0px 0px',
                 text: 'Toevoegen aan favorieten',
                 listeners: {
@@ -203,7 +201,6 @@ Ext.define ("viewer.components.Bookmark",{
         }
         formItems.push({ 
             xtype: 'button',
-            componentCls: 'mobileLarge',
             margin: '10px 0px 0px 10px',
             text: 'Sluiten',
             listeners: {
@@ -216,8 +213,11 @@ Ext.define ("viewer.components.Bookmark",{
         this.form = new Ext.form.FormPanel({
             frame: false,
             border: 0,
-            width: '95%',
-            margin: '0px 0px 0px 10px',
+            width: '100%',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             padding: '5px',
             items: formItems,
             renderTo: this.getContentDiv()

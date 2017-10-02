@@ -43,6 +43,8 @@ Ext.define("vieweradmin.components.ConfigPage", {
         this.createMainTab();
         // Create the form for the Layout tab
         this.createLayoutTab();
+        // Create the form for the Responsive tab
+        this.createResponsiveConfig();
         // Create the form for the Help tab
         if(this.showHelp()) {
             this.createHelpTab();
@@ -64,21 +66,23 @@ Ext.define("vieweradmin.components.ConfigPage", {
         Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
 
         var tabs = [{
+            itemId: 'config-tab',
             contentEl:'config',
             title: 'Configuratie',
             autoScroll: true
         },{
+            itemId: 'rights-tab',
             contentEl:'rights',
             title: 'Rechten'
         }];
-        if((this.config.metadata.hasOwnProperty("type") && this.config.metadata.type == "popup") || this.showConfigureHeight()) {
-            tabs.push({
-                contentEl:'layout',
-                title: 'Layout'
-            });
-        }
+        tabs.push({
+            itemId: 'layout-tab',
+            contentEl:'layout',
+            title: 'Layout'
+        });
         if(this.showHelp()){
             tabs.push({
+                itemId: 'help-tab',
                 contentEl:'help',
                 title: 'Help'
             });
@@ -91,7 +95,8 @@ Ext.define("vieweradmin.components.ConfigPage", {
             height: '100%',
             activeTab: 0,
             defaults :{
-                bodyPadding: 10
+                bodyPadding: 10,
+                autoScroll: true
             },
             layoutOnTabChange: true,
             items: tabs,
@@ -99,7 +104,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 tabchange: {
                     scope: this,
                     fn: function(panel, activetab, previoustab) {
-                        if(activetab.contentEl && activetab.contentEl === 'help' && !htmlEditorRendered) {
+                        if(activetab.getItemId() === 'help-tab' && !htmlEditorRendered) {
                             // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
                             Ext.create('Ext.form.field.HtmlEditor', {
                                 id: 'helpText',
@@ -129,7 +134,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 xtype: 'button',
                 text: 'Annuleren',
                 id: 'cancalConfigButton',
-                iconCls: 'cancelbutton-icon',
+                iconCls: 'x-fa fa-times',
                 listeners: {
                     click: {
                         fn: function() {
@@ -142,7 +147,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 xtype: 'button',
                 text: 'Opslaan',
                 id: 'saveConfigButton',
-                iconCls: 'savebutton-icon',
+                iconCls: 'x-fa fa-floppy-o',
                 listeners: {
                     click: {
                         fn: this.save,
@@ -459,6 +464,38 @@ Ext.define("vieweradmin.components.ConfigPage", {
         }
     },
 
+    createResponsiveConfig: function () {
+        var minWidth = '';
+        if(this.config.configObject.hasOwnProperty('requiredScreenWidth')) {
+            minWidth = this.config.configObject.requiredScreenWidth;
+        }
+        this.responsiveLayoutForm = new Ext.form.FormPanel({
+            frame: false,
+            width: 520,
+            border: 0,
+            items: [{
+                xtype:'fieldset',
+                title: 'Minimale afmetingen waarbij component zichtbaar is',
+                collapsible: false,
+                items:[{
+                    xtype: 'numberfield',
+                    fieldLabel: 'Minimale schermbreedte (px)',
+                    id: "requiredScreenWidth",
+                    name: 'requiredScreenWidth',
+                    value: minWidth,
+                    labelWidth: 180
+                },{
+                    xtype: 'container',
+                    html: 'Indien deze waarde is ingesteld wordt dit gebruikt om bij het starten van de applicatie' +
+                    'te bepalen of een component wel of niet getoond moet worden. Als de schermafmetingen op dat' +
+                    'moment kleiner zijn dan bovenstaande waarde dan wordt het component niet getoond.<br /><br />' +
+                    'Bij een lege waarde (of 0) wordt het component altijd getoond'
+                }]
+            }],
+            renderTo: "layout"
+        });
+    },
+
     createHeightLayoutTab: function () {
         var compHeight = '';
         if(this.config.configObject.hasOwnProperty('componentHeight')) {
@@ -583,6 +620,10 @@ Ext.define("vieweradmin.components.ConfigPage", {
             if(heightConfig && heightConfig.getValue() !== '') {
                 config['componentHeight'] = parseInt(heightConfig.getValue(), 10);
             }
+        }
+        var responsiveWidthConfig = Ext.getCmp('requiredScreenWidth');
+        if(responsiveWidthConfig && responsiveWidthConfig.getValue() !== '') {
+            config['requiredScreenWidth'] = parseInt(responsiveWidthConfig.getValue(), 10);
         }
         var configFormObject = Ext.get("configObject");
         configFormObject.dom.value = JSON.stringify(config);

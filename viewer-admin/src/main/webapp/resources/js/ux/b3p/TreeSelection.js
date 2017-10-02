@@ -214,9 +214,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
         Ext.create('Ext.Button', {
             renderTo: me.layerSelectionButtons,
-            icon: me.moveRightIcon,
-            width: 23,
-            height: 22,
+            // icon: me.moveRightIcon,
+            iconCls: 'x-fa fa-caret-right',
             cls: 'plain-button',
             listeners: {
                 click: function() {
@@ -227,9 +226,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
         Ext.create('Ext.Button', {
             renderTo: me.layerSelectionButtons,
-            icon: me.moveLeftIcon,
-            width: 23,
-            height: 22,
+            // icon: me.moveLeftIcon,
+            iconCls: 'x-fa fa-caret-left',
             cls: 'plain-button',
             listeners: {
                 click: function() {
@@ -239,9 +237,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         });
 
         me.moveUpButton = Ext.create('Ext.Button', {
-            icon: me.moveUpIcon,
-            width: 23,
-            height: 22,
+            // icon: me.moveUpIcon,
+            iconCls: 'x-fa fa-caret-up',
             renderTo: me.layerMoveButtons,
             cls: 'plain-button',
             listeners: {
@@ -252,9 +249,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         });
 
         me.moveDownButton = Ext.create('Ext.Button', {
-            icon: me.moveDownIcon,
-            width: 23,
-            height: 22,
+            // icon: me.moveDownIcon,
+            iconCls: 'x-fa fa-caret-down',
             renderTo: me.layerMoveButtons,
             cls: 'plain-button',
             listeners: {
@@ -266,7 +262,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
         if(this.useDeleteButton && !this.useArrowLeftAsDelete) {
             me.deleteButton = Ext.create('Ext.Button', {
-                icon: me.removeIcon,
+                // icon: me.removeIcon,
+                iconCls: 'x-fa fa-trash-o',
                 width: 23,
                 height: 22,
                 renderTo: me.layerMoveButtons,
@@ -402,12 +399,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
             if(removeIdx === -1) {
                 selection[i].set("isRemoved", true);
-                this.deletedRecords.push({ id: recordid, type: recordtype })
-                if(this.deleteButton) this.deleteButton.setIcon(this.unremoveIcon);
+                this.deletedRecords.push({ id: recordid, type: recordtype });
             } else {
                 selection[i].set("isRemoved", false);
                 this.deletedRecords.splice(removeIdx, 1);
-                if(this.deleteButton) this.deleteButton.setIcon(this.removeIcon);
             }
             if(!selection[i].get("leaf") && selection[i].get("expanded")) {
                 selection[i].collapse();

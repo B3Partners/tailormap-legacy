@@ -63,7 +63,6 @@ Ext.define ("viewer.components.DirectSearch",{
         this.mainContainer = Ext.create('Ext.container.Container', {
             itemId: this.name + 'Container',
             width: 300,
-            height: 30,
             padding: 0,
             border: 0,
             margin: 0,
@@ -81,10 +80,6 @@ Ext.define ("viewer.components.DirectSearch",{
 
         this.alignContainer();
         this.loadingContainer = this.mainContainer;
-        this.searchField && this.searchField.inputEl && this.searchField.inputEl.set({
-            placeholder: this.config.title,
-			style: 'height: 28px;'
-        });
     },
     
     alignContainer: function() {
@@ -105,7 +100,9 @@ Ext.define ("viewer.components.DirectSearch",{
         if(align.substr(1) === 'r') {
             pos[0] = pos[0] * -1;
         }
-        this.mainContainer.alignTo(Ext.getBody(), [align, align].join('-'), pos);
-        this.mainContainer.anchorTo(Ext.getBody(), [align, align].join('-'), pos);
+        this.mainContainer.alignTo(this.config.viewerController.getWrapperId(), [align, align].join('-'), pos);
+        this.config.viewerController.anchorTo(
+            this.mainContainer, this.config.viewerController.getWrapperId(), [align, align].join('-'), pos
+        );
     }
 });
