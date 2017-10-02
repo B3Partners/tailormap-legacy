@@ -2,16 +2,31 @@
 Which version of flamingo do you use: <!-- go to http://<server>/viewer-admin/about.jsp or http://<server>/viewer/about.jsp and paste below -->
 
 ### Browser info
-Which browser are you using? <!-- visit https://whichbrowser.net/ and paste the information below -->
+<!-- Which browser are you using? visit https://whichbrowser.net/ and paste the information below -->
 
 ### URL
-Where can we find an application which has the bug?
+<!-- Where can we find an application which has the bug? -->
 
-### Where?
-Was it in the viewer or the viewer-admin? Which page and which component?
+### Where and/or What
+<!--Was it in the viewer or the viewer-admin? Which page and which component? -->
 
 ### What happened
 <!-- Something odd/unexpected/terrible happened. Tell us everything! -->
+
+### Screenshots
+<!-- please resize your browser window before captureing and remeber to blur-out any sensitive data in the image befor uploading
+
+### Server log
+<details><summary>relevant section of the server log:</summary>
+
+```
+
+DOUBLECLICK_n_PASTE_HERE
+
+```
+
+</details>
+
 
 ### What did you expect?
 <!-- What should have happened? -->
@@ -23,14 +38,3 @@ How can we reproduce this? <!-- A detailed, step-by-step explanation helps us to
   2. 
   3. 
   
-
-### Server log
-<details><summary>relevant section of the server log:</summary>
-
-```
-
-PASTE_HERE
-
-```
-
-</details>
