@@ -16,6 +16,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -30,6 +31,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 
 /**
@@ -137,8 +139,10 @@ public class HttpClientConfigured {
         SystemDefaultRoutePlanner routePlanner =
                 new SystemDefaultRoutePlanner(ProxySelector.getDefault());
         hcb.setRoutePlanner(routePlanner);
-
+        RedirectStrategy rs = new LaxRedirectStrategy();
+        hcb.setRedirectStrategy(rs);
         this.httpClient = hcb.build();
+        
         this.httpContext = context;
     }
 
