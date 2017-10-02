@@ -21,12 +21,16 @@ How can we reproduce this? <!-- A detailed, step-by-step explanation helps us to
 
   1. 
   2. 
+  3. 
   
 
 ### Server log
-relevant section of the server log:
+<details><summary>relevant section of the server log:</summary>
+
 ```
 
 PASTE_HERE
 
 ```
+
+</details>
