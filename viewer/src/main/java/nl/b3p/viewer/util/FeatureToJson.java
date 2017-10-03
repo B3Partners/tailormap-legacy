@@ -148,7 +148,7 @@ public class FeatureToJson {
          */
         else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
             int index = 0;
-            if(fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0)) ){
+            if (fs.getSchema().getGeometryDescriptor() != null && fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0))) {
                 if(propertyNames.size() > 1){
                     index = 1;
                 }else {
