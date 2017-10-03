@@ -164,7 +164,7 @@ public class FeatureReportActionBean implements ActionBean {
             q.setMaxFeatures(1);
             q.setHandle("FeatureReportActionBean_attributes");
 
-            FeatureToJson ftjson = new FeatureToJson(false, false, false, attributesToInclude);
+            FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude);
             JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
 
             // if there are more than one something is very wrong in datamodel or datasource
@@ -182,6 +182,7 @@ public class FeatureReportActionBean implements ActionBean {
             // get related features and add to extra data
             if (layer.getFeatureType().hasRelations()) {
                 String label;
+                ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude);
                 for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
                     if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
                         SimpleFeatureType fType = rel.getForeignFeatureType();

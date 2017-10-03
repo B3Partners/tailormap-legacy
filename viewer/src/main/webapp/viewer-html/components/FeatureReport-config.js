@@ -49,7 +49,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 xtype: 'textfield',
                 fieldLabel: 'Klik locatie label (mag leeg zijn)',
                 name: 'clickLabel',
-                value: this.configObject.clickLabel = this.configObject.clickLabel || "Klik punt",
+                value: this.configObject.clickLabel = this.configObject.clickLabel || "",
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'numberfield',
