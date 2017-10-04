@@ -515,6 +515,16 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }
         return size;
     },
+
+    unselectAll: function() {
+        this.modifyFeature.selectControl.unselectAll();
+    },
+
+    readGeoJSON: function(geoJson) {
+        var geoJSONreader = new OpenLayers.Format.GeoJSON();
+        var features = geoJSONreader.read(geoJson);
+        this.getFrameworkLayer().addFeatures(features);
+    },
     
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
