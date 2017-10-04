@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, contextPath, MobileManager, actionBeans, saveAs */
+/* global Ext, contextPath, MobileManager, actionBeans, saveAs, FlamingoAppLoader */
 
 /**
  * Ontbrandingsaanvraag component
@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     extend: "viewer.components.Component",
     vectorLayer: null,
     extraObjectsLayer: null,
+    safetyZonesLayer: null,
     // Current active feature
     activeFeature: null,
     // All features
@@ -99,6 +100,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             'fillColor': "#000000",
             'strokeColor': '#' + this.MEASURE_LINE_COLOR
         }));
+        
+        this.safetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
+            'fillColor': "#990000",
+            'strokeColor': "#FF0000"
+        }));
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: 'ontbrandingsAanvraagVectorLayer',
             geometrytypes: ["Circle","Polygon","Point","LineString"],
@@ -116,8 +122,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             defaultFeatureStyle: this.defaultStyle,
             addStyleToFeature: true
         });
+        this.safetyZonesLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: 'safetyZonesVectorLayer',
+            geometrytypes: ["Circle","Polygon"],
+            showmeasures: true,
+            viewerController: this.config.viewerController,
+            defaultFeatureStyle: this.safetyZoneStyle,
+            addStyleToFeature: true,
+            addAttributesToFeature: true
+        });
+        
         this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.safetyZonesLayer);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, this.activeFeatureChanged, this);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.activeFeatureFinished, this);
     },
@@ -237,6 +254,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     margin: this.defaultMargin,
                     listeners: { click: this.calculateSafetyZone, scope: this }
                 },
+                 {
+                    xtype: 'button',
+                    html: 'Verwijder veiligheidszone',
+                    margin: this.defaultMargin,
+                    listeners: { click: this.removeSafetyZones, scope: this }
+                },
                 {
                     xtype: 'container',
                     itemId: 'calculation_messages',
@@ -301,7 +324,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             },
             items: this.wizardPages,
             fbar: [
-                { type: 'button', itemId: 'prev_button', text: 'Vorige', handler: function() { this.previousPage() }.bind(this) },
+                { type: 'button', itemId: 'prev_button', text: 'Vorige', handler: function() { this.previousPage(); }.bind(this) },
                 { type: 'button', itemId: 'next_button', text: 'Volgende', handler: function() { this.nextPage(); }.bind(this) }
             ]
         });
@@ -876,7 +899,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             return rowIndex;
         }
         window.setTimeout((function() {
-            this._editLocation(grid, rowIndex)
+            this._editLocation(grid, rowIndex);
         }).bind(this), 0);
         return rowIndex;
     },
@@ -1153,6 +1176,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     calculateSafetyZone: function() {
+        this.removeSafetyZones();
         var store = this.ignitionLocationsGrid.getStore();
         var main_location = this.audienceLocationsGrid.getStore().find('mainLocation', true);
         if(main_location.length === 0) {
@@ -1163,9 +1187,44 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.showMessageInContainer('#calculation_messages', 'U dient minimaal één afsteeklocatie toe te voegen');
             return;
         }
+        
         store.each(function(location) {
-
+            console.log(location);
         }, this);
+        
+        var features = this.getAllFeatures();
+        Ext.Ajax.request({
+            url: actionBeans["ontbrandings"],
+            scope:this,
+            params: {
+                features: Ext.JSON.encode(features)
+            },                
+            success: function (result) {
+                var response = Ext.JSON.decode(result.responseText);
+                var featuresJSON = response.safetyZones;
+                var features = [];
+                for(var i = 0 ; i < featuresJSON.length; i++){
+                    var f = featuresJSON[i];
+                    var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
+                    features.push(feat);
+                }
+                
+                this.safetyZonesLayer.defaultFeatureStyle = this.safetyZoneStyle;
+                this.safetyZonesLayer.addFeatures(features);
+       
+            },
+            failure: function (result) {
+                if (failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });
+        
+        
+    },
+
+    removeSafetyZones: function(){
+        this.safetyZonesLayer.removeAllFeatures();
     },
 
     createWizardPage: function(title, items) {
