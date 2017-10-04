@@ -86,9 +86,9 @@ public class OntbrandingsActionBean implements ActionBean{
         JSONObject attributes = feature.getJSONObject("attributes");
         String type = attributes.getString("type");
         if (type.equals("ignitionLocation")) {
-            Integer zoneDistance = attributes.optInt("zonedistance", 0);
+            Integer zoneDistance = attributes.optInt("zonedistance_m", 0);
             if(zoneDistance == 0){
-                zoneDistance = attributes.optInt("custom_zonedistance", 0);
+                zoneDistance = attributes.optInt("custom_zonedistance_m", 0);
             }
             boolean fan = attributes.getBoolean("fan");
             Geometry geom = wkt.read(feature.getString("wktgeom"));

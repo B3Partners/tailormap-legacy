@@ -25,7 +25,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     extend: "viewer.components.Component",
     vectorLayer: null,
     extraObjectsLayer: null,
-    safetyZonesLayer: null,
     calculationResultLayer: null,
     // Current active feature
     activeFeature: null,
@@ -57,9 +56,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     constructor: function (conf){
         this.initConfig(conf);
+        viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
         this.zoneDistanceConfigToObject(conf.zonedistances, this.ZONE_DISTANCES);
         this.zoneDistanceConfigToObject(conf.zonedistances_fan, this.ZONE_DISTANCES_FAN);
-	    viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
+	
         this.features = {};
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         this.iconPath = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/drawing/";
@@ -67,7 +67,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, this.createLayers, this);
         return this;
     },
-
+    
+    zoneDistanceConfigToObject: function(conf, obj) {
+         if(!conf || conf.length === 0) return;
+         for(var i = 0; i < conf.length; i++) {
+             obj[conf[i].label] = conf[i].distance;
+         }
+    },
+    
     selectedContentChanged : function (){
         if(this.vectorLayer === null) {
             this.createLayers();
@@ -1267,39 +1274,44 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             complete = false;
         }
         if(complete) {
+            this.removeSafetyZones();
             var features = this.getAllFeatures();
-            this.drawSafetyZone('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[19096.32,567100.16],[33288.96,591184.64],[35439.36,613978.88],[69845.76,598496],[89199.36,607957.76],[105112.32,586453.76],[117154.56,567530.24],[80597.76,553337.6],[87479.04,524952.32],[50922.24,529683.2],[33719.04,487105.28],[15225.6,525812.48],[8344.32,543015.68],[19096.32,567100.16]]]}},{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[57803.52,487535.36],[51352.32,514200.32],[65544.96,544736],[105972.48,539575.04],[115864.32,501297.92],[153281.28,514200.32],[164033.28,481944.32],[121455.36,461300.48],[114144,420442.88],[68125.44,438506.24],[24687.36,415281.92],[15655.68,456139.52],[52642.56,464311.04],[40170.24,489255.68],[32428.8,525812.48],[57803.52,487535.36]]]}}]}');
-           Ext.Ajax.request({
-            url: actionBeans["ontbrandings"],
-            scope:this,
-            params: {
-                features: Ext.JSON.encode(features)
-            },                
-            success: function (result) {
-                var response = Ext.JSON.decode(result.responseText);
-                var featuresJSON = response.safetyZones;
-                var features = [];
-                for(var i = 0 ; i < featuresJSON.length; i++){
-                    var f = featuresJSON[i];
-                    var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
-                    features.push(feat);
+            //this.drawSafetyZone('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[19096.32,567100.16],[33288.96,591184.64],[35439.36,613978.88],[69845.76,598496],[89199.36,607957.76],[105112.32,586453.76],[117154.56,567530.24],[80597.76,553337.6],[87479.04,524952.32],[50922.24,529683.2],[33719.04,487105.28],[15225.6,525812.48],[8344.32,543015.68],[19096.32,567100.16]]]}},{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[57803.52,487535.36],[51352.32,514200.32],[65544.96,544736],[105972.48,539575.04],[115864.32,501297.92],[153281.28,514200.32],[164033.28,481944.32],[121455.36,461300.48],[114144,420442.88],[68125.44,438506.24],[24687.36,415281.92],[15655.68,456139.52],[52642.56,464311.04],[40170.24,489255.68],[32428.8,525812.48],[57803.52,487535.36]]]}}]}');
+            Ext.Ajax.request({
+                url: actionBeans["ontbrandings"],
+                scope: this,
+                params: {
+                    features: Ext.JSON.encode(features)
+                },
+                success: function (result) {
+                    var response = Ext.JSON.decode(result.responseText);
+                    var featuresJSON = response.safetyZones;
+                    var features = [];
+                    for (var i = 0; i < featuresJSON.length; i++) {
+                        var f = featuresJSON[i];
+                        var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
+                        features.push(feat);
+                    }
+
+                    this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;
+                    this.calculationResultLayer.addFeatures(features);
+
+                },
+                failure: function (result) {
+                    if (failureFunction != undefined) {
+                        failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    }
                 }
-                
-                this.safetyZonesLayer.defaultFeatureStyle = this.safetyZoneStyle;
-                this.safetyZonesLayer.addFeatures(features);
-       
-            },
-            failure: function (result) {
-                if (failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                }
-            }
-        });
+            });
         }
     },
 
     drawSafetyZone: function(result) {
         this.getCalculationResultLayer().readGeoJSON(result);
+    },
+    
+    removeSafetyZones: function(){
+        this.getCalculationResultLayer().removeAllFeatures();
     },
 
     checkAudienceLocations: function() {
