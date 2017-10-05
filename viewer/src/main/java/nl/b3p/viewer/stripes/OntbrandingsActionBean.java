@@ -17,9 +17,9 @@
 package nl.b3p.viewer.stripes;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
@@ -64,14 +64,27 @@ public class OntbrandingsActionBean implements ActionBean{
         wkt = new WKTReader2(gf);
         
         JSONArray jsonFeatures = new JSONArray(features);
+        JSONObject mainLocation = null;
+        for (Iterator<Object> iterator = jsonFeatures.iterator(); iterator.hasNext();) {
+            JSONObject feature = (JSONObject)iterator.next();
+            JSONObject attrs = feature.getJSONObject("attributes");
+            if(attrs.getString("type").equals("audienceLocation") && attrs.getBoolean("mainLocation")){
+                mainLocation = feature;
+                break;
+            }
+            
+        }
         JSONArray safetyZones = new JSONArray();
         for (Iterator<Object> iterator = jsonFeatures.iterator(); iterator.hasNext();) {
             JSONObject feature = (JSONObject)iterator.next();
             JSONObject safetyZone;
             try {
-                safetyZone = calculateSafetyZone(feature);
-                if(safetyZone != null){
-                    safetyZones.put(safetyZone);
+                JSONArray obs = calculateSafetyZone(feature, mainLocation);
+                if(obs != null && obs.length() > 0){
+                    for (Iterator<Object> iterator1 = obs.iterator(); iterator1.hasNext();) {
+                        JSONObject g = (JSONObject)iterator1.next();
+                        safetyZones.put(g);
+                    }
                 }
             } catch (ParseException ex) {
                 LOG.debug("Error calculating safetyzone: ", ex);
@@ -82,31 +95,68 @@ public class OntbrandingsActionBean implements ActionBean{
         return new StreamingResolution( "application/json",new StringReader(result.toString()));
     }
     
-    private JSONObject calculateSafetyZone(JSONObject feature) throws ParseException{
+    private JSONArray calculateSafetyZone(JSONObject feature,JSONObject mainLocation) throws ParseException{
         JSONObject attributes = feature.getJSONObject("attributes");
         String type = attributes.getString("type");
+        JSONArray gs = new JSONArray();
         if (type.equals("ignitionLocation")) {
-            Integer zoneDistance = attributes.optInt("zonedistance_m", 0);
-            if(zoneDistance == 0){
-                zoneDistance = attributes.optInt("custom_zonedistance_m", 0);
-            }
             boolean fan = attributes.getBoolean("fan");
-            Geometry geom = wkt.read(feature.getString("wktgeom"));
-            Geometry combined = geom.buffer(zoneDistance);
- 
-            if(combined != null){
-                JSONObject feat = new JSONObject();
-                JSONObject attrs = new JSONObject();
-                feat.put("attributes",attrs);
-                feat.put("wktgeom",combined.toText());
-                
-                attrs.put("type", "safetyZone");
-                attrs.put("label", "Veiligheidszone");
-                        
-                return feat;
+            
+            if(fan){
+                calculateFan(feature, mainLocation, gs);
+            }else{
+                calculateNormalSafetyZone(feature, gs);
             }
         }
-        return null;
+        return gs;
+    }
+    
+    private void calculateFan(JSONObject feature, JSONObject mainLocation, JSONArray gs) throws ParseException{
+        // Bereken centroide van feature: [1]
+        // bereken centroide van hoofdlocatie: [2]
+        // bereken lijn tussen de twee [1] en [2] centroides: [3]
+        // bereken loodlijn op [3]: [4]
+        // maak buffer in richting van [4] voor de fanafstand
+            //Mogelijke verbetering, nu niet doen :// Voor elk vertex in feature, buffer met fan afstand in beiden richtingen van [4]
+                // union alle buffers
+                
+                
+        Geometry ignition = wkt.read(feature.getString("wktgeom"));
+        Geometry audience = wkt.read(mainLocation.getString("wktgeom"));
+        Point ignitionCentroid = ignition.getCentroid();
+        Point audienceCentroid = audience.getCentroid();
+        Coordinate[] coords = {ignitionCentroid.getCoordinate(), audienceCentroid.getCoordinate()};
+        LineString ls = gf.createLineString(coords);
+        
+        gs.put(createFeature(ignitionCentroid, "temp", "ignitionCentroid"));
+        gs.put(createFeature(audienceCentroid, "temp", "audienceCentroid"));
+        gs.put(createFeature(ls, "temp", "audience2ignition"));
+        
+    }
+    
+    private void calculateNormalSafetyZone(JSONObject feature,  JSONArray gs) throws ParseException {
+        JSONObject attributes = feature.getJSONObject("attributes");
+        Integer zoneDistance = attributes.optInt("zonedistance_m", 0);
+        if (zoneDistance == 0) {
+            zoneDistance = attributes.optInt("custom_zonedistance_m", 0);
+        }
+        Geometry geom = wkt.read(feature.getString("wktgeom"));
+        
+        Geometry zone = geom.buffer(zoneDistance);
+        gs.put(createFeature(zone, "safetyZone", "Veiligheidszone"));
+    }
+
+    private JSONObject createFeature(Geometry geom, String type, String label) {
+
+        JSONObject feat = new JSONObject();
+        JSONObject attrs = new JSONObject();
+        feat.put("attributes", attrs);
+        feat.put("wktgeom", geom.toText());
+
+        attrs.put("type", type);
+        attrs.put("label", label);
+
+        return feat;
     }
     
     public Resolution print(){
