@@ -157,7 +157,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         });
         this.calculationResultLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: 'calculationResultLayer',
-            geometrytypes: ["Polygon", "Circle"],
+            geometrytypes: ["Polygon", "Circle", "Point", "LineString"],
             showmeasures: false,
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.safetyZoneStyle
@@ -1113,12 +1113,20 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     importFeatures: function(json) {
         var feature;
         var features = [];
+        var extent = null;;
         for(var i = 0; i < json.features.length; i++) {
             feature = json.features[i];
-            features.push(
-                this.createFeature(feature.wktgeom, this.createFeatureStyle(feature.style), feature.attributes)
-            );
+            var flaFeature = this.createFeature(feature.wktgeom, this.createFeatureStyle(feature.style), feature.attributes);
+            if(!extent){
+                extent = flaFeature.getExtent();
+            }else{
+                var newExtent = flaFeature.getExtent();
+                extent.expand(newExtent);
+            }
+            features.push(flaFeature);
         }
+        extent.buffer(150);
+        this.config.viewerController.mapComponent.getMap().zoomToExtent(extent);
         this.removeAllFeatures();
         this.isImporting = true;
         this.getVectorLayer().addFeatures(features);
@@ -1138,6 +1146,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return Ext.create('viewer.viewercontroller.controller.Feature', {
             wktgeom: wkt,
             style: style,
+            label: attributes && attributes.label ? attributes.label : '',
             attributes: attributes || {}
         });
     },
