@@ -992,6 +992,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     _saveLocation: function(grid, rowIndex, formQuery) {
         var location = grid.getStore().getAt(rowIndex);
         var data = this.getContentContainer().query(this.toId(formQuery))[0].getForm().getFieldValues();
+        if(data.fan){
+            data.fan = data.fan === 'ja';
+        }
         location.set(data);
         var locationType = location.get('type');
         if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
@@ -1063,6 +1066,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     newRequest: function() {
+        this.removeAllFeatures();
         this.nextPage();
     },
 
@@ -1226,6 +1230,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.removeAllForGrid(this.ignitionLocationsGrid);
         this.removeAllForGrid(this.audienceLocationsGrid);
         this.removeAllForGrid(this.extraObjectsGrid);
+        this.getCalculationResultLayer().removeAllFeatures();
     },
 
     removeAllForGrid: function(grid) {
@@ -1290,7 +1295,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 url: actionBeans["ontbrandings"],
                 scope: this,
                 params: {
-                    features: Ext.JSON.encode(features)
+                    features: Ext.JSON.encode(features),
+                    showIntermediateResults:false
                 },
                 success: function (result) {
                     var response = Ext.JSON.decode(result.responseText);
