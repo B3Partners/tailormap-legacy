@@ -23,6 +23,8 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.linearref.LengthIndexedLine;
+import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import java.awt.geom.AffineTransform;
 import java.io.StringReader;
@@ -44,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.opensphere.geometry.algorithm.ConcaveHull;
 
 /**
  *
@@ -63,7 +66,7 @@ public class OntbrandingsActionBean implements ActionBean {
     private String features;
     
     @Validate
-    private boolean showIntermediateResults = false;
+    private boolean showIntermediateResults = true;
 
     @DefaultHandler
     public Resolution calculate() throws TransformException {
@@ -134,69 +137,83 @@ public class OntbrandingsActionBean implements ActionBean {
         double fanHeight = attributes.getDouble("zonedistance_m");
         Geometry ignition = wkt.read(feature.getString("wktgeom"));
         Geometry audience = wkt.read(mainLocation.getString("wktgeom"));
+        Geometry boundary = ignition.getBoundary();
+        LineString boundaryLS = (LineString)boundary;
+        LengthIndexedLine lil = new LengthIndexedLine(boundaryLS);
+        
         Point ignitionCentroid = ignition.getCentroid();
         Point audienceCentroid = audience.getCentroid();
-
-        Coordinate[] coords = ignition.getCoordinates();
+        
+        double offset = fanHeight / 2;
+        int endIndex = (int)lil.getEndIndex();
+        
+        
         Geometry zone = createNormalSafetyZone(feature);
         Geometry unioned = zone;
-        for (int i = 0; i < coords.length; i++) {
-            Coordinate coord = coords[i];
-            Geometry fan = createEllipse(ignitionCentroid, audienceCentroid, coord, fanLength, fanHeight, 20, gs);
-            unioned = unioned.union(fan);
-            if(showIntermediateResults){
-                gs.put(createFeature(fan, "temp", "fan" + i));
-            }
-        }
-
+        
+        
+        double dx = ignitionCentroid.getX() - audienceCentroid.getX();
+        double dy = ignitionCentroid.getY() - audienceCentroid.getY();
+   
         if (showIntermediateResults) {
-            gs.put(createFeature(ignitionCentroid, "temp", "ignitionCentroid"));
-            gs.put(createFeature(audienceCentroid, "temp", "audienceCentroid"));
-            gs.put(createFeature(zone, "temp", "normaleSatetyZone"));
-        }
-        gs.put(createFeature(unioned, "temp", "fan"));
-    }
+            Coordinate[] coords = {audienceCentroid.getCoordinate(), ignitionCentroid.getCoordinate()};
+            LineString ls = gf.createLineString(coords);
 
-    public Geometry createEllipse(Point direction, Point audienceCentroid, Coordinate startPoint, double fanlength, double fanheight, int numPoints, JSONArray gs) throws TransformException {
-        Coordinate[] coords = {direction.getCoordinate(), audienceCentroid.getCoordinate()};
-        LineString ls = gf.createLineString(coords);
-
-        double length = ls.getLength();
-        double dx = direction.getX() - audienceCentroid.getX();
-        double dy = direction.getY() - audienceCentroid.getY();
-
-        double ratioX = (dx / length);
-        double ratioY = (dy / length);
-        double theta = Math.atan2(dy, dx);
-        double correctBearing = (Math.PI / 2);
-
-        double fanX = ratioX * fanlength;
-        double fanY = ratioY * fanlength;
-
-        GeometricShapeFactory gsf = new GeometricShapeFactory(gf);
-        gsf.setBase(new Coordinate(startPoint.x - fanlength, startPoint.y - fanheight));
-        gsf.setWidth(fanlength * 2);
-        gsf.setHeight(fanheight * 2);
-        gsf.setNumPoints(numPoints);
-        gsf.setRotation(theta - correctBearing);
-
-        if (showIntermediateResults) {
-            Point eindLoodlijn = gf.createPoint(new Coordinate(direction.getX() + fanX, direction.getY() + fanY));
-            Coordinate ancorPoint = direction.getCoordinate();
+            double length = ls.getLength();
+            double ratioX = (dx / length);
+            double ratioY = (dy / length);
+            double fanX = ratioX * fanLength;
+            double fanY = ratioY * fanLength;
+            Point eindLoodlijn = gf.createPoint(new Coordinate(ignitionCentroid.getX() + fanX, ignitionCentroid.getY() + fanY));
+            Coordinate ancorPoint = ignitionCentroid.getCoordinate();
 
             double angleRad = Math.toRadians(90);
             AffineTransform affineTransform = AffineTransform.getRotateInstance(angleRad, ancorPoint.x, ancorPoint.y);
             MathTransform mathTransform = new AffineTransform2D(affineTransform);
 
             Geometry rotatedPoint = JTS.transform(eindLoodlijn, mathTransform);
-            Coordinate[] loodLijnCoords = {direction.getCoordinate(), rotatedPoint.getCoordinate()};
+            Coordinate[] loodLijnCoords = {ignitionCentroid.getCoordinate(), rotatedPoint.getCoordinate()};
             LineString loodLijn = gf.createLineString(loodLijnCoords);
             gs.put(createFeature(eindLoodlijn, "temp", "eindLoodlijn"));
             gs.put(createFeature(loodLijn, "temp", "loodLijn"));
             gs.put(createFeature(rotatedPoint, "temp", "loodLijn2"));
             gs.put(createFeature(ls, "temp", "audience2ignition"));
         }
-        return gsf.createEllipse();
+        
+        double theta = Math.atan2(dy, dx);
+        double correctBearing = (Math.PI / 2);
+        double rotation = theta - correctBearing;
+        for (int i = 0; i < endIndex; i += offset) {
+            Coordinate c = lil.extractPoint(i);
+            Geometry fan = createEllipse(c, rotation, fanLength, fanHeight, 20);
+
+            if (!fan.isEmpty()) {            
+                if (showIntermediateResults) {
+               //    gs.put(createFeature(fan, "temp", ("fan" + 1)));
+                }
+                unioned = unioned.union(fan);
+            }
+        }
+
+        ConcaveHull con = new ConcaveHull(unioned, fanHeight);
+        Geometry g = con.getConcaveHull();
+        TopologyPreservingSimplifier tp = new TopologyPreservingSimplifier(g);
+        tp.setDistanceTolerance(0.5);
+        gs.put(createFeature(tp.getResultGeometry(), "safetyZone", "concaaf"));
+    }
+
+    public Geometry createEllipse(Coordinate startPoint, double rotation, double fanlength, double fanheight, int numPoints) throws TransformException {
+     
+
+        GeometricShapeFactory gsf = new GeometricShapeFactory(gf);
+        gsf.setBase(new Coordinate(startPoint.x - fanlength, startPoint.y - fanheight));
+        gsf.setWidth(fanlength * 2);
+        gsf.setHeight(fanheight * 2);
+        gsf.setNumPoints(numPoints);
+        gsf.setRotation(rotation);
+
+        Geometry ellipse = gsf.createEllipse();
+        return ellipse;
     }
 
     private void calculateNormalSafetyZone(JSONObject feature, JSONArray gs) throws ParseException {
