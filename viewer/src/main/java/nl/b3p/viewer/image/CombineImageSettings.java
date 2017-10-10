@@ -47,7 +47,7 @@ public class CombineImageSettings {
     private Integer width = null;
     private Integer height = null;
     private Integer angle = null;
-    private Color defaultWktGeomColor= Color.RED;
+    public static Color defaultWktGeomColor= Color.RED;
     private String mimeType="image/png";
     
     // bbox + ";"+ resolutions + ";" + tileSize + ";" + serviceUrl;
@@ -462,6 +462,12 @@ public class CombineImageSettings {
                     }
                     if (geom.has("strokeWidth") && !geom.isNull("strokeWidth")) {
                         ciw.setStrokeWidth((float) geom.getDouble("strokeWidth"));
+                    }
+                    
+                    if(geom.has("style")){
+                        JSONObject jsonStyle = geom.getJSONObject("style");
+                        FeatureStyle fs = new FeatureStyle(jsonStyle);
+                        ciw.setStyle(fs);
                     }
                     wkts.add(ciw);
                 }

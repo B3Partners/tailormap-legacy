@@ -449,9 +449,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
             feature.color = color;
         }
-        if(this.config.addStyleToFeature) {
-            feature.style = this.fromOpenLayersStyle(openLayersFeature);
-        }
+        feature.style = this.fromOpenLayersStyle(openLayersFeature).getProperties();;
         if(this.config.addAttributesToFeature) {
             feature.attributes = openLayersFeature.attributes;
         }

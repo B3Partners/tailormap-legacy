@@ -208,28 +208,28 @@ public class ImageTool {
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
         Graphics2D gbi = newBufIm.createGraphics();
         gbi.drawImage(bi, 0, 0, null);
-        Font font = gbi.getFont().deriveFont(Font.BOLD, gbi.getFont().getSize() * 4f);
+        Font font = gbi.getFont().deriveFont(Font.BOLD, gbi.getFont().getSize());
         for (int i = 0; i < wktGeoms.size(); i++) {
-            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             CombineImageWkt ciw = (CombineImageWkt) wktGeoms.get(i);
-            Color color = settings.getDefaultWktGeomColor();
-            if (ciw.getColor() != null) {
-                color = ciw.getColor();
-            }
-            gbi.setColor(color);
+            FeatureStyle fs = ciw.getStyle();
+            font = font.deriveFont(fs.getFontSize());
+            float strokeWidth = fs.getStrokeWidth().floatValue();
+            gbi.setStroke(new BasicStroke(strokeWidth));
+            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
+            
+            gbi.setColor(fs.getFillColor());
             String wktGeom = ciw.getWktGeom();
             Geometry geom = geometrieFromText(wktGeom, srid);
             Shape shape = createImage(geom, srid, bbox, width, height);
             Point centerPoint = null;
             if (geom instanceof Polygon) {
                 gbi.fill(shape);
+                gbi.setColor(fs.getStrokeColor());
+                gbi.draw(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
                 centerPoint = calculateCenter(shape, srid, bbox, width, height);
-                float strokeWidth = ciw.getStrokeWidth() != null ? ciw.getStrokeWidth() : 2f;
                 gbi.fill(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 8 * strokeWidth, 8 * strokeWidth));
             } else {
-                float strokeWidth = ciw.getStrokeWidth() != null ? ciw.getStrokeWidth() : 3f;
-                gbi.setStroke(new BasicStroke(strokeWidth));
                 gbi.draw(shape);
             }
             if (ciw.getLabel() != null) {
@@ -243,7 +243,7 @@ public class ImageTool {
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() + 2);
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 2, (float) centerPoint.getY());
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() + 2, (float) centerPoint.getY());
-                gbi.setColor(Color.BLACK);
+                gbi.setColor(fs.getFontColor());
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY());
             }
