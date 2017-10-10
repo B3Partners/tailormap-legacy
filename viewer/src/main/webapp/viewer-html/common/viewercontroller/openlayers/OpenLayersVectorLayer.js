@@ -449,7 +449,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
             feature.color = color;
         }
-        feature.style = this.fromOpenLayersStyle(openLayersFeature).getProperties();;
+        feature.style = this.frameworkStyleToFeatureStyle(openLayersFeature).getProperties();;
         if(this.config.addAttributesToFeature) {
             feature.attributes = openLayersFeature.attributes;
         }
@@ -460,7 +460,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         return featureStyle.getProperties();
     },
 
-    fromOpenLayersStyle: function(openLayersFeature) {
+    frameworkStyleToFeatureStyle: function(openLayersFeature) {
         var styleProps = openLayersFeature.style || {};
         return Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
     },

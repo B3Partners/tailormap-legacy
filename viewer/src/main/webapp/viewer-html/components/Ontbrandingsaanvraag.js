@@ -1242,7 +1242,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 ? raw_data.attributes.custom_zonedistance_fan
                 : this.ZONE_DISTANCES_FAN[raw_data.attributes.zonedistance_fan];
         }
-        raw_data.style = feature.style.getProperties();
+        raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature.style).getProperties();
         delete raw_data.id;
         delete raw_data.attributes.id;
         delete raw_data.attributes.fid;

@@ -127,5 +127,8 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     /** handle ESC key when drawing. */
     cancelSketch: function () {
         Ext.Error.raise({msg: "VectorLayer.cancelSketch() Not implemented! Must be implemented in sub-class"});
+    },
+    frameworkStyleToFeatureStyle: function(frameworkStyle){
+        Ext.Error.raise({msg: "VectorLayer.frameworkStyleToFeatureStyle() Not implemented! Must be implemented in sub-class"});
     }
 });

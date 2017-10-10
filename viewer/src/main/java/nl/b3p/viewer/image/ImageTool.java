@@ -36,6 +36,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.RenderingHints.Key;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -44,9 +45,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageWriter;
@@ -207,6 +209,15 @@ public class ImageTool {
         }
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
         Graphics2D gbi = newBufIm.createGraphics();
+
+        Map<Key, Object> hints = new HashMap<>();
+        hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        hints.put(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
+        hints.put(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        hints.put(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
+        
+        RenderingHints rh = new RenderingHints(hints);
+        gbi.setRenderingHints(rh);
         gbi.drawImage(bi, 0, 0, null);
         Font font = gbi.getFont().deriveFont(Font.BOLD, gbi.getFont().getSize());
         for (int i = 0; i < wktGeoms.size(); i++) {
@@ -227,14 +238,14 @@ public class ImageTool {
                 gbi.setColor(fs.getStrokeColor());
                 gbi.draw(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
-                centerPoint = calculateCenter(shape, srid, bbox, width, height);
+                centerPoint = calculateCenter(shape, srid, bbox, width, height, null, gbi);
                 gbi.fill(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 8 * strokeWidth, 8 * strokeWidth));
             } else {
                 gbi.draw(shape);
             }
             if (ciw.getLabel() != null) {
                 if (centerPoint == null) {
-                    centerPoint = calculateCenter(shape, srid, bbox, width, height);
+                    centerPoint = calculateCenter(shape, srid, bbox, width, height, ciw.getLabel(), gbi);
                 }
                 gbi.setFont(font);
                 // witte halo
@@ -244,7 +255,7 @@ public class ImageTool {
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 2, (float) centerPoint.getY());
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() + 2, (float) centerPoint.getY());
                 gbi.setColor(fs.getFontColor());
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY());
             }
         }
@@ -252,12 +263,18 @@ public class ImageTool {
         return newBufIm;
     }
 
-    private static Point calculateCenter(Shape shape, int srid, Bbox bbox, int width, int height) throws Exception {
+    private static Point calculateCenter(Shape shape, int srid, Bbox bbox, int width, int height, String label, Graphics2D gbi) throws Exception {
         Point centerPoint = new Point();
         double x = shape.getBounds2D().getCenterX();
         double y = shape.getBounds2D().getCenterY();
         centerPoint.setLocation(x, y);
         centerPoint = transformToScreen(centerPoint, srid, bbox, width, height);
+        if(label != null){
+            int stringWidth = gbi.getFontMetrics().stringWidth(label) / 2;
+            int stringHeight = gbi.getFontMetrics().getHeight() / 2;
+            centerPoint.translate(-stringWidth, stringHeight);
+        }
+        
         return centerPoint;
     }
 
