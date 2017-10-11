@@ -24,6 +24,7 @@ package nl.b3p.viewer.image;
 import com.sun.imageio.plugins.png.PNGMetadata;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
@@ -243,17 +244,23 @@ public class ImageTool {
                 gbi.setColor(fs.getStrokeColor());
                 gbi.draw(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
-                int pointwidth = (int) pointRadius * (int) strokeWidth;
-                int pointheight = (int) pointRadius * (int) strokeWidth;
+                int pointwidth = (int) pointRadius * 2;
+                int pointheight = (int) pointRadius * 2;
                 centerPoint = calculateCenter(shape, srid, bbox, width, height, -pointwidth / 2, -pointheight / 2);
                 Shape s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
                 gbi.fill(s);
                 gbi.draw(s);
-            } else if( geom instanceof com.vividsolutions.jts.geom.LineString){
+            } else if( geom instanceof LineString){
+                /* possibly starting point for correctly placing labels with line
+                Shape tempshape = createImage(((LineString) geom).getStartPoint(), srid, bbox, width, height);
+                int pointwidth = (int) pointRadius * (int) strokeWidth;
+                int pointheight = (int) pointRadius * (int) strokeWidth;
+                centerPoint = calculateCenter(tempshape, srid, bbox, width, height, -pointwidth / 2, -pointheight / 2);
+                */
                 String dash = fs.getStrokeDashstyle();
                 Color strokecolor = fs.getStrokeColor();
                 gbi.setColor(strokecolor);
-                Stroke stroke = null;
+                Stroke stroke;
                 switch(dash){
                     case "dot":
                         stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3,10}, 0);
@@ -272,22 +279,33 @@ public class ImageTool {
             }else {
                 gbi.draw(shape);
             }
-            if (ciw.getLabel() != null) {
+            if (ciw.getLabel() != null && !ciw.getLabel().isEmpty()) {
+                int xoffset = -1 * (gbi.getFontMetrics().stringWidth(ciw.getLabel()) / 2 );
                 if (centerPoint == null) {
-                    
-                    int xoffset = -1* gbi.getFontMetrics().stringWidth(ciw.getLabel()) / 2;
                     centerPoint = calculateCenter(shape, srid, bbox, width, height,xoffset, yoffset);
                 }
-                gbi.setFont(font);
+                AffineTransform t = gbi.getTransform();
+                
+                double rotation = fs.getRotation();
+                AffineTransform rot = new AffineTransform(t);
+                rot.rotate(Math.toRadians(rotation), centerPoint.getX(), centerPoint.getY());
+                gbi.setTransform(rot);
+                double labelXOffset = fs.getLabelXOffset();
+                double labelYOffset = fs.getLabelYOffset();
+                centerPoint.translate(xoffset+(int)labelXOffset, yoffset-(int)labelYOffset);
+
                 // witte halo
+                gbi.setFont(font);
                 gbi.setColor(Color.WHITE);
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() - 2);
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() + 2);
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 2, (float) centerPoint.getY());
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() + 2, (float) centerPoint.getY());
+                // actual text
                 gbi.setColor(fs.getFontColor());
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
                 gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY());
+                gbi.setTransform(t);
             }
         }
         gbi.dispose();
