@@ -220,6 +220,9 @@ public class ImageTool {
         gbi.setRenderingHints(rh);
         gbi.drawImage(bi, 0, 0, null);
         Font font = gbi.getFont().deriveFont(Font.BOLD, gbi.getFont().getSize());
+        
+        int yoffset = gbi.getFontMetrics().getHeight() / 2;
+        
         for (int i = 0; i < wktGeoms.size(); i++) {
             CombineImageWkt ciw = (CombineImageWkt) wktGeoms.get(i);
             FeatureStyle fs = ciw.getStyle();
@@ -238,14 +241,21 @@ public class ImageTool {
                 gbi.setColor(fs.getStrokeColor());
                 gbi.draw(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
-                centerPoint = calculateCenter(shape, srid, bbox, width, height, null, gbi);
-                gbi.fill(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 8 * strokeWidth, 8 * strokeWidth));
+                int ratio = 4;
+                int pointwidth = ratio * (int) strokeWidth;
+                int pointheight = ratio * (int) strokeWidth;
+                centerPoint = calculateCenter(shape, srid, bbox, width, height, -pointwidth / 2, -pointheight / 2);
+                Shape s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
+                gbi.fill(s);
+                gbi.draw(s);
             } else {
                 gbi.draw(shape);
             }
             if (ciw.getLabel() != null) {
                 if (centerPoint == null) {
-                    centerPoint = calculateCenter(shape, srid, bbox, width, height, ciw.getLabel(), gbi);
+                    
+                    int xoffset = -1* gbi.getFontMetrics().stringWidth(ciw.getLabel()) / 2;
+                    centerPoint = calculateCenter(shape, srid, bbox, width, height,xoffset, yoffset);
                 }
                 gbi.setFont(font);
                 // witte halo
@@ -263,17 +273,13 @@ public class ImageTool {
         return newBufIm;
     }
 
-    private static Point calculateCenter(Shape shape, int srid, Bbox bbox, int width, int height, String label, Graphics2D gbi) throws Exception {
+    private static Point calculateCenter(Shape shape, int srid, Bbox bbox, int width, int height, int xoffset, int yoffset) throws Exception {
         Point centerPoint = new Point();
         double x = shape.getBounds2D().getCenterX();
         double y = shape.getBounds2D().getCenterY();
         centerPoint.setLocation(x, y);
         centerPoint = transformToScreen(centerPoint, srid, bbox, width, height);
-        if(label != null){
-            int stringWidth = gbi.getFontMetrics().stringWidth(label) / 2;
-            int stringHeight = gbi.getFontMetrics().getHeight() / 2;
-            centerPoint.translate(-stringWidth, stringHeight);
-        }
+        centerPoint.translate(xoffset, yoffset);
         
         return centerPoint;
     }

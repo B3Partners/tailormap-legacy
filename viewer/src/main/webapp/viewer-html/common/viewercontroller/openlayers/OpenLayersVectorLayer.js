@@ -461,7 +461,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     frameworkStyleToFeatureStyle: function(openLayersFeature) {
-        var styleProps = openLayersFeature.style || {};
+        var styleProps = openLayersFeature.style || this.getCurrentStyleHash();
         return Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
     },
     
