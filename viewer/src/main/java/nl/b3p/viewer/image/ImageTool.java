@@ -38,6 +38,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
@@ -228,6 +229,7 @@ public class ImageTool {
             FeatureStyle fs = ciw.getStyle();
             font = font.deriveFont(fs.getFontSize());
             float strokeWidth = fs.getStrokeWidth().floatValue();
+            double pointRadius = fs.getPointRadius();
             gbi.setStroke(new BasicStroke(strokeWidth));
             gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
             
@@ -241,14 +243,33 @@ public class ImageTool {
                 gbi.setColor(fs.getStrokeColor());
                 gbi.draw(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
-                int ratio = 4;
-                int pointwidth = ratio * (int) strokeWidth;
-                int pointheight = ratio * (int) strokeWidth;
+                int pointwidth = (int) pointRadius * (int) strokeWidth;
+                int pointheight = (int) pointRadius * (int) strokeWidth;
                 centerPoint = calculateCenter(shape, srid, bbox, width, height, -pointwidth / 2, -pointheight / 2);
                 Shape s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
                 gbi.fill(s);
                 gbi.draw(s);
-            } else {
+            } else if( geom instanceof com.vividsolutions.jts.geom.LineString){
+                String dash = fs.getStrokeDashstyle();
+                Color strokecolor = fs.getStrokeColor();
+                gbi.setColor(strokecolor);
+                Stroke stroke = null;
+                switch(dash){
+                    case "dot":
+                        stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3,10}, 0);
+                        break;
+                    case "dash":
+                        stroke = new BasicStroke(strokeWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{13,7}, 0);
+                        break;
+                    case "solid":
+                    default:
+                        stroke = new BasicStroke(strokeWidth);//3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9,3}, 0);
+                        break;
+                }
+                gbi.setStroke(stroke);
+                gbi.draw(shape);
+                
+            }else {
                 gbi.draw(shape);
             }
             if (ciw.getLabel() != null) {
