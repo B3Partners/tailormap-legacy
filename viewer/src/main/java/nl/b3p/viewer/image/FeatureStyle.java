@@ -53,8 +53,12 @@ public class FeatureStyle {
         rotation = style.optDouble("rotation", 0.0);
         labelXOffset = style.optDouble("labelXOffset", 0.0);
         labelYOffset = style.optDouble("labelYOffset", 0.0);
-        fillColor = sanitizeColorString(style.optString("fillColor"));
-        fillOpacity = style.optDouble("fillOpacity", 0.5);
+        String fc = style.optString("fillColor");
+        boolean transparentFillColor = fc.equalsIgnoreCase("transparent");
+        fc = transparentFillColor ? null : fc;
+        fc = sanitizeColorString(fc);
+        fillColor = sanitizeColorString(fc);
+        fillOpacity = transparentFillColor ? 0.0 : style.optDouble("fillOpacity", 0.0);
         strokeColor = sanitizeColorString(style.optString("strokeColor"));
         strokeOpacity = style.optDouble("strokeOpacity", 0.0);
         strokeDashstyle = style.optString("strokeDashstyle");

@@ -75,7 +75,7 @@ public class CombineImageWkt {
         this.color = color;
     }
     public void setColor(String hexrgb) {
-        if (hexrgb==null){
+        if (hexrgb==null || hexrgb.equals("transparent")){
             return;
         }
         if (hexrgb.length()>0)
