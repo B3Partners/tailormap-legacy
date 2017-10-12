@@ -246,10 +246,20 @@ public class ImageTool {
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
                 int pointwidth = (int) pointRadius * 2;
                 int pointheight = (int) pointRadius * 2;
-                centerPoint = calculateCenter(shape, srid, bbox, width, height, -pointwidth / 2, -pointheight / 2);
-                Shape s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
+                int xpointoffset =  -pointwidth / 2;
+                int ypointoffset = -pointheight / 2;
+                centerPoint = calculateCenter(shape, srid, bbox, width, height,xpointoffset , ypointoffset);
+                Shape s;
+                AffineTransform at = gbi.getTransform();
+            
+                if(fs.getGraphicName() != null && !fs.getGraphicName().isEmpty()){
+                    s = drawPointGraphic(centerPoint, fs, xpointoffset, ypointoffset, gbi);
+                } else {
+                    s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
+                }
                 gbi.fill(s);
                 gbi.draw(s);
+                gbi.setTransform(at);
             } else if( geom instanceof LineString){
                 /* possibly starting point for correctly placing labels with line
                 Shape tempshape = createImage(((LineString) geom).getStartPoint(), srid, bbox, width, height);
@@ -310,6 +320,31 @@ public class ImageTool {
         }
         gbi.dispose();
         return newBufIm;
+    }
+
+    private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi) {
+        double rotation = fs.getRotation();
+        int length = fs.getPointRadius().intValue() * 2;
+        int halfLength = length/2;
+        int originX = (int) origin.getX();
+        int originY = (int) origin.getY();
+        
+        AffineTransform rot = gbi.getTransform();
+        rot.rotate(Math.toRadians(rotation), originX  - xoffset, originY+ length + yoffset);
+        gbi.setTransform(rot);
+        int [] x ={
+            originX - halfLength - xoffset,
+            originX  - xoffset,
+            originX + halfLength - xoffset
+        };
+        
+        int [] y = {
+            originY + length + yoffset,
+            originY + yoffset - (length * 2/3),
+            originY + length + yoffset
+        };
+        Shape s = new java.awt.Polygon(x, y, 3);
+        return s;
     }
 
     private static Point calculateCenter(Shape shape, int srid, Bbox bbox, int width, int height, int xoffset, int yoffset) throws Exception {
