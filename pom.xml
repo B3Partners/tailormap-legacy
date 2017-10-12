@@ -52,11 +52,12 @@
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
+        <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
     </properties>
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-dependency-updates > dependency-updates.log
+            mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-dependency-updates > dependency-updates.log
             and check the output for any available updates.
             
             To check for vulnarabilities in dependencies use the following command:
@@ -507,7 +508,7 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-plugin-updates -T1 > plugin-updates.log
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-plugin-updates -T1 > plugin-updates.log
                     and check the output for any available updates
                 -->
                 <plugin>
@@ -518,7 +519,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -538,7 +539,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.7.0</version>
                     <configuration>
                         <source>${project.build.sourceVersion}</source>
                         <target>${project.build.targetVersion}</target>
@@ -552,12 +553,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.20</version>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.20</version>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -567,17 +568,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.0.2</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.2</version>
+                    <version>2.2.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -587,7 +588,7 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <!-- current release of the compiler versions (2.5 atm) fails on an inline function:
+                    <!-- current release of the compiler versions (2.6 atm) fails on an inline function:
                     [ERROR] JSC_BAD_FUNCTION_DECLARATION. functions can only be declared at top level or immediately within another function in ES5 strict mode at /home/mark/dev/projects/flamingo/viewer/src/main/webapp/viewer-html/common/viewercontroller/openlayers/OpenLayersMapComponent.js line 381 : 16
                     -->
                     <version>2.4</version>
@@ -617,6 +618,11 @@
                     <artifactId>properties-maven-plugin</artifactId>
                     <version>1.0.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -642,7 +648,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
                 <configuration>
                     <formats>
                         <format>html</format>
