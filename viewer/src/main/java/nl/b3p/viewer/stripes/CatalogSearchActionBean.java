@@ -412,7 +412,7 @@ public class CatalogSearchActionBean implements ActionBean {
 
             PropertyIsEqualTo propertyIsEqualTo = FilterCreator.createPropertyIsEqualTo(queryString, propertyName);
 
-            StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_45,DutchAnalyzer.getDefaultStopSet());
+            StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_46, DutchAnalyzer.getDefaultStopSet());
 
             orList.add(propertyIsEqualTo);
             try {
