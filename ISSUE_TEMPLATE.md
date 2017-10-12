@@ -14,7 +14,7 @@ Which version of flamingo do you use: <!-- go to http://<server>/viewer-admin/ab
 <!-- Something odd/unexpected/terrible happened. Tell us everything! -->
 
 ### Screenshots
-<!-- please resize your browser window before captureing and remeber to blur-out any sensitive data in the image befor uploading
+<!-- please resize your browser window before capturing and remember to blur-out any sensitive data in the image before uploading
 
 ### Server log
 <details><summary>relevant section of the server log:</summary>
