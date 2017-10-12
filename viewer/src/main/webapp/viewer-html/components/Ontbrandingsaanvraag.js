@@ -22,7 +22,7 @@
  * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 Ext.define ("viewer.components.Ontbrandingsaanvraag",{
-    extend: "viewer.components.Component",
+    extend: "viewer.components.tools.DownloadMap",
     vectorLayer: null,
     extraObjectsLayer: null,
     calculationResultLayer: null,
@@ -1265,7 +1265,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
     printRequest: function() {
         var features = this.getAllFeatures();
-        // Print the features!
+        this.buttonDown();
     },
 
     /**
