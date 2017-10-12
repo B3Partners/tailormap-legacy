@@ -292,7 +292,7 @@ public class ImageTool {
             if (ciw.getLabel() != null && !ciw.getLabel().isEmpty()) {
                 int xoffset = -1 * (gbi.getFontMetrics().stringWidth(ciw.getLabel()) / 2 );
                 if (centerPoint == null) {
-                    centerPoint = calculateCenter(shape, srid, bbox, width, height,xoffset, yoffset);
+                    centerPoint = calculateCenter(shape, srid, bbox, width, height,0, 0);
                 }
                 AffineTransform t = gbi.getTransform();
                 
