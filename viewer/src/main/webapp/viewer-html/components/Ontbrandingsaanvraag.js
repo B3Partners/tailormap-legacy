@@ -1170,10 +1170,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(attributes.id) {
             delete attributes.id;
         }
+        var label = '';
+        if(attributes && attributes.label && (attributes.type !== this.EXTRA_OJBECT_TYPE && attributes.type !== this.MEASURE_LINE_TYPE)) {
+            label = attributes.label
+        }
         return Ext.create('viewer.viewercontroller.controller.Feature', {
             wktgeom: wkt,
             style: style,
-            label: attributes && attributes.label ? attributes.label : '',
+            label: label,
             attributes: attributes || {}
         });
     },
