@@ -60,6 +60,10 @@ public class FeatureToJson {
     private boolean edit = false;
     private boolean graph = false;
     private boolean aliases = true;
+    /**
+     * set to {@code true} to return empty string for null value.
+     */
+    private boolean returnNullval = false;
     private List<Long> attributesToInclude = new ArrayList();
     private static final int TIMEOUT = 5000;
     private FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
@@ -82,6 +86,15 @@ public class FeatureToJson {
         this.graph = graph;
         this.attributesToInclude = attributesToInclude;
         this.aliases = aliases;
+    }
+
+    public FeatureToJson(boolean arrays, boolean edit, boolean graph, boolean aliases, boolean returnNullval, List<Long> attributesToInclude) {
+        this.arrays = arrays;
+        this.edit = edit;
+        this.graph = graph;
+        this.attributesToInclude = attributesToInclude;
+        this.aliases = aliases;
+        this.returnNullval = returnNullval;
     }
 
     /**
@@ -148,7 +161,7 @@ public class FeatureToJson {
          */
         else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
             int index = 0;
-            if(fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0)) ){
+            if (fs.getSchema().getGeometryDescriptor() != null && fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0))) {
                 if(propertyNames.size() > 1){
                     index = 1;
                 }else {
@@ -398,6 +411,9 @@ public class FeatureToJson {
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     private Object formatValue(Object value) {
+        if (this.returnNullval && value == null) {
+            return "";
+        }
         if(value instanceof Date) {
             // JSON has no date type so format the date as it is used for
             // display, not calculation

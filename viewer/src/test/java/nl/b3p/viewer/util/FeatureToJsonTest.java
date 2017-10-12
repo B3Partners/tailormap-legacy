@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class FeatureToJsonTest {
     
-    private String url = "http://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
+    private String url = "https://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
     private String featureTypeName = "Test_omgeving:cbs_gemeente_2014";
     
 
