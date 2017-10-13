@@ -11,9 +11,10 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
 
+    <xsl:import href="legend.xsl"/>
+
     <xsl:output method="xml" version="1.0" omit-xml-declaration="no" indent="yes"/>
 
-    <xsl:import href="legend.xsl"/>
     <xsl:include href="calc.xsl"/>
     <xsl:include href="styles.xsl"/>
 
@@ -93,8 +94,14 @@
                             </fo:block>
                             <xsl:call-template name="table-related"/>
                         </xsl:for-each>
+                        
+                        <xsl:if test="count(//extra/info[@classname='related']) = 0">
+                            <fo:block xsl:use-attribute-sets="subtitle-font">
+                                <xsl:text>Geen gerelateerde data gevonden</xsl:text>
+                            </fo:block>
+                        </xsl:if>
                     </fo:block-container>
-
+                    
                     <!-- footer -->
                     <fo:block-container width="12.0cm" height="2.3cm" top="26.5cm" left="0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="disclaimer-block"/>
@@ -184,7 +191,7 @@
     </xsl:template>
 
     <xsl:template name="disclaimer-block">
-        <fo:block margin-left="0.2cm" margin-top="0.5cm" color="#000000" xsl:use-attribute-sets="default-font">
+        <fo:block margin-left="0.2cm" margin-top="0.5cm" color="#000000" xsl:use-attribute-sets="disclaimer-font">
             <xsl:text>Aan deze kaart kunnen geen rechten worden ontleend.</xsl:text>
         </fo:block>
     </xsl:template>

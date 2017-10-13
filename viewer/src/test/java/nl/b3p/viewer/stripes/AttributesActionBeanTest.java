@@ -45,7 +45,7 @@ public class AttributesActionBeanTest extends TestUtil{
     private ApplicationLayer applayerGS = new ApplicationLayer();
     private ApplicationLayer applayerDG = new ApplicationLayer();
     
-    private String urlGeoserver = "http://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
+    private String urlGeoserver = "https://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
     private String typenameGeoserver = "Test_omgeving:cbs_gemeente_2014";
     private FeatureSource fsGeoserver = new WFSFeatureSource();
     private SimpleFeatureType ftGeoserver = new SimpleFeatureType();
@@ -59,7 +59,7 @@ public class AttributesActionBeanTest extends TestUtil{
     
     
     
-    private String urlGeoserverRel = "http://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
+    private String urlGeoserverRel = "https://flamingo4.b3p.nl/geoserver/Test_omgeving/wms";
     private String typenameGeoserverRel = "Test_omgeving:cbs_gemeente_2014";
     private FeatureSource fsGeoserverRel = new WFSFeatureSource();
     private SimpleFeatureType ftGeoserverRel = new SimpleFeatureType();
