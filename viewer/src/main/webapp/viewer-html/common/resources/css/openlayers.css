@@ -180,3 +180,31 @@ div.olControlMousePosition{
 .olControlPanel .olControlDrawFeaturePolygonItemActive{
     background-image: url("../default/img/draw_polygon_on.png");
 }*/
+.ol-custom-overviewmap,
+      .ol-custom-overviewmap.ol-uncollapsible {
+        bottom: auto;
+        left: auto;
+        right: 0;
+        top: 500px;
+      }
+
+      .ol-custom-overviewmap:not(.ol-collapsed)  {
+        border: 1px solid black;
+      }
+
+      .ol-custom-overviewmap .ol-overviewmap-map {
+        border: none;
+        width: 600px;
+        height: 200px;
+      }
+
+      .ol-custom-overviewmap .ol-overviewmap-box {
+        border: 2px solid red;
+      }
+
+      .ol-custom-overviewmap:not(.ol-collapsed) button{
+        bottom: auto;
+        left: auto;
+        right: 1px;
+        top: 1px;
+      }

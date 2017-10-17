@@ -99,8 +99,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     
     getCurrtentStyle : function(){
         var color = ol.color.asArray(this.colorPrefix+ this.style['fillcolor']);
-        color = color.slice();
-        color[3] = 0.2;
+            color = color.slice();
+            color[3] = 0.2;
         var featureFill = new ol.style.Fill({
             //color: this.colorPrefix+ this.style['strokecolor']
             color:color
@@ -178,7 +178,10 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
             // check if a colour was specified on the feature and set that for drawing
             if (feature.config.color) {
                 olFeature.getStyle().getStroke().setColor(this.colorPrefix +feature.config.color);
-                olFeature.getStyle().getFill().setColor(this.colorPrefix+feature.config.color);
+                var color = ol.color.asArray(this.colorPrefix+feature.config.color);
+                color = color.slice();
+                color[3] = 0.2;
+                olFeature.getStyle().getFill().setColor(color);
             }
         }
         return this.source.addFeatures(olFeatures);
@@ -295,9 +298,11 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     toOpenLayersFeature : function(feature){
         var wktFormat= new ol.format.WKT();
         var geom = wktFormat.readGeometry(feature.config.wktgeom);
+        console.log(feature);
+        console.log(geom);
         var olFeature = new ol.Feature();
         olFeature.setGeometry(geom);
-        olFeature.setStyle(this.getCurrtentStyle());
+        olFeature.setStyle(this.getCurrtentStyle(feature.config.color));
         olFeature.getStyle().setText(new ol.style.Text({text:feature.config.label}));
         olFeature.setId(feature.config.id);
         return olFeature;

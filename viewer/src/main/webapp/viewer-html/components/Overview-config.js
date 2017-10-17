@@ -131,6 +131,18 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'url',
                 value: config.url,
                 labelWidth:me.labelWidth
+            },{
+                xtype: 'radiogroup',
+                fieldLabel: 'layer type',
+                name: 'layer type',
+                columns: 2,
+                labelWidth:me.labelWidth,
+                vertical: false,
+                items: [
+                    {boxLabel : "Tms", name: 'rb', inputValue: '1', checked:config.rb =='1' ? true :false},
+                    {boxLabel : "wms/image", name: 'rb', inputValue: '2' , checked:config.rb =='2' ? true :false}
+                ]
+                
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Layers (optioneel)',
@@ -143,13 +155,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "followZoom",
                 fieldLabel: "Volg zoomen",
                 labelWidth:me.labelWidth
-            },{
-                xtype: 'checkbox',
-                fieldLabel: 'WMTS',
-                name: 'LAYERTYPE_WMTS',
-                checked: me.config.type = 'WMTS',
-                labelWidth:me.labelWidth,
-                value: false
             },{ 
                 xtype:'container',
                 margin: 5,
