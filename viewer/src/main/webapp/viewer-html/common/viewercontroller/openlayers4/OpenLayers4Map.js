@@ -6,7 +6,7 @@
 
 /* global ol */
 
-Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
+Ext.define ("viewer.viewercontroller.openlayers4.OpenLayers4Map",{
     extend: "viewer.viewercontroller.controller.Map",
     layersLoading : null,
     utils:null,
@@ -17,9 +17,9 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
      * @see viewer.viewercontroller.controller.Map#constructor
      */  
     constructor: function(config){
-        viewer.viewercontroller.openlayers3.OpenLayersMap3.superclass.constructor.call(this, config);
+        viewer.viewercontroller.openlayers4.OpenLayers4Map.superclass.constructor.call(this, config);
         this.initConfig(config);
-        this.utils = Ext.create("viewer.viewercontroller.openlayers3.Utils");
+        this.utils = Ext.create("viewer.viewercontroller.openlayers4.Utils");
         var maxBounds=null;
         
         if (config.options.maxExtent){
@@ -264,7 +264,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
                 this.frameworkMap.on(olSpecificEvent,this.handleEvent, this);
             }
         }
-        viewer.viewercontroller.openlayers3.OpenLayersMap3.superclass.addListener.call(this,event,handler,scope);
+        viewer.viewercontroller.openlayers4.OpenLayers4Map.superclass.addListener.call(this,event,handler,scope);
     },
     
     removeListener : function (event,handler,scope){
@@ -283,7 +283,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.OpenLayersMap3",{
                     this.frameworkMap.un(olSpecificEvent,this.handleEvent,this);
                 }
             }            
-            viewer.viewercontroller.openlayers3.OpenLayersMap3.superclass.removeListener.call(this,event,handler,scope);
+            viewer.viewercontroller.openlayers4.OpenLayers4Map.superclass.removeListener.call(this,event,handler,scope);
         }else{
             this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }

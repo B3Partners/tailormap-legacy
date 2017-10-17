@@ -6,7 +6,7 @@
 
 
 
-Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomIn",{
+Ext.define("viewer.viewercontroller.openlayers4.tools.ZoomIn",{
 
     tempKey:null,
     constructor : function(conf){

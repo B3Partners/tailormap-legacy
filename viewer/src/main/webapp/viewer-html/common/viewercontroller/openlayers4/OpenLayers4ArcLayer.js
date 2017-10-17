@@ -6,13 +6,13 @@
 
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ArcLayer",{
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4ArcLayer",{
     extend: "viewer.viewercontroller.controller.ArcLayer",
     mixins: {
-        openLayersLayer: "viewer.viewercontroller.openlayers3.OpenLayers3Layer"
+        openLayersLayer: "viewer.viewercontroller.openlayers4.OpenLayers4Layer"
     },
     constructor: function(config){
-        viewer.viewercontroller.openlayers3.OpenLayers3ArcLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.openlayers4.OpenLayers4ArcLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
         this.initConfig(config);
         return this;

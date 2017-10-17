@@ -5,8 +5,8 @@
  */
 
 
-Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonitor",{
-    extend: "viewer.viewercontroller.openlayers3.OpenLayers3Component",    
+Ext.define ("viewer.viewercontroller.openlayers4.components.OpenLayers4LoadMonitor",{
+    extend: "viewer.viewercontroller.openlayers4.OpenLayers4Component",    
     config:{
         top:null,
         left:null,
@@ -14,7 +14,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonit
     },
     
     constructor: function (conf){    
-        viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonitor.superclass.constructor.call(this, conf);
+        viewer.viewercontroller.openlayers4.components.OpenLayers4LoadMonitor.superclass.constructor.call(this, conf);
         // Make the control and add it to the openlayersmap
         var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
 

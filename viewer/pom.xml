@@ -396,44 +396,44 @@
                             </compilerOptions>
                             <externFiles />
                             <sourceFiles>
-                                <!-- OpenLayers3 -->                              
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/test.js</param>
+                                <!-- OpenLayers4 -->                              
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/test.js</param>
                                 
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Layer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3WMSLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3TilingLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Tool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/Utils.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/ToolMapClick3.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3Component.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayersMap3Component.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ArcServerLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3SnappingController.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3VectorLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/OpenLayers3ImageLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Layer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4WMSLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4TilingLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Tool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Map.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/Utils.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/ToolMapClick.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Component.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4MapComponent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4ArcLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4ArcServerLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4SnappingController.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4VectorLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4ImageLayer.js</param>
 
                                 <!-- OpenLayers Components -->
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3Maptip.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/panZoomBar.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/LoadingPanel.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3LoadMonitor.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/components/OpenLayers3Overview.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/OpenLayers4Maptip.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/panZoomBar.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/LoadingPanel.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/OpenLayers4LoadMonitor.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/OpenLayers4Overview.js</param>
                                 
                                 <!-- OpenLayers Tools -->
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3IdentifyTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/OpenLayers3DefaultTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/DragPan.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/FullExtent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/Measure.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ToolButton.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ZoomIn.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/ZoomOutButton.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers3/tools/StreetViewButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/OpenLayers4IdentifyTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/OpenLayers4DefaultTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/DragPan.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/FullExtent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/Measure.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/ToolButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/ZoomIn.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/ZoomOutButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/StreetViewButton.js</param>
                                   
                             </sourceFiles>
-                            <outputFile>${minify.outputdir}/openlayers3-min.js</outputFile>
+                            <outputFile>${minify.outputdir}/openlayers4-min.js</outputFile>
                         </compilation>
                         <compilation>
                             <compilationLevel>WHITESPACE_ONLY</compilationLevel>

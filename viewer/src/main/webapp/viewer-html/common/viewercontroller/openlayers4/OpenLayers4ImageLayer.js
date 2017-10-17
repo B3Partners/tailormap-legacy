@@ -5,16 +5,16 @@
  */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer",{
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4ImageLayer",{
     extend: "viewer.viewercontroller.controller.ImageLayer",
     mixins: {
-        openLayers3Layer: "viewer.viewercontroller.openlayers3.OpenLayers3Layer"
+        openLayers4Layer: "viewer.viewercontroller.openlayers4.OpenLayers4Layer"
     },
     constructor : function (config){
-        viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer.superclass.constructor.call(this, config);
-        this.mixins.openLayers3Layer.constructor.call(this,config);
+        viewer.viewercontroller.openlayers4.OpenLayers4ImageLayer.superclass.constructor.call(this, config);
+        this.mixins.openLayers4Layer.constructor.call(this,config);
         
-        this.utils = Ext.create("viewer.viewercontroller.openlayers3.Utils");
+        this.utils = Ext.create("viewer.viewercontroller.openlayers4.Utils");
         
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
         var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
@@ -68,49 +68,49 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer",{
      *Get the type of the layer
      */
     getType : function (){
-        return this.mixins.openLayers3Layer.getType.call(this);
+        return this.mixins.openLayers4Layer.getType.call(this);
     },
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
     setVisible: function(vis){
-        this.mixins.openLayers3Layer.setVisible.call(this,vis);
+        this.mixins.openLayers4Layer.setVisible.call(this,vis);
     },
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
     getVisible: function(){        
-        return this.mixins.openLayers3Layer.getVisible.call(this);
+        return this.mixins.openLayers4Layer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
      */
     setAlpha: function (alpha){
-        this.mixins.openLayers3Layer.setAlpha.call(this,alpha);
+        this.mixins.openLayers4Layer.setAlpha.call(this,alpha);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#reload
      */
     reload: function (){
-        this.mixins.openLayers3Layer.reload.call(this);
+        this.mixins.openLayers4Layer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
      */
     addListener: function (event,handler,scope){
-        this.mixins.openLayers3Layer.addListener.call(this,event,handler,scope);
+        this.mixins.openLayers4Layer.addListener.call(this,event,handler,scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
      */
     removeListener: function (event,handler,scope){
-        this.mixins.openLayers3Layer.removeListener.call(this,event,handler,scope);
+        this.mixins.openLayers4Layer.removeListener.call(this,event,handler,scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#destroy
      */
     destroy: function (){
-        this.mixins.openLayers3Layer.destroy.call(this);
+        this.mixins.openLayers4Layer.destroy.call(this);
     }
     
 });

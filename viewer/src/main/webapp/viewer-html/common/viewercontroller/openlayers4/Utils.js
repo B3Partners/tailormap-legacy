@@ -7,7 +7,7 @@
 
 /* global ol */
 
-Ext.define("viewer.viewercontroller.openlayers3.Utils",{
+Ext.define("viewer.viewercontroller.openlayers4.Utils",{
     createBounds : function(extent){
         return [Number(extent.minx),Number(extent.miny),Number(extent.maxx),Number(extent.maxy)];
     },

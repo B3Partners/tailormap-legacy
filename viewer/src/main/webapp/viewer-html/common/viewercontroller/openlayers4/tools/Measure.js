@@ -8,8 +8,8 @@
 /* global ol */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
-    extend: "viewer.viewercontroller.openlayers3.OpenLayers3Tool",
+Ext.define("viewer.viewercontroller.openlayers4.tools.Measure",{
+    extend: "viewer.viewercontroller.openlayers4.OpenLayers4Tool",
     sketch:null,
     listener:null,
     measureTooltipElement:null,
@@ -17,7 +17,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.Measure",{
     overlay:null,
     layer:null,
     constructor : function(conf){
-        //viewer.viewercontroller.openlayers3.tools.Measure.superclass.constructor.call(this,conf);
+        //viewer.viewercontroller.openlayers4.tools.Measure.superclass.constructor.call(this,conf);
         this.initConfig(conf);
         this.conf = conf;
         this.overlay =[];

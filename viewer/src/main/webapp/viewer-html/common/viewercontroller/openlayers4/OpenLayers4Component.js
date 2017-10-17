@@ -5,7 +5,7 @@
  */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Component",{
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4Component",{
     extend: "viewer.viewercontroller.controller.Component",
     /**
      * @see viewer.viewercontroller.controller.Component#constructor
@@ -14,7 +14,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Component",{
      */
     constructor : function (conf,frameworkObject){
         
-        viewer.viewercontroller.openlayers3.OpenLayers3Component.superclass.constructor.call(this,conf);
+        viewer.viewercontroller.openlayers4.OpenLayers4Component.superclass.constructor.call(this,conf);
         this.frameworkObject=frameworkObject;
         if(conf.regionName == "content_bottom" && this.config.viewerController.mapComponent.contentBottom){
             // Make a new div and append it to the contentBottom div. So controls can't override other controls (for example the mouseposition renders itself to the content of this.div

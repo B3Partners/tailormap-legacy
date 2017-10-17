@@ -8,10 +8,10 @@
 
 /* global ol */
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4VectorLayer",{
     extend: "viewer.viewercontroller.controller.VectorLayer",
     mixins: {
-        openLayers3Layer: "viewer.viewercontroller.openlayers3.OpenLayers3Layer"
+        openLayers4Layer: "viewer.viewercontroller.openlayers4.OpenLayers4Layer"
     },
     draw:null,
     point:null,
@@ -29,8 +29,8 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     modifyFeature:null,
     constructor : function (config){
         config.colorPrefix = '#';
-        viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer.superclass.constructor.call(this, config);
-        this.mixins.openLayers3Layer.constructor.call(this,config);
+        viewer.viewercontroller.openlayers4.OpenLayers4VectorLayer.superclass.constructor.call(this, config);
+        this.mixins.openLayers4Layer.constructor.call(this,config);
         this.defColor = this.colorPrefix + config.style['fillcolor'];
         
         this.draw = new ol.interaction.Draw({type:'Point'});
@@ -348,14 +348,14 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",{
     },
     
     getVisible: function(){
-        return this.mixins.openLayers3Layer.getVisible.call(this);
+        return this.mixins.openLayers4Layer.getVisible.call(this);
     },
     
     reload: function (){
-        this.mixins.openLayers3Layer.reload.call(this);
+        this.mixins.openLayers4Layer.reload.call(this);
     },
     getType : function (){
-        return this.mixins.openLayers3Layer.getType.call(this);
+        return this.mixins.openLayers4Layer.getType.call(this);
     }
     
     });

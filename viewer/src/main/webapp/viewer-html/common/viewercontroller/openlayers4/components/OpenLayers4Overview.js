@@ -5,8 +5,8 @@
  */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview", {
-    extend: "viewer.viewercontroller.openlayers3.OpenLayers3Component",
+Ext.define("viewer.viewercontroller.openlayers4.components.OpenLayers4Overview", {
+    extend: "viewer.viewercontroller.openlayers4.OpenLayers4Component",
     config: {
         top: null,
         left: null,
@@ -26,7 +26,7 @@ Ext.define("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",
         this.height = 300;
         this.width = 300;
         
-        viewer.viewercontroller.openlayers3.components.OpenLayers3Overview.superclass.constructor.call(this, conf);
+        viewer.viewercontroller.openlayers4.components.OpenLayers4Overview.superclass.constructor.call(this, conf);
         var map = this.config.viewerController.mapComponent.getMap().frameworkMap;
         this.map = map;
         if (Ext.isEmpty(this.config.url)) {

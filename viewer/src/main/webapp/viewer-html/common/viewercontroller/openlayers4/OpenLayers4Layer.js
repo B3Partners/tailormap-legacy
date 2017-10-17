@@ -5,7 +5,7 @@
  */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Layer",{        
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4Layer",{        
     config:{
         name: null
     },

@@ -624,7 +624,7 @@ Ext.define('viewer.LayoutManager', {
                 componentItem.regionName=regionName;
             }
             me.componentList.push(componentItem);
-            if(component.componentClass == "viewer.mapcomponents.FlamingoMap" || component.componentClass == "viewer.mapcomponents.OpenLayersMap" || component.componentClass == "viewer.mapcomponents.OpenLayersMap3" ) {
+            if(component.componentClass == "viewer.mapcomponents.FlamingoMap" || component.componentClass == "viewer.mapcomponents.OpenLayersMap" || component.componentClass == "viewer.mapcomponents.OpenLayers4Map" ) {
                 me.mapId = cmpId;
             }
             first = false;

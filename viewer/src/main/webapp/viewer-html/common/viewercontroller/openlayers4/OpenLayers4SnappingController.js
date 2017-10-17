@@ -7,7 +7,7 @@
 
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3SnappingController", {
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4SnappingController", {
     extend: "viewer.viewercontroller.controller.SnappingController",
     /**
      * editable/drawable OpenLayers Vector layer.
@@ -48,7 +48,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3SnappingController", 
      * @returns {viewer.viewercontroller.openlayers.OpenLayersSnappingController}
      */
     constructor: function (config) {
-        viewer.viewercontroller.openlayers3.OpenLayers3SnappingController.superclass.constructor.call(this, config);
+        viewer.viewercontroller.openlayers4.OpenLayers4SnappingController.superclass.constructor.call(this, config);
 
         this.frameworkMap = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         this.frameworkControl = new ol.interaction.Snap({source:this.frameworkLayer});

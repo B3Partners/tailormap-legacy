@@ -6,7 +6,7 @@
 
 
 
-Ext.define("viewer.viewercontroller.openlayers3.tools.FullExtent",{
+Ext.define("viewer.viewercontroller.openlayers4.tools.FullExtent",{
 
     constructor : function(conf){
         this.initConfig(conf);
