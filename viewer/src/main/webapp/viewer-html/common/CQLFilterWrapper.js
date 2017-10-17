@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 /**
  * A 
  * 
@@ -27,7 +29,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         id:null,
         cql:null,
         operator:null,
-        // Possible values: ATTRIBUTE/GEOMETRY
+        // Possible values: ATTRIBUTE/GEOMETRY/APPLAYER
         type: null
     },
     constructor : function (config){
@@ -43,7 +45,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         for (var i = 0 ; i < this.logicOperators.length;i++){
             val = Ext.String.trim(val);
             var op = this.logicOperators[i];
-            if(val.indexOf(op) == 0){
+            if(val.indexOf(op) === 0){
                 val = val.substr(op.length);
             }
         }
@@ -54,7 +56,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         for (var i = 0 ; i < this.logicOperators.length;i++){
             val = Ext.String.trim(val);
             var op = this.logicOperators[i];
-            if(val.indexOf(op) == 0){
+            if(val.indexOf(op) === 0){
                 val = val.substr(op.length);
             }
         }
@@ -62,14 +64,14 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     },
     getInternalCQLWithoutType : function (type){
         var returnValue = "";
-        if(this.config.type != type){
-            if(this.config.cql != ""){
+        if(this.config.type !== type){
+            if(this.config.cql !== ""){
                 returnValue = " " + this.config.operator + " " + this.config.cql;
             }
         }
         for(var i = 0 ; i < this.filters.length;i++){
             var f = this.filters[i];
-            if(f.type != type){
+            if(f.type !== type){
                 returnValue += f.getInternalCQLWithoutType(type);
             }
         }
@@ -78,7 +80,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     getInternalCQL : function (){
         var returnValue = "";
             
-        if(this.config.cql != ""){
+        if(this.config.cql !== ""){
             returnValue = " " + this.config.operator + " " + this.config.cql;
         }
         for(var i = 0 ; i < this.filters.length;i++){
@@ -96,7 +98,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     removeFilterById : function (id){
         for(var i = 0 ; i < this.filters.length;i++){
             var f = this.filters[i];
-            if(f.config.id == id){
+            if(f.config.id === id){
                 this.filters.splice(i,1);
                 break;
             }

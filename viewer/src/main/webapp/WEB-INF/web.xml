@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <filter-mapping>
+        <filter-name>HeaderAuthenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
         <filter-name>IPAuthenticationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
@@ -120,6 +124,31 @@
     <filter>
         <filter-name>IPAuthenticationFilter</filter-name>
         <filter-class>nl.b3p.viewer.util.IPAuthenticationFilter</filter-class>
+    </filter>
+    <filter>
+        <!-- See JavaDoc for documentation.
+
+        Add the following link to login.jsp to enable SAML login:
+        <p>Klik <a href="${contextPath}/auth/init?returnTo=${contextPath}/app?name=${param['name']}&version=${param['version']}&debug=${param['debug']}">hier</a> om in te loggen met uw externe account.</p> 
+        -->
+        <filter-name>HeaderAuthenticationFilter</filter-name>
+        <filter-class>nl.b3p.web.filter.HeaderAuthenticationFilter</filter-class>
+        <init-param>
+            <!-- Only enable when the webapp is ONLY reachable proxied by the
+             webserver correctly configured to clear the userHeader on the
+             authPath. Must not be directly reachable by the Tomcat HTTP
+             connector, disable it or bind it to localhost! -->
+            <param-name>iHaveSecuredMyServerAndDisabledTheTomcatHttpConnector</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>commonRole</param-name>
+            <param-value>ExtendedUser</param-value>
+        </init-param>
+        <init-param>
+            <param-name>saveExtraHeaders</param-name>
+            <param-value>MELLON_SESSION</param-value>
+        </init-param>
     </filter>
     <servlet>
         <servlet-name>StripesDispatcher</servlet-name>

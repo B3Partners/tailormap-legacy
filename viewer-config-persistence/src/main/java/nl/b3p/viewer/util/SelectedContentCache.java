@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 B3Partners B.V.
+ * Copyright (C) 2013-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -70,7 +69,7 @@ public class SelectedContentCache {
                 ClobElement el = new ClobElement(cached.toString());
                 app.getDetails().put(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT, el);
                 setApplicationCacheDirty(app, false, useExpanded,em);
-                Stripersist.getEntityManager().getTransaction().commit();
+                em.getTransaction().commit();
             }
         } else {
             ClobElement el = app.getDetails().get(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT);
@@ -272,7 +271,7 @@ public class SelectedContentCache {
             o.put("selectedContent", selectedContent);
 
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em, false);
 
             Collections.sort(selectedObjects, new Comparator() {
                 @Override
@@ -323,7 +322,7 @@ public class SelectedContentCache {
         return o;
     }
 
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em) throws JSONException {
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em, boolean previouslySelected) throws JSONException {
         
         StartLevel sl = l.getStartLevels().get(app);
         if(sl != null){
@@ -332,14 +331,17 @@ public class SelectedContentCache {
             Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
             o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
             o.put("background", l.isBackground() || parentIsBackground);
+            o.put("removed", sl.isRemoved());
             String levelId = l.getId().toString();
             if (validXmlTags) {
                 levelId = "level_" + levelId;
             }
             levels.put(levelId, o);
-
-            if (sl != null && sl.getSelectedIndex() != null) {
+            boolean selected = false || previouslySelected;
+            
+            if (sl != null && sl.getSelectedIndex() != null && !sl.isRemoved() && !previouslySelected) {
                 selectedContent.add(sl);
+                selected = true;
             }
 
             for (ApplicationLayer al : l.getLayers()) {
@@ -347,6 +349,7 @@ public class SelectedContentCache {
                 if(startLayer != null){
                     JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, app);
                     p.put("background", l.isBackground() || parentIsBackground);
+                    p.put("removed", startLayer.isRemoved());
 
                     Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
                     p.put("editAuthorizations", rw != null ? rw.toJSON() : new JSONObject());
@@ -360,7 +363,7 @@ public class SelectedContentCache {
 
                     appLayers.put(alId, p);
 
-                    if (startLayer.getSelectedIndex() != null) {
+                    if (startLayer.getSelectedIndex() != null && !startLayer.isRemoved()) {
                         selectedContent.add(startLayer);
                     }
                 }
@@ -381,7 +384,7 @@ public class SelectedContentCache {
                     Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
                     childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                     jsonChildren.put(childObject);
-                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em);
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache, em, selected);
                 }
             }
         }

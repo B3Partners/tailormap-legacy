@@ -175,7 +175,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             error = "Bovenste niveau kan niet worden verwijderd";
         } else if(level.getChildren().size() > 0) {
             error = "Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft.";
-        } else if(sl != null && sl.getSelectedIndex() != null) {
+        } else if(sl != null && sl.getSelectedIndex() != null && sl.isRemoved() == false) {
             error = "Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen";
         } else if(level.getLayers().size() > 0) {
             error = "Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat.";
@@ -237,7 +237,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 level.getDocuments().add(doc);
              }
         }
-        
+        if (level.getStartLevels().isEmpty()) {
+            StartLevel sl = new StartLevel();
+            sl.setApplication(application);
+            sl.setLevel(level);
+            sl.setSelectedIndex(null);
+            application.getStartLevels().add(sl);
+            level.getStartLevels().put(application, sl);
+        }
         em.persist(level);
         application.authorizationsModified();
         SelectedContentCache.setApplicationCacheDirty(application, true, false, em);

@@ -1,3 +1,5 @@
+/* global Ext, actionBeans */
+
 /**
  * ViewerController
  * @class Controller for a GIS application
@@ -444,7 +446,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var app = this.app;
 
         var traverseLevel = function(level) {
-            if(!level){
+            if(!level || level.removed){
                 return;
             }
             onLevel(level);
@@ -457,7 +459,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if(level.layers) {
                 for(var j = 0; j < level.layers.length; j++) {
                     var layer = app.appLayers[level.layers[j]];
-                    onAppLayer(layer);
+                    if(!layer.removed){
+                        onAppLayer(layer);
+                    }
                 }
             }
         };
@@ -832,7 +836,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var options={
             id: id,
             ratio: 1,
-            visible: appLayer.checked
+            visible: appLayer.checked,
+            serviceId : service.id
         };
         if(appLayer.details && appLayer.details.transparency != undefined) {
             options.alpha = 100-appLayer.details.transparency;

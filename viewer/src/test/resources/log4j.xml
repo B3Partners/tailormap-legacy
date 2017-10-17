@@ -25,8 +25,17 @@
     <logger name="org.apache.http">
         <level value="info" />
     </logger>
+    <logger name="org.apache.commons.httpclient">
+        <level value="info" />
+    </logger>
     <logger name="org.apache.http.wire">
         <level value="info" />
+    </logger>
+    <logger name="httpclient.wire">
+        <level value="info" />
+    </logger>
+    <logger name="nl.b3p.viewer.util.databaseupdate.ScriptRunner">
+        <level value="error" />
     </logger>
     <root>
         <level value="debug" />

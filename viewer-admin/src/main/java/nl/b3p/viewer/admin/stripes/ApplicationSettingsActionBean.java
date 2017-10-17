@@ -428,7 +428,12 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public Resolution publish (){
         // Find current published application and make backup
         EntityManager em = Stripersist.getEntityManager();
-        try {
+        publish(em);
+        return new RedirectResolution(ChooseApplicationActionBean.class);
+    }
+    
+    protected void publish(EntityManager em){
+          try {
             Application oldPublished = (Application)em.createQuery("from Application where name = :name AND version IS null")
                 .setMaxResults(1)
                 .setParameter("name", name)
@@ -456,8 +461,6 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         em.getTransaction().commit();
 
         setApplication(null);
-
-        return new RedirectResolution(ChooseApplicationActionBean.class);
     }
 
       /**

@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, actionBeans, MobileManager, appId, contextPath */
+
 /**
  * SelectionModule component
  * Creates a SelectionModule component to build a tree
@@ -242,7 +244,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var sc = this.config.viewerController.app.selectedContent;
         for( var i = 0 ; i < sc.length ; i++){
             var item = sc[i];
-            if(item.type == "level"){
+            if(item.type === "level"){
                 var level = this.config.viewerController.app.levels[item.id];
                 if(!level.background){
                     return false;
@@ -370,7 +372,7 @@ Ext.define ("viewer.components.SelectionModule",{
         me.popup.popupWin.setLoading("Zoeken...");
 
         var protocol = '', url = '', q = '';
-        if(me.customServiceType == 'csw') {
+        if(me.customServiceType === 'csw') {
             url = Ext.getCmp('cswServiceUrlTextfield').getValue();
             q = Ext.getCmp('cswSearchTextfield').getValue();
             var csw = Ext.create("viewer.CSWClient", {
@@ -456,7 +458,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 checked: true,
                 name: 'layerSource',
                 boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : 'Kaart',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
@@ -466,7 +468,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 checked: (radioControls.length === 0),
                 name: 'layerSource',
                 boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : 'Kaartlaag',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
@@ -476,7 +478,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 name: 'layerSource',
                 checked: (radioControls.length === 0),
                 boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : 'Eigen service',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
         if(me.config.selectCsw){
@@ -485,7 +487,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 name:'layerSource',
                 checked: (radioControls.length === 0),
                 boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : 'CSW service',
-                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval);}}
             });
         }
 
@@ -999,7 +1001,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         addParents(node.parentNode);
                     }
                 };
-                if(node.get('type') != 'cswresult' || (node.get('type') == 'cswresult') && node.data.loadedService) {
+                if(node.get('type') !== 'cswresult' || (node.get('type') === 'cswresult') && node.data.loadedService) {
                     node.expand(false, function() {// expand all nodes
                         if(node.hasChildNodes()) {
                             node.eachChild(function(childNode) {
@@ -1072,7 +1074,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var rootLevel = me.originalLevels[me.rootLevel];
         if(Ext.isDefined(rootLevel.children)) {
             for(var i = 0 ; i < rootLevel.children.length; i++) {
-                var l = me.addLevel(rootLevel.children[i], true, true, this.config.showBackgroundLevels, null,null,me.originalLevels);
+                var l = me.addLevel(rootLevel.children[i], true, true, this.config.showBackgroundLevels, null,null,me.originalLevels,true);
                 if(l !== null) {
                     l.expanded = true; // Make top levels expand
                     levels.push(l);
@@ -1092,14 +1094,16 @@ Ext.define ("viewer.components.SelectionModule",{
 
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
-            if(contentItem.type ==  "level") {
-                var level = me.addLevel(contentItem.id, true, true, this.config.showBackgroundLevels, null,null,me.levels);
-                if(level != null){
+            if(contentItem.type ===  "level") {
+                var level = me.addLevel(contentItem.id, true, true, this.config.showBackgroundLevels, null,null,me.levels,false);
+                if(level != null ){
                     nodes.push(level);
                 }
-            } else if(contentItem.type == "appLayer"){
+            } else if(contentItem.type === "appLayer"){
                 var layer = me.addLayer(contentItem.id);
-                nodes.push(layer);
+                if(layer){
+                    nodes.push(layer);
+                }
             }
         }
         me.insertTreeNode(nodes, rootNode);
@@ -1133,22 +1137,23 @@ Ext.define ("viewer.components.SelectionModule",{
             });
         }
 
-        var node = this.addLevel (levelId, true, true, this.config.showBackgroundLevels,null,null, this.levels);
+        var node = this.addLevel (levelId, true, true, this.config.showBackgroundLevels,null,null, this.levels,false);
 
         this.addedLevels.push({id:levelId,status:'new'});
         node = this.insertTreeNode(node,rootNode);
         this.sortTreeAndContent(rootNode.childNodes, rootNode);
     },
 
-    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions,levels) {
+    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions,levels, showRemovedItems) {
         var me = this;
         if(!Ext.isDefined(levels[levelId])) {
             return null;
         }
         var level = levels[levelId];
-        if(level.background && !showBackgroundLayers) {
+        if(level.background && !showBackgroundLayers || (!showRemovedItems && level.removed)) {
             return null;
         }
+        
         var description = descriptions ? descriptions[level.id] : null;
         var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false, false, description);
         treeNodeLayer.type = 'level';
@@ -1163,7 +1168,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 for(var i = 0 ; i < level.children.length; i++) {
                     var child = level.children[i];
                     if(!childrenIdsToShow || me.containsId(child,childrenIdsToShow)){
-                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow,descriptions,levels);
+                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow,descriptions,levels, showRemovedItems);
                         if(l !== null) {
                             nodes.push(l);
                         }
@@ -1298,15 +1303,15 @@ Ext.define ("viewer.components.SelectionModule",{
             applicationTreeContainer.setStyle('visibility', 'hidden');
             registryTreeContainer.setStyle('visibility', 'hidden');
             customTreeContainer.setStyle('visibility', 'hidden');
-            if(field == 'radioApplication') {
+            if(field === 'radioApplication') {
                 applicationTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.applicationTree.treePanel;
             }
-            if(field == 'radioRegistry') {
+            if(field === 'radioRegistry') {
                 registryTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.registryTree.treePanel;
             }
-            if(field == 'radioCustom') {
+            if(field === 'radioCustom') {
                 me.customServiceType = 'custom';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
@@ -1315,7 +1320,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 customServiceUrlButton.setVisible(true);
                 this.setTopHeight(MobileManager.isMobile() ? 70 : 60);
             }
-            if(field == 'radioCSW') {
+            if(field === 'radioCSW') {
                 me.customServiceType = 'csw';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
@@ -1655,7 +1660,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var rootNode = parent ? parent : me.treePanels.selectionTree.treePanel.getRootNode();
         var recordOrigData = me.getOrigData(record);
         var recordid = record.get('id');
-        if(nodeType == "layer") {
+        if(nodeType === "layer") {
             recordid = 'rl' + recordid;
         }
         var searchNode = rootNode.findChild('id', recordid, false);
@@ -1702,6 +1707,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 });
             }
             var level = this.levels[recordOrigData.id];
+            this.processRemovedFlag(level);
             if(level && !level.background && this.autoCheck()) {
                 this.checkAllChildren(level, true);
             }
@@ -1732,6 +1738,23 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         if(objData !== null) {
             this.insertNode(rootNode, objData);
+        }
+    },
+    
+    processRemovedFlag: function (level){
+        this.levels[level.id].removed = false;
+        var l = this.levels[level.id];
+        if(level.children){
+            for(var i = 0 ; i < l.children.length; i++){
+                var child = this.levels[l.children[i]];
+                this.processRemovedFlag(child);
+            }
+        }
+        
+        if (l.layers) {
+            for (var i = 0; i < l.layers.length; i++) {
+                this.appLayers[l.layers[i]].removed = false;
+            }
         }
     },
     
@@ -1772,7 +1795,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var parentNode = record.parentNode;
         // Root level reached and no service found
         if(parentNode == null) return null;
-        if(me.getNodeType(parentNode) == "service") {
+        if(me.getNodeType(parentNode) === "service") {
             return parentNode.data.service;
         } else {
             return me.findService(parentNode);
@@ -1816,11 +1839,11 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.removeLayer(recordOrigData.id, null);
                 me.removeService(recordOrigData.userService);
             }
-            else if(nodeType == "maplevel" || nodeType == "level") {
+            else if(nodeType === "maplevel" || nodeType === "level") {
                 // Added from application
                 me.removeLevel(recordOrigData.id, null);
             }
-            else if(nodeType == "appLayer") {
+            else if(nodeType === "appLayer") {
                 // Added from registry or application
                 me.removeLayer(recordOrigData.id, null);
                 me.removeService(recordOrigData.userService);
@@ -1865,14 +1888,14 @@ Ext.define ("viewer.components.SelectionModule",{
         });
         var selectedContent = [];
         Ext.Array.each(me.selectedContent, function(content) {
-            if(!(content.id == layerid && content.type == "appLayer")) {
+            if(!(content.id == layerid && content.type === "appLayer")) {
                 selectedContent.push(content);
             }
         });
 
         var levels = {};
         Ext.Object.each(me.levels, function(key,level) {
-            var layers = []
+            var layers = [];
             if(level.layers){
                 Ext.Array.each(level.layers, function(layer) {
                     if(layer !== layerid){
@@ -1926,18 +1949,18 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         // Remove layers, levels and services with status = new, a.k.a. not added to the selectedContent
         Ext.Array.each(me.addedLayers, function(addedLayer) {
-            if(addedLayer.status == 'new') {
+            if(addedLayer.status === 'new') {
                 me.removeLayer(addedLayer.id);
             }
         });
 
         Ext.Array.each(me.addedLevels, function(addedLevel) {
-            if(addedLevel.status == 'new') {
+            if(addedLevel.status === 'new') {
                 me.removeLevel(addedLevel.id);
             }
         });
         Ext.Array.each(me.addedServices, function(addedService) {
-            if(addedService.status == 'new') {
+            if(addedService.status === 'new') {
                 me.removeService(addedService.id);
             }
         });
@@ -1949,7 +1972,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var checkedFirstBackgroundLayer = null;
         Ext.Array.each(me.addedServices, function(addedService) {
-            if(addedService.status == 'new') {
+            if(addedService.status === 'new') {
                 addedService.status = 'added';
                 me.config.viewerController.addService(addedService);
             }
@@ -1964,7 +1987,7 @@ Ext.define ("viewer.components.SelectionModule",{
             });
         });
         Ext.Array.each(me.addedLevels, function(addedLevel) {
-            if(addedLevel.status == 'new') {
+            if(addedLevel.status === 'new') {
                 addedLevel.status = 'added';
                 if(me.levels[addedLevel.id] && me.levels[addedLevel.id].background && checkedFirstBackgroundLayer === null && me.autoCheck('onlybackground')) {
                     checkedFirstBackgroundLayer = addedLevel.id;
@@ -1972,7 +1995,7 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         });
         Ext.Array.each(me.addedLayers, function(addedLayer) {
-            if(addedLayer.status == 'new') {
+            if(addedLayer.status === 'new') {
                 addedLayer.status = 'added';
                 me.config.viewerController.addAppLayer(addedLayer);
             }

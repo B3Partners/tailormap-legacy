@@ -209,6 +209,7 @@ INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabl
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('wms', 2, '2015-09-15 16:34:14.961', false, true, 'Groen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&', 'B3P', NULL, 'Inimage', false, NULL, 2, 3);
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('wms', 3, '2015-09-15 16:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map&', 'B3P', NULL, 'Inimage', false, NULL, 2, 9);
 
+insert into geo_service_readers (geo_service, role_name) values (2, 'Admin');
 
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (1, 'false', 'useIntersect');
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (2, 'false', 'useProxy');
@@ -326,26 +327,27 @@ insert into SOLR_CONF_INDEX_ATTRIBUTES (solr_conf, attribute_) values(1, 45);
 insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_) values(1, 43); 
 insert into SOLR_CONF_RESULT_ATTRIBUTES (solr_conf, attribute_)	values(1, 45); 
 
-INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (42, null, 1, 1);
-INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (43, null, 1, 2);
-INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (44, 0, 1, 3);
-INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (45, null, 1, 4);
-INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (46, 1, 1, 5);
-INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_) VALUES (47, 2, 1, 6);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_,REMOVED) VALUES (42, null, 1, 1, false);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_,REMOVED) VALUES (43, null, 1, 2, false);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_,REMOVED) VALUES (44, 0, 1, 3, false);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_,REMOVED) VALUES (45, null, 1, 4, false);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_,REMOVED) VALUES (46, 1, 1, 5, false);
+INSERT INTO START_LEVEL (ID, SELECTED_INDEX, APPLICATION, LEVEL_,REMOVED) VALUES (47, 2, 1, 6, false);
 
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (24, true, null, 1, 1, false);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (25, false, null, 1, 2, false);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (26, false, null, 1, 3, false);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (27, false, null, 1, 4, false);
+INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (28, false, null, 1, 5, false);
 
-INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (24, true, null, 1, 1);
-INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (25, false, null, 1, 2);
-INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (26, false, null, 1, 3);
-INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (27, false, null, 1, 4);
-INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER) VALUES (28, false, null, 1, 5);
-
-INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '26');
+INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '28');
 
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');
+INSERT INTO user_ (username, password) VALUES ('pietje', '14c06474bec5e7def0304925d09f2b977af3146a');
 
 
 
 INSERT INTO user_groups (username, group_) VALUES ('admin', 'Admin');
+INSERT INTO user_groups (username, group_) VALUES ('pietje', 'UserAdmin');
 
 SET DATABASE REFERENTIAL INTEGRITY TRUE;

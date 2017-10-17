@@ -148,6 +148,10 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("25", new UpdateElement (Collections.singletonList("alter_layer_children_child_unique.sql"), String.class));
 
         updates.put("26", new UpdateElement(Collections.singletonList("add-wmts-support.sql"), String.class));
+        
+        updates.put("27", new UpdateElement(Collections.singletonList("fix_removed_startlayers_levels.sql"), String.class));
+        
+        updates.put("28", new UpdateElement(Collections.singletonList("add_geoservice_rights.sql"), String.class));
 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 333
     }

@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, actionBeans */
+
 Ext.define("viewer.components.sf.SimpleFilterBase",{
     wrapSimpleFilter: function(label, contents, className) {
         var contentBefore = [
@@ -301,7 +303,9 @@ Ext.define("viewer.components.sf.Checkbox", {
             var checkbox = Ext.getCmp(this.config.name + this.options[i].id);
             if(checkbox.getValue()){
                 cql += cql !== "" ? " OR " : "";
-                cql += this.config.attributeName +  " = " +  (mustEscape ? "'" : "")  + this.sanitizeValue(checkbox.getName(),mustEscape) + (mustEscape ? "'" : "");
+                var name = checkbox.getName();
+                var operator = name.indexOf('%') === -1 ? ' = ' : ' ILIKE ';
+                cql += this.config.attributeName +  operator + (mustEscape ? "'" : "")  + this.sanitizeValue(name,mustEscape) + (mustEscape ? "'" : "");
             }
         }
         return cql;

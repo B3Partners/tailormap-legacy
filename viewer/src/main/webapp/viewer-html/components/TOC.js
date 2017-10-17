@@ -239,7 +239,7 @@ Ext.define ("viewer.components.TOC",{
     addLevel : function (levelId){
         var nodes = new Array();
         var level = this.levels[levelId];
-        if(!level || level.background && !this.config.showBaselayers){
+        if(!level || level.background && !this.config.showBaselayers || level.removed){
             return null;
         }
         var levelId = "level-"+level.id;
@@ -328,6 +328,9 @@ Ext.define ("viewer.components.TOC",{
     // Add a layer to the level
     addLayer : function (layerId){
         var appLayerObj = this.appLayers[layerId];
+        if(!appLayerObj || appLayerObj.removed){
+            return null;
+        }
         var service = this.services[appLayerObj.serviceId];
         var serviceLayer = service.layers[appLayerObj.layerName];
         var layerTitle = appLayerObj.alias;

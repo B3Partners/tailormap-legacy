@@ -733,13 +733,7 @@ Ext.define('viewer.LayoutManager', {
     },
     
     expandRegion: function(componentId) {
-        if(!this.collapsibleComponents[componentId]){
-            if(!this.isTabComponent(componentId)) {
-                return;
-            }else{
-                Ext.getCmp(this.tabComponents[componentId].tabId).ownerCt.expand();
-            }
-        }else{
+        if(this.collapsibleComponents.hasOwnProperty(componentId)) {
             Ext.getCmp(this.collapsibleComponents[componentId]).expand();
         }
     },

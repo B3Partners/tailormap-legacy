@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.8.1-SNAPSHOT</version>
+    <version>4.8.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -37,14 +37,14 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>4.8.1-SNAPSHOT</flamingo.version>
+        <flamingo.version>4.8.2-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.8</project.build.sourceVersion>
         <project.build.targetVersion>1.8</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>16.2</geotools.version>
-        <powermock.version>1.6.6</powermock.version>
+        <geotools.version>16.5</geotools.version>
         <hsqldb.version>2.3.4</hsqldb.version>
+        <powermock.version>1.7.0RC2</powermock.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.0.0</postgresql.version>
         <apache.poi.version>3.15</apache.poi.version>
@@ -56,8 +56,11 @@
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-dependency-updates
-            and check the output for any available updates
+            mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-dependency-updates > dependency-updates.log
+            and check the output for any available updates.
+            
+            To check for vulnarabilities in dependencies use the following command:
+            mvn org.owasp:dependency-check-maven:1.4.5:check > vuln-check.log
         -->
         <dependencies>
             <!-- viewer-->
@@ -133,6 +136,13 @@
                 <artifactId>xercesImpl</artifactId>
                 <version>2.11.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.flamingo-mc</groupId>
+                <artifactId>viewer-config-persistence</artifactId>
+                <type>test-jar</type>
+                <scope>test</scope>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- nl b3p csw-->
             <dependency>
@@ -198,6 +208,12 @@
                 <version>1.1.1</version>
             </dependency>
             <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>2.7.22</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock.version}</version>
@@ -205,17 +221,10 @@
             </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito</artifactId>
+                <artifactId>powermock-api-mockito2</artifactId>
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.10.19</version>
-                <scope>test</scope>
-            </dependency>
-
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-data</artifactId>
@@ -440,7 +449,7 @@
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
-                <version>1.4.0</version>
+                <version>1.5.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -486,7 +495,7 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.3:display-plugin-updates -T1
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-plugin-updates -T1 > plugin-updates.log
                     and check the output for any available updates
                 -->
                 <plugin>
@@ -517,7 +526,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.6.2</version>
                     <configuration>
                         <source>${project.build.sourceVersion}</source>
                         <target>${project.build.targetVersion}</target>
@@ -531,12 +540,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -546,12 +555,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
@@ -612,6 +621,22 @@
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                     <skipTests>${test.skip.integrationtests}</skipTests>
+                    <systemPropertyVariables>
+                        <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
+                    </systemPropertyVariables>
+                    <argLine>-Xmx1g -Xms1g -XX:+TieredCompilation -XX:TieredStopAtLevel=1</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <check />
                 </configuration>
             </plugin>
         </plugins>

@@ -1,15 +1,18 @@
+package nl.b3p.viewer.util;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.b3p.viewer.util;
+
 
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.mock.MockHttpServletRequest;
 import net.sourceforge.stripes.mock.MockHttpSession;
 import net.sourceforge.stripes.mock.MockServletContext;
+import nl.b3p.viewer.config.security.User;
 
 /**
  *
@@ -17,6 +20,15 @@ import net.sourceforge.stripes.mock.MockServletContext;
  */
 public class TestActionBeanContext extends ActionBeanContext{
     
+    private User user = null;
+    
+    public TestActionBeanContext(){
+        
+    }
+
+    public TestActionBeanContext(User user){
+        this.user = user;
+    }
       /**
      * Retrieves the HttpServletRequest object that is associated with the current request.
      * @return HttpServletRequest the current request
@@ -25,6 +37,7 @@ public class TestActionBeanContext extends ActionBeanContext{
     public HttpServletRequest getRequest() {
         MockHttpSession session = new MockHttpSession(new MockServletContext("test"));
         MockHttpServletRequest request=  new MockHttpServletRequest("", "");
+        request.setUserPrincipal(user);
         request.setSession(session);
         return request;
     }

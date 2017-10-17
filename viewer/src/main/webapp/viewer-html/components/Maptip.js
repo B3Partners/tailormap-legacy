@@ -255,8 +255,14 @@ Ext.define ("viewer.components.Maptip",{
             if (!this.enabled){
                 return;
             }
+            var data=options.data;
+            var components=[];
+            if (!data){
+                return;
+            }
+            
             //if the mouse is in the balloon, stop. Dont show new data.
-            if (this.balloon.isMouseOver()){
+            if (this.balloon.isMouseOver() &&  options.data[0].requestId !== this.currentRequestId ){
                 return;
             }
             //if position is not the last position remove content
@@ -270,13 +276,7 @@ Ext.define ("viewer.components.Maptip",{
             this.lastPosition.x = options.x;
             this.lastPosition.y = options.y;
             this.worldPosition = options.coord;
-            //alert(layer);
-            var me = this;
-            var data=options.data;
-            var components=[];
-            if (!data){
-                return;
-            }
+       
             components = this.createInfoHtmlElements(data, options);
             if (!Ext.isEmpty(components)){
                 var x= options.x;
@@ -372,8 +372,10 @@ Ext.define ("viewer.components.Maptip",{
                         extraDiv.addCls("feature_callback_link");
                         for (var i = 0; i < this.extraLinkCallbacks.length; i++) {
                             var entry = this.extraLinkCallbacks[i];
-                            if (entry.appLayers && !Ext.Array.contains(entry.appLayers, appLayer)) {
-                                // looking at an unspecified appLayer, skip adding the link
+                            if (entry.appLayers && !((entry.appLayers).filter(function (l) {
+                                return l.id === appLayer.id;
+                            })).length > 0) {
+                                // console.debug("looking at an unspecified appLayer, skip adding the link");
                                 continue;
                             }
                             extraDiv.appendChild(this.createCallbackLink(entry, feature, appLayer, options.coord));

@@ -59,7 +59,8 @@ public class FeatureToJson {
     private boolean arrays = false;
     private boolean edit = false;
     private boolean graph = false;
-    private List<Long> attributesToInclude = new ArrayList<Long>();
+    private boolean aliases = true;
+    private List<Long> attributesToInclude = new ArrayList();
     private static final int TIMEOUT = 5000;
     private FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
@@ -74,6 +75,15 @@ public class FeatureToJson {
         this.graph = graph;
         this.attributesToInclude=attributesToInclude;
     }
+
+    public FeatureToJson(boolean arrays, boolean edit, boolean graph, boolean aliases, List<Long> attributesToInclude) {
+        this.arrays = arrays;
+        this.edit = edit;
+        this.graph = graph;
+        this.attributesToInclude = attributesToInclude;
+        this.aliases = aliases;
+    }
+
     /**
      * Get the features as JSONArray with the given params
      * @param al The application layer(if there is a application layer)
@@ -113,7 +123,17 @@ public class FeatureToJson {
          * a JDBC featureType without a primary key.
          */
         else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
-            setSortBy(q, propertyNames.get(0),dir);
+            int index = 0;
+            if(fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0)) ){
+                if(propertyNames.size() > 1){
+                    index = 1;
+                }else {
+                    index = -1;
+                }
+            }
+            if(index != -1){
+                setSortBy(q, propertyNames.get(index),dir);
+            }
         }
         Integer start = q.getStartIndex();
         if (start==null){
@@ -155,12 +175,16 @@ public class FeatureToJson {
                 j.put("c" + index++, formatValue(value));
             }
         } else {
-            for(String name: propertyNames) {
-                String alias = null;
-                if (attributeAliases!=null){
-                    alias=attributeAliases.get(name);
+            for (String name : propertyNames) {
+                if (!aliases) {
+                    j.put(name, formatValue(f.getAttribute(name)));
+                } else {
+                    String alias = null;
+                    if (attributeAliases != null) {
+                        alias = attributeAliases.get(name);
+                    }
+                    j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
                 }
-                j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
             }
         }
         //if edit and not yet set
@@ -385,17 +409,45 @@ public class FeatureToJson {
         }
     }
 
+    /**
+     *
+     * Optimze and reformat filter. Delegates to
+     * {@link #reformatFilter(org.opengis.filter.Filter, nl.b3p.viewer.config.services.SimpleFeatureType, boolean)}
+     * with the {@code includeRelations} set to {@code true}.
+     *
+     * @param filter the filter to process
+     * @param ft featuretype to apply filter
+     * @return reformatted / optimised filter
+     * @throws Exception if any
+     * @see #reformatFilter(org.opengis.filter.Filter,
+     * nl.b3p.viewer.config.services.SimpleFeatureType, boolean)
+     */
     public static Filter reformatFilter(Filter filter, SimpleFeatureType ft) throws Exception {
-        if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)){
+        return reformatFilter(filter, ft, true);
+    }
+
+    /**
+     * Optimze and reformat filter.
+     *
+     * @param filter the filter to process
+     * @param ft featuretype to apply filter
+     * @param includeRelations whether to include related (joined) data
+     * @return reformatted / optimised filter
+     * @throws Exception if any
+     */
+    public static Filter reformatFilter(Filter filter, SimpleFeatureType ft, boolean includeRelations) throws Exception {
+        if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)) {
             return filter;
         }
-        for (FeatureTypeRelation rel : ft.getRelations()){
-            if (FeatureTypeRelation.JOIN.equals(rel.getType())){
-                filter= reformatFilter(filter, rel.getForeignFeatureType());
-                filter = (Filter) filter.accept(new ValidFilterExtractor(rel), filter);
+        if (includeRelations) {
+            for (FeatureTypeRelation rel : ft.getRelations()) {
+                if (FeatureTypeRelation.JOIN.equals(rel.getType())) {
+                    filter = reformatFilter(filter, rel.getForeignFeatureType(), includeRelations);
+                    filter = (Filter) filter.accept(new ValidFilterExtractor(rel), filter);
+                }
             }
         }
-        filter=(Filter) filter.accept(new SimplifyingFilterVisitor(),null);
+        filter = (Filter) filter.accept(new SimplifyingFilterVisitor(), null);
         return filter;
     }
 
