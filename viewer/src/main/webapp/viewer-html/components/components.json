@@ -6,7 +6,7 @@
         "restrictions": ["content"],
         "group": "Map",
         "singleton": true,
-        "notInCombinationWith": ["viewer.mapcomponents.OpenLayersMap","viewer.mapcomponents.OpenLayersMap3"],
+        "notInCombinationWith": ["viewer.mapcomponents.OpenLayersMap","viewer.mapcomponents.OpenLayers4Map"],
         "extPropertyGridConfigs": {
             "propertyNames": {"resolutions": "Resoluties", "movetime": "Move time", "movesteps": "Move Steps" },
             "source": {"resolutions": "", "movetime": "", "movesteps": ""}
@@ -19,7 +19,7 @@
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap","viewer.mapcomponents.OpenLayersMap3"],
+        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap","viewer.mapcomponents.OpenLayers4Map"],
         "extPropertyGridConfigs": {
             "propertyNames": {
                 "resolutions": "Resoluties (komma gescheiden)",
@@ -33,9 +33,9 @@
     },
     
     {
-        "className": "viewer.mapcomponents.OpenLayersMap3",
-        "name": "OpenLayers Map3",
-        "shortName": "Om3",
+        "className": "viewer.mapcomponents.OpenLayers4Map",
+        "name": "OpenLayers4 Map",
+        "shortName": "Om4",
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],

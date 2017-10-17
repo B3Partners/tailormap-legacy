@@ -5,14 +5,14 @@
  */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4WMSLayer",{
     extend: "viewer.viewercontroller.controller.WMSLayer",
     mixins: {
-        openLayers3Layer: "viewer.viewercontroller.openlayers3.OpenLayers3Layer"
+        openLayers4Layer: "viewer.viewercontroller.openlayers4.OpenLayers4Layer"
     },
     constructor : function (config){
-        viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer.superclass.constructor.call(this,config);
-        this.mixins.openLayers3Layer.constructor.call(this,config);
+        viewer.viewercontroller.openlayers4.OpenLayers4WMSLayer.superclass.constructor.call(this,config);
+        this.mixins.openLayers4Layer.constructor.call(this,config);
 
         
         var sources = new ol.source.TileWMS({
@@ -41,14 +41,14 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
     },
     
     setVisible: function(vis){
-        this.mixins.openLayers3Layer.setVisible.call(this,vis);
+        this.mixins.openLayers4Layer.setVisible.call(this,vis);
     },
     
     getVisible: function(){
-        return this.mixins.openLayers3Layer.getVisible.call(this);
+        return this.mixins.openLayers4Layer.getVisible.call(this);
     },
     getType : function (){
-        return this.mixins.openLayers3Layer.getType.call(this);
+        return this.mixins.openLayers4Layer.getType.call(this);
     },
     
     
@@ -106,7 +106,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
     },
     
     setAlpha: function (alpha){
-        this.mixins.openLayers3Layer.setAlpha.call(this,alpha);
+        this.mixins.openLayers4Layer.setAlpha.call(this,alpha);
     },
     
     reload: function (){
@@ -114,6 +114,6 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",{
         var params = source.getParams();
         params.t = new Date().getMilliseconds();
         source.updateParams(params);
-        this.mixins.openLayers3Layer.reload.call(this);
+        this.mixins.openLayers4Layer.reload.call(this);
     }
 });

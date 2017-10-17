@@ -7,8 +7,8 @@
 
 /* global handleResponse, requestWmsGFI, buildWMSOtions */
 
-Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool",{
-    extend: "viewer.viewercontroller.openlayers3.OpenLayers3Tool",
+Ext.define("viewer.viewercontroller.openlayers4.tools.OpenLayers4IdentifyTool",{
+    extend: "viewer.viewercontroller.openlayers4.OpenLayers4Tool",
     map: null,
     deactivatedControls: null,
     wmsGetFeatureInfoControl:null,
@@ -35,7 +35,7 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool",{
 
 
         this.mapComponent = conf.viewerController.mapComponent;
-        viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool.superclass.constructor.call(this,conf,this);
+        viewer.viewercontroller.openlayers4.tools.OpenLayers4IdentifyTool.superclass.constructor.call(this,conf,this);
         this.map=this.config.viewerController.mapComponent.getMap();
         
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);

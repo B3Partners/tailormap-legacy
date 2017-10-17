@@ -5,7 +5,7 @@
  */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.tools.ZoomOutButton",{
+Ext.define("viewer.viewercontroller.openlayers4.tools.ZoomOutButton",{
 
     constructor : function(conf){
         this.initConfig(conf);

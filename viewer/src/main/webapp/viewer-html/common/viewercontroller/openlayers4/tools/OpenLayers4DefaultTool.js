@@ -7,8 +7,8 @@
 
 /* global Ext */
 
-Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3DefaultTool",{ 
-    extend: "viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool",
+Ext.define("viewer.viewercontroller.openlayers4.tools.OpenLayers4DefaultTool",{ 
+    extend: "viewer.viewercontroller.openlayers4.tools.OpenLayers4IdentifyTool",
     map: null,
     navigationControl: null,
     mapClick: null,
@@ -25,13 +25,13 @@ Ext.define("viewer.viewercontroller.openlayers3.tools.OpenLayers3DefaultTool",{
       for(var i in controlOptions){
           olTool.set(i,controlOptions[i],true);
       }
-      viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool.superclass.constructor.call(this,conf,olTool);
+      viewer.viewercontroller.openlayers4.tools.OpenLayers4IdentifyTool.superclass.constructor.call(this,conf,olTool);
       
       this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
       
       this.map=this.config.viewerController.mapComponent.getMap();
       
-      this.mapClick = new viewer.viewercontroller.openlayers3.ToolMapClick3({
+      this.mapClick = new viewer.viewercontroller.openlayers4.ToolMapClick({
           id: "mapclick_"+this.id,
           viewerController: this.config.viewerController,
           handler: {

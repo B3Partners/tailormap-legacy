@@ -98,8 +98,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:choose>
         </c:if>
                             
-        <c:if test="${actionBean.viewerType == 'openlayers3'}">
-               <link href="${contextPath}/viewer-html/common/openlayers3/theme/openlayers3.css" rel="stylesheet">  
+        <c:if test="${actionBean.viewerType == 'openlayers4'}">
+               <link href="${contextPath}/viewer-html/common/openlayers4/theme/openlayers4.css" rel="stylesheet">  
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
                
                <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
@@ -107,10 +107,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                
                <c:choose>
                 <c:when test="${param.ol == 'debug'}">
-                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/ol-debug.js"></script>
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers4/ol-debug.js"></script>
                 </c:when>
                 <c:otherwise>
-                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/ol.js"></script>
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers4/ol.js"></script>
                 </c:otherwise>
             </c:choose>
         </c:if>
@@ -200,35 +200,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersDefaultTool.js"></script>
                     </c:when>
                     
-                        <c:when test="${actionBean.viewerType == 'openlayers3'}">
-                        <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers3"/>
+                        <c:when test="${actionBean.viewerType == 'openlayers4'}">
+                        <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers4"/>
                         <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js" type="text/javascript"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Layer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayersMap3.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4Layer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4Map.js"></script>
                         <script type="text/javascript" src="${scriptDir}/Utils.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3TilingLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayersMap3Component.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Component.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3Tool.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/ToolMapClick3.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3WMSLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3ArcLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3VectorLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3ArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3SnappingController.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayers3ImageLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4TilingLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4MapComponent.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4Component.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4Tool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4WMSLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4ArcLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4VectorLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4ArcServerLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4SnappingController.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayers4ImageLayer.js"></script>
                         
                         
                         <!-- The components -->
                         <script type="text/javascript" src="${scriptDir}/components/panZoomBar.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers3LoadMonitor.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers3Maptip.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers3Overview.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers4LoadMonitor.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers4Maptip.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayers4Overview.js"></script>
                         
                         <!-- The tools -->
-                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayers3IdentifyTool.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayers3DefaultTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayers4IdentifyTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayers4DefaultTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/ZoomIn.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/ZoomOutButton.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/Measure.js"></script>

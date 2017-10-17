@@ -5,31 +5,37 @@
  */
 
 
-Ext.define("viewer.viewercontroller.openlayers3.tools.StreetViewButton",{
+
+Ext.define("viewer.viewercontroller.openlayers4.tools.DragPan",{
+
     constructor : function(conf){
         this.initConfig(conf);
         this.conf = conf;
-        conf.id = conf.name;
-        conf.class = conf.displayClass;
+        conf.id = "ol-DragPan";
+        conf.class = "olControlDragPan";
         conf.onlyClick = false;
         conf.actives =false;
         this.mapComponent = conf.viewerController.mapComponent;
-        this.frameworkObject = new ol.interaction.DragPan();
+        this.kinec = undefined;
+        
+        if(conf.enableKinetic){
+            this.kinec = new ol.Kinetic(-0.01,0.1,200);
+        }
+        
+        this.frameworkObject = new ol.interaction.DragPan({
+            kinetic: this.kinec
+        });
         this.initTool();
     },
 
-    activate : function(tool){
+    activate : function(){
         this.conf.actives =true;
         this.frameworkObject.setActive(true);
-        tool.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);
     },
 
-    deactivate : function(tool) {
+    deactivate : function() {
         this.conf.actives =false;
         this.frameworkObject.setActive(false);
-        if(tool){
-            tool.fire(viewer.viewercontroller.controller.Event.ON_EVENT_UP);
-        }
     },
 
     initTool : function(){

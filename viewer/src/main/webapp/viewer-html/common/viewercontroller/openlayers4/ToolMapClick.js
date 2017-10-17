@@ -5,7 +5,7 @@
  */
 
 
-Ext.define ("viewer.viewercontroller.openlayers3.ToolMapClick3",{
+Ext.define ("viewer.viewercontroller.openlayers4.ToolMapClick",{
     extend: "viewer.viewercontroller.controller.ToolMapClick",
     handler:null,
     scope:null,
@@ -21,7 +21,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.ToolMapClick3",{
      */
     constructor: function (conf){
         conf.onlyClick = false;
-        viewer.viewercontroller.openlayers3.ToolMapClick3.superclass.constructor.call(this,conf);
+        viewer.viewercontroller.openlayers4.ToolMapClick.superclass.constructor.call(this,conf);
         this.initConfig(conf);
         this.visible=false;
         this.type = viewer.viewercontroller.controller.Tool.MAP_CLICK;

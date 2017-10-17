@@ -7,7 +7,7 @@
 
 /* global ol, Ext */
 
-Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
+Ext.define("viewer.viewercontroller.OpenLayers4MapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
     
     mapOptions:null,
@@ -29,7 +29,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         document.getElementById(domId).appendChild(container);
         
             
-        viewer.viewercontroller.OpenLayersMap3Component.superclass.constructor.call(this, viewerController,domId,config);
+        viewer.viewercontroller.OpenLayers4MapComponent.superclass.constructor.call(this, viewerController,domId,config);
         var resolutions;
         if(config && config.resolutions){
             var rString = (config.resolutions).split(",");
@@ -81,7 +81,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         }
 
         if(enable){
-            var defaultTool = new viewer.viewercontroller.openlayers3.tools.OpenLayers3DefaultTool({
+            var defaultTool = new viewer.viewercontroller.openlayers4.tools.OpenLayers4DefaultTool({
                 viewerController: this.viewerController,
                 id: 'defaultTool'
             });
@@ -123,7 +123,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         options.mapComponent=this;
         options.viewerController = this.viewerController;
         options.domId=this.domId;
-        var olMap = Ext.create("viewer.viewercontroller.openlayers3.OpenLayersMap3",options);
+        var olMap = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4Map",options);
         return olMap;
     },
     
@@ -134,12 +134,12 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         if(options.alpha != undefined) {
             options.opacity = options.alpha / 100;
         }
-        var tmsLayer= new viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer(options);
+        var tmsLayer= new viewer.viewercontroller.openlayers4.OpenLayers4TilingLayer(options);
         return tmsLayer;  
     },
     
     createImageLayer : function (name,url, bounds){
-        var imageLayer = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3ImageLayer",{
+        var imageLayer = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4ImageLayer",{
             id: name,
             url: url,
             extent : bounds,
@@ -160,7 +160,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             }
         }
 
-        return Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3VectorLayer",options);
+        return Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4VectorLayer",options);
     },
 
     createWMSLayer : function(name, wmsurl,ogcParams,config){
@@ -186,7 +186,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
             config.options.ratio = config.ratio;
         }
 
-        var wmsLayer = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3WMSLayer",config);
+        var wmsLayer = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4WMSLayer",config);
         return wmsLayer;
     },
     
@@ -197,13 +197,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         if(options.alpha != undefined) {
             options.opacity = options.alpha / 100;
         }
-        var arcServer = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",options);
+        var arcServer = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4ArcServerLayer",options);
         return arcServer;
     },
     
     addMap : function(map) {
-        if (!(map instanceof viewer.viewercontroller.openlayers3.OpenLayersMap3)){
-            Ext.Error.raise({msg: "The given map is not of the type 'OpenLayersMap3'"});
+        if (!(map instanceof viewer.viewercontroller.openlayers4.OpenLayers4Map)){
+            Ext.Error.raise({msg: "The given map is not of the type 'OpenLayers4Map'"});
         }
         if (this.maps.length>=1)
             Ext.Error.raise({msg: "Multiple maps not supported yet"});
@@ -298,16 +298,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
         var type = config.type;
         var comp = null;
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
-            comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3LoadMonitor",config);
+            comp = Ext.create("viewer.viewercontroller.openlayers4.components.OpenLayers4LoadMonitor",config);
         }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
-            comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3Overview",config);
+            comp = Ext.create("viewer.viewercontroller.openlayers4.components.OpenLayers4Overview",config);
         }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
             var panZoomBar = new ol.control.panZoomBar({imgPath:"/openlayers/img/",
             slider:true,
             ownmap:this,
             left:config.left,
             top:config.top});
-            comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config,panZoomBar);
+            comp = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4Component",config,panZoomBar);
         }
         else if(type === viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
@@ -315,7 +315,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                 options.target = this.contentBottom;
                 config.cssClass = "ol-mouse-position";
             }
-            comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config, new ol.control.MousePosition({projection: config.projection,
+            comp = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4Component",config, new ol.control.MousePosition({projection: config.projection,
             target:options.target,
             undefinedHTML: 'outside',
             coordinateFormat: ol.coordinate.createStringXY(options.numDigits)}));
@@ -330,12 +330,12 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
                 frameworkOptions.target = this.contentBottom;
                 config.cssClass = "olControlScale";
             }8
-            comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3Component",config,
+            comp = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4Component",config,
                 new ol.control.ScaleLine());
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
-            comp = Ext.create("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",config,this.getMap());
+            comp = Ext.create("viewer.viewercontroller.openlayers4.components.OpenLayers4Maptip",config,this.getMap());
         }else if(type == viewer.viewercontroller.controller.Component.SNAPPING) {
-            comp = Ext.create("viewer.viewercontroller.openlayers3.OpenLayers3SnappingController", config);
+            comp = Ext.create("viewer.viewercontroller.openlayers4.OpenLayers4SnappingController", config);
         }else if(type == viewer.viewercontroller.controller.Component.KEYBOARD){
             this.getMap().getFrameworkMap().addInteraction(new ol.interaction.KeyboardPan());
             this.getMap().getFrameworkMap().addInteraction(new ol.interaction.KeyboardZoom());
@@ -371,34 +371,34 @@ Ext.define("viewer.viewercontroller.OpenLayersMap3Component",{
       }
 
       if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.ZoomIn(conf));
+            return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.ZoomIn(conf));
       }      
       else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON){//3,
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.ZoomOutButton(conf));
+            return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.ZoomOutButton(conf));
       }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.FullExtent(conf));           
+            return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.FullExtent(conf));           
       }else if (type==viewer.viewercontroller.controller.Tool.PAN){//7,
-          return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.DragPan(conf)); 
+          return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.DragPan(conf)); 
           
       }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
             conf.enableKinetic=true;
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.DragPan(conf));
+            return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.DragPan(conf));
         }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
           conf.typ =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'LineString' : 'Polygon');
           conf.class =(conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? 'olControlMeasure' : 'olControlMeasureArea');
-          var t = new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.Measure(conf));
+          var t = new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.Measure(conf));
           return t;
         }else if(conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.ToolButton(conf));
+            return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.ToolButton(conf));
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
-            //return new viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool(conf);
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.OpenLayers3IdentifyTool(conf));
+            //return new viewer.viewercontroller.openlayers4.tools.OpenLayers4IdentifyTool(conf);
+            return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.OpenLayers4IdentifyTool(conf));
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
-            return Ext.create ("viewer.viewercontroller.openlayers3.ToolMapClick3",conf);
+            return Ext.create ("viewer.viewercontroller.openlayers4.ToolMapClick",conf);
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
-            return new viewer.viewercontroller.openlayers3.tools.OpenLayers3DefaultTool(conf);
+            return new viewer.viewercontroller.openlayers4.tools.OpenLayers4DefaultTool(conf);
         }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
-            return new viewer.viewercontroller.openlayers3.OpenLayers3Tool(conf, new viewer.viewercontroller.openlayers3.tools.StreetViewButton(conf));
+            return new viewer.viewercontroller.openlayers4.OpenLayers4Tool(conf, new viewer.viewercontroller.openlayers4.tools.StreetViewButton(conf));
         }
     },
     

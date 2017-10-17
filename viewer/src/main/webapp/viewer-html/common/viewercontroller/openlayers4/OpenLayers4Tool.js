@@ -6,12 +6,12 @@
 
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4Tool",{
     extend: "viewer.viewercontroller.controller.Tool",
     controls:null,
     enabledEvents: null,
     constructor : function (conf,tool){
-        viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.constructor.call(this, conf);
+        viewer.viewercontroller.openlayers4.OpenLayers4Tool.superclass.constructor.call(this, conf);
         this.olTool = tool;
         if(tool.frameworkObject){
             this.frameworkObject=tool.frameworkObject;
@@ -100,7 +100,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
             }
             
         }        
-        viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.addListener.call(this,event,handler,scope);
+        viewer.viewercontroller.openlayers4.OpenLayers4Tool.superclass.addListener.call(this,event,handler,scope);
     },
     
     removeListener : function (event,handler,scope){
@@ -120,7 +120,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3Tool",{
                 }
             }            
         }
-        viewer.viewercontroller.openlayers3.OpenLayers3Tool.superclass.removeListener.call(this,event,handler,scope);
+        viewer.viewercontroller.openlayers4.OpenLayers4Tool.superclass.removeListener.call(this,event,handler,scope);
     },
     
     activate: function(){

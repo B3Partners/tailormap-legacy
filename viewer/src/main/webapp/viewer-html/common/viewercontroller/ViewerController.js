@@ -132,7 +132,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             var component = comps[c];
             if(component.className == "viewer.mapcomponents.FlamingoMap" ||
-                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OpenLayersMap3"){
+                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OpenLayers4Map"){
                 config = component.config;
                 break;
             }
@@ -142,8 +142,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         }else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
-        }else if(viewerType == "openlayers3"){
-            this.mapComponent = new viewer.viewercontroller.OpenLayersMap3Component(this, mapId, config);
+        }else if(viewerType == "openlayers4"){
+            this.mapComponent = new viewer.viewercontroller.OpenLayers4MapComponent(this, mapId, config);
             
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
@@ -155,7 +155,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType == "openlayers" || viewerType == "openlayers3") {
+        if(viewerType == "openlayers" || viewerType == "openlayers4") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
     },
@@ -302,7 +302,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         // XXX
-        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OpenLayersMap3" ) {
+        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OpenLayers4Map" ) {
             return null;
         }
         

@@ -7,22 +7,22 @@
 
 /* global ol */
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4TilingLayer",{
     extend: "viewer.viewercontroller.controller.TilingLayer",
     mixins: {
-        openLayers3Layer: "viewer.viewercontroller.openlayers3.OpenLayers3Layer"
+        openLayers4Layer: "viewer.viewercontroller.openlayers4.OpenLayers4Layer"
     },
     constructor : function(config){
-        viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.openlayers4.OpenLayers4TilingLayer.superclass.constructor.call(this, config);
         
         if(!Ext.Array.contains(["TMS", "ArcGisRest","WMTS"/*,"OSM"*/], this.getProtocol())) {
             throw new Error("OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
         
-        this.mixins.openLayers3Layer.constructor.call(this,config);
+        this.mixins.openLayers4Layer.constructor.call(this,config);
          
         this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
-        this.utils = Ext.create("viewer.viewercontroller.openlayers3.Utils");
+        this.utils = Ext.create("viewer.viewercontroller.openlayers4.Utils");
          
          var opacity = this.config.opacity != undefined ? this.config.opacity : 1;
          //var serviceEnvelopeTokens=this.serviceEnvelope.split(",");
@@ -136,11 +136,11 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
     },
     
     setVisible: function(vis){
-        this.mixins.openLayers3Layer.setVisible.call(this,vis);
+        this.mixins.openLayers4Layer.setVisible.call(this,vis);
     },
     
     getVisible: function(){
-        return this.mixins.openLayers3Layer.getVisible.call(this);
+        return this.mixins.openLayers4Layer.getVisible.call(this);
     },
         
     getMatrixIds: function(matrices){
@@ -170,17 +170,17 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
         return matrixIds;
     },
     addListener: function (event,handler,scope){
-        this.mixins.openLayers3Layer.addListener.call(this,event,handler,scope);
+        this.mixins.openLayers4Layer.addListener.call(this,event,handler,scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
      */
     removeListener: function (event,handler,scope){
-        this.mixins.openLayers3Layer.removeListener.call(this,event,handler,scope);
+        this.mixins.openLayers4Layer.removeListener.call(this,event,handler,scope);
     },
     
     getType : function (){
-        return this.mixins.openLayers3Layer.getType.call(this);
+        return this.mixins.openLayers4Layer.getType.call(this);
     },
     
     getLastMapRequest : function(){
@@ -199,7 +199,7 @@ Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3TilingLayer",{
         if(this.frameworkLayer) {
             this.frameworkLayer.transitionEffect = alpha < 100 ? null : "resize";
         }
-        this.mixins.openLayers3Layer.setAlpha.call(this,alpha);
+        this.mixins.openLayers4Layer.setAlpha.call(this,alpha);
     },
     getLayers: function (){
         return this.frameworkLayer.options.layername;

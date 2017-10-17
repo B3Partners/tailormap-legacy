@@ -5,8 +5,8 @@
  */
 
 
-Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",{
-    extend: "viewer.viewercontroller.openlayers3.OpenLayers3Component",    
+Ext.define ("viewer.viewercontroller.openlayers4.components.OpenLayers4Maptip",{
+    extend: "viewer.viewercontroller.openlayers4.OpenLayers4Component",    
     map: null,
     timerId: null,
     delay: 500,
@@ -17,7 +17,7 @@ Ext.define ("viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip",{
      * @returns {viewer.viewercontroller.openlayers.components.OpenLayersMaptip}
      */
     constructor: function(conf,map){
-        viewer.viewercontroller.openlayers3.components.OpenLayers3Maptip.superclass.constructor.call(this,conf);
+        viewer.viewercontroller.openlayers4.components.OpenLayers4Maptip.superclass.constructor.call(this,conf);
         this.map = map;
         var me  = this;
         this.frameworkObject = new ol.interaction.Pointer();

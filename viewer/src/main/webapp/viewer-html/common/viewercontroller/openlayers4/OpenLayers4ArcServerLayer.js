@@ -7,10 +7,10 @@
 
 
 
-Ext.define("viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer",{
-    extend: "viewer.viewercontroller.openlayers3.OpenLayers3ArcLayer",
+Ext.define("viewer.viewercontroller.openlayers4.OpenLayers4ArcServerLayer",{
+    extend: "viewer.viewercontroller.openlayers4.OpenLayers4ArcLayer",
     constructor: function(config){
-        viewer.viewercontroller.openlayers3.OpenLayers3ArcServerLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.openlayers4.OpenLayers4ArcServerLayer.superclass.constructor.call(this, config);
         var source = new ol.source.TileArcGISRest({
             projection: config.viewerController.mapComponent.mapOptions.projection,
             params: {
