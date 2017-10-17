@@ -104,7 +104,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                
                <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
                <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
-               <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/OpenLayers.js"></script>
+               
+               <c:choose>
+                <c:when test="${param.ol == 'debug'}">
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/ol-debug.js"></script>
+                </c:when>
+                <c:otherwise>
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers3/ol.js"></script>
+                </c:otherwise>
+            </c:choose>
         </c:if>
                
         <c:choose>
