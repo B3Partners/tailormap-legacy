@@ -505,9 +505,9 @@ Ext.define ("viewer.components.SpatialFilter",{
             viewerController : this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
-                fillopacity: 50,
+                fillopacity: 10,
                 strokecolor: "FF0000",
-                strokeopacity: 50
+                strokeopacity: 15
             }
         });
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
