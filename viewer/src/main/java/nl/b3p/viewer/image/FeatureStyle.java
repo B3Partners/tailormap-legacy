@@ -26,23 +26,32 @@ import org.json.JSONObject;
 public class FeatureStyle {
 
     private String label = "";
-    private String labelOutlineColor = "";
-    private String labelOutlineWidth = "";
-    private String labelAlign = "";
+    private String labelOutlineColor = null;
+    private String labelOutlineWidth = null;
+    private String labelAlign = null;
     private int fontSize = 0;
-    private String fontColor = "";
+    private String fontColor = null;
     private Double rotation = 0.0;
     private Double labelXOffset = 0.0;
     private Double labelYOffset = 0.0;
-    private String fillColor = "";
+    private String fillColor = null;
     private double fillOpacity = 0.0f;
-    private String strokeColor = "";
+    private String strokeColor = null;
     private Double strokeOpacity = 0.0;
     private Double strokeWidth = 0.0;
-    private String strokeDashstyle = "";
-    private String graphicName = "";
+    private String strokeDashstyle = null;
+    private String graphicName = null;
     private Double pointRadius = 0.0;
 
+    public FeatureStyle(){
+        fillColor = "ff0000";
+        fillOpacity = 0.3;
+        pointRadius = 6.0;
+        strokeColor = "ff0000";
+        strokeOpacity = 0.3;
+        strokeWidth = 2.0;        
+    }
+    
     public FeatureStyle(JSONObject style) {
         label = style.optString("label");
         labelOutlineColor = sanitizeColorString(style.optString("labelOutlineColor"));
@@ -140,7 +149,7 @@ public class FeatureStyle {
     }
 
     public Color getFillColor() {
-        return fillColor != null ? new Color(Integer.parseInt((fillColor), 16)) : CombineImageSettings.defaultWktGeomColor;
+        return fillColor != null && !fillColor.endsWith("") ? new Color(Integer.parseInt((fillColor), 16)) : CombineImageSettings.defaultWktGeomColor;
     }
 
     public void setFillColor(String fillColor) {

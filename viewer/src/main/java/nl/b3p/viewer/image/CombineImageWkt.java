@@ -16,7 +16,7 @@ public class CombineImageWkt {
     private Color color = null;
     private String label=null;
     private Float strokeWidth = null;
-    private FeatureStyle style;
+    private FeatureStyle style = new FeatureStyle();
     
     public CombineImageWkt(String wktGeomString){
         int colorIndex=wktGeomString.indexOf("#");
