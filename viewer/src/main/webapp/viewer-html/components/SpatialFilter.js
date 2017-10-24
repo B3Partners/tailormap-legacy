@@ -163,12 +163,17 @@ Ext.define ("viewer.components.SpatialFilter",{
     buffer : function(){
         Ext.getCmp(this.config.name + "BufferContainer").setLoading("Buffer berekenen...");
         var features = this.features;
+        var wkts = [];
+        for (var key in features){
+            var wkt = features[key].config.wktgeom;
+            wkts.push(wkt);
+        }
         var distance = Ext.getCmp(this.config.name + "BufferDistance").getValue();
         if(distance === null || distance === 0){
             return;
         }
         var requestParams = {
-            features: features, 
+            features: wkts, 
             buffer : distance
         };
         Ext.Ajax.request({
