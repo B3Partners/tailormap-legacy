@@ -22,10 +22,11 @@ Ext.define("viewer.viewercontroller.openlayers4.tools.OpenLayers4DefaultTool",{
             title: conf.tooltip
         };
       var olTool = new ol.control.Control(controlOptions);
+      conf.frameworkObject = olTool;
       for(var i in controlOptions){
           olTool.set(i,controlOptions[i],true);
       }
-      viewer.viewercontroller.openlayers4.tools.OpenLayers4IdentifyTool.superclass.constructor.call(this,conf,olTool);
+      viewer.viewercontroller.openlayers4.tools.OpenLayers4DefaultTool.superclass.constructor.call(this,conf,olTool);
       
       this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
       
