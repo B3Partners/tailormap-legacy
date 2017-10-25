@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.define("viewer.components.BrowserCheck", {
     extend: "viewer.components.Component",
     
@@ -31,8 +33,7 @@ Ext.define("viewer.components.BrowserCheck", {
 		viewer.components.BrowserCheck.superclass.constructor.call(this, this.config);
         
         this.unsupported = (Ext.isIE && Ext.ieVersion < 9)
-            || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari));
-        this.unsupported = MobileManager.isMobile() ? false : this.unsupported;
+            || (!Ext.isIE && !(Ext.isChrome || Ext.isGecko || Ext.isOpera || Ext.isWebkit || Ext.isSafari || Ext.isEdge));
         
         if((this.config.test || this.unsupported) && this.config.showPopup) {
             Ext.MessageBox.show({

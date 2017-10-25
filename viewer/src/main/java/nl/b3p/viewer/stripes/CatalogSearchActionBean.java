@@ -64,8 +64,8 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.util.Version;
-import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
@@ -412,7 +412,7 @@ public class CatalogSearchActionBean implements ActionBean {
 
             PropertyIsEqualTo propertyIsEqualTo = FilterCreator.createPropertyIsEqualTo(queryString, propertyName);
 
-            StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_45,DutchAnalyzer.getDefaultStopSet());
+            StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_46, DutchAnalyzer.getDefaultStopSet());
 
             orList.add(propertyIsEqualTo);
             try {

@@ -36,7 +36,12 @@ Ext.define("viewer.components.sf.Config", {
             items: items
         });
 
-        Ext.ComponentQuery.query(config.renderTo)[0].add(this.form);
+        if(config.renderTo) {
+            Ext.ComponentQuery.query(config.renderTo)[0].add(this.form);
+        }
+        if(config.container) {
+            config.container.add(this.form);
+        }
     },
     getFormItems: function () {
         var items = [{
@@ -151,7 +156,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             { text: 'Waarde', dataIndex: 'value', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
             { xtype: 'actioncolumn', menuDisabled: true, sortable: false, width: 30, items: [{
                 icon: false,
-                iconCls: 'removebutton-icon',
+                iconCls: 'x-fa fa-minus-circle',
                 tooltip: 'Verwijder',
                 handler: function (grid, rowIndex, colIndex) {
                     grid.getStore().removeAt(rowIndex);
@@ -170,7 +175,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
                 pluginId: 'celleditor'
             },
             columns: columns,
-            height: 130,
+            height: 150,
             width: 315
         });
         items.push(

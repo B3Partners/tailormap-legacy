@@ -26,7 +26,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 import org.xml.sax.InputSource;
 
 /**

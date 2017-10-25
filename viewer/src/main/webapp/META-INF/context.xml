@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
-  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
-  <!-- For Tomcat: define datasource in server.xml, for example:
+<!--
+more about the available context attributes:
+  https://tomcat.apache.org/tomcat-7.0-doc/config/context.html
+or
+  https://tomcat.apache.org/tomcat-8.0-doc/config/context.html
+-->
+<Context antiResourceLocking="true" path="/viewer">
+  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components" />
+  
+  <!-- Tomcat resource links for configuration database and mail service -->
+  <!-- For Tomcat: define the datasource in server.xml, for example:
 
     <Server ...>
         ...
@@ -15,20 +23,54 @@
                 url="jdbc:oracle:thin:@localhost:1521:orcl"
                 maxActive="40"
                 validationQuery="select 1 from dual"
-
                 timeBetweenEvictionRunsMillis="30000"
                 minEvictableIdleTimeMillis="5000"
             />
         </GlobalNamingResources>
         ...
     </Server>
+
+    NOTE: each JDBC driver version and each version of Tomcat will have different options that can be set
+    
     -->
-  <!-- Tomcat resource link -->
-  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
-  <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
+  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource" />
+  <!-- For Tomcat: define JavaMail resource in server.xml. See:
+
+    http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
+
+    Don't forget to put a mail.jar in the Tomcat lib directory.
+
+    To configure your mail server, use attributes like "mail.smtp.host" for
+    the Resource element. See Appendix A of the JavaMail spec for which
+    attributes you can use, possibly accessible at
+    http://www.oracle.com/technetwork/java/javamail/index-141777.html
+
+    <Server ...>
+        ...
+        <GlobalNamingResources>
+            <Resource name="mail/session"
+                    auth="Container"
+                    type="javax.mail.Session"
+                    mail.smtp.host="smtp.mycompany.com"
+            />
+        </GlobalNamingResources>
+        ...
+    </Server>
+    -->
+  <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session" />
+  <!-- Security configuration -->
   <!-- use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
   <Realm className="org.apache.catalina.realm.LockOutRealm">
-    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
+    <Realm allRolesMode="authOnly" 
+           className="org.apache.catalina.realm.DataSourceRealm" 
+           dataSourceName="jdbc/geo_viewer" 
+           digest="SHA-1" 
+           roleNameCol="group_" 
+           userCredCol="password" 
+           userNameCol="username" 
+           userRoleTable="user_groups" 
+           userTable="user_"
+    />
     <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
              http://tomcat.apache.org/tomcat-8.0-doc/config/realm.html

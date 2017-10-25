@@ -76,6 +76,20 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         }
         return true;
     },
+    
+    expand: function (extent){
+        this.minx = Math.min(this.minx,extent.minx);
+        this.miny = Math.min(this.miny,extent.miny);
+        this.maxx = Math.max(this.maxx, extent.maxx);
+        this.maxy = Math.max(this.maxy, extent.maxy);
+    },
+    
+    buffer: function(distance){
+        this.minx -= distance;
+        this.miny -= distance;
+        this.maxx += distance;
+        this.maxy += distance;
+    },
     /**
      * The extent as comma seperated String
      * @return comma seperated String

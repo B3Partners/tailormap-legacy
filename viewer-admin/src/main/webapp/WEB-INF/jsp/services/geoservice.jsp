@@ -270,6 +270,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:when test="${!edit}">
                 <stripes:submit name="add" value="Service inladen"/>
                 <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="Annuleren"/>
+                <script>function urlChanged(){}</script>
             </c:when>
             <c:otherwise>
                 <stripes:submit name="save" value="Opslaan" onclick="return saveConfirm();"/>
@@ -321,9 +322,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 contentEl: Ext.getDom('sldcontent')
             });
             Ext.on('resize', function () {
-                panel.doLayout();
+                panel.updateLayout();
             });                
-            panel.doLayout();
+            panel.updateLayout();
         });
     </script>
     <div id="sldcontent" class="insidePanel" style="margin: 5px">

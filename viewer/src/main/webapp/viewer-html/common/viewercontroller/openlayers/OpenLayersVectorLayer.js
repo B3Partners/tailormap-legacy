@@ -37,54 +37,50 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         config.colorPrefix = '#';
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
-   
-        var styleMap = new OpenLayers.StyleMap (
-        {
-            "default" :this.getCurrentStyleHash(),
-            "temporary": this.getCurrentStyleHash(),
-            "select":{
-                'strokeColor' : '#FF0000',
-                'strokeWidth': 2,
-                'fillColor' : this.colorPrefix + config.style['fillcolor'],
-                'fillOpacity': 0.4,
-                'strokeOpacity':0.8,
-                'pointRadius': 6
-            }
-        },{extendDefault:false});
-        config.styleMap = styleMap;
+
+        this.defaultFeatureStyle = config.defaultFeatureStyle || this.mapStyleConfigToFeatureStyle();
+        config.styleMap = this.getStylemapFromFeatureStyle(this.defaultFeatureStyle);
         
         // Delete style from config, because it messes up the styling in the vectorlayer.
         delete config.style;
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
-        
+
+        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+        if(config.showmeasures) {
+            this.pathMeasureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Path);
+            this.polygonMeasureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon);
+            map.addControl(this.pathMeasureControl);
+            map.addControl(this.polygonMeasureControl);
+        }
+
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
-        this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
+        this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
         });
-        this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, {
+        this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath'
-        });
-        this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
+        }));
+        this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon'
-        });
-        this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon,{
+        }));
+        this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon,OpenLayers.Handler.RegularPolygon, {
             handlerOptions: {
                 sides: 40}
         });
-        this.box = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.RegularPolygon, {
+        this.box = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.RegularPolygon, OpenLayers.Handler.RegularPolygon, {
             handlerOptions: {
                 sides: 4,
                 irregular: true
             }
         });
         
-        this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
+        this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon',
             handlerOptions: {
               freehand: true
             }
-        });
+        }));
             
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
@@ -93,11 +89,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.point);
         this.drawFeatureControls.push(this.box);
         this.drawFeatureControls.push(this.freehand);
-        
+
         // The modifyfeature control allows us to edit and select features.
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : true,vertexRenderIntent: "select"});
-        
-        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+
         map.addControl(this.point);
         map.addControl(this.line);
         map.addControl(this.polygon);
@@ -105,32 +100,99 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.box);
         map.addControl(this.freehand);
         map.addControl(this.modifyFeature);
-        
+
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
-        
+
         this.modifyFeature.activate();
     },
+
+    addMeasureListener: function(handler, conf) {
+        if(this.config.showmeasures) {
+            var measureTool = handler === OpenLayers.Handler.Path ? this.pathMeasureControl : this.polygonMeasureControl;
+            var containerPrefix = this.config.name || 'vectorMeasure';
+            conf.callbacks = {
+                modify: function(evt) {
+                    viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.modifyHandler(measureTool, {
+                        containerPrefix: containerPrefix
+                    }, evt);
+                }
+            }
+        }
+        return conf;
+    },
+
+    removeMeasures: function() {
+        if(this.config.showmeasures) {
+            var containerPrefix = this.config.name || 'vectorMeasure';
+            viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.removeMeasure(containerPrefix);
+        }
+    },
+
+    mapStyleConfigToFeatureStyle: function() {
+        var featureStyle = {
+            fillColor: this.colorPrefix + (this.getStyleConfig('fillcolor') || 'FF0000'),
+            fillOpacity: (this.getStyleConfig('fillopacity') || 100) / 100,
+            strokeColor: this.colorPrefix + (this.getStyleConfig('strokecolor') || 'FF0000'),
+            strokeOpacity: (this.getStyleConfig('strokeopacity') || 100) / 100
+        };
+        return Ext.create('viewer.viewercontroller.controller.FeatureStyle', featureStyle);
+    },
+
+    getStylemapFromFeatureStyle: function(featureStyle) {
+        return new OpenLayers.StyleMap({
+            "default": this.getCurrentStyleHash(featureStyle),
+            "temporary": this.getCurrentStyleHash(featureStyle),
+            "select": this.getSelectedStyleHash(featureStyle)
+        }, {
+            extendDefault: false
+        });
+    },
+
     /**
      * Get the current hash with all the stylesettings. To be used in olFeature.style
      */
-    getCurrentStyleHash : function(){
-          var hash = {
-            'strokeColor' : this.colorPrefix+ this.style['strokecolor'],
+    getCurrentStyleHash : function(featureStyle) {
+        if(!featureStyle) {
+            featureStyle = this.defaultFeatureStyle;
+        }
+        var featureStyleProps = featureStyle.getProperties();
+        return Ext.Object.merge({}, {
             'strokeWidth': 3,
-            'pointRadius': 6,
-            'fillColor' : this.colorPrefix + this.style['fillcolor'],
-            'fillOpacity': this.style['fillopacity'] / 100
-        };
-        return hash;
+            'pointRadius': 6
+        }, featureStyleProps);
+    },
+
+    getSelectedStyleHash: function(featureStyle) {
+        if(!featureStyle) {
+            featureStyle = this.defaultFeatureStyle;
+        }
+        var featureStyleProps = featureStyle.getProperties();
+        var fillColor = this.getStyleConfig('fillcolor');
+        return Ext.Object.merge({}, {
+            'strokeColor' : '#FF0000',
+            'strokeWidth': 2,
+            'fillColor' : fillColor ? this.colorPrefix + fillColor : 'transparent',
+            'fillOpacity': 0.4,
+            'strokeOpacity':0.8,
+            'pointRadius': 6
+        }, featureStyleProps);
+    },
+
+    getStyleConfig: function(property) {
+        if(!this.style || !this.style.hasOwnProperty(property)) {
+            return  "";
+        }
+        return this.style[property];
     },
     
     /**
      * Does nothing, but is needed for API compliance
      */
-    adjustStyle : function(){
+    adjustStyle : function() {
+        this.defaultFeatureStyle = this.mapStyleConfigToFeatureStyle();
     },
     /**
      * Removes all features and all 'sketches' (not finished geometries)
@@ -188,6 +250,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.modifyFeature.unselectFeature(olFeature);
         this.getFrameworkLayer().removeFeatures([olFeature]);
     },
+
+    removeFeaturesByAttribute: function(attribute, val) {
+        var objects = this.getFrameworkLayer().getFeaturesByAttribute(attribute, val);
+        this.getFrameworkLayer().removeFeatures(objects);
+    },
     
     addFeatures : function(features){
         var olFeatures = new Array();
@@ -195,7 +262,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             var feature = features[i];
             var olFeature = this.toOpenLayersFeature(feature);
             olFeatures.push(olFeature);
-            olFeature.style = this.getCurrentStyleHash();
             // Check if framework independed feature has a label. If so, set it to the style
             if (feature.config.label) {
                 olFeature.style['label'] = feature.config.label;
@@ -313,6 +379,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     featureModified : function (evt){
         var featureObject = this.fromOpenLayersFeature(evt.feature);
+        this.removeMeasures();
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
     
@@ -329,6 +396,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if(!object.feature.style){
             object.feature.style = this.getCurrentStyleHash();
         }
+        this.removeMeasures();
         this.editFeature(object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
     },
@@ -350,10 +418,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     toOpenLayersFeature : function(feature){
         var geom = OpenLayers.Geometry.fromWKT(feature.config.wktgeom);
-        var style = this.frameworkLayer.styleMap.styles["default"];    
+        var style = this.getCurrentStyleHash();
         style.label = feature.config.label;
-        var olFeature = new OpenLayers.Feature.Vector(geom, {id: feature.config.id}, {style: style});
-        return olFeature;
+        var featureStyle = feature.getStyle();
+        if(featureStyle) {
+            style = Ext.Object.merge({}, style, this.toOpenLayersStyle(featureStyle));
+        }
+        var attributes = Ext.Object.merge({}, { id: feature.config.id }, feature.getAttributes());
+        return new OpenLayers.Feature.Vector(geom, attributes, style);
     },
 
     /**
@@ -365,9 +437,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if(!openLayersFeature){
             return null;
         }
-        var feature = new viewer.viewercontroller.controller.Feature(
-        {
-            id:openLayersFeature.id,
+        var feature = new viewer.viewercontroller.controller.Feature({
+            id: openLayersFeature.id,
             wktgeom: openLayersFeature.geometry.toString()
         });
         if(openLayersFeature.style){
@@ -378,8 +449,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
             feature.color = color;
         }
+        feature.style = this.frameworkStyleToFeatureStyle(openLayersFeature).getProperties();;
+        if(this.config.addAttributesToFeature) {
+            feature.attributes = openLayersFeature.attributes;
+        }
         return feature;
-    }, 
+    },
+
+    toOpenLayersStyle: function(featureStyle) {
+        return featureStyle.getProperties();
+    },
+
+    frameworkStyleToFeatureStyle: function(openLayersFeature) {
+        var styleProps = openLayersFeature.style || this.getCurrentStyleHash();
+        return Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
+    },
     
     setLabel : function (id, label){
         var olFeature = this.getFrameworkLayer().getFeatureById(id);
@@ -387,6 +471,57 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             olFeature.style.label = label;
             this.reload();
         }
+    },
+
+    setFeatureStyle: function (id, featureStyle, noUpdate){
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(olFeature) {
+            olFeature.style = Ext.Object.merge({}, olFeature.style, featureStyle.getProperties());
+            if(!noUpdate) {
+                this.reload();
+            }
+        }
+    },
+
+    getFeatureGeometry: function(id) {
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(olFeature) {
+            return olFeature.geometry;
+        }
+        return {};
+    },
+
+    editFeatureById: function (id){
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(!olFeature) {
+            return;
+        }
+        this.editFeature(olFeature);
+    },
+
+    getFeatureSize: function(id) {
+        var size = null;
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        if(!olFeature) {
+            return size;
+        }
+        if(olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.Polygon" || olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.MultiPolygon" ||  olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LinearRing") {
+            size = olFeature.geometry.getArea();
+        }
+        if(olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.LineString" || olFeature.geometry.CLASS_NAME === "OpenLayers.Geometry.MultiLineString") {
+            size = olFeature.geometry.getLength();
+        }
+        return size;
+    },
+
+    unselectAll: function() {
+        this.modifyFeature.selectControl.unselectAll();
+    },
+
+    readGeoJSON: function(geoJson) {
+        var geoJSONreader = new OpenLayers.Format.GeoJSON();
+        var features = geoJSONreader.read(geoJson);
+        this.getFrameworkLayer().addFeatures(features);
     },
     
     /******** overwrite functions to make use of the mixin functions **********/    

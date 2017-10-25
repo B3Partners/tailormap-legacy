@@ -16,7 +16,8 @@ public class CombineImageWkt {
     private Color color = null;
     private String label=null;
     private Float strokeWidth = null;
-
+    private FeatureStyle style;
+    
     public CombineImageWkt(String wktGeomString){
         int colorIndex=wktGeomString.indexOf("#");
         int labelIndex=wktGeomString.indexOf("|");
@@ -74,7 +75,7 @@ public class CombineImageWkt {
         this.color = color;
     }
     public void setColor(String hexrgb) {
-        if (hexrgb==null){
+        if (hexrgb==null || hexrgb.equals("transparent")){
             return;
         }
         if (hexrgb.length()>0)
@@ -102,4 +103,13 @@ public class CombineImageWkt {
     public void setStrokeWidth(Float strokeWidth) {
         this.strokeWidth = strokeWidth;
     }
+
+    public FeatureStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(FeatureStyle style) {
+        this.style = style;
+    }
+    
 }

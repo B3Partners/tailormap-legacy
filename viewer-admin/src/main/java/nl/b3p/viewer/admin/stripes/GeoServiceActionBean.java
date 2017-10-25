@@ -698,9 +698,9 @@ public class GeoServiceActionBean implements ActionBean {
     public void makeLists(){
         EntityManager em = Stripersist.getEntityManager();
         allGroups = em.createQuery("from Group").getResultList();
-        if(service != null){
+        if (service != null) {
             groupsRead = new ArrayList(service.getReaders());
-        }   
+        }
     }
 
     public Resolution update() throws JSONException {
@@ -846,6 +846,7 @@ public class GeoServiceActionBean implements ActionBean {
         }
 
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
+        service.getReaders().addAll(groupsRead);
 
         category = em.find(Category.class, category.getId());
         service.setCategory(category);

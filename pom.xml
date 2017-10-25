@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.8.2-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -37,26 +37,27 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>4.8.2-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.0.0-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.8</project.build.sourceVersion>
         <project.build.targetVersion>1.8</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>16.5</geotools.version>
-        <hsqldb.version>2.3.4</hsqldb.version>
-        <powermock.version>1.7.0RC2</powermock.version>
+        <geotools.version>18.0</geotools.version>
+        <powermock.version>1.7.3</powermock.version>
+        <hsqldb.version>2.4.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.0.0</postgresql.version>
-        <apache.poi.version>3.15</apache.poi.version>
+        <postgresql.version>42.1.1</postgresql.version>
+        <apache.poi.version>3.17</apache.poi.version>
         <apache.httpcomponents.version>4.5.3</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
+        <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
     </properties>
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-dependency-updates > dependency-updates.log
+            mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-dependency-updates > dependency-updates.log
             and check the output for any available updates.
             
             To check for vulnarabilities in dependencies use the following command:
@@ -67,12 +68,12 @@
             <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
-                <version>1.3.2</version>
+                <version>1.3.3</version>
             </dependency>
             <dependency>
-                <groupId>jdom</groupId>
-                <artifactId>jdom</artifactId>
-                <version>1.0</version>
+                <groupId>org.jdom</groupId>
+                <artifactId>jdom2</artifactId>
+                <version>2.0.6</version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -114,12 +115,24 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.1</version>
+                <version>2.2</version>
+            </dependency>
+            <dependency>
+                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-i18n</artifactId>
+                <version>1.9.1</version>
+            </dependency>
+            <dependency>
+                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>batik-constants</artifactId>
+                <version>1.9.1</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
@@ -148,12 +161,12 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>2.0</version>
+                <version>5.0.0-RC1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.5</version>
+                <version>3.6</version>
             </dependency>
             <dependency>
                 <groupId>com.google.javascript</groupId>
@@ -210,7 +223,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.7.22</version>
+                <version>2.11.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -282,23 +295,23 @@
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
-                <version>2.2.3</version>
+                <version>2.3.0</version>
             </dependency>
             <dependency>
                 <!-- override the version provided by hibernate -->
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.22.0-CR1</version>
+                <version>3.22.0-CR2</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>3.6.8.Final</version>
+                <version>3.6.10.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>3.6.8.Final</version>
+                <version>3.6.10.Final</version>
                 <exclusions>
                     <exclusion>
                         <!--
@@ -386,7 +399,7 @@
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>javax.mail-api</artifactId>
-                <version>1.5.6</version>
+                <version>1.6.0</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -455,47 +468,17 @@
     </dependencyManagement>
     <repositories>
         <repository>
-            <id>boundless</id>
-            <name>Boundless Maven Repository</name>
-            <url>http://repo.boundlessgeo.com/main</url>
-        </repository>
-        <repository>
-            <id>GeoSolutions</id>
-            <name>GeoSolutions Maven Repository</name>
-            <url>http://maven.geo-solutions.it/</url>
-        </repository>
-        <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-        <repository>
-            <id>nexus.codehaus.org</id>
-            <name>Former CodeHaus Maven Repository</name>
-            <url>https://nexus.codehaus.org/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>B3Partners</id>
             <name>Releases hosted by B3Partners</name>
             <url>http://repo.b3p.nl/nexus/content/groups/public/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
-    <pluginRepositories />
     <build>
         <pluginManagement>
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.4:display-plugin-updates -T1 > plugin-updates.log
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-plugin-updates -T1 > plugin-updates.log
                     and check the output for any available updates
                 -->
                 <plugin>
@@ -506,7 +489,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -526,7 +509,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.7.0</version>
                     <configuration>
                         <source>${project.build.sourceVersion}</source>
                         <target>${project.build.targetVersion}</target>
@@ -540,12 +523,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.20</version>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.20</version>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -555,17 +538,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.0.2</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.2</version>
+                    <version>2.2.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -575,7 +558,7 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <!-- current release of the compiler versions (2.5 atm) fails on an inline function:
+                    <!-- current release of the compiler versions (2.6 atm) fails on an inline function:
                     [ERROR] JSC_BAD_FUNCTION_DECLARATION. functions can only be declared at top level or immediately within another function in ES5 strict mode at /home/mark/dev/projects/flamingo/viewer/src/main/webapp/viewer-html/common/viewercontroller/openlayers/OpenLayersMapComponent.js line 381 : 16
                     -->
                     <version>2.4</version>
@@ -605,6 +588,11 @@
                     <artifactId>properties-maven-plugin</artifactId>
                     <version>1.0.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -630,7 +618,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
                 <configuration>
                     <formats>
                         <format>html</format>

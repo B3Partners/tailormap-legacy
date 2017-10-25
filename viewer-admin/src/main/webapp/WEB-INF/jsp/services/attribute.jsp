@@ -55,89 +55,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </div>
         <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>
         <script type="text/javascript">
-            var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
-            var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="edit"/>';
-            vieweradmin.components.Menu.setActiveLink('menu_attributen');
-
             Ext.onReady(function() {
-                var featureSourceId = Ext.get('featureSourceId');
-                var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
-                featureSourceId.on('change', function() {
-                    featureSourceChange(featureSourceId);
+                // Expose vieweradmin_components_ChooseApplication to global scope to be able to access the component from the iframe
+                window.vieweradmin_components_Attributes = Ext.create('vieweradmin.components.Attributes', {
+                    gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>',
+                    editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="edit"/>',
+                    getfeaturetypesurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>'
                 });
-                simpleFeatureTypeId.on('change', function() {
-                    simpleFeatureTypeChange(simpleFeatureTypeId);
-                });
-                function getOption(value, text, selected) {
-                    var option = document.createElement('option');
-                    option.value = value;
-                    option.innerHTML = text;
-                    if(selected) {
-                        option.selected = true;
-                    }
-                    return option;
-                }
-                function removeChilds(el) {
-                    if (el.hasChildNodes()) {
-                        while (el.childNodes.length >= 1) {
-                            el.removeChild(el.firstChild);
-                        }
-                    }
-                }
-                function featureSourceChange(featureSourceId) {
-                    var selectedValue = parseInt(featureSourceId.getValue());
-
-                    var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
-                    // We are now emptying dom and adding options manully, don't know if this is optimal
-                    removeChilds(simpleFeatureTypeId);
-                    simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', true));
-
-                    if(selectedValue != -1) {
-                        Ext.Ajax.request({
-                            url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>',
-                            scope:this,
-                            params: {
-                                featureSourceId: selectedValue
-                            },
-                            success: function ( result, request ) {
-                                result = Ext.JSON.decode(result.responseText);
-                                Ext.Array.each(result, function(item) {
-                                    simpleFeatureTypeId.appendChild(getOption(item.id, item.name, false));
-                                });
-                            },
-                            failure: function() {
-                                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
-                            }
-                        });
-                        var gridStore = Ext.getCmp('editGrid').getStore();
-                        gridStore.proxy.extraParams.featureSourceId = selectedValue;
-                        // Go back to page 1 and reload store
-                        gridStore.load({params: {
-                            start: 0,
-                            page: 1,
-                            limit: 10
-                        }});
-                        gridStore.loadPage(1, {limit:10});
-                    }
-                }
-                function simpleFeatureTypeChange(simpleFeatureTypeId) {
-                    var gridStore = Ext.getCmp('editGrid').getStore();
-                    gridStore.proxy.extraParams.simpleFeatureTypeId = simpleFeatureTypeId.getValue();
-                    // Go back to page 1 and reload store
-                    gridStore.load({params: {
-                        start: 0,
-                        page: 1,
-                        limit: 10
-                    }});
-                    gridStore.loadPage(1, {limit:10});
-                }
-                // Init with change, because a certain select value can be preselected
-                featureSourceChange(featureSourceId);
             });
-
-            function reloadGrid(){
-                Ext.getCmp('editGrid').getStore().load();
-            }
         </script>
     </stripes:layout-component>
 

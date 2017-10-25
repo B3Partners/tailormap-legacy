@@ -59,7 +59,8 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
             style: {
                 margin: '4px 1px 1px 3px',
                 backgroundColor: '#f3f3f3',
-                border: '1px solid #9d9d9d'
+                border: '1px solid #9d9d9d',
+                padding: '2px'
             },
             renderTo: me.renderTo,
             handler: function() {
