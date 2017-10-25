@@ -228,6 +228,21 @@ Ext.define ("viewer.components.AttributeList",{
         if(this.config.showAttributelistLinkInFeatureInfo) {
             this.createFeatureInfoLink(evt.layers);
         }
+        this.initTotalCounts(args.store);
+    },
+    initTotalCounts: function(store) {
+        store.each(function(item) {
+            if(item.get("totalcount")) {
+                return;
+            }
+            var appLayer = item.get("layer");
+            var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
+            featureService.getCount(appLayer, function(totalCount) {
+                item.set("totalcount", totalCount);
+                item.set("title", [item.get("title"), " (", totalCount, ")"].join(""));
+                this.layerSelector.redraw();
+            }, function() {}, this);
+        }, this);
     },
     createFeatureInfoLink: function(attributelistLayers) {
         if(this.attributeListLinkInFeatureInfoCreated) {

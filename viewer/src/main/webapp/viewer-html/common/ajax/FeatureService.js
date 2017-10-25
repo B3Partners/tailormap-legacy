@@ -54,8 +54,8 @@ Ext.define("viewer.DirectFeatureService", {
             }
         });
     },
-    getCount : function(appLayer, successFunction, failureFunction,filter,scope){
-        successFunction(16);
+    getCount : function(appLayer, successFunction, failureFunction,scope){
+        successFunction.call(scope || this, 16);
     }
 });
 
@@ -151,7 +151,7 @@ Ext.define("viewer.AppLayerService", {
             }
         }
     },
-    getCount : function(appLayer, successFunction, failureFunction,filter,scope){
-        successFunction(16);
+    getCount : function(appLayer, successFunction, failureFunction,scope){
+        successFunction.call(scope || this, 16);
     }
 });
