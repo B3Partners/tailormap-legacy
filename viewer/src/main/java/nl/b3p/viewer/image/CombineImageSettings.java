@@ -17,10 +17,8 @@
 package nl.b3p.viewer.image;
 
 import java.awt.Color;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -41,6 +39,7 @@ public class CombineImageSettings {
     public static final String IMAGE_PROTOCOL="IMAGE";
     public static final String WMSC_PROTOCOL="WMSC";
     public static final String TMS_PROTOCOL="TMS";
+    public static final String WMTS_PROTOCOL="WMTS";
     
     private List<CombineImageUrl> urls = null;
     private List<CombineImageWkt> wktGeoms = null;
@@ -407,7 +406,7 @@ public class CombineImageSettings {
                         cwu.setResolutions(res);
                     }
                     ciu = cwu;
-                } else if (TMS_PROTOCOL.equals(protocol)) {
+                } else if (TMS_PROTOCOL.equals(protocol) ) {
                     CombineTMSUrl ctu = new CombineTMSUrl();
                     if (request.has("serverExtent")) {
                         ctu.setServiceBbox(new Bbox(request.getString("serverExtent")));
@@ -430,6 +429,25 @@ public class CombineImageSettings {
                         }
                         ctu.setResolutions(res);
                     }
+                    ciu = ctu;
+                }else if ( WMTS_PROTOCOL.equals(protocol) ) {
+                    CombineWMTSUrl ctu = new CombineWMTSUrl();
+                    if (request.has("serverExtent")) {
+                        ctu.setServiceBbox(new Bbox(request.getString("serverExtent")));
+                    }
+                    if (request.has("tileWidth")) {
+                        ctu.setTileWidth(request.getInt("tileWidth"));
+                    }
+                    if (request.has("tileHeight")) {
+                        ctu.setTileHeight(request.getInt("tileHeight"));
+                    }
+                    if (request.has("extension")) {
+                        ctu.setExtension(request.getString("extension"));
+                    }
+                    if(request.has("matrixSet")){
+                        ctu.setMatrixSet(request.getJSONObject("matrixSet"));
+                    }
+                    
                     ciu = ctu;
                 }else if (ARCSERVERREST_PROTOCOL.equals(protocol)){
                     CombineArcServerRestUrl casr = new CombineArcServerRestUrl();

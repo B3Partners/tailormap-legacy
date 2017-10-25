@@ -61,6 +61,23 @@ public class TileMatrixSet {
     })
     private BoundingBox bbox;
     
+    public static TileMatrixSet fromJSONObject(JSONObject obj){
+        TileMatrixSet tms = new TileMatrixSet();
+        BoundingBox bbox = BoundingBox.fromJSONObject(obj.getJSONObject("bbox"));
+        tms.setBbox(bbox);
+        tms.setCrs(obj.getString("crs"));
+        tms.setIdentifier(obj.getString("identifier"));
+        JSONArray tmses = obj.getJSONArray("matrices");
+        for (int i = 0; i < tmses.length(); i++) {
+            JSONObject tmObj = tmses.getJSONObject(i);
+            TileMatrix tm = TileMatrix.fromJSONObject(tmObj);
+            tm.setMatrixSet(tms);
+            tms.getMatrices().add(tm);
+            
+        }
+        return tms;
+    }
+    
     public JSONObject toJSONObject(){
         JSONObject obj = new JSONObject();
         obj.put("id",id);
