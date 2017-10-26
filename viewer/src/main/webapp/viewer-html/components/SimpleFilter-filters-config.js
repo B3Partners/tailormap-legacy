@@ -133,8 +133,17 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
         if(this.setDefaultValue) {
             fields.push({ name: 'defaultVal', type: 'boolean', defaultValue: false });
         }
-        this.store = Ext.create('Ext.data.Store', {
+        Ext.define('viewer.components.sf.CheckboxOption', {
+            extend: 'Ext.data.Model',
+            requires: [
+                'Ext.data.identifier.Uuid'
+            ],
             fields: fields,
+            idProperty: 'id',
+            identifier : 'uuid'
+        });
+        this.store = Ext.create('Ext.data.Store', {
+            model: 'viewer.components.sf.CheckboxOption',
             data: []
         });
         if(config.configObject.options){
@@ -145,7 +154,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
     },
     addOption: function(option) {
         if(!option) {
-            option = { id: Ext.id() };
+            option = {};
         }
         this.store.add(option);
     },
