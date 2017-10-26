@@ -29,7 +29,20 @@ Ext.define('vieweradmin.components.Geoservice', {
 
     constructor: function(config) {
         this.initConfig(config);
+        this.filterEmptyLayers();
         this.createTree();
+    },
+
+    filterEmptyLayers: function() {
+        var layers = this.config.layers;
+        for(var i = layers.length - 1; i >= 0; i--) {
+            var applications = layers[i].children;
+            for(var j = applications.length - 1; j >= 0; j--) {
+                if(applications[j].children.length === 0) {
+                    applications.splice(j, 1);
+                }
+            }
+        }
     },
 
     createTree: function() {
