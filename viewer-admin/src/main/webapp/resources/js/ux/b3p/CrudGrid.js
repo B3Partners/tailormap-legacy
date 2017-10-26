@@ -140,8 +140,13 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
             },
             listeners: {
                 load: {
-                    fn: function () {
+                    fn: function (store, records) {
                         this.grid.updateLayout(); // Fix to apply filters
+                        if(store.currentPage !== 0 && store.totalCount !== 0 && records.length === 0) {
+                            // Total is not 0 but there are no records. Last record on page is probably removed. Go back to previous page
+                            var maxPage = parseInt(Math.ceil(store.totalCount / store.pageSize), 10);
+                            store.loadPage(Math.min(store.currentPage - 1, maxPage));
+                        }
                     },
                     scope: this
                 }
