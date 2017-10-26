@@ -547,19 +547,17 @@ Ext.define("vieweradmin.components.ConfigPage", {
         }
     },
 
-    save: function () {
+    save: function (btn) {
+        btn.focus();
+        window.setTimeout(this._save.bind(this), 0);
+    },
+
+    _save: function() {
         if(this.config.metadata.configSource != undefined){
             var config = this.customConfiguration.getConfiguration();
             this.continueSave(config);
         }else{
-            // Hackhackhack
-            if(Ext.isIE8){
-                this.propertyGrid.addListener("propertychange",getPropertyGridConfig,this);
-                var btn = Ext.get('saveConfigButton');
-                btn.focus();
-            }else{
-                this.getPropertyGridConfig();
-            }
+            this.getPropertyGridConfig();
         }
     },
 
