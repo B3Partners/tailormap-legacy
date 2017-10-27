@@ -106,7 +106,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
 
-        this.modifyFeature.activate();
+        if(this.allowSelection()) this.modifyFeature.activate();
+    },
+    
+    allowSelection: function() {
+        return !this.config.hasOwnProperty('allowselection') || this.config.allowselection;
     },
 
     addMeasureListener: function(handler, conf) {

@@ -507,6 +507,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             name: this.config.name + 'VectorLayer',
             geometrytypes:["Circle","Polygon"],
             showmeasures:false,
+            allowselection: false,
             viewerController : this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
