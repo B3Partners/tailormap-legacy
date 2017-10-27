@@ -55,7 +55,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }
 
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
-        this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, OpenLayers.Handler.Point, {
+        this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
         });
         this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
@@ -64,11 +64,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon'
         }));
-        this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon,OpenLayers.Handler.RegularPolygon, {
+        this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon, {
             handlerOptions: {
                 sides: 40}
         });
-        this.box = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.RegularPolygon, OpenLayers.Handler.RegularPolygon, {
+        this.box = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.RegularPolygon, {
             handlerOptions: {
                 sides: 4,
                 irregular: true
@@ -106,7 +106,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
 
-        this.modifyFeature.activate();
+        if(this.allowSelection()) this.modifyFeature.activate();
+    },
+    
+    allowSelection: function() {
+        return !this.config.hasOwnProperty('allowselection') || this.config.allowselection;
     },
 
     addMeasureListener: function(handler, conf) {

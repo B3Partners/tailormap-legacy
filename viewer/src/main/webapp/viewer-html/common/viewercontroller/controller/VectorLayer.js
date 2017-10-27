@@ -45,7 +45,8 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         colorPrefix:null,
         defaultFeatureStyle: null,
         addStyleToFeature: false,
-        addAttributesToFeature: false
+        addAttributesToFeature: false,
+        allowselection: true
     },
     constructor : function (config){
         viewer.viewercontroller.controller.VectorLayer.superclass.constructor.call(this, config);
