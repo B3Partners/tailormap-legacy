@@ -153,7 +153,6 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     },
     reset : function(){
         var layer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
-
         if (!layer) {
             return;
         }
@@ -342,6 +341,7 @@ Ext.define("viewer.components.sf.Checkbox", {
         }
         this.ready = true;
         this.callParent();
+        this.applyFilter();
     }
 });
 
@@ -539,9 +539,10 @@ Ext.define("viewer.components.sf.Combo", {
         var cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(this.combo.getValue(),mustEscape) + (mustEscape ? "'" : "");
         return cql;
     },
-    reset : function(){
-        this.callParent();
+    reset : function() {
         this.combo.setValue(null);
+        this.callParent();
+        this.applyFilter();
     }
 });
 
@@ -616,8 +617,9 @@ Ext.define("viewer.components.sf.Number", {
         return cql;
     },
     reset : function(){
-        this.callParent();
         this.numberField.setValue(this.config.filterConfig.start || "");
+        this.callParent();
+        this.applyFilter();
     }
 });
 
@@ -845,7 +847,6 @@ Ext.define("viewer.components.sf.Slider", {
         return cql;
     },
     reset : function(){
-
         if(this.config.filterConfig.sliderType === "range") {
             this.slider.setValue(0, this.config.filterConfig.start[0]);
             this.slider.setValue(1, this.config.filterConfig.start[1]);
@@ -853,6 +854,7 @@ Ext.define("viewer.components.sf.Slider", {
             this.slider.setValue(this.config.filterConfig.start);
         }
         this.callParent();
+        this.applyFilter();
     }
 });
 
@@ -970,5 +972,6 @@ Ext.define("viewer.components.sf.Numberrange", {
         this.minField.setValue(this.config.defaultValues.Min);
         this.maxField.setValue(this.config.defaultValues.Max);
         this.callParent();
+        this.applyFilter();
     }
 });
