@@ -75,41 +75,32 @@
                         <xsl:call-template name="map-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="6.5cm" height="23.0cm" top="2.6cm" left="13.6cm" xsl:use-attribute-sets="column-block-border">
+                    <fo:block-container width="6.5cm" height="18cm" top="2.6cm" left="13.6cm" xsl:use-attribute-sets="column-block-border">
                         <xsl:call-template name="info-block"/>
                     </fo:block-container>
 
                     <!-- attribute tables -->
-                    <fo:block-container width="13.1cm" height="4.0cm" top="10.6cm" left="0cm" margin-left="0.1cm" xsl:use-attribute-sets="column-block-border">
+                    <fo:block-container width="13.1cm" height="10.0cm" top="10.6cm" left="0cm" margin-left="0.1cm" xsl:use-attribute-sets="column-block-border">
                         <xsl:for-each select="extra/info[@classname='feature']/root">
                             <fo:block xsl:use-attribute-sets="subtitle-font">Geselecteerd Object</fo:block>
                             <xsl:call-template name="table-2column"/>
                         </xsl:for-each>
                     </fo:block-container>
 
-                    <fo:block-container width="13.1cm" height="11.0cm" top="14.7cm" left="0cm" margin-left="0.1cm" xsl:use-attribute-sets="column-block-border">
-                        <xsl:for-each select="extra/info[@classname='related']/root">
-                            <fo:block xsl:use-attribute-sets="subtitle-font">
-                                <xsl:value-of select="ancestor::info[1]/@componentname"/>
-                            </fo:block>
-                            <xsl:call-template name="table-related"/>
-                        </xsl:for-each>
-                        
-                        <xsl:if test="count(//extra/info[@classname='related']) = 0">
-                            <fo:block xsl:use-attribute-sets="subtitle-font">
-                                <xsl:text>Geen gerelateerde data gevonden</xsl:text>
-                            </fo:block>
-                        </xsl:if>
-                    </fo:block-container>
-                    
-                    <!-- footer -->
-                    <fo:block-container width="12.0cm" height="2.3cm" top="26.5cm" left="0cm" xsl:use-attribute-sets="column-block">
-                        <xsl:call-template name="disclaimer-block"/>
-                    </fo:block-container>
+                        <fo:block-container width="20.15cm" height="7.0cm" top="20.7cm" left="0cm" margin-left="0.1cm" xsl:use-attribute-sets="column-block-border">
+                            <xsl:for-each select="extra/info[@classname='related']/root">
+                                <fo:block xsl:use-attribute-sets="subtitle-font">
+                                    <xsl:value-of select="ancestor::info[1]/@componentname" />
+                                </fo:block>
+                                <xsl:call-template name="table-related" />
+                            </xsl:for-each>
 
-                    <fo:block-container width="7.6cm" height="2.3cm" top="26.5cm" left="12.0cm" xsl:use-attribute-sets="column-block">
-                        <xsl:call-template name="logo-block"/>
-                    </fo:block-container>
+                            <xsl:if test="count(//extra/info[@classname='related']) = 0">
+                                <fo:block xsl:use-attribute-sets="subtitle-font">
+                                    <xsl:text>Geen gerelateerde data gevonden</xsl:text>
+                                </fo:block>
+                            </xsl:if>
+                        </fo:block-container>
 
                 </fo:flow>
             </fo:page-sequence>
@@ -122,25 +113,9 @@
             <fo:external-graphic src="url('b3p_noordpijl.png')" width="84px" height="77px"/>
         </fo:block>
 
-        <!-- TODO
-        <fo:block-container margin-left="0.2cm" margin-top="2.6cm" width="6.5cm" height="4.9cm">
-            <xsl:call-template name="legend" />
-        </fo:block-container> -->
-
-        <!-- TODO
-        <fo:block-container width="4.0cm" height="2.9cm" top="1.6cm" left="13.2cm" margin-left="0cm" xsl:use-attribute-sets="column-block">
-            <xsl:call-template name="overview-block">
-                <xsl:with-param name="width" select="'112'" />
-                <xsl:with-param name="height" select="'80'" />
-                <xsl:with-param name="width" select="'112px'" />
-                <xsl:with-param name="height" select="'80px'" />
-            </xsl:call-template>
-        </fo:block-container>
-        -->
-
-        <fo:block margin-left="0.2cm" margin-top="4cm" xsl:use-attribute-sets="default-font">
+        <fo:block margin-left="0.2cm" xsl:use-attribute-sets="default-font">
             <!-- create scalebar -->
-            <fo:block margin-left="0.2cm" margin-top="0.5cm" font-size="9pt">
+            <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="9pt">
                 <xsl:text>schaal</xsl:text>
             </fo:block>
 
@@ -155,15 +130,34 @@
                 </xsl:call-template>
             </fo:block>
 
-            <fo:block margin-left="0.2cm" margin-top="0.5cm" font-size="10pt">
+            <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="10pt">
                 <xsl:text>datum: </xsl:text>
                 <xsl:value-of select="date"/>
             </fo:block>
 
         </fo:block>
+         
+        <fo:block-container margin-left="0.2cm" margin-top="0.5cm" width="6.5cm" height="9cm">
+            <xsl:call-template name="legend" />
+        </fo:block-container>
+        
+        <!-- overzichtskaart
+        <fo:block-container width="4.0cm" height="2.9cm" top="1.6cm" left="13.2cm" margin-left="0cm" xsl:use-attribute-sets="column-block">
+            <xsl:call-template name="overview-block">
+                <xsl:with-param name="width" select="'112'" />
+                <xsl:with-param name="height" select="'80'" />
+                <xsl:with-param name="width" select="'112px'" />
+                <xsl:with-param name="height" select="'80px'" />
+            </xsl:call-template>
+        </fo:block-container>
+        -->
+
+        <xsl:call-template name="logo-block"/>
+
+        <xsl:call-template name="disclaimer-block"/>
     </xsl:template>
 
-    <!-- create map -->
+    <!-- kaartje -->
     <xsl:template name="map-block">
         <xsl:variable name="bbox-corrected">
             <xsl:call-template name="correct-bbox">
@@ -198,7 +192,7 @@
 
     <xsl:template name="logo-block">
         <fo:block>
-            <fo:external-graphic src="url('b3p_logo.png')" width="231px" height="56px"/>
+            <fo:external-graphic src="url('b3p_logo.png')" width="231px" height="58px"/>
         </fo:block>
     </xsl:template>
 
@@ -208,8 +202,8 @@
         <xsl:param name="tWidthRight">50</xsl:param>
         <fo:block font-size="9pt">
             <fo:table table-layout="fixed" width="{$tWidthLeft + $tWidthRight}mm">
-                <fo:table-column column-width="{$tWidthLeft}mm"/>
-                <fo:table-column column-width="{$tWidthRight}mm"/>
+                <fo:table-column column-width="{$tWidthLeft}mm" />
+                <fo:table-column column-width="{$tWidthRight}mm" />
                 <fo:table-body>
                     <xsl:for-each select="*">
                         <xsl:sort select="local-name()" data-type="text"/>
