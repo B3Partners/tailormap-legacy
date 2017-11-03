@@ -512,7 +512,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 align: 'stretch'
             },
             defaults: {
-                labelAlign: 'top'
+                labelAlign: 'top',
+                listeners: { blur: this.saveIgnitionLocation, scope: this }
             },
             border: 0,
             hidden: true,
@@ -646,7 +647,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 align: 'stretch'
             },
             defaults: {
-                labelAlign: 'top'
+                labelAlign: 'top',
+                listeners: { blur: this.saveAudienceLocation, scope: this }
             },
             border: 0,
             hidden: true,
@@ -682,7 +684,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 align: 'stretch'
             },
             defaults: {
-                labelAlign: 'top'
+                labelAlign: 'top',
+                listeners: { blur: this.saveExtraObject, scope: this }
             },
             border: 0,
             hidden: true,
@@ -772,6 +775,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     saveAudienceLocation: function() {
         var location = this._saveLocation(this.audienceLocationsGrid, this.editingAudienceLocation, this.AUDIENCE_LOCATION_FORM);
+        if(!location) return;
         if(location.get('mainLocation') === true) {
             this.getVectorLayer().setFeatureStyle(location.get('fid'), this.mainAudienceLocationStyle, true);
             this.audienceLocationsGrid.getStore().each(function(loc) {
@@ -809,6 +813,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     saveExtraObject: function() {
         var extraObject = this._saveLocation(this.extraObjectsGrid, this.editingExtraObject, this.EXTRA_OBJECT_FORM);
+        if(!extraObject) return;
         this.updateExtraObjectFeature(extraObject);
     },
 
@@ -928,6 +933,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     setExtraObjectColor: function(color) {
         var extraObject = this.extraObjectsGrid.getStore().getAt(this.editingExtraObject);
         extraObject.set('color', color);
+        this.saveExtraObject();
     },
 
     _createLocation: function(drawType, formQuery) {
@@ -1016,6 +1022,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         form.getForm().setValues(location.getData());
         if(location_type === this.IGNITION_LOCATION_TYPE) {
             this.editingIgnitionLocation = rowIndex;
+            this.toggleZonedistancesForm();
         }
         if(location_type === this.AUDIENCE_LOCATION_TYPE) {
             this.editingAudienceLocation = rowIndex;
@@ -1028,7 +1035,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     _saveLocation: function(grid, rowIndex, formQuery) {
+        if(!rowIndex && rowIndex !== 0) {
+            return;
+        }
         var location = grid.getStore().getAt(rowIndex);
+        if(!location) {
+            return;
+        }
         var data = this.getContentContainer().query(this.toId(formQuery))[0].getForm().getFieldValues();
         location.set(data);
         var locationType = location.get('type');
