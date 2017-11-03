@@ -406,6 +406,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             next_button.setDisabled(true);
         }
         this.wizardPages[this.currentPage].setVisible(true);
+        this.deselectAllFeatures();
     },
 
     createIgnitionLocationsGrid: function() {
@@ -1159,7 +1160,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.isImporting = true;
         this.getVectorLayer().addFeatures(features);
         this.isImporting = false;
-        this.getVectorLayer().unselectAll();
+        this.deselectAllFeatures();
         this.nextPage();
     },
 
@@ -1271,6 +1272,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     printRequest: function() {
         var features = this.getAllFeatures();
         this.buttonDown();
+    },
+
+    deselectAllFeatures: function() {
+        this.getVectorLayer().unselectAll();
+        this.getExtraObjectsLayer().unselectAll();
     },
 
     /**
