@@ -844,6 +844,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 end = xy[1];
             }
         }
+        if(start.x > end.x) {
+            var tmp = end;
+            end = start;
+            start = tmp;
+        }
         var midx = start.x + (end.x - start.x)/2;
         var midy = start.y + (end.y - start.y)/2;
         var opposite = (end.y - start.y);
