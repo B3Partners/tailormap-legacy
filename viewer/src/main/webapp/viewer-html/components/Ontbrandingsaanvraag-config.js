@@ -21,33 +21,33 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
-    DEFAULT_ZONE_DISTANCES: {
-        "Vuurpijlen (schietrichting schuin van het publiek af)": 125,
-        "Vuurpijlen (schietrichting overig)": 200,
-        "Tekstborden": 15,
-        "Grondvuurwerk": 30,
-        "Romeinse kaarsen met kaliber tot en met 2 inch": 75,
-        "Mines tot en met een kaliber van 4 inch": 60,
-        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": 100,
-        "Dagbommen kleiner dan 21 cm diameter": 75
+    DEFAULT_ZONE_DISTANCES_CONSUMER: {
+        "Vuurpijlen (schietrichting schuin van het publiek af)": { distance: 125, fan: true },
+        "Vuurpijlen (schietrichting overig)": { distance: 200, fan: true },
+        "Tekstborden": { distance: 15, fan: true },
+        "Grondvuurwerk": { distance: 30, fan: true },
+        "Romeinse kaarsen met kaliber tot en met 2 inch": { distance: 75, fan: true },
+        "Mines tot en met een kaliber van 4 inch": { distance: 60, fan: true },
+        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": { distance: 100, fan: true },
+        "Dagbommen kleiner dan 21 cm diameter": { distance: 75, fan: true }
     },
-    DEFAULT_ZONE_DISTANCES_FAN: {
-        "Vuurpijlen (schietrichting schuin van het publiek af)": 125,
-        "Vuurpijlen (schietrichting overig)": 200,
-        "Tekstborden": 15,
-        "Grondvuurwerk": 30,
-        "Romeinse kaarsen met kaliber tot en met 2 inch": 75,
-        "Mines tot en met een kaliber van 4 inch": 60,
-        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": 100,
-        "Dagbommen kleiner dan 21 cm diameter": 75
+    DEFAULT_ZONE_DISTANCES_PROFESSIONAL: {
+        "Vuurpijlen (schietrichting schuin van het publiek af)": { distance: 125, fan: false },
+        "Vuurpijlen (schietrichting overig)": { distance: 200, fan: false },
+        "Tekstborden": { distance: 15, fan: false },
+        "Grondvuurwerk": { distance: 30, fan: false },
+        "Romeinse kaarsen met kaliber tot en met 2 inch": { distance: 75, fan: false },
+        "Mines tot en met een kaliber van 4 inch": { distance: 60, fan: false },
+        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": { distance: 100, fan: false },
+        "Dagbommen kleiner dan 21 cm diameter": { distance: 75, fan: false }
     },
     constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {};
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        this.addForm(configObject, "zonedistances", "Zoneafstanden", "Zoneafstand", this.DEFAULT_ZONE_DISTANCES);
-        this.addForm(configObject, "zonedistances_fan", "Zoneafstanden fan", "Zoneafstand fan", this.DEFAULT_ZONE_DISTANCES_FAN);
+        this.addForm(configObject, "zonedistances_consumer", "Zoneafstanden consumenten vuurwerk", "Zoneafstand consumenten vuurwerk", this.DEFAULT_ZONE_DISTANCES_CONSUMER);
+        this.addForm(configObject, "zonedistances_professional", "Zoneafstanden professioneel vuurwerk", "Zoneafstand professioneel vuurwerk", this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
     },
     addForm: function(configObject, paramkey, label, label_singular, defaults) {
         var distances = [];
@@ -55,13 +55,13 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(typeof configWaardes === "undefined") {
             configWaardes = [];
             for(var key in defaults) if(defaults.hasOwnProperty(key)) {
-                configWaardes.push({ label: key, distance: defaults[key] });
+                configWaardes.push({ label: key, distance: defaults[key].distance, fan: defaults[key].fan });
             }
         }
         var containerKey = paramkey + "distancesContainer";
         for (var i = 0 ; i < configWaardes.length ;i++){
             var waarde = configWaardes[i];
-            var item = this.createRow(waarde.label, waarde.distance);
+            var item = this.createRow(waarde.label, waarde.distance, waarde.fan);
             distances.push(item);
         }
         this.form.add({
@@ -83,7 +83,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     listeners: {
                         click: function(){
                             var distancesContainer = Ext.ComponentQuery.query("#" + containerKey)[0];
-                            distancesContainer.add(this.createRow('', ''));
+                            distancesContainer.add(this.createRow('', '', paramkey === 'zonedistances_consumer'));
                         },
                         scope:this
                     }
@@ -94,7 +94,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: distances
         });
     },
-    createRow: function(labelValue, distance) {
+    createRow: function(labelValue, distance, fan_value) {
         return {
             xtype: "container",
             layout: {
@@ -119,6 +119,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth: 50,
                 width: 150
             }, {
+                xtype: "checkbox",
+                fieldLabel: "Fan",
+                labelWidth: 50,
+                name: "fan",
+                value: fan_value
+            }, {
                 xtype: "button",
                 text: " X ",
                 listeners:{
@@ -132,8 +138,8 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
     getConfiguration: function() {
         var config = this.callParent(arguments);
-        config.zonedistances = this.getConfigFor("zonedistances");
-        config.zonedistances_fan = this.getConfigFor("zonedistances_fan");
+        config.zonedistances_consumer = this.getConfigFor("zonedistances_consumer");
+        config.zonedistances_professional = this.getConfigFor("zonedistances_professional");
         return config;
     },
     getConfigFor: function(paramkey) {
@@ -146,7 +152,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             var vals = item.items.items;
             var entry = {
                 label : vals[0].getValue(),
-                distance : +(vals[1].getValue())
+                distance : +(vals[1].getValue()),
+                fan : vals[2].getValue()
             };
             if(entry.label && entry.distance){
                 distances.push(entry);

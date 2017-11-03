@@ -51,15 +51,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     COMPONENT_VERSION: '1.0',
     COMPONENT_NAME: 'Ontbrandingsaanvraag',
-    ZONE_DISTANCES: {},
-    ZONE_DISTANCES_FAN: {},
+    ZONE_DISTANCES_CONSUMER: {},
+    ZONE_DISTANCES_PROFESSIONAL: {},
     OTHER_LABEL: "Anders, namelijk...",
 
     constructor: function (conf){
         this.initConfig(conf);
         viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
-        this.zoneDistanceConfigToObject(conf.zonedistances, this.ZONE_DISTANCES);
-        this.zoneDistanceConfigToObject(conf.zonedistances_fan, this.ZONE_DISTANCES_FAN);
+        this.zoneDistanceConfigToObject(conf.zonedistances_consumer, this.ZONE_DISTANCES_CONSUMER);
+        this.zoneDistanceConfigToObject(conf.zonedistances_professional, this.ZONE_DISTANCES_PROFESSIONAL);
 	
         this.features = {};
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
@@ -415,11 +415,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'fid', type: 'string' },
                 { name: 'label', type: 'string' },
                 { name: 'type', type: 'string', defaultValue: this.IGNITION_LOCATION_TYPE },
-                { name: 'zonedistance', type: 'string' },
-                { name: 'custom_zonedistance', type: 'number' },
-                { name: 'fan', type: 'boolean', defaultValue: false },
-                { name: 'zonedistance_fan', type: 'string' },
-                { name: 'custom_zonedistance_fan', type: 'number' },
+                { name: 'zonedistance_consumer', type: 'string' },
+                { name: 'custom_zonedistance_consumer', type: 'number' },
+                { name: 'fireworks_type', type: 'string', defaultValue: 'consumer' },
+                { name: 'zonedistance_professional', type: 'string' },
+                { name: 'custom_zonedistance_professional', type: 'number' },
                 { name: 'size', type: 'number' }
             ],
             data: []
@@ -502,26 +502,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     createIgnitionLocationForm: function() {
-        var keys = Ext.Object.getKeys(this.ZONE_DISTANCES);
-        var store_items = Ext.Array.map(keys, function(item) {
-            return { "label": item };
-        });
-        store_items.push({ "label": this.OTHER_LABEL });
-        Ext.create('Ext.data.Store', {
-            storeId: 'zoneDistanceStore',
-            fields: ['label'],
-            data: store_items
-        });
-        var fan_keys = Ext.Object.getKeys(this.ZONE_DISTANCES_FAN);
-        var fan_store_items = Ext.Array.map(fan_keys, function(item) {
-            return { "label": item };
-        });
-        fan_store_items.push({ "label": this.OTHER_LABEL });
-        Ext.create('Ext.data.Store', {
-            storeId: 'zoneDistanceFanStore',
-            fields: ['label'],
-            data: fan_store_items
-        });
+        this.createZonedistanceStore(this.ZONE_DISTANCES_CONSUMER, 'consumerZoneDistanceStore');
+        this.createZonedistanceStore(this.ZONE_DISTANCES_PROFESSIONAL, 'professionalZoneDistanceStore');
         return {
             xtype: 'form',
             layout: {
@@ -542,17 +524,45 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     itemId: 'ignition_label'
                 },
                 {
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Type vuurwerk',
+                    height: 65,
+                    defaultType: 'radiofield',
+                    defaults: {
+                        flex: 1,
+                        listeners: {
+                            change: this.toggleZonedistancesForm,
+                            scope: this
+                        }
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            boxLabel: 'Consument',
+                            name: 'fireworks_type',
+                            inputValue: 'consumer',
+                            itemId: 'fireworks_type_choice_consumer'
+
+                        }, {
+                            boxLabel: 'Professioneel',
+                            name: 'fireworks_type',
+                            inputValue: 'professional',
+                            itemId: 'fireworks_type_choice_professional'
+                        }
+                    ]
+                },
+                {
                     xtype: 'combobox',
                     fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
-                    store: Ext.StoreManager.lookup('zoneDistanceStore'),
+                    store: Ext.StoreManager.lookup('consumerZoneDistanceStore'),
                     displayField: 'label',
-                    valueField: 'label',
-                    name: 'zonedistance',
-                    itemId: 'zonedistance',
+                    valueField: 'val',
+                    name: 'zonedistance_consumer',
+                    itemId: 'zonedistance_consumer',
                     listeners: {
                         change: function(combo, val) {
-                            this.getContentContainer().query('#custom_zonedistance')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         scope: this
                     }
@@ -561,69 +571,32 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     xtype: 'numberfield',
                     fieldLabel: 'Handmatige zoneafstand',
                     hidden: true,
-                    name: 'custom_zonedistance',
-                    itemId: 'custom_zonedistance'
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    fieldLabel: 'Fan uitworp (elipsevormig gebied)',
-                    defaultType: 'radiofield',
-                    defaults: {
-                        flex: 1
-                    },
-                    layout: 'hbox',
-                    items: [
-                        {
-                            boxLabel: 'Ja',
-                            name: 'fan',
-                            inputValue: 'ja',
-                            itemId: 'fan_choice_yes',
-                            listeners: {
-                                change: function(radio, val) {
-                                    this.getContentContainer().query('#zonedistance_fan')[0].setVisible(val);
-                                },
-                                scope: this
-                            }
-                        }, {
-                            boxLabel: 'Nee',
-                            name: 'fan',
-                            inputValue: 'nee',
-                            itemId: 'fan_choice_no',
-                            listeners: {
-                                change: function(radio, val) {
-                                    if(val) {
-                                        this.getContentContainer().query('#zonedistance_fan')[0].setVisible(false);
-                                        this.getContentContainer().query('#custom_zonedistance_fan')[0].setVisible(false);
-                                    }
-                                },
-                                scope: this
-                            }
-                        }
-                    ]
+                    name: 'custom_zonedistance_consumer',
+                    itemId: 'custom_zonedistance_consumer'
                 },
                 {
                     xtype: 'combobox',
-                    fieldLabel: 'Zoneafstanden fan',
+                    fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
-                    store: Ext.StoreManager.lookup('zoneDistanceFanStore'),
+                    store: Ext.StoreManager.lookup('professionalZoneDistanceStore'),
                     displayField: 'label',
                     hidden: true,
-                    valueField: 'label',
-                    name: 'zonedistance_fan',
-                    itemId: 'zonedistance_fan',
+                    valueField: 'val',
+                    name: 'zonedistance_professional',
+                    itemId: 'zonedistance_professional',
                     listeners: {
                         change: function(combo, val) {
-                            this.getContentContainer().query('#custom_zonedistance_fan')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         scope: this
                     }
                 },
                 {
                     xtype: 'numberfield',
-                    fieldLabel: 'Handmatige zoneafstand fan',
+                    fieldLabel: 'Handmatige zoneafstand',
                     hidden: true,
-                    name: 'custom_zonedistance_fan',
-                    itemId: 'custom_zonedistance_fan'
+                    name: 'custom_zonedistance_professional',
+                    itemId: 'custom_zonedistance_professional'
                 },
                 {
                     xtype: 'button',
@@ -632,6 +605,36 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 }
             ]
         };
+    },
+
+    createZonedistanceStore: function(zonedistances, name) {
+        var keys = Ext.Object.getKeys(zonedistances);
+        var store_items = Ext.Array.map(keys, function(item) {
+            return { "val": item, "label": [item, " (", zonedistances[item], "m)"].join("") };
+        }, this);
+        store_items.push({ "val": this.OTHER_LABEL, "label": this.OTHER_LABEL });
+        Ext.create('Ext.data.Store', {
+            storeId: name,
+            fields: ['val', 'label'],
+            data: store_items
+        });
+    },
+
+    toggleZonedistancesForm: function() {
+        var val = '';
+        if(this.getContentContainer().query('#fireworks_type_choice_consumer')[0].getValue()) {
+            val = 'consumer';
+        } else if(this.getContentContainer().query('#fireworks_type_choice_professional')[0].getValue()) {
+            val = 'professional';
+        }
+        this.getContentContainer().query('#zonedistance_consumer')[0].setVisible(val === 'consumer');
+        this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(
+            val === 'consumer' && this.getContentContainer().query('#zonedistance_consumer')[0].getValue() === this.OTHER_LABEL
+        );
+        this.getContentContainer().query('#zonedistance_professional')[0].setVisible(val === 'professional');
+        this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(
+            val === 'professional' && this.getContentContainer().query('#zonedistance_professional')[0].getValue() === this.OTHER_LABEL
+        );
     },
 
     createAudienceLocationForm: function() {
@@ -996,11 +999,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         form.getForm().setValues(location.getData());
         if(location_type === this.IGNITION_LOCATION_TYPE) {
             this.editingIgnitionLocation = rowIndex;
-            if(location.get('fan')) {
-                this.getContentContainer().query('#fan_choice_yes')[0].setValue('ja');
-            } else {
-                this.getContentContainer().query('#fan_choice_no')[0].setValue('nee');
-            }
         }
         if(location_type === this.AUDIENCE_LOCATION_TYPE) {
             this.editingAudienceLocation = rowIndex;
@@ -1015,9 +1013,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     _saveLocation: function(grid, rowIndex, formQuery) {
         var location = grid.getStore().getAt(rowIndex);
         var data = this.getContentContainer().query(this.toId(formQuery))[0].getForm().getFieldValues();
-        if(data.fan){
-            data.fan = data.fan === 'ja';
-        }
         location.set(data);
         var locationType = location.get('type');
         if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
@@ -1239,12 +1234,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var raw_data = feature.toJsonObject();
         raw_data.attributes = item.getData();
         if(raw_data.attributes.type === this.IGNITION_LOCATION_TYPE) {
-            raw_data.attributes.zonedistance_m = raw_data.attributes.zonedistance === this.OTHER_LABEL
-                ? raw_data.attributes.custom_zonedistance
-                : this.ZONE_DISTANCES[raw_data.attributes.zonedistance];
-            raw_data.attributes.zonedistance_fan_m = raw_data.attributes.zonedistance_fan === this.OTHER_LABEL
-                ? raw_data.attributes.custom_zonedistance_fan
-                : this.ZONE_DISTANCES_FAN[raw_data.attributes.zonedistance_fan];
+            raw_data.attributes.zonedistance_consumer_m = raw_data.attributes.zonedistance_consumer === this.OTHER_LABEL
+                ? raw_data.attributes.custom_zonedistance_consumer
+                : this.ZONE_DISTANCES_CONSUMER[raw_data.attributes.zonedistance_consumer];
+            raw_data.attributes.zonedistance_professional_m = raw_data.attributes.zonedistance_professional === this.OTHER_LABEL
+                ? raw_data.attributes.custom_zonedistance_professional
+                : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional];
         }
         raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature.style).getProperties();
         delete raw_data.id;
@@ -1318,7 +1313,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(complete) {
             this.removeSafetyZones();
             var features = this.getAllFeatures();
-            //this.drawSafetyZone('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[19096.32,567100.16],[33288.96,591184.64],[35439.36,613978.88],[69845.76,598496],[89199.36,607957.76],[105112.32,586453.76],[117154.56,567530.24],[80597.76,553337.6],[87479.04,524952.32],[50922.24,529683.2],[33719.04,487105.28],[15225.6,525812.48],[8344.32,543015.68],[19096.32,567100.16]]]}},{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[57803.52,487535.36],[51352.32,514200.32],[65544.96,544736],[105972.48,539575.04],[115864.32,501297.92],[153281.28,514200.32],[164033.28,481944.32],[121455.36,461300.48],[114144,420442.88],[68125.44,438506.24],[24687.36,415281.92],[15655.68,456139.52],[52642.56,464311.04],[40170.24,489255.68],[32428.8,525812.48],[57803.52,487535.36]]]}}]}');
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
                 scope: this,
@@ -1349,9 +1343,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     this.tempCalculationResultLayer.addFeatures(tempfeatures);
                 },
                 failure: function (result) {
-                    if (failureFunction != undefined) {
-                        failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                    }
+                    this.addMessageInContainer('#calculation_messages',
+                        'Er is iets mis gegaan met het berekenen van de veiligheidszone. Sla uw aanvraag op en probeer het opnieuw.');
                 }
             });
         }
@@ -1390,21 +1383,25 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             if(!this.checkZoneDistance(location)) {
                 complete = false;
             }
-            if(location.get('fan') && !this.checkZoneDistance(location, /*fan=*/true)) {
-                complete = false;
-            }
         }, this);
         return complete;
     },
 
-    checkZoneDistance: function(location, fan) {
-        var zone_distance = location.get(fan ? 'zonedistance_fan' : 'zonedistance');
-        var zone_distances = fan ? this.ZONE_DISTANCES : this.ZONE_DISTANCES;
-        if(!zone_distances.hasOwnProperty(zone_distance) && zone_distance !== this.OTHER_LABEL) {
-            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd voor Zoneafstanden' + (fan ? ' fan' : '') + ' voor afsteeklocatie ' + location.get('label'));
+    checkZoneDistance: function(location) {
+        var fireworks_type = location.get('fireworks_type');
+        if(fireworks_type !== 'consumer' && fireworks_type !== 'professional') {
+            this.addMessageInContainer('#calculation_messages', 'U heeft geen geldige keuze gemaakt bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
             return false;
-        } else if(zone_distance === this.OTHER_LABEL && !location.get('custom_zonedistance')) {
-            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen voor Handmatige zoneafstand' + (fan ? ' fan' : '') + ' anders voor afsteeklocatie ' + location.get('label'));
+        }
+        var zone_distances = fireworks_type === 'consumer' ? this.ZONE_DISTANCES_CONSUMER : this.ZONE_DISTANCES_PROFESSIONAL;
+        var zone_distance = fireworks_type === 'consumer' ? location.get('zonedistance_consumer') : location.get('zonedistance_professional');
+        if(!zone_distances.hasOwnProperty(zone_distance) && zone_distance !== this.OTHER_LABEL) {
+            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd bij "Zoneafstanden" voor afsteeklocatie ' + location.get('label'));
+            return false;
+        }
+        var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');
+        if(zone_distance === this.OTHER_LABEL && !zone_distance_custom) {
+            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige zoneafstand" voor afsteeklocatie ' + location.get('label'));
             return false;
         }
         return true;
