@@ -364,7 +364,7 @@ Ext.define("viewer.components.sf.Radio", {
                 change: {
                     scope: this,
                     fn: function(radio, newValue){
-                        if(newValue){
+                        if(newValue !== null){
                             this.applyFilter();
                         }
                     }
