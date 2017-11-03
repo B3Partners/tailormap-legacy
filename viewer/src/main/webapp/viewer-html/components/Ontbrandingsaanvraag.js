@@ -735,7 +735,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             return '';
         }
         var unit = squareMeters ? 'm2' : 'm';
-        if(size > (squareMeters ? 100000 : 100)) {
+        if(size > (squareMeters ? 1000000 : 1000)) {
             size = size / (squareMeters ? 1000000 : 1000);
             unit = squareMeters ? 'km2' : 'km';
         }
