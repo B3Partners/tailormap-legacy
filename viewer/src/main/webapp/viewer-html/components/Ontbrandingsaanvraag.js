@@ -47,7 +47,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     EXTRA_OJBECT_TYPE: 'extraObject',
     EXTRA_OBJECT_FORM: 'extraObjectForm',
     MEASURE_LINE_TYPE: 'measureObject',
-    MEASURE_LINE_COLOR: 'AAAAAA',
+    MEASURE_LINE_COLOR: '777777',
 
     COMPONENT_VERSION: '1.0',
     COMPONENT_NAME: 'Ontbrandingsaanvraag',
@@ -823,6 +823,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         featureStyle.set('strokeColor', '#' + extraObject.get('color'));
         featureStyle.set('strokeDashstyle', extraObject.get('dashStyle'));
         featureStyle.set('label', '');
+        featureStyle.set('strokeWidth', 4);
         this.getVectorLayer().setFeatureStyle(extraObject.get('fid'), featureStyle);
         this.updateExtraObjectLabel(extraObject);
     },
