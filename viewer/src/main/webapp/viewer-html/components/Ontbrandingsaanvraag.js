@@ -933,16 +933,26 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     _createLocation: function(drawType, formQuery) {
         this.isDrawing = drawType;
         this.getVectorLayer().defaultFeatureStyle = this.ingnitionLocationStyle;
+        var drawingName = "afsteeklocatie";
         if(drawType === this.AUDIENCE_LOCATION_TYPE) {
             this.getVectorLayer().defaultFeatureStyle = this.defaultAudienceLocation;
+            drawingName = "publiekslocatie";
         }
         if(drawType === this.MEASURE_LINE_TYPE) {
             this.getVectorLayer().defaultFeatureStyle = this.measureLineStyle;
+            drawingName = "afstandslijn";
+        }
+        if(drawType === this.EXTRA_OJBECT_TYPE) {
+            drawingName = "hulplijn";
         }
         if(drawType === this.EXTRA_OJBECT_TYPE || drawType === this.MEASURE_LINE_TYPE) {
             this.getVectorLayer().drawFeature("LineString");
         } else {
             this.getVectorLayer().drawFeature("Polygon");
+        }
+        var grid = this.getGridForType(drawType);
+        if(grid) {
+            grid.mask("Teken een " + drawingName + " op de kaart");
         }
         var form = this.getContentContainer().query(this.toId(formQuery))[0];
         form.setVisible(false);
@@ -1308,6 +1318,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             }
             if(locationType === this.EXTRA_OJBECT_TYPE || locationType === this.MEASURE_LINE_TYPE) {
                 this.addExtraObject(this.activeFeature, locationType);
+            }
+            var grid = this.getGridForType(locationType);
+            if(grid) {
+                grid.unmask();
             }
             this.isDrawing = false;
         }
