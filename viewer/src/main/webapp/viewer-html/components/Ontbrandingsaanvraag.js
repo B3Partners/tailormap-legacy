@@ -39,6 +39,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     currentPage: 0,
     // config
     config:{},
+    importedFileName: "",
 
     IGNITION_LOCATION_TYPE: 'ignitionLocation',
     IGNITION_LOCATION_FORM: 'ignitionLocationForm',
@@ -1119,6 +1120,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     newRequest: function() {
         this.removeAllFeatures();
+        this.importedFileName = "";
         this.nextPage();
     },
 
@@ -1147,6 +1149,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             var reader = new FileReader();
             // Closure to capture the file information.
             reader.onload = this.fileLoaded.bind(this);
+            this.importedFileName = file.name;
             // Read in the image file as a data URL.
             reader.readAsText(file);
         }
@@ -1238,14 +1241,36 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     saveFile: function() {
+        Ext.Msg.prompt(
+            'Aanvraag opslaan',
+            [
+                'U kunt de aanvraag opslaan om op een later moment verder te gaan,<br />of de aanvraag later opnieuw te gebruiken.',
+                '<br /><br />Vul hieronder de bestandsnaam in en klik op "Ok" in het bestand te downloaden',
+                '<br /><br />'
+            ].join(''),
+            function(btn, text){
+            if (btn === 'ok') {
+                this._saveFile(text)
+            }
+        }, this, false, this.getFilename());
+    },
+
+    _saveFile: function(filename) {
         var data = {
             version: this.COMPONENT_VERSION,
             type: this.COMPONENT_NAME,
             features: this.getAllFeatures()
         };
         var blob = new Blob([ Ext.JSON.encode(data) ], { type: "application/json;charset=utf-8" });
+        saveAs(blob, filename);
+    },
+
+    getFilename: function() {
+        if(this.importedFileName) {
+            return this.importedFileName;
+        }
         var date = Ext.Date.format(new Date(), 'd-m-Y');
-        saveAs(blob, "ontbrandingsaanvraag-" + date + ".json");
+        return "ontbrandingsaanvraag-" + date + ".json";
     },
 
     getAllFeatures: function() {
