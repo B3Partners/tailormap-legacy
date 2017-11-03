@@ -353,6 +353,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     html: 'Aanvraag printen',
                     margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
+                },
+                {
+                    xtype: 'button',
+                    html: 'Terug naar het begin',
+                    margin: this.defaultMargin,
+                    listeners: { click: this.movePage.bind(this, 0), scope: this }
                 }
             ])
         ];
@@ -389,7 +395,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     movePage: function(direction) {
         this.wizardPages[this.currentPage].setVisible(false);
-        this.currentPage += direction;
+        if(direction === 0) {
+            this.currentPage = 0;
+        } else {
+            this.currentPage += direction;
+        }
         var next_button = this.getContentContainer().query('#next_button')[0];
         var prev_button = this.getContentContainer().query('#prev_button')[0];
         next_button.setDisabled(false);
