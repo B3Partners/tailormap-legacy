@@ -599,12 +599,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     hidden: true,
                     name: 'custom_zonedistance_professional',
                     itemId: 'custom_zonedistance_professional'
-                },
+                }/*,
                 {
                     xtype: 'button',
                     text: 'Opslaan',
                     listeners: { click: this.saveIgnitionLocation, scope: this }
-                }
+                }*/
             ]
         };
     },
@@ -665,12 +665,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     fieldLabel: 'Hoofdlocatie',
                     name: 'mainLocation',
                     itemId: 'mainLocation'
-                },
+                }/*,
                 {
                     xtype: 'button',
                     text: 'Opslaan',
                     listeners: { click: this.saveAudienceLocation, scope: this }
-                }
+                }*/
             ]
         };
     },
@@ -724,12 +724,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     store: [['none', 'Geen'], ['begin', 'Begin van de lijn'], ['end', 'Eind van de lijn'], ['both', 'Beide kanten van de lijn']],
                     name: 'arrow',
                     itemId: 'arrow'
-                },
+                }/*,
                 {
                     xtype: 'button',
                     text: 'Opslaan',
                     listeners: { click: this.saveExtraObject, scope: this }
-                }
+                }*/
             ]
         };
     },
