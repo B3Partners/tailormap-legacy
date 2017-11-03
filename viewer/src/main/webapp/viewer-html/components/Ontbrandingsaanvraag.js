@@ -378,10 +378,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     previousPage: function() {
         this.movePage(-1);
+        this.deselectAllFeatures();
     },
 
     nextPage: function() {
         this.movePage(1);
+        this.deselectAllFeatures();
     },
 
     movePage: function(direction) {
@@ -406,7 +408,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             next_button.setDisabled(true);
         }
         this.wizardPages[this.currentPage].setVisible(true);
-        this.deselectAllFeatures();
     },
 
     createIgnitionLocationsGrid: function() {
@@ -534,6 +535,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                         flex: 1,
                         listeners: {
                             change: this.toggleZonedistancesForm,
+                            blur: this.saveIgnitionLocation,
                             scope: this
                         }
                     },
@@ -566,6 +568,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(val === this.OTHER_LABEL);
                         },
+                        blur: this.saveIgnitionLocation,
                         scope: this
                     }
                 },
@@ -590,6 +593,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(val === this.OTHER_LABEL);
                         },
+                        blur: this.saveIgnitionLocation,
                         scope: this
                     }
                 },
@@ -766,7 +770,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     addAudienceLocation: function(id) {
         var added_index = this._addLocation(this.audienceLocationsGrid, id, null, "Publiekslocatie ");
-        if(added_index === 0) {
+        if(!this.isImporting && added_index === 0) {
             var location = this.audienceLocationsGrid.getStore().getAt(added_index);
             location.set('mainLocation', true);
             this.getVectorLayer().setFeatureStyle(id, this.mainAudienceLocationStyle);
@@ -1158,6 +1162,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
             }
         } catch(e) {
+            console.error(e);
             this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
         }
     },
@@ -1183,7 +1188,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.isImporting = true;
         this.getVectorLayer().addFeatures(features);
         this.isImporting = false;
-        this.deselectAllFeatures();
         this.nextPage();
     },
 
@@ -1332,7 +1336,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             if(locationType === this.EXTRA_OJBECT_TYPE || locationType === this.MEASURE_LINE_TYPE) {
                 this.addExtraObject(this.activeFeature, locationType);
             }
-            var grid = this.getGridForType(locationType);
+            var grid = this.isImporting ? null : this.getGridForType(locationType);
             if(grid) {
                 grid.unmask();
             }
