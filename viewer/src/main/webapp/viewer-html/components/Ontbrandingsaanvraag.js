@@ -1215,7 +1215,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             features: this.getAllFeatures()
         };
         var blob = new Blob([ Ext.JSON.encode(data) ], { type: "application/json;charset=utf-8" });
-        var date = Ext.Date.format(new Date(), 'd-m-Y-H-i-s');
+        var date = Ext.Date.format(new Date(), 'd-m-Y');
         saveAs(blob, "ontbrandingsaanvraag-" + date + ".json");
     },
 
