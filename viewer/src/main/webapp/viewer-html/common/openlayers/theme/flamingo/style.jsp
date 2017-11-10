@@ -172,69 +172,69 @@ div.olControlZoom a:hover {
 
 .olControlPanel .olControlZoomBoxItemInactive:hover,
 .olControlPanel .olControlZoomBoxItemActive:hover {
-    background: url("${sprite}") -27px 394px;
+    background-position: -27px 394px;
 }
 .olControlPanel .olControlDragPanItemInactive:hover,
 .olControlPanel .olControlDragPanItemActive:hover {
-    background: url("${sprite}") -27px 422px;
+    background-position: -27px 422px;
 }
 .olControlPanel .olControlZoomOutItemInactive:hover,
 .olControlPanel .olControlZoomOutItemActive:hover {
-    background: url("${sprite}") -27px 366px;
+    background-position: -27px 366px;
 }
 .olControlPanel .olControlIdentifyItemInactive:hover,
 .olControlPanel .olControlIdentifyItemActive:hover {
-    background: url("${sprite}") -28px 478px;
+    background-position: -28px 478px;
 }
 .olControlPanel .olControlZoomToMaxExtentItemInactive:hover,
 .olControlPanel .olControlZoomToMaxExtentItemActive:hover {
-    background: url("${sprite}") -28px 590px;
+    background-position: -28px 590px;
 }
 .olControlPanel .olControlMeasureItemInactive:hover,
 .olControlPanel .olControlMeasureItemActive:hover {
-    background: url("${sprite}") -28px 450px;
+    background-position: -28px 450px;
 }
 .olControlPanel .olControlDefaultItemInactive:hover,
 .olControlPanel .olControlDefaultItemActive:hover {
-    background: url("${sprite}") -29px 338px;
+    background-position: -29px 338px;
 }
 .olControlPanel .olControlNavigationHistoryPreviousItemInactive:hover,
 .olControlPanel .olControlNavigationHistoryPreviousItemActive:hover {
-    background: url("${sprite}") -28px 534px;
+    background-position: -28px 534px;
 }
 .olControlPanel .olControlNavigationHistoryNextItemInactive:hover,
 .olControlPanel .olControlNavigationHistoryNextItemActive:hover {
-    background: url("${sprite}") -28px 562px;
+    background-position: -28px 562px;
 }
 .olControlPanPanel .olControlPanNorthItemInactive:hover,
 .olControlPanPanel .olControlPanNorthItemActive:hover {
-    background: url("${sprite}") -27px 786px !important;
+    background-position: -27px 786px !important;
 }
 .olControlPanPanel .olControlPanSouthItemInactive:hover,
 .olControlPanPanel .olControlPanSouthItemActive:hover {
-    background: url("${sprite}") -27px 702px !important;
+    background-position: -27px 702px !important;
 }
 .olControlPanPanel .olControlPanEastItemInactive:hover,
 .olControlPanPanel .olControlPanEastItemActive:hover {
-    background: url("${sprite}") -27px 812px !important;
+    background-position: -27px 812px !important;
 }
 .olControlPanPanel .olControlPanWestItemInactive:hover,
 .olControlPanPanel .olControlPanWestItemActive:hover {
-    background:  url("${sprite}") -27px 618px !important;
+    background-position: -27px 618px !important;
 }
 .olControlPanel .streetViewItemInactive:hover,
 .olControlPanel .streetViewItemActive:hover {
-    background: url("${sprite}") -31px 196px !important;
+    background-position: -31px 196px !important;
 }
 .olControlPanel .olControlMeasureAreaItemInactive:hover,
 .olControlPanel .olControlMeasureAreaItemActive:hover {
-    background: url("${sprite}") -32px 107px;
+    background-position: -32px 107px;
 }
 .olControlPanel .downloadMapItemInactive:hover,
 .olControlPanel .downloadMapItemActive:hover {
-    background: url("${sprite}") -34px 136px;
+    background-position: -34px 136px;
 }
 .olControlPanel .currentLocationItemInactive:hover,
 .olControlPanel .currentLocationItemActive:hover {
-    background: url("${sprite}") -61px 166px;
+    background-position: -61px 166px;
 }
