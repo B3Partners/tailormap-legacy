@@ -31,7 +31,16 @@
             }
         }
     },
-
+    {
+        "className": "viewer.components.Ontbrandingsaanvraag",
+        "name": "Ontbrandingsaanvraag",
+        "group": "Component",
+        "shortName": "OA",
+        "sources": ["../common/ColorField.js", "DownloadMap.js", "Ontbrandingsaanvraag.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Ontbrandingsaanvraag-config.js"],
+        "restrictions": ["leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom"],
+        "singleton": true
+    },
     {
         "className": "viewer.components.tools.StreetView",
         "name": "Streetview",
