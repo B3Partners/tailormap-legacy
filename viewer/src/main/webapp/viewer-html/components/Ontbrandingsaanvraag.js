@@ -512,6 +512,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var grid = Ext.create('Ext.grid.Panel', {
             title: title,
             header: false,
+            hideHeaders: true,
             store: Ext.data.StoreManager.lookup(storeId),
             columns: columns,
             listeners: {
