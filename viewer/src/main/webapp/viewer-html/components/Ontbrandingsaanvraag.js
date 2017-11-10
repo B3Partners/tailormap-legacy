@@ -41,6 +41,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     config:{},
     importedFileName: "",
 
+    isImporting: false,
+    isDrawing: false,
+    isDeselecting: false,
+
     IGNITION_LOCATION_TYPE: 'ignitionLocation',
     IGNITION_LOCATION_FORM: 'ignitionLocationForm',
     AUDIENCE_LOCATION_TYPE: 'audienceLocation',
@@ -358,7 +362,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     xtype: 'button',
                     html: 'Terug naar het begin',
                     margin: this.defaultMargin,
-                    listeners: { click: this.movePage.bind(this, 0), scope: this }
+                    listeners: { click: this.movePage.bind(this, 0, 0), scope: this }
                 }
             ])
         ];
@@ -1346,8 +1350,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     deselectAllFeatures: function() {
+        this.isDeselecting = true;
         this.getVectorLayer().unselectAll();
         this.getExtraObjectsLayer().unselectAll();
+        this.activeFeature = null;
+        this.isDeselecting = false;
     },
 
     /**
@@ -1356,7 +1363,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      * Event handlers
      **/
     activeFeatureChanged : function (vectorLayer, feature){
-        if(this.isImporting || this.isDrawing) {
+        if(this.isImporting || this.isDrawing || this.isDeselecting) {
             return;
         }
         if(typeof this.features[feature.config.id] === "undefined") {
