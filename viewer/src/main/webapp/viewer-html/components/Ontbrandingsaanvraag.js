@@ -1323,7 +1323,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 ? raw_data.attributes.custom_zonedistance_professional
                 : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional];
         }
-        raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature.style).getProperties();
+        raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature).getProperties();
         delete raw_data.id;
         delete raw_data.attributes.id;
         delete raw_data.attributes.fid;
