@@ -1,7 +1,7 @@
 /* global Ext */
 
 /**
- * @class 
+ * @class
  * @param id The id of the Feature
  * @param wkt The wkt describing the Feature
  * @description The generic class for defining a feature. A feature consists of a id and a wkt.
@@ -12,7 +12,9 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
         id:null,
         wktgeom:null,
         color:null,
-        label:null
+        label:null,
+        style: null,
+        attributes: {}
     },
     /**
      * @param {Object} config
@@ -24,7 +26,18 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
             this.label = "";
         }
     },
-    
+
+    /**
+     * @returns {FeatureStyle|null}
+     */
+    getStyle: function() {
+        return this.config.style;
+    },
+
+    getAttributes: function() {
+        return this.config.attributes;
+    },
+
     /**
      * Function to get the JSON representation for this feature object.
      * @return {Object} this feature as an object
@@ -60,9 +73,9 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
             }
         }
         return Ext.create('viewer.viewercontroller.controller.Extent',
-                Ext.Array.min(xcoords),
-                Ext.Array.min(ycoords),
-                Ext.Array.max(xcoords),
-                Ext.Array.max(ycoords));
+            Ext.Array.min(xcoords),
+            Ext.Array.min(ycoords),
+            Ext.Array.max(xcoords),
+            Ext.Array.max(ycoords));
     }
 });

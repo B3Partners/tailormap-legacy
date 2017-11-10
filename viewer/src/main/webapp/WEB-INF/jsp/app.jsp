@@ -97,6 +97,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </c:if>
+        <script type="text/javascript" src="${contextPath}/resources/js/FileSaver.js"></script>
 
         <c:choose>
             <c:when test="${!(param.debug == true)}">
@@ -143,6 +144,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${scriptDir}/VectorLayer.js"></script>
                 <script type="text/javascript" src="${scriptDir}/ArcLayer.js"></script>
                 <script type="text/javascript" src="${scriptDir}/Feature.js"></script>
+                <script type="text/javascript" src="${scriptDir}/FeatureStyle.js"></script>
                 <script type="text/javascript" src="${scriptDir}/MapTip.js"></script>
                 <script type="text/javascript" src="${scriptDir}/Extent.js"></script>
                 <script type="text/javascript" src="${scriptDir}/Event.js"></script>
@@ -180,6 +182,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <!-- The tools -->
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersIdentifyTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersDefaultTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayersMeasureHandler.js"></script>
                     </c:when>
                     <c:otherwise>
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/flamingo"/>
