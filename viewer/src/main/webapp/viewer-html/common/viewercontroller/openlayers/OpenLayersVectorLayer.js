@@ -40,7 +40,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
 
         this.defaultFeatureStyle = config.defaultFeatureStyle || this.mapStyleConfigToFeatureStyle();
         config.styleMap = this.getStylemapFromFeatureStyle(this.defaultFeatureStyle);
-        
+
         // Delete style from config, because it messes up the styling in the vectorlayer.
         delete config.style;
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
@@ -74,14 +74,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
                 irregular: true
             }
         });
-        
+
         this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon',
             handlerOptions: {
-              freehand: true
+                freehand: true
             }
         }));
-            
+
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
         this.drawFeatureControls.push(this.polygon);
@@ -108,7 +108,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
 
         if(this.allowSelection()) this.modifyFeature.activate();
     },
-    
+
     allowSelection: function() {
         return !this.config.hasOwnProperty('allowselection') || this.config.allowselection;
     },
@@ -191,7 +191,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }
         return this.style[property];
     },
-    
+
     /**
      * Does nothing, but is needed for API compliance
      */
@@ -259,7 +259,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var objects = this.getFrameworkLayer().getFeaturesByAttribute(attribute, val);
         this.getFrameworkLayer().removeFeatures(objects);
     },
-    
+
     addFeatures : function(features){
         var olFeatures = new Array();
         for(var i = 0 ; i < features.length ; i++){
@@ -303,7 +303,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.activeDrawFeatureControl = this.freehand;
             this.freehand.activate();
         } else {
-           this.config.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
+            this.config.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
     },
     /**
@@ -468,7 +468,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var styleProps = openLayersFeature.style || this.getCurrentStyleHash();
         return Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
     },
-    
+
     setLabel : function (id, label){
         var olFeature = this.getFrameworkLayer().getFeatureById(id);
         if(olFeature){
@@ -527,8 +527,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var features = geoJSONreader.read(geoJson);
         this.getFrameworkLayer().addFeatures(features);
     },
-    
-    /******** overwrite functions to make use of the mixin functions **********/    
+
+    /******** overwrite functions to make use of the mixin functions **********/
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */

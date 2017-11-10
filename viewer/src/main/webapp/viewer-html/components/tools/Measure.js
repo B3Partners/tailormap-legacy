@@ -44,14 +44,14 @@ Ext.define ("viewer.components.tools.Measure",{
     initEvents: function() {
         var config = this.config;
         var frameworkTool = this.tool.getFrameworkTool();
-        
+
         function removeClone() {
             var clonedValueDiv = document.getElementById("olControlMeasureValueClone");
             if(clonedValueDiv && clonedValueDiv.parentNode) {
                 clonedValueDiv.parentNode.removeChild(clonedValueDiv);
             }
         }
-        
+
         function createMeasureClone() {
             var measureValueDiv = document.getElementById("olControlMeasureValue");
             if(!measureValueDiv) {
@@ -64,7 +64,7 @@ Ext.define ("viewer.components.tools.Measure",{
             clonedValueDiv.querySelector('#olControlMeasureValueText').id = 'olControlMeasureValueTextClone';
             return clonedValueDiv;
         }
-        
+
         frameworkTool.events.register('measure', frameworkTool, function() {
             this.map.div.appendChild(createMeasureClone());
             if(config.nonSticky){

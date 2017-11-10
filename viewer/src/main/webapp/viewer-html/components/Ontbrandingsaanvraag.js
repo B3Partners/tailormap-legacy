@@ -65,22 +65,22 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
         this.zoneDistanceConfigToObject(conf.zonedistances_consumer, this.ZONE_DISTANCES_CONSUMER);
         this.zoneDistanceConfigToObject(conf.zonedistances_professional, this.ZONE_DISTANCES_PROFESSIONAL);
-	
+
         this.features = {};
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
-        this.iconPath = FlamingoAppLoader.get('contextPath') + "/viewer-html/components/resources/images/drawing/";
+        this.iconPath = contextPath + "/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, this.createLayers, this);
         return this;
     },
-    
+
     zoneDistanceConfigToObject: function(conf, obj) {
-         if(!conf || conf.length === 0) return;
-         for(var i = 0; i < conf.length; i++) {
-             obj[conf[i].label] = conf[i].distance;
-         }
+        if(!conf || conf.length === 0) return;
+        for(var i = 0; i < conf.length; i++) {
+            obj[conf[i].label] = conf[i].distance;
+        }
     },
-    
+
     selectedContentChanged : function (){
         if(this.vectorLayer === null) {
             this.createLayers();
@@ -188,7 +188,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.tempSafetyZoneStyle,
             addStyleToFeature: true
-        });        
+        });
         this.config.viewerController.mapComponent.getMap().addLayer(this.calculationResultLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.tempCalculationResultLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
@@ -301,7 +301,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     margin: this.defaultMargin,
                     listeners: { click: this.calculateSafetyZone, scope: this }
                 },
-                 {
+                {
                     xtype: 'button',
                     html: 'Verwijder veiligheidszone',
                     margin: this.defaultMargin,
@@ -399,9 +399,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     getPageForType: function(type) {
         return type === this.IGNITION_LOCATION_TYPE ? 1
-                : type === this.AUDIENCE_LOCATION_TYPE ? 2
+            : type === this.AUDIENCE_LOCATION_TYPE ? 2
                 : type === this.EXTRA_OJBECT_TYPE ? 4
-                : type === this.MEASURE_LINE_TYPE ? 4 : 0;
+                    : type === this.MEASURE_LINE_TYPE ? 4 : 0;
     },
 
     movePage: function(direction, pageNo) {
@@ -1272,10 +1272,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 '<br /><br />'
             ].join(''),
             function(btn, text){
-            if (btn === 'ok') {
-                this._saveFile(text)
-            }
-        }, this, false, this.getFilename());
+                if (btn === 'ok') {
+                    this._saveFile(text)
+                }
+            }, this, false, this.getFilename());
     },
 
     _saveFile: function(filename) {
@@ -1323,7 +1323,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 ? raw_data.attributes.custom_zonedistance_professional
                 : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional];
         }
-        raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature.style).getProperties();
+        raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature).getProperties();
         delete raw_data.id;
         delete raw_data.attributes.id;
         delete raw_data.attributes.fid;
@@ -1432,7 +1432,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
                     this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;
                     this.tempCalculationResultLayer.defaultFeatureStyle = this.tempSafetyZoneStyle;
-                    
+
                     this.calculationResultLayer.addFeatures(features);
                     this.tempCalculationResultLayer.addFeatures(tempfeatures);
                 },
@@ -1447,7 +1447,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     drawSafetyZone: function(result) {
         this.getCalculationResultLayer().readGeoJSON(result);
     },
-    
+
     removeSafetyZones: function(){
         this.getCalculationResultLayer().removeAllFeatures();
         this.getTempCalculationResultLayer().removeAllFeatures();
