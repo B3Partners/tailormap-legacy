@@ -230,6 +230,17 @@ public class ApplicationActionBean implements ActionBean {
     public Resolution view() throws JSONException, IOException {
         if(unknown){
             getDefaultViewer();
+            /* Redirected here from /index.jsp: further redirect to app with
+             * name and version parameters of default app in URL and
+             * unknown=false. This makes sure that links in URL always include
+             * the app name. Required for compact bookmark links for default app
+             * to work.
+             */
+            return new RedirectResolution(ApplicationActionBean.class)
+                    .addParameter("name", name)
+                    .addParameter("version", version)
+                    .addParameter("debug", debug);
+
         }
         application = findApplication(name, version);
 
