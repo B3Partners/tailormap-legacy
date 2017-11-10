@@ -287,7 +287,8 @@ Ext.define("viewer.components.Legend", {
         // priority
         
         var map = this.config.viewerController.mapComponent.getMap();
-        var curScale = OpenLayers.Util.getScaleFromResolution(map.getResolution(), map.units);
+        var curScale = map.getResolution();
+        //var curScale = OpenLayers.Util.getScaleFromResolution(map.getResolution(), map.units);
         var legendScale = curScale;
         var serviceLayer = this.config.viewerController.getServiceLayer(appLayer);
 

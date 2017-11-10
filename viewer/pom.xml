@@ -303,6 +303,7 @@
                                 <param>${viewerhtml.path}/common/ajax/ArcQueryUtil.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureExtent.js</param>
                                 <!-- Abstracts MapComponent -->
+
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Map.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Layer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/TilingLayer.js</param>
@@ -370,6 +371,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersTool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMap.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/Utils.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMeasure.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/ToolMapClick.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersComponent.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMapComponent.js</param>
@@ -385,6 +387,53 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
+                        </compilation>
+                        <compilation>
+                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
+                            <compilerOptions>
+                                <prettyPrint>true</prettyPrint>
+                                <languageIn>ECMASCRIPT3</languageIn>
+                            </compilerOptions>
+                            <externFiles />
+                            <sourceFiles>
+                                <!-- OpenLayers4 -->                              
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/test.js</param>
+                                
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Layer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4WMSLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4TilingLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Tool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Map.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/Utils.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/ToolMapClick.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4Component.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4MapComponent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4ArcLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4ArcServerLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4SnappingController.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4VectorLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/OpenLayers4ImageLayer.js</param>
+
+                                <!-- OpenLayers Components -->
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/OpenLayers4Maptip.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/panZoomBar.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/LoadingPanel.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/OpenLayers4LoadMonitor.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/components/OpenLayers4Overview.js</param>
+                                
+                                <!-- OpenLayers Tools -->
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/OpenLayers4IdentifyTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/OpenLayers4DefaultTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/DragPan.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/FullExtent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/Measure.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/ToolButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/ZoomIn.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/ZoomOutButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers4/tools/StreetViewButton.js</param>
+                                  
+                            </sourceFiles>
+                            <outputFile>${minify.outputdir}/openlayers4-min.js</outputFile>
                         </compilation>
                         <compilation>
                             <compilationLevel>WHITESPACE_ONLY</compilationLevel>

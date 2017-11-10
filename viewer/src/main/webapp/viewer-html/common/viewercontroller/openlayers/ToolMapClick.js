@@ -34,6 +34,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
      * @see viewer.viewercontroller.controller.ToolMapClick#constructor
      */
     constructor: function (conf){
+        
         viewer.viewercontroller.openlayers.ToolMapClick.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         //this.visible=false;
@@ -49,7 +50,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         this.clickControl = new OpenLayers.Control.Click({
             handlerOptions: me.config.handlerOptions,
             click: function(evt){
-                me.handleClick(evt)
+                me.handleClick(evt);
             }
         });
         this.olMap.addControl(this.clickControl);
@@ -61,7 +62,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
      *the handler.
      */
     handleClick : function(event){
-        var opx = this.olMap.getLonLatFromPixel(event.xy)
+        var opx = this.olMap.getLonLatFromPixel(event.xy);
         var options = {            
             x: event.xy.x,
             y: event.xy.y,

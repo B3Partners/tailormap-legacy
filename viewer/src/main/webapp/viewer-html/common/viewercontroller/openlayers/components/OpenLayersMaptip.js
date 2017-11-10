@@ -51,7 +51,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
     getFrameworkObject: function() {
         return this.frameworkObject;
     },
-    onPause: function(object){         
+    onPause: function(object){     
         var lonLat = this.map.getFrameworkMap().getLonLatFromViewPortPx(object.xy);
         /**
          * @field
@@ -69,7 +69,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
                 x: lonLat.lon,
                 y: lonLat.lat
             }
-        }
+        };
         this.map.fire(viewer.viewercontroller.controller.Event.ON_MAPTIP,options);
     },
     /**

@@ -131,6 +131,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * Does nothing, but is needed for API compliance
      */
     adjustStyle : function(){
+
     },
     /**
      * Removes all features and all 'sketches' (not finished geometries)

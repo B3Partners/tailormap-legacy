@@ -190,7 +190,6 @@ Ext.define ("viewer.components.LayerSwitch",{
     },
     
     layerVisibilityChanged: function(map, event) {
-
         var eventLevel = this.config.viewerController.getAppLayerParent(event.layer.id);
         var backgroundLevel = null;
         Ext.each(this.selectedBackgroundLevels, function(level) {

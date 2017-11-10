@@ -20,6 +20,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     config:{
         resolutions : null,
         id: null
+        
     },
     /**
      * Construct a map component
@@ -301,7 +302,6 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         if (specific==undefined || specific==null){
             return null;
         }
-        //console.log(specific);
         if (this.eventList.length==0){
             this.initEvents();
         }

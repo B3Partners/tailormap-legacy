@@ -79,6 +79,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             urlTokens.splice(urlTokens.length - 2, 2);
             this.url = urlTokens.join("/") + "/";
             //set TMS tiling options.
+
             options.serviceVersion = version;
             options.layername = layerName;
             this.frameworkLayer = new OpenLayers.Layer.TMS(layerName,this.url,options);
@@ -152,7 +153,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         var grid = this.getFrameworkLayer().grid;
         for (var r=0; r < grid.length; r++){
             for (var c=0; c < grid[r].length; c++){
-                var tile = grid[r][c]
+                var tile = grid[r][c];
                 var bounds=tile.bounds;
                 var url = tile.url;
                 requests.push({
@@ -160,7 +161,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
                     url: url
                     });
             }
-        }
+        } 
         return requests;
     },
     /******** overwrite functions to make use of the mixin functions **********/

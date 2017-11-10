@@ -43,7 +43,7 @@ Ext.define ("viewer.components.tools.StreetView",{
 		viewer.components.tools.StreetView.superclass.constructor.call(this, this.config);
 
         this.markerName = this.id + "MARKER";
-        
+
         this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.config.name,
@@ -57,6 +57,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVATE,this.onActivate,this);
         this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_DEACTIVATE,this.onDeactivate,this);
         
+
         this.button= this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
             id:this.getName(),
@@ -66,7 +67,7 @@ Ext.define ("viewer.components.tools.StreetView",{
             viewerController: this.config.viewerController
         });
         this.config.viewerController.mapComponent.addTool(this.button);
-        
+
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);
         
@@ -77,7 +78,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         this.url="http://maps.google.nl/maps?q=[y],[x]&z=16&layer=c&cbll=[y],[x]&cbp=12,0,,0,0";
         return this;
     },
-    mapClicked : function (toolMapClick,comp){        
+    mapClicked : function (toolMapClick,comp){  
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -116,7 +117,7 @@ Ext.define ("viewer.components.tools.StreetView",{
      * @param button the button
      * @param object the options.        
      */
-    buttonDown : function(button,object){        
+    buttonDown : function(button,object){    
         this.toolMapClick.activateTool();
         
         this.config.viewerController.mapComponent.setCursor(true, "crosshair");

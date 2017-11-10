@@ -35,7 +35,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
             displayClass: "olControlDefault",
             type: OpenLayers.Control.TYPE_TOOL,
             title: conf.tooltip
-        };        
+        };    
         var olTool= new OpenLayers.Control(controlOptions);        
         //call super.super constructor
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,olTool);
@@ -64,6 +64,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
         
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
+        
+        //console.log(this.events);
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);

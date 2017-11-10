@@ -35,7 +35,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             var me = this;
             frameworkObject.trigger= function(){
                 me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);
-            }
+            };
         }
         return this;
     },

@@ -41,7 +41,7 @@ Ext.define ("viewer.components.Buffer",{
     },
     constructor: function (conf){
         this.initConfig(conf);     
-		viewer.components.Buffer.superclass.constructor.call(this, this.config);
+        viewer.components.Buffer.superclass.constructor.call(this, this.config);
         if(this.config.maxFeatures == null){
             this.config.maxFeatures = 50;
         }

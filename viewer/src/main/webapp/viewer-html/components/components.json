@@ -6,7 +6,7 @@
         "restrictions": ["content"],
         "group": "Map",
         "singleton": true,
-        "notInCombinationWith": ["viewer.mapcomponents.OpenLayersMap"],
+        "notInCombinationWith": ["viewer.mapcomponents.OpenLayersMap","viewer.mapcomponents.OpenLayers4Map"],
         "extPropertyGridConfigs": {
             "propertyNames": {"resolutions": "Resoluties", "movetime": "Move time", "movesteps": "Move Steps" },
             "source": {"resolutions": "", "movetime": "", "movesteps": ""}
@@ -19,7 +19,7 @@
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap","viewer.mapcomponents.OpenLayers4Map"],
         "extPropertyGridConfigs": {
             "propertyNames": {
                 "resolutions": "Resoluties (komma gescheiden)",
@@ -31,7 +31,25 @@
             }
         }
     },
-
+    
+    {
+        "className": "viewer.mapcomponents.OpenLayers4Map",
+        "name": "OpenLayers4 Map",
+        "shortName": "Om4",
+        "group": "Map",
+        "singleton": true,
+        "restrictions": ["content"],
+        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap","viewer.mapcomponents.OpenLayersMap"],
+        "extPropertyGridConfigs": {
+            "propertyNames": {
+                "resolutions": "Resoluties (komma gescheiden)"
+            },
+            "source": {
+                "resolutions": ""
+            }
+        }
+    },
+    
     {
         "className": "viewer.components.tools.StreetView",
         "name": "Streetview",
@@ -931,5 +949,5 @@
         "sources": ["tools/Tool.js","CoordinateLinkWindow.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","CoordinateLinkWindow-config.js"],
         "restrictions": ["top_menu"]
-    }
+    }   
 ]

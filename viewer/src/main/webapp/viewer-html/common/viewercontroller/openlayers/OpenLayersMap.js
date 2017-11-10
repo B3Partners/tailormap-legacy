@@ -49,7 +49,6 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }else{
             this.config.viewerController.logger.error("No bounds found, can't center viewport");
         }
-        
         config.restrictedExtent = maxBounds;
         
         
@@ -61,7 +60,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.Navigation()
         ];
-        this.frameworkMap=new OpenLayers.Map(config.domId,config);        
+        this.frameworkMap = new OpenLayers.Map(config.domId,config); 
         this.frameworkMap.centerLayerContainer();
         /* Zoom to the start extent when the first layer is added
          * because openlayers needs the baselayer to zoom. After zooming, remove the listener.
@@ -307,6 +306,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
      * If the event is thrown by the OpenLayers event the given handlers are called.
      */
     addListener : function(event,handler,scope){
+
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
@@ -316,8 +316,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
              * count the events for removing the listener again.
              */
             if(this.enabledEvents[olSpecificEvent]){
+
                 this.enabledEvents[olSpecificEvent]++;                
             }else{
+
                 this.enabledEvents[olSpecificEvent] = 1;
                 this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
             }
@@ -360,10 +362,12 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
      *
      */
     handleEvent : function(args){
+
         var event = args.type;
         var options={};
         var genericEvent = this.config.viewerController.mapComponent.getGenericEventName(event);
         if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
+
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
             if (options.layer ==undefined){
                 //if no layer found return, dont fire

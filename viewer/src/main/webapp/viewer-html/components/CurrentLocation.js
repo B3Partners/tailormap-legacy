@@ -66,7 +66,6 @@ Ext.define ("viewer.components.CurrentLocation",{
             viewerController: this.config.viewerController
         });
         this.config.viewerController.mapComponent.addTool(this.button);
-        
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         if (this.config.interval>0){
             this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);

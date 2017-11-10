@@ -36,7 +36,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /* Keep track of open popups to close previous when configured */
     singlePopup: false,
     previousPopup: null,
+    
     dataSelectionChecker:null,
+    
     /** Layers initialized?*/
     layersInitialized: false,
     /**
@@ -46,6 +48,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /**
      * List of layers for this application and whether the user has them checked/unchecked
      */
+   
+    
     savedCheckedState: {},
     // Debounce applyFilter calls
     filterDebounce: {},
@@ -69,9 +73,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker", { viewerController: this });
         this.app = app;
-
+        //console.log(app.components.openLayersMap1.className);
+        
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));
-
+        //console.log(this.dataSelectionChecker.naam);
+        //console.log(this.queryParams);
         this.savedCheckedState = this.restoreSavedCheckedState();
 
         var logLevel=viewer.components.Logger.LEVEL_ERROR;
@@ -106,6 +112,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         try {
             if(app.details && app.details.globalLayout) {
                 var globalLayout = Ext.JSON.decode(app.details.globalLayout);
+                
                 if(globalLayout.hasOwnProperty('singlePopup') && globalLayout.singlePopup) {
                     this.singlePopup = globalLayout.singlePopup;
                 }
@@ -119,12 +126,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var comps = this.app.components;
         var config = {};
         for (var c in comps){
+            
             if(!comps.hasOwnProperty(c)) {
                 continue;
             }
             var component = comps[c];
             if(component.className == "viewer.mapcomponents.FlamingoMap" ||
-                component.className == "viewer.mapcomponents.OpenLayersMap"){
+                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OpenLayers4Map"){
                 config = component.config;
                 break;
             }
@@ -134,6 +142,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         }else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
+        }else if(viewerType == "openlayers4"){
+            this.mapComponent = new viewer.viewercontroller.OpenLayers4MapComponent(this, mapId, config);
+            
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
         }
@@ -144,7 +155,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType == "openlayers") {
+        if(viewerType == "openlayers" || viewerType == "openlayers4") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
     },
@@ -291,17 +302,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         // XXX
-        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap") {
+        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OpenLayers4Map" ) {
             return null;
         }
-
+        
         config.viewerController = this;
         config.name=name;
         config.details=details;
 
         try{
             var instance = Ext.create(className, config);
-
             if(instance.config.hasSharedPopup){
                 instance.popup = this.layoutManager.popupWin;
             }
@@ -835,7 +845,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         options.attribution = layer.details && layer.details.attribution ? layer.details.attribution : null;
 
         var layerObj = null;
-
         try {
             if(service.protocol =="wms" ){
                 var layerUrl = service.url;
@@ -1012,7 +1021,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         layerObj.appLayerId = appLayer.id;
         this.layers[id] = layerObj;
         this.mapComponent.getMap().addLayer(layerObj);
-
         return layerObj;
     },
     /**

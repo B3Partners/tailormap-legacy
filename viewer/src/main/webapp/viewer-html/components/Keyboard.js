@@ -24,15 +24,18 @@
 Ext.define ("viewer.components.Keyboard",{
     extend: "viewer.components.Component",
     keyboardTool:null,
-    config:{
+    conf:{
         name: "keyboard",
         tooltip: "Keyboard navigation"
     },
     constructor: function (conf){        
         this.initConfig(conf);
-		viewer.components.Keyboard.superclass.constructor.call(this, this.config);
-        this.keyboardTool = new OpenLayers.Control.KeyboardDefaults();
-        this.viewerController.mapComponent.getMap().getFrameworkMap().addControl(this.keyboardTool);
+	viewer.components.Keyboard.superclass.constructor.call(this, this.config);
+        
+        conf.type=viewer.viewercontroller.controller.Component.KEYBOARD;
+        
+        var comp = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(comp);
         return this;
     }
 });

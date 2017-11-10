@@ -56,8 +56,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
              this.utils.createBounds(this.extent),
              new OpenLayers.Size(width,height),
              me.options
-         );
-            
+         );     
     },
     /**
      * @see viewer.viewercontroller.controller.ImageLayer#setExtent

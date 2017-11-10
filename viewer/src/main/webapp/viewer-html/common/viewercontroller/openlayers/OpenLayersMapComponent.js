@@ -43,6 +43,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }
         //TODO: remove the hardcoded projection....
         Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
+       
         //set some default options.
         this.mapOptions =  {
             projection:new OpenLayers.Projection("EPSG:28992"),
@@ -57,7 +58,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
          */
         var me =this
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
-            setTimeout(function(){me.checkTools()},10);
+            setTimeout(function(){me.checkTools();},10);
         },this);
         return this;
     },
@@ -435,6 +436,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 new OpenLayers.Control.ScaleLine(frameworkOptions));
         } else if(type == viewer.viewercontroller.controller.Component.SNAPPING) {
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersSnappingController", config);
+        }else if(type == viewer.viewercontroller.controller.Component.KEYBOARD){
+            comp  = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,new OpenLayers.Control.KeyboardDefaults());
         } else {
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
@@ -477,11 +480,17 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
         }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
+            var t = new viewer.viewercontroller.openlayers.OpenLayersMeasure(conf);
+            frameworkOptions = t.initialConfig.frameworkOptions;
+            if (conf.tooltip){
+                frameworkOptions.title=conf.tooltip;
+            }
             var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
             var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
             if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
                 measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
             }
+            t.initEvents(measureTool.getFrameworkTool());
             return measureTool;
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
             return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions));

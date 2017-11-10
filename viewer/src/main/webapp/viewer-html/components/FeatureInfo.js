@@ -75,8 +75,9 @@ Ext.define ("viewer.components.FeatureInfo",{
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.config.viewerController.isSummaryLayer(mapLayer)){   
-            //Store the current map extent for every maptip request.            
+        if(this.config.viewerController.isSummaryLayer(mapLayer)){  
+            //Store the current map extent for every maptip request.    
+            
             this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
                 this.setRequestExtent(map.getExtent());
             },this); 
