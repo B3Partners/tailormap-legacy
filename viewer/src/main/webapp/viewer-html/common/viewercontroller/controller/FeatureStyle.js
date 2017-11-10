@@ -36,6 +36,7 @@ Ext.define("viewer.viewercontroller.controller.FeatureStyle", {
         strokeColor: '',
         strokeOpacity: 0,
         strokeDashstyle: '',
+        strokeWidth: 0,
         graphicName: '',
         pointRadius: 0
     },
