@@ -1,7 +1,7 @@
 /* global Ext */
 
 /**
- * @class 
+ * @class
  * @param id The id of the Feature
  * @param wkt The wkt describing the Feature
  * @description The generic class for defining a feature. A feature consists of a id and a wkt.
@@ -73,9 +73,9 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
             }
         }
         return Ext.create('viewer.viewercontroller.controller.Extent',
-                Ext.Array.min(xcoords),
-                Ext.Array.min(ycoords),
-                Ext.Array.max(xcoords),
-                Ext.Array.max(ycoords));
+            Ext.Array.min(xcoords),
+            Ext.Array.min(ycoords),
+            Ext.Array.max(xcoords),
+            Ext.Array.max(ycoords));
     }
 });
