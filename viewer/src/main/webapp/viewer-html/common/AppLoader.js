@@ -38,7 +38,6 @@ Ext.define("viewer.AppLoader", {
     constructor: function(config) {
         this.initConfig(config);
         this.exposeGlobalVariables();
-        this.loadApplication();
     },
 
     reloadApplication: function(appConfig) {

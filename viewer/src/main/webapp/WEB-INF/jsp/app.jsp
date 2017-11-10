@@ -286,5 +286,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </script>
 
         <%@include file="/WEB-INF/jsp/app_overrides.jsp"%>
+
+        <script>
+            <%-- allow app_overrides to redirect before firing off Ajax requests,
+                 for instance to check a single-sign login / passive SAML request --%>
+            FlamingoAppLoader.loadApplication();
+        </script>
     </body>
 </html>
