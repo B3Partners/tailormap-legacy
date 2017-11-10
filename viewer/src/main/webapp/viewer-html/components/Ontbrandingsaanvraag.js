@@ -384,9 +384,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.movePage(1);
     },
 
-    movePage: function(direction) {
+    getPageForType: function(type) {
+        return type === this.IGNITION_LOCATION_TYPE ? 1
+                : type === this.AUDIENCE_LOCATION_TYPE ? 2
+                : type === this.EXTRA_OJBECT_TYPE ? 4
+                : type === this.MEASURE_LINE_TYPE ? 4 : 0;
+    },
+
+    movePage: function(direction, pageNo) {
         this.wizardPages[this.currentPage].setVisible(false);
         this.currentPage += direction;
+        if(typeof pageNo !== "undefined") {
+            this.currentPage = pageNo;
+        }
         var next_button = this.getContentContainer().query('#next_button')[0];
         var prev_button = this.getContentContainer().query('#prev_button')[0];
         next_button.setDisabled(false);
@@ -1049,10 +1059,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(!location) {
             return;
         }
+        var location_type = location.get('type');
+        this.movePage(0, this.getPageForType(location_type));
         if(size !== null) {
             location.set('size', size);
         }
-        if(location.get('type') === this.EXTRA_OJBECT_TYPE || location.get('type') === this.MEASURE_LINE_TYPE) {
+        if(location_type === this.EXTRA_OJBECT_TYPE || location_type === this.MEASURE_LINE_TYPE) {
             this.updateExtraObjectLabel(location);
         }
         grid.setSelection(location);
@@ -1157,9 +1169,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.removeAllFeatures();
         this.isImporting = true;
         this.getVectorLayer().addFeatures(features);
-        this.isImporting = false;
         this.getVectorLayer().unselectAll();
         this.nextPage();
+        this.isImporting = false;
     },
 
     createFeatureStyle: function(style) {
