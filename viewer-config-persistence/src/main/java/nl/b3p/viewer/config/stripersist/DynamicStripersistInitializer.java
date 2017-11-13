@@ -21,7 +21,9 @@ import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
+import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
@@ -37,7 +39,7 @@ public class DynamicStripersistInitializer implements InitializeSettings {
 
     private static final Log log = LogFactory.getLog(DynamicStripersistInitializer.class);
     
-    private static final String DATA_SOURCE_NAME = "java:comp/env/jdbc/geo_viewer";
+    private static final String DATA_SOURCE_NAME = "jdbc/geo_viewer";
 
     public static final String PU_PREFIX = "viewer-config-";
     public static String databaseProductName = null;
@@ -59,11 +61,12 @@ public class DynamicStripersistInitializer implements InitializeSettings {
         String persistenceUnit = null;
         DataSource ds = null;
         try {
-            InitialContext ctx = new InitialContext();
-        
-            ds = (DataSource)ctx.lookup(DATA_SOURCE_NAME);
-        } catch(Exception e) {
-            log.info("No JNDI DataSource found under " + DATA_SOURCE_NAME + "");
+            InitialContext init = new InitialContext();
+            Context env = (Context) init.lookup("java:comp/env");
+            ds = (DataSource) env.lookup(DATA_SOURCE_NAME);
+        } catch (NamingException e) {
+            log.fatal("No JNDI DataSource found under " + DATA_SOURCE_NAME + "");
+            log.debug(e.getLocalizedMessage(), e);
         }
 
         if(ds != null) {
