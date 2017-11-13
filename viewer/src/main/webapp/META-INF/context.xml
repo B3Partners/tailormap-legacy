@@ -2,39 +2,73 @@
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
+    NOTE:
+        each version of tomcat comes with it's own version of the pooling library
+        that can have subtle difference so you must check for your version:
+
+        - https://tomcat.apache.org/tomcat-7.0-doc/jndi-datasource-examples-howto.html
+        - https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html
+        - https://tomcat.apache.org/tomcat-8.5-doc/jndi-datasource-examples-howto.html
 
     <Server ...>
         ...
+        Oracle:
+
         <GlobalNamingResources>
             <Resource name="jdbc/geo_viewer"
                 auth="Container"
                 type="javax.sql.DataSource"
-                username="geo_viewer"
-                password="geo_viewer"
+                username="flamingo4"
+                password="flamingo4"
                 driverClassName="oracle.jdbc.OracleDriver"
                 url="jdbc:oracle:thin:@localhost:1521:orcl"
                 maxActive="40"
-                validationQuery="select 1 from dual"
-
                 timeBetweenEvictionRunsMillis="30000"
                 minEvictableIdleTimeMillis="5000"
+                validationQuery="select 1 from dual"
             />
         </GlobalNamingResources>
         ...
+
+        PostgreSQL:
+        <Resource auth="Container"
+                  driverClassName="org.postgresql.Driver"
+                  type="javax.sql.DataSource"
+                  name="jdbc/geo_viewer"
+                  url="jdbc:postgresql://localhost:5432/flamingo4"
+                  username="flamingo4"
+                  password="flamingo4"
+                  timeBetweenEvictionRunsMillis="30000"
+                  maxWaitMillis="15000"
+                  minEvictableIdleTimeMillis="5000"
+                  maxTotal="40"
+                  validationQuery="select 1"
+        />
     </Server>
     -->
-  <!-- Tomcat resource link -->
-  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
-  <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
-  <!-- use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
-  <Realm className="org.apache.catalina.realm.LockOutRealm">
-    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
-    <!-- Use JNDIRealm for authenticating against a LDAP server (such as
+    <!-- Tomcat resource link -->
+    <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource" />
+    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session" />
+    <!-- use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
+    <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm allRolesMode="authOnly"
+               className="org.apache.catalina.realm.DataSourceRealm"
+               dataSourceName="jdbc/geo_viewer"
+               roleNameCol="group_"
+               userCredCol="password"
+               userNameCol="username"
+               userRoleTable="user_groups"
+               userTable="user_">
+            <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+                               algorithm="SHA-1"
+            />
+        </Realm>
+        <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
              http://tomcat.apache.org/tomcat-8.0-doc/config/realm.html
              http://tomcat.apache.org/tomcat-8.0-doc/realm-howto.html#JNDIRealm
         -->
-    <!--Realm className="org.apache.catalina.realm.JNDIRealm"
+        <!--Realm className="org.apache.catalina.realm.JNDIRealm"
             allRolesMode="authOnly"
             connectionURL="ldap://ldap:389"
             connectionName="cn=ServiceUser,ou=Services,o=MyOrg"
@@ -44,5 +78,5 @@
             userSearch="cn={0}"
             commonRole="ExtendedUser"
         /-->
-  </Realm>
+    </Realm>
 </Context>
