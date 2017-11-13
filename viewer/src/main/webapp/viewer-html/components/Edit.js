@@ -62,9 +62,10 @@ Ext.define("viewer.components.Edit", {
     editLblClass: 'editCmpLbl',
     constructor: function (conf) {
         this.initConfig(conf);
+        console.log(this.config);
         viewer.components.Edit.superclass.constructor.call(this, this.config);
         var me = this;
-
+        
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
             if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
                     || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
@@ -102,7 +103,6 @@ Ext.define("viewer.components.Edit", {
             viewerController: this.config.viewerController
         });
         this.schema = new Ext.data.schema.Schema();
-
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         return this;

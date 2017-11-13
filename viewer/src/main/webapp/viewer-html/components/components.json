@@ -966,5 +966,28 @@
         "sources": ["tools/Tool.js","CoordinateLinkWindow.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","CoordinateLinkWindow-config.js"],
         "restrictions": ["top_menu"]
+    },
+    {
+        "className": "viewer.components.digitreeEdit",
+        "name": "Digitree Edit",
+        "shortName": "De",
+        "sources": [
+            "Component.js",
+            "Edit.js",
+            "digitreeEdit.js"
+            
+        ],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
+        
+        
+        "closureCompilerSafe": true,
+        "notInCombinationWith": [
+            "viewer.mapcomponents.FlamingoMap"
+        ],
+        
+        "restrictions": ["left_menu"],
+        "type": "popup",
+        "singleton": true,
+        "showHelp": true
     }
 ]
