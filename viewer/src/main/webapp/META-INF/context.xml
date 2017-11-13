@@ -58,7 +58,8 @@
                userCredCol="password"
                userNameCol="username"
                userRoleTable="user_groups"
-               userTable="user_">
+               userTable="user_"
+               digest="SHA-1">
             <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
                                algorithm="SHA-1"
             />

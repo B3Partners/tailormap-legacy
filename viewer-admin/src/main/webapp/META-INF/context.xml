@@ -55,7 +55,7 @@
     </Server>
     -->
   <!-- Tomcat resource link -->
-  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource" />
+  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
   <!-- For Tomcat: define JavaMail resource in server.xml. See:
 
     http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
@@ -90,7 +90,8 @@
                userCredCol="password"
                userNameCol="username"
                userRoleTable="user_groups"
-               userTable="user_">
+               userTable="user_"
+               digest="SHA-1">
             <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
                                algorithm="SHA-1"
             />
