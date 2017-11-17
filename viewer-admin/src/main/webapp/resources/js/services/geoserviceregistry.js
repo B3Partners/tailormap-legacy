@@ -154,7 +154,7 @@ Ext.onReady(function() {
         renderTo: 'tree-container',
         width: 330,
         height: 600,
-        scroll: 'both',
+        scrollable: true,
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
                 if(record.get('type') == "category") {

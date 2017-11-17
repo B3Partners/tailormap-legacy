@@ -583,3 +583,11 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
     font-weight: 800;
     font-style: italic;
 }
+
+/** Override Ext scrolling behaviour for tree's. This appears to be a bug in Ext.
+    Horizontal scrolling is disabled even when scrollable is set to true */
+.x-tree-view.x-tree-view-default.x-scroller {
+    overflow: auto !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+}

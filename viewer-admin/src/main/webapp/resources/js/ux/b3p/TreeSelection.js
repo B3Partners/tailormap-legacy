@@ -108,7 +108,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.treeContainer,
             width: 325,
             height: 600,
-            autoScroll: true,
+            scrollable: true,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.addNode(record);
@@ -186,7 +186,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.selectedLayersContainer,
             width: 325,
             height: 600,
-            autoScroll: true,
+            scrollable: true,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.removeNodes([ record ]);
@@ -279,6 +279,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     getViewConfig: function(treeType) {
         var me = this;
         return {
+            scrollable: true,
             plugins: {
                 ptype: 'treeviewdragdrop',
                 appendOnly: false,

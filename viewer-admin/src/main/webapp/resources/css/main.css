@@ -785,3 +785,11 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .x-html-editor-tb .x-edit-justifyright, .x-menu-item div.x-edit-justifyright {
     background-position: -141px 0;
 }
+
+/** Override Ext scrolling behaviour for tree's. This appears to be a bug in Ext.
+    Horizontal scrolling is disabled even when scrollable is set to true */
+.x-tree-view.x-tree-view-default.x-scroller {
+    overflow: auto !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+}

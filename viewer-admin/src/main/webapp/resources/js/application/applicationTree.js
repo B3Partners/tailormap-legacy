@@ -120,14 +120,15 @@ Ext.onReady(function() {
         id: 'applicationtree',
         store: treeStore,
         rootVisible: true,
-        scroll: 'both',
+        scrollable: true,
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',
         width: 325,
         height: 600,
-        viewConfig:{
-          plugins: {
+        viewConfig: {
+            scrollable: true,
+            plugins: {
                 ptype: 'treeviewdragdrop',
                 appendOnly: false,
                 allowContainerDrops: false,
