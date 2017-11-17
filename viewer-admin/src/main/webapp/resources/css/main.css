@@ -746,9 +746,42 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     color: #BBBBBB;
     text-decoration: line-through;
 }
+
 .disable-selection {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+/** Overrides the sprite position of HTML editor buttons. */
+.x-html-editor-tb .x-edit-bold, .x-menu-item div.x-edit-bold {
+    background-position: 2px 0;
+}
+.x-html-editor-tb .x-edit-italic, .x-menu-item div.x-edit-italic {
+    background-position: -15px 0;
+}
+.x-html-editor-tb .x-edit-underline, .x-menu-item div.x-edit-underline {
+    background-position: -30px 0;
+}
+.x-html-editor-tb .x-edit-increasefontsize, .x-menu-item div.x-edit-increasefontsize {
+    background-position: -45px 0;
+}
+.x-html-editor-tb .x-edit-decreasefontsize, .x-menu-item div.x-edit-decreasefontsize {
+    background-position: -61px 0;
+}
+.x-html-editor-tb .x-edit-forecolor, .x-menu-item div.x-edit-forecolor {
+    background-position: -158px 0;
+}
+.x-html-editor-tb .x-edit-backcolor, .x-menu-item div.x-edit-backcolor {
+    background-position: -174px 0;
+}
+.x-html-editor-tb .x-edit-justifyleft, .x-menu-item div.x-edit-justifyleft {
+    background-position: -110px 0;
+}
+.x-html-editor-tb .x-edit-justifycenter, .x-menu-item div.x-edit-justifycenter {
+    background-position: -125px 0;
+}
+.x-html-editor-tb .x-edit-justifyright, .x-menu-item div.x-edit-justifyright {
+    background-position: -141px 0;
 }

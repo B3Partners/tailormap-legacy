@@ -208,7 +208,7 @@ Ext.define ("viewer.components.DataSelection",{
             var attribute = attributes[i];
             if(attribute.selectable){
                 var defaultVal = "";
-                if(attribute.defaultValue != undefined){
+                if(typeof attribute.defaultValue !== "undefined" && attribute.defaultValue !== ""){
                     defaultVal = attribute.defaultValue; 
                     if(defaultVal === "#MAX#" || defaultVal === "#MIN#"){
                         minMaxAttrs.push({
@@ -228,8 +228,8 @@ Ext.define ("viewer.components.DataSelection",{
                     name: attribute.name,
                     fieldLabel: attribute.alias || attribute.name,
                     labelWidth:150,
-                    displayField: 'id',
-                    valueField: 'id',
+                    displayField: 'name',
+                    valueField: 'name',
                     value : defaultVal,
                     width: 500,
                     style: {
@@ -238,7 +238,7 @@ Ext.define ("viewer.components.DataSelection",{
                     emptyText:'Maak uw keuze',
                     store: {
                         fields: [{
-                            name:'id'
+                            name: 'name'
                         }],
                         data : []
                     }
@@ -383,8 +383,8 @@ Ext.define ("viewer.components.DataSelection",{
         if(combobox){   // In case there are more than one layer with dataselection fields. This method can be called with an attribute of layer 1, when layer 2 is initialized
             combobox.setDisabled(false);
             var store = combobox.getStore(), records = [];
-            for(var i = 0; i < values.length; i++) {
-                records.push({ 'id': values[i] });
+            for(var i = 0; i < values.length; i++) if(values[i]) {
+                records.push({ 'name': values[i] });
             }
             store.add(records);
         }
@@ -510,17 +510,17 @@ Ext.define ("viewer.components.DataSelection",{
         var cql = "";
         for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection.
             var item = items[i];
-            if(item.getValue() !== ""){
+            if(item.getValue()) {
                 if(i > 1 ){
                     cql += " AND ";
                 }
                 cql += "\"" +item.id + "\"=";
                 var attributeType = item.dataType;
-                if(attributeType && attributeType.toLowerCase() == "string"){
+                if(attributeType && attributeType.toLowerCase() === "string"){
                     cql += "\'";
                 }  
                 cql += item.getValue();
-                if(attributeType && attributeType.toLowerCase() == "string"){
+                if(attributeType && attributeType.toLowerCase() === "string"){
                     cql += "\'";
                 }
             }
