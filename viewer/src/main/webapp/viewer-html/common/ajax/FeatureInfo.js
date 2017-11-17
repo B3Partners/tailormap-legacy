@@ -181,6 +181,8 @@ Ext.define("viewer.FeatureInfo", {
                 
                 var response = Ext.JSON.decode(result.responseText)[0];
                 
+                var is_objecttype = false;
+                
                 console.log(response);
                 
                 if(response.features){
@@ -189,13 +191,20 @@ Ext.define("viewer.FeatureInfo", {
                            response.related_features.objecttype = response.features[0][key];
                            response.related_features.hoofdgroep = response.features[0]['c1'];
                            response.related_features.fid = response.features[0]['fid'];
+                           is_objecttype = true;
                            break;
                        }
                    }
                 
                    
-                }
                 
+                    if (!is_objecttype){
+                        //console.log("objecttype is niet geconfigureerd of is leeg in de database (using hardcoded  value)");
+                        response.related_features.objecttype = "niet bekend";
+                        response.related_features.hoofdgroep = response.features[0]['c1'];
+                        response.related_features.fid = response.features[0]['fid'];
+                    }
+                }
                 //console.log(response);
                 //var resp = response.features.concat(response.related_features);
                 if(response.error) {
