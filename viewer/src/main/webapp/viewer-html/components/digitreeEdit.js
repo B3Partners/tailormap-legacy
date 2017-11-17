@@ -19,16 +19,17 @@ Ext.define ("viewer.components.digitreeEdit",{
     origin:null,
     fbutton:null,
     objecttype:null,
-    grasList: [{"name":" Geen gebrek"},{"name":"afschuving"},{"name":"afsterving"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"gaten"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"vergraving"},{"name":"verzakking"},{"name":"wellen_(zandmeevoeren)"},{"name":"afschot_foutief"},{"name":"grasmat_beschadigd"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"kwelplek"},{"name":"oneffenheden"},{"name":"ontgronding"},{"name":"vertrapping"},{"name":"spoorvorming"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"vermossing"},{"name":"wildschade"},{"name":"zetting"},{"name":"organische_stof_overlast"},{"name":"vervuiling"},{"name":"aantastting_kritisch"},{"name":"aantastting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"gaten"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"groeihoogte_onjuist_niet_kritisch"},{"name":"insectenvraat_kritisch"},{"name":"verzuring"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"oppervlakteschade"},{"name":"wortelingroei"},{"name":"obstakels"},{"name":"groeihoogte_onjuist_kritisch"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"slijtage_sportvelden"},{"name":"verruiging"}],
-    kruidList:[{"name":" Geen gebrek"},{"name":"afschuving"},{"name":"afsterving"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"vergraving"},{"name":"wellen_(zandmeevoeren)"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"ontgronding"},{"name":"spoorvorming"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"vergrassing"},{"name":"verhouting"},{"name":"zetting"},{"name":"vervuiling"},{"name":"aantastting_kritisch"},{"name":"aantastting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"groeihoogte_onjuist_niet_kritisch"},{"name":"bloeiontwikkeling_onvoldoende"},{"name":"houtige_begroeiing_onderbroken"},{"name":"insectenvraat_kritisch"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"obstakels"},{"name":"groeihoogte_onjuist_kritisch"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"verruiging"},{"name":"bladontwikkeling_onjuist"}],
-    ruigtesList:[{"name":" Geen gebrek"},{"name":"afschuving"},{"name":"afsterving"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"vergraving"},{"name":"wellen_(zandmeevoeren)"},{"name":"afschot_foutief"},{"name":"oeverafslag"},{"name":"grasmat_beschadigd"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"oneffenheden"},{"name":"ontgronding"},{"name":"vertrapping"},{"name":"spoorvorming"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"verlanding"},{"name":"vermossing"},{"name":"wildschade"},{"name":"zetting"},{"name":"vervuiling"},{"name":"verzanding"},{"name":"aantastting_kritisch"},{"name":"aantastting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"gaten"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"insectenvraat_kritisch"},{"name":"verzuring"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"obstakels"},{"name":"aangroei"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"verruiging"},{"name":"bladontwikkeling_onjuist"}],
-    houtList:[{"name":" Geen gebrek"},{"name":"afschuving"},{"name":"afsterving"},{"name":"breuk"},{"name":"deformatie_kritiek"},{"name":"Toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"houtrot"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"scheur_constructief"},{"name":"verankering_defect"},{"name":"vergraving"},{"name":"wellen_(zandmeevoeren)"},{"name":"stam_beschadigd"},{"name":"boomvitaliteit_vermindering"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"ontgronding"},{"name":"spoorvorming"},{"name":"verstuiving"},{"name":"kroonontwikkeling_onevenwichtig"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"vergrassing"},{"name":"verhouting"},{"name":"wildschade"},{"name":"zetting"},{"name":"organische_stof_overlast"},{"name":"vervuiling"},{"name":"scheefstand"},{"name":"aahechtingsmankement"},{"name":"aantastting_kritisch"},{"name":"aantastting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"gaten"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"groeihoogte_onjuist_niet_kritisch"},{"name":"takken_laaghangend_niet_kritisch"},{"name":"losliggend"},{"name":"snoeiwond_afgrendeling_onjuist"},{"name":"kroon_stam_verhouding_onjuist"},{"name":"kroon_stam_verhouding_afwijkend"},{"name":"bloeiontwikkeling_onvoldoende"},{"name":"houtige_begroeiing_onderbroken"},{"name":"insectenvraat_kritisch"},{"name":"reactiehout"},{"name":"gesteltakken_gescheurd"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"zuigers_overlast"},{"name":"wurgwortels"},{"name":"oppervlakteschade"},{"name":"obstakels"},{"name":"aangroei"},{"name":"deformatie_niet_kritiek"},{"name":"vervorming"},{"name":"slijtage_mechanisch"},{"name":"kroon_beschadigd"},{"name":"groeihoogte_onjuist_kritisch"},{"name":"wortels_beschadigd"},{"name":"takken_laaghangend_kritisch"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"draagkracht_bodem_onvoldoende"},{"name":"top_dubbel"},{"name":"plakoksel"},{"name":"verruiging"},{"name":"bladontwikkeling_onjuist"},{"name":"scheurvorming"}],
+    grasList: [{"name":" Geen gebrek"},{"name":"afschuiving"},{"name":"afsterving"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"gaten"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"vergraving"},{"name":"verzakking"},{"name":"wellen_(zandmeevoeren)"},{"name":"afschot_foutief"},{"name":"grasmat_beschadigd"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"kwelplek"},{"name":"oneffenheden"},{"name":"ontgronding"},{"name":"vertrapping"},{"name":"spoorvorming"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"vermossing"},{"name":"wildschade"},{"name":"zetting"},{"name":"organische_stof_overlast"},{"name":"vervuiling"},{"name":"aantasting_kritisch"},{"name":"aantasting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"gaten"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"groeihoogte_onjuist_niet_kritisch"},{"name":"insectenvraat_kritisch"},{"name":"verzuring"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"oppervlakteschade"},{"name":"wortelingroei"},{"name":"obstakels"},{"name":"groeihoogte_onjuist_kritisch"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"slijtage_sportvelden"},{"name":"verruiging"}], 
+    kruidList:[{"name":" Geen gebrek"},{"name":"afschuiving"},{"name":"afsterving"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"vergraving"},{"name":"wellen_(zandmeevoeren)"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"ontgronding"},{"name":"spoorvorming"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"vergrassing"},{"name":"verhouting"},{"name":"zetting"},{"name":"vervuiling"},{"name":"aantasting_kritisch"},{"name":"aantasting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"groeihoogte_onjuist_niet_kritisch"},{"name":"bloeiontwikkeling_onvoldoende"},{"name":"houtige_begroeiing_onderbroken"},{"name":"insectenvraat_kritisch"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"obstakels"},{"name":"groeihoogte_onjuist_kritisch"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"verruiging"},{"name":"bladontwikkeling_onjuist"}], 
+    ruigtesList:[{"name":" Geen gebrek"},{"name":"afschuiving"},{"name":"afsterving"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"vergraving"},{"name":"wellen_(zandmeevoeren)"},{"name":"afschot_foutief"},{"name":"oeverafslag"},{"name":"grasmat_beschadigd"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"oneffenheden"},{"name":"ontgronding"},{"name":"vertrapping"},{"name":"spoorvorming"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"verlanding"},{"name":"vermossing"},{"name":"wildschade"},{"name":"zetting"},{"name":"vervuiling"},{"name":"verzanding"},{"name":"aantasting_kritisch"},{"name":"aantasting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"gaten"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"insectenvraat_kritisch"},{"name":"verzuring"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"obstakels"},{"name":"aangroei"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"verruiging"},{"name":"bladontwikkeling_onjuist"}], 
+    houtList:[{"name":" Geen gebrek"},{"name":"afschuiving"},{"name":"afsterving"},{"name":"breuk"},{"name":"deformatie_kritiek"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"houtrot"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"scheur_constructief"},{"name":"verankering_defect"},{"name":"vergraving"},{"name":"wellen_(zandmeevoeren)"},{"name":"stam_beschadigd"},{"name":"boomvitaliteit_vermindering"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"ontgronding"},{"name":"spoorvorming"},{"name":"verstuiving"},{"name":"kroonontwikkeling_onevenwichtig"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"vergrassing"},{"name":"verhouting"},{"name":"wildschade"},{"name":"zetting"},{"name":"organische_stof_overlast"},{"name":"vervuiling"},{"name":"scheefstand"},{"name":"aanhechtingsmankement"},{"name":"aantasting_kritisch"},{"name":"aantasting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"gaten"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"groeihoogte_onjuist_niet_kritisch"},{"name":"takken_laaghangend_niet_kritisch"},{"name":"losliggend"},{"name":"snoeiwond_afgrendeling_onjuist"},{"name":"kroon_stam_verhouding_onjuist"},{"name":"kroon_stam_verhouding_afwijkend"},{"name":"bloeiontwikkeling_onvoldoende"},{"name":"houtige_begroeiing_onderbroken"},{"name":"insectenvraat_kritisch"},{"name":"reactiehout"},{"name":"gesteltakken_gescheurd"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"zuigers_overlast"},{"name":"wurgwortels"},{"name":"oppervlakteschade"},{"name":"obstakels"},{"name":"aangroei"},{"name":"deformatie_niet_kritiek"},{"name":"vervorming"},{"name":"slijtage_mechanisch"},{"name":"kroon_beschadigd"},{"name":"groeihoogte_onjuist_kritisch"},{"name":"wortels_beschadigd"},{"name":"takken_laaghangend_kritisch"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"draagkracht_bodem_onvoldoende"},{"name":"top_dubbel"},{"name":"plakoksel"},{"name":"verruiging"},{"name":"bladontwikkeling_onjuist"},{"name":"scheurvorming"}], 
+    boomList:[{"name":" Geen gebrek"},{"name":"afschuiving"},{"name":"afsterving"},{"name":"breuk"},{"name":"deformatie_kritiek"},{"name":"toplaag_dichtgeslibd"},{"name":"dichtgroei_boomopslag"},{"name":"functie_afwezig"},{"name":"houtrot"},{"name":"insectenvraat_niet_kritisch"},{"name":"exotengroei_ongewenst"},{"name":"scheur_constructief"},{"name":"verankering_defect"},{"name":"vergraving"},{"name":"wellen_(zandmeevoeren)"},{"name":"stam_beschadigd"},{"name":"boomvitaliteit_vermindering"},{"name":"boomwortelopgroei"},{"name":"erosie"},{"name":"functie_verminderd"},{"name":"ontgronding"},{"name":"spoorvorming"},{"name":"verstuiving"},{"name":"kroonontwikkeling_onevenwichtig"},{"name":"onkruidgroei"},{"name":"plasvorming"},{"name":"verdroging"},{"name":"vergrassing"},{"name":"verhouting"},{"name":"wildschade"},{"name":"zetting"},{"name":"organische_stof_overlast"},{"name":"vervuiling"},{"name":"scheefstand"},{"name":"aanhechtingsmankement"},{"name":"aantasting_kritisch"},{"name":"aantasting_niet_kritisch"},{"name":"bladkleur_afwijkend"},{"name":"gaten"},{"name":"groeistoornis_kritisch"},{"name":"groeistoornis_niet_kritisch"},{"name":"groeihoogte_onjuist_niet_kritisch"},{"name":"takken_laaghangend_niet_kritisch"},{"name":"losliggend"},{"name":"snoeiwond_afgrendeling_onjuist"},{"name":"kroon_stam_verhouding_onjuist"},{"name":"kroon_stam_verhouding_afwijkend"},{"name":"bloeiontwikkeling_onvoldoende"},{"name":"houtige_begroeiing_onderbroken"},{"name":"insectenvraat_kritisch"},{"name":"reactiehout"},{"name":"gesteltakken_gescheurd"},{"name":"ziekte_kritisch"},{"name":"ziekte_niet_kritisch"},{"name":"zuigers_overlast"},{"name":"wurgwortels"},{"name":"oppervlakteschade"},{"name":"obstakels"},{"name":"aangroei"},{"name":"deformatie_niet_kritiek"},{"name":"vervorming"},{"name":"slijtage_mechanisch"},{"name":"kroon_beschadigd"},{"name":"groeihoogte_onjuist_kritisch"},{"name":"wortels_beschadigd"},{"name":"takken_laaghangend_kritisch"},{"name":"bedekkingsgraad_onvoldoende"},{"name":"schade_mechanisch"},{"name":"draagkracht_bodem_onvoldoende"},{"name":"top_dubbel"},{"name":"plakoksel"},{"name":"verruiging"},{"name":"bladontwikkeling_onjuist"},{"name":"scheurvorming"}], 
     columnsF:["objecttype","gebrek","ernst"],
     inputcustomContainer: null,
     constructor: function(conf){
         this.initConfig(conf);
         viewer.components.digitreeEdit.superclass.constructor.call(this, conf);
-
+        
         //console.log(this.config);
         
         this.popup.popupWin.addListener('hide', function () {
@@ -128,7 +129,8 @@ Ext.define ("viewer.components.digitreeEdit",{
             },
             padding: 10,
             renderTo: this.getContentDiv(),
-            items: [this.createFeatureGrid(),
+            items: [this.layerSelector.getLayerSelector(),
+                    this.createFeatureGrid(),
                 {
                     itemId: 'buttonPanel',
                     xtype: "container",
@@ -161,7 +163,9 @@ Ext.define ("viewer.components.digitreeEdit",{
                             xtype: 'textfield',
                             reference: 'objecttype', // A named reference to be held on the referenceHolder
                             name: 'objecttype',
-                            fieldLabel: 'soort vlak:',    
+                            fieldLabel: 'soort:', 
+                            labelWidth: 100,
+                            anchor: '80%',
                             readOnly: true
                         },
                         this.createForm(),
@@ -335,7 +339,7 @@ Ext.define ("viewer.components.digitreeEdit",{
         this.savebutton = this.maincontainer.down("#saveButton");
 
     },
-    
+       
     createActionButtons: function () {
         var buttons = [];
         
@@ -347,7 +351,7 @@ Ext.define ("viewer.components.digitreeEdit",{
             buttons.push(this.createButton("copyButton", "Kopie", this.copy, "Kopie bewerken"));
         }
         if (this.config.allowEdit) {
-            buttons.push(this.createButton("editButton", "Selecteer groen vlak", this.selectArea));
+            buttons.push(this.createButton("editButton", "Selecteer vlak/boom", this.selectArea));
         }
         if (this.config.allowDelete) {
             buttons.push(this.createButton("deleteButton", "Verwijder", this.deleteFeature));
@@ -412,7 +416,7 @@ Ext.define ("viewer.components.digitreeEdit",{
     },
     
     failed: function (msg) {
-        Ext.Msg.alert('Mislukt', msg);
+        //Ext.Msg.alert('Mislukt', msg);
         this.activateMapClick();
     },
     
@@ -525,6 +529,8 @@ Ext.define ("viewer.components.digitreeEdit",{
         
         this.input = Ext.create('Ext.form.ComboBox', {
             fieldLabel: 'Gebrek',
+            labelWidth: 100,
+            anchor: '80%',
             store: this.valueStore,
             reference: 'gebrek',
             name:'gebrek',
@@ -539,7 +545,7 @@ Ext.define ("viewer.components.digitreeEdit",{
     },
     
     updateForm: function(feature){
-        console.log(this.hoofdgroep);
+        //console.log(this.hoofdgroep);
         if(this.hoofdgroep === "gras"){
             this.valueStore.setData(this.grasList);
         }else if(this.hoofdgroep === "kruidachtige beplanting"){
@@ -548,6 +554,8 @@ Ext.define ("viewer.components.digitreeEdit",{
             this.valueStore.setData(this.ruigtesList);
         }else if(this.hoofdgroep === "houtachtige beplanting"){
             this.valueStore.setData(this.houtList);
+        }else if(this.hoofdgroep === "bomen"){
+            this.valueStore.setData(this.boomList);
         }
         this.valueStore.sort('name','ASC');
     
@@ -568,7 +576,7 @@ Ext.define ("viewer.components.digitreeEdit",{
         }
         if(features.length === 0){
             //features[0] = {objecttype:"Er zijn geen gebreken"};
-            this.gridPanel.setTitle("Er zijn geen gebreken voor dit vlak");
+            this.gridPanel.setTitle("Er zijn geen gebreken");
         }
         else{
             this.gridPanel.setTitle("Kies één gebrek");
@@ -671,8 +679,7 @@ Ext.define ("viewer.components.digitreeEdit",{
         return this.gridPanel;
     },
     
-    deleteGebrek:function(data){
-        
+    deleteGebrek:function(data){       
         this.inputcustomContainer.getForm().setValues(data);
         this.remove();
     },
@@ -693,8 +700,9 @@ Ext.define ("viewer.components.digitreeEdit",{
         
         else{
             this.cancel();
-    }
-    
+        }
+        var layer = this.layerSelector.getValue();
+        this.config.viewerController.getLayer(layer).reload();
     },
     deleteSucces: function(fid){
         //Ext.Msg.alert('Gelukt', "Het feature is verwijderd.");
@@ -707,6 +715,8 @@ Ext.define ("viewer.components.digitreeEdit",{
             ];
         this.clearFeatureAndForm();
         this.handleFeature(feat[0]);
+        var layer = this.layerSelector.getValue();
+        this.config.viewerController.getLayer(layer).reload();
     },
     
     updateFeaturesGrid: function () {
@@ -720,7 +730,5 @@ Ext.define ("viewer.components.digitreeEdit",{
         }, function (msg) {
             me.failed(msg);
         });
-    }
-    
-
+    }   
 });

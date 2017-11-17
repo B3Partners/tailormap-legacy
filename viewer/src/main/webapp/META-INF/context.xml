@@ -2,7 +2,7 @@
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
-
+    
     <Server ...>
         ...
         <GlobalNamingResources>

@@ -62,7 +62,7 @@ Ext.define("viewer.components.Edit", {
     editLblClass: 'editCmpLbl',
     constructor: function (conf) {
         this.initConfig(conf);
-        console.log(this.config);
+        //console.log(this.config);
         viewer.components.Edit.superclass.constructor.call(this, this.config);
         var me = this;
         
