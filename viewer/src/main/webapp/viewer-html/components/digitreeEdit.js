@@ -359,6 +359,23 @@ Ext.define ("viewer.components.digitreeEdit",{
         return buttons;
     },
     
+    resetForm: function () {
+        this.setButtonDisabled("editButton", true);
+        this.setButtonDisabled("newButton", true);
+        this.setButtonDisabled("deleteButton", true);
+        this.setButtonDisabled("copyButton", true);
+        this.savebutton.setText("Opslaan + sluiten");
+        this.mode = null;
+        this.layerSelector.clearSelection();
+        this.geomlabel.setText("");
+        this.inputContainer.removeAll();
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+        if (this.vectorLayer) {
+            // vector layer may be null when cancel() is called
+            this.vectorLayer.removeAllFeatures();
+        }
+    },
+    
     selectArea: function(){
         this.hideMobilePopup();
         this.clearFeatureAndForm();
