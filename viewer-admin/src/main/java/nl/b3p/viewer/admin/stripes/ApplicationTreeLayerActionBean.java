@@ -21,7 +21,6 @@ import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
@@ -118,15 +117,15 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             stylesTitleJson.put((String)style.get("id"), styleTitleJson);
 
         }
-        if(layer.getDetails().containsKey(Layer.DETAIL_WMS_STYLES)) {
+        if (applicationLayer.getService() instanceof WMSService && layer.getDetails().containsKey(Layer.DETAIL_WMS_STYLES)) {
             JSONArray wmsStyles = new JSONArray(layer.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
             for(int i = 0; i < wmsStyles.length(); i++) {
                 JSONObject wmsStyle = wmsStyles.getJSONObject(i);
                 Map style = new HashMap();
                 style.put("id", "wms:" + wmsStyle.getString("name"));
-                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : "") );
+                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : ""));
                 JSONObject styleTitleJson = new JSONObject();
-                styleTitleJson.put("styleTitle", wmsStyle.has("title") ? wmsStyle.getString("title") :wmsStyle.getString("name") );
+                styleTitleJson.put("styleTitle", wmsStyle.has("title") ? wmsStyle.getString("title") : wmsStyle.getString("name"));
                 styles.add(style);
                 stylesTitleJson.put((String)style.get("id"), styleTitleJson);
             }
