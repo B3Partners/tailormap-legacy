@@ -284,3 +284,11 @@ body > .legend {
     -moz-box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
     box-shadow: #157fcc 0 2px 0 0 inset,#157fcc 0 -2px 0 0 inset,#157fcc -2px 0 0 0 inset,#157fcc 2px 0 0 0 inset;
 }
+
+/* Added classes below to support some icon classes from Ext6 */
+.fa-pencil {
+    background-image: url("../images/wrench.png");
+}
+.fa-trash {
+    background-image: url("../images/delete.png");
+}

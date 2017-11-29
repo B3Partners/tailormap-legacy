@@ -13,6 +13,9 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
     <logger name="nl.b3p.viewer.admin.stripes">
         <level value="debug" />
     </logger>
+    <logger name="nl.b3p.viewer.util.databaseupdate.ScriptRunner">
+        <level value="error" />
+    </logger>
     <logger name="org.hibernate">
         <level value="error" />
     </logger>

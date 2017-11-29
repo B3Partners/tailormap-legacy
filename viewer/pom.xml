@@ -311,6 +311,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/VectorLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/ArcLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Feature.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/controller/FeatureStyle.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/MapTip.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Extent.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Event.js</param>
@@ -383,6 +384,7 @@
                                 <!-- OpenLayers Tools -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersMeasureHandler.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
                         </compilation>

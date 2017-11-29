@@ -216,7 +216,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         }
         return new ForwardResolution(EDITJSP);
     }
-    
+
     protected void deleteApplication(EntityManager em) {
         if (applicationToDelete.isMashup()) {
             applicationToDelete.setRoot(null);
@@ -358,23 +358,21 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             j.put("baseName", app.getName());
             j.put("version", app.getVersion());
             j.put("baseUrl", baseUrl);
-            String mashup = "Nee";
-            if (app.getDetails().containsKey(Application.DETAIL_IS_MASHUP)) {
-                String mashupValue = app.getDetails().get(Application.DETAIL_IS_MASHUP).getValue();
-                mashup = Boolean.valueOf(mashupValue) ? "Ja" : "Nee";
-                if ( Boolean.valueOf(mashupValue)) {
+            boolean isMashup = app.isMashup(sess);
+            if (isMashup) {
                     List<Application> linkedApps = em.createQuery(
                             "from Application where root = :level and id <> :oldId")
-                            .setParameter("level", app.getRoot()).setParameter("oldId", app.getId()).getResultList();
+                            .setParameter("level", app.getRoot())
+                            .setParameter("oldId", app.getId())
+                            .getResultList();
                     for (Application linkedApp : linkedApps) {
-                        if (!linkedApp.isMashup()) {
+                        if (!linkedApp.isMashup(sess)) {
                             j.put("motherapplication", linkedApp.getNameWithVersion());
                             break;
                         }
                     }
                 }
-            } 
-            j.put("mashup",mashup);
+            j.put("mashup", (isMashup ? "Ja" : "Nee"));
             jsonData.put(j);
         }
 
@@ -403,7 +401,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
 
         try {
 
-            Application copy = createWorkversion(applicationWorkversion, em,version);
+            Application copy = createWorkversion(applicationWorkversion, em, version);
             getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
             setApplication(copy);
 
@@ -459,7 +457,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
-        try{
+        try {
             EntityManager em = Stripersist.getEntityManager();
             Metadata md = null;
             try {
@@ -477,7 +475,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             em.persist(md);
             em.getTransaction().commit();
             json.put("success", Boolean.TRUE);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             log.error("Error during setting the default application: ", ex);
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));

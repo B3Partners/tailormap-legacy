@@ -42,7 +42,11 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
             //@field (0 – 100, default: 100) Stroke opacity. A value of 0 means completely transparent.
             strokeopacity: 100
         },
-        colorPrefix:null
+        colorPrefix:null,
+        defaultFeatureStyle: null,
+        addStyleToFeature: false,
+        addAttributesToFeature: false,
+        allowselection: true
     },
     constructor : function (config){
         viewer.viewercontroller.controller.VectorLayer.superclass.constructor.call(this, config);
@@ -124,5 +128,8 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     /** handle ESC key when drawing. */
     cancelSketch: function () {
         Ext.Error.raise({msg: "VectorLayer.cancelSketch() Not implemented! Must be implemented in sub-class"});
+    },
+    frameworkStyleToFeatureStyle: function(frameworkStyle){
+        Ext.Error.raise({msg: "VectorLayer.frameworkStyleToFeatureStyle() Not implemented! Must be implemented in sub-class"});
     }
 });

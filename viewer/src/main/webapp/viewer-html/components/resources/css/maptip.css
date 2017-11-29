@@ -42,6 +42,9 @@
     height: 100%;
     overflow: auto;
     position: absolute;
+    left: 0;
+    top: 0;
+    padding: 10px;
 }
 /*Balloon Content*/
 .balloonContent{
@@ -116,7 +119,6 @@
     width: 100%;
     margin-bottom: 7px;
     padding-bottom: 2px;
-    margin-left: 5px;
     border-bottom: 1px solid #C7C7C7;
     overflow: auto;
 }

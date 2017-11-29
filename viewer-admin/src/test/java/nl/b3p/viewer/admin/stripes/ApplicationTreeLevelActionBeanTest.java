@@ -14,6 +14,7 @@ import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -115,6 +116,114 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         app.setTreeCache(null);
         cache =app.loadTreeCache(entityManager);
         assertEquals(numAppLayers + 1, cache.getApplicationLayers().size());
+    }
+    
+    @Test
+    public void testAddLayerToExistingLevelUsedInMashup() throws Exception{
+         /*
+         This test is for the situation:
+         
+        Motherapp:
+            Level A
+                Layer B
+        Create mashup
+        
+        In motherapp, add Layer C to Level A
+        Mashup shouldn't be affected
+        */
+        initData(true);
+        
+        Application mashup = app.createMashup("mashup", entityManager, false);
+        entityManager.persist(mashup);
+     
+        
+        instance.setApplication(app);
+        instance.setLevel(testLevel);
+        
+        instance.setSelectedlayers("l8," + "al" + testAppLayer.getId()); //begroeid_terreinvakonderdeel_plan
+        instance.saveLevel(entityManager);
+        
+        ApplicationStartMapActionBean asm = new ApplicationStartMapActionBean();
+        asm.setLevelId("n" + testLevel.getId());
+        asm.setReaddedLayersString("[]");
+        asm.setApplication(mashup);
+        JSONArray children = asm.loadSelectedLayers(entityManager);
+        assertEquals(1, children.length());
+    }
+    
+    
+    @Test
+    public void testRemoveAndReaddLevelInMashup() throws Exception{
+         /*
+         This test is for the situation:
+         
+        Motherapp:
+            Level A
+                Layer B
+        Create mashup
+        
+        In motherapp, add Layer C to Level A
+        Mashup shouldn't be affected
+        
+        In mashup then: Remove level A, save, and readd level A
+        Layer B and C should be present
+        */
+        initData(true);
+        
+        Application mashup = app.createMashup("mashup", entityManager, false);
+        entityManager.persist(mashup);
+     
+        
+        // Add layer to mother app
+        instance.setApplication(app);
+        instance.setLevel(testLevel);
+        instance.setSelectedlayers("l8," + "al" + testAppLayer.getId());
+        instance.saveLevel(entityManager);
+
+        // test if mashup still has 1 layers in testlevel
+        ApplicationStartMapActionBean asm = new ApplicationStartMapActionBean();
+        asm.setLevelId("n" + testLevel.getId());
+        asm.setApplication(mashup);
+        asm.setReaddedLayersString("[]");
+        JSONArray children = asm.loadSelectedLayers(entityManager);
+        assertEquals(1, children.length()); 
+        
+        // remove level from mashup
+        // save 
+        asm = new ApplicationStartMapActionBean();
+        asm.setApplication(mashup);
+        entityManager.getTransaction().begin();
+        asm.setRemovedRecordsString(" [{\"id\":"+ testLevel.getId() + ",\"type\":\"level\"}]");
+        asm.setSelectedContent(" []");
+        asm.setCheckedLayersString("[]");
+        asm.setReaddedLayersString("[]");
+        asm.saveStartMap(entityManager);
+        
+        // check if still allright
+        asm = new ApplicationStartMapActionBean();
+        asm.setLevelId("n" + testLevel.getId());
+        asm.setReaddedLayersString("[]");
+        asm.setApplication(mashup);
+        children = asm.loadSelectedLayers(entityManager);
+        assertEquals(0, children.length());
+        
+        // add level to mashup
+        entityManager.getTransaction().begin();
+        asm = new ApplicationStartMapActionBean();
+        asm.setApplication(mashup);
+        asm.setCheckedLayersString("[]");
+        asm.setSelectedContent(" [{\"id\":"+ testLevel.getId() + ",\"type\":\"level\"}]");
+        asm.setRemovedRecordsString(null);
+        asm.setReaddedLayersString("[]");
+        asm.saveStartMap(entityManager);
+        
+        
+        asm = new ApplicationStartMapActionBean();
+        asm.setReaddedLayersString("[]");
+        asm.setApplication(mashup);
+        asm.setLevelId("n" + testLevel.getId());
+        children = asm.loadSelectedLayers(entityManager);
+        assertEquals(2, children.length());
     }
     
     @Test

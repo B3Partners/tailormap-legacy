@@ -27,6 +27,8 @@ install:
   - mvn install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -q
 
 script:
+  - ulimit -a
+  - free -m
   # execute unit tests
   - mvn -e clean test -B
   # run integration tests on all modules except viewer-admin
@@ -34,7 +36,7 @@ script:
   # run integration tests on viewer-admin module only
   - mvn -e clean verify -B -Ptravis-ci -pl 'viewer-admin'
   # run code coverage
-  - mvn cobertura:cobertura
+  - mvn cobertura:cobertura -Ptravis-ci
   # on oracle java 8 run a javadoc build to check for errors
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
          mvn javadoc:javadoc;

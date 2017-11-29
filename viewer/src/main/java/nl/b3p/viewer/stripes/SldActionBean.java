@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.io.*;
 import java.net.URL;
 import java.util.Map;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +36,7 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.StyleLibrary;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
 import nl.b3p.web.SharedSessionData;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -223,8 +225,9 @@ public class SldActionBean implements ActionBean {
     
     private void getSldXmlOrCreateNewSld() throws Exception {
         
-        if(id != null) {
-            StyleLibrary sld = Stripersist.getEntityManager().find(StyleLibrary.class, id);
+        EntityManager em = Stripersist.getEntityManager();
+        if (id != null) {
+            StyleLibrary sld = em.find(StyleLibrary.class, id);
             if(sld == null) {
                 throw new IllegalArgumentException("Can't find SLD in Flamingo service registry with id " + id);
             }
@@ -282,21 +285,21 @@ public class SldActionBean implements ActionBean {
                 if (commonAndFilter.indexOf("%")>0){
                     commonAndFilter = URI.decode(commonAndFilter);  
                 }
-                andFilter = ECQL.toFilter(commonAndFilter);
+                andFilter = FlamingoCQL.toFilter(commonAndFilter, em);
             }
             if (commonOrFilter!=null){
                 //GeoServer encodes the sld url even if its a valid url
                 if (commonOrFilter.indexOf("%")>0){
                     commonOrFilter = URI.decode(commonOrFilter);
                 }
-                orFilter = ECQL.toFilter(commonOrFilter);
+                orFilter = FlamingoCQL.toFilter(commonOrFilter, em);
             }
             if(layers != null) {
                 
                 for(int i = 0; i < layers.length; i++) {
                     Filter filter=null;
                     if(filters != null && i < filters.length && !"none".equals(filters[i]) && filters[i].length()>0) {
-                         filter = ECQL.toFilter(filters[i]);
+                         filter = FlamingoCQL.toFilter(filters[i], em);
                     }
                     NamedLayer nl = sldFactory.createNamedLayer();
                     nl.setName(layers[i]);                    
@@ -359,7 +362,8 @@ public class SldActionBean implements ActionBean {
     private static final String NS_SE = "http://www.opengis.net/se";
     
     private void addFilterToExistingSld() throws Exception {
-        Filter f = CQL.toFilter(filter);
+        EntityManager em = Stripersist.getEntityManager();
+        Filter f = FlamingoCQL.toFilter(filter, em);
         
         f = (Filter) f.accept(new ChangeMatchCase(false),null);
         
@@ -525,15 +529,16 @@ public class SldActionBean implements ActionBean {
     public Resolution transformFilter() throws JSONException{
         JSONObject json = new JSONObject();
         String error=null;
+        EntityManager em = Stripersist.getEntityManager();
         try{
             json.put("success", Boolean.FALSE);
             if (filter!=null && applicationLayer!=null){
-                Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
+                Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName(), em);
                 if (layer==null){
                     error = "Layer not found";
                 }else{
                     SimpleFeatureType sft=layer.getFeatureType();
-                    Filter f = CQL.toFilter(filter);
+                    Filter f =FlamingoCQL.toFilter(filter, em);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
                     f = FeatureToJson.reformatFilter(f, sft);
                     String cqlFilter = ECQL.toCQL(f);
