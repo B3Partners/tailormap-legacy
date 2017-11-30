@@ -65,9 +65,6 @@ public class OntbrandingsActionBean implements ActionBean {
     @Validate
     private String features;
     
-    @Validate
-    private boolean showIntermediateResults = false;
-
     @DefaultHandler
     public Resolution calculate() throws TransformException {
         JSONObject result = new JSONObject();
@@ -169,7 +166,7 @@ public class OntbrandingsActionBean implements ActionBean {
         double dx = ignitionCentroid.getX() - audienceCentroid.getX();
         double dy = ignitionCentroid.getY() - audienceCentroid.getY();
    
-        if (showIntermediateResults) {
+      /* if (showIntermediateResults) {
             Coordinate[] coords = {audienceCentroid.getCoordinate(), ignitionCentroid.getCoordinate()};
             LineString ls = gf.createLineString(coords);
 
@@ -192,7 +189,7 @@ public class OntbrandingsActionBean implements ActionBean {
             gs.put(createFeature(loodLijn, "temp", "loodLijn"));
             gs.put(createFeature(rotatedPoint, "temp", "loodLijn2"));
             gs.put(createFeature(ls, "temp", "audience2ignition"));
-        }
+        }*/
         
         double theta = Math.atan2(dy, dx);
         double correctBearing = (Math.PI / 2);
@@ -202,9 +199,6 @@ public class OntbrandingsActionBean implements ActionBean {
             Geometry fan = createEllipse(c, rotation, fanLength, fanHeight, 220);
 
             if (!fan.isEmpty()) {            
-                if (showIntermediateResults) {
-               //    gs.put(createFeature(fan, "temp", ("fan" + 1)));
-                }
                 unioned = unioned.union(fan);
             }
         }
@@ -213,7 +207,7 @@ public class OntbrandingsActionBean implements ActionBean {
         Geometry g = con.getConcaveHull();
         TopologyPreservingSimplifier tp = new TopologyPreservingSimplifier(g);
         tp.setDistanceTolerance(0.5);
-        gs.put(createFeature(tp.getResultGeometry(), "safetyZone", "concaaf"));
+        gs.put(createFeature(tp.getResultGeometry(), "safetyZone", ""));
     }
 
     public Geometry createEllipse(Coordinate startPoint, double rotation, double fanlength, double fanheight, int numPoints) throws TransformException {
@@ -232,7 +226,7 @@ public class OntbrandingsActionBean implements ActionBean {
 
     private void calculateNormalSafetyZone(JSONObject feature, JSONArray gs) throws ParseException {
         Geometry zone = createNormalSafetyZone(feature);
-        gs.put(createFeature(zone, "safetyZone", "Veiligheidszone"));
+        gs.put(createFeature(zone, "safetyZone", ""));
     }
 
     private Geometry createNormalSafetyZone(JSONObject feature) throws ParseException {
@@ -290,13 +284,6 @@ public class OntbrandingsActionBean implements ActionBean {
         this.features = features;
     }
 
-    public boolean isShowIntermediateResults() {
-        return showIntermediateResults;
-    }
-
-    public void setShowIntermediateResults(boolean showIntermediateResults) {
-        this.showIntermediateResults = showIntermediateResults;
-    }
     // </editor-fold>
 
 }

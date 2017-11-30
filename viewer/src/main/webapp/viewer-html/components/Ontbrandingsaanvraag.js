@@ -26,7 +26,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     vectorLayer: null,
     extraObjectsLayer: null,
     calculationResultLayer: null,
-    tempCalculationResultLayer: null,
     // Current active feature
     activeFeature: null,
     // All features
@@ -114,13 +113,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return this.calculationResultLayer;
     },
 
-    getTempCalculationResultLayer: function() {
-        if(this.tempCalculationResultLayer === null) {
-            this.createLayers();
-        }
-        return this.tempCalculationResultLayer;
-    },
-
     createLayers : function () {
         var defaultProps = {
             'fontColor': "#000000",
@@ -135,14 +127,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
         this.safetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
-            'fillColor': '#ffe19b',
-            'strokeColor': "#ffba37"
-        }));
-        this.tempSafetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, this.safetyZoneStyle.config, {
-            'fillColor': '#ffe19b',
-            'fillOpacity': 0.2,
-            'strokeOpacity': 0.2,
-            'strokeColor': "#ffba37"
+            'fillOpacity' : 0.000001,
+            'strokeColor': "#ffba37",
+            'strokeOpacity' : 1.0
         }));
         this.ingnitionLocationStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
             'fillColor': "#009900",
@@ -184,16 +171,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.safetyZoneStyle
         });
-        this.tempCalculationResultLayer = this.config.viewerController.mapComponent.createVectorLayer({
-            name: 'tempCalculationResultLayer',
-            geometrytypes: ["Polygon", "Circle", "Point", "LineString"],
-            showmeasures: false,
-            viewerController: this.config.viewerController,
-            defaultFeatureStyle: this.tempSafetyZoneStyle,
-            addStyleToFeature: true
-        });
         this.config.viewerController.mapComponent.getMap().addLayer(this.calculationResultLayer);
-        this.config.viewerController.mapComponent.getMap().addLayer(this.tempCalculationResultLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, this.activeFeatureChanged, this);
@@ -1352,7 +1330,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.removeAllForGrid(this.audienceLocationsGrid);
         this.removeAllForGrid(this.extraObjectsGrid);
         this.getCalculationResultLayer().removeAllFeatures();
-        this.getTempCalculationResultLayer().removeAllFeatures();
     },
 
     removeAllForGrid: function(grid) {
@@ -1438,20 +1415,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     var tempfeatures = [];
                     for (var i = 0; i < featuresJSON.length; i++) {
                         var f = featuresJSON[i];
-                        var type = f.attributes.type;
                         var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
-                        if(type === 'temp'){
-                            tempfeatures.push(feat);
-                        }else{
-                            features.push(feat);
-                        }
+                        features.push(feat);
                     }
 
                     this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;
-                    this.tempCalculationResultLayer.defaultFeatureStyle = this.tempSafetyZoneStyle;
 
                     this.calculationResultLayer.addFeatures(features);
-                    this.tempCalculationResultLayer.addFeatures(tempfeatures);
                 },
                 failure: function (result) {
                     this.addMessageInContainer('#calculation_messages',
@@ -1467,7 +1437,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     removeSafetyZones: function(){
         this.getCalculationResultLayer().removeAllFeatures();
-        this.getTempCalculationResultLayer().removeAllFeatures();
     },
 
     checkAudienceLocations: function() {
