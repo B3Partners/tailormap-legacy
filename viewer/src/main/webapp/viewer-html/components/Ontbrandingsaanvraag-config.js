@@ -22,9 +22,11 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
     DEFAULT_ZONE_DISTANCES_CONSUMER: {
-        "Grondvuurwerk": { distance: 15, fan: true },
-        "Luchtvuurwerk met kaliber tot en met 1 inch": { distance: 40, fan: true },
-        "Luchtvuurwerk met kaliber van 1 inch tot 2 inch": { distance: 60, fan: true }
+        "Grondvuurwerk": { distance: 15, fan: false },
+        "Luchtvuurwerk met kaliber tot en met 1 inch": { distance: 40, fan: false },
+        "Luchtvuurwerk met kaliber van 1 inch tot 2 inch": { distance: 60, fan: false },
+        "Luchtvuurwerk met kaliber tot en met 1 inch - fanshape": { distance: 40, fan: true },
+        "Luchtvuurwerk met kaliber van 1 inch tot 2 inch - fanshape": { distance: 60, fan: true }
     },
     DEFAULT_ZONE_DISTANCES_PROFESSIONAL: {
         "Vuurpijlen (schietrichting schuin van het publiek af)": {distance: 125, fan: false},
