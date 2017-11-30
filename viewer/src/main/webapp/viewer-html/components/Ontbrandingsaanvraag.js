@@ -1429,7 +1429,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 scope: this,
                 params: {
                     features: Ext.JSON.encode(features),
-                    showIntermediateResults:true
+                    showIntermediateResults:false
                 },
                 success: function (result) {
                     var response = Ext.JSON.decode(result.responseText);

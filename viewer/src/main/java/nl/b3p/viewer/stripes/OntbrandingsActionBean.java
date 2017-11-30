@@ -66,7 +66,7 @@ public class OntbrandingsActionBean implements ActionBean {
     private String features;
     
     @Validate
-    private boolean showIntermediateResults = true;
+    private boolean showIntermediateResults = false;
 
     @DefaultHandler
     public Resolution calculate() throws TransformException {
@@ -145,8 +145,8 @@ public class OntbrandingsActionBean implements ActionBean {
             fanLength = attributes.getDouble("zonedistance_consumer_m") * 1.5;
             fanHeight = attributes.getDouble("zonedistance_consumer_m");
         } else {
-            fanLength = attributes.getDouble("zonedistance_consumer_m") * 1.5;
-            fanHeight = attributes.getDouble("zonedistance_consumer_m");
+            fanLength = attributes.getDouble("zonedistance_professional_m") * 1.5;
+            fanHeight = attributes.getDouble("zonedistance_professional_m");
         }
         
         Geometry ignition = wkt.read(feature.getString("wktgeom"));
@@ -199,7 +199,7 @@ public class OntbrandingsActionBean implements ActionBean {
         double rotation = theta - correctBearing;
         for (int i = 0; i < endIndex; i += offset) {
             Coordinate c = lil.extractPoint(i);
-            Geometry fan = createEllipse(c, rotation, fanLength, fanHeight, 20);
+            Geometry fan = createEllipse(c, rotation, fanLength, fanHeight, 220);
 
             if (!fan.isEmpty()) {            
                 if (showIntermediateResults) {
@@ -237,10 +237,15 @@ public class OntbrandingsActionBean implements ActionBean {
 
     private Geometry createNormalSafetyZone(JSONObject feature) throws ParseException {
         JSONObject attributes = feature.getJSONObject("attributes");
-        Integer zoneDistance = attributes.optInt("zonedistance_m", 0);
-        if (zoneDistance == 0) {
-            zoneDistance = attributes.optInt("custom_zonedistance_m", 0);
+        Integer zoneDistance;
+
+        if (attributes.getString("fireworks_type").equals("consumer")) {
+            zoneDistance = attributes.getInt("zonedistance_consumer_m");
+        } else {
+            zoneDistance = attributes.getInt("zonedistance_professional_m");
         }
+
+        
         Geometry geom = wkt.read(feature.getString("wktgeom"));
 
         Geometry zone = geom.buffer(zoneDistance);
