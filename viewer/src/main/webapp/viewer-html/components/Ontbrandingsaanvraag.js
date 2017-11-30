@@ -77,7 +77,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     zoneDistanceConfigToObject: function(conf, obj) {
         if(!conf || conf.length === 0) return;
         for(var i = 0; i < conf.length; i++) {
-            obj[conf[i].label] = conf[i].distance;
+            obj[conf[i].label] = {
+                distance: conf[i].distance,
+                fan: conf[i].fan
+            }
         }
     },
 
@@ -638,7 +641,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     createZonedistanceStore: function(zonedistances, name) {
         var keys = Ext.Object.getKeys(zonedistances);
         var store_items = Ext.Array.map(keys, function(item) {
-            return { "val": item, "label": [item, " (", zonedistances[item], "m)"].join("") };
+            return { "val": item, "label": [item, " (", zonedistances[item].distance, "m)"].join("") };
         }, this);
         store_items.push({ "val": this.OTHER_LABEL, "label": this.OTHER_LABEL });
         Ext.create('Ext.data.Store', {
@@ -1317,12 +1320,25 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var raw_data = feature.toJsonObject();
         raw_data.attributes = item.getData();
         if(raw_data.attributes.type === this.IGNITION_LOCATION_TYPE) {
-            raw_data.attributes.zonedistance_consumer_m = raw_data.attributes.zonedistance_consumer === this.OTHER_LABEL
-                ? raw_data.attributes.custom_zonedistance_consumer
-                : this.ZONE_DISTANCES_CONSUMER[raw_data.attributes.zonedistance_consumer];
-            raw_data.attributes.zonedistance_professional_m = raw_data.attributes.zonedistance_professional === this.OTHER_LABEL
-                ? raw_data.attributes.custom_zonedistance_professional
-                : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional];
+            if(raw_data.attributes.zonedistance_consumer){
+                raw_data.attributes.zonedistance_consumer_m = raw_data.attributes.zonedistance_consumer === this.OTHER_LABEL
+                    ? raw_data.attributes.custom_zonedistance_consumer
+                    : this.ZONE_DISTANCES_CONSUMER[raw_data.attributes.zonedistance_consumer].distance;
+
+                raw_data.attributes.zonedistance_consumer_fan = raw_data.attributes.zonedistance_consumer === this.OTHER_LABEL
+                    ? false
+                    : this.ZONE_DISTANCES_CONSUMER[raw_data.attributes.zonedistance_consumer].fan;
+            }
+            
+            if(raw_data.attributes.zonedistance_professional){
+                raw_data.attributes.zonedistance_professional_m = raw_data.attributes.zonedistance_professional === this.OTHER_LABEL
+                    ? raw_data.attributes.custom_zonedistance_professional
+                    : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional].distance;
+
+                raw_data.attributes.zonedistance_professional_fan = raw_data.attributes.zonedistance_professional === this.OTHER_LABEL
+                    ? false
+                    : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional].fan;
+            }
         }
         raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature).getProperties();
         delete raw_data.id;

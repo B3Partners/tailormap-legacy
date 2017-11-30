@@ -268,7 +268,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "download":           <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
                 "buffergeom":         <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>,
                 "cyclorama":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CycloramaActionBean"/></js:quote>,
-                "featureExtent":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureExtentActionBean"/></js:quote>
+                "featureExtent":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureExtentActionBean"/></js:quote>,
+                "ontbrandings":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.OntbrandingsActionBean"/></js:quote>
             };
 
             <c:if test="${actionBean.viewerType == 'openlayers'}">
