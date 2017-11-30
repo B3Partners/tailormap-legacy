@@ -22,24 +22,29 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
     DEFAULT_ZONE_DISTANCES_CONSUMER: {
-        "Vuurpijlen (schietrichting schuin van het publiek af)": { distance: 125, fan: true },
-        "Vuurpijlen (schietrichting overig)": { distance: 200, fan: true },
-        "Tekstborden": { distance: 15, fan: true },
-        "Grondvuurwerk": { distance: 30, fan: true },
-        "Romeinse kaarsen met kaliber tot en met 2 inch": { distance: 75, fan: true },
-        "Mines tot en met een kaliber van 4 inch": { distance: 60, fan: true },
-        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": { distance: 100, fan: true },
-        "Dagbommen kleiner dan 21 cm diameter": { distance: 75, fan: true }
+        "Grondvuurwerk": { distance: 15, fan: true },
+        "Luchtvuurwerk met kaliber tot en met 1 inch": { distance: 40, fan: true },
+        "Luchtvuurwerk met kaliber van 1 inch tot 2 inch": { distance: 60, fan: true }
     },
     DEFAULT_ZONE_DISTANCES_PROFESSIONAL: {
-        "Vuurpijlen (schietrichting schuin van het publiek af)": { distance: 125, fan: false },
-        "Vuurpijlen (schietrichting overig)": { distance: 200, fan: false },
-        "Tekstborden": { distance: 15, fan: false },
-        "Grondvuurwerk": { distance: 30, fan: false },
-        "Romeinse kaarsen met kaliber tot en met 2 inch": { distance: 75, fan: false },
-        "Mines tot en met een kaliber van 4 inch": { distance: 60, fan: false },
-        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": { distance: 100, fan: false },
-        "Dagbommen kleiner dan 21 cm diameter": { distance: 75, fan: false }
+        "Vuurpijlen (schietrichting schuin van het publiek af)": {distance: 125, fan: false},
+        "Vuurpijlen (schietrichting overig)": {distance: 200, fan: false},
+        "Tekstborden": {distance: 15, fan: false},
+        "Grondvuurwerk": {distance: 30, fan: false},
+        "Romeinse kaarsen met kaliber tot en met 2 inch": {distance: 75, fan: false},
+        "Mines tot en met een kaliber van 4 inch": {distance: 60, fan: false},
+        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": {distance: 100, fan: false},
+        "Dagbommen kleiner dan 21 cm diameter": {distance: 75, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber <3 inch": {distance: 120, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >3 inch": {distance: 165, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >4 inch": {distance: 200, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >5 inch": {distance: 230, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >6 inch": {distance: 265, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >8 inch": {distance: 325, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >10 inch": {distance: 390, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >12 inch": {distance: 455, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >18 inch": {distance: 645, fan: false},
+        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >24 inch": {distance: 845, fan: false}
     },
     constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
