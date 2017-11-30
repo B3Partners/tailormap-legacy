@@ -329,13 +329,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createWizardPage("Opslaan en printen", [
                 {
                     xtype: 'button',
-                    html: 'Aanvraag opslaan',
+                    html: 'Situatietekening opslaan .JSON',
                     margin: this.defaultMargin,
                     listeners: { click: this.saveFile, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: 'Aanvraag printen',
+                    html: 'Situatietekening opslaan .PDF',
                     margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
                 },
