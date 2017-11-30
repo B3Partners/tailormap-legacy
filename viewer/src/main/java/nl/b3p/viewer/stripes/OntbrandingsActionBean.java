@@ -246,18 +246,12 @@ public class OntbrandingsActionBean implements ActionBean {
 
         // 3. afstand tussen rand afsteekzone en safetyzone: haaks op publiek
         
-        rotatedPoint = JTS.transform(rotatedPoint, mathTransform);
-        rotatedPoint = JTS.transform(rotatedPoint, mathTransform);
-        rotatedPoint = JTS.transform(rotatedPoint, mathTransform);
-        
-        Coordinate[] loodLijnCoords2 = {ignitionCentroid.getCoordinate(), rotatedPoint.getCoordinate()};
-        LineString loodLijn2 = gf.createLineString(loodLijnCoords2);
-        Geometry cutoffLoodlijn2 = loodLijn2.intersection(fan);
-        cutoffLoodlijn2 = cutoffLoodlijn2.difference(ignition);
+        Coordinate[] endContinuousLine = {ignitionCentroid.getCoordinate(), eindLoodlijn.getCoordinate()};
+        LineString continuousLine = gf.createLineString(endContinuousLine);
+        Geometry cutoffContLine = continuousLine.intersection(fan);
+        cutoffContLine = cutoffContLine.difference(ignition);
 
-        gs.put(createFeature(cutoffLoodlijn2, "safetyDistance", round(cutoffLoodlijn2.getLength(), 2) + " m"));
-        
-        
+        gs.put(createFeature(cutoffContLine, "safetyDistance", round(cutoffContLine.getLength(), 2) + " m"));
     }
 
     public Geometry createEllipse(Coordinate startPoint, double rotation, double fanlength, double fanheight, int numPoints) throws TransformException {
