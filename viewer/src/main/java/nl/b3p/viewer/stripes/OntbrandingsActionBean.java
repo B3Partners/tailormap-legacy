@@ -28,6 +28,8 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import java.awt.geom.AffineTransform;
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Iterator;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
@@ -64,7 +66,7 @@ public class OntbrandingsActionBean implements ActionBean {
 
     @Validate
     private String features;
-    
+
     @DefaultHandler
     public Resolution calculate() throws TransformException {
         JSONObject result = new JSONObject();
@@ -110,10 +112,10 @@ public class OntbrandingsActionBean implements ActionBean {
         JSONArray gs = new JSONArray();
         if (type.equals("ignitionLocation")) {
             boolean fan = false;
-            if(attributes.getString("fireworks_type").equals("consumer")){
+            if (attributes.getString("fireworks_type").equals("consumer")) {
                 fan = attributes.getBoolean("zonedistance_consumer_fan");
-            }else{
-                fan = attributes.getBoolean("zonedistance_professional_fan");                
+            } else {
+                fan = attributes.getBoolean("zonedistance_professional_fan");
             }
 
             if (fan) {
@@ -145,32 +147,28 @@ public class OntbrandingsActionBean implements ActionBean {
             fanLength = attributes.getDouble("zonedistance_professional_m") * 1.5;
             fanHeight = attributes.getDouble("zonedistance_professional_m");
         }
-        
+
         Geometry ignition = wkt.read(feature.getString("wktgeom"));
         Geometry audience = wkt.read(mainLocation.getString("wktgeom"));
         Geometry boundary = ignition.getBoundary();
-        LineString boundaryLS = (LineString)boundary;
+        LineString boundaryLS = (LineString) boundary;
         LengthIndexedLine lil = new LengthIndexedLine(boundaryLS);
-        
+
         Point ignitionCentroid = ignition.getCentroid();
         Point audienceCentroid = audience.getCentroid();
-        
+
         double offset = fanHeight / 2;
-        int endIndex = (int)lil.getEndIndex();
-        
-        
+        int endIndex = (int) lil.getEndIndex();
+
         Geometry zone = createNormalSafetyZone(feature);
         Geometry unioned = zone;
-        
-        
+
         double dx = ignitionCentroid.getX() - audienceCentroid.getX();
         double dy = ignitionCentroid.getY() - audienceCentroid.getY();
-   
-      /* if (showIntermediateResults) {
-            Coordinate[] coords = {audienceCentroid.getCoordinate(), ignitionCentroid.getCoordinate()};
-            LineString ls = gf.createLineString(coords);
 
-            double length = ls.getLength();
+        // if (showIntermediateResults) {
+
+        /* double length = ls.getLength();
             double ratioX = (dx / length);
             double ratioY = (dy / length);
             double fanX = ratioX * fanLength;
@@ -184,13 +182,11 @@ public class OntbrandingsActionBean implements ActionBean {
 
             Geometry rotatedPoint = JTS.transform(eindLoodlijn, mathTransform);
             Coordinate[] loodLijnCoords = {ignitionCentroid.getCoordinate(), rotatedPoint.getCoordinate()};
-            LineString loodLijn = gf.createLineString(loodLijnCoords);
-            gs.put(createFeature(eindLoodlijn, "temp", "eindLoodlijn"));
+            LineString loodLijn = gf.createLineString(loodLijnCoords);*/
+ /*  gs.put(createFeature(eindLoodlijn, "temp", "eindLoodlijn"));
             gs.put(createFeature(loodLijn, "temp", "loodLijn"));
-            gs.put(createFeature(rotatedPoint, "temp", "loodLijn2"));
-            gs.put(createFeature(ls, "temp", "audience2ignition"));
-        }*/
-        
+            gs.put(createFeature(rotatedPoint, "temp", "loodLijn2"));*/
+        //}
         double theta = Math.atan2(dy, dx);
         double correctBearing = (Math.PI / 2);
         double rotation = theta - correctBearing;
@@ -198,7 +194,7 @@ public class OntbrandingsActionBean implements ActionBean {
             Coordinate c = lil.extractPoint(i);
             Geometry fan = createEllipse(c, rotation, fanLength, fanHeight, 220);
 
-            if (!fan.isEmpty()) {            
+            if (!fan.isEmpty()) {
                 unioned = unioned.union(fan);
             }
         }
@@ -208,10 +204,63 @@ public class OntbrandingsActionBean implements ActionBean {
         TopologyPreservingSimplifier tp = new TopologyPreservingSimplifier(g);
         tp.setDistanceTolerance(0.5);
         gs.put(createFeature(tp.getResultGeometry(), "safetyZone", ""));
+
+        createSafetyDistances(gs, audience, ignition, g, fanLength);
+    }
+
+    private void createSafetyDistances(JSONArray gs, Geometry audience, Geometry ignition, Geometry fan, double fanLength) throws TransformException {
+
+        // Create safetydistances
+        // 1. afstand tussen publiek en safetyzone
+        Point audienceCentroid = audience.getCentroid();
+        Point ignitionCentroid = ignition.getCentroid();
+        Coordinate[] coords = {audienceCentroid.getCoordinate(), ignitionCentroid.getCoordinate()};
+        LineString audience2ignition = gf.createLineString(coords);
+        Geometry cutoff = audience2ignition.difference(fan);
+        cutoff = cutoff.difference(audience);
+
+        gs.put(createFeature(cutoff, "safetyDistance", round(cutoff.getLength(), 2) + " m"));
+
+        // 2. afstand tussen rand afsteekzone en safetyzone: loodrecht op publiek
+        double dx = ignitionCentroid.getX() - audienceCentroid.getX();
+        double dy = ignitionCentroid.getY() - audienceCentroid.getY();
+        double length = audience2ignition.getLength();
+        double ratioX = (dx / length);
+        double ratioY = (dy / length);
+        double fanX = ratioX * 1000;
+        double fanY = ratioY * 1000;
+
+        Point eindLoodlijn = gf.createPoint(new Coordinate(ignitionCentroid.getX() + fanX, ignitionCentroid.getY() + fanY));
+        Coordinate ancorPoint = ignitionCentroid.getCoordinate();
+        
+        double angleRad = Math.toRadians(90);
+        AffineTransform affineTransform = AffineTransform.getRotateInstance(angleRad, ancorPoint.x, ancorPoint.y);
+        MathTransform mathTransform = new AffineTransform2D(affineTransform);
+
+        Geometry rotatedPoint = JTS.transform(eindLoodlijn, mathTransform);
+        Coordinate[] loodLijnCoords = {ignitionCentroid.getCoordinate(), rotatedPoint.getCoordinate()};
+        LineString loodLijn = gf.createLineString(loodLijnCoords);  
+        Geometry cutoffLoodlijn = loodLijn.intersection(fan);
+        cutoffLoodlijn = cutoffLoodlijn.difference(ignition);
+        gs.put(createFeature(cutoffLoodlijn, "safetyDistance", round(cutoffLoodlijn.getLength(), 2) + " m"));
+
+        // 3. afstand tussen rand afsteekzone en safetyzone: haaks op publiek
+        
+        rotatedPoint = JTS.transform(rotatedPoint, mathTransform);
+        rotatedPoint = JTS.transform(rotatedPoint, mathTransform);
+        rotatedPoint = JTS.transform(rotatedPoint, mathTransform);
+        
+        Coordinate[] loodLijnCoords2 = {ignitionCentroid.getCoordinate(), rotatedPoint.getCoordinate()};
+        LineString loodLijn2 = gf.createLineString(loodLijnCoords2);
+        Geometry cutoffLoodlijn2 = loodLijn2.intersection(fan);
+        cutoffLoodlijn2 = cutoffLoodlijn2.difference(ignition);
+
+        gs.put(createFeature(cutoffLoodlijn2, "safetyDistance", round(cutoffLoodlijn2.getLength(), 2) + " m"));
+        
+        
     }
 
     public Geometry createEllipse(Coordinate startPoint, double rotation, double fanlength, double fanheight, int numPoints) throws TransformException {
-     
 
         GeometricShapeFactory gsf = new GeometricShapeFactory(gf);
         gsf.setBase(new Coordinate(startPoint.x - fanlength, startPoint.y - fanheight));
@@ -239,7 +288,6 @@ public class OntbrandingsActionBean implements ActionBean {
             zoneDistance = attributes.getInt("zonedistance_professional_m");
         }
 
-        
         Geometry geom = wkt.read(feature.getString("wktgeom"));
 
         Geometry zone = geom.buffer(zoneDistance);
@@ -265,6 +313,16 @@ public class OntbrandingsActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(result.toString()));
     }
 
+    public static double round(double value, int places) {
+        if (places < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     @Override
     public ActionBeanContext getContext() {
@@ -285,5 +343,4 @@ public class OntbrandingsActionBean implements ActionBean {
     }
 
     // </editor-fold>
-
 }
