@@ -268,7 +268,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createWizardPage("Afsteeklocaties", [
                 {
                     xtype: 'button',
-                    html: 'Afsteeklocatie toevoegen',
+                    html: '+ Afsteeklocatie toevoegen',
                     margin: this.defaultMargin,
                     listeners: { click: this.createIgnitionLocation, scope: this }
                 },
@@ -284,7 +284,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createWizardPage("Publieklocaties", [
                 {
                     xtype: 'button',
-                    html: 'Publieklocatie toevoegen',
+                    html: '+ Publieklocatie toevoegen',
                     margin: this.defaultMargin,
                     listeners: { click: this.createAudienceLocation, scope: this }
                 },
@@ -316,7 +316,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     html: ''
                 }
             ]),
-            this.createWizardPage("Toevoegen hulp- en afstandslijnen", [
+            this.createWizardPage("Toevoegen hulplijnen", [
                 {
                     xtype: 'container',
                     layout: {
