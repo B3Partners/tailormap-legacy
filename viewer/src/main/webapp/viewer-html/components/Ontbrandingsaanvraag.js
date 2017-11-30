@@ -55,7 +55,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     MEASURE_LINE_COLOR: '777777',
 
     COMPONENT_VERSION: '1.0',
-    COMPONENT_NAME: 'Ontbrandingsaanvraag',
+    COMPONENT_NAME: 'Vuurwerkevenementen',
     ZONE_DISTANCES_CONSUMER: {},
     ZONE_DISTANCES_PROFESSIONAL: {},
     OTHER_LABEL: "Anders, namelijk...",
@@ -205,17 +205,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      */
     loadWindow : function() {
         this.wizardPages = [
-            this.createWizardPage("Nieuwe of bestaande aanvraag", [
-                "Via dit formulier kunt u een ontbrandingsaanvraag tekeken om vervolgens in te dienen.",
+            this.createWizardPage("Nieuwe of bestaande situatietekening", [
+                "Via dit formulier kunt u een situatietekening maken om vervolgens in te dienen.",
                 {
                     xtype: 'button',
-                    html: 'Nieuw aanvraag indienen',
+                    html: 'Nieuw situatietekening maken',
                     margin: this.defaultMargin,
                     listeners: { click: this.newRequest, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: 'Eerdere aanvraag inladen',
+                    html: 'Eerdere situatietekening inladen',
                     margin: this.defaultMargin,
                     listeners: { click: this.loadRequest, scope: this }
                 },
@@ -1297,7 +1297,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             return this.importedFileName;
         }
         var date = Ext.Date.format(new Date(), 'd-m-Y');
-        return "ontbrandingsaanvraag-" + date + ".json";
+        return this.COMPONENT_NAME.toLowerCase()+"-" + date + ".json";
     },
 
     getAllFeatures: function() {
