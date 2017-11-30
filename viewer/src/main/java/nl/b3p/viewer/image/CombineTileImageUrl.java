@@ -69,6 +69,10 @@ public abstract class CombineTileImageUrl extends CombineImageUrl {
         }
         return zoomlevel;
     }
+    
+    public Double getResolution(Integer zoomlevel){
+        return resolutions[zoomlevel];
+    }
 
     @Override
     public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox) {
@@ -76,7 +80,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl {
 
         //get closest res
         Integer zoomlevel = getClosestZoomlevel(imbbox);
-        Double closestResolution = resolutions[zoomlevel];
+        Double closestResolution = getResolution(zoomlevel); 
 
         // calc width in mapRes per tile: so the number of meter along the x axis
         Double tileWidthMapUnits = null;
@@ -144,7 +148,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl {
 
         CombineStaticImageUrl tile = new CombineStaticImageUrl();
         tile.setBbox(tileBbox);
-        tile.setUrl(this.url);
+        tile.setUrl(getUrl());
         tile.setAlpha(this.getAlpha());
         Bbox requestBbox = imageBbox.getBbox();
         Double msx = (requestBbox.getMaxx() - requestBbox.getMinx()) / imageBbox.getWidth();
