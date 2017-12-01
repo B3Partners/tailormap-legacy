@@ -460,9 +460,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'type', type: 'string', defaultValue: this.IGNITION_LOCATION_TYPE },
                 { name: 'zonedistance_consumer', type: 'string' },
                 { name: 'custom_zonedistance_consumer', type: 'number' },
+                { name: 'custom_fireworktype_consumer', type: 'string' },
                 { name: 'fireworks_type', type: 'string', defaultValue: 'consumer' },
                 { name: 'zonedistance_professional', type: 'string' },
                 { name: 'custom_zonedistance_professional', type: 'number' },
+                { name: 'custom_fireworktype_professional', type: 'string' },
                 { name: 'size', type: 'number' }
             ],
             data: []
@@ -613,10 +615,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     listeners: {
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_fireworktype_consumer')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         blur: this.saveIgnitionLocation,
                         scope: this
                     }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Type vuurwerk',
+                    hidden: true,
+                    name: 'custom_fireworktype_consumer',
+                    itemId: 'custom_fireworktype_consumer'
                 },
                 {
                     xtype: 'numberfield',
@@ -638,10 +648,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     listeners: {
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_fireworktype_professional')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         blur: this.saveIgnitionLocation,
                         scope: this
                     }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Type vuurwerk',
+                    hidden: true,
+                    name: 'custom_fireworktype_professional',
+                    itemId: 'custom_fireworktype_professional'
                 },
                 {
                     xtype: 'numberfield',
@@ -683,8 +701,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(
             val === 'consumer' && this.getContentContainer().query('#zonedistance_consumer')[0].getValue() === this.OTHER_LABEL
         );
+        this.getContentContainer().query('#custom_fireworktype_consumer')[0].setVisible(
+            val === 'consumer' && this.getContentContainer().query('#zonedistance_consumer')[0].getValue() === this.OTHER_LABEL
+        );
         this.getContentContainer().query('#zonedistance_professional')[0].setVisible(val === 'professional');
         this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(
+            val === 'professional' && this.getContentContainer().query('#zonedistance_professional')[0].getValue() === this.OTHER_LABEL
+        );
+        this.getContentContainer().query('#custom_fireworktype_professional')[0].setVisible(
             val === 'professional' && this.getContentContainer().query('#zonedistance_professional')[0].getValue() === this.OTHER_LABEL
         );
     },
@@ -1528,8 +1552,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             return false;
         }
         var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');
+        var firework_type_custom = fireworks_type === 'consumer' ? location.get('custom_fireworktype_consumer') : location.get('custom_fireworktype_professional');
         if(zone_distance === this.OTHER_LABEL && !zone_distance_custom) {
             this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige zoneafstand" voor afsteeklocatie ' + location.get('label'));
+            return false;
+        }
+        if(zone_distance === this.OTHER_LABEL && !firework_type_custom) {
+            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
             return false;
         }
         return true;
