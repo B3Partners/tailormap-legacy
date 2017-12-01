@@ -127,7 +127,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
         this.safetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
-            'fillOpacity' : 0.000001,
+            'fillOpacity' : 0,
             'strokeColor': "#ffba37",
             'strokeOpacity' : 1.0
         }));
