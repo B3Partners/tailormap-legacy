@@ -559,6 +559,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     ]
                 },
                 {
+                    xtype: 'container',
+                    html: 'Indien op deze locatie meerdere categorieën vuurwerk worden opgesteld, dient u de vuurwerkcategorie met de grootste veiligheidsafstand te selecteren.'
+                },
+                {
                     xtype: 'combobox',
                     fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
