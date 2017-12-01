@@ -19,7 +19,7 @@
     <logger name="org.hibernate.SQL">
         <level value="error" />
     </logger>
-    <logger name="org.hsqldb.persist">
+    <logger name="hsqldb.db">
         <level value="warn" />
     </logger>
     <logger name="org.apache.http">
