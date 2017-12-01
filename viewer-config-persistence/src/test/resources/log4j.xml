@@ -27,6 +27,9 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
     <logger name="org.hibernate.SQL">
         <level value="error" />
     </logger>
+    <logger name="hsqldb.db">
+        <level value="warn" />
+    </logger>
     <root>
         <level value="info" />
         <appender-ref ref="consoleAppender" />
