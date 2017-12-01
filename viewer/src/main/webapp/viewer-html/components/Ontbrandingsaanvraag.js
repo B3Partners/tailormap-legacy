@@ -1412,11 +1412,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     var response = Ext.JSON.decode(result.responseText);
                     var featuresJSON = response.safetyZones;
                     var features = [];
-                    var tempfeatures = [];
+                    var safetyDistances = [];
                     for (var i = 0; i < featuresJSON.length; i++) {
                         var f = featuresJSON[i];
                         var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
-                        features.push(feat);
+                        var type = f.attributes.type;
+                        if(type === "safetyDistance"){
+                            features.push(feat);
+                        }else{
+                            features.push(feat);
+                        }
                     }
 
                     this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;

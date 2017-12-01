@@ -17,10 +17,8 @@
 package nl.b3p.viewer.image;
 
 import java.awt.Color;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -49,7 +47,7 @@ public class CombineImageSettings {
     private Integer width = null;
     private Integer height = null;
     private Integer angle = null;
-    private Color defaultWktGeomColor= Color.RED;
+    public static Color defaultWktGeomColor= Color.RED;
     private String mimeType="image/png";
     
     // bbox + ";"+ resolutions + ";" + tileSize + ";" + serviceUrl;
@@ -73,7 +71,7 @@ public class CombineImageSettings {
     private List<CombineImageUrl> getCalculatedUrls(List<CombineImageUrl> oldList){
         List<CombineImageUrl> returnValue=new ArrayList();
         if (bbox == null || width == null || height == null) {
-            //log.info("Not all settings set (width,height and bbox must be set to recalculate). Return original urls");
+            log.warn("Not all settings set (width,height and bbox must be set to recalculate). Return original urls");
             return oldList;
         }else if(oldList==null){
             return returnValue;
@@ -464,6 +462,12 @@ public class CombineImageSettings {
                     }
                     if (geom.has("strokeWidth") && !geom.isNull("strokeWidth")) {
                         ciw.setStrokeWidth((float) geom.getDouble("strokeWidth"));
+                    }
+                    
+                    if(geom.has("style")){
+                        JSONObject jsonStyle = geom.getJSONObject("style");
+                        FeatureStyle fs = new FeatureStyle(jsonStyle);
+                        ciw.setStyle(fs);
                     }
                     wkts.add(ciw);
                 }
