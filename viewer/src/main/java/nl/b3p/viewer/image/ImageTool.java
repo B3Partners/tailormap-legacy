@@ -232,16 +232,17 @@ public class ImageTool {
             float strokeWidth = fs.getStrokeWidth().floatValue();
             double pointRadius = fs.getPointRadius();
             gbi.setStroke(new BasicStroke(strokeWidth));
-            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
-            
+
             gbi.setColor(fs.getFillColor());
             String wktGeom = ciw.getWktGeom();
             Geometry geom = geometrieFromText(wktGeom, srid);
             Shape shape = createImage(geom, srid, bbox, width, height);
             Point centerPoint = null;
             if (geom instanceof Polygon) {
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
                 gbi.fill(shape);
                 gbi.setColor(fs.getStrokeColor());
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getStrokeOpacity().floatValue()));
                 gbi.draw(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
                 int pointwidth = (int) pointRadius * 2;
@@ -257,16 +258,11 @@ public class ImageTool {
                 } else {
                     s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
                 }
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
                 gbi.fill(s);
                 gbi.draw(s);
                 gbi.setTransform(at);
             } else if( geom instanceof LineString){
-                /* possibly starting point for correctly placing labels with line
-                Shape tempshape = createImage(((LineString) geom).getStartPoint(), srid, bbox, width, height);
-                int pointwidth = (int) pointRadius * (int) strokeWidth;
-                int pointheight = (int) pointRadius * (int) strokeWidth;
-                centerPoint = calculateCenter(tempshape, srid, bbox, width, height, -pointwidth / 2, -pointheight / 2);
-                */
                 String dash = fs.getStrokeDashstyle();
                 Color strokecolor = fs.getStrokeColor();
                 gbi.setColor(strokecolor);
@@ -284,12 +280,14 @@ public class ImageTool {
                         break;
                 }
                 gbi.setStroke(stroke);
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getStrokeOpacity().floatValue()));
                 gbi.draw(shape);
                 
             }else {
                 gbi.draw(shape);
             }
             if (ciw.getLabel() != null && !ciw.getLabel().isEmpty()) {
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
                 int xoffset = -1 * (gbi.getFontMetrics().stringWidth(ciw.getLabel()) / 2 );
                 if (centerPoint == null) {
                     centerPoint = calculateCenter(shape, srid, bbox, width, height,0, 0);

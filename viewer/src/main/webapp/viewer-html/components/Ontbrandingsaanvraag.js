@@ -1255,7 +1255,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ].join(''),
             function(btn, text){
                 if (btn === 'ok') {
-                    this._saveFile(text)
+                    this._saveFile(text);
                 }
             }, this, false, this.getFilename());
     },
