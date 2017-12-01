@@ -135,6 +135,8 @@ public class GeoServiceActionBean implements ActionBean {
     private boolean useProxy;
     @Validate
     private WMSExceptionType exception_type;
+    @Validate
+    private boolean skipDiscoverWFS;
 
     private WaitPageStatus status;
     private JSONObject newService;
@@ -423,6 +425,15 @@ public class GeoServiceActionBean implements ActionBean {
     public void setGroupsRead(List<String> groupsRead) {
         this.groupsRead = groupsRead;
     }
+
+    public boolean isSkipDiscoverWFS() {
+        return skipDiscoverWFS;
+    }
+
+    public void setSkipDiscoverWFS(boolean skipDiscoverWFS) {
+        this.skipDiscoverWFS = skipDiscoverWFS;
+    }
+
     //</editor-fold>
 
     private JSONArray layersInApplications = new JSONArray();
@@ -806,6 +817,7 @@ public class GeoServiceActionBean implements ActionBean {
 
         if (protocol.equals(WMSService.PROTOCOL)) {
             params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
+            params.put(WMSService.PARAM_SKIP_DISCOVER_WFS, skipDiscoverWFS);
             params.put(WMSService.PARAM_USERNAME, username);
             params.put(WMSService.PARAM_PASSWORD, password);
             service = new WMSService().loadFromUrl(url, params, status, em);

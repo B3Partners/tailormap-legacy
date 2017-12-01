@@ -72,6 +72,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var tilingProtocol = Ext.query("select[name='tilingProtocol']")[0].value;
             Ext.fly('agsVersion').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "arcgis");
             Ext.fly('useUrlTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
+            Ext.fly('useWFSTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
+            Ext.fly('wmsExcTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
             Ext.fly('serviceNameTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "arcims" || protocol === "tiled" &&  tilingProtocol !== "WMTS");
             Ext.fly('tileSizeTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
             Ext.fly('resolutionsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
@@ -80,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.fly('extensionTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
             Ext.fly('crsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
             Ext.fly('useProxy').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
-        }
+        };
         Ext.onReady(function() {
             appendPanel('headertext', 'formcontent');
         });
@@ -121,7 +123,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </label>
             </td>
         </tr>
-        <tr id="useUrlTr">     
+        <tr id="useWFSTr">
+            <td colspan="2">
+                <label>
+                    <stripes:checkbox name="skipDiscoverWFS"/> Sla ontdekken en koppelen van WFS attribuutbron over
+                </label>
+            </td>
+        </tr>
+        <tr id="wmsExcTr">
             <td>Exceptiontype:</td>
             <td>
                 <stripes:select value="Inimage" name="exception_type" id="exception_type">

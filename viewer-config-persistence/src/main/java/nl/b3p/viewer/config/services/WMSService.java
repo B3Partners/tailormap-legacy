@@ -66,7 +66,14 @@ public class WMSService extends GeoService implements Updatable {
      * Parameter to specify the value for #getOverrideUrl().
      */
     public static final String PARAM_OVERRIDE_URL = "overrideUrl";
-    
+
+    /**
+     * Parameter to specify the value for {@code skipDiscoverWFS}.
+     *
+     * @see #skipDiscoverWFS
+     */
+    public static final String PARAM_SKIP_DISCOVER_WFS = "skipDiscoverWFS";
+
    
     /* Detail key under which "true" is saved in details if in the WMS capabilities 
      * the <UserDefinedSymbolization> element has a positive SupportSLD attribute.
@@ -83,7 +90,12 @@ public class WMSService extends GeoService implements Updatable {
      * Additional persistent property for this subclass, so type must be nullable.
      */
     private Boolean overrideUrl;
-    
+
+    /**
+     * Additional persistent property for this subclass to remember wether to
+     * search for and join WFS attribute sources, so type must be nullable.
+     */
+    private Boolean skipDiscoverWFS;
     
     @Enumerated(EnumType.STRING)
     private WMSExceptionType exception_type = WMSExceptionType.Inimage;
@@ -114,7 +126,15 @@ public class WMSService extends GeoService implements Updatable {
     public void setException_type(WMSExceptionType exception_type) {
         this.exception_type = exception_type;
     }
-    
+
+    public Boolean getSkipDiscoverWFS() {
+        return skipDiscoverWFS;
+    }
+
+    public void setSkipDiscoverWFS(Boolean skipDiscoverWFS) {
+        this.skipDiscoverWFS = skipDiscoverWFS;
+    }
+
     @Override
     public String toString() {
         return String.format("WMS service \"%s\" at %s", getName(), getUrl());
@@ -142,7 +162,7 @@ public class WMSService extends GeoService implements Updatable {
             wmsService.setPassword((String)params.get(PARAM_PASSWORD));
             wmsService.setUrl(url);
             wmsService.setOverrideUrl(Boolean.TRUE.equals(params.get(PARAM_OVERRIDE_URL)));
-            
+            wmsService.setSkipDiscoverWFS(Boolean.TRUE.equals(params.get(PARAM_SKIP_DISCOVER_WFS)));
             WebMapServer wms = wmsService.getWebMapServer();
             
             if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
@@ -191,46 +211,53 @@ public class WMSService extends GeoService implements Updatable {
         
         org.geotools.data.ows.Layer rl = wms.getCapabilities().getLayer();
         setTopLayer(new Layer(rl, this));
-        
-        Map<String,List<LayerDescription>> layerDescByWfs = null;
-        
-        // Some servers are shy about supporting DescribeLayer in the 
-        // Capabilities, so do the request anyway, but only if version is not
-        // WMS 1.0.0 
-        if(!"1.0.0".equals(wms.getCapabilities().getVersion())) {
-            try {
-                status.setProgress(60);
-                status.setCurrentAction("Gerelateerde WFS bronnen opzoeken...");
 
-                layerDescByWfs = getDescribeLayerPerWFS(wms);
-            } catch(Exception e) {
-                if(supportsDescribeLayer) {
-                    log.error("DescribeLayer request failed", e);
-                } else {
-                    log.debug("DescribeLayer not supported in Capabilities, did request anyway but failed");
-                }
-            }
-        }
-            
-        if(layerDescByWfs != null) {
+        if (this.getSkipDiscoverWFS()) {
             status.setProgress(80);
-            String action = "Gerelateerde WFS bron inladen...";
+            log.debug("Skip trying to discover WFS associated with " + this.toString());
+        } else {
+            log.debug("Try to discover WFS associated with " + this.toString());
+            Map<String, List<LayerDescription>> layerDescByWfs = null;
 
-            String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
-            for(int i = 0; i < wfses.length; i++) {
-                String wfsUrl = wfses[i];
-
-                String wfsAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
-                status.setCurrentAction(wfsAction);
-
+            // Some servers are shy about supporting DescribeLayer in the
+            // Capabilities, so do the request anyway, but only if version is not
+            // WMS 1.0.0
+            if (!"1.0.0".equals(wms.getCapabilities().getVersion())) {
                 try {
-                    List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
+                    status.setProgress(60);
+                    status.setCurrentAction("Gerelateerde WFS bronnen opzoeken...");
 
-                    loadLayerFeatureTypes(wfsUrl, layerDescriptions, em);
-                } catch(Exception e) {
-                    log.error("Failed loading feature types from WFS " + wfsUrl, e);
+                    layerDescByWfs = getDescribeLayerPerWFS(wms);
+                } catch (Exception e) {
+                    if (supportsDescribeLayer) {
+                        log.error("DescribeLayer request failed", e);
+                    } else {
+                        log.debug("DescribeLayer not supported in Capabilities, did request anyway but failed");
+                    }
                 }
             }
+
+            if (layerDescByWfs != null) {
+                status.setProgress(80);
+                String action = "Gerelateerde WFS bron inladen...";
+
+                String[] wfses = (String[]) layerDescByWfs.keySet().toArray(new String[]{});
+                for (int i = 0; i < wfses.length; i++) {
+                    String wfsUrl = wfses[i];
+
+                    String wfsAction = action + (wfses.length > 1 ? " (" + (i + 1) + " van " + wfses.length + ")" : "");
+                    status.setCurrentAction(wfsAction);
+
+                    try {
+                        List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
+
+                        loadLayerFeatureTypes(wfsUrl, layerDescriptions, em);
+                    } catch (Exception e) {
+                        log.error("Failed loading feature types from WFS " + wfsUrl, e);
+                    }
+                }
+            }
+
         }
     }
     
