@@ -153,7 +153,8 @@ public class DatabaseSynchronizer implements Servlet {
         
         updates.put("28", new UpdateElement(Collections.singletonList("add_geoservice_rights.sql"), String.class));
 
-        // NB when adding an update also update the metadata version in the testdata.sql file around line 333
+        updates.put("29", new UpdateElement(Collections.singletonList("add_wms_discover-wfs"), String.class));
+        // NB when adding an update also update the metadata version in the testdata.sql file around line 343
     }
 
     /**
