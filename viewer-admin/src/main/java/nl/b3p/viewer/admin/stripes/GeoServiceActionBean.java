@@ -136,7 +136,7 @@ public class GeoServiceActionBean implements ActionBean {
     @Validate
     private WMSExceptionType exception_type;
     @Validate
-    private boolean skipDiscoverWFS;
+    private boolean skipDiscoverWFS = false;
 
     private WaitPageStatus status;
     private JSONObject newService;
@@ -491,7 +491,9 @@ public class GeoServiceActionBean implements ActionBean {
 
             }else if(protocol.equals(WMSService.PROTOCOL)){
                 overrideUrl = ((WMSService)service).getOverrideUrl();
-                exception_type = ((WMSService)service).getException_type();
+                exception_type = ((WMSService) service).getException_type();
+                // default to false
+                skipDiscoverWFS = ((WMSService) service).getSkipDiscoverWFS() == null ? false : ((WMSService) service).getSkipDiscoverWFS();
             }
 
             if(service.getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
@@ -603,7 +605,8 @@ public class GeoServiceActionBean implements ActionBean {
 
         if (service instanceof WMSService) {
             ((WMSService)service).setOverrideUrl(overrideUrl);
-            ((WMSService)service).setException_type(exception_type);
+            ((WMSService) service).setException_type(exception_type);
+            ((WMSService) service).setSkipDiscoverWFS(skipDiscoverWFS);
         }
         EntityManager em = Stripersist.getEntityManager();
         // Invalidate the cache of the applications using this service. Options like username/password, useProxy, etc. might have changed, which
