@@ -1447,7 +1447,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             var c = comps[i];
             var a = 0;
             c.buttonClick();
-            
+            c.qualitySlider.setValue(c.qualitySlider.maxValue);
         }
     },
 
