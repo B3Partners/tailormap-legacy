@@ -73,11 +73,11 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
     public Integer getClosestZoomlevel(ImageBbox requestBbox) {
 
         double res = requestBbox.getUnitsPixelX();
-        //int dpi = 72;
-        //double dpm = 0.0254; // ratio for converting inches to meters
-        //double scale = res * (dpi / dpm);
+        int dpi = 72;
+        double dpm = 0.0254; // ratio for converting inches to meters
+        double scale = res * (dpi / dpm);
         
-            double pixelSpan = Double.valueOf(tm.getScaleDenominator()) * 0.00028 / TileService.metersPerUnit(tm.getMatrixSet().getCrs());
+            
         List<TileMatrix> matrices = set.getMatrices();
         int index = - 1;
         for (int i = 0; i < matrices.size(); i++) {
