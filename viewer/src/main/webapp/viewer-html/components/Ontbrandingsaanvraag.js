@@ -350,12 +350,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
         this.mainContainer = Ext.create('Ext.panel.Panel', {
             layout: {
-                type: 'fit'
+                type: 'vbox',
+                align: 'stretch'
             },
-            defaults: {
-                bodyStyle: 'padding: 10px'
-            },
-            items: this.wizardPages,
+            items: [
+                this.createTabs(),
+                { xtype: 'container', flex: 1, items: this.wizardPages, layout: 'fit', defaults: { bodyStyle: 'padding: 10px' } }
+            ],
             fbar: [
                 { type: 'button', itemId: 'prev_button', text: 'Vorige', handler: function() { this.previousPage(); }.bind(this) },
                 { type: 'button', itemId: 'next_button', text: 'Volgende', handler: function() { this.nextPage(); }.bind(this) }
@@ -410,6 +411,44 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             next_button.setDisabled(true);
         }
         this.wizardPages[this.currentPage].setVisible(true);
+        this.tabs.setActiveTab(this.currentPage);
+    },
+
+    createTabs: function() {
+        this.tabs = Ext.create('Ext.tab.Panel', {
+            bodyStyle: {
+                width: 0,
+                height: 0,
+                display: 'none'
+            },
+            items: [
+                { itemId: "page-0", title: "Aanvraag" },
+                { itemId: "page-1", title: "Afsteeklocaties" },
+                { itemId: "page-2", title: "Publiekslocatie" },
+                { itemId: "page-3", title: "Berekening" },
+                { itemId: "page-4", title: "Hulplijnen" },
+                { itemId: "page-5", title: "Opslaan en printen" }
+            ],
+            listeners :{
+                tabchange: {
+                    fn: this.tabChanged,
+                    scope: this
+                }
+            }
+        });
+        return this.tabs;
+    },
+
+    getPageFromTab: function(tab) {
+        if(!tab) {
+            return null;
+        }
+        return parseInt(tab.getItemId().replace("page-", ""), 10);
+    },
+
+    tabChanged: function(tabPanel, newTab) {
+        var pageNo = this.getPageFromTab(newTab);
+        this.movePage(0, pageNo);
     },
 
     createIgnitionLocationsGrid: function() {
@@ -421,9 +460,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'type', type: 'string', defaultValue: this.IGNITION_LOCATION_TYPE },
                 { name: 'zonedistance_consumer', type: 'string' },
                 { name: 'custom_zonedistance_consumer', type: 'number' },
+                { name: 'custom_fireworktype_consumer', type: 'string' },
                 { name: 'fireworks_type', type: 'string', defaultValue: 'consumer' },
                 { name: 'zonedistance_professional', type: 'string' },
                 { name: 'custom_zonedistance_professional', type: 'number' },
+                { name: 'custom_fireworktype_professional', type: 'string' },
                 { name: 'size', type: 'number' }
             ],
             data: []
@@ -559,6 +600,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     ]
                 },
                 {
+                    xtype: 'container',
+                    html: 'Indien op deze locatie meerdere categorieën vuurwerk worden opgesteld, dient u de vuurwerkcategorie met de grootste veiligheidsafstand te selecteren.'
+                },
+                {
                     xtype: 'combobox',
                     fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
@@ -570,10 +615,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     listeners: {
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_fireworktype_consumer')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         blur: this.saveIgnitionLocation,
                         scope: this
                     }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Type vuurwerk',
+                    hidden: true,
+                    name: 'custom_fireworktype_consumer',
+                    itemId: 'custom_fireworktype_consumer'
                 },
                 {
                     xtype: 'numberfield',
@@ -595,10 +648,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     listeners: {
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_fireworktype_professional')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         blur: this.saveIgnitionLocation,
                         scope: this
                     }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Type vuurwerk',
+                    hidden: true,
+                    name: 'custom_fireworktype_professional',
+                    itemId: 'custom_fireworktype_professional'
                 },
                 {
                     xtype: 'numberfield',
@@ -640,8 +701,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(
             val === 'consumer' && this.getContentContainer().query('#zonedistance_consumer')[0].getValue() === this.OTHER_LABEL
         );
+        this.getContentContainer().query('#custom_fireworktype_consumer')[0].setVisible(
+            val === 'consumer' && this.getContentContainer().query('#zonedistance_consumer')[0].getValue() === this.OTHER_LABEL
+        );
         this.getContentContainer().query('#zonedistance_professional')[0].setVisible(val === 'professional');
         this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(
+            val === 'professional' && this.getContentContainer().query('#zonedistance_professional')[0].getValue() === this.OTHER_LABEL
+        );
+        this.getContentContainer().query('#custom_fireworktype_professional')[0].setVisible(
             val === 'professional' && this.getContentContainer().query('#zonedistance_professional')[0].getValue() === this.OTHER_LABEL
         );
     },
@@ -1485,8 +1552,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             return false;
         }
         var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');
+        var firework_type_custom = fireworks_type === 'consumer' ? location.get('custom_fireworktype_consumer') : location.get('custom_fireworktype_professional');
         if(zone_distance === this.OTHER_LABEL && !zone_distance_custom) {
             this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige zoneafstand" voor afsteeklocatie ' + location.get('label'));
+            return false;
+        }
+        if(zone_distance === this.OTHER_LABEL && !firework_type_custom) {
+            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
             return false;
         }
         return true;
