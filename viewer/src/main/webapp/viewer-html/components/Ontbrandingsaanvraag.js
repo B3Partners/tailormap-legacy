@@ -350,12 +350,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
         this.mainContainer = Ext.create('Ext.panel.Panel', {
             layout: {
-                type: 'fit'
+                type: 'vbox',
+                align: 'stretch'
             },
-            defaults: {
-                bodyStyle: 'padding: 10px'
-            },
-            items: this.wizardPages,
+            items: [
+                this.createTabs(),
+                { xtype: 'container', flex: 1, items: this.wizardPages, layout: 'fit', defaults: { bodyStyle: 'padding: 10px' } }
+            ],
             fbar: [
                 { type: 'button', itemId: 'prev_button', text: 'Vorige', handler: function() { this.previousPage(); }.bind(this) },
                 { type: 'button', itemId: 'next_button', text: 'Volgende', handler: function() { this.nextPage(); }.bind(this) }
@@ -410,6 +411,44 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             next_button.setDisabled(true);
         }
         this.wizardPages[this.currentPage].setVisible(true);
+        this.tabs.setActiveTab(this.currentPage);
+    },
+
+    createTabs: function() {
+        this.tabs = Ext.create('Ext.tab.Panel', {
+            bodyStyle: {
+                width: 0,
+                height: 0,
+                display: 'none'
+            },
+            items: [
+                { itemId: "page-0", title: "Aanvraag" },
+                { itemId: "page-1", title: "Afsteeklocaties" },
+                { itemId: "page-2", title: "Publiekslocatie" },
+                { itemId: "page-3", title: "Berekening" },
+                { itemId: "page-4", title: "Hulplijnen" },
+                { itemId: "page-5", title: "Opslaan en printen" }
+            ],
+            listeners :{
+                tabchange: {
+                    fn: this.tabChanged,
+                    scope: this
+                }
+            }
+        });
+        return this.tabs;
+    },
+
+    getPageFromTab: function(tab) {
+        if(!tab) {
+            return null;
+        }
+        return parseInt(tab.getItemId().replace("page-", ""), 10);
+    },
+
+    tabChanged: function(tabPanel, newTab) {
+        var pageNo = this.getPageFromTab(newTab);
+        this.movePage(0, pageNo);
     },
 
     createIgnitionLocationsGrid: function() {
