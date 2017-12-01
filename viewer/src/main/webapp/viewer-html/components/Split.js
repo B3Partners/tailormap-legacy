@@ -41,7 +41,7 @@ Ext.define("viewer.components.Split", {
     toSplitFeature: null,
     config: {
         actionbeanUrl: "/viewer/action/feature/split",
-        strategy: null,
+        strategy: "replace",
         title: "",
         iconUrl: "",
         layers: null,

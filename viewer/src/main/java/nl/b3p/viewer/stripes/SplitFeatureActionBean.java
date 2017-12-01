@@ -303,7 +303,8 @@ public class SplitFeatureActionBean implements ActionBean {
         boolean firstFeature = true;
         for (Geometry newGeom : geoms) {
             if (firstFeature) {
-                if (localStrategy.equalsIgnoreCase("replace")) {
+                // default to replace strategy
+                if (localStrategy == null || localStrategy.equalsIgnoreCase("replace")) {
                     // use first/largest geom to update existing feature geom
                     feature.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
                     feature = this.handleExtraData(feature);
