@@ -322,10 +322,13 @@ public class ImageTool {
 
     private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi) {
         double rotation = fs.getRotation();
+        Double strokewidth = fs.getStrokeWidth();
         int length = fs.getPointRadius().intValue() * 2;
         int halfLength = length/2;
         int originX = (int) origin.getX();
         int originY = (int) origin.getY();
+        
+        int ycorrected = rotation % 360 < 180 ? yoffset * 2 : yoffset;
         
         AffineTransform rot = gbi.getTransform();
         rot.rotate(Math.toRadians(rotation), originX  - xoffset, originY+ length + yoffset);
@@ -336,10 +339,11 @@ public class ImageTool {
             originX + halfLength - xoffset
         };
         
+        
         int [] y = {
-            originY + length + yoffset,
-            originY + yoffset - (length * 2/3),
-            originY + length + yoffset
+            originY + length - ycorrected,
+            originY - ycorrected,
+            originY + length - ycorrected
         };
         Shape s = new java.awt.Polygon(x, y, 3);
         return s;

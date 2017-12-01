@@ -1288,7 +1288,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.getVectorLayer().unselectAll();
         this.nextPage();
         this.isImporting = false;
-        this.movePage(0, 3);
     },
 
     createFeatureStyle: function(style) {
