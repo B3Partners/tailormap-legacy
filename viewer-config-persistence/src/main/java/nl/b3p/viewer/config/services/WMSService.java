@@ -308,6 +308,7 @@ public class WMSService extends GeoService implements Updatable {
             params.put(PARAM_OVERRIDE_URL, getOverrideUrl());
             params.put(PARAM_USERNAME, getUsername());
             params.put(PARAM_PASSWORD, getPassword());
+            params.put(PARAM_SKIP_DISCOVER_WFS, getSkipDiscoverWFS());
             WMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80),em);
             
             if(!getUrl().equals(update.getUrl())) {
