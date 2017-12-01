@@ -43,6 +43,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     isImporting: false,
     isDrawing: false,
     isDeselecting: false,
+    isAddingSafetyZone: false,
 
     IGNITION_LOCATION_TYPE: 'ignitionLocation',
     IGNITION_LOCATION_FORM: 'ignitionLocationForm',
@@ -52,6 +53,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     EXTRA_OBJECT_FORM: 'extraObjectForm',
     MEASURE_LINE_TYPE: 'measureObject',
     MEASURE_LINE_COLOR: '777777',
+    SAFETY_DISTANCE_TYPE: 'safetyDistance',
 
     COMPONENT_VERSION: '1.0',
     COMPONENT_NAME: 'Vuurwerkevenementen',
@@ -128,7 +130,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
         this.safetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
             'fillOpacity' : 0,
-            'strokeColor': "#ffba37",
+            'strokeColor': "#FF7724",
             'strokeOpacity' : 1.0
         }));
         this.ingnitionLocationStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
@@ -169,13 +171,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             geometrytypes: ["Polygon", "Circle", "Point", "LineString"],
             showmeasures: false,
             viewerController: this.config.viewerController,
-            defaultFeatureStyle: this.safetyZoneStyle
+            defaultFeatureStyle: this.safetyZoneStyle,
+            addAttributesToFeature: true,
+            addStyleToFeature: true
         });
         this.config.viewerController.mapComponent.getMap().addLayer(this.calculationResultLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, this.activeFeatureChanged, this);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.activeFeatureFinished, this);
+        this.calculationResultLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.activeFeatureFinished, this);
     },
 
     /**
@@ -498,8 +503,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     createExtraObjectsGrid: function() {
-        Ext.create('Ext.data.Store', {
-            storeId: 'extraObject',
+        Ext.define('OntbrandingsaanvraagExtraObject', {
+            extend: 'Ext.data.Model',
             fields: [
                 { name: 'fid', type: 'string' },
                 { name: 'type', type: 'string', defaultValue: this.EXTRA_OJBECT_TYPE },
@@ -507,7 +512,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'color', type: 'string', defaultValue: 'FF0000' },
                 { name: 'dashStyle', type: 'string', defaultValue: 'solid' },
                 { name: 'arrow', type: 'string', defaultValue: 'none' }
-            ],
+            ]
+        });
+        Ext.create('Ext.data.Store', {
+            storeId: 'extraObject',
+            model: 'OntbrandingsaanvraagExtraObject',
             data: []
         });
         this.extraObjectsGrid = this._createGrid('extraObject', "Extra objecten", [
@@ -882,7 +891,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             extraObject.set('color', this.MEASURE_LINE_COLOR);
             extraObject.set('dashStyle', 'dash');
         }
-        this.updateExtraObjectFeature(extraObject, feature);
+        this.updateExtraObjectFeature(extraObject);
+    },
+
+    addSafetyDistanceObject: function(feature) {
+        var extraObject = Ext.create('OntbrandingsaanvraagExtraObject', {
+            'fid': feature.getId(),
+            'type': feature.attributes.type,
+            'label': feature.attributes.label,
+            'color': 'FF7724',
+            'dashStyle': 'dot',
+            'arrow': 'both'
+        });
+        this.updateExtraObjectFeature(extraObject, this.calculationResultLayer);
     },
 
     saveExtraObject: function() {
@@ -891,11 +912,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.updateExtraObjectFeature(extraObject);
     },
 
-    updateExtraObjectFeature: function(extraObject) {
+    updateExtraObjectFeature: function(extraObject, layer) {
         if(!extraObject) {
             return;
         }
-        var feature = this.getVectorLayer().getFeatureById(extraObject.get('fid'));
+        var feature = (layer || this.getVectorLayer()).getFeatureById(extraObject.get('fid'));
+        if(!feature) {
+            return;
+        }
         var featureStyle = feature.getStyle();
         if(!featureStyle) {
             featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', {});
@@ -904,15 +928,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         featureStyle.set('strokeDashstyle', extraObject.get('dashStyle'));
         featureStyle.set('label', '');
         featureStyle.set('strokeWidth', 4);
-        this.getVectorLayer().setFeatureStyle(extraObject.get('fid'), featureStyle);
-        this.updateExtraObjectLabel(extraObject);
+        (layer || this.getVectorLayer()).setFeatureStyle(extraObject.get('fid'), featureStyle);
+        this.updateExtraObjectLabel(extraObject, layer);
     },
 
-    updateExtraObjectLabel: function(extraObject) {
+    updateExtraObjectLabel: function(extraObject, layer) {
         var longest_component = 0;
         var start = null;
         var end = null;
-        var components = this.getVectorLayer().getFeatureGeometry(extraObject.get('fid')).components;
+        var components = (layer || this.getVectorLayer()).getFeatureGeometry(extraObject.get('fid')).components;
         if(!components) {
             return;
         }
@@ -936,7 +960,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var adjacent = (end.x - start.x);
         var theta = Math.atan2(opposite, adjacent);
         var angle = -theta * (180/Math.PI);
-        this.removeExtraObjects(extraObject);
+        this.removeExtraObjects(extraObject, layer);
         var label = extraObject.get('label');
         if(extraObject.get('type') === this.MEASURE_LINE_TYPE) {
             label = this.createSizeLabel(extraObject.get('size'));
@@ -961,7 +985,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         if(arrow === 'end' || arrow === 'both') {
             features.push(this.createArrow(components[components.length-1], components[components.length-2], extraObject));
         }
-        this.getExtraObjectsLayer().addFeatures(features);
+        (layer || this.getExtraObjectsLayer()).addFeatures(features);
     },
 
     createArrow: function(arrow_start, arrow_end, extraObject) {
@@ -1000,8 +1024,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return ['POINT(', x, ' ', y, ')'].join('');
     },
 
-    removeExtraObjects: function(extraObject) {
-        this.getExtraObjectsLayer().removeFeaturesByAttribute('object_fid', extraObject.get('fid'));
+    removeExtraObjects: function(extraObject, layer) {
+        (layer || this.getExtraObjectsLayer()).removeFeaturesByAttribute('object_fid', extraObject.get('fid'));
     },
 
     setExtraObjectColor: function(color) {
@@ -1038,8 +1062,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         form.setVisible(false);
     },
 
-    _addLocation: function(grid, id, label, default_label, overrideType) {
-        var store = grid.getStore();
+    _addLocation: function(grid, id, label, default_label, overrideType, store) {
+        store = store || grid.getStore();
         var next_number = store.count() + 1;
         label = label || default_label + (next_number);
         var data = { 'fid': id, 'label': label };
@@ -1054,7 +1078,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var added_feature = store.add(data);
         var locationType = added_feature[0].get('type');
         this.activeFeature.attributes.locationType = locationType;
-        if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
+        if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE && locationType !== this.SAFETY_DISTANCE_TYPE) {
             this.getVectorLayer().setLabel(id, label);
         }
         var rowIndex = next_number - 1;
@@ -1264,6 +1288,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.getVectorLayer().unselectAll();
         this.nextPage();
         this.isImporting = false;
+        this.movePage(0, 3);
     },
 
     createFeatureStyle: function(style) {
@@ -1414,6 +1439,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.isDeselecting = true;
         this.getVectorLayer().unselectAll();
         this.getExtraObjectsLayer().unselectAll();
+        this.getCalculationResultLayer().unselectAll();
         this.activeFeature = null;
         this.isDeselecting = false;
     },
@@ -1436,7 +1462,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     activeFeatureFinished : function (vectorLayer, feature) {
         this.activeFeature = feature;
-        if(this.isDrawing || this.isImporting) {
+        if(this.isDrawing || this.isImporting || this.isAddingSafetyZone) {
             var locationType = !!this.isDrawing ? this.isDrawing : feature.attributes.type;
             this.activeFeature.attributes.locationType = locationType;
             if(locationType === this.IGNITION_LOCATION_TYPE) {
@@ -1448,7 +1474,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             if(locationType === this.EXTRA_OJBECT_TYPE || locationType === this.MEASURE_LINE_TYPE) {
                 this.addExtraObject(this.activeFeature, locationType);
             }
-            var grid = this.isImporting ? null : this.getGridForType(locationType);
+            if(locationType === this.SAFETY_DISTANCE_TYPE) {
+                this.addSafetyDistanceObject(this.activeFeature);
+            }
+            var grid = (this.isImporting || this.isAddingSafetyZone) ? null : this.getGridForType(locationType);
             if(grid) {
                 grid.unmask();
             }
@@ -1467,7 +1496,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         if(complete) {
             this.removeSafetyZones();
+            this.isAddingSafetyZone = true;
             var features = this.getAllFeatures();
+            this.wizardPages[3].mask("Bezig met berekenen van veiligheidszone");
+            var showError = this.showSafetyZoneError.bind(this);
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
                 scope: this,
@@ -1476,35 +1508,44 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     showIntermediateResults:false
                 },
                 success: function (result) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    var featuresJSON = response.safetyZones;
-                    var features = [];
-                    var safetyDistances = [];
-                    for (var i = 0; i < featuresJSON.length; i++) {
-                        var f = featuresJSON[i];
-                        var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
-                        var type = f.attributes.type;
-                        if(type === "safetyDistance"){
-                            features.push(feat);
-                        }else{
-                            features.push(feat);
-                        }
+                    try {
+                        this.drawSafetyZone(result)
+                    } catch(e) {
+                        console.error(e);
+                        showError();
                     }
-
-                    this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;
-
-                    this.calculationResultLayer.addFeatures(features);
                 },
-                failure: function (result) {
-                    this.addMessageInContainer('#calculation_messages',
-                        'Er is iets mis gegaan met het berekenen van de veiligheidszone. Sla uw aanvraag op en probeer het opnieuw.');
-                }
+                failure: showError
             });
         }
     },
 
+    showSafetyZoneError: function() {
+        this.wizardPages[3].unmask();
+        this.addMessageInContainer('#calculation_messages',
+            'Er is iets mis gegaan met het berekenen van de veiligheidszone. Sla uw aanvraag op en probeer het opnieuw.');
+        this.isAddingSafetyZone = false;
+    },
+
     drawSafetyZone: function(result) {
-        this.getCalculationResultLayer().readGeoJSON(result);
+        var response = Ext.JSON.decode(result.responseText);
+        var featuresJSON = response.safetyZones;
+        var safetyDistances = [];
+        var features = [];
+        this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;
+        for (var i = 0; i < featuresJSON.length; i++) {
+            var f = featuresJSON[i];
+            if(!f.wktgeom || f.wktgeom.indexOf("EMPTY") !== -1) {
+                continue;
+            }
+            f.attributes.fid = 'safetyZone-' + i;
+            var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
+            features.push(feat);
+        }
+        this.calculationResultLayer.addFeatures(features);
+        this.deselectAllFeatures();
+        this.wizardPages[3].unmask();
+        this.isAddingSafetyZone = false;
     },
 
     removeSafetyZones: function(){
