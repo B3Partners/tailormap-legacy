@@ -63,6 +63,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     constructor: function (conf){
         this.initConfig(conf);
+        this.hideOwnButton = true;
         viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
         this.zoneDistanceConfigToObject(conf.zonedistances_consumer, this.ZONE_DISTANCES_CONSUMER);
         this.zoneDistanceConfigToObject(conf.zonedistances_professional, this.ZONE_DISTANCES_PROFESSIONAL);
@@ -337,6 +338,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     html: 'Situatietekening opslaan .JSON',
                     margin: this.defaultMargin,
                     listeners: { click: this.saveFile, scope: this }
+                },
+                {
+                    xtype: 'button',
+                    html: 'Situatietekening opslaan .PNG',
+                    margin: this.defaultMargin,
+                    listeners: { click: this.makeImage, scope: this }
                 },
                 {
                     xtype: 'button',
@@ -1429,9 +1436,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this._removeLocation(grid, i);
         }
     },
-    printRequest: function() {
+    makeImage: function() {
         var features = this.getAllFeatures();
         this.buttonDown();
+    },
+    
+    printRequest:function(){
+        var comps = this.config.viewerController.getComponentsByClassName("viewer.components.Print");
+        for(var i = 0 ; i < comps.length ;i ++){
+            var c = comps[i];
+            var a = 0;
+            c.buttonClick();
+            
+        }
     },
 
     deselectAllFeatures: function() {

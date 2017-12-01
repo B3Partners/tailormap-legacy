@@ -322,7 +322,6 @@ public class ImageTool {
 
     private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi) {
         double rotation = fs.getRotation();
-        Double strokewidth = fs.getStrokeWidth();
         int length = fs.getPointRadius().intValue() * 2;
         int halfLength = length/2;
         int originX = (int) origin.getX();
