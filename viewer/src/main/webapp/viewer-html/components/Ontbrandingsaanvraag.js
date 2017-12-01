@@ -313,11 +313,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     },
                     items: [
                         {
-                            html: 'Hulplijn',
+                            html: '+ Hulplijn',
                             listeners: { click: this.createExtraObject, scope: this }
                         },
                         {
-                            html: 'Afstandslijn',
+                            html: '+ Afstandslijn',
                             listeners: { click: this.createMeasureLine, scope: this }
                         }
                     ]
