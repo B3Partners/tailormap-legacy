@@ -868,7 +868,7 @@ Ext.define ("viewer.components.Print",{
             var layer = layers[i];
             if (layer.getVisible()){
                 if (layer.getType()=== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
-                    var features=layer.getAllFeatures();
+                    var features = layer.getAllFeatures(true);
                     for (var f =0; f < features.length; f++){
                         var feature=features[f];
                         if (feature.getWktgeom()!=null){

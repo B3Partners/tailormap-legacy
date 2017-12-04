@@ -228,11 +228,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         return this.fromOpenLayersFeature(this.getFrameworkLayer().getFeatureById(id));
     },
 
-    getAllFeatures : function(){
+    getAllFeatures : function(filterSelectionFeatures){
         var olFeatures = this.getFrameworkLayer().features;
         var features = new Array();
         for(var i = 0 ; i < olFeatures.length;i++){
             var olFeature = olFeatures[i];
+            if(filterSelectionFeatures && olFeature._sketch) {
+                continue;
+            }
             var feature = this.fromOpenLayersFeature(olFeature);
             features.push(feature);
         }
