@@ -385,18 +385,21 @@ public class ApplicationActionBean implements ActionBean {
         // Sort components by classNames, so order is always the same for debugging
         ComponentRegistry cr = ComponentRegistryInitializer.getInstance();
 
-        Collection<ViewerComponent> comps = cr.getComponentList();
-
+        List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
+        Collections.sort(comps);
         if(isDebug()) {
 
             Set<String> classNamesDone = new HashSet<String>();
-            for(ViewerComponent cc: comps) {
+            for(ConfiguredComponent cc: comps) {
 
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                    continue;
+                }
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
 
-                    if(cc.getSources() != null) {
-                        for(File f: cc.getSources()) {
+                    if(cc.getViewerComponent().getSources() != null) {
+                        for(File f: cc.getViewerComponent().getSources()) {
                             String url = new ForwardResolution(ComponentActionBean.class, "source")
                                     .addParameter("app", name)
                                     .addParameter("version", version)
@@ -423,7 +426,11 @@ public class ApplicationActionBean implements ActionBean {
 
             int hash = 0;
             Set<String> classNamesDone = new HashSet<String>();
-            for(ViewerComponent cc: comps) {
+            for (ConfiguredComponent cc : comps) {
+                if (!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                    continue;
+                }
+
                 if(!classNamesDone.contains(cc.getClassName())) {
                     hash = hash ^ cc.getClassName().hashCode();
                 } else {
