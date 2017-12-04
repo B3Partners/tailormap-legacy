@@ -46,6 +46,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             autoScroll:true,
             hideMode : 'offsets',
             items: [
+                /* FLAMINGO FLASH, NOT USED ANYMORE
             {
                 xtype: 'container',
                 name : 'overviewPopupConfig',
@@ -93,6 +94,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
                 ]
             },
+            */
             {
                 xtype: "label",
                 text: "Afmetingen",
@@ -127,7 +129,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
             ,{ 
                 xtype: 'textfield',
-                fieldLabel: 'URL naar achtergrondkaart (afbeelding, WMS-request of swf)',
+                fieldLabel: 'URL naar achtergrondkaart (afbeelding of WMS-request)',
                 name: 'url',
                 value: config.url,
                 labelWidth:me.labelWidth

@@ -34,7 +34,6 @@
     {
         "className": "viewer.components.Ontbrandingsaanvraag",
         "name": "Ontbrandingsaanvraag",
-        "group": "Component",
         "shortName": "OA",
         "sources": ["../common/ColorField.js", "Print.js", "DownloadMap.js", "Ontbrandingsaanvraag.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Ontbrandingsaanvraag-config.js"],
@@ -878,6 +877,7 @@
         "name": "Simpel filter",
         "shortName": "SF",
         "closureCompilerSafe": true,
+        "group": "Component",
         "restrictions": ["leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom"],
         "sources": ["SimpleFilter.js","SimpleFilterFilters.js"],
         "singleton": false,

@@ -483,8 +483,12 @@ Ext.define('LayoutManager', {
     
     createToolbox: function() {
         var groups = {};
+        var filteredComponents = ['viewer.mapcomponents.FlamingoMap', 'viewer.components.BrowserCheck'];
         for(var i = 0 ; i < this.config.components.length;i++){
             var component = this.config.components[i];
+            if(Ext.Array.contains(filteredComponents, component.className)) {
+                continue;
+            }
             var group = component.group;
             if(!groups.hasOwnProperty(group)){
                 groups[group] = {
@@ -533,7 +537,7 @@ Ext.define('LayoutManager', {
         
         // open all panels, so the view is initialized (and all the previously configured components are rendered.
         for(var i = 0 ; i < panels.length;i++){
-            panels[i].expand(); 
+            panels[i].expand();
         }
 
         this.addConfiguredComponentsToRegions();
