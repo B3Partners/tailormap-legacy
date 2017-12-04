@@ -40,6 +40,10 @@
                userRoleTable="user_groups"
                userTable="user_"
                localDataSource="true"
-        />
+        >
+            <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+                               algorithm="SHA-1"
+            />
+        </Realm>
     </Realm>
 </Context>
