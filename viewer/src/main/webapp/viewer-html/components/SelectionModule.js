@@ -1692,10 +1692,9 @@ Ext.define ("viewer.components.SelectionModule",{
     },
     
     autoCheck: function(type) {
-        if(!type) {
-            type = 'always';
-        }
-        return !this.config.hasOwnProperty('autoOnLayers') || this.config.autoOnLayers === type;
+        return !this.config.hasOwnProperty('autoOnLayers')
+            || this.config.autoOnLayers === 'always'
+            || (typeof type !== "undefined" && this.config.autoOnLayers === type);
     },
     
     checkAllChildren: function(level, checked) {
