@@ -286,7 +286,10 @@ Ext.define("viewer.components.Edit", {
     showAndFocusForm: function () {
         this.showMobilePopup();
         this.setFormVisible(true);
-        this.inputContainer.down("field").focus();
+        var firstField = this.inputContainer.down("field");
+        if(firstField) {
+            firstField.focus();
+        }
         this.geomlabel.setText("");
         this.untoggleButtons();
     },
