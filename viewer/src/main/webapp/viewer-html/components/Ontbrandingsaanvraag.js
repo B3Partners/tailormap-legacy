@@ -60,6 +60,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     ZONE_DISTANCES_CONSUMER: {},
     ZONE_DISTANCES_PROFESSIONAL: {},
     OTHER_LABEL: "Anders, namelijk...",
+    
+    printComponent:null,
 
     constructor: function (conf){
         this.initConfig(conf);
@@ -73,6 +75,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.iconPath = contextPath + "/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, this.createLayers, this);
+        
+        var c = Ext.Object.merge({}, conf, {
+            isPopup: true,
+            regionName : "left_menu"
+        });
+        this.printComponent = Ext.create("viewer.components.Print",c);
+        this.movePage(0, 5);
+        
         return this;
     },
 
@@ -1307,7 +1317,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var label = '';
         if(attributes && attributes.label && (attributes.type !== this.EXTRA_OJBECT_TYPE && attributes.type !== this.MEASURE_LINE_TYPE)) {
-            label = attributes.label
+            label = attributes.label;
         }
         return Ext.create('viewer.viewercontroller.controller.Feature', {
             wktgeom: wkt,
@@ -1442,13 +1452,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
     
     printRequest:function(){
-        var comps = this.config.viewerController.getComponentsByClassName("viewer.components.Print");
-        for(var i = 0 ; i < comps.length ;i ++){
-            var c = comps[i];
-            var a = 0;
-            c.buttonClick();
-            c.qualitySlider.setValue(c.qualitySlider.maxValue);
-        }
+        this.printComponent.buttonClick();
+        this.printComponent.qualitySlider.setValue(this.printComponent.qualitySlider.maxValue);
     },
 
     deselectAllFeatures: function() {
@@ -1525,7 +1530,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 success: function (result) {
                     try {
-                        this.drawSafetyZone(result)
+                        this.drawSafetyZone(result);
                     } catch(e) {
                         console.error(e);
                         showError();
