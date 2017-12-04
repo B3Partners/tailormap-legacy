@@ -371,33 +371,57 @@ Ext.define("viewer.components.Merge", {
     },
     layerChanged: function (appLayer, previousAppLayer, scope) {
         this.appLayer = appLayer;
+
         Ext.getCmp(this.name + "selectAButton").setDisabled(true);
         Ext.getCmp(this.name + "selectBButton").setDisabled(true);
         this.mode = null;
         this.geometryEditable = false;
 
         if (appLayer != null) {
-            if (appLayer.geometryAttributeIndex != undefined) {
-                this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
-                if (appLayer.attributes[appLayer.geometryAttributeIndex].userAllowedToEditGeom !== undefined) {
-                    this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].userAllowedToEditGeom;
-                }
-                if (this.vectorLayer) {
-                    this.vectorLayer.removeAllFeatures();
-                }
-                this.mode = null;
-                this.config.viewerController.mapComponent.getMap().removeMarker("edit");
-
-
-                Ext.getCmp(this.name + "selectAButton").setDisabled(false);
-                Ext.getCmp(this.name + "selectBButton").setDisabled(true);
-
-                Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelA + " en " + this.labelB + " geometrie");
+            this.maincontainer.setLoading("Laadt attributen...");
+            this.loadAttributes(appLayer);
+        } else {
+            this.cancel();
+        }
+    },
+    loadAttributes: function (appLayer) {
+        this.appLayer = appLayer;
+        var me = this;
+        if (this.appLayer != null) {
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
+            // check if featuretype was loaded
+            if (this.appLayer.attributes == undefined) {
+                this.featureService.loadAttributes(me.appLayer, function (attributes) {
+                    me.initMerge(me.appLayer);
+                    me.maincontainer.setLoading(false);
+                });
             } else {
-                Ext.getCmp(this.name + "geomLabel").setText('Geometrie mag niet bewerkt worden.');
+                this.initMerge(me.appLayer);
+                this.maincontainer.setLoading(false);
             }
         } else {
             this.cancel();
+        }
+    },
+    initMerge: function(appLayer) {
+        if (appLayer.geometryAttributeIndex != undefined) {
+            this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+            if (appLayer.attributes[appLayer.geometryAttributeIndex].userAllowedToEditGeom !== undefined) {
+                this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].userAllowedToEditGeom;
+            }
+            if (this.vectorLayer) {
+                this.vectorLayer.removeAllFeatures();
+            }
+            this.mode = null;
+            this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+
+
+            Ext.getCmp(this.name + "selectAButton").setDisabled(false);
+            Ext.getCmp(this.name + "selectBButton").setDisabled(true);
+
+            Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelA + " en " + this.labelB + " geometrie");
+        } else {
+            Ext.getCmp(this.name + "geomLabel").setText('Geometrie mag niet bewerkt worden.');
         }
     },
     featuresReceived: function (features) {
