@@ -31,7 +31,7 @@ Ext.define("viewer.components.Merge", {
     config: {
         name: "Samenvoegen",
         tooltip: "Features samenvoegen",
-        strategy: null,
+        strategy: "replace",
         actionbeanUrl: "/viewer/action/feature/merge",
         layers: null,
         mergeGapDist: null,
