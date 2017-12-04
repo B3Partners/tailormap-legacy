@@ -48,7 +48,7 @@
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.1.1</postgresql.version>
         <apache.poi.version>3.17</apache.poi.version>
-        <apache.httpcomponents.version>4.5.3</apache.httpcomponents.version>
+        <apache.httpcomponents.version>4.5.4</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -61,7 +61,7 @@
             and check the output for any available updates.
             
             To check for vulnarabilities in dependencies use the following command:
-            mvn org.owasp:dependency-check-maven:1.4.5:check > vuln-check.log
+            mvn org.owasp:dependency-check-maven:3.0.2:check > vuln-check.log
         -->
         <dependencies>
             <!-- viewer-->
@@ -161,12 +161,12 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.0.0-RC1</version>
+                <version>5.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.6</version>
+                <version>3.7</version>
             </dependency>
             <dependency>
                 <groupId>com.google.javascript</groupId>
@@ -175,14 +175,21 @@
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.5</version>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>jstl</groupId>
-                <artifactId>jstl</artifactId>
-                <version>1.2</version>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>javax.servlet.jsp.jstl</artifactId>
+                <version>1.2.4</version>
+                <exclusions>
+                    <exclusion>
+                        <!-- sleept servlet api 2.5 mee -->
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!-- geozet openls -->
             <dependency>
@@ -223,7 +230,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.11.0</version>
+                <version>2.12.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -363,9 +370,9 @@
 
             <!-- web-commons -->
             <dependency>
-                <groupId>javax.servlet</groupId>
+                <groupId>javax.servlet.jsp</groupId>
                 <artifactId>jsp-api</artifactId>
-                <version>2.0</version>
+                <version>2.2</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -548,7 +555,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.3</version>
+                    <version>2.2.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
