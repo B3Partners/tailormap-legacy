@@ -31,6 +31,7 @@
         ...
 
         PostgreSQL:
+
         <Resource auth="Container"
                   driverClassName="org.postgresql.Driver"
                   type="javax.sql.DataSource"
@@ -46,7 +47,7 @@
         />
     </Server>
 
-    NOTE: each JDBC driver version and each version of Tomcat will have different options that can be set
+    NOTE: each JDBC driver version and each version of Tomcat will have different options that can/must be set
     
     -->
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource" />
@@ -62,12 +63,29 @@
     http://www.oracle.com/technetwork/java/javamail/index-141777.html
 
     <Server ...>
-        ...
-        <GlobalNamingResources>
-            <Resource name="mail/session"
-                    auth="Container"
-                    type="javax.mail.Session"
-                    mail.smtp.host="smtp.mycompany.com"
+    ...
+    <GlobalNamingResources>
+        <Resource name="mail/session"
+                auth="Container"
+                type="javax.mail.Session"
+                mail.smtp.host="smtp.mycompany.com"
+        />
+    -->
+    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
+    <!-- Security configuration -->
+    <!-- use LockOutRealm instead of CombinedRealm to prevent brute-forcing -->
+    <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm allRolesMode="authOnly"
+               className="org.apache.catalina.realm.DataSourceRealm"
+               dataSourceName="jdbc/geo_viewer"
+               roleNameCol="group_"
+               userCredCol="password"
+               userNameCol="username"
+               userRoleTable="user_groups"
+               userTable="user_"
+               digest="SHA-1">
+            <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+                               algorithm="SHA-1"
             />
         </Realm>
         <!-- Use JNDIRealm for authenticating against a LDAP server (such as
