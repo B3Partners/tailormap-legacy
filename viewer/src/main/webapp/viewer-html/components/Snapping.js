@@ -45,6 +45,10 @@ Ext.define("viewer.components.Snapping", {
         tooltip: "",
         layers: null,
         label: "",
+        snapColour: "FF00FF",
+        snapFillColour: "FF00FF",
+        snapColourOpacity: 50,
+        snapFillColourOpacity: 50,
         details: {
             minWidth: 400,
             minHeight: 250
