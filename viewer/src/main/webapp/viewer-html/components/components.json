@@ -155,6 +155,7 @@
         "group": "Map",
         "shortName": "FR",
         "sources": [
+            "Print.js",
             "FeatureReportUtil.js",
             "FeatureReport.js"
         ],
