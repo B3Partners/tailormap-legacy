@@ -412,7 +412,7 @@ Ext.define ("viewer.components.AttributeList",{
                 childGridIds.push(gridId);
                 newEl.id=this.name +gridId+ 'Container';
                 newEl.style.margin="5px";
-                expandRow.children[0].children[0].appendChild(newEl);
+                expandRow.children[1].appendChild(newEl);
                 this.createGrid(gridId,newEl, this.appLayer, ft.id,ft.filter,false);
             }
             store.addListener("sort", function() {
