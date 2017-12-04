@@ -35,7 +35,8 @@ Ext.define ("viewer.components.LayerSelector",{
         restriction : null,
         layers: null,
         useTabs: false,
-        label: null
+        label: null,
+        rememberSelection: false
     }, 
     constructor: function (conf){
         if(!conf.label){
@@ -155,10 +156,12 @@ Ext.define ("viewer.components.LayerSelector",{
             }
         }
     },
-    initLayers : function () {
+    initLayers : function (hasBeenInitialized) {
         if(!this.layersInitialized) {
             return;
         }
+        var remember = this.config.rememberSelection && hasBeenInitialized;
+        var currentValue = this.getValue();
         this.layerArray = [];
         var visibleLayers = this.config.viewerController.getVisibleLayers();
         for(var i = 0 ; i < this.forcedLayers.length; i++){
@@ -193,14 +196,21 @@ Ext.define ("viewer.components.LayerSelector",{
             // this.layerselector.inputEl.dom.placeholder='Maak uw keuze';
             this.layerselector.setDisabled(false);
             if(this.config.useTabs) {
-                this.initTabs();
+                this.initTabs(remember);
+            }
+        }
+        if(remember) {
+            var updated = this.updateValueById(currentValue.id);
+            if(!updated) {
+                this.clearSelection();
+                this.selectFirstLayer();
             }
         }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS,
-                {store: this.layerstore, layers: this.layerList}, this);
+                {store: this.layerstore, layers: this.layerList, hasBeenInitialized: hasBeenInitialized}, this);
     },
 
-    initTabs: function() {
+    initTabs: function(skipSetActiveTab) {
         var tabs = [];
         this.layerstore.each(function(val) {
             tabs.push({
@@ -209,7 +219,7 @@ Ext.define ("viewer.components.LayerSelector",{
             });
         });
         this.layerselector.add(tabs);
-        this.layerselector.setActiveTab(0);
+        if(!skipSetActiveTab) this.layerselector.setActiveTab(0);
     },
 
     getLayerIdFromTab: function(tab) {
@@ -288,10 +298,26 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     setValue : function (appLayer) {
         if(this.config.useTabs) {
-            this.layerselector.setActiveTab(this.layerselector.getComponent(appLayer.id));
+            this.layerselector.setActiveTab(this.layerselector.getComponent('tab-' + appLayer.get('layerId')));
             return;
         }
         this.layerselector.setValue(appLayer);
+    },
+    updateValueById: function(layerId) {
+        if(this.config.useTabs) {
+            var tab = this.layerselector.getComponent('tab-' + layerId);
+            if(!tab) {
+                return false;
+            }
+            this.layerselector.setActiveTab(tab);
+            return true;
+        }
+        var record = this.layerstore.findRecord('layerId', layerId);
+        if(!record) {
+            return false;
+        }
+        this.layerselector.setValue(record);
+        return true;
     },
     hasValue: function(appLayer) {
         return this.findLayerInStore(appLayer.id) !== null;
@@ -343,6 +369,6 @@ Ext.define ("viewer.components.LayerSelector",{
         return [ this.layerselector.getId() ];
     },
     layerVisibilityChanged : function (map,object){
-        this.initLayers();
+        this.initLayers(true);
     }
 });

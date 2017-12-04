@@ -107,7 +107,8 @@ Ext.define ("viewer.components.AttributeList",{
             viewerController : this.config.viewerController,
             restriction: "attribute",
             layers: this.config.layers,
-            useTabs: this.config.showLayerSelectorTabs
+            useTabs: this.config.showLayerSelectorTabs,
+            rememberSelection: true
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
@@ -228,10 +229,12 @@ Ext.define ("viewer.components.AttributeList",{
         });
     },
     layerSelectorInit: function(evt) {
-        // First clear selection so we are sure to get an 'changed' event
-        this.layerSelector.clearSelection();
-        // Select first layer
-        this.layerSelector.selectFirstLayer();
+        if(!evt.hasBeenInitialized) {
+            // First clear selection so we are sure to get an 'changed' event
+            this.layerSelector.clearSelection();
+            // Select first layer
+            this.layerSelector.selectFirstLayer();
+        }
         if(this.config.showAttributelistLinkInFeatureInfo) {
             this.createFeatureInfoLink(evt.layers);
         }
@@ -367,9 +370,8 @@ Ext.define ("viewer.components.AttributeList",{
         }
     },
     filterChanged : function (filter,appLayer){
-        if (this.layerSelector!=null){
+        if (this.layerSelector !== null){
             var selectedLayer = this.layerSelector.getValue();
-
             if(selectedLayer){
                 if(selectedLayer.id == appLayer.id){
                    this.loadAttributes(appLayer);
