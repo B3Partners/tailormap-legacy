@@ -29,8 +29,8 @@
             <artifactId>commons-fileupload</artifactId>
         </dependency>
         <dependency>
-            <groupId>jdom</groupId>
-            <artifactId>jdom</artifactId>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -118,11 +118,11 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>javax.servlet.jsp.jstl</artifactId>
         </dependency>
         <!-- geozet openls -->
         <dependency>

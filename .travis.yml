@@ -47,7 +47,9 @@ script:
     fi
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
+         bash <(curl -s https://codecov.io/bash)
+    fi
   
 jdk:
   - oraclejdk8

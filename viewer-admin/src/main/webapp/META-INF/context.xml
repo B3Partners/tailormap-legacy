@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- crossContext="true" is required to enable the viewer-admin to load the
-  components.json file and component config javascript sources from the viewer -->
-<Context antiJARLocking="true" crossContext="true" disableURLRewriting="true" path="/viewer-admin">
+<!--
+more about the available context attributes:
+  https://tomcat.apache.org/tomcat-7.0-doc/config/context.html
+or
+  https://tomcat.apache.org/tomcat-8.0-doc/config/context.html
+
+crossContext="true" is required to enable the viewer-admin to load the
+  components.json file and component config javascript sources from the viewer
+-->
+<Context antiResourceLocking="true" crossContext="true" path="/viewer-admin">
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
-  <!-- Customized context parameters; see web.xml -->
+  <!-- Customized context parameters; see also: web.xml -->
   <!--Parameter name="viewer.url" value="/viewer" override="false"/-->
   <!--Parameter name="monitoring.mail.from.email" value="no-reply@b3partners.nl" override="false"/-->
   <!--Parameter name="monitoring.mail.from.name" value="Geo services monitoring" override="false"/-->
@@ -53,8 +60,10 @@
                   validationQuery="select 1"
         />
     </Server>
+
+    NOTE: each JDBC driver version and each version of Tomcat will have different options that can/must be set
+
     -->
-  <!-- Tomcat resource link -->
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
   <!-- For Tomcat: define JavaMail resource in server.xml. See:
 
@@ -79,7 +88,7 @@
         ...
     </Server>
     -->
-    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session" />
+    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
     <!-- Security configuration -->
     <!-- use LockOutRealm instead of CombinedRealm to prevent brute-forcing -->
     <Realm className="org.apache.catalina.realm.LockOutRealm">

@@ -31,6 +31,7 @@
         ...
 
         PostgreSQL:
+
         <Resource auth="Container"
                   driverClassName="org.postgresql.Driver"
                   type="javax.sql.DataSource"
@@ -45,11 +46,34 @@
                   validationQuery="select 1"
         />
     </Server>
+
+    NOTE: each JDBC driver version and each version of Tomcat will have different options that can/must be set
+    
     -->
-    <!-- Tomcat resource link -->
-    <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource" />
-    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session" />
-    <!-- use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
+  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource" />
+  <!-- For Tomcat: define JavaMail resource in server.xml. See:
+
+    http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
+
+    Don't forget to put a mail.jar in the Tomcat lib directory.
+
+    To configure your mail server, use attributes like "mail.smtp.host" for
+    the Resource element. See Appendix A of the JavaMail spec for which
+    attributes you can use, possibly accessible at
+    http://www.oracle.com/technetwork/java/javamail/index-141777.html
+
+    <Server ...>
+    ...
+    <GlobalNamingResources>
+        <Resource name="mail/session"
+                auth="Container"
+                type="javax.mail.Session"
+                mail.smtp.host="smtp.mycompany.com"
+        />
+    -->
+    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
+    <!-- Security configuration -->
+    <!-- use LockOutRealm instead of CombinedRealm to prevent brute-forcing -->
     <Realm className="org.apache.catalina.realm.LockOutRealm">
         <Realm allRolesMode="authOnly"
                className="org.apache.catalina.realm.DataSourceRealm"
