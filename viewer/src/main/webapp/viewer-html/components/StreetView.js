@@ -63,7 +63,8 @@ Ext.define ("viewer.components.tools.StreetView",{
             name: this.getName(),
             tooltip: this.config.tooltip || null,
             displayClass : "streetView",
-            viewerController: this.config.viewerController
+            viewerController: this.config.viewerController,
+            preventActivationAsFirstTool: true
         });
         this.config.viewerController.mapComponent.addTool(this.button);
         

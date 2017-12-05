@@ -64,7 +64,8 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         iconUrl_over: null,
         iconUrl_sel:null,
         iconUrl_dis:null,
-        viewerController:null
+        viewerController:null,
+        preventActivationAsFirstTool: false
     },
 
     constructor: function (config){
