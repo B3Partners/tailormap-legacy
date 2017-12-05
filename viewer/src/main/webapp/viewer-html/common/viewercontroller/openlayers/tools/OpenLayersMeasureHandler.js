@@ -37,7 +37,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler", 
                 measureValueDiv.style.left = px.x + 10 + 'px';
                 measureValueDiv.style.display = "block";
                 var measureValueText = document.getElementById(divId + 'Text');
-                var decimals = conf.decimals || 3;
+                var decimals = conf.hasOwnProperty('decimals') && conf.decimals !== "" ? +(conf.decimals) : 3;
                 var decimalSeparator = conf.decimalSeparator || ",";
                 var measure;
                 var units;
