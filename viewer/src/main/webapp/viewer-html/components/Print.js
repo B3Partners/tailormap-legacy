@@ -47,6 +47,10 @@ Ext.define ("viewer.components.Print",{
         mailprint:null,
         fromAddress:null,
         fromName:null,
+        useA0: false,
+        useA3: true,
+        useA4: true,
+        useA5: false,
         details: {
             minWidth: 550,
             minHeight: 575
@@ -212,7 +216,11 @@ Ext.define ("viewer.components.Print",{
      */
     createForm: function(){
         var me = this;
-
+        var pageFormats = [];
+        this.config.useA5 && pageFormats.push(['a5','A5']);
+        this.config.useA4 && pageFormats.push(['a4','A4']);
+        this.config.useA3 && pageFormats.push(['a3','A3']);
+        this.config.useA0 && pageFormats.push(['a0','A0']);
         this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,
@@ -459,7 +467,7 @@ Ext.define ("viewer.components.Print",{
                                 forceSelection: true,
                                 queryMode: 'local',
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
-                                store: [['a5','A5'],['a4','A4'],['a3','A3'],['a0','A0']],
+                                store: pageFormats,
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{

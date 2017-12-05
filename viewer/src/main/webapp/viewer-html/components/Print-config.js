@@ -50,7 +50,46 @@ Ext.define("viewer.components.CustomConfiguration",{
                     inputValue: 'portrait', 
                     checked: !(me.configObject.orientation=="landscape")
                 }]
-            },{
+            },
+            {
+                xtype: "label",
+                text: "Toon de volgende paginaformaten",
+                style: "font-weight: bold;"
+            },
+            {
+                xtype: 'container',
+                layout: 'hbox',
+                defaults: {
+                    margin: '0 3px 0 0'
+                },
+                items: [
+                    {
+                        xtype: "checkbox",
+                        name: "useA5",
+                        checked: me.configObject.useA5 || false,
+                        boxLabel: "A5"
+                    },
+                    {
+                        xtype: "checkbox",
+                        name: "useA4",
+                        checked: me.configObject.useA4 || true,
+                        boxLabel: "A4"
+                    },
+                    {
+                        xtype: "checkbox",
+                        name: "useA3",
+                        checked: me.configObject.useA3 || true,
+                        boxLabel: "A3"
+                    },
+                    {
+                        xtype: "checkbox",
+                        name: "useA0",
+                        checked: me.configObject.useA0 || false,
+                        boxLabel: "A0"
+                    }
+                ]
+            },
+            {
                 xtype: "label",
                 text: "Standaard paginaformaat",
                 style: "font-weight: bold;"                
