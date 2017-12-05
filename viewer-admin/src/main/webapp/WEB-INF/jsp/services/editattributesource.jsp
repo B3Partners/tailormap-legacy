@@ -97,7 +97,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </script>
                         </c:if>
                 </c:when>
-                <c:when test="${actionBean.context.eventName == 'newAttributeSource'}">
+                <c:when test="${actionBean.context.eventName == 'newAttributeSource' || (not empty actionBean.context.validationErrors) }">
 
                             <h1 id="headertext">Nieuwe attribuutbron toevoegen</h1>
                             <p>
