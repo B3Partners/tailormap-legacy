@@ -160,8 +160,8 @@ Ext.define ("viewer.components.LayerSelector",{
         if(!this.layersInitialized) {
             return;
         }
-        var remember = this.config.rememberSelection && hasBeenInitialized;
         var currentValue = this.getValue();
+        var remember = this.config.rememberSelection && hasBeenInitialized && currentValue;
         this.layerArray = [];
         var visibleLayers = this.config.viewerController.getVisibleLayers();
         for(var i = 0 ; i < this.forcedLayers.length; i++){
