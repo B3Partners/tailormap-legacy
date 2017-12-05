@@ -479,6 +479,9 @@ Ext.define ("viewer.components.Drawing",{
             this.activeFeature.color = this.config.color;
             var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
             this.activeFeature.config.wktgeom = feature.config.wktgeom;
+            if(this.activeFeature.label) {
+                this.activeFeature.config.label = this.activeFeature.label;
+            }
             this.vectorLayer.removeFeature(this.activeFeature);
             delete this.features[this.activeFeature.getId()];
             this.vectorLayer.addFeature(this.activeFeature);
