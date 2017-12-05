@@ -35,7 +35,7 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
 		viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, this.config);
         this.config.type = viewer.viewercontroller.controller.Tool.DEFAULT;
         this.initTool(this.config);
-        if (this.getNavigationPanel()){  
+        if (this.getNavigationPanel() || this.config.show_zoom_buttons){
             confNav.name += "_navPan";
             this.navComp = Ext.create("viewer.components.NavigationPanel", confNav);
         }

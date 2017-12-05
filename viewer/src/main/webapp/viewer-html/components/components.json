@@ -434,13 +434,6 @@
             "propertyNames": {
                 "navigationPanel": "Navigatiepaneel",
                 "tooltip": "Tooltip tool",
-                "width": "Width",
-                "height": "Height",
-                "tooltip_pan_right": "Tooltip pan rechts",
-                "tooltip_pan_left": "Tooltip pan links",
-                "tooltip_pan_up": "Tooltip pan omhoog",
-                "tooltip_pan_down": "Tooltip pan omlaag",
-                "tooltip_slider": "Tooltip slider",
                 "show_zoom_buttons": "Show zoom buttons",
                 "left": "Positie vanaf links",
                 "top": "Positie vanaf boven",
@@ -449,13 +442,6 @@
             "source": {
                 "navigationPanel": true,
                 "tooltip": "Pan(slepen), zoom(dubbel klikken) en identify(enkele klik)",
-                "width": "",
-                "height": "",
-                "tooltip_pan_right": "Pan naar rechts",
-                "tooltip_pan_left": "Pan naar links",
-                "tooltip_pan_up": "Pan omhoog",
-                "tooltip_pan_down": "Pan omlaag",
-                "tooltip_slider": "Sleep om te zoomen",
                 "show_zoom_buttons": false,
                 "left": "0",
                 "top": "20",
@@ -476,26 +462,10 @@
         "notInCombinationWith": ["Google Navigation"],
         "extPropertyGridConfigs": {
             "propertyNames": {
-                "width": "Width",
-                "height": "Height",
-                "tooltip_pan_right": "Tooltip pan rechts",
-                "tooltip_pan_left": "Tooltip pan links",
-                "tooltip_pan_up": "Tooltip pan omhoog",
-                "tooltip_pan_down": "Tooltip pan omlaag",
-                "tooltip_slider": "Tooltip slider",
-                "show_zoom_buttons": "Show zoom buttons",
                 "left": "Positie vanaf links",
                 "top": "Positie vanaf boven"
             },
             "source": {
-                "width": "",
-                "height": "",
-                "tooltip_pan_right": "Pan naar rechts",
-                "tooltip_pan_left": "Pan naar links",
-                "tooltip_pan_up": "Pan omhoog",
-                "tooltip_pan_down": "Pan omlaag",
-                "tooltip_slider": "Sleep om te zoomen",
-                "show_zoom_buttons": false,
                 "left": "0",
                 "top": "20"
             }

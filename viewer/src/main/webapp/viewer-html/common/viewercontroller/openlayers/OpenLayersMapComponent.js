@@ -412,7 +412,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }if (config.left){
                 x = Number(config.left);
             }
-            var panZoom =  new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(x,y), zoomWorldIcon:true});
+            var showPanButtons = true;
+            if(config.hasOwnProperty('navigationPanel') && !config.navigationPanel) {
+                showPanButtons = false;
+            }
+            var panZoom =  new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(x,y), zoomWorldIcon: showPanButtons, panIcons: showPanButtons });
             if(config.zoomToFullIsStart){
                 var me = this;
                 function onButtonClick (evt) {
