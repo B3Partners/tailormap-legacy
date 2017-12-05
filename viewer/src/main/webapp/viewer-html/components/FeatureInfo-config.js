@@ -171,6 +171,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         config.detailShowDesc = Ext.getCmp("detailShowDesc").getValue();
         config.detailShowAttr = Ext.getCmp("detailShowAttr").getValue();
         config.detailHideNullValues = Ext.getCmp("detailHideNullValues").getValue();
+        config.detailHideGeomAttr = Ext.getCmp("detailHideGeomAttr").getValue();
         return config;
     }
 });
