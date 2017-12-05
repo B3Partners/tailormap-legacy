@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:messages/>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
                 <c:choose>
-                    <c:when test="${actionBean.context.eventName == 'edit'}">
+                    <c:when test="${actionBean.context.eventName == 'edit' ||(not empty actionBean.context.validationErrors)}">
                     <h1 id="headertext">Gebruiker bewerken</h1>
                     <stripes:hidden name="user" value="${actionBean.user.username}"/>
 
