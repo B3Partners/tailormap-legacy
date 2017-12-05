@@ -67,7 +67,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
-            document.getElementById(this.getDiv()).addEventListener('click', this.relatedFeaturesListener.bind(this));
+        this.panel.getEl().dom.addEventListener('click', this.relatedFeaturesListener.bind(this));
         if(this.config.hasSharedPopup){
       //      document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
         }
