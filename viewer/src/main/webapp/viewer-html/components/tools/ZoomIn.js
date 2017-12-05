@@ -29,7 +29,11 @@ Ext.define ("viewer.components.tools.ZoomIn",{
     constructor: function (conf){        
         this.initConfig(conf);
 		viewer.components.tools.ZoomIn.superclass.constructor.call(this, this.config);
-        conf.type = viewer.viewercontroller.controller.Tool.ZOOMIN_BOX;        
+        if(conf.zoomBox === false){
+            conf.type = viewer.viewercontroller.controller.Tool.ZOOMIN_BUTTON;
+        }else{
+            conf.type = viewer.viewercontroller.controller.Tool.ZOOMIN_BOX;
+        }
         this.initTool(conf);
         return this;
     }

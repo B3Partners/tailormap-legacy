@@ -29,6 +29,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         NAVIGATION_HISTORY         : 1,
         ZOOMIN_BOX                 : 2,
         ZOOMOUT_BOX                : 3,
+        ZOOMIN_BUTTON             : 26,
         ZOOMOUT_BUTTON             : 6,
         ZOOM                       : 7,
         PAN                        : 4,

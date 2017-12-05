@@ -21,10 +21,10 @@
     width: 28px;
     height: 28px;
 }
-.olControlPanel .olControlZoomBoxItemInactive {
+.olControlPanel .olControlZoomBoxItemInactive, .olControlPanel .olControlZoomInItemInactive {
 background: url("${sprite}") 514px 394px;    
 }
-.olControlPanel .olControlZoomBoxItemActive {    
+.olControlPanel .olControlZoomBoxItemActive, .olControlPanel .olControlZoomInItemActive {
     background: url("${sprite}") 0 394px;
 }
 

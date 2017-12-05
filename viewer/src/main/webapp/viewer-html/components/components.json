@@ -92,8 +92,8 @@
         "singleton": true,
         "restrictions": ["top_menu"],
         "extPropertyGridConfigs": {
-            "propertyNames": {"tooltip": "Tooltip"},
-            "source": {"tooltip": "Zoom In"}
+            "propertyNames": {"tooltip": "Tooltip", "zoomBox": "Trek rechthoek voor inzoomen"},
+            "source": {"tooltip": "Zoom in", "zoomBox" : true}
         }
     },
     {
