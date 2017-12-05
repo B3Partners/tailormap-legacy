@@ -295,7 +295,7 @@ Ext.define("viewer.components.Graph", {
                             // if(graphType === 'bar' || graphType === 'column') {
                             //     this.setTitle(item.value[0] + ': ' + item.value[1]);
                             // } else {
-                                this.setTitle(storeItem.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + storeItem.get(me.getAttributeTitle(appLayer,serieAttribute)));
+                                this.setTitle(item.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + item.get(me.getAttributeTitle(appLayer,serieAttribute)));
                             // }
                         }
                     },
