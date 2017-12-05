@@ -192,11 +192,60 @@ public class SimpleFeatureType {
             }
         }
         
+        //loop over oude attributes
+        // voor iedere oude attr kijk of er een attib ib de update.attributes zit
+        //   zo ja kijk of type gelijk is
+        //      als type niet gelijk dan oude attr verwijderen en vervangen door nieuwe, evt met alias kopieren
+        // zo niet dan toevoegen nieuw attr aan oude set
+        //   loop over nieuwe attributen om te kijken of er oude verwijderd moeten worden
+        // todo: Het is handiger om deze check op basis van 2 hashmaps uittevoeren
         if(!attributes.equals(update.attributes)) {
-            attributes.clear();
-            attributes.addAll(update.attributes);
             changed = true;
-        }               
+            for(int i = 0; i < attributes.size();i++){
+                boolean notFound = true;
+                
+                for(AttributeDescriptor newAttribute: update.attributes){
+                    
+                    if(attributes.get(i).getName().equals(newAttribute.getName())){
+                        notFound = false;
+                        if(attributes.get(i).getType().equals(newAttribute.getType())){
+                            // ! expression didnt work(???) so dummy if-else (else is only used)
+                        }else{
+                            attributes.remove(i);
+                            attributes.add(i, newAttribute);  
+                        }
+                        break;
+                    }
+                }
+                if(notFound){
+                    attributes.remove(i);
+                }
+            }
+            
+            //nieuwe attributen worden hier toegevoegd aan de oude attributen lijst
+            for(int i = 0; i < update.attributes.size();i++){
+                boolean notFound = true;
+                
+                for(AttributeDescriptor oldAttribute: attributes){
+                    if(update.attributes.get(i).getName().equals(oldAttribute.getName())){
+                        notFound = false;
+                        break; 
+                    }
+                   
+                }
+                if(notFound){
+                    attributes.add(update.attributes.get(i));
+                }
+            }
+        }
+        
+        //update.attributes ID = NULL so the attributes list is getting NULL aswell
+        //if(!attributes.equals(update.attributes)) {
+            //attributes.clear();
+            //attributes.addAll(update.attributes);
+            //changed = true;
+        //}
+        
         for(AttributeDescriptor ad: attributes) {
             String alias = aliasesByAttributeName.get(ad.getName());
             if(alias != null) {
