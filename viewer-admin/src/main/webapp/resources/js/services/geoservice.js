@@ -42,6 +42,9 @@ Ext.define('vieweradmin.components.Geoservice', {
                     applications.splice(j, 1);
                 }
             }
+            if(applications.length === 0) {
+                layers.splice(i, 1);
+            }
         }
     },
 
