@@ -883,7 +883,7 @@ Ext.define ("viewer.components.Print",{
                             wktGeoms.push(feature);
                         }
                     }
-                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol == "TMS" || layer.protocol == "WMSC")){
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && ( layer.protocol === "TMS" || layer.protocol === "WMSC")){
                     var printLayer = new Object();
                     printLayer.url=layer.config.url;
                     printLayer.alpha=layer.alpha;
@@ -892,7 +892,17 @@ Ext.define ("viewer.components.Print",{
                     printLayer.serverExtent = layer.serviceEnvelope;
                     printLayer.tileWidth = layer.tileWidth;
                     printLayer.tileHeight = layer.tileHeight;
-                    printLayer.resolutions= layer.resolutions.toString();
+                    printLayer.resolutions = layer.resolutions.toString();
+                    printLayers.push(printLayer);
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol === "WMTS" )){
+                    var printLayer = new Object();
+                    printLayer.url=layer.config.url;
+                    printLayer.alpha=layer.alpha;
+                    printLayer.extension=layer.extension;
+                    printLayer.name=layer.name;
+                    printLayer.protocol=layer.protocol ;
+                    printLayer.serverExtent = layer.serviceEnvelope;
+                    printLayer.matrixSet = layer.matrixSet;
                     printLayers.push(printLayer);
                 }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.WMS_TYPE ){
                     var printLayer = new Object();

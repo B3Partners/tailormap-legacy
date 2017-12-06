@@ -265,6 +265,11 @@
                 <artifactId>gt-epsg-wkt</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-wmts</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
 
             <!-- Solr dependencies for indexing and searching -->
             <dependency>

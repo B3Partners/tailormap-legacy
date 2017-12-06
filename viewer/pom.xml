@@ -45,6 +45,10 @@
             <artifactId>gt-geojson</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-wmts</artifactId>
+        </dependency>
+        <dependency>
             <groupId>eu.medsea.mimeutil</groupId>
             <artifactId>mime-util</artifactId>
         </dependency>
