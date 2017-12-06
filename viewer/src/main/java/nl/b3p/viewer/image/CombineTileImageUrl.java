@@ -70,7 +70,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl {
         return zoomlevel;
     }
     
-    public Double getResolution(Integer zoomlevel){
+    public Double getResolution(ImageBbox imbbox,Integer zoomlevel){
         return resolutions[zoomlevel];
     }
 
@@ -80,7 +80,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl {
 
         //get closest res
         Integer zoomlevel = getClosestZoomlevel(imbbox);
-        Double closestResolution = getResolution(zoomlevel); 
+        Double closestResolution = getResolution(imbbox,zoomlevel); 
 
         // calc width in mapRes per tile: so the number of meter along the x axis
         Double tileWidthMapUnits = null;
