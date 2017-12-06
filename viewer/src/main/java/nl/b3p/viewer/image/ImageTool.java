@@ -287,6 +287,8 @@ public class ImageTool {
                 gbi.draw(shape);
                 
             }else {
+                gbi.fill(shape);
+                gbi.setColor(fs.getStrokeColor());
                 gbi.draw(shape);
             }
             if (ciw.getLabel() != null && !ciw.getLabel().isEmpty()) {
