@@ -141,6 +141,7 @@ Ext.onReady(function() {
     Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
     Ext.createWidget('tabpanel', {
         title: headercontent,
+        itemId: 'apptreeleveltabs',
         renderTo: 'tabs',
         height: '100%',
         width: '100%',
@@ -205,6 +206,10 @@ Ext.onReady(function() {
                 }
             }
         ]
+    });
+
+    Ext.on('resize', function() {
+        Ext.ComponentQuery.query('#apptreeleveltabs')[0].updateLayout();
     });
 
     function saveFunction() {
