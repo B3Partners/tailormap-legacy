@@ -289,6 +289,7 @@ function addSublevel(record) {
                         objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                         var newNode = Ext.create('AppLevelTreeModel', objData);
                         addNode(newNode, objData.parentid, function() {
+                            Ext.getCmp("applicationtree").getView().getSelectionModel().select(newNode);
                             Ext.getCmp("applicationtree").fireEvent("itemclick", null, newNode);
                         });
                     },

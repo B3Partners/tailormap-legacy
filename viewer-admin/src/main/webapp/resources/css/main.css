@@ -793,3 +793,6 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     overflow-x: auto !important;
     overflow-y: auto !important;
 }
+.x-tree-icon {
+    pointer-events: none;
+}
