@@ -60,7 +60,7 @@
             the solr configuration and index will be located.
         </description>
         <param-name>flamingo.data.dir</param-name>
-        <param-value>/opt/flamingo_data/</param-value>
+        <param-value>PATH/TO/DATA/DIRECTORY</param-value>
     </context-param>
     <context-param>
         <description>
@@ -83,7 +83,7 @@
             The url on where the solr server is to be found.
         </description>
         <param-name>flamingo.solr.url</param-name>
-        <param-value>http://localhost:8084/solr</param-value>
+        <param-value>http://SERVER/solr</param-value>
     </context-param>
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>

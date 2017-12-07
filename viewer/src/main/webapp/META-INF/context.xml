@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
-  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components,/home/meine/dev/3rd-party-components/dbk-component"/>
+  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
     NOTE:
         each version of tomcat comes with it's own version of the pooling library
