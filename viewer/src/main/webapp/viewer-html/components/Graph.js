@@ -293,11 +293,7 @@ Ext.define("viewer.components.Graph", {
                         minWidth: 140,
                         height: 28,
                         renderer: function(toolTip, item) {
-                            // if(graphType === 'bar' || graphType === 'column') {
-                            //     this.setTitle(item.value[0] + ': ' + item.value[1]);
-                            // } else {
-                                toolTip.setHtml(item.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + item.get(me.getAttributeTitle(appLayer,serieAttribute)));
-                            // }
+                            toolTip.setHtml(item.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + item.get(me.getAttributeTitle(appLayer,serieAttribute)));
                         }
                     },
                     highlight: {
