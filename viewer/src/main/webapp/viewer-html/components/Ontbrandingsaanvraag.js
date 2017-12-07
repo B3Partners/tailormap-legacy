@@ -52,7 +52,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     EXTRA_OJBECT_TYPE: 'extraObject',
     EXTRA_OBJECT_FORM: 'extraObjectForm',
     MEASURE_LINE_TYPE: 'measureObject',
-    MEASURE_LINE_COLOR: '777777',
+    MEASURE_LINE_COLOR: 'FFD600',
+    SAFETY_DISTANCE_COLOR: 'FF7724',
     SAFETY_DISTANCE_TYPE: 'safetyDistance',
 
     COMPONENT_VERSION: '1.0',
@@ -81,7 +82,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             regionName : "left_menu"
         });
         this.printComponent = Ext.create("viewer.components.Print",c);
-        this.movePage(0, 5);
         
         return this;
     },
@@ -141,7 +141,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
         this.safetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
             'fillOpacity' : 0,
-            'strokeColor': "#FF7724",
+            'strokeColor': "#" + this.SAFETY_DISTANCE_COLOR,
             'strokeOpacity' : 1.0
         }));
         this.ingnitionLocationStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
@@ -631,6 +631,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('consumerZoneDistanceStore'),
@@ -663,6 +664,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('professionalZoneDistanceStore'),
@@ -706,7 +708,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     createZonedistanceStore: function(zonedistances, name) {
         var keys = Ext.Object.getKeys(zonedistances);
         var store_items = Ext.Array.map(keys, function(item) {
-            return { "val": item, "label": [item, " (", zonedistances[item].distance, "m)"].join("") };
+            var label = [item, " (", zonedistances[item].distance, "m"];
+            if(zonedistances[item].fan) {
+                label.push("/", (zonedistances[item].distance * 1.5), "m");
+            }
+            label.push(")");
+            return {
+                "val": item,
+                "label":  label.join('')
+            };
         }, this);
         store_items.push({ "val": this.OTHER_LABEL, "label": this.OTHER_LABEL });
         Ext.create('Ext.data.Store', {
@@ -811,14 +821,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Lijntype',
                     queryMode: 'local',
                     store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
                     name: 'dashStyle',
                     itemId: 'dashStyle'
-                },
+                }/*,
                 {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Pijlen',
                     queryMode: 'local',
                     store: [['none', 'Geen'], ['begin', 'Begin van de lijn'], ['end', 'Eind van de lijn'], ['both', 'Beide kanten van de lijn']],
@@ -904,7 +916,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var added_index = this._addLocation(this.extraObjectsGrid, feature.getId(), null, default_label, override_type);
         var extraObject = this.extraObjectsGrid.getStore().getAt(added_index);
         if(type === this.MEASURE_LINE_TYPE) {
-            extraObject.set('arrow', 'both');
+            // extraObject.set('arrow', 'both');
             extraObject.set('color', this.MEASURE_LINE_COLOR);
             extraObject.set('dashStyle', 'dash');
         }
@@ -916,9 +928,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             'fid': feature.getId(),
             'type': feature.attributes.type,
             'label': feature.attributes.label,
-            'color': 'FF7724',
-            'dashStyle': 'dot',
-            'arrow': 'both'
+            'color': this.SAFETY_DISTANCE_COLOR,
+            'dashStyle': 'dot'
+            // 'arrow': 'both'
         });
         this.updateExtraObjectFeature(extraObject, this.calculationResultLayer);
     },
@@ -995,13 +1007,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 "object_fid": extraObject.get('fid')
             })
         ];
-        var arrow = extraObject.get('arrow');
-        if(arrow === 'begin' || arrow === 'both') {
-            features.push(this.createArrow(components[0], components[1], extraObject));
-        }
-        if(arrow === 'end' || arrow === 'both') {
-            features.push(this.createArrow(components[components.length-1], components[components.length-2], extraObject));
-        }
+        // Arrows are disabled for now
+        // var arrow = extraObject.get('arrow');
+        // if(arrow === 'begin' || arrow === 'both') {
+        //     features.push(this.createArrow(components[0], components[1], extraObject));
+        // }
+        // if(arrow === 'end' || arrow === 'both') {
+        //     features.push(this.createArrow(components[components.length-1], components[components.length-2], extraObject));
+        // }
         (layer || this.getExtraObjectsLayer()).addFeatures(features);
     },
 
@@ -1159,20 +1172,38 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var data = this.getContentContainer().query(this.toId(formQuery))[0].getForm().getFieldValues();
         location.set(data);
-        var locationType = location.get('type');
-        if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
-            this.getVectorLayer().setLabel(location.get('fid'), location.get('label'));
-        }
+        this.setLabelForLocation(location);
         return location;
     },
 
     _removeLocation: function(grid, rowIndex) {
         var record = grid.getStore().getAt(rowIndex);
-        this.getVectorLayer().removeFeature(this.getVectorLayer().getFeatureById(record.get('fid')));
-        if(record.get('type') === this.EXTRA_OJBECT_TYPE || record.get('type') === this.MEASURE_LINE_TYPE) {
+        var location_type = record.get('type');
+        this.deselectAllFeatures();
+        var feature = this.getVectorLayer().getFeatureById(record.get('fid'));
+        this.getVectorLayer().removeFeature(feature);
+        if(location_type === this.EXTRA_OJBECT_TYPE || location_type === this.MEASURE_LINE_TYPE) {
             this.removeExtraObjects(record);
         }
         grid.getStore().removeAt(rowIndex);
+        var formQuery = this.getFormForType(location_type);
+        if(formQuery) {
+            var form = this.getContentContainer().query(this.toId(formQuery))[0];
+            form.setVisible(false);
+        }
+    },
+
+    setLabelForLocation: function(location) {
+        var locationType = location.get('type');
+        if(locationType === this.MEASURE_LINE_TYPE || locationType === this.EXTRA_OJBECT_TYPE) {
+            return;
+        }
+        var size_label = '';
+        var size = location.get('size');
+        if(size) {
+            size_label = '\n(' + this.createSizeLabel(size, /*squareMeters=*/true) + ')';
+        }
+        this.getVectorLayer().setLabel(location.get('fid'), location.get('label') + size_label);
     },
 
     editActiveFeature: function(size) {
@@ -1193,6 +1224,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.movePage(0, this.getPageForType(location_type));
         if(size !== null) {
             location.set('size', size);
+            this.setLabelForLocation(location);
         }
         if(location_type === this.EXTRA_OJBECT_TYPE || location_type === this.MEASURE_LINE_TYPE) {
             this.updateExtraObjectLabel(location);
@@ -1468,10 +1500,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     /**
      * @param vectorLayer The vectorlayer from which the feature comes
      * @param feature the feature which has been activated
+     * @param evt Optional event object
      * Event handlers
      **/
-    activeFeatureChanged : function (vectorLayer, feature){
-        if(this.isImporting || this.isDrawing || this.isDeselecting) {
+    activeFeatureChanged : function (vectorLayer, feature, evt) {
+        if(this.isImporting || this.isDrawing || this.isDeselecting || (evt && evt.type && evt.type === 'afterfeaturemodified')) {
             return;
         }
         if(typeof this.features[feature.config.id] === "undefined") {
@@ -1544,7 +1577,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     showSafetyZoneError: function() {
         this.wizardPages[3].unmask();
         this.addMessageInContainer('#calculation_messages',
-            'Er is iets mis gegaan met het berekenen van de veiligheidszone. Sla uw aanvraag op en probeer het opnieuw.');
+            'Er is iets mis gegaan met het berekenen van de veiligheidszone. ' +
+            'Sla uw tekening op en probeer het opnieuw. ' +
+            'U kunt uw tekening opslaan door naar het tabblad \'Opslaan en printen\' te gaan of onderin tweemaal op \'Volgende\' te klikken.');
         this.isAddingSafetyZone = false;
     },
 
@@ -1610,7 +1645,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var zone_distances = fireworks_type === 'consumer' ? this.ZONE_DISTANCES_CONSUMER : this.ZONE_DISTANCES_PROFESSIONAL;
         var zone_distance = fireworks_type === 'consumer' ? location.get('zonedistance_consumer') : location.get('zonedistance_professional');
         if(!zone_distances.hasOwnProperty(zone_distance) && zone_distance !== this.OTHER_LABEL) {
-            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd bij "Zoneafstanden" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd bij "Vuurwerkcategorie" voor afsteeklocatie ' + location.get('label'));
             return false;
         }
         var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');

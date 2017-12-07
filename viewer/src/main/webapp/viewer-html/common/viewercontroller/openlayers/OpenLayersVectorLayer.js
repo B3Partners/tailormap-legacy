@@ -384,7 +384,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     featureModified : function (evt){
         var featureObject = this.fromOpenLayersFeature(evt.feature);
         this.removeMeasures();
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject,evt);
     },
     
     /**
