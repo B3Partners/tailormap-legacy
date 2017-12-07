@@ -24,13 +24,14 @@ Ext.define ("viewer.components.tools.FullExtent",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "fullExtent",
-        tooltip: "Full extent"
+        tooltip: "Full extent",
+        preventActivationAsFirstTool: true
     },
     constructor: function (conf){        
         this.initConfig(conf);
 		viewer.components.tools.FullExtent.superclass.constructor.call(this, this.config);
-        conf.type = viewer.viewercontroller.controller.Tool.FULL_EXTENT;        
-        this.initTool(conf);
+        this.config.type = viewer.viewercontroller.controller.Tool.FULL_EXTENT;
+        this.initTool(this.config);
         return this;
     }
 });
