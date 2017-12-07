@@ -1042,7 +1042,7 @@ Ext.define ("viewer.components.SelectionModule",{
             for(var i = 0 ; i < rootLevel.children.length; i++) {
                 var l = me.addLevel(rootLevel.children[i], true, true, this.config.showBackgroundLevels, null,null,me.originalLevels,true);
                 if(l !== null) {
-                    l.expanded = true; // Make top levels expand
+                    l.expanded = !l.origData.background; // Make top levels expand
                     levels.push(l);
                 }
             }
@@ -1127,6 +1127,9 @@ Ext.define ("viewer.components.SelectionModule",{
         if(Ext.isDefined(level.layers)) {
             treeNodeLayer.type = 'maplevel';
             treeNodeLayer.nodeid = 'm' + level.id;
+        }
+        if(level.background) {
+            treeNodeLayer.origData.background = true;
         }
         if(showChildren) {
             var nodes = [];
