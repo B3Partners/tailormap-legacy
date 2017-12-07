@@ -29,7 +29,6 @@ Ext.define ("viewer.components.SpatialFilter",{
     vectorLayer:null,
     iconPath:null,
     features:null,
-    onlySourceGeometry:null,
     config:{
         title: "",
         iconUrl: "",
@@ -54,7 +53,6 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.initConfig(conf);     
 		viewer.components.SpatialFilter.superclass.constructor.call(this, this.config);
         var me = this;
-        this.onlySourceGeometry = true;
         this.features = new Array();
         this.renderButton({
             handler: function(){
@@ -90,7 +88,6 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     drawGeometry: function(type){
-        this.onlySourceGeometry = false;
         var appendFilter = Ext.getCmp (this.config.name + 'AppendFilter');
         if(!appendFilter.getValue()){
             this.vectorLayer.removeAllFeatures();
@@ -100,7 +97,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     applyFilter: function () {
         var sourceAppLayer = this.sourceLayerSelector.getValue();
-        if (this.onlySourceGeometry && sourceAppLayer) {
+        if (Ext.Object.isEmpty(this.features) && sourceAppLayer) {
 
             var appLayer = this.layerSelector.getValue();
             var geomAttr = appLayer.attributes[appLayer.geometryAttributeIndex].name;
@@ -119,7 +116,12 @@ Ext.define ("viewer.components.SpatialFilter",{
             var i = 0;
             for (var key in features){
                 var feature = features[key].config.wktgeom;
-                var coords = feature.replace("POLYGON", "");
+                var coords = null;
+                if(feature.indexOf("MULTIPOLYGON") !== -1){
+                    coords = feature.replace("MULTIPOLYGON(","").replace(")))","))");
+                }else{
+                    coords = feature.replace("POLYGON", "");
+                }
                 if (i > 0) {
                     multi += ",";
                 }
