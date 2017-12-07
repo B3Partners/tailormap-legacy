@@ -225,6 +225,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
 
             var actionBeans = {
+                "app":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ApplicationActionBean"/></js:quote>,
                 "appConfig":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ApplicationActionBean" event="retrieveAppConfigJSON" /></js:quote>,
                 "service":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/></js:quote>,
                 "feature":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/></js:quote>,

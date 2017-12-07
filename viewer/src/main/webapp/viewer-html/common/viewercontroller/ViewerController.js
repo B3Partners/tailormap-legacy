@@ -1706,17 +1706,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
 
                 for( var i = 0 ; i < value.length ; i++){
-                    selectedContent.push({
-                        type: "level",
-                        id : value[i]
-                    });
-                }
-            }else if(key === "search"){
-                if(!Ext.isEmpty(value)){
-                    var components = this.getComponentsByClassName("viewer.components.Search");
-                    for (var i = 0 ; i < components.length ;i++){
-                        var comp = components[i];
-                        comp.loadVariables(value);
+                    var found = false;
+                    for(var j = 0; j<appLayers.length;j++){
+                        if(value[i]===appLayers[j]){
+                            found = true;
+                            selectedContent.push({
+                                type: "appLayer",
+                                id : value[i]
+                            });
+                        }
+                    }
+                    if(!found){
+                        selectedContent.push({
+                            type: "level",
+                            id : value[i]
+                        });
                     }
                 }
             }else if(key === "levels"){
@@ -1787,34 +1791,25 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             params:[]
         };
 
-        var url = document.URL;
-        var index = url.indexOf("?");
-        var newUrl = "";
-        if(index > 0){
-            newUrl = url.substring(0,index)+"?";
-        }else{
-            newUrl = url+"?";
+        var url = window.location.origin+ actionBeans["app"];
+        url += "/"+this.app.name;
+        if(typeof this.app.version !== "undefined") {
+            url += "/v"+this.app.version;
         }
         var param = {
             name: "url",
-            value: newUrl
+            value: url+"?"
         };
         paramJSON.params.push(param);
-
-        if(index > 0){
-            var params = url.substring(index +1);
-            var parameters = params.split("&");
-            for ( var i = 0 ; i < parameters.length ; i++){
-                var parameter = parameters[i];
-                var index2 = parameter.indexOf("=");
-                var type = parameter.substring(0,index2);
-                var value = parameter.substring(index2 +1);
-                if(type != "layers" && type != "extent" && type != "bookmark" && type != "levelOrder"){
-                    paramJSON.params.push({
-                        name: type,
-                        value: value
-                    });
-                }
+        
+        var obj = Ext.urlDecode(window.location.search);
+        
+        for (var option in obj){
+            if(option != "layers" && option != "extent" && option != "bookmark" && option != "levelOrder"){
+                paramJSON.params.push({
+                    name: option,
+                    value: obj[option]
+                });
             }
         }
 
