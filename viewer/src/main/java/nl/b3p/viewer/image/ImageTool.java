@@ -25,6 +25,7 @@ import com.sun.imageio.plugins.png.PNGMetadata;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
@@ -239,7 +240,7 @@ public class ImageTool {
             Geometry geom = geometrieFromText(wktGeom, srid);
             Shape shape = createImage(geom, srid, bbox, width, height);
             Point centerPoint = null;
-            if (geom instanceof Polygon) {
+            if (geom instanceof Polygon || geom instanceof MultiPolygon) {
                 gbi.fill(shape);
                 gbi.setColor(fs.getStrokeColor());
                 gbi.draw(shape);
@@ -286,10 +287,6 @@ public class ImageTool {
                 gbi.setStroke(stroke);
                 gbi.draw(shape);
                 
-            }else {
-                gbi.fill(shape);
-                gbi.setColor(fs.getStrokeColor());
-                gbi.draw(shape);
             }
             if (ciw.getLabel() != null && !ciw.getLabel().isEmpty()) {
                 int xoffset = -1 * (gbi.getFontMetrics().stringWidth(ciw.getLabel()) / 2 );
