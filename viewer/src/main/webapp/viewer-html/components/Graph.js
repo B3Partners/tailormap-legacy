@@ -281,21 +281,22 @@ Ext.define("viewer.components.Graph", {
                     axis: 'left',
                     xField: me.getAttributeTitle(appLayer, gco.categoryAttribute),
                     yField: me.getAttributeTitle(appLayer, serieAttribute),
+                    title: me.getAttributeTitle(appLayer,serieAttribute),
                     marker: {
                         type: 'circle',
                         size: 4,
                         radius: 4,
                         'stroke-width': 0
                     },
-                    tips: {
+                    tooltip: {
                         trackMouse: true,
                         minWidth: 140,
                         height: 28,
-                        renderer: function(storeItem, item) {
+                        renderer: function(toolTip, item) {
                             // if(graphType === 'bar' || graphType === 'column') {
                             //     this.setTitle(item.value[0] + ': ' + item.value[1]);
                             // } else {
-                                this.setTitle(item.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + item.get(me.getAttributeTitle(appLayer,serieAttribute)));
+                                toolTip.setHtml(item.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + item.get(me.getAttributeTitle(appLayer,serieAttribute)));
                             // }
                         }
                     },
