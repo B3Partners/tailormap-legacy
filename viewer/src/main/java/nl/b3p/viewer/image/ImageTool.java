@@ -518,9 +518,7 @@ public class ImageTool {
         }
         if (image.getHeight()!=null && image.getWidth()!=null){
             gbi.drawImage(image.getImage(), x, y, image.getWidth(),image.getHeight(),null);      
-          //  gbi.drawImage(image.getImage(), x, y,null);// image.getWidth(),image.getHeight(),null);      
-            gbi.setColor(Color.BLACK);
-            gbi.drawRect(image.getX(), image.getY(), image.getWidth() -1, image.getHeight() -1);
+          //  gbi.drawImage(image.getImage(), x, y,null);// image.getWidth(),image.getHeight(),null);
         }else{ 
            gbi.drawImage(image.getImage(), x, y, null);        
         }
