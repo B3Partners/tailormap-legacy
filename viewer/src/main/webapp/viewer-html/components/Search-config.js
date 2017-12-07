@@ -186,7 +186,29 @@ Ext.define("viewer.components.SearchConfiguration",{
                         },
                         { fieldLabel: 'URL *', name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
                         { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
-                        { xtype: 'container', itemId: 'pdokConfig' + config.id, hidden: true, height: 130, autoScroll: true,items: [{xtype: "textfield",value: config.filter,name: "filter" + config.id,itemId: "filter" + config.id,fieldLabel: "Optioneel filter",labelWidth: 120,width: 600}] },
+                        {
+                            xtype: 'container',
+                            itemId: 'pdokConfig' + config.id,
+                            hidden: true,
+                            height: 100,
+                            autoScroll: true,
+                            items: [
+                                {   xtype: "textfield",
+                                    value: config.filter,
+                                    name: "filter" + config.id,
+                                    itemId: "filter" + config.id,
+                                    fieldLabel: "Optioneel filter",
+                                    labelWidth: 120,
+                                    width: 600
+                                },
+                                {   xtype: "container",
+                                    html: "Meer informatie over de configuratie van de PDOK Adreszoeker kunt u vinden via " +
+                                    "<a href=\"https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine\" target='_help'>" +
+                                    "https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine" +
+                                    "</a>"
+                                }
+                            ]
+                        },
                         { xtype: 'container', itemId: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', layout: { type: 'vbox', align: 'stretch' } },
                         {
                             xtype:'button',
