@@ -238,6 +238,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         });
         document.getElementById('sliderheader-container').appendChild(me.createSliderHeader(sliderid, slidername));
         me.initHeader(sliderid);
+        me.setSliderForm(sliderid);
     },
     
     appendSliders: function() {
