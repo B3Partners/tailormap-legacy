@@ -33,6 +33,7 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -216,7 +217,10 @@ public class ImageTool {
         hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         hints.put(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-        hints.put(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
+        hints.put(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);        
+        hints.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        hints.put(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        hints.put(RenderingHints.KEY_COLOR_RENDERING,RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         
         RenderingHints rh = new RenderingHints(hints);
         gbi.setRenderingHints(rh);
@@ -297,27 +301,43 @@ public class ImageTool {
                 double rotation = fs.getRotation();
                 AffineTransform rot = new AffineTransform(t);
                 rot.rotate(Math.toRadians(rotation), centerPoint.getX(), centerPoint.getY());
-                gbi.setTransform(rot);
                 double labelXOffset = fs.getLabelXOffset();
                 double labelYOffset = fs.getLabelYOffset();
                 centerPoint.translate(xoffset+(int)labelXOffset, yoffset-(int)labelYOffset);
 
-                // witte halo
-                gbi.setFont(font);
-                gbi.setColor(Color.WHITE);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() - 2);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() + 2);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 2, (float) centerPoint.getY());
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() + 2, (float) centerPoint.getY());
-                // actual text
                 gbi.setColor(fs.getFontColor());
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY());
+                BufferedImage b = createStringImage(gbi, ciw.getLabel());
+                rot.translate(centerPoint.getX(), centerPoint.getY());
+                gbi.drawImage(b, rot, null);
                 gbi.setTransform(t);
             }
         }
         gbi.dispose();
         return newBufIm;
+    }
+
+    private static BufferedImage createStringImage(Graphics g, String s) {
+        int w = g.getFontMetrics().stringWidth(s) + 8;
+        int h = g.getFontMetrics().getHeight();
+
+        BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D gbi = image.createGraphics();
+       
+        gbi.setFont(gbi.getFont());
+        gbi.setColor(Color.WHITE);
+        
+        int halosize= 1;
+        
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent()-halosize);
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent()+halosize);
+        gbi.drawString(s, -halosize, h - g.getFontMetrics().getDescent());
+        gbi.drawString(s, halosize, h - g.getFontMetrics().getDescent());
+        
+        gbi.setColor(Color.BLACK);
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent());
+        gbi.dispose();
+
+        return image;
     }
 
     private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi) {
