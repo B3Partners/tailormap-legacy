@@ -45,7 +45,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
 
-    private static final String DEFAULT_SPRITE = "/resources/images/default_sprite.png";
+    private static final String DEFAULT_SPRITE = "/viewer/viewer-html/sprite.svg";
 
     @Validate
     private String name;
