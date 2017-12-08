@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, FlamingoAppLoader */
+
 /**
  * Graph component
  * Creates a Graph component
@@ -231,7 +233,7 @@ Ext.define("viewer.components.Graph", {
         options.filter = filter;
         options.graph = true;
         options.arrays = false;
-        options.sort = this.getAttributeTitle(appLayer, config.categoryAttribute);
+        options.sort = this.getAttributeTitleName(appLayer, config.categoryAttribute, false);
         options.attributesToInclude = attributes;
         options.attributesNotNull = attributes;
         Ext.Ajax.request({
