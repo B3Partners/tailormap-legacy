@@ -236,7 +236,7 @@ public class OntbrandingsActionBean implements ActionBean {
         LineString loodLijn = gf.createLineString(loodLijnCoords);  
         Geometry cutoffLoodlijn = loodLijn.intersection(safetyZone);
         cutoffLoodlijn = cutoffLoodlijn.difference(ignition);
-        gs.put(createFeature(cutoffLoodlijn, "safetyDistance", round(cutoffLoodlijn.getLength(), 2) + " m"));
+        gs.put(createFeature(cutoffLoodlijn, "safetyDistance", (int)cutoffLoodlijn.getLength() + " m"));
 
         // 2. afstand tussen rand afsteekzone en safetyzone: haaks op publiek
         
@@ -245,7 +245,7 @@ public class OntbrandingsActionBean implements ActionBean {
         Geometry cutoffContLine = continuousLine.intersection(safetyZone);
         cutoffContLine = cutoffContLine.difference(ignition);
 
-        gs.put(createFeature(cutoffContLine, "safetyDistance", round(cutoffContLine.getLength(), 2) + " m"));
+        gs.put(createFeature(cutoffContLine, "safetyDistance", (int)cutoffContLine.getLength() + " m"));
     }
 
     public Geometry createEllipse(Coordinate startPoint, double rotation, double fanlength, double fanheight, int numPoints) throws TransformException {
@@ -302,15 +302,6 @@ public class OntbrandingsActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(result.toString()));
     }
 
-    public static double round(double value, int places) {
-        if (places < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        BigDecimal bd = new BigDecimal(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
-    }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     @Override
