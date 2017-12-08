@@ -408,11 +408,11 @@ public class AttributeSourceActionBean implements ActionBean {
         };
     }
 
-    private JSONObject getGridRow(int i, String name, String url, String type) throws JSONException {
+    private JSONObject getGridRow(int id, String name, String url, String type) throws JSONException {
         JSONObject j = new JSONObject();
-        j.put("id", i);
+        j.put("id", id);
         j.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
-        j.put("name", name);
+        j.put("name", "#" + id + " " + name);
         j.put("url", url);
         j.put("protocol", type);
         return j;
