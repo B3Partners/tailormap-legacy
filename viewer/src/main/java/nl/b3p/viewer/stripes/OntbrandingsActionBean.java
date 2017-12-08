@@ -209,19 +209,13 @@ public class OntbrandingsActionBean implements ActionBean {
     }
 
     private void createSafetyDistances(JSONArray gs, Geometry audience, Geometry ignition, Geometry safetyZone) throws TransformException {
-
         // Create safetydistances
-        // 1. afstand tussen publiek en safetyzone
+        // 1. afstand tussen rand afsteekzone en safetyzone: loodrecht op publiek
         Point audienceCentroid = audience.getCentroid();
         Point ignitionCentroid = ignition.getCentroid();
         Coordinate[] coords = {audienceCentroid.getCoordinate(), ignitionCentroid.getCoordinate()};
         LineString audience2ignition = gf.createLineString(coords);
-        Geometry cutoff = audience2ignition.difference(safetyZone);
-        cutoff = cutoff.difference(audience);
-
-        gs.put(createFeature(cutoff, "safetyDistance", round(cutoff.getLength(), 2) + " m"));
-
-        // 2. afstand tussen rand afsteekzone en safetyzone: loodrecht op publiek
+        
         double dx = ignitionCentroid.getX() - audienceCentroid.getX();
         double dy = ignitionCentroid.getY() - audienceCentroid.getY();
         double length = audience2ignition.getLength();
@@ -244,7 +238,7 @@ public class OntbrandingsActionBean implements ActionBean {
         cutoffLoodlijn = cutoffLoodlijn.difference(ignition);
         gs.put(createFeature(cutoffLoodlijn, "safetyDistance", round(cutoffLoodlijn.getLength(), 2) + " m"));
 
-        // 3. afstand tussen rand afsteekzone en safetyzone: haaks op publiek
+        // 2. afstand tussen rand afsteekzone en safetyzone: haaks op publiek
         
         Coordinate[] endContinuousLine = {ignitionCentroid.getCoordinate(), eindLoodlijn.getCoordinate()};
         LineString continuousLine = gf.createLineString(endContinuousLine);
