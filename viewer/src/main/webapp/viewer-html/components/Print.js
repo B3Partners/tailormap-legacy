@@ -67,7 +67,7 @@ Ext.define ("viewer.components.Print",{
         this.combineImageService = Ext.create("viewer.CombineImage",{});
 
         var me = this;
-        if(this.hasButton === null || this.hasButton){
+        if(this.hasButton === null || this.hasButton === undefined || this.hasButton){
             this.renderButton({
                 handler: function(){
                     me.buttonClick();
