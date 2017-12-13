@@ -68,8 +68,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                     iconCls: 'addbutton-icon',
                     text: 'Zoekingang toevoegen',
                     listeners: {
-                        click: function() {
-                            me.appendSearchField();
+                        click:{
+                            fn: function() {
+                                me.appendSearchField();
+                            },
+                            scope: me
                         }
                     }
                 }
@@ -88,7 +91,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                     me.appendSearchField(searchconfig);
                 });
             }
-            if(config.nextSearchConfigId !== null) {
+            if(config.nextSearchConfigId) {
                 me.nextId = config.nextSearchConfigId;
             }
         }
@@ -170,6 +173,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 inputValue: 'pdok',
                                 checked: config.type === "pdok"
                             },{
+                                boxLabel: 'WFS', 
+                                name: 'type' + config.id, 
+                                inputValue: 'wfs',
+                                checked: config.type === "wfs"
+                            },{
                                 boxLabel: 'Eenvoudig', 
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
@@ -232,7 +240,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         // When switching radio input type is an array
         if(typeof type !== 'string') return;
         this.hideExtraConfig(configid);
-        if(type === 'solr' || type === 'simplelist' || type === 'pdok') {
+        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'wfs') {
             if(type === 'solr') {
                 // Show additional Solr configuration
                 this.addSolrconfig(configid);
@@ -242,6 +250,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
             if(type === "pdok"){
                 this.addPdokConfig(configid);
+            }
+            if(type === 'wfs'){
+                this.addWFSConfig(configid);
             }
             this.hideUrl(configid);
         } else {
@@ -419,11 +430,12 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     addPdokConfig: function(configid){
         var searchConfig = this.getConfig(configid);
-        var solrConfigContainer = Ext.ComponentQuery.query('#pdokConfig' + configid)[0];
-        solrConfigContainer.setVisible(true);
-        var a =0;
+        var pdokConfigContainer = Ext.ComponentQuery.query('#pdokConfig' + configid)[0];
+        pdokConfigContainer.setVisible(true);
         this.panel.updateLayout();
-        
+    },
+    
+    addWFSConfig: function (configId){
         
     },
     /**
@@ -488,16 +500,18 @@ Ext.define("viewer.components.SearchConfiguration",{
                 ]
             });
             me.requiredLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
-                requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
+                requestUrl: this.getContextpath() + "/action/componentConfigList",
                 requestParams: {
-                    appId: this.getApplicationId()
+                    appId: this.getApplicationId(),
+                    layerlist:true
                 },
                 parentContainer: Ext.ComponentQuery.query('#requiredLayersOn')[0]
             });
             me.switchLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
-                requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
+                requestUrl: this.getContextpath() + "/action/componentConfigList",
                 requestParams: {
-                    appId: this.getApplicationId()
+                    appId: this.getApplicationId(),
+                    layerlist:true
                 },
                 parentContainer: Ext.ComponentQuery.query('#switchLayersOn')[0],
                 checked: (searchConfig && searchConfig.hasOwnProperty('switchOnLayers')) ? searchConfig.switchOnLayers : []

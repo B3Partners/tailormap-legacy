@@ -230,10 +230,11 @@ Ext.define("viewer.components.CustomConfiguration", {
         var me = this;
         me.layers = null;
         Ext.Ajax.request({
-            url: this.getContextpath() + "/action/componentConfigLayerList",
+            url: this.getContextpath() + "/action/componentConfigList",
             params:{
                 appId: this.getApplicationId(),
-                attribute:true
+                attribute:true,
+                layerlist:true
             },
             success: function ( result, request ) {
                 var layers = Ext.JSON.decode(result.responseText);
