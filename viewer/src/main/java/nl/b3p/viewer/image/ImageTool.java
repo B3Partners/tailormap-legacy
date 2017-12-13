@@ -34,6 +34,7 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -49,6 +50,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -212,12 +214,14 @@ public class ImageTool {
         }
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
         Graphics2D gbi = newBufIm.createGraphics();
-
         Map<Key, Object> hints = new HashMap<>();
         hints.put(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         hints.put(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-        hints.put(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);
+        hints.put(RenderingHints.KEY_STROKE_CONTROL,RenderingHints.VALUE_STROKE_NORMALIZE);        
+        hints.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        hints.put(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        hints.put(RenderingHints.KEY_COLOR_RENDERING,RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         
         RenderingHints rh = new RenderingHints(hints);
         gbi.setRenderingHints(rh);
@@ -225,8 +229,8 @@ public class ImageTool {
         Font font = gbi.getFont().deriveFont(Font.BOLD, gbi.getFont().getSize());
         
         int yoffset = gbi.getFontMetrics().getHeight() / 2;
-        
         for (int i = 0; i < wktGeoms.size(); i++) {
+            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             CombineImageWkt ciw = (CombineImageWkt) wktGeoms.get(i);
             FeatureStyle fs = ciw.getStyle();
             font = font.deriveFont(fs.getFontSize());
@@ -234,15 +238,17 @@ public class ImageTool {
             double pointRadius = fs.getPointRadius();
             gbi.setStroke(new BasicStroke(strokeWidth));
             gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
-            
+
             gbi.setColor(fs.getFillColor());
             String wktGeom = ciw.getWktGeom();
             Geometry geom = geometrieFromText(wktGeom, srid);
             Shape shape = createImage(geom, srid, bbox, width, height);
             Point centerPoint = null;
             if (geom instanceof Polygon || geom instanceof MultiPolygon) {
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
                 gbi.fill(shape);
                 gbi.setColor(fs.getStrokeColor());
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getStrokeOpacity().floatValue()));
                 gbi.draw(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
                 int pointwidth = (int) pointRadius * 2;
@@ -255,9 +261,10 @@ public class ImageTool {
             
                 if(fs.getGraphicName() != null && !fs.getGraphicName().isEmpty()){
                     s = drawPointGraphic(centerPoint, fs, xpointoffset, ypointoffset, gbi);
-                } else {
+            } else {
                     s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
                 }
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
                 gbi.fill(s);
                 gbi.draw(s);
                 gbi.setTransform(at);
@@ -285,10 +292,12 @@ public class ImageTool {
                         break;
                 }
                 gbi.setStroke(stroke);
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getStrokeOpacity().floatValue()));
                 gbi.draw(shape);
                 
             }
             if (ciw.getLabel() != null && !ciw.getLabel().isEmpty()) {
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
                 int xoffset = -1 * (gbi.getFontMetrics().stringWidth(ciw.getLabel()) / 2 );
                 if (centerPoint == null) {
                     centerPoint = calculateCenter(shape, srid, bbox, width, height,0, 0);
@@ -298,27 +307,43 @@ public class ImageTool {
                 double rotation = fs.getRotation();
                 AffineTransform rot = new AffineTransform(t);
                 rot.rotate(Math.toRadians(rotation), centerPoint.getX(), centerPoint.getY());
-                gbi.setTransform(rot);
                 double labelXOffset = fs.getLabelXOffset();
                 double labelYOffset = fs.getLabelYOffset();
                 centerPoint.translate(xoffset+(int)labelXOffset, yoffset-(int)labelYOffset);
 
-                // witte halo
-                gbi.setFont(font);
-                gbi.setColor(Color.WHITE);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() - 2);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY() + 2);
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() - 2, (float) centerPoint.getY());
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX() + 2, (float) centerPoint.getY());
-                // actual text
                 gbi.setColor(fs.getFontColor());
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
-                gbi.drawString(ciw.getLabel(), (float) centerPoint.getX(), (float) centerPoint.getY());
+                BufferedImage b = createStringImage(gbi, ciw.getLabel());
+                rot.translate(centerPoint.getX(), centerPoint.getY());
+                gbi.drawImage(b, rot, null);
                 gbi.setTransform(t);
             }
         }
         gbi.dispose();
         return newBufIm;
+    }
+
+    private static BufferedImage createStringImage(Graphics g, String s) {
+        int w = g.getFontMetrics().stringWidth(s) + 8;
+        int h = g.getFontMetrics().getHeight();
+
+        BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D gbi = image.createGraphics();
+       
+        gbi.setFont(gbi.getFont());
+        gbi.setColor(Color.WHITE);
+        
+        int halosize= 1;
+        
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent()-halosize);
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent()+halosize);
+        gbi.drawString(s, -halosize, h - g.getFontMetrics().getDescent());
+        gbi.drawString(s, halosize, h - g.getFontMetrics().getDescent());
+        
+        gbi.setColor(Color.BLACK);
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent());
+        gbi.dispose();
+
+        return image;
     }
 
     private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi) {
@@ -327,6 +352,8 @@ public class ImageTool {
         int halfLength = length/2;
         int originX = (int) origin.getX();
         int originY = (int) origin.getY();
+        
+        int ycorrected = rotation % 360 < 180 ? yoffset * 2 : yoffset;
         
         AffineTransform rot = gbi.getTransform();
         rot.rotate(Math.toRadians(rotation), originX  - xoffset, originY+ length + yoffset);
@@ -337,10 +364,11 @@ public class ImageTool {
             originX + halfLength - xoffset
         };
         
+        
         int [] y = {
-            originY + length + yoffset,
-            originY + yoffset - (length * 2/3),
-            originY + length + yoffset
+            originY + length - ycorrected,
+            originY - ycorrected,
+            originY + length - ycorrected
         };
         Shape s = new java.awt.Polygon(x, y, 3);
         return s;
@@ -353,7 +381,6 @@ public class ImageTool {
         centerPoint.setLocation(x, y);
         centerPoint = transformToScreen(centerPoint, srid, bbox, width, height);
         centerPoint.translate(xoffset, yoffset);
-        
         return centerPoint;
     }
 
@@ -516,10 +543,9 @@ public class ImageTool {
             y=0;
         }
         if (image.getHeight()!=null && image.getWidth()!=null){
-            gbi.drawImage(image.getImage(), x, y, image.getWidth(),image.getHeight(),null);      
-          //  gbi.drawImage(image.getImage(), x, y,null);// image.getWidth(),image.getHeight(),null);
-        }else{ 
-           gbi.drawImage(image.getImage(), x, y, null);        
+            gbi.drawImage(image.getImage(), x, y, image.getWidth(),image.getHeight(),null);        
+        }else{
+            gbi.drawImage(image.getImage(), x, y, null);        
         }
     }
     // </editor-fold>

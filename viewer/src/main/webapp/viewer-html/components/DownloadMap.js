@@ -30,29 +30,31 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     lastImageUrl: "",
     constructor: function (conf){        
         this.hasButton = false;
-        this.initConfig(conf);   
-		viewer.components.tools.DownloadMap.superclass.constructor.call(this, this.config);
+        this.initConfig(conf);
+        viewer.components.tools.DownloadMap.superclass.constructor.call(this, this.config);
         
-        if(this.isPopup){
-            var me = this;
-            this.renderButton({
-                text: me.title,
-                tooltip: me.config.tooltip,
-                label: me.label,
-                handler: function() {
-                    me.buttonDown();
-                }
-            });
-        }else{
-            this.button= this.config.viewerController.mapComponent.createTool({
-                type: viewer.viewercontroller.controller.Tool.BUTTON,
-                displayClass: "downloadMap",
-                tooltip: this.config.tooltip || null,
-                viewerController: this.config.viewerController
-            });
-            this.config.viewerController.mapComponent.addTool(this.button);
+        if(!this.hideOwnButton){
+            if(this.isPopup){
+                var me = this;
+                this.renderButton({
+                    text: me.title,
+                    tooltip: me.config.tooltip,
+                    label: me.label,
+                    handler: function() {
+                        me.buttonDown();
+                    }
+                });
+            }else{
+                this.button= this.config.viewerController.mapComponent.createTool({
+                    type: viewer.viewercontroller.controller.Tool.BUTTON,
+                    displayClass: "downloadMap",
+                    tooltip: this.config.tooltip || null,
+                    viewerController: this.config.viewerController
+                });
+                this.config.viewerController.mapComponent.addTool(this.button);
 
-            this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
+                this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
+            }
         }
         return this;
     },

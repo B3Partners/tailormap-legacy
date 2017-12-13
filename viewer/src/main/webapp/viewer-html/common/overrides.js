@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /**
  * This file contains overrides for Ext bugs and behaviour.
  * For every new Ext release we should check if these are still necessary
@@ -40,7 +39,7 @@ Ext.define('viewer.overrides.dom.TouchAction', {
     onTouchEnd: function(e) {
         this.callParent([this.fixEvent(e)]);
     }
-});
+    });
 /*
  Fixes an issue in Chrome since default settings for passive have changed since Chrome 56, see
  - https://www.chromestatus.com/features/5093566007214080
@@ -74,7 +73,7 @@ if(Ext.browser.is.Chrome || Ext.browser.is.ChromeMobile) {
                 }
                 this.callParent([eventName]);
             }
-        });
+    });
     });
 }
 /*
@@ -104,7 +103,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
         outlineStyle.fontStrokeWidth = style.labelOutlineWidth;
         delete outlineStyle.labelOutlineWidth;
         this.drawText(featureId, outlineStyle, location);
-    }
+}
 
     var resolution = this.getResolution();
 
@@ -150,7 +149,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
     if (style.rotation) {
         label.setAttributeNS(null, "transform",
             'rotate(' + style.rotation + ',' + x + ',' + -y + ')'
-        );
+);
     }
     var align = style.labelAlign || OpenLayers.Renderer.defaultSymbolizer.labelAlign;
     label.setAttributeNS(null, "text-anchor",

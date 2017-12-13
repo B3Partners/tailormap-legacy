@@ -64,25 +64,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="wrapper"></div>
 
         <script type="text/javascript">
-            // IOS7 on iPad has an issue with height of the html/body
-            // http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
-            // To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
-            if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i) && !window.navigator.standalone) {
-                document.documentElement.className += ' ipad ios7';
-                document.ontouchmove = function(event){
-                    event.preventDefault();
-                };
-            }
+                            // IOS7 on iPad has an issue with height of the html/body
+                            // http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
+                            // To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
+                            if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i) && !window.navigator.standalone) {
+                                document.documentElement.className += ' ipad ios7';
+                                document.ontouchmove = function(event){
+                                    event.preventDefault();
+                                };
+                    }
         </script>
+
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
+
         <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
 
         <c:if test="${actionBean.viewerType == 'flamingo'}">
             <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         </c:if>
         <c:if test="${actionBean.viewerType == 'openlayers'}">
+
             <c:choose>
                 <c:when test="${param.ol == 'debug'}">
                     <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/lib/OpenLayers.js"></script>
@@ -224,6 +227,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 };
             }
 
+
             var actionBeans = {
                 "app":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ApplicationActionBean"/></js:quote>,
                 "appConfig":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ApplicationActionBean" event="retrieveAppConfigJSON" /></js:quote>,
@@ -283,7 +287,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 absoluteURIPrefix: "${absoluteURIPrefix}",
                 actionbeanUrl: actionBeans["appConfig"]
 
-            });
+                        });
+
         </script>
 
         <%@include file="/WEB-INF/jsp/app_overrides.jsp"%>

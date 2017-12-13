@@ -22,23 +22,23 @@
 Ext.define("viewer.viewercontroller.controller.FeatureStyle", {
 
     config: {
-        label: '',
-        labelOutlineColor: '',
-        labelOutlineWidth: '',
-        labelAlign: '',
-        fontSize: '',
-        fontColor: '',
-        rotation: 0,
-        labelXOffset: 0,
-        labelYOffset: 0,
-        fillColor: '',
-        fillOpacity: 0,
-        strokeColor: '',
-        strokeOpacity: 0,
-        strokeDashstyle: '',
-        strokeWidth: 0,
-        graphicName: '',
-        pointRadius: 0
+        label: null,
+        labelOutlineColor: null,
+        labelOutlineWidth: null,
+        labelAlign: null,
+        fontSize: null,
+        fontColor: null,
+        rotation: null,
+        labelXOffset: null,
+        labelYOffset: null,
+        fillColor: null,
+        fillOpacity: null,
+        strokeColor: null,
+        strokeOpacity: null,
+        strokeDashstyle: null,
+        strokeWidth: null,
+        graphicName: null,
+        pointRadius: null
     },
 
     /**
@@ -56,7 +56,7 @@ Ext.define("viewer.viewercontroller.controller.FeatureStyle", {
     getProperties: function() {
         var props = {};
         for(var prop in this.config) if(this.config.hasOwnProperty(prop)) {
-            if(this.config[prop] !== '' && this.config[prop] !== 0) {
+            if(this.config[prop] !== null) {
                 props[prop] = this.config[prop];
             }
         }

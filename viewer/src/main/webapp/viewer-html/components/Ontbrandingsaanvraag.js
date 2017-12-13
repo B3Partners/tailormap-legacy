@@ -26,7 +26,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     vectorLayer: null,
     extraObjectsLayer: null,
     calculationResultLayer: null,
-    tempCalculationResultLayer: null,
     // Current active feature
     activeFeature: null,
     // All features
@@ -44,6 +43,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     isImporting: false,
     isDrawing: false,
     isDeselecting: false,
+    isAddingSafetyZone: false,
 
     IGNITION_LOCATION_TYPE: 'ignitionLocation',
     IGNITION_LOCATION_FORM: 'ignitionLocationForm',
@@ -52,16 +52,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     EXTRA_OJBECT_TYPE: 'extraObject',
     EXTRA_OBJECT_FORM: 'extraObjectForm',
     MEASURE_LINE_TYPE: 'measureObject',
-    MEASURE_LINE_COLOR: '777777',
+    MEASURE_LINE_COLOR: 'FFD600',
+    SAFETY_DISTANCE_COLOR: 'FF7724',
+    SAFETY_DISTANCE_TYPE: 'safetyDistance',
 
     COMPONENT_VERSION: '1.0',
-    COMPONENT_NAME: 'Ontbrandingsaanvraag',
+    COMPONENT_NAME: 'Vuurwerkevenementen',
     ZONE_DISTANCES_CONSUMER: {},
     ZONE_DISTANCES_PROFESSIONAL: {},
     OTHER_LABEL: "Anders, namelijk...",
+    
+    printComponent:null,
 
     constructor: function (conf){
         this.initConfig(conf);
+        this.hideOwnButton = true;
         viewer.components.Ontbrandingsaanvraag.superclass.constructor.call(this, this.config);
         this.zoneDistanceConfigToObject(conf.zonedistances_consumer, this.ZONE_DISTANCES_CONSUMER);
         this.zoneDistanceConfigToObject(conf.zonedistances_professional, this.ZONE_DISTANCES_PROFESSIONAL);
@@ -71,13 +76,23 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.iconPath = contextPath + "/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, this.createLayers, this);
+        
+        var c = Ext.Object.merge({}, conf, {
+            isPopup: true,
+            regionName : "left_menu"
+        });
+        this.printComponent = Ext.create("viewer.components.Print",c);
+        
         return this;
     },
 
     zoneDistanceConfigToObject: function(conf, obj) {
         if(!conf || conf.length === 0) return;
         for(var i = 0; i < conf.length; i++) {
-            obj[conf[i].label] = conf[i].distance;
+            obj[conf[i].label] = {
+                distance: conf[i].distance,
+                fan: conf[i].fan
+            }
         }
     },
 
@@ -111,13 +126,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return this.calculationResultLayer;
     },
 
-    getTempCalculationResultLayer: function() {
-        if(this.tempCalculationResultLayer === null) {
-            this.createLayers();
-        }
-        return this.tempCalculationResultLayer;
-    },
-
     createLayers : function () {
         var defaultProps = {
             'fontColor': "#000000",
@@ -132,14 +140,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
         this.safetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
-            'fillColor': '#ffe19b',
-            'strokeColor': "#ffba37"
-        }));
-        this.tempSafetyZoneStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, this.safetyZoneStyle.config, {
-            'fillColor': '#ffe19b',
-            'fillOpacity': 0.2,
-            'strokeOpacity': 0.2,
-            'strokeColor': "#ffba37"
+            'fillOpacity' : 0,
+            'strokeColor': "#" + this.SAFETY_DISTANCE_COLOR,
+            'strokeOpacity' : 1.0
         }));
         this.ingnitionLocationStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', Ext.Object.merge({}, defaultProps, {
             'fillColor': "#009900",
@@ -179,22 +182,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             geometrytypes: ["Polygon", "Circle", "Point", "LineString"],
             showmeasures: false,
             viewerController: this.config.viewerController,
-            defaultFeatureStyle: this.safetyZoneStyle
-        });
-        this.tempCalculationResultLayer = this.config.viewerController.mapComponent.createVectorLayer({
-            name: 'tempCalculationResultLayer',
-            geometrytypes: ["Polygon", "Circle", "Point", "LineString"],
-            showmeasures: false,
-            viewerController: this.config.viewerController,
-            defaultFeatureStyle: this.tempSafetyZoneStyle,
+            defaultFeatureStyle: this.safetyZoneStyle,
+            addAttributesToFeature: true,
             addStyleToFeature: true
         });
         this.config.viewerController.mapComponent.getMap().addLayer(this.calculationResultLayer);
-        this.config.viewerController.mapComponent.getMap().addLayer(this.tempCalculationResultLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.extraObjectsLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, this.activeFeatureChanged, this);
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.activeFeatureFinished, this);
+        this.calculationResultLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.activeFeatureFinished, this);
     },
 
     /**
@@ -202,17 +199,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      */
     loadWindow : function() {
         this.wizardPages = [
-            this.createWizardPage("Nieuwe of bestaande aanvraag", [
-                "Via dit formulier kunt u een ontbrandingsaanvraag tekeken om vervolgens in te dienen.",
+            this.createWizardPage("Nieuwe of bestaande situatietekening", [
+                "Via dit formulier kunt u een situatietekening maken om vervolgens in te dienen.",
                 {
                     xtype: 'button',
-                    html: 'Nieuw aanvraag indienen',
+                    html: 'Nieuw situatietekening maken',
                     margin: this.defaultMargin,
                     listeners: { click: this.newRequest, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: 'Eerdere aanvraag inladen',
+                    html: 'Eerdere situatietekening inladen',
                     margin: this.defaultMargin,
                     listeners: { click: this.loadRequest, scope: this }
                 },
@@ -265,7 +262,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createWizardPage("Afsteeklocaties", [
                 {
                     xtype: 'button',
-                    html: 'Afsteeklocatie toevoegen',
+                    html: '+ Afsteeklocatie toevoegen',
                     margin: this.defaultMargin,
                     listeners: { click: this.createIgnitionLocation, scope: this }
                 },
@@ -281,7 +278,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createWizardPage("Publieklocaties", [
                 {
                     xtype: 'button',
-                    html: 'Publieklocatie toevoegen',
+                    html: '+ Publieklocatie toevoegen',
                     margin: this.defaultMargin,
                     listeners: { click: this.createAudienceLocation, scope: this }
                 },
@@ -313,7 +310,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     html: ''
                 }
             ]),
-            this.createWizardPage("Toevoegen hulp- en afstandslijnen", [
+            this.createWizardPage("Toevoegen hulplijnen", [
                 {
                     xtype: 'container',
                     layout: {
@@ -327,11 +324,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     },
                     items: [
                         {
-                            html: 'Hulplijn',
+                            html: '+ Hulplijn',
                             listeners: { click: this.createExtraObject, scope: this }
                         },
                         {
-                            html: 'Afstandslijn',
+                            html: '+ Afstandslijn',
                             listeners: { click: this.createMeasureLine, scope: this }
                         }
                     ]
@@ -348,13 +345,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createWizardPage("Opslaan en printen", [
                 {
                     xtype: 'button',
-                    html: 'Aanvraag opslaan',
+                    html: 'Situatietekening opslaan .JSON',
                     margin: this.defaultMargin,
                     listeners: { click: this.saveFile, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: 'Aanvraag printen',
+                    html: 'Situatietekening opslaan .PNG',
+                    margin: this.defaultMargin,
+                    listeners: { click: this.makeImage, scope: this }
+                },
+                {
+                    xtype: 'button',
+                    html: 'Situatietekening opslaan .PDF',
                     margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
                 },
@@ -369,12 +372,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
         this.mainContainer = Ext.create('Ext.panel.Panel', {
             layout: {
-                type: 'fit'
+                type: 'vbox',
+                align: 'stretch'
             },
-            defaults: {
-                bodyStyle: 'padding: 10px'
-            },
-            items: this.wizardPages,
+            items: [
+                this.createTabs(),
+                { xtype: 'container', flex: 1, items: this.wizardPages, layout: 'fit', defaults: { bodyStyle: 'padding: 10px' } }
+            ],
             fbar: [
                 { type: 'button', itemId: 'prev_button', text: 'Vorige', handler: function() { this.previousPage(); }.bind(this) },
                 { type: 'button', itemId: 'next_button', text: 'Volgende', handler: function() { this.nextPage(); }.bind(this) }
@@ -429,6 +433,44 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             next_button.setDisabled(true);
         }
         this.wizardPages[this.currentPage].setVisible(true);
+        this.tabs.setActiveTab(this.currentPage);
+    },
+
+    createTabs: function() {
+        this.tabs = Ext.create('Ext.tab.Panel', {
+            bodyStyle: {
+                width: 0,
+                height: 0,
+                display: 'none'
+            },
+            items: [
+                { itemId: "page-0", title: "Aanvraag" },
+                { itemId: "page-1", title: "Afsteeklocaties" },
+                { itemId: "page-2", title: "Publiekslocatie" },
+                { itemId: "page-3", title: "Berekening" },
+                { itemId: "page-4", title: "Hulplijnen" },
+                { itemId: "page-5", title: "Opslaan en printen" }
+            ],
+            listeners :{
+                tabchange: {
+                    fn: this.tabChanged,
+                    scope: this
+                }
+            }
+        });
+        return this.tabs;
+    },
+
+    getPageFromTab: function(tab) {
+        if(!tab) {
+            return null;
+        }
+        return parseInt(tab.getItemId().replace("page-", ""), 10);
+    },
+
+    tabChanged: function(tabPanel, newTab) {
+        var pageNo = this.getPageFromTab(newTab);
+        this.movePage(0, pageNo);
     },
 
     createIgnitionLocationsGrid: function() {
@@ -440,9 +482,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'type', type: 'string', defaultValue: this.IGNITION_LOCATION_TYPE },
                 { name: 'zonedistance_consumer', type: 'string' },
                 { name: 'custom_zonedistance_consumer', type: 'number' },
+                { name: 'custom_fireworktype_consumer', type: 'string' },
                 { name: 'fireworks_type', type: 'string', defaultValue: 'consumer' },
                 { name: 'zonedistance_professional', type: 'string' },
                 { name: 'custom_zonedistance_professional', type: 'number' },
+                { name: 'custom_fireworktype_professional', type: 'string' },
                 { name: 'size', type: 'number' }
             ],
             data: []
@@ -476,8 +520,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     createExtraObjectsGrid: function() {
-        Ext.create('Ext.data.Store', {
-            storeId: 'extraObject',
+        Ext.define('OntbrandingsaanvraagExtraObject', {
+            extend: 'Ext.data.Model',
             fields: [
                 { name: 'fid', type: 'string' },
                 { name: 'type', type: 'string', defaultValue: this.EXTRA_OJBECT_TYPE },
@@ -485,7 +529,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'color', type: 'string', defaultValue: 'FF0000' },
                 { name: 'dashStyle', type: 'string', defaultValue: 'solid' },
                 { name: 'arrow', type: 'string', defaultValue: 'none' }
-            ],
+            ]
+        });
+        Ext.create('Ext.data.Store', {
+            storeId: 'extraObject',
+            model: 'OntbrandingsaanvraagExtraObject',
             data: []
         });
         this.extraObjectsGrid = this._createGrid('extraObject', "Extra objecten", [
@@ -578,7 +626,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     ]
                 },
                 {
+                    xtype: 'container',
+                    html: 'Indien op deze locatie meerdere categorieën vuurwerk worden opgesteld, dient u de vuurwerkcategorie met de grootste veiligheidsafstand te selecteren.'
+                },
+                {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('consumerZoneDistanceStore'),
@@ -589,10 +642,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     listeners: {
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_fireworktype_consumer')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         blur: this.saveIgnitionLocation,
                         scope: this
                     }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Type vuurwerk',
+                    hidden: true,
+                    name: 'custom_fireworktype_consumer',
+                    itemId: 'custom_fireworktype_consumer'
                 },
                 {
                     xtype: 'numberfield',
@@ -603,6 +664,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Zoneafstanden',
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('professionalZoneDistanceStore'),
@@ -614,10 +676,18 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     listeners: {
                         change: function(combo, val) {
                             this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(val === this.OTHER_LABEL);
+                            this.getContentContainer().query('#custom_fireworktype_professional')[0].setVisible(val === this.OTHER_LABEL);
                         },
                         blur: this.saveIgnitionLocation,
                         scope: this
                     }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Type vuurwerk',
+                    hidden: true,
+                    name: 'custom_fireworktype_professional',
+                    itemId: 'custom_fireworktype_professional'
                 },
                 {
                     xtype: 'numberfield',
@@ -638,7 +708,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     createZonedistanceStore: function(zonedistances, name) {
         var keys = Ext.Object.getKeys(zonedistances);
         var store_items = Ext.Array.map(keys, function(item) {
-            return { "val": item, "label": [item, " (", zonedistances[item], "m)"].join("") };
+            var label = [item, " (", zonedistances[item].distance, "m"];
+            if(zonedistances[item].fan) {
+                label.push("/", (zonedistances[item].distance * 1.5), "m");
+            }
+            label.push(")");
+            return {
+                "val": item,
+                "label":  label.join('')
+            };
         }, this);
         store_items.push({ "val": this.OTHER_LABEL, "label": this.OTHER_LABEL });
         Ext.create('Ext.data.Store', {
@@ -659,8 +737,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.getContentContainer().query('#custom_zonedistance_consumer')[0].setVisible(
             val === 'consumer' && this.getContentContainer().query('#zonedistance_consumer')[0].getValue() === this.OTHER_LABEL
         );
+        this.getContentContainer().query('#custom_fireworktype_consumer')[0].setVisible(
+            val === 'consumer' && this.getContentContainer().query('#zonedistance_consumer')[0].getValue() === this.OTHER_LABEL
+        );
         this.getContentContainer().query('#zonedistance_professional')[0].setVisible(val === 'professional');
         this.getContentContainer().query('#custom_zonedistance_professional')[0].setVisible(
+            val === 'professional' && this.getContentContainer().query('#zonedistance_professional')[0].getValue() === this.OTHER_LABEL
+        );
+        this.getContentContainer().query('#custom_fireworktype_professional')[0].setVisible(
             val === 'professional' && this.getContentContainer().query('#zonedistance_professional')[0].getValue() === this.OTHER_LABEL
         );
     },
@@ -737,14 +821,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Lijntype',
                     queryMode: 'local',
                     store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
                     name: 'dashStyle',
                     itemId: 'dashStyle'
-                },
+                }/*,
                 {
                     xtype: 'combobox',
+                    editable: false,
                     fieldLabel: 'Pijlen',
                     queryMode: 'local',
                     store: [['none', 'Geen'], ['begin', 'Begin van de lijn'], ['end', 'Eind van de lijn'], ['both', 'Beide kanten van de lijn']],
@@ -830,11 +916,23 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var added_index = this._addLocation(this.extraObjectsGrid, feature.getId(), null, default_label, override_type);
         var extraObject = this.extraObjectsGrid.getStore().getAt(added_index);
         if(type === this.MEASURE_LINE_TYPE) {
-            extraObject.set('arrow', 'both');
+            // extraObject.set('arrow', 'both');
             extraObject.set('color', this.MEASURE_LINE_COLOR);
             extraObject.set('dashStyle', 'dash');
         }
-        this.updateExtraObjectFeature(extraObject, feature);
+        this.updateExtraObjectFeature(extraObject);
+    },
+
+    addSafetyDistanceObject: function(feature) {
+        var extraObject = Ext.create('OntbrandingsaanvraagExtraObject', {
+            'fid': feature.getId(),
+            'type': feature.attributes.type,
+            'label': feature.attributes.label,
+            'color': this.SAFETY_DISTANCE_COLOR,
+            'dashStyle': 'dot'
+            // 'arrow': 'both'
+        });
+        this.updateExtraObjectFeature(extraObject, this.calculationResultLayer);
     },
 
     saveExtraObject: function() {
@@ -843,11 +941,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.updateExtraObjectFeature(extraObject);
     },
 
-    updateExtraObjectFeature: function(extraObject) {
+    updateExtraObjectFeature: function(extraObject, layer) {
         if(!extraObject) {
             return;
         }
-        var feature = this.getVectorLayer().getFeatureById(extraObject.get('fid'));
+        var feature = (layer || this.getVectorLayer()).getFeatureById(extraObject.get('fid'));
+        if(!feature) {
+            return;
+        }
         var featureStyle = feature.getStyle();
         if(!featureStyle) {
             featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', {});
@@ -856,15 +957,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         featureStyle.set('strokeDashstyle', extraObject.get('dashStyle'));
         featureStyle.set('label', '');
         featureStyle.set('strokeWidth', 4);
-        this.getVectorLayer().setFeatureStyle(extraObject.get('fid'), featureStyle);
-        this.updateExtraObjectLabel(extraObject);
+        (layer || this.getVectorLayer()).setFeatureStyle(extraObject.get('fid'), featureStyle);
+        this.updateExtraObjectLabel(extraObject, layer);
     },
 
-    updateExtraObjectLabel: function(extraObject) {
+    updateExtraObjectLabel: function(extraObject, layer) {
         var longest_component = 0;
         var start = null;
         var end = null;
-        var components = this.getVectorLayer().getFeatureGeometry(extraObject.get('fid')).components;
+        var components = (layer || this.getVectorLayer()).getFeatureGeometry(extraObject.get('fid')).components;
         if(!components) {
             return;
         }
@@ -888,7 +989,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var adjacent = (end.x - start.x);
         var theta = Math.atan2(opposite, adjacent);
         var angle = -theta * (180/Math.PI);
-        this.removeExtraObjects(extraObject);
+        this.removeExtraObjects(extraObject, layer);
         var label = extraObject.get('label');
         if(extraObject.get('type') === this.MEASURE_LINE_TYPE) {
             label = this.createSizeLabel(extraObject.get('size'));
@@ -906,14 +1007,15 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 "object_fid": extraObject.get('fid')
             })
         ];
-        var arrow = extraObject.get('arrow');
-        if(arrow === 'begin' || arrow === 'both') {
-            features.push(this.createArrow(components[0], components[1], extraObject));
-        }
-        if(arrow === 'end' || arrow === 'both') {
-            features.push(this.createArrow(components[components.length-1], components[components.length-2], extraObject));
-        }
-        this.getExtraObjectsLayer().addFeatures(features);
+        // Arrows are disabled for now
+        // var arrow = extraObject.get('arrow');
+        // if(arrow === 'begin' || arrow === 'both') {
+        //     features.push(this.createArrow(components[0], components[1], extraObject));
+        // }
+        // if(arrow === 'end' || arrow === 'both') {
+        //     features.push(this.createArrow(components[components.length-1], components[components.length-2], extraObject));
+        // }
+        (layer || this.getExtraObjectsLayer()).addFeatures(features);
     },
 
     createArrow: function(arrow_start, arrow_end, extraObject) {
@@ -952,8 +1054,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         return ['POINT(', x, ' ', y, ')'].join('');
     },
 
-    removeExtraObjects: function(extraObject) {
-        this.getExtraObjectsLayer().removeFeaturesByAttribute('object_fid', extraObject.get('fid'));
+    removeExtraObjects: function(extraObject, layer) {
+        (layer || this.getExtraObjectsLayer()).removeFeaturesByAttribute('object_fid', extraObject.get('fid'));
     },
 
     setExtraObjectColor: function(color) {
@@ -990,8 +1092,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         form.setVisible(false);
     },
 
-    _addLocation: function(grid, id, label, default_label, overrideType) {
-        var store = grid.getStore();
+    _addLocation: function(grid, id, label, default_label, overrideType, store) {
+        store = store || grid.getStore();
         var next_number = store.count() + 1;
         label = label || default_label + (next_number);
         var data = { 'fid': id, 'label': label };
@@ -1006,7 +1108,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var added_feature = store.add(data);
         var locationType = added_feature[0].get('type');
         this.activeFeature.attributes.locationType = locationType;
-        if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
+        if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE && locationType !== this.SAFETY_DISTANCE_TYPE) {
             this.getVectorLayer().setLabel(id, label);
         }
         var rowIndex = next_number - 1;
@@ -1070,20 +1172,38 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var data = this.getContentContainer().query(this.toId(formQuery))[0].getForm().getFieldValues();
         location.set(data);
-        var locationType = location.get('type');
-        if(locationType !== this.MEASURE_LINE_TYPE && locationType !== this.EXTRA_OJBECT_TYPE) {
-            this.getVectorLayer().setLabel(location.get('fid'), location.get('label'));
-        }
+        this.setLabelForLocation(location);
         return location;
     },
 
     _removeLocation: function(grid, rowIndex) {
         var record = grid.getStore().getAt(rowIndex);
-        this.getVectorLayer().removeFeature(this.getVectorLayer().getFeatureById(record.get('fid')));
-        if(record.get('type') === this.EXTRA_OJBECT_TYPE || record.get('type') === this.MEASURE_LINE_TYPE) {
+        var location_type = record.get('type');
+        this.deselectAllFeatures();
+        var feature = this.getVectorLayer().getFeatureById(record.get('fid'));
+        this.getVectorLayer().removeFeature(feature);
+        if(location_type === this.EXTRA_OJBECT_TYPE || location_type === this.MEASURE_LINE_TYPE) {
             this.removeExtraObjects(record);
         }
         grid.getStore().removeAt(rowIndex);
+        var formQuery = this.getFormForType(location_type);
+        if(formQuery) {
+            var form = this.getContentContainer().query(this.toId(formQuery))[0];
+            form.setVisible(false);
+        }
+    },
+
+    setLabelForLocation: function(location) {
+        var locationType = location.get('type');
+        if(locationType === this.MEASURE_LINE_TYPE || locationType === this.EXTRA_OJBECT_TYPE) {
+            return;
+        }
+        var size_label = '';
+        var size = location.get('size');
+        if(size) {
+            size_label = '\n(' + this.createSizeLabel(size, /*squareMeters=*/true) + ')';
+        }
+        this.getVectorLayer().setLabel(location.get('fid'), location.get('label') + size_label);
     },
 
     editActiveFeature: function(size) {
@@ -1104,6 +1224,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.movePage(0, this.getPageForType(location_type));
         if(size !== null) {
             location.set('size', size);
+            this.setLabelForLocation(location);
         }
         if(location_type === this.EXTRA_OJBECT_TYPE || location_type === this.MEASURE_LINE_TYPE) {
             this.updateExtraObjectLabel(location);
@@ -1228,7 +1349,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var label = '';
         if(attributes && attributes.label && (attributes.type !== this.EXTRA_OJBECT_TYPE && attributes.type !== this.MEASURE_LINE_TYPE)) {
-            label = attributes.label
+            label = attributes.label;
         }
         return Ext.create('viewer.viewercontroller.controller.Feature', {
             wktgeom: wkt,
@@ -1274,7 +1395,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ].join(''),
             function(btn, text){
                 if (btn === 'ok') {
-                    this._saveFile(text)
+                    this._saveFile(text);
                 }
             }, this, false, this.getFilename());
     },
@@ -1294,7 +1415,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             return this.importedFileName;
         }
         var date = Ext.Date.format(new Date(), 'd-m-Y');
-        return "ontbrandingsaanvraag-" + date + ".json";
+        return this.COMPONENT_NAME.toLowerCase()+"-" + date + ".json";
     },
 
     getAllFeatures: function() {
@@ -1317,12 +1438,25 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var raw_data = feature.toJsonObject();
         raw_data.attributes = item.getData();
         if(raw_data.attributes.type === this.IGNITION_LOCATION_TYPE) {
-            raw_data.attributes.zonedistance_consumer_m = raw_data.attributes.zonedistance_consumer === this.OTHER_LABEL
-                ? raw_data.attributes.custom_zonedistance_consumer
-                : this.ZONE_DISTANCES_CONSUMER[raw_data.attributes.zonedistance_consumer];
-            raw_data.attributes.zonedistance_professional_m = raw_data.attributes.zonedistance_professional === this.OTHER_LABEL
-                ? raw_data.attributes.custom_zonedistance_professional
-                : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional];
+            if(raw_data.attributes.zonedistance_consumer){
+                raw_data.attributes.zonedistance_consumer_m = raw_data.attributes.zonedistance_consumer === this.OTHER_LABEL
+                    ? raw_data.attributes.custom_zonedistance_consumer
+                    : this.ZONE_DISTANCES_CONSUMER[raw_data.attributes.zonedistance_consumer].distance;
+
+                raw_data.attributes.zonedistance_consumer_fan = raw_data.attributes.zonedistance_consumer === this.OTHER_LABEL
+                    ? false
+                    : this.ZONE_DISTANCES_CONSUMER[raw_data.attributes.zonedistance_consumer].fan;
+            }
+            
+            if(raw_data.attributes.zonedistance_professional){
+                raw_data.attributes.zonedistance_professional_m = raw_data.attributes.zonedistance_professional === this.OTHER_LABEL
+                    ? raw_data.attributes.custom_zonedistance_professional
+                    : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional].distance;
+
+                raw_data.attributes.zonedistance_professional_fan = raw_data.attributes.zonedistance_professional === this.OTHER_LABEL
+                    ? false
+                    : this.ZONE_DISTANCES_PROFESSIONAL[raw_data.attributes.zonedistance_professional].fan;
+            }
         }
         raw_data.style = this.getVectorLayer().frameworkStyleToFeatureStyle(feature).getProperties();
         delete raw_data.id;
@@ -1336,7 +1470,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         this.removeAllForGrid(this.audienceLocationsGrid);
         this.removeAllForGrid(this.extraObjectsGrid);
         this.getCalculationResultLayer().removeAllFeatures();
-        this.getTempCalculationResultLayer().removeAllFeatures();
     },
 
     removeAllForGrid: function(grid) {
@@ -1345,15 +1478,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this._removeLocation(grid, i);
         }
     },
-    printRequest: function() {
+    makeImage: function() {
         var features = this.getAllFeatures();
         this.buttonDown();
+    },
+    
+    printRequest:function(){
+        this.printComponent.buttonClick();
+        this.printComponent.qualitySlider.setValue(this.printComponent.qualitySlider.maxValue);
     },
 
     deselectAllFeatures: function() {
         this.isDeselecting = true;
         this.getVectorLayer().unselectAll();
         this.getExtraObjectsLayer().unselectAll();
+        this.getCalculationResultLayer().unselectAll();
         this.activeFeature = null;
         this.isDeselecting = false;
     },
@@ -1361,10 +1500,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     /**
      * @param vectorLayer The vectorlayer from which the feature comes
      * @param feature the feature which has been activated
+     * @param evt Optional event object
      * Event handlers
      **/
-    activeFeatureChanged : function (vectorLayer, feature){
-        if(this.isImporting || this.isDrawing || this.isDeselecting) {
+    activeFeatureChanged : function (vectorLayer, feature, evt) {
+        if(this.isImporting || this.isDrawing || this.isDeselecting || (evt && evt.type && evt.type === 'afterfeaturemodified')) {
             return;
         }
         if(typeof this.features[feature.config.id] === "undefined") {
@@ -1376,7 +1516,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     activeFeatureFinished : function (vectorLayer, feature) {
         this.activeFeature = feature;
-        if(this.isDrawing || this.isImporting) {
+        if(this.isDrawing || this.isImporting || this.isAddingSafetyZone) {
             var locationType = !!this.isDrawing ? this.isDrawing : feature.attributes.type;
             this.activeFeature.attributes.locationType = locationType;
             if(locationType === this.IGNITION_LOCATION_TYPE) {
@@ -1388,7 +1528,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             if(locationType === this.EXTRA_OJBECT_TYPE || locationType === this.MEASURE_LINE_TYPE) {
                 this.addExtraObject(this.activeFeature, locationType);
             }
-            var grid = this.isImporting ? null : this.getGridForType(locationType);
+            if(locationType === this.SAFETY_DISTANCE_TYPE) {
+                this.addSafetyDistanceObject(this.activeFeature);
+            }
+            var grid = (this.isImporting || this.isAddingSafetyZone) ? null : this.getGridForType(locationType);
             if(grid) {
                 grid.unmask();
             }
@@ -1407,51 +1550,62 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         if(complete) {
             this.removeSafetyZones();
+            this.isAddingSafetyZone = true;
             var features = this.getAllFeatures();
+            this.wizardPages[3].mask("Bezig met berekenen van veiligheidszone");
+            var showError = this.showSafetyZoneError.bind(this);
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
                 scope: this,
                 params: {
                     features: Ext.JSON.encode(features),
-                    showIntermediateResults:true
+                    showIntermediateResults:false
                 },
                 success: function (result) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    var featuresJSON = response.safetyZones;
-                    var features = [];
-                    var tempfeatures = [];
-                    for (var i = 0; i < featuresJSON.length; i++) {
-                        var f = featuresJSON[i];
-                        var type = f.attributes.type;
-                        var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
-                        if(type === 'temp'){
-                            tempfeatures.push(feat);
-                        }else{
-                            features.push(feat);
-                        }
+                    try {
+                        this.drawSafetyZone(result);
+                    } catch(e) {
+                        console.error(e);
+                        showError();
                     }
-
-                    this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;
-                    this.tempCalculationResultLayer.defaultFeatureStyle = this.tempSafetyZoneStyle;
-
-                    this.calculationResultLayer.addFeatures(features);
-                    this.tempCalculationResultLayer.addFeatures(tempfeatures);
                 },
-                failure: function (result) {
-                    this.addMessageInContainer('#calculation_messages',
-                        'Er is iets mis gegaan met het berekenen van de veiligheidszone. Sla uw aanvraag op en probeer het opnieuw.');
-                }
+                failure: showError
             });
         }
     },
 
+    showSafetyZoneError: function() {
+        this.wizardPages[3].unmask();
+        this.addMessageInContainer('#calculation_messages',
+            'Er is iets mis gegaan met het berekenen van de veiligheidszone. ' +
+            'Sla uw tekening op en probeer het opnieuw. ' +
+            'U kunt uw tekening opslaan door naar het tabblad \'Opslaan en printen\' te gaan of onderin tweemaal op \'Volgende\' te klikken.');
+        this.isAddingSafetyZone = false;
+    },
+
     drawSafetyZone: function(result) {
-        this.getCalculationResultLayer().readGeoJSON(result);
+        var response = Ext.JSON.decode(result.responseText);
+        var featuresJSON = response.safetyZones;
+        var safetyDistances = [];
+        var features = [];
+        this.calculationResultLayer.defaultFeatureStyle = this.safetyZoneStyle;
+        for (var i = 0; i < featuresJSON.length; i++) {
+            var f = featuresJSON[i];
+            if(!f.wktgeom || f.wktgeom.indexOf("EMPTY") !== -1) {
+                continue;
+            }
+            f.attributes.fid = 'safetyZone-' + i;
+            var feat = this.createFeature(f.wktgeom, this.safetyZoneStyle, f.attributes);
+            features.push(feat);
+        }
+        this.calculationResultLayer.addFeatures(features);
+        this.deselectAllFeatures();
+        this.wizardPages[3].unmask();
+        this.isAddingSafetyZone = false;
     },
 
     removeSafetyZones: function(){
         this.getCalculationResultLayer().removeAllFeatures();
-        this.getTempCalculationResultLayer().removeAllFeatures();
     },
 
     checkAudienceLocations: function() {
@@ -1491,12 +1645,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var zone_distances = fireworks_type === 'consumer' ? this.ZONE_DISTANCES_CONSUMER : this.ZONE_DISTANCES_PROFESSIONAL;
         var zone_distance = fireworks_type === 'consumer' ? location.get('zonedistance_consumer') : location.get('zonedistance_professional');
         if(!zone_distances.hasOwnProperty(zone_distance) && zone_distance !== this.OTHER_LABEL) {
-            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd bij "Zoneafstanden" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd bij "Vuurwerkcategorie" voor afsteeklocatie ' + location.get('label'));
             return false;
         }
         var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');
+        var firework_type_custom = fireworks_type === 'consumer' ? location.get('custom_fireworktype_consumer') : location.get('custom_fireworktype_professional');
         if(zone_distance === this.OTHER_LABEL && !zone_distance_custom) {
             this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige zoneafstand" voor afsteeklocatie ' + location.get('label'));
+            return false;
+        }
+        if(zone_distance === this.OTHER_LABEL && !firework_type_custom) {
+            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
             return false;
         }
         return true;

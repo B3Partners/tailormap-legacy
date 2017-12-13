@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, MobileManager, actionBeans */
 /**
  * Print component
  * Creates a AttributeList component
@@ -69,7 +70,7 @@ Ext.define ("viewer.components.Print",{
         this.combineImageService = Ext.create("viewer.CombineImage",{});
 
         var me = this;
-        if(this.hasButton == null || this.hasButton){
+        if(this.hasButton === null || this.hasButton){
             this.renderButton({
                 handler: function(){
                     me.buttonClick();
@@ -133,10 +134,10 @@ Ext.define ("viewer.components.Print",{
         this.legends[appLayer.id]={};
         var me = this;
         this.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){
-                me.addLegend(appLayer,legendObject)
+                me.addLegend(appLayer,legendObject);
             },
             function(appLayer){
-                me.failLegend(appLayer)
+                me.failLegend(appLayer);
             });
 
         /*if (url!=null){
@@ -150,7 +151,7 @@ Ext.define ("viewer.components.Print",{
     },
 
     removeLegend: function (layer){
-        if (layer!=null){
+        if (layer !== null){
             delete this.legends[layer.appLayerId];
         }
         if (!this.legendLoading()){
@@ -161,7 +162,7 @@ Ext.define ("viewer.components.Print",{
      * when Legend is succesfully loaded, add it to the legend object.
      */
     addLegend: function (appLayer,legendObject){
-        if (this.legends[appLayer.id]!=undefined){
+        if (this.legends[appLayer.id] !== undefined){
             this.legends[appLayer.id]= legendObject;
         }
         if (!this.legendLoading()){
@@ -203,9 +204,10 @@ Ext.define ("viewer.components.Print",{
             this.popup.show();
             restart=true;
         }
-        if (this.panel==null)
+        if (this.panel === null){
             this.createForm();
             this.setQuality();
+        }
         if (restart){
             this.redrawPreview();
             this.createLegendSelector();
@@ -216,6 +218,7 @@ Ext.define ("viewer.components.Print",{
      */
     createForm: function(){
         var me = this;
+
         var pageFormats = [];
         this.config.useA5 && pageFormats.push(['a5','A5']);
         this.config.useA4 && pageFormats.push(['a4','A4']);
@@ -356,7 +359,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'button',
                                 text: '<',
                                 width: /*MobileManager.isMobile() ? 50 : */30,
-                                                listeners: {
+                                listeners: {
                                     click:{
                                         scope: this,
                                         fn: function (){
@@ -522,7 +525,7 @@ Ext.define ("viewer.components.Print",{
                 items: [{
                     xtype: 'button',
                     text: 'Sluiten',
-                        style: {
+                    style: {
                         "float": "right",
                         marginLeft: '5px'
                     },
@@ -554,7 +557,7 @@ Ext.define ("viewer.components.Print",{
                     xtype: 'button',
                     text: 'Printen via PDF'  ,
                     hidden: this.config.mailPrint === "canOnlyMail",
-                        style: {
+                    style: {
                         "float": "right",
                         marginLeft: '5px'
                     },
@@ -569,7 +572,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Verstuur per mail',
-                        hidden:this.config.mailPrint === "cantMail",
+                    hidden:this.config.mailPrint === "cantMail",
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -634,7 +637,7 @@ Ext.define ("viewer.components.Print",{
      */
     createLegendSelector: function(){
         //only create legend when legends are loaded and the panel is created.
-        if (!this.legendLoading() && this.panel!=null){
+        if (!this.legendLoading() && this.panel !== null){
             var checkboxes= new Array();
             checkboxes.push({
                 xtype: "label",
@@ -879,7 +882,7 @@ Ext.define ("viewer.components.Print",{
                     var features = layer.getAllFeatures(true);
                     for (var f =0; f < features.length; f++){
                         var feature=features[f];
-                        if (feature.getWktgeom()!=null){
+                        if (feature.getWktgeom() !== null){
                             wktGeoms.push(feature);
                         }
                     }
@@ -892,7 +895,7 @@ Ext.define ("viewer.components.Print",{
                     printLayer.serverExtent = layer.serviceEnvelope;
                     printLayer.tileWidth = layer.tileWidth;
                     printLayer.tileHeight = layer.tileHeight;
-                    printLayer.resolutions = layer.resolutions.toString();
+                    printLayer.resolutions= layer.resolutions.toString();
                     printLayers.push(printLayer);
                 }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol === "WMTS" )){
                     var printLayer = new Object();
@@ -917,8 +920,9 @@ Ext.define ("viewer.components.Print",{
                         if (request){
                             request.protocol=layer.getType();
                             var alpha=layer.getAlpha();
-                            if (alpha!=null)
+                            if (alpha !== null){
                                 request.alpha = alpha;
+                            }
                             printLayers.push(request);
                             //do a to string for the extent.
                             if (request.extent){
@@ -975,22 +979,23 @@ Ext.define ("viewer.components.Print",{
         var config=new Object();
         for( var i = 0 ; i < container.items.length ; i++){
             //if its a radiogroup get the values with the function and apply the values to the config.
-            if ("radiogroup"==container.items.get(i).xtype){
+            if ("radiogroup" === container.items.get(i).xtype){
                 Ext.apply(config, container.items.get(i).getValue());
-            }else if ("container"==container.items.get(i).xtype || "fieldcontainer"==container.items.get(i).xtype){
+            }else if ("container" === container.items.get(i).xtype || "fieldcontainer" === container.items.get(i).xtype){
                 Ext.apply(config,this.getValuesFromContainer(container.items.get(i)));
-            }else if (container.items.get(i).name!=undefined){
+            }else if (container.items.get(i).name !== undefined){
                 var value=container.items.get(i).getValue();
-                if ("checkbox"==container.items.get(i).xtype){
-                    if (value==true){
+                if ("checkbox" === container.items.get(i).xtype){
+                    if (value === true){
                         value = container.items.get(i).getSubmitValue();
                     }else{
                         value=null;
                     }
                 }
-                if (value==null)
+                if (value === null){
                     continue;
-                if (config[container.items.get(i).name]==undefined){
+                }
+                if (config[container.items.get(i).name] === undefined){
                     config[container.items.get(i).name] = value;
                 }else if (config[container.items.get(i).name] instanceof Array){
                     config[container.items.get(i).name].push(value);

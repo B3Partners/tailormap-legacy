@@ -149,7 +149,7 @@ public class FeatureStyle {
     }
 
     public Color getFillColor() {
-        return fillColor != null && !fillColor.endsWith("") ? new Color(Integer.parseInt((fillColor), 16)) : CombineImageSettings.defaultWktGeomColor;
+        return fillColor != null && !fillColor.isEmpty() ? new Color(Integer.parseInt((fillColor), 16)) : CombineImageSettings.defaultWktGeomColor;
     }
 
     public void setFillColor(String fillColor) {

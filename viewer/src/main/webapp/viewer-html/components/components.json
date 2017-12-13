@@ -33,11 +33,12 @@
     },
     {
         "className": "viewer.components.Ontbrandingsaanvraag",
-        "name": "Ontbrandingsaanvraag",
-        "shortName": "OA",
+        "name": "Vuurwerkevenementen",
+        "group": "Component",
+        "shortName": "VE",
         "sources": ["../common/ColorField.js", "Print.js", "DownloadMap.js", "Ontbrandingsaanvraag.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Ontbrandingsaanvraag-config.js"],
-        "restrictions": ["leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom"],
+        "restrictions": ["footer","leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom"],
         "singleton": true
     },
     {
@@ -170,7 +171,6 @@
         ],
         "showHelp": true
     },
-
     {
         "className": "viewer.components.tools.Identify",
         "name": "Identify",
