@@ -102,9 +102,10 @@ Ext.define("viewer.components.CustomConfiguration",{
             renderTo: parentId
         });
         filterableCheckboxes = Ext.create('Ext.ux.b3p.SelectionGrid', {
-            requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
+            requestUrl: this.getContextpath() + "/action/componentConfigList",
             requestParams: {
-                appId: this.getApplicationId()
+                appId: this.getApplicationId(),
+                layerlist:true
             },
             renderTo: 'selectionGridContainer',
             sliders: sliders
