@@ -317,6 +317,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             if(type === 'simplelist') {
                 me.saveSimpleListConfig(configid);
             }
+            if(type === 'wfs') {
+                me.saveWFSConfig(configid);
+            }
             newSearchconfigs.push(searchconfig);
         });
         me.searchconfigs = newSearchconfigs;
@@ -483,7 +486,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         xtype: 'combo',
                         fieldLabel: 'Attribuutbron',
                         store: this.featureSourceStore,
-                        itemId: "featureSource",
+                        itemId: "featureSource" + searchconfigId,
                         queryMode: "local",
                         displayField: "name",
                         editable: false,
@@ -492,7 +495,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         listeners: {
                             select: {
                                 fn: function (combo, record, eOpts) {
-                                    var ftCombo = Ext.ComponentQuery.query("#featureType")[0];
+                                    var ftCombo = Ext.ComponentQuery.query("#featureType" +searchconfigId)[0];
                                     ftCombo.clearValue();
                                     var store = ftCombo.getStore();
 
@@ -507,7 +510,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         xtype: 'combo',
                         fieldLabel: 'Feature type',
                         store: this.featureTypeStore,
-                        itemId: "featureType",
+                        itemId: "featureType" + searchconfigId,
                         queryMode: "local",
                         displayField: "typeName",
                         editable: false,
@@ -560,7 +563,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     
     makeFilterableCheckboxesAttributes: function (featureType, configId){
         //Ext.ux.b3p.FilterableCheckboxes  
-        var parentcontainer = Ext.ComponentQuery.query('#checkboxes' + configId)[0]
+        var parentcontainer = Ext.ComponentQuery.query('#checkboxes' + configId)[0];
         var checkboxes = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
             requestUrl: '',
             itemList:featureType.attributes,
@@ -681,6 +684,18 @@ Ext.define("viewer.components.SearchConfiguration",{
         me.switchLayersOn.resetChecked(switchOnLayersChecked);
         // Show the window
         me.layerSelectionWindow.show();
+    },
+    
+    saveWFSConfig: function(searchconfigId){
+        var searchConfig = this.getConfig(searchconfigId);
+        var featuresource = Ext.ComponentQuery.query('#featureSource'+searchconfigId)[0].value;
+        var featureType = Ext.ComponentQuery.query('#featureType'+searchconfigId)[0].value;
+        var queryAttributes = [1,2];
+        var resultAttributes = [1,4];
+        searchConfig.featureSource = featuresource;
+        searchConfig.featureType = featureType;
+        searchConfig.queryAttributes = queryAttributes;
+        searchConfig.resultAttributes = resultAttributes;
     },
     savePDOKConfig:function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
