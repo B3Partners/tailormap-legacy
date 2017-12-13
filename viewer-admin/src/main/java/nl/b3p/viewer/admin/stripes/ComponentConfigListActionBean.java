@@ -171,20 +171,29 @@ public class ComponentConfigListActionBean implements ActionBean {
     public Resolution attributesources(){
         EntityManager em = Stripersist.getEntityManager();
 
-        JSONArray jsonArray = new JSONArray();
+        JSONObject result = new JSONObject();
+        result.put("success", false);
+        JSONArray fsArray = new JSONArray();
+        JSONObject ftsObject = new JSONObject();
         List<FeatureSource> fses = em.createQuery("from FeatureSource where protocol = :protocol").setParameter("protocol", "wfs").getResultList();
         for (FeatureSource fs : fses) {
             JSONObject fsObject = fs.toJSONObject();
             List<SimpleFeatureType> fts = fs.getFeatureTypes();
+            
             JSONArray ftsArray = new JSONArray();
             for (SimpleFeatureType ft : fts) {
                 JSONObject ftObject = ft.toJSONObject();
                 ftsArray.put(ftObject);
             }
-            fsObject.put("featureTypes", ftsArray);
-            jsonArray.put(fsObject);
+            
+            ftsObject.put(fs.getId().toString(), ftsArray);
+            fsArray.put(fsObject);
         }
-        return new StreamingResolution("application/json", new StringReader(jsonArray.toString()));
+        
+        result.put("featureTypes", ftsObject);
+        result.put("featureSources", fsArray);
+        result.put("success", true);
+        return new StreamingResolution("application/json", new StringReader(result.toString()));
     }
 
 }
