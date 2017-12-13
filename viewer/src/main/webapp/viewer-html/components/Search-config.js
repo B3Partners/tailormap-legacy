@@ -65,7 +65,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 "->",
                 {
                     xtype:'button',
-                    iconCls: 'addbutton-icon',
+                    iconCls: 'x-fa fa-plus-circle',
                     text: 'Zoekingang toevoegen',
                     listeners: {
                         click:{
@@ -116,6 +116,9 @@ Ext.define("viewer.components.SearchConfiguration",{
         var collapsed = true;
         if(nextId === 1) collapsed = false;
         me.panel.add(me.newSearchField(newconfig, collapsed));
+        if(!collapsed){
+            this.showExtraconfig(newconfig.type, newconfig.id);
+        }
         me.nextId++;
     },
     newSearchField: function(config, collapsed) {
@@ -129,7 +132,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             animCollapse: false,
             collapsible: true,
             collapsed: collapsed,
-            iconCls: "edit-icon-bw",
+            iconCls: "x-fa fa-wrench",
             titleCollapse: true,
             hideCollapseTool: true,
             items: [
@@ -191,11 +194,34 @@ Ext.define("viewer.components.SearchConfiguration",{
                         },
                         { fieldLabel: 'URL *', name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
                         { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
-                        { xtype: 'container', itemId: 'pdokConfig' + config.id, hidden: true, height: 130, autoScroll: true,items: [{xtype: "textfield",value: config.filter,name: "filter" + config.id,itemId: "filter" + config.id,fieldLabel: "Optioneel filter",labelWidth: 120,width: 600}] },
+                        { xtype: 'container', itemId: 'wfsConfig' + config.id, hidden: true, height: 130, autoScroll: true },
+                        {
+                            xtype: 'container',
+                            itemId: 'pdokConfig' + config.id,
+                            hidden: true,
+                            height: 100,
+                            autoScroll: true,
+                            items: [
+                                {   xtype: "textfield",
+                                    value: config.filter,
+                                    name: "filter" + config.id,
+                                    itemId: "filter" + config.id,
+                                    fieldLabel: "Optioneel filter",
+                                    labelWidth: 120,
+                                    width: 600
+                                },
+                                {   xtype: "container",
+                                    html: "Meer informatie over de configuratie van de PDOK Adreszoeker kunt u vinden via " +
+                                    "<a href=\"https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine\" target='_help'>" +
+                                    "https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine" +
+                                    "</a>"
+                                }
+                            ]
+                        },
                         { xtype: 'container', itemId: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', layout: { type: 'vbox', align: 'stretch' } },
                         {
                             xtype:'button',
-                            iconCls: 'savebutton-icon',
+                            iconCls: 'x-fa fa-floppy-o',
                             text: 'Zoekingang opslaan',
                             listeners: {
                                 click: function(button) {
@@ -208,7 +234,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             ],
             tbar: this.maxSearchConfigs === 1 ? null : ["->", {
                 xtype:'button',
-                iconCls: 'removebutton-icon',
+                iconCls: 'x-fa fa-minus-circle',
                 text: 'Zoekingang verwijderen',
                 listeners: {
                     click: function() {
@@ -435,8 +461,113 @@ Ext.define("viewer.components.SearchConfiguration",{
         this.panel.updateLayout();
     },
     
-    addWFSConfig: function (configId){
+    addWFSConfig: function (searchconfigId) {
+        var wfsConfigContainer = Ext.ComponentQuery.query('#wfsConfig' + searchconfigId)[0];
+        var me = this;
+        if (!this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
         
+            var searchConfig = me.getConfig(searchconfigId);
+            if (!searchConfig.wfsConfig) {
+                searchConfig.wfsConfig = {};
+            }
+
+            this.featureSourceStore = Ext.create('Ext.data.Store', {
+                fields: ['id', 'name', 'protocol', 'url']
+            });
+            this.featureTypeStore = Ext.create('Ext.data.Store', {
+                fields: ['id', 'writeable', 'geometryAttribute', 'typeName']
+            });
+            
+            var container = Ext.create('Ext.container.Container', {
+                items: [{
+                        xtype: 'combo',
+                        fieldLabel: 'Attribuutbron',
+                        store: this.featureSourceStore,
+                        itemId: "featureSource",
+                        queryMode: "local",
+                        displayField: "name",
+                        editable: false,
+                        width: 350,
+                        valueField: "id",
+                        listeners: {
+                            select: {
+                                fn: function (combo, record, eOpts) {
+                                    var ftCombo = Ext.ComponentQuery.query("#featureType")[0];
+                                    ftCombo.clearValue();
+                                    var store = ftCombo.getStore();
+
+                                    store.removeAll();
+                                    var featureTypes = this.featureTypes[record.data.id];
+                                    store.loadData(featureTypes);
+    },
+                                scope: me
+                            }
+                        }
+                    }, {
+                        xtype: 'combo',
+                        fieldLabel: 'Feature type',
+                        store: this.featureTypeStore,
+                        itemId: "featureType",
+                        queryMode: "local",
+                        displayField: "typeName",
+                        editable: false,
+                        width: 350,
+                        valueField: "id",
+                        listeners: {
+                            select: {
+                                fn: function (combo, record, eOpts) {
+                                    var featureType = record.data;
+                                    this.makeFilterableCheckboxesAttributes(featureType, searchconfigId);
+                                },
+                                scope: me
+                            }
+                        }
+                    },{
+                         xtype: 'container',
+                         itemId: 'checkboxes' + searchconfigId
+                           
+                    }],
+
+                height: '100%',
+                width: '100%',
+                layout: 'vbox'
+            });
+            wfsConfigContainer.add(container);
+
+            Ext.Ajax.request({
+                url: this.getContextpath() + "/action/componentConfigList",
+                scope: this,
+                params: {
+                    attributesources: true,
+                    type: "wfs"
+                },
+                success: function (result, request) {
+                    var attributeData = Ext.JSON.decode(result.responseText);
+                    var featureSources = attributeData.featureSources;
+                    this.featureTypes = attributeData.featureTypes;
+                 
+                    var store = this.featureSourceStore;
+                    store.loadData(featureSources);
+                },
+                failure: function () {
+                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met attribuutbronnen niet kan worden weergegeven");
+                }
+            });
+        }
+        wfsConfigContainer.setVisible(true);
+        this.panel.updateLayout();
+    },
+    
+    makeFilterableCheckboxesAttributes: function (featureType, configId){
+        //Ext.ux.b3p.FilterableCheckboxes  
+        var parentcontainer = Ext.ComponentQuery.query('#checkboxes' + configId)[0]
+        var checkboxes = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
+            requestUrl: '',
+            itemList:featureType.attributes,
+            titleField: 'name',
+            parentContainer: parentcontainer
+        });
+        checkboxes.render();            
     },
     /**
      * Shows the window with layers which must be on / will be switched on when
@@ -605,6 +736,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     hideExtraConfig: function(searchconfigId) {
         Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#simpleListConfig' + searchconfigId)[0].setVisible(false);
+        Ext.ComponentQuery.query('#pdokConfig' + searchconfigId)[0].setVisible(false);
         this.panel.updateLayout();
     },
     /**
