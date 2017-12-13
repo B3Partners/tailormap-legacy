@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -82,13 +82,13 @@ Ext.define("viewer.components.SearchConfiguration",{
             Voorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='";
         document.getElementById("config").appendChild(extraText);
 
-        if(config != null) {
-            if(config.searchconfigs != null) {
+        if(config !== null) {
+            if(config.searchconfigs !== null) {
                 Ext.Array.each(config.searchconfigs, function(searchconfig) {
                     me.appendSearchField(searchconfig);
                 });
             }
-            if(config.nextSearchConfigId != null) {
+            if(config.nextSearchConfigId !== null) {
                 me.nextId = config.nextSearchConfigId;
             }
         }
@@ -153,27 +153,27 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 boxLabel: 'OpenLS', 
                                 name: 'type' + config.id, 
                                 inputValue: 'openls',
-                                checked: config.type=="openls" || config.type==undefined
+                                checked: config.type === "openls" || config.type === undefined
                             },{
                                 boxLabel: 'ArcGISRest', 
                                 name: 'type' + config.id, 
                                 inputValue: 'arcgisrest',
-                                checked: config.type=="arcgisrest"
+                                checked: config.type === "arcgisrest"
                             },{
                                 boxLabel: 'Solr', 
                                 name: 'type' + config.id, 
                                 inputValue: 'solr',
-                                checked: config.type=="solr"
+                                checked: config.type === "solr"
                             },{
                                 boxLabel: 'PDOK Adreszoeker', 
                                 name: 'type' + config.id, 
                                 inputValue: 'pdok',
-                                checked: config.type==="pdok"
+                                checked: config.type === "pdok"
                             },{
                                 boxLabel: 'Eenvoudig', 
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
-                                checked: config.type=="simplelist"
+                                checked: config.type === "simplelist"
                             }],
                             listeners: {
                                 change: function(radio) {
@@ -220,7 +220,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                     setTimeout(function() {
                         me.showExtraconfig(me.getType(config.id), config.id);
                     }, 0);
-                },
+                }
             }
         };
         return searchField;
@@ -289,7 +289,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         me.panel.remove(configid);
         var newSearchconfigs = [];
         Ext.Array.each(me.searchconfigs, function(searchconfig) {
-            if(searchconfig.id != configid) {
+            if(searchconfig.id !== configid) {
                 newSearchconfigs.push(searchconfig);
             }
         });
@@ -378,6 +378,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     /**
      * Show Solr configuration options for searchConfig
+     * @param searchconfigId Add solr configuration 
      */
     addSolrconfig: function(searchconfigId) {
         var solrConfigContainer = Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0];
@@ -428,6 +429,9 @@ Ext.define("viewer.components.SearchConfiguration",{
     /**
      * Shows the window with layers which must be on / will be switched on when
      * using the solr search
+     * @param target
+     * @param searchconfigId
+     * @param searchConfig
      */
     showLayerconfig: function(target, searchconfigId, searchConfig) {
         var me = this;
@@ -535,7 +539,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     savePDOKConfig:function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
-        var filter = Ext.ComponentQuery.query('#filter'+searchconfigId)[0].value
+        var filter = Ext.ComponentQuery.query('#filter'+searchconfigId)[0].value;
         
         searchConfig.filter = filter;
     },
@@ -582,6 +586,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     /**
      * Function to hide extra config options
+     * @param searchconfigId hide config
      */
     hideExtraConfig: function(searchconfigId) {
         Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0].setVisible(false);
@@ -590,6 +595,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     /**
      * Helper function to get searchconfig for searchconfigId
+     * @param searchconfigId
      */     
     getConfig: function(searchconfigId) {
         for(var x = 0; x < this.searchconfigs.length; x++) {
