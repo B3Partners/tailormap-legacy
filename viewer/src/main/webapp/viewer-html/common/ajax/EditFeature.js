@@ -53,6 +53,35 @@ Ext.define("viewer.EditFeature", {
             }
         });        
     },
+
+    editDigi: function (appLayer, feature, successFunction, failureFunction) {
+        console.log(feature);
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl + "?saveRelatedFeatures",
+            params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
+            success: function (result) {
+                var response = Ext.JSON.decode(result.responseText);
+
+                if (response.success) {
+                    if (response.hasOwnProperty("__fid")) {
+                        successFunction(response.__fid);
+                    } else {
+                        successFunction(null);
+                    }
+                } else {
+                    if (failureFunction != undefined) {
+                        failureFunction(response.error);
+                    }
+                }
+            },
+            failure: function (result) {
+                if (failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });
+    },
+    
     remove: function(appLayer, feature,successFunction, failureFunction){
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
@@ -70,6 +99,29 @@ Ext.define("viewer.EditFeature", {
             },
             failure: function(result) {
                 if(failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });
+    },
+    
+    removeDigi: function (appLayer, feature, successFunction, failureFunction) {
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl + "?removeRelatedFeatures",
+            params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
+            success: function (result) {
+                var response = Ext.JSON.decode(result.responseText);
+
+                if (response.success) {
+                    successFunction();
+                } else {
+                    if (failureFunction != undefined) {
+                        failureFunction(response.error);
+                    }
+                }
+            },
+            failure: function (result) {
+                if (failureFunction != undefined) {
                     failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
