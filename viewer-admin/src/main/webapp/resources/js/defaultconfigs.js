@@ -118,7 +118,7 @@ Ext.define('vieweradmin.components.HelpController', {
         var extel = Ext.fly(htmlel);
         var hash = extel.getAttribute('href');
         // IE fix, href in IE8 and lower is the complete URL + hash, not just the hash
-        hash = hash.substring(hash.lastIndexOf('#'));
+        hash = hash.substring(hash.lastIndexOf('#') + 1);
         var iframeurl = this.helppath + hash;
         vieweradmin.components.iFramePopupController.loadPage(iframeurl, 'Help');
     }
