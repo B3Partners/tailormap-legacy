@@ -42,6 +42,7 @@ Ext.define('vieweradmin.components.IpManager', {
             autoScroll: true,
             bodyPadding: 10,
             renderTo: this.config.container,
+            layout: 'vbox',
             items: [{
                 xtype: 'button',
                 name: 'add-ip',
@@ -57,9 +58,24 @@ Ext.define('vieweradmin.components.IpManager', {
     addIpField: function(val) {
         var idx = this.formPanel.items.length - 1;
         this.formPanel.insert(idx, {
-            xtype: 'textfield',
-            name: "ips",
-            value: val || '0.0.0.0'
+            xtype: 'container',
+            layout: {
+                type: 'hbox'
+            },
+            padding: '0 0 10 0',
+            items: [{
+                xtype: 'textfield',
+                name: "ips",
+                value: val || '0.0.0.0'
+            }, {
+                xtype: 'button',
+                iconCls: 'x-fa fa-remove',
+                handler: function(btn) {
+                    var row = btn.up('container');
+                    var formPanel = row.up('form');
+                    formPanel.remove(row);
+                }
+            }]
         });
     },
 
