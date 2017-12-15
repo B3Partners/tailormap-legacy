@@ -67,11 +67,11 @@ public class FeatureToJsonTest {
         Query q = new Query();
         q.setStartIndex(0);
         q.setMaxFeatures(10);
-        String sort = null;
+        String sort = "GM_NAAM";
         String dir = null;
         List<Long> attributesToInclude = new ArrayList<>();
         
-        FeatureToJson instance = new FeatureToJson(true, true, false, attributesToInclude);
+        FeatureToJson instance = new FeatureToJson(false, true, false, attributesToInclude);
         JSONArray result = instance.getJSONFeatures(al, ft, gtFS, q, sort, dir);
         assertNotNull(result);
         assertFalse(result.length() == 0);
@@ -86,11 +86,11 @@ public class FeatureToJsonTest {
         Query q = new Query();
         q.setStartIndex(10);
         q.setMaxFeatures(10);
-        String sort = null;
+        String sort = "GM_NAAM";
         String dir = null;
         List<Long> attributesToInclude = new ArrayList<>();
         
-        FeatureToJson instance = new FeatureToJson(true, true, false, attributesToInclude);
+        FeatureToJson instance = new FeatureToJson(false, true, false, attributesToInclude);
         JSONArray result = instance.getJSONFeatures(al, ft, gtFS, q, sort, dir);
         assertNotNull(result);
         assertFalse(result.length() == 0);
