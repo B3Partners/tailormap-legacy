@@ -165,8 +165,35 @@ Ext.define ("viewer.components.FeatureInfo",{
         }
         if (!found){
             this.setMaptipEnabled(true);
+        } else {
+            this.autoOpenFeatureInfoLinks(data);
         }
         this.callParent(arguments);        
+    },
+    autoOpenFeatureInfoLinks: function(data) {
+        for (var layerIndex = 0; layerIndex < data.length; layerIndex++) {
+            var layer = data[layerIndex];
+            this.autoOpenLink(layer);
+        }
+    },
+    autoOpenLink: function(layer) {
+        var appLayer =  this.config.viewerController.app.appLayers[layer.request.appLayer];
+        var details;
+        if(appLayer) {
+            details = appLayer.details;
+        } else {
+            details = this.config.viewerController.mapComponent.getMap().getLayer(layer.request.appLayer).getDetails();
+        }
+        if (!details || !details["summary.link"]) {
+            return;
+        }
+        var noHtmlEncode = "true" === details['summary.noHtmlEncode'];
+        var nl2br = "true" === details['summary.nl2br'];
+        for (var index = 0 ; index < layer.features.length ; index ++) {
+            var feature = layer.features[index];
+            var link = this.replaceByAttributes(details["summary.link"], feature, noHtmlEncode, nl2br);
+            window.open(link, '_blank' + (feature.__fid || feature.fid || ''));
+        }
     },
     /**
      *Called when extent is changed, recalculate the position
