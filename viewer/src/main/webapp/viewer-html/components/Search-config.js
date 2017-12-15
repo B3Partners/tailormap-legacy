@@ -26,6 +26,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     nextId: 1,
     maxSearchConfigs: -1,
     solrSearchconfigs: {},
+    attribuutbronSearchconfigs: {},
     simpleListConfigs: {},
     layerSelectionWindow: null,
     requiredLayersOn: null,
@@ -176,10 +177,10 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 inputValue: 'pdok',
                                 checked: config.type === "pdok"
                             },{
-                                boxLabel: 'WFS', 
+                                boxLabel: 'Attribuutbron', 
                                 name: 'type' + config.id, 
-                                inputValue: 'wfs',
-                                checked: config.type === "wfs"
+                                inputValue: 'attributesource',
+                                checked: config.type === "attributesource"
                             },{
                                 boxLabel: 'Eenvoudig', 
                                 name: 'type' + config.id, 
@@ -194,7 +195,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         },
                         { fieldLabel: 'URL *', name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
                         { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
-                        { xtype: 'container', itemId: 'wfsConfig' + config.id, hidden: true, height: 130, autoScroll: true },
+                        { xtype: 'container', itemId: 'asConfig' + config.id, hidden: true, height: 130, autoScroll: true },
                         {
                             xtype: 'container',
                             itemId: 'pdokConfig' + config.id,
@@ -266,7 +267,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         // When switching radio input type is an array
         if(typeof type !== 'string') return;
         this.hideExtraConfig(configid);
-        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'wfs') {
+        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'attributesource') {
             if(type === 'solr') {
                 // Show additional Solr configuration
                 this.addSolrconfig(configid);
@@ -277,8 +278,8 @@ Ext.define("viewer.components.SearchConfiguration",{
             if(type === "pdok"){
                 this.addPdokConfig(configid);
             }
-            if(type === 'wfs'){
-                this.addWFSConfig(configid);
+            if(type === 'attributesource'){
+                this.addAttributeSourceConfig(configid);
             }
             this.hideUrl(configid);
         } else {
@@ -317,8 +318,8 @@ Ext.define("viewer.components.SearchConfiguration",{
             if(type === 'simplelist') {
                 me.saveSimpleListConfig(configid);
             }
-            if(type === 'wfs') {
-                me.saveWFSConfig(configid);
+            if(type === 'attributesource') {
+                me.saveASConfig(configid);
             }
             newSearchconfigs.push(searchconfig);
         });
@@ -464,100 +465,52 @@ Ext.define("viewer.components.SearchConfiguration",{
         this.panel.updateLayout();
     },
     
-    addWFSConfig: function (searchconfigId) {
-        var wfsConfigContainer = Ext.ComponentQuery.query('#wfsConfig' + searchconfigId)[0];
+    addAttributeSourceConfig: function (searchconfigId) {
+        var attributeConfigContainer = Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0];
         var me = this;
-        if (!this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
-        
+        if (!this.attribuutbronSearchconfigs.hasOwnProperty(searchconfigId)) {
+
             var searchConfig = me.getConfig(searchconfigId);
-            if (!searchConfig.wfsConfig) {
-                searchConfig.wfsConfig = {};
+            if (!searchConfig.asConfig) {
+                searchConfig.asConfig = {};
             }
 
-            this.featureSourceStore = Ext.create('Ext.data.Store', {
-                fields: ['id', 'name', 'protocol', 'url']
-            });
-            this.featureTypeStore = Ext.create('Ext.data.Store', {
-                fields: ['id', 'writeable', 'geometryAttribute', 'typeName']
+            var combo = Ext.ComponentQuery.query('#asSearchConfig' + searchconfigId)[0];
+            if(!combo){
+                Ext.Ajax.request({
+                    url: this.getContextpath() + "/action/configuresolr?getSearchconfigData=true",
+                    params:{},
+                    scope: this,
+                    success: function (result, request) {
+                        var searchConfigs = Ext.JSON.decode(result.responseText);
+                        this.searchConfigStore = Ext.create('Ext.data.Store', {
+                            fields: ['id', 'name'],
+                            data: searchConfigs
             });
             
             var container = Ext.create('Ext.container.Container', {
                 items: [{
                         xtype: 'combo',
-                        fieldLabel: 'Attribuutbron',
-                        store: this.featureSourceStore,
-                        itemId: "featureSource" + searchconfigId,
+                                    fieldLabel: 'Zoekbron',
+                                    store: this.searchConfigStore,
+                                    itemId: "asSearchConfig" + searchconfigId,
                         queryMode: "local",
                         displayField: "name",
                         editable: false,
                         width: 350,
-                        valueField: "id",
-                        listeners: {
-                            select: {
-                                fn: function (combo, record, eOpts) {
-                                    var ftCombo = Ext.ComponentQuery.query("#featureType" +searchconfigId)[0];
-                                    ftCombo.clearValue();
-                                    var store = ftCombo.getStore();
-
-                                    store.removeAll();
-                                    var featureTypes = this.featureTypes[record.data.id];
-                                    store.loadData(featureTypes);
-    },
-                                scope: me
-                            }
-                        }
-                    }, {
-                        xtype: 'combo',
-                        fieldLabel: 'Feature type',
-                        store: this.featureTypeStore,
-                        itemId: "featureType" + searchconfigId,
-                        queryMode: "local",
-                        displayField: "typeName",
-                        editable: false,
-                        width: 350,
-                        valueField: "id",
-                        listeners: {
-                            select: {
-                                fn: function (combo, record, eOpts) {
-                                    var featureType = record.data;
-                                    this.makeFilterableCheckboxesAttributes(featureType, searchconfigId);
-                                },
-                                scope: me
-                            }
-                        }
-                    },{
-                         xtype: 'container',
-                         itemId: 'checkboxes' + searchconfigId
-                           
-                    }],
-
-                height: '100%',
-                width: '100%',
-                layout: 'vbox'
+                                    value: searchConfig.searchConfigId ? searchConfig.searchConfigId : null,
+                                    valueField: "id"
+                                }]
             });
-            wfsConfigContainer.add(container);
-
-            Ext.Ajax.request({
-                url: this.getContextpath() + "/action/componentConfigList",
-                scope: this,
-                params: {
-                    attributesources: true,
-                    type: "wfs"
-                },
-                success: function (result, request) {
-                    var attributeData = Ext.JSON.decode(result.responseText);
-                    var featureSources = attributeData.featureSources;
-                    this.featureTypes = attributeData.featureTypes;
-                 
-                    var store = this.featureSourceStore;
-                    store.loadData(featureSources);
+                        attributeConfigContainer.add(container);
                 },
                 failure: function () {
                     Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met attribuutbronnen niet kan worden weergegeven");
                 }
             });
         }
-        wfsConfigContainer.setVisible(true);
+        }
+        attributeConfigContainer.setVisible(true);
         this.panel.updateLayout();
     },
     
@@ -572,6 +525,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         });
         checkboxes.render();            
     },
+    
     /**
      * Shows the window with layers which must be on / will be switched on when
      * using the solr search
@@ -686,16 +640,12 @@ Ext.define("viewer.components.SearchConfiguration",{
         me.layerSelectionWindow.show();
     },
     
-    saveWFSConfig: function(searchconfigId){
+    saveASConfig: function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
-        var featuresource = Ext.ComponentQuery.query('#featureSource'+searchconfigId)[0].value;
-        var featureType = Ext.ComponentQuery.query('#featureType'+searchconfigId)[0].value;
-        var queryAttributes = [1,2];
-        var resultAttributes = [1,4];
-        searchConfig.featureSource = featuresource;
-        searchConfig.featureType = featureType;
-        searchConfig.queryAttributes = queryAttributes;
-        searchConfig.resultAttributes = resultAttributes;
+        if( Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0]){
+            var searchConfigId = Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0].value;
+            searchConfig.searchConfigId = searchConfigId;
+        }
     },
     savePDOKConfig:function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
@@ -752,6 +702,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#simpleListConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#pdokConfig' + searchconfigId)[0].setVisible(false);
+        Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0].setVisible(false);
         this.panel.updateLayout();
     },
     /**
