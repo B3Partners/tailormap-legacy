@@ -122,6 +122,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </stripes:form>
+        <c:if test="${actionBean.context.eventName == 'edit'}">
+            <br />
+            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
+                <stripes:submit name="edit" value="Nieuwe gebruiker"/>
+            </stripes:form>
+        </c:if>
         </div>
         <script type="text/javascript">
             Ext.onReady(function() {
