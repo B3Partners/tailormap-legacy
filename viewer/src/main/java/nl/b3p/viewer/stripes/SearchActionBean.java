@@ -29,7 +29,7 @@ import nl.b3p.viewer.search.PDOKSearchClient;
 import nl.b3p.viewer.search.SearchClient;
 import nl.b3p.viewer.search.SearchResult;
 import nl.b3p.viewer.search.SolrSearchClient;
-import nl.b3p.viewer.search.WFSSearchClient;
+import nl.b3p.viewer.search.AttributeSourceSearchClient;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -225,8 +225,8 @@ public class SearchActionBean implements ActionBean {
             }else if (type.equalsIgnoreCase("pdok")) {
                 String filter = config.optString("filter");
                 client = new PDOKSearchClient(filter);
-            } else if(type.equalsIgnoreCase("wfs")){
-                client = new WFSSearchClient(config);
+            } else if(type.equalsIgnoreCase("attributesource")){
+                client = new AttributeSourceSearchClient(config);
             }else{
                 client = null;
             }
