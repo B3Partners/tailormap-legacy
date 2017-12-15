@@ -74,7 +74,7 @@ background: url("${sprite}") 514px 394px;
 }
 
 .olControlPanel .olControlMeasureAreaItemActive{
-    background: url("${sprite}") 538px 107px;
+    background: url("${sprite}") 567px 107px;
 }
 
 .olControlPanel .downloadMapItemInactive{
