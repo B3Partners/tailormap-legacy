@@ -248,6 +248,7 @@ public class AttributesActionBeanTest extends TestUtil{
         instance.setAppLayer(relatedAL);
         instance.setDebug(true);
         instance.layer = relatedLayer;
+        instance.setSort("GM_NAAM");
         
         JSONObject result = instance.executeStore(entityManager);
         
@@ -265,6 +266,7 @@ public class AttributesActionBeanTest extends TestUtil{
         instance.setFilter("GM_NAAM = 'Coevorden'");
         instance.setFeatureType(relatedMain);
         instance.setAppLayer(relatedAL);
+        instance.setSort("GM_NAAM");
         instance.setDebug(true);
         instance.layer = relatedLayer;
         
