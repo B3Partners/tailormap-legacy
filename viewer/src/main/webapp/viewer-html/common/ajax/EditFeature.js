@@ -26,14 +26,16 @@ Ext.define("viewer.EditFeature", {
             this.config.actionbeanUrl = actionBeans["editfeature"];
         }        
     },
-    edit: function(appLayer, feature, successFunction, failureFunction) {
-        
+    edit: function(appLayer, feature, successFunction, failureFunction, extendUrl) {
+        if(extendUrl === undefined){
+            extendUrl = "";
+        }
         Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
+            url: this.config.actionbeanUrl+extendUrl,
             params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
+                console.log(response);    
                 if(response.success) {
                     if(response.hasOwnProperty("__fid")) {
                         successFunction(response.__fid);
@@ -53,39 +55,18 @@ Ext.define("viewer.EditFeature", {
             }
         });        
     },
-
-    editDigi: function (appLayer, feature, successFunction, failureFunction) {
-        console.log(feature);
-        Ext.Ajax.request({
-            url: this.config.actionbeanUrl + "?saveRelatedFeatures",
-            params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
-            success: function (result) {
-                var response = Ext.JSON.decode(result.responseText);
-
-                if (response.success) {
-                    if (response.hasOwnProperty("__fid")) {
-                        successFunction(response.__fid);
-                    } else {
-                        successFunction(null);
-                    }
-                } else {
-                    if (failureFunction != undefined) {
-                        failureFunction(response.error);
-                    }
-                }
-            },
-            failure: function (result) {
-                if (failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                }
-            }
-        });
-    },
     
-    remove: function(appLayer, feature,successFunction, failureFunction){
+    remove: function(appLayer, feature,successFunction, failureFunction, extendUrl){
+        var obj ={};
+        if(extendUrl === undefined){
+            extendUrl = "";
+            obj = {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature),"delete": "d"};
+        }else if(extendUrl === "?removeRelatedFeatures"){
+            obj = {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)};
+        }
         Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
-            params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature),"delete": "d"},
+            url: this.config.actionbeanUrl+extendUrl,
+            params: obj,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
@@ -99,29 +80,6 @@ Ext.define("viewer.EditFeature", {
             },
             failure: function(result) {
                 if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                }
-            }
-        });
-    },
-    
-    removeDigi: function (appLayer, feature, successFunction, failureFunction) {
-        Ext.Ajax.request({
-            url: this.config.actionbeanUrl + "?removeRelatedFeatures",
-            params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
-            success: function (result) {
-                var response = Ext.JSON.decode(result.responseText);
-
-                if (response.success) {
-                    successFunction();
-                } else {
-                    if (failureFunction != undefined) {
-                        failureFunction(response.error);
-                    }
-                }
-            },
-            failure: function (result) {
-                if (failureFunction != undefined) {
                     failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }

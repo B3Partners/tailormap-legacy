@@ -139,23 +139,30 @@ Ext.define("viewer.FeatureInfo", {
             }
         });
     },
-    editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams) {
+    
+    editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams, extendUrl) {
+        if(extendUrl === undefined){
+            extendUrl = "";
+        }
         var query = [{appLayer: appLayer.id}];
         var params ={application: this.config.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};
         if(extraParams){
             Ext.merge(params, extraParams);
         }
         Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
+            url: this.config.actionbeanUrl+extendUrl,
             params: params,
             timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText)[0];
-
                 if(response.error) {
                     failureFunction("Error finding feature to edit: " + response.error);
                 } else {
-                    successFunction(response.features);
+                    if(extendUrl !== ""){
+                        successFunction(response);
+                    }else{
+                        successFunction(response.features);
+                    }
                 }
             },
             failure: function(result) {
@@ -164,53 +171,6 @@ Ext.define("viewer.FeatureInfo", {
                 }
             }
         });
-    },
-   
-    editFeatureInfoDigi: function (x, y, distance, appLayer, successFunction, failureFunction, extraParams) {
-        var query = [{appLayer: appLayer.id}];
-        var params = {application: this.config.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};
-        if (extraParams) {
-            Ext.merge(params, extraParams);
-        }
-
-        Ext.Ajax.request({
-            url: this.config.actionbeanUrl + "?featureInfoDigi",
-            params: params,
-            timeout: 40000,
-            success: function (result) {
-
-                var response = Ext.JSON.decode(result.responseText)[0];
-
-                var is_objecttype = false;
-
-                if (response.features) {
-                    for (var key in response.features[0]) {
-                        if (key == "c0") {
-                            response.related_features.objecttype = response.features[0][key];
-                            response.related_features.hoofdgroep = response.features[0]['c1'];
-                            response.related_features.fid = response.features[0]['fid'];
-                            is_objecttype = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!is_objecttype) {
-                        response.related_features.objecttype = "niet bekend";
-                        response.related_features.hoofdgroep = response.features[0]['c1'];
-                        response.related_features.fid = response.features[0]['fid'];
-                    }
-                }
-                if (response.error) {
-                    failureFunction("Error finding feature to edit: " + response.error);
-                } else {
-                    successFunction(response.related_features);
-                }
-            },
-            failure: function (result) {
-                if (failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                }
-            }
-        });
     }
+
 });

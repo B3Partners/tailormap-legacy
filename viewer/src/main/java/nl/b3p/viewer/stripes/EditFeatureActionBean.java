@@ -392,7 +392,7 @@ public class EditFeatureActionBean  implements ActionBean {
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
         String error = null;
-
+        System.out.println("hjoee");
         FeatureSource fs = null;
         EntityManager em = Stripersist.getEntityManager();
         if (appLayer == null) {

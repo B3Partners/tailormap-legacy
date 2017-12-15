@@ -72,14 +72,14 @@ Ext.define("viewer.components.digitreeEdit", {
         //console.log(feature); 
         Ext.create("viewer.EditFeature", {
             viewerController: this.config.viewerController
-        }).editDigi(
+        }).edit(
                 me.editingLayer,
                 feature,
                 function (fid) {
                     me.saveSucces(fid, is_new);
                 }, function (error) {
             me.failed(error);
-        });
+        }, "?saveRelatedFeatures");
 
     },
 
@@ -99,7 +99,7 @@ Ext.define("viewer.components.digitreeEdit", {
         me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
             viewerController: this.config.viewerController
-        }).removeDigi(
+        }).remove(
                 me.editingLayer,
                 feature,
                 function (fid) {
@@ -107,7 +107,7 @@ Ext.define("viewer.components.digitreeEdit", {
                 }, function (error) {
             me.failed(error);
 
-        });
+        }, "?removeRelatedFeatures");
 
 
     },
@@ -421,14 +421,15 @@ Ext.define("viewer.components.digitreeEdit", {
             viewerController: this.config.viewerController
         });
         var me = this;
-        featureInfo.editFeatureInfoDigi(this.x, this.y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
+        featureInfo.editFeatureInfo(this.x, this.y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
             //console.log(features);
+            features = me.decodeFeatureInfo(features);
             me.createFeaturesGrid(features);
             me.featuresReceived(features);
             me.activateMapClick();
         }, function (msg) {
             me.failed(msg);
-        });
+        }, {}, "?relatedInfo");
     },
 
     failed: function (msg) {
@@ -733,10 +734,34 @@ Ext.define("viewer.components.digitreeEdit", {
             viewerController: this.config.viewerController
         });
         var me = this;
-        featureInfo.editFeatureInfoDigi(this.x, this.y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
+        featureInfo.editFeatureInfo(this.x, this.y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
+            features = me.decodeFeatureInfo(features);
             me.createFeaturesGrid(features);
         }, function (msg) {
             me.failed(msg);
-        });
+        }, {}, "?relatedInfo");
+    },
+
+    decodeFeatureInfo: function (response) {
+        var is_objecttype = false;
+
+        if (response.features) {
+            for (var key in response.features[0]) {
+                if (key == "c0") {
+                    response.related_features.objecttype = response.features[0][key];
+                    response.related_features.hoofdgroep = response.features[0]['c1'];
+                    response.related_features.fid = response.features[0]['fid'];
+                    is_objecttype = true;
+                    break;
+                }
+            }
+
+            if (!is_objecttype) {
+                response.related_features.objecttype = "niet bekend";
+                response.related_features.hoofdgroep = response.features[0]['c1'];
+                response.related_features.fid = response.features[0]['fid'];
+            }
+        }
+        return response.related_features;
     }
 });

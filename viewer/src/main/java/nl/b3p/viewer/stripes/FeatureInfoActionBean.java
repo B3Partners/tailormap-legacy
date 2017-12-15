@@ -207,7 +207,7 @@ public class FeatureInfoActionBean implements ActionBean {
         return this.layer;
     }
     //</editor-fold>
-
+    @DefaultHandler
     public Resolution info() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
 
@@ -348,7 +348,7 @@ public class FeatureInfoActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
     
-    public Resolution featureInfoDigi() throws JSONException, Exception {
+    public Resolution relatedInfo() throws JSONException, Exception {
         JSONArray queries = new JSONArray(queryJSON);
 
         Boolean checkRelated = true;
