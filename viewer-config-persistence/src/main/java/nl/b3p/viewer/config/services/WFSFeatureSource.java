@@ -202,7 +202,10 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
         if (!wfsUrl.endsWith("&") && !wfsUrl.endsWith("?")) {
             wfsUrl += wfsUrl.indexOf("?") >= 0 ? "&" : "?";
         }
-        wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS&VERSION=1.0.0";
+        wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS";
+        if(!wfsUrl.toUpperCase().contains("VERSION")){
+            wfsUrl += "&VERSION=1.1.0";
+        }
 
         params.put(WFSDataStoreFactory.URL.key, wfsUrl);
         params.put(WFSDataStoreFactory.USERNAME.key, getUsername());

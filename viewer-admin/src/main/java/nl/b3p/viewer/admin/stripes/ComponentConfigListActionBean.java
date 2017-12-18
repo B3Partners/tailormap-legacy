@@ -25,23 +25,26 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
  * @author Roy Braam
  */
-@UrlBinding("/action/componentConfigLayerList")
+@UrlBinding("/action/componentConfigList")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
-public class ComponentConfigLayerListActionBean implements ActionBean {
+public class ComponentConfigListActionBean implements ActionBean {
 
-    private static final Log log = LogFactory.getLog(ComponentConfigLayerListActionBean.class);
+    private static final Log log = LogFactory.getLog(ComponentConfigListActionBean.class);
     private ActionBeanContext context;
 
     public ActionBeanContext getContext() {
@@ -67,6 +70,9 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     private Boolean wfs = false;
     @Validate
     private Boolean attribute = false;
+    
+    @Validate
+    private String type;
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getAppId() {
@@ -133,16 +139,24 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         this.wfs = wfs;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     //</editor-fold>
-    public Resolution source() {
+    
+    @DefaultHandler
+    public Resolution layerlist() {
         EntityManager em = Stripersist.getEntityManager();
         JSONArray jsonArray = new JSONArray();
 
         if (appId != null) {
             Application app = em.find(Application.class, appId);
-            long startTime = System.currentTimeMillis();
             List<ApplicationLayer> layers =LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute, false, null,em);
-            long end = System.currentTimeMillis();
             for (ApplicationLayer layer : layers) {
                 try {
                     jsonArray.put(layer.toJSONObject(em));
@@ -150,11 +164,7 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
                     log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
                 }
             }
-            long end2 = System.currentTimeMillis();
-            log.error("Layerlist:" + (end - startTime));
-            log.error("toJSON:" + (end2 - end));
         }
         return new StreamingResolution("application/json", new StringReader(jsonArray.toString()));
     }
-
 }

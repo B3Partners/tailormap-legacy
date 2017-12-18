@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     nextId: 1,
     maxSearchConfigs: -1,
     solrSearchconfigs: {},
+    attribuutbronSearchconfigs: {},
     simpleListConfigs: {},
     layerSelectionWindow: null,
     requiredLayersOn: null,
@@ -68,8 +69,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                     iconCls: 'x-fa fa-plus-circle',
                     text: 'Zoekingang toevoegen',
                     listeners: {
-                        click: function() {
-                            me.appendSearchField();
+                        click:{
+                            fn: function() {
+                                me.appendSearchField();
+                            },
+                            scope: me
                         }
                     }
                 }
@@ -82,13 +86,13 @@ Ext.define("viewer.components.SearchConfiguration",{
             Voorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='";
         document.getElementById("config").appendChild(extraText);
 
-        if(config != null) {
-            if(config.searchconfigs != null) {
+        if(config !== null) {
+            if(config.searchconfigs !== null) {
                 Ext.Array.each(config.searchconfigs, function(searchconfig) {
                     me.appendSearchField(searchconfig);
                 });
             }
-            if(config.nextSearchConfigId != null) {
+            if(config.nextSearchConfigId) {
                 me.nextId = config.nextSearchConfigId;
             }
         }
@@ -156,27 +160,32 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 boxLabel: 'OpenLS', 
                                 name: 'type' + config.id, 
                                 inputValue: 'openls',
-                                checked: config.type=="openls" || config.type==undefined
+                                checked: config.type === "openls" || config.type === undefined
                             },{
                                 boxLabel: 'ArcGISRest', 
                                 name: 'type' + config.id, 
                                 inputValue: 'arcgisrest',
-                                checked: config.type=="arcgisrest"
+                                checked: config.type === "arcgisrest"
                             },{
                                 boxLabel: 'Solr', 
                                 name: 'type' + config.id, 
                                 inputValue: 'solr',
-                                checked: config.type=="solr"
+                                checked: config.type === "solr"
                             },{
                                 boxLabel: 'PDOK Adreszoeker', 
                                 name: 'type' + config.id, 
                                 inputValue: 'pdok',
-                                checked: config.type==="pdok"
+                                checked: config.type === "pdok"
+                            },{
+                                boxLabel: 'Attribuutbron', 
+                                name: 'type' + config.id, 
+                                inputValue: 'attributesource',
+                                checked: config.type === "attributesource"
                             },{
                                 boxLabel: 'Eenvoudig', 
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
-                                checked: config.type=="simplelist"
+                                checked: config.type === "simplelist"
                             }],
                             listeners: {
                                 change: function(radio) {
@@ -186,6 +195,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         },
                         { fieldLabel: 'URL *', name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
                         { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
+                        { xtype: 'container', itemId: 'asConfig' + config.id, hidden: true, height: 130, autoScroll: true },
                         {
                             xtype: 'container',
                             itemId: 'pdokConfig' + config.id,
@@ -245,7 +255,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                     setTimeout(function() {
                         me.showExtraconfig(me.getType(config.id), config.id);
                     }, 0);
-                },
+                }
             }
         };
         return searchField;
@@ -257,7 +267,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         // When switching radio input type is an array
         if(typeof type !== 'string') return;
         this.hideExtraConfig(configid);
-        if(type === 'solr' || type === 'simplelist' || type === 'pdok') {
+        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'attributesource') {
             if(type === 'solr') {
                 // Show additional Solr configuration
                 this.addSolrconfig(configid);
@@ -267,6 +277,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
             if(type === "pdok"){
                 this.addPdokConfig(configid);
+            }
+            if(type === 'attributesource'){
+                this.addAttributeSourceConfig(configid);
             }
             this.hideUrl(configid);
         } else {
@@ -305,6 +318,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             if(type === 'simplelist') {
                 me.saveSimpleListConfig(configid);
             }
+            if(type === 'attributesource') {
+                me.saveASConfig(configid);
+            }
             newSearchconfigs.push(searchconfig);
         });
         me.searchconfigs = newSearchconfigs;
@@ -314,7 +330,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         me.panel.remove(configid);
         var newSearchconfigs = [];
         Ext.Array.each(me.searchconfigs, function(searchconfig) {
-            if(searchconfig.id != configid) {
+            if(searchconfig.id !== configid) {
                 newSearchconfigs.push(searchconfig);
             }
         });
@@ -403,6 +419,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     /**
      * Show Solr configuration options for searchConfig
+     * @param searchconfigId Add solr configuration 
      */
     addSolrconfig: function(searchconfigId) {
         var solrConfigContainer = Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0];
@@ -443,16 +460,78 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     addPdokConfig: function(configid){
         var searchConfig = this.getConfig(configid);
-        var solrConfigContainer = Ext.ComponentQuery.query('#pdokConfig' + configid)[0];
-        solrConfigContainer.setVisible(true);
-        var a =0;
+        var pdokConfigContainer = Ext.ComponentQuery.query('#pdokConfig' + configid)[0];
+        pdokConfigContainer.setVisible(true);
         this.panel.updateLayout();
-        
-        
     },
+    
+    addAttributeSourceConfig: function (searchconfigId) {
+        var attributeConfigContainer = Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0];
+        var me = this;
+        if (!this.attribuutbronSearchconfigs.hasOwnProperty(searchconfigId)) {
+   
+            var searchConfig = me.getConfig(searchconfigId);
+            if (!searchConfig.asConfig) {
+                searchConfig.asConfig = {};
+            }
+            var combo = Ext.ComponentQuery.query('#asSearchConfig' + searchconfigId)[0];
+            if(!combo){
+                Ext.Ajax.request({
+                    url: this.getContextpath() + "/action/configuresolr?getSearchconfigData=true",
+                    params:{},
+                    scope: this,
+                    success: function (result, request) {
+                        var searchConfigs = Ext.JSON.decode(result.responseText);
+                        this.searchConfigStore = Ext.create('Ext.data.Store', {
+                            fields: ['id', 'name'],
+                            data: searchConfigs
+                        });
+
+                        var container = Ext.create('Ext.container.Container', {
+                            items: [{
+                                    xtype: 'combo',
+                                    fieldLabel: 'Zoekbron',
+                                    store: this.searchConfigStore,
+                                    itemId: "asSearchConfig" + searchconfigId,
+                                    queryMode: "local",
+                                    displayField: "name",
+                                    editable: false,
+                                    width: 350,
+                                    value: searchConfig.searchConfigId ? searchConfig.searchConfigId : null,
+                                    valueField: "id"
+                                }]
+                        });
+                        attributeConfigContainer.add(container);
+                    },
+                    failure: function () {
+                        Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met attribuutbronnen niet kan worden weergegeven");
+
+                    }
+                });
+            }
+        }
+        attributeConfigContainer.setVisible(true);
+        this.panel.updateLayout();
+    },
+    
+    makeFilterableCheckboxesAttributes: function (featureType, configId){
+        //Ext.ux.b3p.FilterableCheckboxes  
+        var parentcontainer = Ext.ComponentQuery.query('#checkboxes' + configId)[0];
+        var checkboxes = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
+            requestUrl: '',
+            itemList:featureType.attributes,
+            titleField: 'name',
+            parentContainer: parentcontainer
+        });
+        checkboxes.render();            
+    },
+    
     /**
      * Shows the window with layers which must be on / will be switched on when
      * using the solr search
+     * @param target
+     * @param searchconfigId
+     * @param searchConfig
      */
     showLayerconfig: function(target, searchconfigId, searchConfig) {
         var me = this;
@@ -509,16 +588,18 @@ Ext.define("viewer.components.SearchConfiguration",{
                 ]
             });
             me.requiredLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
-                requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
+                requestUrl: this.getContextpath() + "/action/componentConfigList",
                 requestParams: {
-                    appId: this.getApplicationId()
+                    appId: this.getApplicationId(),
+                    layerlist:true
                 },
                 parentContainer: Ext.ComponentQuery.query('#requiredLayersOn')[0]
             });
             me.switchLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
-                requestUrl: this.getContextpath() + "/action/componentConfigLayerList",
+                requestUrl: this.getContextpath() + "/action/componentConfigList",
                 requestParams: {
-                    appId: this.getApplicationId()
+                    appId: this.getApplicationId(),
+                    layerlist:true
                 },
                 parentContainer: Ext.ComponentQuery.query('#switchLayersOn')[0],
                 checked: (searchConfig && searchConfig.hasOwnProperty('switchOnLayers')) ? searchConfig.switchOnLayers : []
@@ -558,9 +639,17 @@ Ext.define("viewer.components.SearchConfiguration",{
         // Show the window
         me.layerSelectionWindow.show();
     },
+    
+    saveASConfig: function(searchconfigId){
+        var searchConfig = this.getConfig(searchconfigId);
+        if( Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0]){
+            var searchConfigId = Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0].value;
+            searchConfig.searchConfigId = searchConfigId;
+        }
+    },
     savePDOKConfig:function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
-        var filter = Ext.ComponentQuery.query('#filter'+searchconfigId)[0].value
+        var filter = Ext.ComponentQuery.query('#filter'+searchconfigId)[0].value;
         
         searchConfig.filter = filter;
     },
@@ -607,15 +696,18 @@ Ext.define("viewer.components.SearchConfiguration",{
     },
     /**
      * Function to hide extra config options
+     * @param searchconfigId hide config
      */
     hideExtraConfig: function(searchconfigId) {
         Ext.ComponentQuery.query('#solrConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#simpleListConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#pdokConfig' + searchconfigId)[0].setVisible(false);
+        Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0].setVisible(false);
         this.panel.updateLayout();
     },
     /**
      * Helper function to get searchconfig for searchconfigId
+     * @param searchconfigId
      */     
     getConfig: function(searchconfigId) {
         for(var x = 0; x < this.searchconfigs.length; x++) {

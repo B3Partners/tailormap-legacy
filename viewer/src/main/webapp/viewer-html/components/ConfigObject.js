@@ -34,7 +34,7 @@ Ext.define("viewer.components.ConfigObject",{
         this.parentId = parentId;
         this.configObject = configObject || {};
         this.configPage = configPage;
-        this.requestPath = configPage.getContextpath() + "/action/componentConfigLayerList"
+        this.requestPath = configPage.getContextpath() + "/action/componentConfigList";
     },
     /**
      * Must return the configuration that is set by the user.

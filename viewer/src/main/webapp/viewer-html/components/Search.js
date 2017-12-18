@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, FlamingoAppLoader, actionBeans */
+
 /**
  * Print component
  * Creates a AttributeList component
@@ -361,7 +363,7 @@ Ext.define ("viewer.components.Search",{
     },
     search : function(){
         this.searchRequestId++;
-        if(this.results != null){
+        if(this.results !== null){
             this.results.destroy();
         }
         this.searchField.getPicker().hide();
@@ -523,7 +525,7 @@ Ext.define ("viewer.components.Search",{
     addResult : function(result,index){
         var type = result.type;
         if(!this.groupedResult.hasOwnProperty(type)){
-            this.groupedResult[type] = new Array()
+            this.groupedResult[type] = new Array();
         }
         var item = this.createResult(result,index);
         this.groupedResult[type].push(item);
