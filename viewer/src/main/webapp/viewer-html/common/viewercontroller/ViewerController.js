@@ -1705,21 +1705,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     value = value.split(",");
                 }
 
-                for( var i = 0 ; i < value.length ; i++){
-                    var found = false;
-                    for(var j = 0; j<appLayers.length;j++){
-                        if(value[i]===appLayers[j]){
-                            found = true;
-                            selectedContent.push({
-                                type: "appLayer",
-                                id : value[i]
-                            });
-                        }
-                    }
-                    if(!found){
+                for (var i = 0; i < value.length; i++) {
+                    if (value[i][0] === "L") {
+                        var id = value[i].slice(1, value[i].length);
                         selectedContent.push({
                             type: "level",
-                            id : value[i]
+                            id: id
+                        });
+                    } else if (value[i][0] === "A") {
+                        var id = value[i].slice(1, value[i].length);
+                        selectedContent.push({
+                            type: "appLayer",
+                            id: id
+                        });
+                    } else {
+                        selectedContent.push({
+                            type: "level",
+                            id: value[i]
                         });
                     }
                 }
@@ -1836,7 +1838,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         var levelOrder = [];
         for (var i=0; i < this.app.selectedContent.length; i++){
+            var layer = this.app.selectedContent[i];
             var levelId = this.app.selectedContent[i].id;
+            if(layer.type === "level"){
+                levelId = "L"+levelId;
+            }
+            else if(layer.type === "appLayer"){
+                levelId = "A"+levelId;
+            }
             levelOrder.push(levelId);
         }
 
