@@ -195,3 +195,12 @@
     float: left;
     text-indent: 0;
 }
+.balloon-title {
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    right: 55px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

@@ -42,10 +42,13 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.balloon.closeOnMouseOut=false;
         this.balloon.showCloseButton=true;
         var me = this;
-        this.balloon.close = function(){            
+        this.balloon.close = function() {
             me.balloon.setContent("");
             me.balloon.hide();
             me.setMaptipEnabled(true);
+        };
+        if(this.config.title) {
+            this.balloon.setTitle(this.config.title);
         }
         //if topmenu height is in % then recalc on every resize.        
         var topMenuLayout=this.config.viewerController.getLayout('top_menu');

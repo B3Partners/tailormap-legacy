@@ -856,6 +856,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.closeOnMouseOut=true;
     this.showCloseButton=false;
     this.zIndex = 13000;
+    this.balloonTitleContent = "";
+    this.balloonTitle = null;
     //because click events still needs to be handled by the map, move the balloon a bit
     this.offsetX=1;
     this.offsetY=0;
@@ -971,6 +973,23 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloonContent.appendChild(minMaximizeButton);
     };
 
+    this.setTitle = function(title) {
+        this.balloonTitleContent = title;
+        this._appendTitle();
+    };
+
+    this._appendTitle = function() {
+        if(!this.balloonContent) {
+            return;
+        }
+        if(!this.balloonTitle) {
+            this.balloonTitle = new Ext.Element(document.createElement("div"));
+            this.balloonTitle.addCls("balloon-title");
+            this.balloonContent.appendChild(this.balloonTitle);
+        }
+        this.balloonTitle.update(this.balloonTitleContent);
+    };
+
     /**
      *Private function. Use setPosition(x,y,true) to reset the position
      *Reset the position to the point. And displays the right Arrow to the point
@@ -1081,6 +1100,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             this._resetPositionOfBalloon(x,y);
         }
         this._appendButtons();
+        this._appendTitle();
         this.maximize();
         if (x && y ){
 
