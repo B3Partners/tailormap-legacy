@@ -326,39 +326,44 @@ Ext.define ("viewer.components.Maptip",{
                     var feature = layer.features[index];
                     var featureDiv = new Ext.Element(document.createElement("div"));
                     featureDiv.addCls("feature_summary_feature");
+                    // Render right column first, floated right, left column fills up the rest
+                    if (showRightColumn) {
+                        var rightColumnDiv = new Ext.Element(document.createElement("div"));
+                        rightColumnDiv.addCls("feature_summary_rightcolumn");
+                        var imageDiv = new Ext.Element(document.createElement("div"));
+                        imageDiv.addCls("feature_summary_image");
+                        imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>", appLayer);
+                        rightColumnDiv.appendChild(imageDiv);
+                        featureDiv.appendChild(rightColumnDiv);
+                    }
                     //left column
                     var leftColumnDiv = new Ext.Element(document.createElement("div"));
                     leftColumnDiv.addCls("feature_summary_leftcolumn");
-                    if(!showRightColumn) {
-                        leftColumnDiv.setStyle({
-                            'width': '100%'
-                        });
+                    //title
+                    if (details && details["summary.title"] ){
+                        var titleDiv = new Ext.Element(document.createElement("div"));
+                        titleDiv.addCls("feature_summary_title");
+                        titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],feature,noHtmlEncode,nl2br, appLayer));
+                        leftColumnDiv.appendChild(titleDiv);
                     }
-                        //title
-                        if (details && details["summary.title"] ){
-                            var titleDiv = new Ext.Element(document.createElement("div"));
-                            titleDiv.addCls("feature_summary_title");
-                            titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],feature,noHtmlEncode,nl2br, appLayer));
-                            leftColumnDiv.appendChild(titleDiv);
+                    //description
+                    if (details && details["summary.description"]){
+                        var descriptionDiv = new Ext.Element(document.createElement("div"));
+                        descriptionDiv.addCls("feature_summary_description");
+                        if (this.config.heightDescription){
+                            descriptionDiv.setHeight(Number(this.config.heightDescription));
                         }
-                        //description
-                        if (details && details["summary.description"]){
-                            var descriptionDiv = new Ext.Element(document.createElement("div"));
-                            descriptionDiv.addCls("feature_summary_description");
-                            if (this.config.heightDescription){
-                                descriptionDiv.setHeight(Number(this.config.heightDescription));
-                            }
-                            var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br, appLayer);
+                        var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br, appLayer);
 
-                            descriptionDiv.insertHtml("beforeEnd",desc);
-                            leftColumnDiv.appendChild(descriptionDiv);
-                        }
-                        //link
-                        if (details && details["summary.link"]){
-                            var linkDiv = new Ext.Element(document.createElement("div"));
-                            linkDiv.addCls("feature_summary_link");
-                            linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>", appLayer);
-                            leftColumnDiv.appendChild(linkDiv);
+                        descriptionDiv.insertHtml("beforeEnd",desc);
+                        leftColumnDiv.appendChild(descriptionDiv);
+                    }
+                    //link
+                    if (details && details["summary.link"]){
+                        var linkDiv = new Ext.Element(document.createElement("div"));
+                        linkDiv.addCls("feature_summary_link");
+                        linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>", appLayer);
+                        leftColumnDiv.appendChild(linkDiv);
                     }
 
                     if (this.extraLinkCallbacks && this.extraLinkCallbacks.length > 0) {
@@ -377,37 +382,27 @@ Ext.define ("viewer.components.Maptip",{
                         leftColumnDiv.insertFirst(extraDiv);
                     }
 
-                        //detail
-                        var detailDiv = new Ext.Element(document.createElement("div"));
-                        detailDiv.addCls("feature_summary_detail");
-                        //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                        if (this.getMoreLink() !== null){
-                            var detailElem=document.createElement("a");
-                            detailElem.href='javascript: void(0)';
-                            detailElem.feature= feature;
-                            detailElem.appLayer=appLayer;
-                            var detailLink = new Ext.Element(detailElem);
-                            detailLink.addListener("click",
-                                function (evt,el,o){
-                                    me.showDetails(el.appLayer,el.feature);
-                                },
-                                this);
-                            detailLink.insertHtml("beforeEnd",this.getMoreLink());
-                            detailDiv.appendChild(detailLink);
-                        }
-                        leftColumnDiv.appendChild(detailDiv);
+                    //detail
+                    var detailDiv = new Ext.Element(document.createElement("div"));
+                    detailDiv.addCls("feature_summary_detail");
+                    //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
+                    if (this.getMoreLink() !== null){
+                        var detailElem=document.createElement("a");
+                        detailElem.href='javascript: void(0)';
+                        detailElem.feature= feature;
+                        detailElem.appLayer=appLayer;
+                        var detailLink = new Ext.Element(detailElem);
+                        detailLink.addListener("click",
+                            function (evt,el,o){
+                                me.showDetails(el.appLayer,el.feature);
+                            },
+                            this);
+                        detailLink.insertHtml("beforeEnd",this.getMoreLink());
+                        detailDiv.appendChild(detailLink);
+                    }
+                    leftColumnDiv.appendChild(detailDiv);
 
                     featureDiv.appendChild(leftColumnDiv);
-
-                    if (showRightColumn) {
-                        var rightColumnDiv = new Ext.Element(document.createElement("div"));
-                        rightColumnDiv.addCls("feature_summary_rightcolumn");
-                        var imageDiv = new Ext.Element(document.createElement("div"));
-                        imageDiv.addCls("feature_summary_image");
-                        imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>", appLayer);
-                        rightColumnDiv.appendChild(imageDiv);
-                        featureDiv.appendChild(rightColumnDiv);
-                    }
 
                     components.push(featureDiv);
 
