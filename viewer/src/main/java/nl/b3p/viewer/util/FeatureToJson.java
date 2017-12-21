@@ -219,6 +219,9 @@ public class FeatureToJson {
                     String alias = null;
                     if (attributeAliases != null) {
                         alias = attributeAliases.get(name);
+                        if (alias!=null) {
+                            alias = alias.replaceAll(" ", "_");
+                        }
                     }
                     j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
                 }
