@@ -192,9 +192,18 @@ public class FeatureReportActionBean implements ActionBean {
                         List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
                         String leftSide = keys.get(0).getLeftSide().getName();
                         String rightSide = keys.get(0).getRightSide().getName();
+                        String type = keys.get(0).getLeftSide().getExtJSType();
+                        String query = rightSide + "=";
+                        if (type.equalsIgnoreCase("string") 
+                                || type.equalsIgnoreCase("date")
+                                || type.equalsIgnoreCase("auto")) {
+                            query += "'" + jFeat.get(leftSide) + "'";
+                        } else {
+                            query += jFeat.get(leftSide);
+                        }
 
                         // collect related feature attributes
-                        q = new Query(fType.getTypeName(), ECQL.toFilter(rightSide + "=" + jFeat.get(leftSide)));
+                        q = new Query(fType.getTypeName(), ECQL.toFilter(query));
                         q.setMaxFeatures(this.maxrelatedfeatures + 1);
                         q.setHandle("FeatureReportActionBean_related_attributes");
                         LOG.debug("Related features query: " + q);

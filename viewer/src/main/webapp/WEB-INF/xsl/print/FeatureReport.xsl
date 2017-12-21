@@ -75,12 +75,12 @@
                         <xsl:call-template name="map-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="6.5cm" height="18cm" top="2.6cm" left="13.6cm" xsl:use-attribute-sets="column-block-border">
+                    <fo:block-container width="6.95cm" height="18cm" top="2.6cm" left="13.2cm" xsl:use-attribute-sets="column-block-border">
                         <xsl:call-template name="info-block"/>
                     </fo:block-container>
 
                     <!-- attribute tables -->
-                    <fo:block-container width="13.1cm" height="10.0cm" top="10.6cm" left="0cm" margin-left="0.1cm" xsl:use-attribute-sets="column-block-border">
+                    <fo:block-container width="13.1cm" height="10.0cm" top="10.6cm" left="0cm" margin-left="0.1cm" overflow="hidden" xsl:use-attribute-sets="column-block-border">
                         <xsl:for-each select="extra/info[@classname='feature']/root">
                             <fo:block xsl:use-attribute-sets="subtitle-font">Geselecteerd Object</fo:block>
                             <xsl:call-template name="table-2column"/>
@@ -109,52 +109,58 @@
 
 
     <xsl:template name="info-block">
-        <fo:block margin-left="0.2cm">
-            <fo:external-graphic src="url('b3p_noordpijl.png')" width="84px" height="77px"/>
-        </fo:block>
-
-        <fo:block margin-left="0.2cm" xsl:use-attribute-sets="default-font">
-            <!-- create scalebar -->
-            <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="9pt">
-                <xsl:text>schaal</xsl:text>
+        <fo:block-container margin-left="0.2cm">
+            <fo:block>
+                <fo:external-graphic src="url('b3p_noordpijl.png')" width="84px" height="77px"/>
             </fo:block>
-
-            <fo:block margin-left="0.2cm" margin-top="0.2cm">
-                <xsl:call-template name="calc-scale">
-                    <xsl:with-param name="m-width">
-                        <xsl:call-template name="calc-bbox-width-m-corrected">
-                            <xsl:with-param name="bbox" select="bbox"/>
-                        </xsl:call-template>
-                    </xsl:with-param>
-                    <xsl:with-param name="px-width" select="$map-width-px"/>
-                </xsl:call-template>
+	
+            <fo:block xsl:use-attribute-sets="default-font">
+                <!-- create scalebar -->
+                <fo:block margin-top="0.3cm" font-size="9pt">
+                    <xsl:text>schaal</xsl:text>
+                </fo:block>
+	
+                <fo:block margin-top="0.2cm">
+                    <xsl:call-template name="calc-scale">
+                        <xsl:with-param name="m-width">
+                            <xsl:call-template name="calc-bbox-width-m-corrected">
+                                <xsl:with-param name="bbox" select="bbox"/>
+                            </xsl:call-template>
+                        </xsl:with-param>
+                        <xsl:with-param name="px-width" select="$map-width-px"/>
+                    </xsl:call-template>
+                </fo:block>
+	
+                <fo:block margin-top="0.3cm" font-size="10pt">
+                    <xsl:text>datum: </xsl:text>
+                    <xsl:value-of select="date"/>
+                </fo:block>
+	
             </fo:block>
-
-            <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="10pt">
-                <xsl:text>datum: </xsl:text>
-                <xsl:value-of select="date"/>
-            </fo:block>
-
-        </fo:block>
-         
-        <fo:block-container margin-left="0.2cm" margin-top="0.5cm" width="6.5cm" height="9cm">
-            <xsl:call-template name="legend" />
+			 
+            <fo:block-container margin-left="0.2cm" margin-top="0.5cm" width="6.5cm" height="3cm">
+                <xsl:call-template name="legend" />
+                <fo:block>
+                        <xsl:text></xsl:text>
+                </fo:block>
+            </fo:block-container>
+		   
+            <!-- overzichtskaart
+            <fo:block-container width="4.0cm" height="2.9cm" top="1.6cm" left="13.2cm" margin-left="0cm" xsl:use-attribute-sets="column-block">
+                    <xsl:call-template name="overview-block">
+                            <xsl:with-param name="width" select="'112'" />
+                            <xsl:with-param name="height" select="'80'" />
+                            <xsl:with-param name="width" select="'112px'" />
+                            <xsl:with-param name="height" select="'80px'" />
+                    </xsl:call-template>
+            </fo:block-container>
+            -->
+	
+            <xsl:call-template name="logo-block"/>
+	
+            <xsl:call-template name="disclaimer-block"/>
+			
         </fo:block-container>
-        
-        <!-- overzichtskaart
-        <fo:block-container width="4.0cm" height="2.9cm" top="1.6cm" left="13.2cm" margin-left="0cm" xsl:use-attribute-sets="column-block">
-            <xsl:call-template name="overview-block">
-                <xsl:with-param name="width" select="'112'" />
-                <xsl:with-param name="height" select="'80'" />
-                <xsl:with-param name="width" select="'112px'" />
-                <xsl:with-param name="height" select="'80px'" />
-            </xsl:call-template>
-        </fo:block-container>
-        -->
-
-        <xsl:call-template name="logo-block"/>
-
-        <xsl:call-template name="disclaimer-block"/>
     </xsl:template>
 
     <!-- kaartje -->
@@ -233,7 +239,7 @@
             <xsl:variable name="numOfCols" select="colCount" as="xs:integer"/>
             <xsl:variable name="numOfrows" select="rowCount" as="xs:integer"/>
 
-            <fo:table table-layout="auto" inline-progression-dimension="auto">
+            <fo:table table-layout="fixed" inline-progression-dimension="auto">
                 <fo:table-header font-weight="bold">
                     <xsl:comment>header rij</xsl:comment>
                     <fo:table-row>
