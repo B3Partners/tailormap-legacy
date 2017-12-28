@@ -33,6 +33,7 @@ import nl.b3p.viewer.print.PrintExtraInfo;
 import nl.b3p.viewer.print.PrintGenerator;
 import nl.b3p.viewer.print.PrintInfo;
 import nl.b3p.viewer.print.PrintUtil;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
@@ -95,6 +96,11 @@ public class PrintActionBean implements ActionBean {
         if (jRequest.has("subtitle")){
             info.setSubtitle(jRequest.getString("subtitle"));
         }
+        String username = context.getRequest().getRemoteUser();
+        if (!StringUtils.isEmpty(username)){
+            info.setUsername(username);
+        }
+
         info.setDate(df.format(new Date()));        
         info.setImageUrl(imageUrl);
         if (jRequest.has("bbox")){

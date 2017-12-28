@@ -152,6 +152,10 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
             </fo:block>
 
             <fo:block margin-left="0.2cm" margin-top="0.5cm" font-size="10pt">
+                <xsl:if test="username"> 
+                    <xsl:value-of select="username"/>
+                    <xsl:text> - </xsl:text>
+                </xsl:if>
                 <xsl:value-of select="date"/>
             </fo:block>
 
