@@ -46,12 +46,13 @@ import org.apache.commons.logging.LogFactory;
 import org.opengis.geometry.BoundingBox;
 
 @XmlRootElement(name="info")
-@XmlType(propOrder = {"title", "subtitle", "date", "imageUrl", "legendUrls", "bbox", "remark", "quality", "angle", "overviewUrl", "extra"})
+@XmlType(propOrder = {"title", "subtitle", "username", "date", "imageUrl", "legendUrls", "bbox", "remark", "quality", "angle", "overviewUrl", "extra"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
     
     private String title;
     private String subtitle;
+    private String username;
     private String date;
     private String imageUrl;
     private String bbox;
@@ -75,6 +76,15 @@ public class PrintInfo {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @XmlElement(name="username")
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @XmlElement(name="date")

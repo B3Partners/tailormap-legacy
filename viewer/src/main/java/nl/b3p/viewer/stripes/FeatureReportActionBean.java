@@ -192,45 +192,50 @@ public class FeatureReportActionBean implements ActionBean {
                         List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
                         String leftSide = keys.get(0).getLeftSide().getName();
                         String rightSide = keys.get(0).getRightSide().getName();
-                        String type = keys.get(0).getLeftSide().getExtJSType();
-                        String query = rightSide + "=";
-                        if (type.equalsIgnoreCase("string") 
-                                || type.equalsIgnoreCase("date")
-                                || type.equalsIgnoreCase("auto")) {
-                            query += "'" + jFeat.get(leftSide) + "'";
+                        
+                        JSONObject info = new JSONObject();
+                        if (jFeat.get(leftSide)!=null) {
+                            String type = keys.get(0).getLeftSide().getExtJSType();
+                            String query = rightSide + "=";
+                            if (type.equalsIgnoreCase("string")
+                                    || type.equalsIgnoreCase("date")
+                                    || type.equalsIgnoreCase("auto")) {
+                                query += "'" + jFeat.get(leftSide) + "'";
+                            } else {
+                                query += jFeat.get(leftSide);
+                            }
+
+                            // collect related feature attributes
+                            q = new Query(fType.getTypeName(), ECQL.toFilter(query));
+                            q.setMaxFeatures(this.maxrelatedfeatures + 1);
+                            q.setHandle("FeatureReportActionBean_related_attributes");
+                            LOG.debug("Related features query: " + q);
+
+                            fs = fType.openGeoToolsFeatureSource(TIMEOUT);
+                            features = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+
+                            JSONArray jsonFeats = new JSONArray();
+                            int featureCount;
+                            int colCount = 0;
+                            int numFeats = features.length();
+                            int maxFeatures = Math.min(numFeats, this.maxrelatedfeatures);
+                            for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
+                                // remove FID
+                                features.getJSONObject(featureCount).remove(FID);
+                                colCount = features.getJSONObject(featureCount).length();
+                                jsonFeats.put(features.getJSONObject(featureCount));
+                            }
+                            info.put("features", jsonFeats);
+                            info.putOnce("colCount", colCount);
+                            info.putOnce("rowCount", featureCount);
+
+                            if (numFeats > this.maxrelatedfeatures) {
+                                info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                            }
                         } else {
-                            query += jFeat.get(leftSide);
+                            info.putOnce("errorMessage", "Kolom met naam '" + leftSide + "' moet beschikbaar zijn voor het ophalen van gerelateerde items.");
                         }
-
-                        // collect related feature attributes
-                        q = new Query(fType.getTypeName(), ECQL.toFilter(query));
-                        q.setMaxFeatures(this.maxrelatedfeatures + 1);
-                        q.setHandle("FeatureReportActionBean_related_attributes");
-                        LOG.debug("Related features query: " + q);
-
-                        fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                        features = ftjson.getJSONFeatures(appLayer, fType, fs, q);
-
-                        JSONArray jsonFeats = new JSONArray();
-                        int featureCount;
-                        int colCount = 0;
-                        int numFeats = features.length();
-                        int maxFeatures = Math.min(numFeats, this.maxrelatedfeatures);
-                        for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
-                            // remove FID
-                            features.getJSONObject(featureCount).remove(FID);
-                            colCount = features.getJSONObject(featureCount).length();
-                            jsonFeats.put(features.getJSONObject(featureCount));
-                        }
-                        JSONObject info = new JSONObject()
-                                .put("features", jsonFeats)
-                                .putOnce("colCount", colCount)
-                                .putOnce("rowCount", featureCount);
-
-                        if (numFeats > this.maxrelatedfeatures) {
-                            info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
-                        }
-
+                        
                         extra = new JSONObject()
                                 .put("className", "related")
                                 .put("componentName", label)
