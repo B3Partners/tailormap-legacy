@@ -48,7 +48,7 @@ public class TileMatrix {
 
     public static TileMatrix fromJSONObject(JSONObject tilematrix){
         TileMatrix tm = new TileMatrix();
-        tm.setDescription(tilematrix.getString("description"));
+        tm.setDescription(tilematrix.optString("description"));
         tm.setMatrixHeight(tilematrix.getInt("matrixHeight"));
         tm.setMatrixWidth(tilematrix.getInt("matrixWidth"));
         tm.setScaleDenominator(tilematrix.getString("scaleDenominator"));

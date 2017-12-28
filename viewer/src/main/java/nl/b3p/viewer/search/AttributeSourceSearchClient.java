@@ -74,7 +74,7 @@ public class AttributeSourceSearchClient extends SearchClient {
                 JSONObject oldFeature = (JSONObject) feature;
                 String label = "";
                 for (String name : resultAttributes) {
-                    Object value = oldFeature.get(name);
+                    Object value = oldFeature.optString(name,"");
                     newFeature.put(name, value);
                     label += " " + value;
                 }
