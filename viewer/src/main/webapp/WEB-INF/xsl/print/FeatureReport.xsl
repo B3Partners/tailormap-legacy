@@ -200,7 +200,7 @@
 
     <xsl:template name="logo-block">
         <fo:block>
-            <fo:external-graphic src="url('b3p_logo.png')" width="231px" height="58px"/>
+            <fo:external-graphic src="url('gouda_logo.png')" width="155px" height="55px"/>
         </fo:block>
     </xsl:template>
 
@@ -237,48 +237,56 @@
 
     <xsl:template name="table-related">
         <!-- create a simple multi-column table with auto sizing-->
-        <fo:block font-size="9pt">
-            <xsl:variable name="numOfCols" select="colCount" as="xs:integer"/>
-            <xsl:variable name="numOfrows" select="rowCount" as="xs:integer"/>
-
-            <fo:table table-layout="fixed" inline-progression-dimension="auto">
-                <fo:table-header font-weight="bold">
-                    <xsl:comment>header rij</xsl:comment>
-                    <fo:table-row>
-                        <xsl:for-each select="features/*">
-                            <xsl:if test ="true() and not(../following-sibling::features)">
-                                <fo:table-cell>
-                                    <fo:block>
-                                        <xsl:call-template name="string-remove-underscores">
-                                            <xsl:with-param name="text" select="local-name()" />
-                                        </xsl:call-template>
-                                    </fo:block>
-                                </fo:table-cell>
-                            </xsl:if>
-                        </xsl:for-each>
-                    </fo:table-row>
-                </fo:table-header>
-
-                <fo:table-body>
-                    <xsl:for-each select="features">
-                        <fo:table-row>
-                            <xsl:comment>data rij</xsl:comment>
-                            <xsl:for-each select="*">
-                                <fo:table-cell>
-                                    <fo:block>
-                                        <xsl:value-of select="normalize-space(.)" />
-                                    </fo:block>
-                                </fo:table-cell>
+        <xsl:choose>
+            <xsl:when test="features">
+                <fo:block font-size="9pt">
+                    <xsl:variable name="numOfCols" select="colCount" as="xs:integer"/>
+                    <xsl:variable name="numOfrows" select="rowCount" as="xs:integer"/>
+					
+                    <fo:table table-layout="fixed" inline-progression-dimension="auto">
+                        <fo:table-header font-weight="bold">
+                            <xsl:comment>header rij</xsl:comment>
+                            <fo:table-row>
+                                <xsl:for-each select="features/*">
+                                    <xsl:if test ="true() and not(../following-sibling::features)">
+                                        <fo:table-cell>
+                                            <fo:block>
+                                                <xsl:call-template name="string-remove-underscores">
+                                                    <xsl:with-param name="text" select="local-name()" />
+                                                </xsl:call-template>
+                                            </fo:block>
+                                        </fo:table-cell>
+                                    </xsl:if>
+                                </xsl:for-each>
+                            </fo:table-row>
+                        </fo:table-header>
+                        <fo:table-body>
+                            <xsl:for-each select="features">
+                                <fo:table-row>
+                                    <xsl:comment>data rij</xsl:comment>
+                                    <xsl:for-each select="*">
+                                        <fo:table-cell>
+                                            <fo:block>
+                                                <xsl:value-of select="normalize-space(.)" />
+                                            </fo:block>
+                                        </fo:table-cell>
+                                    </xsl:for-each>
+                                </fo:table-row>
                             </xsl:for-each>
-                        </fo:table-row>
-                    </xsl:for-each>
-                </fo:table-body>
-            </fo:table>
+                        </fo:table-body>
 
-        </fo:block>
-        <fo:block font-size="10pt" font-style="italic">
-            <xsl:value-of select="moreMessage" />
-        </fo:block>
+                    </fo:table>
+                </fo:block>
+                <fo:block font-size="10pt" font-style="italic">
+                    <xsl:value-of select="moreMessage" />
+                </fo:block>
+            </xsl:when>
+            <xsl:otherwise>
+                <fo:block font-size="10pt" font-style="italic">
+                    <xsl:value-of select="errorMessage" />
+                </fo:block>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
 

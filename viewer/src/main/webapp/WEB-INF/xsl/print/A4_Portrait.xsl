@@ -60,11 +60,11 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                         <xsl:call-template name="map-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="14.9cm" height="2.3cm" top="25.7cm" left="0cm" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="13.9cm" height="2.3cm" top="25.7cm" left="0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="disclaimer-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="5cm" height="2.3cm" top="25.7cm" left="15.0cm" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="6cm" height="2.3cm" top="25.7cm" left="14.0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="logo-block"/>
                     </fo:block-container>
                 </fo:flow>
