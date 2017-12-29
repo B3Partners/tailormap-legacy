@@ -11,7 +11,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	
     <xsl:param name="versionParam" select="'1.0'"/>
 
-    <xsl:variable name="map-width-px" select="'403'"/>
+    <xsl:variable name="map-width-px" select="'390'"/>
     <xsl:variable name="map-height-px" select="'678'"/>
     
     <!-- See legend.xsl (does not currently affect size of other elements!) -->
@@ -48,29 +48,23 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
             
             <fo:page-sequence master-reference="a4-staand">
                 <fo:flow flow-name="body">
-                    <fo:block-container width="20.45cm" height="1.5cm" top="0cm" left="0cm" background-color="#FFFFFF" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="20.0cm" height="1.5cm" top="0cm" left="0cm" background-color="#FFFFFF" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="title-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="6.0cm" height="0.75cm" top="1.6cm" left="0cm" background-color="#FFFFFF" xsl:use-attribute-sets="column-block">
-                        <fo:block margin-left="0.2cm" margin-top="0.2cm" xsl:use-attribute-sets="default-font">
-                            <xsl:value-of select="subtitle"/>
-                        </fo:block>
-                    </fo:block-container>
-
-                    <fo:block-container width="5.8cm" height="24.0cm" top="2.35cm" left="0cm" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="5.9cm" height="24.0cm" top="1.6cm" left="0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="info-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="14.3cm" height="24.0cm" top="1.6cm" left="6.1cm" xsl:use-attribute-sets="column-block-border">
+                    <fo:block-container width="13.85cm" height="24.0cm" top="1.6cm" left="6.1cm" xsl:use-attribute-sets="column-block-border">
                         <xsl:call-template name="map-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="12.0cm" height="2.3cm" top="26.5cm" left="0cm" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="14.9cm" height="2.3cm" top="25.7cm" left="0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="disclaimer-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="7.6cm" height="2.3cm" top="26.5cm" left="12.0cm" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="5cm" height="2.3cm" top="25.7cm" left="15.0cm" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="logo-block"/>
                     </fo:block-container>
                 </fo:flow>
@@ -80,60 +74,51 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     
     <!-- blocks -->
     <xsl:template name="title-block">        
-        <fo:block margin-left="0.2cm" margin-top="0.5cm" xsl:use-attribute-sets="title-font">
+        <fo:block margin-left="0.2cm" margin-top="0.1cm" xsl:use-attribute-sets="title-font">
             <xsl:value-of select="title"/>
+        </fo:block>
+        <fo:block margin-left="0.2cm" margin-top="0.2cm" xsl:use-attribute-sets="default-font">
+            <xsl:value-of select="subtitle"/>
         </fo:block>
     </xsl:template>
     
     <xsl:template name="info-block">
-        <xsl:call-template name="windrose">
-            <xsl:with-param name="angle" select="angle"/>
-            <xsl:with-param name="top" select="'0cm'"/>
-        </xsl:call-template>
-        
-        <fo:block margin-left="0.2cm" margin-top="4cm" xsl:use-attribute-sets="default-font">
+        <fo:block-container>
+            <fo:block-container margin-left="0.0cm" margin-right="0.0cm" margin-top="0.0cm" height="2.2cm">
+                <fo:block text-align="right">
+                    <xsl:call-template name="windrose">
+                         <xsl:with-param name="angle" select="angle"/>
+                         <xsl:with-param name="top" select="'0cm'"/>
+                     </xsl:call-template>   
+                </fo:block>
+                <!-- create scalebar -->
+                <fo:block margin-top="1.2cm" text-align="center">
+                    <xsl:call-template name="calc-scale">
+                        <xsl:with-param name="m-width">
+                            <xsl:call-template name="calc-bbox-width-m-corrected">
+                                <xsl:with-param name="bbox" select="bbox"/>
+                            </xsl:call-template>
+                        </xsl:with-param>
+                        <xsl:with-param name="px-width" select="$map-width-px"/>
+                    </xsl:call-template>
+                </fo:block>
+            </fo:block-container>
             
-            <fo:block margin-left="0.2cm" margin-top="0.5cm" font-size="9pt">
-                schaal
-            </fo:block>
-
-            <!-- create scalebar -->
-            <fo:block margin-left="0.2cm" margin-top="0.2cm">
-                <xsl:call-template name="calc-scale">
-                    <xsl:with-param name="m-width">
-                        <xsl:call-template name="calc-bbox-width-m-corrected">
-                            <xsl:with-param name="bbox" select="bbox"/>
-                        </xsl:call-template>
-                    </xsl:with-param>
-                    <xsl:with-param name="px-width" select="$map-width-px"/>
+            <!-- overzichtskaart
+            <fo:block-container margin-left="0.0cm" margin-top="0.2cm">
+               <xsl:call-template name="overview-block">
+                    <xsl:with-param name="width" select="'170px'"/>
+                    <xsl:with-param name="height" select="'120px'"/>
                 </xsl:call-template>
-            </fo:block>
-
-            <fo:block margin-left="0.2cm" margin-top="0.5cm" font-size="10pt">
-                <xsl:if test="username"> 
-                    <xsl:value-of select="username"/>
-                    <xsl:text> - </xsl:text>
-                </xsl:if>
-                <xsl:value-of select="date"/>
-            </fo:block>
-
-            <fo:block margin-left="0.2cm" margin-top="0.1cm" font-size="10pt">
-                U bekijkt een demo ontwerp.
-            </fo:block>
-            
-            <xsl:call-template name="overview-block">
-                <xsl:with-param name="width" select="'170px'"/>
-                <xsl:with-param name="height" select="'120px'"/>
-            </xsl:call-template>
-            
-            <fo:block space-before="0.4cm"/>
-            <xsl:call-template name="legend"/>
-
-            <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="8pt" font-style="italic">
-                <xsl:value-of select="remark"/>
-            </fo:block>
-
-        </fo:block>
+            </fo:block-container>
+            -->
+            <fo:block-container margin-left="0.1cm" margin-right="0.0cm" margin-top="0.0cm" height="13.9cm" overflow="hidden">
+                <xsl:call-template name="legend" />
+                <fo:block>
+                        <xsl:text></xsl:text>
+                </fo:block>
+            </fo:block-container>
+        </fo:block-container>
     </xsl:template>
 
     <!-- create map -->    
@@ -164,8 +149,19 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     </xsl:template>
     
     <xsl:template name="disclaimer-block">
-        <fo:block margin-left="0.2cm" margin-top="0.5cm" color="#000000" xsl:use-attribute-sets="default-font">
-            Aan deze kaart kunnen geen rechten worden ontleend.
+         <fo:block margin-left="0.2cm" margin-top="0.5cm" color="#000000" xsl:use-attribute-sets="default-font">
+            <xsl:value-of select="remark"/>
+        </fo:block>
+        <fo:block margin-left="0.2cm" margin-top="0.5cm" color="#000000" xsl:use-attribute-sets="disclaimer-font">
+            <xsl:if test="username"> 
+                <xsl:text>Auteur: </xsl:text>                    
+                <xsl:value-of select="username"/>
+                <xsl:text> - </xsl:text>
+            </xsl:if>
+            <xsl:text>Datum: </xsl:text>
+            <xsl:value-of select="date"/>
+            <xsl:text> - </xsl:text>
+            <xsl:text>U bekijkt een demo ontwerp. Aan deze kaart kunnen geen rechten worden ontleend.</xsl:text>
         </fo:block>
     </xsl:template>
 

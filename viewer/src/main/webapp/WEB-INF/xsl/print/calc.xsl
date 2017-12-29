@@ -279,14 +279,14 @@
     <!-- wind rose template -->
     <xsl:template name="windrose">
         <xsl:param name="angle" select="0"/>
-        <xsl:param name="width" select="'4cm'"/>
-        <xsl:param name="height" select="'4cm'"/>
+        <xsl:param name="width" select="'1.9cm'"/>
+        <xsl:param name="height" select="'3cm'"/>
         <xsl:param name="top" select="'0cm'"/>
         <xsl:param name="left" select="'0cm'"/>		
         <xsl:param name="millipoints" select="58000"/>
         <fo:block-container fox:transform="translate({$millipoints},{$millipoints}) rotate({$angle}) translate(-{$millipoints}, -{$millipoints})" absolute-position="absolute" top="{$top}" left="{$left}">
             <fo:block>
-                <fo:external-graphic width="{$width}" height="{$height}" content-height="scale-to-fit" content-width="scale-to-fit" src="windrose.svg"/>
+                <fo:external-graphic width="{$width}" height="{$height}" content-height="scale-to-fit" content-width="scale-to-fit" src="NorthArrow_02.svg"/>
             </fo:block>
         </fo:block-container>
     </xsl:template>
