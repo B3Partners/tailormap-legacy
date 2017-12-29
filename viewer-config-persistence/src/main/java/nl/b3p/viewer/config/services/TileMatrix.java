@@ -56,7 +56,7 @@ public class TileMatrix {
         tm.setTileHeight(tilematrix.getInt("tileHeight"));
         tm.setTileWidth(tilematrix.getInt("tileWidth"));
         tm.setIdentifier(tilematrix.getString("identifier"));
-        tm.setTitle(tilematrix.getString("title"));
+        tm.setTitle(tilematrix.optString("title"));
         return tm;
     }
     
