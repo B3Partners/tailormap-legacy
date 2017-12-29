@@ -194,7 +194,7 @@ public class FeatureReportActionBean implements ActionBean {
                         String rightSide = keys.get(0).getRightSide().getName();
                         
                         JSONObject info = new JSONObject();
-                        if (jFeat.get(leftSide)!=null) {
+                        if (jFeat.has(leftSide)) {
                             String type = keys.get(0).getLeftSide().getExtJSType();
                             String query = rightSide + "=";
                             if (type.equalsIgnoreCase("string")
