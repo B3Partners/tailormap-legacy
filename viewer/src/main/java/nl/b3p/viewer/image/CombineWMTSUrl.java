@@ -36,6 +36,7 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
 
     private static final Log log = LogFactory.getLog(CombineTileImageUrl.class);
 
+    private String layername;
     private TileMatrixSet set;
     private double ratio = 1;
 
@@ -51,7 +52,7 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
     protected String createUrl(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY, int zoomlevel) {
         try {
             TileMatrix tm = set.getMatrices().get(zoomlevel);
-            return url + "request=GetTile&version=1.0.0&format=image/png&SERVICE=WMTS&layer=" + "brtachtergrondkaart" + "&TileMatrixSet="
+            return url + "request=GetTile&version=1.0.0&format=image/png&SERVICE=WMTS&layer=" + getLayername() + "&TileMatrixSet="
                     + URLEncoder.encode(set.getIdentifier(), "UTF-8") + "&TileRow=" + indexY + "&TileCol=" + indexX
                     + "&TileMatrix=" + URLEncoder.encode(tm.getIdentifier(), "UTF-8");
         } catch (UnsupportedEncodingException ex) {
@@ -178,5 +179,13 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
         img.setY(imgPosY.intValue());
         img.setAlpha(this.getAlpha());
         return img;
+    }
+
+    public String getLayername() {
+        return layername;
+    }
+
+    public void setLayername(String layername) {
+        this.layername = layername;
     }
 }
