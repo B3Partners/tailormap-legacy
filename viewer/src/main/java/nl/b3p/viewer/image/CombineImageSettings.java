@@ -447,6 +447,8 @@ public class CombineImageSettings {
                     if(request.has("matrixSet")){
                         ctu.setMatrixSet(request.getJSONObject("matrixSet"));
                     }
+                    String layername = request.getString("name");
+                    ctu.setLayername(layername);
                     
                     ciu = ctu;
                 }else if (ARCSERVERREST_PROTOCOL.equals(protocol)){

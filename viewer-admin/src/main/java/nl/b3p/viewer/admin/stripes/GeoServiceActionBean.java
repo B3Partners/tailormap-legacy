@@ -712,7 +712,7 @@ public class GeoServiceActionBean implements ActionBean {
     public void makeLists(){
         EntityManager em = Stripersist.getEntityManager();
         allGroups = em.createQuery("from Group").getResultList();
-        if (service != null) {
+        if (service != null && em.contains(service)) {
             groupsRead = new ArrayList(service.getReaders());
         }
     }
