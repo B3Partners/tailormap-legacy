@@ -251,9 +251,9 @@
             <xsl:text> </xsl:text>
         </xsl:variable>
 
-        <fo:instream-foreign-object font-size="7pt" xsl:use-attribute-sets="default-font">
+        <fo:instream-foreign-object>
             <svg xmlns="http://www.w3.org/2000/svg" width="4.5cm" height="0.6cm" preserveAspectRatio="xMaxYMax meet">
-                <g font-size="7pt" xsl:use-attribute-sets="default-font">
+                <g font-size="8pt">
                     <polygon points="{$scale-1}" fill="black" stroke="black" stroke-width="0.5"/>
                     <polygon points="{$scale-2}" fill="white" stroke="black" stroke-width="0.5"/>
                     <polygon points="{$scale-3}" fill="black" stroke="black" stroke-width="0.5"/>
