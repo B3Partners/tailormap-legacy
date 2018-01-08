@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
+    <suppress>
+        <notes><![CDATA[
+      ignore postgresql-42.1.4.jar, false positive, CVE concerns perl scripts.
+      ]]></notes>
+        <gav regex="true">^org\.postgresql:postgresql:.*$</gav>
+        <cve>CVE-2017-8806</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+      ignore gt-coverage jar, false positive wrt jpeg thumbnail disclosure.
+      ]]></notes>
+        <gav regex="true">^org\.geotools:gt-coverage:.*$</gav>
+        <!-- <cpe>cpe:/a:image_processing_software:image_processing_software</cpe> -->
+        <cve>CVE-2005-0406</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+      ignore gt-swing jar, false positive
+      ]]></notes>
+        <gav regex="true">^org\.geotools:gt-swing:.*$</gav>
+        <cve>CVE-2015-6737</cve>
+    </suppress>
+</suppressions>

@@ -9,7 +9,7 @@ timestamps {
                 numToKeepStr: '5']
             ]]);
 
-        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven 3.3.9'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven 3.5.2'}/bin:${env.JAVA_HOME}/bin"]) {
 
             stage('Prepare') {
                  checkout scm
@@ -40,6 +40,7 @@ timestamps {
                         sh "mvn -e verify -B -Pjenkins -pl 'viewer-admin'"
                     }
                 }
+
             } finally {
                 stage('Publish Results'){
                     junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml, **/target/failsafe-reports/TEST-*.xml'
@@ -47,7 +48,7 @@ timestamps {
             }
 
             stage('OWASP Dependency Check') {
-                dependencyCheckAnalyzer datadir: '', hintsFile: '', includeCsvReports: false, includeHtmlReports: true, includeJsonReports: false, isAutoupdateDisabled: false, outdir: '', scanpath: '**/viewer-**.war,', skipOnScmChange: false, skipOnUpstreamChange: false, suppressionFile: '', zipExtensions: ''
+                sh "mvn org.owasp:dependency-check-maven:3.1.0:aggregate -Dformat=XML -DsuppressionFile=./.mvn/owasp-suppression.xml"
 
                 dependencyCheckPublisher canComputeNew: false, defaultEncoding: '', healthy: '85', pattern: '**/dependency-check-report.xml', shouldDetectModules: true, unHealthy: ''
             }
