@@ -3,16 +3,9 @@ sudo: false
 language: java
 
 addons:
-  postgresql: "9.5"
-  hosts: travis-fla4
-  hostname: travis-fla4
+  postgresql: "9.6"
 
 before_install:
-  # install up-2-date Maven version
-  - wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
-  - unzip -qq apache-maven-3.3.9-bin.zip
-  - export M2_HOME=$PWD/apache-maven-3.3.9
-  - export PATH=$M2_HOME/bin:$PATH
   - export PAGER=cat
   # create Flamingo database
   - psql --version
@@ -64,4 +57,3 @@ matrix:
 cache:
   directories:
   - $HOME/.m2
-
