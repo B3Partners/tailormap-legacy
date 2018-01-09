@@ -29,13 +29,13 @@
 		<xsl:attribute name="color">#000000</xsl:attribute>
 	</xsl:attribute-set>
     <xsl:attribute-set name="legend-attributes">
-		<xsl:attribute name="font-size">10pt</xsl:attribute>
+		<xsl:attribute name="font-size">9pt</xsl:attribute>
     </xsl:attribute-set>    
 
 	<xsl:attribute-set name="simple-border">
 		<xsl:attribute name="border-color">#000000</xsl:attribute>
 		<xsl:attribute name="border-style">solid</xsl:attribute>
-		<xsl:attribute name="border-width">thin</xsl:attribute>
+		<xsl:attribute name="border-width">thick</xsl:attribute>
 	</xsl:attribute-set>
 	<xsl:attribute-set name="column-block">
 		<xsl:attribute name="position">absolute</xsl:attribute>

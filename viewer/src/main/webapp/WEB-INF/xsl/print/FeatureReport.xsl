@@ -28,10 +28,7 @@
     <!-- See legend.xsl ('none', 'before', 'right') -->
     <xsl:variable name="legend-labels-pos" select="'before'"/>
     <xsl:variable name="legend-scale-images-same-ratio" select="true()"/>
-    <xsl:attribute-set name="legend-attributes">
-        <xsl:attribute name="font-size">9pt</xsl:attribute>
-    </xsl:attribute-set>
-
+ 
     <!-- formatter -->
     <xsl:decimal-format name="MyFormat" decimal-separator="." grouping-separator=","
                         infinity="INFINITY" minus-sign="-" NaN="Not a Number" percent="%" per-mille="m"
@@ -133,10 +130,10 @@
 			</fo:block>
 		</fo:block>
 		 
-		<xsl:call-template name="legend" />
-		<fo:block xsl:use-attribute-sets="default-font">
+		<fo:block xsl:use-attribute-sets="header-font">
 				<xsl:text>legenda</xsl:text>
 		</fo:block>
+		<xsl:call-template name="legend" />
 	   
 		<!-- overzichtskaart
 		<xsl:call-template name="overview-block">
@@ -189,7 +186,7 @@
 
     <xsl:template name="logo-block">
         <fo:block>
-            <fo:external-graphic src="url('b3p_logo.png')" width="155px" height="55px"/>
+            <fo:external-graphic src="url('logo.png')" width="155px" height="55px"/>
         </fo:block>
     </xsl:template>
 

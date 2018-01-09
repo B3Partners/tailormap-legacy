@@ -7,7 +7,7 @@
 	-->
 	<xsl:template name="legend">
 		<xsl:if test="legendUrls/legendUrl[legendParts/legendPart]">
-			<fo:block-container margin-top="0.1cm" width="{concat($legend-width-cm,'cm')}" xsl:use-attribute-sets="legend-attributes">
+			<fo:block margin-top="0.1cm" width="{concat($legend-width-cm,'cm')}" xsl:use-attribute-sets="legend-attributes">
 	
 				<xsl:variable name="max-width">
 					<xsl:for-each select="legendUrls/legendUrl/legendParts/legendPart">
@@ -45,7 +45,7 @@
 						</fo:block>
 					</xsl:for-each>
 				</xsl:for-each>
-			</fo:block-container>		
+			</fo:block>		
 		</xsl:if>			
 	</xsl:template>
 </xsl:stylesheet>

@@ -252,7 +252,7 @@
         </xsl:variable>
 
         <fo:instream-foreign-object>
-            <svg xmlns="http://www.w3.org/2000/svg" width="4.5cm" height="0.6cm" preserveAspectRatio="xMaxYMax meet">
+            <svg xmlns="http://www.w3.org/2000/svg" width="5.0cm" height="0.6cm" preserveAspectRatio="xMaxYMax meet">
                 <g font-size="8pt">
                     <polygon points="{$scale-1}" fill="black" stroke="black" stroke-width="0.5"/>
                     <polygon points="{$scale-2}" fill="white" stroke="black" stroke-width="0.5"/>
@@ -279,13 +279,13 @@
     <!-- wind rose template -->
     <xsl:template name="windrose">
         <xsl:param name="angle" select="0"/>
-        <xsl:param name="width" select="'1.9cm'"/>
-        <xsl:param name="height" select="'3cm'"/>
+        <xsl:param name="width" select="'1.8cm'"/>
+        <xsl:param name="height" select="'1.8cm'"/>
         <xsl:param name="top" select="'0cm'"/>
         <xsl:param name="left" select="'0cm'"/>		
         <xsl:param name="millipoints" select="58000"/>
-        <fo:block-container fox:transform="translate({$millipoints},{$millipoints}) rotate({$angle}) translate(-{$millipoints}, -{$millipoints})" absolute-position="absolute" top="{$top}" left="{$left}">
-            <fo:block>
+        <fo:block-container fox:transform="translate({$millipoints},{$millipoints}) rotate({$angle}) translate(-{$millipoints}, -{$millipoints})" absolute-position="absolute" top="{$top}" left="{$left}" width="{$width}" height="{$height}">
+            <fo:block >
                 <fo:external-graphic width="{$width}" height="{$height}" content-height="scale-to-fit" content-width="scale-to-fit" src="NorthArrow_02.svg"/>
             </fo:block>
         </fo:block-container>
