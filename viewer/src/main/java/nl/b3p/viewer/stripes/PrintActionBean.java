@@ -185,6 +185,9 @@ public class PrintActionBean implements ActionBean {
                 JSONObject infoString = extraObj.getJSONObject("info");
 
                 pei.setClassName(className);
+                if (componentName!=null) {
+                    componentName = componentName.replaceAll("_", " ");
+                }
                 pei.setComponentName(componentName);
                 pei.setInfoText(infoString);
                 peis.add(pei);
@@ -225,7 +228,9 @@ public class PrintActionBean implements ActionBean {
 //                        filename += ".rtf";
 //                        break;
                 }
-                if (templateUrl.toLowerCase().startsWith("http://") || templateUrl.toLowerCase().startsWith("ftp://")){
+                if (templateUrl.toLowerCase().startsWith("http://") 
+                        || templateUrl.toLowerCase().startsWith("https://") 
+                        || templateUrl.toLowerCase().startsWith("ftp://")){
                     PrintGenerator.createOutput(info,mimeType, new URL(templateUrl),true,response,filename);
                 }else{
                     File f = new File(templateUrl);
