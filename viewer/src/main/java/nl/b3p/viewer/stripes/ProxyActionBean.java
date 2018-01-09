@@ -230,8 +230,9 @@ public class ProxyActionBean implements ActionBean {
 
         String paramString = paramsFromUrl.substring(index);
         GeoService gs = em.find(GeoService.class, serviceId);
-
-        theUrl = new URL(gs.getUrl() + "?" + paramString);
+        String gsUrl = gs.getUrl();
+        gsUrl = gsUrl.contains("?") ? "" : "?";
+        theUrl = new URL(gsUrl + paramString);
         return theUrl;
     }
     
