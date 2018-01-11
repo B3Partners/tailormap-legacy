@@ -61,6 +61,10 @@ public class FeatureToJson {
     private boolean graph = false;
     private boolean aliases = true;
     /**
+     * Set to {@code true} to return an JSONArray with attributes per feature instead of JSONObject to maintain order of attributes
+     */
+    private boolean ordered = false;
+    /**
      * set to {@code true} to return empty string for null value.
      */
     private boolean returnNullval = false;
@@ -95,6 +99,16 @@ public class FeatureToJson {
         this.attributesToInclude = attributesToInclude;
         this.aliases = aliases;
         this.returnNullval = returnNullval;
+    }
+
+    public FeatureToJson(boolean arrays, boolean edit, boolean graph, boolean aliases, boolean returnNullval, List<Long> attributesToInclude, boolean ordered) {
+        this.arrays = arrays;
+        this.edit = edit;
+        this.graph = graph;
+        this.attributesToInclude = attributesToInclude;
+        this.aliases = aliases;
+        this.returnNullval = returnNullval;
+        this.ordered = ordered;
     }
 
     /**
@@ -191,8 +205,13 @@ public class FeatureToJson {
                 /* if offset not supported and there are more features returned then
                  * only get the features after index >= start*/
                 if (offsetSupported || featureIndex >= start){
-                    JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);
-                    features.put(j);
+                    if(this.ordered) {
+                        JSONArray j = this.toJSONFeatureOrdered(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);
+                        features.put(j);
+                    } else {
+                        JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);
+                        features.put(j);
+                    }
                 }
                 featureIndex++;
             }
@@ -213,12 +232,7 @@ public class FeatureToJson {
             }
         } else {
             for (String name : propertyNames) {
-                String alias = name;
-                if (aliases && attributeAliases != null && attributeAliases.get(name)!=null) {
-                    alias = attributeAliases.get(name);
-                }
-                alias = alias.replaceAll(" ", "_");
-                j.put(alias, formatValue(f.getAttribute(name)));
+                this.addKeyValue(j, f, name, attributeAliases);
             }
         }
         //if edit and not yet set
@@ -229,14 +243,42 @@ public class FeatureToJson {
             j.put(FID, id);
         }
         if (ft.hasRelations()){
-            j = populateWithRelatedFeatures(j,f,ft,al,index);
+            j = populateWithRelatedFeatures(j,f,ft,al,index, null);
         }
         return j;
     }
+
+    private JSONArray toJSONFeatureOrdered(JSONObject j,SimpleFeature f, SimpleFeatureType ft, ApplicationLayer al, List<String> propertyNames,Map<String,String> attributeAliases, int index) throws JSONException, Exception{
+        JSONArray ordered = new JSONArray();
+        for (String name : propertyNames) {
+            ordered.put(this.addKeyValue(new JSONObject(), f, name, attributeAliases));
+        }
+        if(!FeaturePropertiesArrayHelper.containsKey(ordered, FID)) {
+            JSONObject fidObject = new JSONObject();
+            String id = f.getID();
+            fidObject.put(FID, id);
+            ordered.put(fidObject);
+        }
+        if (ft.hasRelations()){
+            populateWithRelatedFeatures(j,f,ft,al,index, ordered);
+        }
+        return ordered;
+    }
+
+    private JSONObject addKeyValue(JSONObject j, SimpleFeature f, String name, Map<String,String> attributeAliases) {
+        String alias = name;
+        if (aliases && attributeAliases != null && attributeAliases.get(name)!=null) {
+            alias = attributeAliases.get(name);
+        }
+        alias = alias.replaceAll(" ", "_");
+        j.put(alias, formatValue(f.getAttribute(name)));
+        return j;
+    }
+
     /**
      * Populate the json object with related featues
      */
-    private JSONObject populateWithRelatedFeatures(JSONObject j,SimpleFeature feature,SimpleFeatureType ft,ApplicationLayer al, int index) throws Exception{
+    private JSONObject populateWithRelatedFeatures(JSONObject j,SimpleFeature feature,SimpleFeatureType ft,ApplicationLayer al, int index, JSONArray ordered) throws Exception{
         if (ft.hasRelations()){
             JSONArray related_featuretypes = new JSONArray();
             for (FeatureTypeRelation rel :ft.getRelations()){
@@ -282,7 +324,11 @@ public class FeatureToJson {
                         while (foreignIt.hasNext()){
                             SimpleFeature foreignFeature = foreignIt.next();
                             //join it in the same json
-                            j= toJSONFeature(j,foreignFeature, rel.getForeignFeatureType(), al,propertyNames,attributeAliases,index);
+                            if(ordered == null) {
+                                j = toJSONFeature(j, foreignFeature, rel.getForeignFeatureType(), al, propertyNames, attributeAliases, index);
+                            } else {
+                                this.concatArray(ordered, toJSONFeatureOrdered(j, foreignFeature, rel.getForeignFeatureType(), al, propertyNames, attributeAliases, index));
+                            }
                         }
                     }finally{
                         if (foreignIt!=null){
@@ -303,10 +349,22 @@ public class FeatureToJson {
                 }
             }
             if (related_featuretypes.length()>0){
-                j.put("related_featuretypes",related_featuretypes);
+                if(ordered == null) {
+                    j.put("related_featuretypes",related_featuretypes);
+                } else {
+                    JSONObject relatedFeatures = new JSONObject();
+                    relatedFeatures.put("related_featuretypes", related_featuretypes);
+                    ordered.put(relatedFeatures);
+                }
             }
         }
         return j;
+    }
+
+    private void concatArray(JSONArray arr1, JSONArray arr2) throws JSONException {
+        for (int i = 0; i < arr2.length(); i++) {
+            arr1.put(arr2.get(i));
+        }
     }
 
     HashMap<Long,List<String>> propertyNamesQueryCache = new HashMap<Long,List<String>>();

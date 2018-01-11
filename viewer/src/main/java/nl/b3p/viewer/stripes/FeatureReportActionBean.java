@@ -40,6 +40,7 @@ import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.util.FeaturePropertiesArrayHelper;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,15 +165,15 @@ public class FeatureReportActionBean implements ActionBean {
             q.setMaxFeatures(1);
             q.setHandle("FeatureReportActionBean_attributes");
 
-            FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude);
+            FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
             JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
 
             // if there are more than one something is very wrong in datamodel or datasource
-            JSONObject jFeat = features.getJSONObject(0);
+            JSONArray jFeat = features.getJSONArray(0);
             // remove __fid, related_featuretypes and geometry nodes from json and add feature attrs to extra data
-            jFeat.remove(FID);
-            jFeat.remove(geomAttribute);
-            jFeat.remove("related_featuretypes");
+            FeaturePropertiesArrayHelper.removeKey(jFeat, FID);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, geomAttribute);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, "related_featuretypes");
 
             JSONObject extra = new JSONObject();
             extra.put("className", "feature").put("componentName", "report").put("info", jFeat);
@@ -182,7 +183,7 @@ public class FeatureReportActionBean implements ActionBean {
             // get related features and add to extra data
             if (layer.getFeatureType().hasRelations()) {
                 String label;
-                ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude);
+                ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude, true);
                 for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
                     if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
                         SimpleFeatureType fType = rel.getForeignFeatureType();
@@ -194,15 +195,15 @@ public class FeatureReportActionBean implements ActionBean {
                         String rightSide = keys.get(0).getRightSide().getName();
                         
                         JSONObject info = new JSONObject();
-                        if (jFeat.has(leftSide)) {
+                        if (FeaturePropertiesArrayHelper.containsKey(jFeat, leftSide)) {
                             String type = keys.get(0).getLeftSide().getExtJSType();
                             String query = rightSide + "=";
                             if (type.equalsIgnoreCase("string")
                                     || type.equalsIgnoreCase("date")
                                     || type.equalsIgnoreCase("auto")) {
-                                query += "'" + jFeat.get(leftSide) + "'";
+                                query += "'" + FeaturePropertiesArrayHelper.getByKey(jFeat, leftSide) + "'";
                             } else {
-                                query += jFeat.get(leftSide);
+                                query += FeaturePropertiesArrayHelper.getByKey(jFeat, leftSide);
                             }
 
                             // collect related feature attributes
@@ -221,9 +222,10 @@ public class FeatureReportActionBean implements ActionBean {
                             int maxFeatures = Math.min(numFeats, this.maxrelatedfeatures);
                             for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
                                 // remove FID
-                                features.getJSONObject(featureCount).remove(FID);
-                                colCount = features.getJSONObject(featureCount).length();
-                                jsonFeats.put(features.getJSONObject(featureCount));
+                                JSONArray feat = features.getJSONArray(featureCount);
+                                FeaturePropertiesArrayHelper.removeKey(feat, FID);//.remove(FID);
+                                colCount = features.getJSONArray(featureCount).length();
+                                jsonFeats.put(feat);
                             }
                             info.put("features", jsonFeats);
                             info.putOnce("colCount", colCount);

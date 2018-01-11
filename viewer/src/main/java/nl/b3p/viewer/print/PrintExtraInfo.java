@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Node;
 
@@ -61,12 +63,21 @@ public class PrintExtraInfo {
     }
 
     public void setInfoText(JSONObject j) throws Exception {
+        this.setInfoObject(j);
+    }
+
+    public void setInfoArray(JSONArray j) throws Exception {
+        JSONObject properties = new JSONObject();
+        properties.put("properties", j);
+        this.setInfoObject(properties);
+    }
+
+    private void setInfoObject(JSONObject j) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         JSONObject root = new JSONObject();
         root.put("root", j);
         String s = org.json.XML.toString( root);
         this.info =dbf.newDocumentBuilder().parse(new ByteArrayInputStream(s.getBytes("UTF-8"))).getDocumentElement();
-        
     }
     
 }

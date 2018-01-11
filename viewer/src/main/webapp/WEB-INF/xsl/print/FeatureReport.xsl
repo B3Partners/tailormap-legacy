@@ -200,21 +200,22 @@
                 <fo:table-column column-width="{$tWidthRight}mm" />
                 <fo:table-body>
                     <xsl:for-each select="*">
-                        <xsl:sort select="local-name()" data-type="text"/>
-                        <fo:table-row>
-                            <fo:table-cell>
-								<fo:block>
-									<xsl:call-template name="string-remove-underscores">
-										<xsl:with-param name="text" select="local-name()" />
-									</xsl:call-template>
-								</fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell>
-                               <fo:block>
-                                    <xsl:value-of select="normalize-space(.)" />
-                                </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
+                        <xsl:for-each select="*">
+                            <fo:table-row>
+                                <fo:table-cell>
+                                    <fo:block>
+                                        <xsl:call-template name="string-remove-underscores">
+                                            <xsl:with-param name="text" select="local-name()" />
+                                        </xsl:call-template>
+                                    </fo:block>
+                                </fo:table-cell>
+                                <fo:table-cell>
+                                   <fo:block>
+                                        <xsl:value-of select="normalize-space(.)" />
+                                    </fo:block>
+                                </fo:table-cell>
+                            </fo:table-row>
+                        </xsl:for-each>
                     </xsl:for-each>
                 </fo:table-body>
             </fo:table>
