@@ -68,7 +68,7 @@ public class PrintExtraInfo {
 
     public void setInfoArray(JSONArray j) throws Exception {
         JSONObject properties = new JSONObject();
-        properties.put("properties", j);
+        properties.put("attr", j);
         this.setInfoObject(properties);
     }
 

@@ -234,15 +234,17 @@
                         <fo:table-header xsl:use-attribute-sets="table-header-font">
                             <xsl:comment>header rij</xsl:comment>
                             <fo:table-row>
-                                <xsl:for-each select="features/*">
-                                    <xsl:if test ="true() and not(../following-sibling::features)">
-                                        <fo:table-cell>
-                                            <fo:block>
-                                                <xsl:call-template name="string-remove-underscores">
-                                                    <xsl:with-param name="text" select="local-name()" />
-                                                </xsl:call-template>
-                                            </fo:block>
-                                        </fo:table-cell>
+                                <xsl:for-each select="features">
+                                    <xsl:if test ="position() = last()">
+                                        <xsl:for-each select="array/*">
+                                            <fo:table-cell>
+                                                <fo:block>
+                                                    <xsl:call-template name="string-remove-underscores">
+                                                        <xsl:with-param name="text" select="local-name()" />
+                                                    </xsl:call-template>
+                                                </fo:block>
+                                            </fo:table-cell>
+                                        </xsl:for-each>
                                     </xsl:if>
                                 </xsl:for-each>
                             </fo:table-row>

@@ -224,7 +224,7 @@ public class FeatureReportActionBean implements ActionBean {
                                 // remove FID
                                 JSONArray feat = features.getJSONArray(featureCount);
                                 FeaturePropertiesArrayHelper.removeKey(feat, FID);//.remove(FID);
-                                colCount = features.getJSONArray(featureCount).length();
+                                colCount = feat.length();
                                 jsonFeats.put(feat);
                             }
                             info.put("features", jsonFeats);

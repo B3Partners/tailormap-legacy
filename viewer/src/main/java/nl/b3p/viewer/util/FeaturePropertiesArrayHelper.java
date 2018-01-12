@@ -21,7 +21,7 @@ public class FeaturePropertiesArrayHelper {
         for(int i = 0; i < len; i++) {
             JSONObject o = j.optJSONObject(i);
             if(o != null && o.has(key)) {
-                o.get(key);
+                return o.get(key);
             }
         }
         return null;
@@ -30,7 +30,7 @@ public class FeaturePropertiesArrayHelper {
     public static JSONArray removeKey(JSONArray j, String key) {
         int len = j.length();
         int idx = -1;
-        for(int i = 0; i < len; i++) {
+        for(int i = (len - 1); i >= 0; i--) {
             JSONObject o = j.optJSONObject(i);
             if(o != null && o.has(key)) {
                 idx = i;
