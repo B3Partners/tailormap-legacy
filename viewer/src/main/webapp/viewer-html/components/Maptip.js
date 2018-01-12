@@ -41,6 +41,7 @@ Ext.define ("viewer.components.Maptip",{
         heightDescription: null,
         clickRadius:null,
         spinnerWhileIdentify:null,
+        useOrderedAttributes: false,
         details: {
             minWidth: 400,
             minHeight: 250
@@ -225,7 +226,7 @@ Ext.define ("viewer.components.Maptip",{
             }
 
             me.onMapData(null, options);
-        }, this.onFailure, me);
+        }, this.onFailure, me, (this.useOrderedAttributes ? { ordered: true } : {}));
     },
     /**
      * Handles when the mapping framework returns with data
@@ -323,7 +324,7 @@ Ext.define ("viewer.components.Maptip",{
                 var showRightColumn = (details && details["summary.image"]);
                 var layerName= layer.request.appLayer;
                 for (var index = 0 ; index< layer.features.length ; index ++){
-                    var feature = layer.features[index];
+                    var feature = Ext.create("viewer.FeatureInfoWrapper", layer.features[index]);
                     var featureDiv = new Ext.Element(document.createElement("div"));
                     featureDiv.addCls("feature_summary_feature");
                     // Render right column first, floated right, left column fills up the rest
@@ -427,7 +428,7 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * Handles the show details click.
      * @param appLayer the applayer for the details
-     * @param feature the feature that must be shown
+     * @param {viewer.FeatureInfoWrapper} feature the feature that must be shown
      */
     showDetails: function(appLayer,feature){
         var cDiv=Ext.get(this.getContentDiv());
@@ -494,27 +495,18 @@ Ext.define ("viewer.components.Maptip",{
                 // find geometry attributes, a WFS attribute source may provide more than one geometry attribute,
                 // and a join may result in more than one as well
                 var geomFields = this.config.viewerController.getAppLayerGeometryAttributes(appLayer);
-
+                var filteredAttributes = ["related_featuretypes", "__fid"];
+                if (this.detailHideGeomAttr) {
+                    filteredAttributes.push(appLayer.geometryAttribute);
+                }
+                for (var n = 0; n < geomFields.length; n++) {
+                    filteredAttributes.push(geomFields[n].name);
+                    filteredAttributes.push(geomFields[n].alias);
+                }
                 var html = "<table>";
-                outerloop:
-                for( var key in feature) {
-                    if (!feature.hasOwnProperty(key) || key === "related_featuretypes" || key === "__fid") {
-                        continue;
-                    }
-                    if (this.detailHideGeomAttr) {
-                        if (key === appLayer.geometryAttribute) {
-                            continue;
-                        }
-                        for (var n = 0; n < geomFields.length; n++) {
-                            if (key === geomFields[n].name || key === geomFields[n].alias) {
-                                continue outerloop;
-                            }
-                        }
-                    }
-
+                feature.forEachAttribute(function(key, value) {
                     html+="<tr>";
                     html+="<td class='feature_detail_attr_key'>"+key+"</td>";
-                    var value = String(feature[key]);
                     if(!noHtmlEncode) {
                         value = Ext.String.htmlEncode(value);
                     }
@@ -526,7 +518,7 @@ Ext.define ("viewer.components.Maptip",{
                     }
                     html+="<td class='feature_detail_attr_value'>"+value+"</td>";
                     html+="</tr>";
-                }
+                }, this, filteredAttributes);
                 html+="</table>";
                 var attributesDiv = new Ext.Element(document.createElement("div"));
                 attributesDiv.addCls("feature_detail_attr");
@@ -562,7 +554,7 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * Replaces all [feature names] with the values of the feature.
      * @param text the text that must be search for 'feature names'
-     * @param feature a object with object[key]=value
+     * @param {viewer.FeatureInfoWrapper} feature a object with object[key]=value
      * @param noHtmlEncode allow HTML tags in feature values
      * @param nl2br Replace newlines in feature values with br tags
      * @param appLayer The appLayer
@@ -571,10 +563,9 @@ Ext.define ("viewer.components.Maptip",{
     replaceByAttributes: function(text,feature,noHtmlEncode,nl2br,appLayer){
         if (Ext.isEmpty(text))
             return "";
+        var attributes = feature.getIndexedAttributes();
         var newText=""+text;
         newText = this.replaceRelatedFeatures(newText, feature, noHtmlEncode, nl2br, appLayer);
-        //backwards compatibility. If the feature is the attributes (old way) use the feature as attribute obj.
-        var attributes = feature.attributes? feature.attributes : feature;
         for (var key in attributes){
             if(!attributes.hasOwnProperty(key)) {
                 continue;
@@ -602,6 +593,15 @@ Ext.define ("viewer.components.Maptip",{
         }
         return newText;
     },
+    /**
+     * Replaces all [feature names] with the values of the feature.
+     * @param text the text that must be search for 'feature names'
+     * @param {viewer.FeatureInfoWrapper} feature a object with object[key]=value
+     * @param noHtmlEncode allow HTML tags in feature values
+     * @param nl2br Replace newlines in feature values with br tags
+     * @param appLayer The appLayer
+     * @return a new text with all [key]'s  replaced
+     */
     replaceRelatedFeatures: function(text,feature, noHtmlEncode, nl2br, appLayer) {
         var firstOccurence = text.indexOf('[begin.');
         if(firstOccurence === -1) {
@@ -637,12 +637,13 @@ Ext.define ("viewer.components.Maptip",{
         return this.replaceRelatedFeatures(newText, feature, noHtmlEncode, nl2br, appLayer);
     },
     findRelatedFeature: function(feature, name) {
-        if(!feature.related_featuretypes) {
+        var related_featuretypes = feature.getRelatedFeatureTypes();
+        if(!related_featuretypes) {
             return null;
         }
-        for(var i = 0; i < feature.related_featuretypes.length; i++) {
-            if(feature.related_featuretypes[i].foreignFeatureTypeName === name) {
-                return feature.related_featuretypes[i];
+        for(var i = 0; i < related_featuretypes.length; i++) {
+            if(related_featuretypes[i].foreignFeatureTypeName === name) {
+                return related_featuretypes[i];
             }
         }
         return null;
@@ -680,7 +681,7 @@ Ext.define ("viewer.components.Maptip",{
         for(var i = 0; i < featureinfo.features.length; i++) {
             parsedHtml.push(this.replaceByAttributes(
                 repeatingText,
-                featureinfo.features[i],
+                Ext.create("viewer.FeatureInfoWrapper", featureinfo.features[i]),
                 relatedFeatureBlock.noHtmlEncode,
                 relatedFeatureBlock.nl2br,
                 relatedFeatureBlock.appLayer

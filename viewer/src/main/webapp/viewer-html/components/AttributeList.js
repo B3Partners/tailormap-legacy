@@ -260,10 +260,16 @@ Ext.define ("viewer.components.AttributeList",{
         }
         this.attributeListLinkInFeatureInfoCreated = true;
     },
+    /**
+     * Handle FeatureInfo/Maptip link click
+     * @param {viewer.FeatureInfoWrapper} feature
+     * @param appLayer
+     * @param coords
+     */
     handleFeatureInfoLink: function(feature, appLayer, coords) {
         // Show the window
         this.showWindow();
-        this.filterFeature = feature.__fid;
+        this.filterFeature = feature.getAttribute('__fid');
         // Check if the appLayer is selected already
         // If the layer is already selected, fire layerChanged ourself
         var selectedAppLayer = this.layerSelector.getValue();

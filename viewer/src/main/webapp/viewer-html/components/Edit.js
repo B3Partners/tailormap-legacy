@@ -38,7 +38,7 @@ Ext.define("viewer.components.Edit", {
     schema: null,
     editLinkInFeatureInfoCreated: false,
     afterLoadAttributes: null,
-    filterFeature: null,
+    filterFeatureId: null,
     // Boolean to check if window is hidden temporarily for mobile mode
     mobileHide: false,
     config: {
@@ -344,7 +344,7 @@ Ext.define("viewer.components.Edit", {
         // Add event handler to get features for coordinates
         this.afterLoadAttributes = function () {
             this.afterLoadAttributes = null;
-            this.filterFeature = feature;
+            this.filterFeatureId = feature.getAttribute('__fid');
             this.mode = "edit";
             this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
             this.getFeaturesForCoords(coords);
@@ -697,11 +697,11 @@ Ext.define("viewer.components.Edit", {
             return;
         }
         // A feature filter has been set, filter the right feature from the result set
-        if (this.filterFeature !== null) {
+        if (this.filterFeatureId !== null) {
             for (var i = 0; i < features.length; i++) {
-                if (features[i].__fid === this.filterFeature.__fid) {
+                if (features[i].__fid === this.filterFeatureId) {
                     this.handleFeature(this.indexFeatureToNamedFeature(features[i]));
-                    this.filterFeature = null; // Remove filter after first use
+                    this.filterFeatureId = null; // Remove filter after first use
                     return;
                 }
             }

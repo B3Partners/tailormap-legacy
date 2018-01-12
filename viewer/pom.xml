@@ -305,6 +305,7 @@
                                 <param>${viewerhtml.path}/common/overrides.js</param>
                                 <param>${viewerhtml.path}/common/ScreenPopup.js</param>
                                 <param>${viewerhtml.path}/common/CQLFilterWrapper.js</param>
+                                <param>${viewerhtml.path}/common/FeatureInfoWrapper.js</param>
                                 <param>${viewerhtml.path}/common/ClearTrigger.js</param>
                                 <param>${viewerhtml.path}/common/LocalStorage.js</param>
                                 <!-- Server side Ajax Wrappers -->
