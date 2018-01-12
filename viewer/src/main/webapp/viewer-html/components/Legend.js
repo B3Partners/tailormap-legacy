@@ -65,7 +65,7 @@ Ext.define("viewer.components.Legend", {
     constructor: function (conf){
         conf.details.useExtLayout = true;
         this.initConfig(conf);
-		viewer.components.Legend.superclass.constructor.call(this, this.config);
+        viewer.components.Legend.superclass.constructor.call(this, this.config);
         var me = this;
         
         this.config.renderLegend = this.config.regionName !== "content";
@@ -272,7 +272,7 @@ Ext.define("viewer.components.Legend", {
             return;
         }
         
-        //console.log("get legend info for appLayer " + appLayer.alias);
+        // console.debug("get legend info for appLayer ", appLayer);
 
         var legend = this.legends[appLayer.id];
 
@@ -311,7 +311,7 @@ Ext.define("viewer.components.Legend", {
     onLayerLegendInfo: function(appLayer, legendInfo, legendScale) {
         
         var legend = this.legends[appLayer.id];
-        //console.log("legend info received for appLayer " + appLayer.alias + ", order " + legend.order, legendInfo);
+        // console.debug("legend info received for appLayer " + appLayer.alias + ", order " + legend.order, legendInfo);
 
         legend.waitingForInfo = false;
 
@@ -449,12 +449,21 @@ Ext.define("viewer.components.Legend", {
             }
             return url.replace(/SCALE=[0-9.,]*/i, "SCALE=" + legendScale);
         }
+        var svc = this.config.viewerController.getService(al.serviceId);
         Ext.Array.each(legendInfo.parts, function(part) {
             divImage = document.createElement("div");
             var divLabel = document.createElement("div");
 
             img = document.createElement("img");
             img.src = getImageSource(part.url);
+            if (svc && svc.useProxy) {
+                img.src = actionBeans['proxy'] + '/wms?' +
+                        Ext.Object.toQueryString({
+                            serviceId: al.serviceId,
+                            mustLogin: svc.mustLogin,
+                            url: getImageSource(part.url)
+                        });
+                    }
             img.onload = function() {
                 //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
                 divLabel.style.lineHeight = (this.height + 4) + "px";
