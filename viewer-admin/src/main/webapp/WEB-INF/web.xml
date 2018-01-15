@@ -76,8 +76,9 @@
     </context-param>
     <context-param>
         <description>
-            Configure at which interval in minutes the solr indexing job should be run.
-            Comment out this parameter or set to -1 to disable.
+            Configure at which interval the solr indexing job should be run.
+            The interval should be a valid cron-expression string, you can use http://www.cronmaker.com/
+            Comment out this context parameter or set to -1 to disable. 
         </description>
         <param-name>flamingo.solr.schedule</param-name>
         <param-value>-1</param-value>
