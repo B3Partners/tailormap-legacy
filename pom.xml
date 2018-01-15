@@ -92,7 +92,7 @@
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20160810</version>
+                <version>20171018</version>
             </dependency>
             <!-- Stripes -->
             <dependency>
@@ -181,7 +181,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20161201</version>
+                <version>v20180101</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
