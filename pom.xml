@@ -65,7 +65,7 @@
             and check the output for any available updates.
             
             To check for vulnarabilities in dependencies use the following command:
-            mvn org.owasp:dependency-check-maven:3.0.2:check > vuln-check.log
+            mvn org.owasp:dependency-check-maven:3.1.0:check > vuln-check.log
         -->
         <dependencies>
             <!-- viewer-->
@@ -195,7 +195,7 @@
                 <version>1.2.4</version>
                 <exclusions>
                     <exclusion>
-                        <!-- sleept servlet api 2.5 mee -->
+                        <!-- drags in servlet api 2.5-->
                         <groupId>javax.servlet</groupId>
                         <artifactId>servlet-api</artifactId>
                     </exclusion>
@@ -240,7 +240,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.12.0</version>
+                <version>2.13.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -580,9 +580,6 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <!-- current release of the compiler versions (2.8 atm) fails on an inline function:
-                    [ERROR] JSC_BAD_FUNCTION_DECLARATION. functions can only be declared at top level or immediately within another function in ES5 strict mode at /home/mark/dev/projects/flamingo/viewer/src/main/webapp/viewer-html/common/viewercontroller/openlayers/OpenLayersMapComponent.js line 381 : 16
-                    -->
                     <version>2.8</version>
                 </plugin>
                 <plugin>
@@ -599,6 +596,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.7</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
