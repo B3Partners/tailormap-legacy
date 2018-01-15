@@ -455,7 +455,6 @@ Ext.define("viewer.components.Legend", {
             var divLabel = document.createElement("div");
 
             img = document.createElement("img");
-            img.src = getImageSource(part.url);
             if (svc && svc.useProxy) {
                 img.src = actionBeans['proxy'] + '/wms?' +
                         Ext.Object.toQueryString({
@@ -463,7 +462,9 @@ Ext.define("viewer.components.Legend", {
                             mustLogin: svc.mustLogin,
                             url: getImageSource(part.url)
                         });
-                    }
+            } else {
+                img.src = getImageSource(part.url);
+            }
             img.onload = function() {
                 //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
                 divLabel.style.lineHeight = (this.height + 4) + "px";
