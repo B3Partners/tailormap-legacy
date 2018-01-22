@@ -51,7 +51,7 @@
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.0</postgresql.version>
         <apache.poi.version>3.17</apache.poi.version>
-        <apache.httpcomponents.version>4.5.4</apache.httpcomponents.version>
+        <apache.httpcomponents.version>4.5.5</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
