@@ -351,6 +351,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.app.services[service.id] = service;
     },
 
+    /**
+     * Will return the geoservice or null if not found.
+     * @param {Number} serviceId
+     * @returns {ViewerControllerAnonym$0.app.services} the geoservice
+     */
+    getService: function (serviceId) {
+        if (this.app.services[serviceId]) {
+            return this.app.services[serviceId];
+        } else {
+            return null;
+        }
+    },
+
     addAppLayer:function(appLayer) {
        if(this.app.appLayers[appLayer.id] == undefined) {
            this.app.appLayers[appLayer.id] = appLayer;
