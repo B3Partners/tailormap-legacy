@@ -10,7 +10,7 @@
   </servers -->
   <profiles>
     <profile>
-      <id>travis-ci</id>
+      <id>travis-ci-prebuild</id>
       <repositories>
         <repository>
           <id>osgeo</id>
