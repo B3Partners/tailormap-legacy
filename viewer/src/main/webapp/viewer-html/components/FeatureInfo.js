@@ -27,6 +27,7 @@ Ext.define ("viewer.components.FeatureInfo",{
      */
     constructor: function (conf){    
         conf.isPopup=true;
+        conf.useOrderedAttributes = true;
         //don't call maptip constructor but that of super maptip.
         this.initConfig(conf);
         viewer.components.FeatureInfo.superclass.constructor.call(this, this.config);

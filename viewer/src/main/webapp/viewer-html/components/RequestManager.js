@@ -29,7 +29,7 @@ Ext.define ("viewer.components.RequestManager",{
         this.featureInfo = featureInfo;
         this.config.viewerController = viewerController;
     },
-    request: function (id, options, radius, layers, callback, failure, scope) {
+    request: function (id, options, radius, layers, callback, failure, scope, params) {
         var me = this;
         if (!scope) {
             scope = me;
@@ -41,9 +41,9 @@ Ext.define ("viewer.components.RequestManager",{
             this.previousRequests[id].done = 0;
             this.cancelPrevious(id);
         }
-        var extraParams = {
+        var extraParams = Ext.merge({}, params, {
             requestId: id
-        };
+        });
         for(var i = 0 ; i < layers.length;i++){
             var request = this.featureInfo.layersFeatureInfo(options.coord.x, options.coord.y, radius, [layers[i]], extraParams,function(data){
                 me.responseReceived(data[0].requestId);

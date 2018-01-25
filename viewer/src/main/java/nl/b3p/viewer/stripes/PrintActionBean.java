@@ -182,14 +182,17 @@ public class PrintActionBean implements ActionBean {
                 PrintExtraInfo pei = new PrintExtraInfo();
                 String className = extraObj.getString("className");
                 String componentName = extraObj.getString("componentName");
-                JSONObject infoString = extraObj.getJSONObject("info");
-
+                Object infoObject = extraObj.get("info");
                 pei.setClassName(className);
                 if (componentName!=null) {
                     componentName = componentName.replaceAll("_", " ");
                 }
                 pei.setComponentName(componentName);
-                pei.setInfoText(infoString);
+                if(infoObject instanceof JSONArray) {
+                    pei.setInfoArray((JSONArray)infoObject);
+                } else if(infoObject instanceof JSONObject) {
+                    pei.setInfoText((JSONObject)infoObject);
+                }
                 peis.add(pei);
             }
             info.setExtra(peis);

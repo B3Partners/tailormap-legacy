@@ -200,21 +200,22 @@
                 <fo:table-column column-width="{$tWidthRight}mm" />
                 <fo:table-body>
                     <xsl:for-each select="*">
-                        <xsl:sort select="local-name()" data-type="text"/>
-                        <fo:table-row>
-                            <fo:table-cell>
-								<fo:block>
-									<xsl:call-template name="string-remove-underscores">
-										<xsl:with-param name="text" select="local-name()" />
-									</xsl:call-template>
-								</fo:block>
-                            </fo:table-cell>
-                            <fo:table-cell>
-                               <fo:block>
-                                    <xsl:value-of select="normalize-space(.)" />
-                                </fo:block>
-                            </fo:table-cell>
-                        </fo:table-row>
+                        <xsl:for-each select="*">
+                            <fo:table-row>
+                                <fo:table-cell>
+                                    <fo:block>
+                                        <xsl:call-template name="string-remove-underscores">
+                                            <xsl:with-param name="text" select="local-name()" />
+                                        </xsl:call-template>
+                                    </fo:block>
+                                </fo:table-cell>
+                                <fo:table-cell>
+                                   <fo:block>
+                                        <xsl:value-of select="normalize-space(.)" />
+                                    </fo:block>
+                                </fo:table-cell>
+                            </fo:table-row>
+                        </xsl:for-each>
                     </xsl:for-each>
                 </fo:table-body>
             </fo:table>
@@ -233,15 +234,17 @@
                         <fo:table-header xsl:use-attribute-sets="table-header-font">
                             <xsl:comment>header rij</xsl:comment>
                             <fo:table-row>
-                                <xsl:for-each select="features/*">
-                                    <xsl:if test ="true() and not(../following-sibling::features)">
-                                        <fo:table-cell>
-                                            <fo:block>
-                                                <xsl:call-template name="string-remove-underscores">
-                                                    <xsl:with-param name="text" select="local-name()" />
-                                                </xsl:call-template>
-                                            </fo:block>
-                                        </fo:table-cell>
+                                <xsl:for-each select="features">
+                                    <xsl:if test ="position() = last()">
+                                        <xsl:for-each select="array/*">
+                                            <fo:table-cell>
+                                                <fo:block>
+                                                    <xsl:call-template name="string-remove-underscores">
+                                                        <xsl:with-param name="text" select="local-name()" />
+                                                    </xsl:call-template>
+                                                </fo:block>
+                                            </fo:table-cell>
+                                        </xsl:for-each>
                                     </xsl:if>
                                 </xsl:for-each>
                             </fo:table-row>

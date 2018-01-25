@@ -100,6 +100,9 @@ public class FeatureInfoActionBean implements ActionBean {
     @Validate
     private boolean graph = false;
 
+    @Validate
+    private boolean ordered = false;
+
     private Layer layer;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -197,6 +200,14 @@ public class FeatureInfoActionBean implements ActionBean {
 
     public void setGraph(boolean graph) {
         this.graph = graph;
+    }
+
+    public boolean isOrdered() {
+        return ordered;
+    }
+
+    public void setOrdered(boolean ordered) {
+        this.ordered = ordered;
     }
 
     public Layer getLayer() {
@@ -360,7 +371,7 @@ public class FeatureInfoActionBean implements ActionBean {
     protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
             throws IOException, JSONException, Exception {
 
-        FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, attributesToInclude);
+        FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, false, false, attributesToInclude, ordered);
         JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null);
         return features;
     }

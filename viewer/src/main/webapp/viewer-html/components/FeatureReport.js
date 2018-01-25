@@ -189,28 +189,29 @@ Ext.define("viewer.components.FeatureReport", {
     /**
      * Called from the featureinfo popup that we registered with.
      *
-     * @param {type} feature selected feature
+     * @param {viewer.FeatureInfoWrapper} feature selected feature
      * @param {type} appLayer
      * @returns void
      */
     handleAction: function (feature, appLayer) {
         Ext.getCmp(this.name + 'formappLayer').setValue(appLayer.id);
-        Ext.getCmp(this.name + 'formFid').setValue(feature.__fid);
+        Ext.getCmp(this.name + 'formFid').setValue(feature.getAttribute('__fid'));
         Ext.getCmp(this.name + 'maxFeats').setValue(this.config.numOfRelatedFeatures);
 
         // use the summary title of the featureinfo
         if (appLayer.details['summary.title']) {
             var t = appLayer.details['summary.title'];
-            for (var key in feature) {
-                if (!feature.hasOwnProperty(key)) {
+            var attributes = feature.getIndexedAttributes();
+            for (var key in attributes) {
+                if (!attributes.hasOwnProperty(key)) {
                     continue;
                 }
                 var regex = new RegExp("\\[" + key + "\\]", "g");
-                t = t.replace(regex, String(feature[key]));
+                t = t.replace(regex, String(attributes[key]));
             }
             this.subTitle = this.config.subTitle + ' ' + t;
         } else {
-            this.subTitle = this.config.subTitle + ' feature id:' + feature.__fid;
+            this.subTitle = this.config.subTitle + ' feature id:' + feature.getAttribute('__fid');
         }
 
         var mapvalues = this.getMapValues();
