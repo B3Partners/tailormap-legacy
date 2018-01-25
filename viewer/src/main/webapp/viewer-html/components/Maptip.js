@@ -809,7 +809,9 @@ Ext.define ("viewer.components.Maptip",{
         callbackLink.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            me.balloon.close();
+            if(me.balloon) {
+                me.balloon.close();
+            }
             entry.callback.call(entry.component, feature, appLayer, coords);
         });
         return callbackLink;

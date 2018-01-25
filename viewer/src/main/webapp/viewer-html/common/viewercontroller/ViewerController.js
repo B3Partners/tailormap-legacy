@@ -1569,6 +1569,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return result;
     },
     /**
+     * Get the components by classnames
+     * @param {Array} classNames full names of the class(es)
+     * @return {Array} of found components.
+     */
+    getComponentsByClassNames : function(classNames) {
+        var result = [];
+        for(var name in this.components) {
+            if(this.components.hasOwnProperty(name)) {
+                var component = this.components[name];
+                if(Ext.Array.indexOf(classNames, component.className) !== -1) {
+                    result.push(component.instance);
+                }
+            }
+        }
+        return result;
+    },
+    /**
      * Get Component by name
      * @param {String} name the name of the component
      * @return the component with the given name or null if not found.

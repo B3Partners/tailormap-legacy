@@ -64,22 +64,8 @@ Ext.define("viewer.components.FeatureReport", {
         Ext.Ajax.request({
             url: actionBeans["layerlist"],
             params: requestParams,
-            success: function (result, request) {
-                me.activatedLayerList = Ext.JSON.decode(result.responseText);
-
-                // register with featureinfo components
-                var infoComponents = me.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
-                for (var i = 0; i < infoComponents.length; i++) {
-                    infoComponents[i].registerExtraLink(
-                            me,
-                            function (feature, appLayer) {
-                                me.handleAction(feature, appLayer);
-                            },
-                            me.config.title,
-                            me.activatedLayerList
-                            );
-                }
-            },
+            scope: this,
+            success: this.reportLayersFetched,
             failure: function (a, b, c) {
                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden opgehaald");
             }
@@ -88,6 +74,25 @@ Ext.define("viewer.components.FeatureReport", {
         me.createForm();
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO, this.onFeatureInfoStart, this);
         return this;
+    },
+    /**
+     * Report Layers fetched
+     * @param result
+     */
+    reportLayersFetched: function(result) {
+        this.activatedLayerList = Ext.JSON.decode(result.responseText);
+        // register with featureinfo components
+        var infoComponents = this.viewerController.getComponentsByClassNames(["viewer.components.FeatureInfo", "viewer.components.ExtendedFeatureInfo"]);
+        for (var i = 0; i < infoComponents.length; i++) {
+            infoComponents[i].registerExtraLink(
+                this,
+                function (feature, appLayer) {
+                    this.handleAction(feature, appLayer);
+                },
+                this.config.title,
+                this.activatedLayerList
+            );
+        }
     },
     /**
      * track the click location.

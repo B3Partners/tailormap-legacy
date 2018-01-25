@@ -321,7 +321,7 @@ Ext.define("viewer.components.Edit", {
         if (this.editLinkInFeatureInfoCreated) {
             return;
         }
-        var infoComponents = this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
+        var infoComponents = this.viewerController.getComponentsByClassNames(["viewer.components.FeatureInfo", "viewer.components.ExtendedFeatureInfo"]);
         var appLayers = [];
         Ext.each(editableLayers, function (record) {
             appLayers.push(this.viewerController.getAppLayerById(record.id));

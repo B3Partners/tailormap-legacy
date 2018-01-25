@@ -243,7 +243,7 @@ Ext.define ("viewer.components.AttributeList",{
         if(this.attributeListLinkInFeatureInfoCreated) {
             return;
         }
-        var infoComponents = this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
+        var infoComponents = this.viewerController.getComponentsByClassNames(["viewer.components.FeatureInfo", "viewer.components.ExtendedFeatureInfo"]);
         var appLayers = [];
         Ext.each(attributelistLayers, function (record) {
             appLayers.push(this.viewerController.getAppLayerById(record.id));

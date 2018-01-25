@@ -111,6 +111,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         if(data[0].requestId === this.currentRequestId){
             this.currentLayer = data[0].appLayer.id;
         }
+        this.currentOptions = options;
+        this.worldPosition = options.coord;
         for(var i = 0 ; i < data.length ;i++){
             var d = data[i];
             for(var j = 0 ; j < d.features.length ; j++){
@@ -127,8 +129,6 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
                 this.totalPages++;
             }
         }
-        this.currentOptions = options;
-        this.worldPosition = options.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("featureInfoMarker",options.coord.x,options.coord.y);
 
         this.activateResultsDiv();
