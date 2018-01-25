@@ -213,12 +213,15 @@ public class FeatureToJson {
             }
         } else {
             for (String name : propertyNames) {
-                String alias = name;
-                if (aliases && attributeAliases != null && attributeAliases.get(name)!=null) {
-                    alias = attributeAliases.get(name);
+                if (!aliases) {
+                    j.put(name, formatValue(f.getAttribute(name)));
+                } else {
+                    String alias = null;
+                    if (attributeAliases != null) {
+                        alias = attributeAliases.get(name);
+                    }
+                    j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
                 }
-                alias = alias.replaceAll(" ", "_");
-                j.put(alias, formatValue(f.getAttribute(name)));
             }
         }
         //if edit and not yet set
