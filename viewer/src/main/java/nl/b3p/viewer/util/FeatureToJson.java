@@ -270,7 +270,6 @@ public class FeatureToJson {
         if (aliases && attributeAliases != null && attributeAliases.get(name)!=null) {
             alias = attributeAliases.get(name);
         }
-        alias = alias.replaceAll(" ", "_");
         j.put(alias, formatValue(f.getAttribute(name)));
         return j;
     }

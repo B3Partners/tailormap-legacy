@@ -663,7 +663,22 @@ Ext.define ("viewer.components.Maptip",{
         }
         var relatedFeatureBlock = this.relatedFeatureBlocks[relatedFeatureId];
         this.requestManager.featureInfo.relatedFeatureInfo(relatedFeatureBlock.appLayer, relatedFeatureBlock.relatedFeature, function(featureinfo) {
-            if(featureinfo.success && featureinfo.total > 0) {
+            var messageContainer = placeholder.parentNode.querySelector('.message-container');
+            if(!messageContainer) {
+                messageContainer = document.createElement('div');
+                messageContainer.className = "message-container";
+                placeholder.parentNode.insertBefore(messageContainer, placeholder);
+            }
+            messageContainer.innerHTML = "";
+            messageContainer.style.display = 'none';
+            if(!featureinfo.success) {
+                messageContainer.style.display = 'block';
+                messageContainer.innerHTML = "Er is iets mis gegaan met het ophalen van object informatie. Probeer het opnieuw";
+            } else if(featureinfo.total === 0) {
+                messageContainer.style.display = 'block';
+                messageContainer.innerHTML = "Voor dit object is deze informatie niet beschikbaar.";
+                placeholder.style.display = 'none';
+            } else if(featureinfo.total > 0) {
                 this.replaceRelatedFeature(featureinfo, relatedFeatureBlock, placeholder);
             }
         }.bind(this));
@@ -795,7 +810,9 @@ Ext.define ("viewer.components.Maptip",{
         callbackLink.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            me.balloon.close();
+            if(me.balloon) {
+                me.balloon.close();
+            }
             entry.callback.call(entry.component, feature, appLayer, coords);
         });
         return callbackLink;

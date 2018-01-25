@@ -17,6 +17,8 @@
 package nl.b3p.viewer.print;
 
 import java.io.ByteArrayInputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
@@ -76,7 +78,20 @@ public class PrintExtraInfo {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         JSONObject root = new JSONObject();
         root.put("root", j);
-        String s = org.json.XML.toString( root);
+        String s = org.json.XML.toString(root);
+        // replace spaces in element names, because the json lib we use is not
+        // smart enough and the produces string will have spaces in element names
+        // is attribute nems have spaces
+        // see: https://stackoverflow.com/questions/19095106/regular-expression-replace-whitespaces-inside-tag
+        final Pattern p = Pattern.compile("(?s)(?<=<).*?(?=/?>|\\s*\\w+\\s*=)");
+        Matcher m = p.matcher(s);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(sb, m.group().replace(" ", "_"));
+        }
+        m.appendTail(sb);
+        s = sb.toString();
+
         this.info =dbf.newDocumentBuilder().parse(new ByteArrayInputStream(s.getBytes("UTF-8"))).getDocumentElement();
     }
     

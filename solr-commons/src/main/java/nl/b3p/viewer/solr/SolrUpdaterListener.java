@@ -66,7 +66,7 @@ public class SolrUpdaterListener implements ServletContextListener {
                     .withIdentity("SolrUpdateJob", "solrupdategroup")
                     .build();
 
-            log.info("Scheduling indexing job for expression " + interval + " minutes");
+            log.info("Scheduling indexing job for expression " + interval);
 
             CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(interval); //("0 42 10 * * ?");
             Trigger trigger = TriggerBuilder.newTrigger()

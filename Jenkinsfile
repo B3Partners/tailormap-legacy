@@ -48,7 +48,7 @@ timestamps {
             }
 
             stage('OWASP Dependency Check') {
-                sh "mvn org.owasp:dependency-check-maven:3.1.0:aggregate -Dformat=XML -DsuppressionFile=./.mvn/owasp-suppression.xml"
+                sh "mvn org.owasp:dependency-check-maven:aggregate -Dformat=XML -DsuppressionFile=./.mvn/owasp-suppression.xml"
 
                 dependencyCheckPublisher canComputeNew: false, defaultEncoding: '', healthy: '85', pattern: '**/dependency-check-report.xml', shouldDetectModules: true, unHealthy: ''
             }

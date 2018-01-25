@@ -351,6 +351,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.app.services[service.id] = service;
     },
 
+    /**
+     * Will return the geoservice or null if not found.
+     * @param {Number} serviceId
+     * @returns {ViewerControllerAnonym$0.app.services} the geoservice
+     */
+    getService: function (serviceId) {
+        if (this.app.services[serviceId]) {
+            return this.app.services[serviceId];
+        } else {
+            return null;
+        }
+    },
+
     addAppLayer:function(appLayer) {
        if(this.app.appLayers[appLayer.id] == undefined) {
            this.app.appLayers[appLayer.id] = appLayer;
@@ -1549,6 +1562,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if(this.components.hasOwnProperty(name)) {
                 var component = this.components[name];
                 if(component.className == className) {
+                    result.push(component.instance);
+                }
+            }
+        }
+        return result;
+    },
+    /**
+     * Get the components by classnames
+     * @param {Array} classNames full names of the class(es)
+     * @return {Array} of found components.
+     */
+    getComponentsByClassNames : function(classNames) {
+        var result = [];
+        for(var name in this.components) {
+            if(this.components.hasOwnProperty(name)) {
+                var component = this.components[name];
+                if(Ext.Array.indexOf(classNames, component.className) !== -1) {
                     result.push(component.instance);
                 }
             }
