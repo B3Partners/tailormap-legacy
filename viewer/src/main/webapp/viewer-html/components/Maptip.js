@@ -189,10 +189,14 @@ Ext.define ("viewer.components.Maptip",{
         var me=this;
         var currentScale = this.config.viewerController.mapComponent.getMap().getScale();
         var inScaleLayers = new Array();
+        this.disableSpinner = true;
         if (this.serverRequestLayers){
             for (var i=0; i < this.serverRequestLayers.length; i++){
                 if (this.config.viewerController.isWithinScale(this.serverRequestLayers[i],currentScale)){
                     inScaleLayers.push(this.serverRequestLayers[i]);
+                    if (this.serverRequestLayers[i].checked) {
+                        this.disableSpinner = false;
+                    }
                 }
             }
         }
@@ -277,6 +281,10 @@ Ext.define ("viewer.components.Maptip",{
             this.lastPosition.x = options.x;
             this.lastPosition.y = options.y;
             this.worldPosition = options.coord;
+
+            if (this.disableSpinner) {
+                this.viewerController.mapComponent.getMap().removeMarker("edit");
+            }
        
             components = this.createInfoHtmlElements(data, options);
             if (!Ext.isEmpty(components)){
