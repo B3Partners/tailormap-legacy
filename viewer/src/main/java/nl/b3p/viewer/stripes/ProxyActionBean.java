@@ -35,6 +35,7 @@ import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.commons.HttpClientConfigured;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.GeoService;
@@ -241,22 +242,20 @@ public class ProxyActionBean implements ActionBean {
         if (mustLogin && serviceId != null) {
             GeoService gs = em.find(GeoService.class, serviceId);
             Set<String> readers = gs.getReaders();
-            User  u = getUser(em);
-            if(u != null){
-                Set<Group> groups = u.getGroups();
-                boolean allowed = false;
-                for (Group group : groups) {
-                    for (String reader : readers) {
-                        if (group.getName().equals(reader)) {
-                            allowed = true;
-                            break;
-                        }
+            Set<String> userroles = Authorizations.getRoles(context.getRequest());
+
+            boolean allowed = false;
+            for (String userrole : userroles) {
+                for (String reader : readers) {
+                    if (userrole.equals(reader)) {
+                        allowed = true;
+                        break;
                     }
                 }
-                if (allowed) {
-                    username = gs.getUsername();
-                    password = gs.getPassword();
-                }
+            }
+            if (allowed) {
+                username = gs.getUsername();
+                password = gs.getPassword();
             }
         }
 
@@ -264,24 +263,9 @@ public class ProxyActionBean implements ActionBean {
         return client;
     }
 
-    private User getUser(EntityManager em) {
-        String username = context.getRequest().getRemoteUser();
-        User u = null;
-        if (username != null) {
-            Principal p = context.getRequest().getUserPrincipal();
-            if (p instanceof User) {
-                u = (User) p;
-            } else {
-                u = em.find(User.class, p.getName());
-            }
-        }
-        return u;
-    }
-
     protected HttpUriRequest getHttpRequest(URL url) throws URISyntaxException{
         return new HttpGet(url.toURI());
     }
-    
 
     private StringBuilder validateParams (String [] params,List<String> allowedParams) throws UnsupportedEncodingException{
         StringBuilder sb = new StringBuilder();
