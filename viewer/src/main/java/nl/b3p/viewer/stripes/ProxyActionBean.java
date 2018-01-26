@@ -247,7 +247,7 @@ public class ProxyActionBean implements ActionBean {
         if (mustLogin && serviceId != null) {
             GeoService gs = em.find(GeoService.class, serviceId);
             Set<String> readers = gs.getReaders();
-            Set<String> userroles = Authorizations.getRoles(context.getRequest());
+            Set<String> userroles = Authorizations.getRoles(context.getRequest(), em);
 
             boolean allowed = false;
             for (String userrole : userroles) {

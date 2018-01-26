@@ -76,12 +76,12 @@ public class SelectedContentCache {
             cached = new JSONObject(el.getValue());
         }
 
-        JSONObject selectedContent = processCache(request, cached);
+        JSONObject selectedContent = processCache(request, cached, em);
         return selectedContent;
     }
 
-    private JSONObject processCache(HttpServletRequest request, JSONObject cached) throws JSONException {
-        Set<String> roles = Authorizations.getRoles(request);
+    private JSONObject processCache(HttpServletRequest request, JSONObject cached, EntityManager em) throws JSONException {
+        Set<String> roles = Authorizations.getRoles(request, em);
 
         JSONObject levels = cached.getJSONObject("levels");
         JSONObject appLayers = cached.getJSONObject("appLayers");

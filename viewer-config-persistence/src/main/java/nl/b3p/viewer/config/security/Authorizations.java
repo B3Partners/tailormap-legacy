@@ -212,7 +212,7 @@ public class Authorizations {
      */
     private static final Map<Long, AppConfiguredComponentsReadersCache> appConfiguredComponentsReadersCache = new HashMap();
     
-    public static Set<String> getRoles(HttpServletRequest request) {
+    public static Set<String> getRoles(HttpServletRequest request, EntityManager em) {
 
         if(request.getRemoteUser() == null) {
             return Collections.EMPTY_SET;
@@ -222,7 +222,7 @@ public class Authorizations {
         
         if(roles == null) {
             roles = new HashSet<String>();
-            List<String> groups = Stripersist.getEntityManager().createQuery("select name FROM Group").getResultList();
+            List<String> groups = em.createQuery("select name FROM Group").getResultList();
             for (String group : groups) {
                 if(request.isUserInRole(group)){
                     roles.add(group);
@@ -234,7 +234,7 @@ public class Authorizations {
         return roles;
     }
     
-    private static boolean isReadAuthorized(HttpServletRequest request, Read auths) {
+    private static boolean isReadAuthorized(HttpServletRequest request, Read auths, EntityManager em) {
        
         if(auths == null  || auths.readers.equals(EVERYBODY)) {
             return true;
@@ -244,7 +244,7 @@ public class Authorizations {
             return false;
         }
         
-        Set<String> roles = getRoles(request);
+        Set<String> roles = getRoles(request,em);
         
         if(roles.isEmpty()) {
             return false;
@@ -253,8 +253,8 @@ public class Authorizations {
         return !Collections.disjoint(auths.readers, roles);
     }
     
-    private static boolean isWriteAuthorized(HttpServletRequest request, ReadWrite auths) {
-        if(!isReadAuthorized(request, auths)) {
+    private static boolean isWriteAuthorized(HttpServletRequest request, ReadWrite auths, EntityManager em) {
+        if(!isReadAuthorized(request, auths,em)) {
             return false;
         }
         if(auths == null || auths.writers.equals(EVERYBODY)) {
@@ -263,7 +263,7 @@ public class Authorizations {
         if(auths.writers.equals(NOBODY)) {
             return false;
         }
-        Set<String> roles = getRoles(request);
+        Set<String> roles = getRoles(request,em);
         
         if(roles.isEmpty()) {
             return false;
@@ -277,7 +277,7 @@ public class Authorizations {
     }
     
     public static boolean isLayerReadAuthorized(Layer l, HttpServletRequest request, EntityManager em) {
-        return isReadAuthorized(request, getLayerAuthorizations(l,em));
+        return isReadAuthorized(request, getLayerAuthorizations(l,em),em);
     }
     
     public static void checkLayerReadAuthorized(Layer l, HttpServletRequest request, EntityManager em) throws Exception {
@@ -287,7 +287,7 @@ public class Authorizations {
     }
     
     public static boolean isLayerWriteAuthorized(Layer l, HttpServletRequest request, EntityManager em) {
-        return isWriteAuthorized(request, getLayerAuthorizations(l,em));
+        return isWriteAuthorized(request, getLayerAuthorizations(l,em),em);
     }
     
     public static void checkLayerWriteAuthorized(Layer l, HttpServletRequest request, EntityManager em) throws Exception {
@@ -347,7 +347,7 @@ public class Authorizations {
     public static boolean isApplicationReadAuthorized(Application app, HttpServletRequest request, EntityManager em) {
         Read auths = new Read(app.getReaders());
 
-        return isReadAuthorized(request, auths);
+        return isReadAuthorized(request, auths,em);
     }
     
     public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request, EntityManager em) {
@@ -363,7 +363,7 @@ public class Authorizations {
             appCache = getApplicationCache(app, em);
         }
         Read auths = appCache.protectedLevels.get(l.getId());       
-        return isReadAuthorized(request, auths);
+        return isReadAuthorized(request, auths,em);
     }
 
     public static void checkLevelReadAuthorized(Application app, Level l, HttpServletRequest request, EntityManager em) throws Exception {
@@ -385,7 +385,7 @@ public class Authorizations {
             appCache = getApplicationCache(app,em);
         }
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
-        return isReadAuthorized(request, auths);
+        return isReadAuthorized(request, auths,em);
     }
     
     public static void checkAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) throws Exception {
@@ -407,7 +407,7 @@ public class Authorizations {
             appCache = getApplicationCache(app, em);
         }
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
-        return isWriteAuthorized(request, auths);
+        return isWriteAuthorized(request, auths,em);
     }
     
     public static void checkAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) throws Exception {
@@ -416,7 +416,7 @@ public class Authorizations {
         }
     }   
         
-    public static boolean isConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request) {
+    public static boolean isConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request, EntityManager em) {
         
         Application app = component.getApplication();
         Long appId = app.getId();
@@ -433,7 +433,7 @@ public class Authorizations {
                 appCache.modified = component.getApplication().getAuthorizationsModified();
                 appCache.readersByConfiguredComponentId = new HashMap();
 
-                List<Object[]> readers = Stripersist.getEntityManager().createQuery(
+                List<Object[]> readers = em.createQuery(
                           "select cc.id, r "
                         + "from ConfiguredComponent cc "
                         + "join cc.readers r "
@@ -458,11 +458,11 @@ public class Authorizations {
             componentReaders = EVERYBODY;
         }
         
-        return isReadAuthorized(request, new Read(componentReaders));
+        return isReadAuthorized(request, new Read(componentReaders), em);
     }
     
-    public static void checkConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request) throws Exception {
-        if(!isReadAuthorized(request, new Read(component.getReaders()))) {
+    public static void checkConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request, EntityManager em) throws Exception {
+        if(!isReadAuthorized(request, new Read(component.getReaders()),em)) {
             throw new Exception(unauthMsg(request,true) + " configured component #" + component.getName() + " of app #" + component.getApplication().getId());
         }
     }    
