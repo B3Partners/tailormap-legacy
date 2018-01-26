@@ -45,13 +45,13 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>18.1</geotools.version>
+        <geotools.version>18.2</geotools.version>
         <powermock.version>1.7.3</powermock.version>
         <hsqldb.version>2.4.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.1.1</postgresql.version>
+        <postgresql.version>42.2.0</postgresql.version>
         <apache.poi.version>3.17</apache.poi.version>
-        <apache.httpcomponents.version>4.5.4</apache.httpcomponents.version>
+        <apache.httpcomponents.version>4.5.5</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
