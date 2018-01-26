@@ -260,7 +260,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                     },
                     features: features,
                     appLayer: groupedLayers[lName].appLayerObj
-                }
+                };
                 appLayer = groupedLayers[lName].appLayerObj;
                 options.data.push(response);
             }
