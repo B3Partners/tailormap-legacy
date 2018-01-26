@@ -30,6 +30,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 
 /**
@@ -77,7 +78,7 @@ public class HttpClientConfigured {
             //accept selfsigned certificates
             //TODO: This appears to be NOT working, not sure why!
             //The only way to get this to work is to add the SSL certificate
-            //of de server (tomcat) with the correct domain name to the
+            //of the server (tomcat) with the correct domain name to the
             //TrustedStore of the JVM in which this app runs.
             try {
                 SSLContext sslcontext = SSLContexts.custom()
@@ -137,6 +138,7 @@ public class HttpClientConfigured {
         SystemDefaultRoutePlanner routePlanner =
                 new SystemDefaultRoutePlanner(ProxySelector.getDefault());
         hcb.setRoutePlanner(routePlanner);
+        hcb.setRedirectStrategy(new LaxRedirectStrategy());
 
         this.httpClient = hcb.build();
         this.httpContext = context;

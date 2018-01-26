@@ -16,8 +16,7 @@ before_install:
 
 install:
   # install without testing
-  #- mvn install -U -DskipTests -Dtest.skip.integrationtests=true -pl viewer-config-persistence,viewer-commons,web-commons -B -V -fae -q
-  - mvn install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -q
+  - travis_wait 30 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -T4.2C
 
 script:
   - ulimit -a
