@@ -7,11 +7,14 @@ package nl.b3p.viewer.util;
  */
 
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.mock.MockHttpServletRequest;
 import net.sourceforge.stripes.mock.MockHttpSession;
 import net.sourceforge.stripes.mock.MockServletContext;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 
 /**
@@ -39,6 +42,11 @@ public class TestActionBeanContext extends ActionBeanContext{
         MockHttpServletRequest request=  new MockHttpServletRequest("", "");
         request.setUserPrincipal(user);
         request.setSession(session);
+        Set<String> roles = new HashSet<>();
+        for (Group group : user.getGroups()) {
+            roles.add(group.getName());
+        }
+        request.setRoles(roles);
         return request;
     }
     
