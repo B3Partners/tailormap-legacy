@@ -231,7 +231,12 @@ public class ProxyActionBean implements ActionBean {
         String paramString = paramsFromUrl.substring(index);
         GeoService gs = em.find(GeoService.class, serviceId);
 
-        theUrl = new URL(gs.getUrl() + "?" + paramString);
+        StringBuilder sbTheUrl = new StringBuilder(gs.getUrl());
+        while (sbTheUrl.charAt(sbTheUrl.length() - 1) == '?') {
+            sbTheUrl.deleteCharAt(sbTheUrl.length() - 1);
+        }
+        sbTheUrl.append('?').append(paramString);
+        theUrl = new URL(sbTheUrl.toString());
         return theUrl;
     }
     
@@ -298,6 +303,10 @@ public class ProxyActionBean implements ActionBean {
 
                 sb.append("&");
             }
+        }
+        if (sb.length() > 1) {
+            // remove trailing ampersand
+            sb.setLength(sb.length() - 1);
         }
         return sb;
     }
