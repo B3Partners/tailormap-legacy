@@ -4,8 +4,17 @@ language: java
 
 addons:
   postgresql: "9.6"
+  hostname: flamingo
+  hosts:
+    - flamingo
+  apt:
+    packages:
+      - oracle-java8-installer
+      - haveged
+      - openjdk-8
 
 before_install:
+  - unset _JAVA_OPTIONS
   - export PAGER=cat
   # create Flamingo database
   - psql --version
@@ -16,7 +25,10 @@ before_install:
 
 install:
   # install without testing
-  - travis_wait 30 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -T4.2C
+  - travis_wait 20 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
+
+before_script:
+  - unset _JAVA_OPTIONS
 
 script:
   - ulimit -a
