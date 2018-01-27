@@ -11,7 +11,8 @@ addons:
     packages:
       - oracle-java8-installer
       - haveged
-      - openjdk-8
+      #- openjdk-8
+      - git-lfs
 
 before_install:
   - unset _JAVA_OPTIONS
