@@ -14,6 +14,9 @@ addons:
       #- openjdk-8
       - git-lfs
 
+services:
+  - haveged
+
 before_install:
   - unset _JAVA_OPTIONS
   - export PAGER=cat
