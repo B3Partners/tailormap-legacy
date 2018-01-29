@@ -1301,7 +1301,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         @return {number} The correction needed to go from resolution to scaledenominator.So:
             resolution * returnValue = scaledenominator
      */
-     calculateScaleCorrection: function (service,minScale,maxScale){
+    calculateScaleCorrection: function (service, minScale, maxScale) {
+        var scaleCorrection = 1;
         if (service && service.protocol === "arcgis"){
             //scale * (dpi / ratio dpi to dpm)
             return 96/0.0254;
@@ -1310,10 +1311,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //return correction for scaledenominator
         else if (minScale > 750 ||
                 ((minScale === undefined || minScale ===0 )&& maxScale > 5000)){
-            return 1/0.00028;
+            scaleCorrection = 1 / 0.00028;
         }
-        //no need for changes
-        return 1;
+        // magic multiply
+        if (service.url.toLowerCase().indexOf("geoserver") > 0) {
+            // test for geoserver
+            scaleCorrection = scaleCorrection * 90.7 / 72;
+        } else if (service.url.toLowerCase().indexOf("mapserver/wmsserver") > 0) {
+            // test for arcgis wms
+            scaleCorrection = scaleCorrection * 96 / 72;
+        } else {
+            // kweenie service
+            scaleCorrection = scaleCorrection * 96 / 90.7;
+        }
+        return scaleCorrection;
      },
     /**
      * Get the Layer Legend image. Superseded by getLayerLegendInfo()
