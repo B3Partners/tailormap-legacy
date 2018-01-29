@@ -29,7 +29,7 @@ before_install:
 
 install:
   # install without testing
-  - travis_wait 30 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
+  - travis_wait 40 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
 
 before_script:
   - unset _JAVA_OPTIONS
