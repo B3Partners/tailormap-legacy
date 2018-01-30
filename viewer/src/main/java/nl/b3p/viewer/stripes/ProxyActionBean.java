@@ -22,7 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +35,6 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.security.Authorizations;
-import nl.b3p.viewer.config.security.Group;
-import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
 import org.apache.commons.logging.Log;
@@ -222,9 +219,12 @@ public class ProxyActionBean implements ActionBean {
             throw new IllegalAccessException();
         }
         //only WMS request param's allowed
-        String[] params = query != null ? query.split("&") : new String[0];
+        String[] params = (query != null ? query.split("&") : new String[0]);
 
         StringBuilder paramsFromUrl = validateParams(params, allowedParams);
+        if (paramsFromUrl.length() > 0 && paramsFromUrl.charAt(paramsFromUrl.length() - 1) != '&') {
+            paramsFromUrl.append('&');
+        }
         paramsFromUrl.append(paramsFromRequest);
 
         int index = paramsFromUrl.charAt(0) == '&' ? 1 : 0;
@@ -233,11 +233,15 @@ public class ProxyActionBean implements ActionBean {
         GeoService gs = em.find(GeoService.class, serviceId);
 
         StringBuilder sbTheUrl = new StringBuilder(gs.getUrl());
-        while (sbTheUrl.charAt(sbTheUrl.length() - 1) == '?') {
-            sbTheUrl.deleteCharAt(sbTheUrl.length() - 1);
+        if (sbTheUrl.indexOf("?") < 0) {
+            // sometimes we don't have a questionmark as part of the url, so add at end
+            sbTheUrl.append('?');
+        } else if ((sbTheUrl.charAt(sbTheUrl.length() - 1) != '&')) {
+            sbTheUrl.append('&');
         }
-        sbTheUrl.append('?').append(paramString);
+        sbTheUrl.append(paramString);
         theUrl = new URL(sbTheUrl.toString());
+
         return theUrl;
     }
     
@@ -288,7 +292,7 @@ public class ProxyActionBean implements ActionBean {
                 sb.append("&");
             }
         }
-        if (sb.length() > 1) {
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '&') {
             // remove trailing ampersand
             sb.setLength(sb.length() - 1);
         }
