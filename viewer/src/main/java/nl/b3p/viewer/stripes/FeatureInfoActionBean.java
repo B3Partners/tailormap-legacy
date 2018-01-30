@@ -371,7 +371,7 @@ public class FeatureInfoActionBean implements ActionBean {
     protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
             throws IOException, JSONException, Exception {
 
-        FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, false, false, attributesToInclude, ordered);
+        FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, true /*aliases*/, false /*returnNullval*/, attributesToInclude, ordered);
         JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null);
         return features;
     }

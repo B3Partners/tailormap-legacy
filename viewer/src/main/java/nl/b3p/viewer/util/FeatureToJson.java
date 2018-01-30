@@ -101,6 +101,14 @@ public class FeatureToJson {
         this.returnNullval = returnNullval;
     }
 
+    /**
+     *
+     * @param aliases {@code true} to return aliases in the response
+     * @param returnNullval {@code true} to return empty string for null value
+     * @param attributesToInclude List of attributes to return in the response
+     * @param ordered {@code true} to return an JSONArray with attributes per
+     * feature instead of JSONObject to maintain order of attributes
+     */
     public FeatureToJson(boolean arrays, boolean edit, boolean graph, boolean aliases, boolean returnNullval, List<Long> attributesToInclude, boolean ordered) {
         this.arrays = arrays;
         this.edit = edit;
