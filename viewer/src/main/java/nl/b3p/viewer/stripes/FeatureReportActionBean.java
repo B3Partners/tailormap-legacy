@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -147,9 +148,28 @@ public class FeatureReportActionBean implements ActionBean {
             Geometry geom = this.getGeometry(fs, fidFilter);
             if (geom != null) {
                 JSONObject wktGeom = new JSONObject();
-                wktGeom.put("_wktgeom", geom.toText());
+                String geomTxt = geom.toText();
+                Geometry bbox = geom.getEnvelope();
+                int megabytes = (2097152/* 2MB is the default tomcat max post size */ - 100 * 1024);
+                double simplify = 1.0;
+                String geomModified = "";
+                while (geomTxt.getBytes("UTF-8").length > megabytes && simplify < 9999) {
+                    // start simplifying to reduce size, start of with 1 and
+                    // each iteration multiply with 10, max 4 steps, so [1,10, 100, 1000]
+                    // if geom still too large bail out and use bbox
+                    LOG.debug("Simplify selected feature geometry with distance of: " + simplify);
+                    geomModified = " (vereenvoudigde geometrie)";
+                    geom = TopologyPreservingSimplifier.simplify(geom, simplify);
+                    geomTxt = geom.toText();
+                    simplify = 10 * simplify;
+                }
+                if (simplify > 9999) {
+                    wktGeom.put("_wktgeom", bbox.toText());
+                } else {
+                    wktGeom.put("_wktgeom", geomTxt);
+                }
                 wktGeom.put("color", "FF00FF");
-                wktGeom.put("label", "Geselecteerd object: " + this.fid.replace(layer.getFeatureType().getTypeName() + ".", ""));
+                wktGeom.put("label", "Geselecteerd object: " + this.fid.replace(layer.getFeatureType().getTypeName() + ".", "") + geomModified);
                 wktGeom.put("strokeWidth", 8);
                 params.getJSONArray("geometries").put(wktGeom);
             }
