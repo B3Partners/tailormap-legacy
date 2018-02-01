@@ -20,10 +20,12 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,13 +166,15 @@ public class LayerListActionBean implements ActionBean {
             
             // TODO filter layers according to readers
             // set writeable according to writers
-
+            HttpServletRequest request = context.getRequest();
             List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers,em);
             for (ApplicationLayer layer : filteredLayers) {
-                try {
-                    jsonArray.put(layer.toJSONObject(em));
-                } catch (JSONException je) {
-                    log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
+                if (Authorizations.isAppLayerReadAuthorized(app, layer, request, em)) {
+                    try {
+                        jsonArray.put(layer.toJSONObject(em));
+                    } catch (JSONException je) {
+                        log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
+                    }
                 }
             }
         }

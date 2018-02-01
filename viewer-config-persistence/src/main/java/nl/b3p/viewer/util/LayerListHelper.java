@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class LayerListHelper {
+
     private static final Log log = LogFactory.getLog(LayerListHelper.class);
 
     /**
@@ -51,8 +52,8 @@ public class LayerListHelper {
      * @param em the entity manager to use
      * @return A list of Layer objects
      */
-    public static List<ApplicationLayer> getLayers(Application application,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,
-        Boolean hasConfiguredLayers, List<Long> possibleLayers, EntityManager em) {
+    public static List<ApplicationLayer> getLayers(Application application, Boolean filterable, Boolean bufferable, Boolean editable, Boolean influence, Boolean arc, Boolean wfs, Boolean attribute,
+            Boolean hasConfiguredLayers, List<Long> possibleLayers, EntityManager em) {
         List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
         long startTime = System.currentTimeMillis();
@@ -60,40 +61,39 @@ public class LayerListHelper {
 
         long end = System.currentTimeMillis();
         log.info("TreeCache load time:" + (end - startTime) + " millis");
-        for(ApplicationLayer appLayer: tc.getApplicationLayers()) {
-
-            Layer l = appLayer.getService().getLayer(appLayer.getLayerName(),em);
-            if(l == null){
-                    continue;
+        for (ApplicationLayer appLayer : tc.getApplicationLayers()) {
+            Layer l = appLayer.getService().getLayer(appLayer.getLayerName(), em);
+            if (l == null) {
+                continue;
             }
-            
-            if(filterable) {
+
+            if (filterable) {
                 // The value of l.isFilterable() for WMS layers is not meaningful
                 // at the moment... Always assume a WMS layer is filterable if
                 // the layer has a feature type. There is a checkbox for an admin
                 // to specify manually if a layer supports SLD filtering for GetMap
-                if(l.getService() instanceof WMSService) {
-                    if(l.getFeatureType() == null) {
+                if (l.getService() instanceof WMSService) {
+                    if (l.getFeatureType() == null) {
                         continue;
                     }
                 } else {
-                    if(!l.isFilterable()) {
+                    if (!l.isFilterable()) {
                         continue;
                     }
                 }
             }
-            
-            if(bufferable && !l.isBufferable() ) {
+
+            if (bufferable && !l.isBufferable()) {
                 continue;
             }
-            if(filterable && l.getService() instanceof ArcGISService){
-                if(l.getFeatureType() == null ){
+            if (filterable && l.getService() instanceof ArcGISService) {
+                if (l.getFeatureType() == null) {
                     continue;
-                }else if(! (l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource )){
+                } else if (!(l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource)) {
                     continue;
                 }
             }
-            
+
             if (editable && (l.getFeatureType() == null || !l.getFeatureType().isWriteable())) {
                 continue;
             }
@@ -109,9 +109,9 @@ public class LayerListHelper {
             if (attribute && appLayer.getAttributes().isEmpty()) {
                 continue;
             }
-            if(hasConfiguredLayers && !possibleLayers.contains(appLayer.getId())){
+            if (hasConfiguredLayers && !possibleLayers.contains(appLayer.getId())) {
                 continue;
-            }            
+            }
 
             layers.add(appLayer);
         }
