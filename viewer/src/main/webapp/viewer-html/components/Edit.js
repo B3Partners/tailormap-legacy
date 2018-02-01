@@ -324,7 +324,10 @@ Ext.define("viewer.components.Edit", {
         var infoComponents = this.viewerController.getComponentsByClassNames(["viewer.components.FeatureInfo", "viewer.components.ExtendedFeatureInfo"]);
         var appLayers = [];
         Ext.each(editableLayers, function (record) {
-            appLayers.push(this.viewerController.getAppLayerById(record.id));
+            var appLayer = this.viewerController.getAppLayerById(record.id);
+            if(appLayer){
+                appLayers.push(appLayer);
+            }
         }, this);
         for (var i = 0; i < infoComponents.length; i++) {
             infoComponents[i].registerExtraLink(

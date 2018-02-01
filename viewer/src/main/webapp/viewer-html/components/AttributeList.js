@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * AttributeList component
  * Creates a AttributeList component
@@ -246,7 +248,10 @@ Ext.define ("viewer.components.AttributeList",{
         var infoComponents = this.viewerController.getComponentsByClassNames(["viewer.components.FeatureInfo", "viewer.components.ExtendedFeatureInfo"]);
         var appLayers = [];
         Ext.each(attributelistLayers, function (record) {
-            appLayers.push(this.viewerController.getAppLayerById(record.id));
+            var appLayer = this.viewerController.getAppLayerById(record.id);
+            if(appLayer){
+                appLayers.push(appLayer);
+            }
         }, this);
         for (var i = 0; i < infoComponents.length; i++) {
             infoComponents[i].registerExtraLink(
