@@ -210,7 +210,7 @@ Ext.define("viewer.components.Legend", {
         }
         
         if(this.config.showInlineLegend) {
-            this.appendLegendToToc(appLayer, legend);
+            this.appendLegendToToc(appLayer, legend.element);
         }
     },
     
@@ -328,24 +328,23 @@ Ext.define("viewer.components.Legend", {
         }
 
         var legendElement = this.createLegendElement(appLayer, legendInfo, legendScale);
-        
-        legend.element = legendElement;
-        this.orderedElements[legend.order] = {
-            appLayer: appLayer,
-            element: legendElement
-        };
         //console.log("for appLayer " + appLayer.alias + " with order " + legend.order + ", insert before order " + indexAfter +
         //    (legendAfter == null ? " (append at end)" : " (before " + this.orderedElements[indexAfter].appLayer.alias + ")")
         //);
         
         if(appLayer.checked && this.config.renderLegend) {
+            legend.element = legendElement;
+            this.orderedElements[legend.order] = {
+                appLayer: appLayer,
+                element: legendElement
+            };
             var indexAfter = this.findElementAfter(this.orderedElements, legend.order);
             var legendAfter = indexAfter == null ? null : this.orderedElements[indexAfter].element;
             this.legendContainer.insertBefore(legendElement, legendAfter);
         }
         
         if(this.config.showInlineLegend) {
-            this.appendLegendToToc(appLayer, legend);
+            this.appendLegendToToc(appLayer, legendElement);
         }
     },
 
@@ -381,24 +380,27 @@ Ext.define("viewer.components.Legend", {
         tree.getEl().dom.addEventListener("click", this.toggleLegendImage);
     },
     
-    appendLegendToToc: function(appLayer, legend) {
+    appendLegendToToc: function(appLayer, legendElement) {
         if(this.treenodes === null) {
             this.loadTreeNodes();
         }
+        if(!legendElement) {
+            return;
+        }
         for(var i = 0; i < this.treenodes.length; i++) {
-            if(this.treenodes[i].layerObj.appLayer.id === appLayer.id && legend.element) {
-                this.createLegendInToc(this.treenodes[i], legend);
+            if(this.treenodes[i].layerObj.appLayer.id === appLayer.id) {
+                this.createLegendInToc(this.treenodes[i], legendElement);
             }
         }
     },
     
-    createLegendInToc: function(treenode, legend) {
+    createLegendInToc: function(treenode, legendElement) {
         var el = document.getElementById("span_" + treenode.layerObj.nodeId);
         if(el) {
             if(el.parentNode.querySelector('.legend-toggle') !== null) {
                 return;
             }
-            var image = legend.element.querySelector(".image");
+            var image = legendElement.querySelector(".image");
             if(image) {
                 var clonedImage = image.cloneNode(true);
                 clonedImage.style.display = 'none';
