@@ -26,18 +26,6 @@ Ext.define("viewer.FeatureInfo", {
             this.config.actionbeanUrl = actionBeans["featureinfo"];
         }
     },
-    getVisibleAppLayers: function() {
-        var visibleLayerIds = this.config.viewerController.getVisibleLayers();
-        var visibleAppLayers = {};
-        for(var i = 0; i < visibleLayerIds.length; i++) {
-            var id=visibleLayerIds[i];
-            var appLayer = this.config.viewerController.getAppLayerById(id);
-            if(appLayer != null) {
-                visibleAppLayers[appLayer.id] = true;
-            }
-        }
-        return visibleAppLayers;
-    },
     featureInfoInternal: function(params, successFunction, failureFunction,scope) {
         var me = this;
         params = Ext.apply(params, { application: this.config.viewerController.app.id });
@@ -67,7 +55,7 @@ Ext.define("viewer.FeatureInfo", {
         });
     },
     featureInfo: function(x, y, distance, successFunction, failureFunction) {
-        var visibleAppLayers = this.getVisibleAppLayers();
+        var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
 
         var queries = [];
         for(var i = 0; i < visibleAppLayers.length; i++) {
@@ -85,7 +73,7 @@ Ext.define("viewer.FeatureInfo", {
     },
     layersFeatureInfo: function(x, y, distance, appLayers, extraParams, successFunction, failureFunction,scope) {
 
-        var visibleAppLayers = this.getVisibleAppLayers();
+        var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
 
         var queries = [];
         for(var i = 0; i < appLayers.length; i++) {

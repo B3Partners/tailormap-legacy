@@ -1134,6 +1134,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return layerArray;
     },
     /**
+     * Returns an object with visible applayer ids
+     * @param castToStrings boolean An optional parameter to cast all ID's to strings.
+     * @return a object of Layer id's (same as appLayerIds) objects
+     **/
+    getVisibleAppLayers: function(castToStrings) {
+        var visibleLayerIds = this.getVisibleLayers(castToStrings);
+        var visibleAppLayers = {};
+        for(var i = 0; i < visibleLayerIds.length; i++) {
+            var id=visibleLayerIds[i];
+            var appLayer = this.getAppLayerById(id);
+            if(appLayer != null) {
+                visibleAppLayers[appLayer.id] = true;
+            }
+        }
+        return visibleAppLayers;
+    },
+    /**
      * Gets the layers that have a maptip configured
      * @param layer a mapComponent layer.
      * @return a string of layer names in the given layer that have a maptip configured.
