@@ -188,17 +188,18 @@ Ext.define ("viewer.components.Maptip",{
         var radius=this.config.clickRadius*map.getResolution();
         var me=this;
         var currentScale = this.config.viewerController.mapComponent.getMap().getScale();
+        var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
         var inScaleLayers = new Array();
-        this.disableSpinner = true;
         if (this.serverRequestLayers){
             for (var i=0; i < this.serverRequestLayers.length; i++){
-                if (this.config.viewerController.isWithinScale(this.serverRequestLayers[i],currentScale)){
+                if (this.config.viewerController.isWithinScale(this.serverRequestLayers[i],currentScale)
+                    && visibleAppLayers.hasOwnProperty(this.serverRequestLayers[i].id)) {
                     inScaleLayers.push(this.serverRequestLayers[i]);
-                    if (this.serverRequestLayers[i].checked) {
-                        this.disableSpinner = false;
-                    }
                 }
             }
+        }
+        if(inScaleLayers.length === 0) {
+            return;
         }
         if(this.config.spinnerWhileIdentify){
             var coords = options.coord;
@@ -262,7 +263,7 @@ Ext.define ("viewer.components.Maptip",{
             }
             var data=options.data;
             var components=[];
-            if (!data){
+            if (!data) {
                 return;
             }
             
@@ -281,10 +282,6 @@ Ext.define ("viewer.components.Maptip",{
             this.lastPosition.x = options.x;
             this.lastPosition.y = options.y;
             this.worldPosition = options.coord;
-
-            if (this.disableSpinner) {
-                this.viewerController.mapComponent.getMap().removeMarker("edit");
-            }
        
             components = this.createInfoHtmlElements(data, options);
             if (!Ext.isEmpty(components)){
