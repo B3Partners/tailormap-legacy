@@ -7,7 +7,8 @@
     z-index: 10;
 }
 
-.svg-button .svg-click-area {
+.svg-button .svg-click-area,
+.svg-tool .svg-click-area {
     position: absolute;
     left: -1px;
     top: -1px;
@@ -18,11 +19,16 @@
 }
 
 .svg-tool svg {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 28px;
     height: 28px;
+    z-index: 10;
 }
 
 .svg-tool {
+    position: relative;
     cursor: pointer;
 }
 
