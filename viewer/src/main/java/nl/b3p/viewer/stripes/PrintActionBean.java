@@ -204,7 +204,8 @@ public class PrintActionBean implements ActionBean {
         // make it possible to override the template using a filename eg mytemplate.xsl which should be in one of the well known locations
         String xsltemplate = jRequest.has("xsltemplate") ? jRequest.getString("xsltemplate") : null;
         final String templateName = ((xsltemplate != null) ? xsltemplate : getTemplateName(pageFormat, orientation));
-        
+        log.debug(String.format("Request for print using pageFormat: %s, orientation %s with output format %s", pageFormat, orientation, mimeType));
+
         final String templateUrl;
         final boolean useMailer = mailprint;
         if (app!=null && app.getDetails()!=null && app.getDetails().get("stylesheetPrint")!=null){            
