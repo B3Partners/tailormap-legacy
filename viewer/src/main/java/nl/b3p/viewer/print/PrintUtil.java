@@ -81,7 +81,10 @@ public class PrintUtil {
     public static String getImageUrl(String param, String url, String sessionID) throws Exception {
         RedirectResolution cia = new RedirectResolution(CombineImageActionBean.class);
         RedirectResolution pa = new RedirectResolution(PrintActionBean.class);
+        // url van print actionbean naar combineimage action bean, kopieer de sessionid naar de url
+        // tomcat specifiek gedrag
         url = url.replace(pa.getUrl(new Locale("NL")), cia.getUrl(new Locale("NL")));
+        url += ";jsessionid=" + sessionID;
 
         HttpClient client = new HttpClient();
         PostMethod method = null;
