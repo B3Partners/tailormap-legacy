@@ -61,7 +61,7 @@ public class HttpClientConfigured {
         if (timeout < 0) {
             timeout = maxResponseTime;
         }
-        boolean preemptive = false;
+        boolean preemptive = true;
  
 
         RequestConfig defaultRequestConfig = RequestConfig.custom()
