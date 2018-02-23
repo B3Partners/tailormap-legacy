@@ -275,30 +275,12 @@ Ext.define("viewer.components.sf.ComboConfig", {
             valueField: "type",
             value: this.configObject.comboType ? this.configObject.comboType : "unique",
             listeners: {
-                change: {
-                    scope: this,
-                    fn: function(obj, newValue){
-                        var min = Ext.getCmp("min");
-                        var max = Ext.getCmp("max");
-                        var ownValues = Ext.getCmp("ownValues");
-                        var maxFeatures = Ext.getCmp("maxFeatures");
-                        if(newValue === "unique" ){
-                            min.hide();
-                            max.hide();
-                            ownValues.hide();
-                            maxFeatures.show();
-                        }else if (newValue === "range"){
-                            min.show();
-                            max.show();
-                            ownValues.hide();
-                            maxFeatures.hide();
-                        }else if (newValue === "own"){
-                            min.hide();
-                            max.hide();
-                            ownValues.show();
-                            maxFeatures.hide();
-                        }
-                    }
+                scope: this,
+                change: function(obj, newValue){
+                    this.toggleComboType(newValue)
+                },
+                render: function(obj) {
+                    this.toggleComboType(this.configObject.comboType || "unique")
                 }
             }
         },
@@ -365,6 +347,28 @@ Ext.define("viewer.components.sf.ComboConfig", {
         }
         ]);
         return items;
+    },
+    toggleComboType: function(newValue) {
+        var min = Ext.getCmp("min");
+        var max = Ext.getCmp("max");
+        var ownValues = Ext.getCmp("ownValues");
+        var maxFeatures = Ext.getCmp("maxFeatures");
+        if(newValue === "unique" ){
+            min.hide();
+            max.hide();
+            ownValues.hide();
+            maxFeatures.show();
+        }else if (newValue === "range"){
+            min.show();
+            max.show();
+            ownValues.hide();
+            maxFeatures.hide();
+        }else if (newValue === "own"){
+            min.hide();
+            max.hide();
+            ownValues.show();
+            maxFeatures.hide();
+        }
     },
     getDefaultStartValue : function (){
         return "max";

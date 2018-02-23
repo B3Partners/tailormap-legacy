@@ -1511,6 +1511,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
     _doApplyFilter: function(appLayer, mapLayer) {
         var me = this;
+        if(!appLayer.filter){
+            appLayer.filter = Ext.create("viewer.components.CQLFilterWrapper", { id: "", cql: "", operator : "" });
+        }
         if(appLayer.filter.getCQL() && appLayer.filter.getCQL() !== ""){
             var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
             Ext.create("viewer.SLD",{
