@@ -603,7 +603,7 @@
         "shortName": "AL",
         "sources": ["AttributeList.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","AttributeList-config.js"],
-        "restrictions": ["left_menu"] ,
+        "restrictions": ["leftmargin_top", "rightmargin_top", "leftmargin_bottom", "rightmargin_bottom", "popupwindow", "left_menu", "header", "footer"],
         "singleton": true,
         "type": "popup",
         "showHelp": true

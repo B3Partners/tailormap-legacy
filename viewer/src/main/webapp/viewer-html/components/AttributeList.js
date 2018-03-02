@@ -27,11 +27,10 @@ Ext.define ("viewer.components.AttributeList",{
     pagers: null,
     attributeIndex: 0,
     expandedRows: [],
-    downloadForm:null,
     requestThresholdCounter:null,
     config: {
         layers:null,
-        title:null,
+        title: "",
         iconUrl:null,
         tooltip:null,
         label: "",
@@ -56,6 +55,7 @@ Ext.define ("viewer.components.AttributeList",{
     featureExtentService: null,
     
     constructor: function (conf){
+        conf.details.useExtLayout = true;
         this.initConfig(conf);
         viewer.components.AttributeList.superclass.constructor.call(this, this.config);
         var me = this;
@@ -116,7 +116,46 @@ Ext.define ("viewer.components.AttributeList",{
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.layerChanged, this);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
 
-        this.topContainer=Ext.create('Ext.container.Container', {
+        var closingPanelOptions = {
+            id: this.name + 'ClosingPanel',
+            xtype: "container",
+            style: {
+                margin: '5px'
+            },
+            layout: {
+                type:'hbox'
+            },
+            items: [
+                {
+                    xtype: 'button',
+                    itemId: 'zoomToAll',
+                    text: 'Zoom naar alle features',
+                    disabled: true,
+                    scope: this,
+                    handler: this.zoomToAllFeatures,
+                    hidden: !this.config.addZoomTo
+                },
+                { xtype: 'container', flex: 1 },
+                {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, scope:this, handler:function(){
+                        this.download();
+                    }},
+                {
+                    xtype: "combobox",
+                    disabled:true,
+                    id:"downloadType",
+                    value: this.config.defaultDownload,
+                    queryMode: 'local',
+                    displayField: 'label',
+                    name:"test",
+                    valueField: 'type',
+                    style: { marginRight: '5px' },
+                    store:  Ext.create('Ext.data.Store', {
+                        fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"GEOJSON", label:"GeoJSON" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
+                    })
+                }
+            ]
+        };
+        var topContainerOptions = {
             id: this.name + 'Container',
             width: '100%',
             height: '100%',
@@ -127,7 +166,6 @@ Ext.define ("viewer.components.AttributeList",{
             style: {
                 backgroundColor: 'White'
             },
-            renderTo: this.getContentDiv(),
             listeners: {
                 afterrender: {
                     fn: function() {
@@ -136,99 +174,42 @@ Ext.define ("viewer.components.AttributeList",{
                     scope: this
                 }
             },
-            items: [{
-                id: this.name + 'LayerSelectorPanel',
-                xtype: "container",
-                padding: this.config.showLayerSelectorTabs ? 0 : "4px",
-                height: this.config.showLayerSelectorTabs ? 44 : 40,
-                items: [
-                    this.layerSelector.getLayerSelector()
-                ]
-            },{
-                id: this.name + 'mainGridPanel',
-                xtype: "container",
-                // autoScroll: true,
-                flex: 1,
-                layout: 'fit'
-            },{
-                id: this.name + 'mainPagerPanel',
-                    xtype: "container"
-            },{
-                id: this.name + 'ClosingPanel',
-                xtype: "container",
-                style: {
-                    margin: '5px'
-                },
-                layout: {
-                    type:'hbox'
-                },
-                items: [
-                    {
-                        xtype: 'button',
-                        itemId: 'zoomToAll',
-                            text: 'Zoom naar alle features',
-                        disabled: true,
-                        scope: this,
-                        handler: this.zoomToAllFeatures,
-                        hidden: !this.config.addZoomTo
-                    },
-                    { xtype: 'container', flex: 1 },
-                    {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, scope:this, handler:function(){
-                             this.download();
-                    }},
-                    {
-                        xtype: "combobox",
-                        disabled:true,
-                        id:"downloadType",
-                        value: this.config.defaultDownload,
-                        queryMode: 'local',
-                        displayField: 'label',
-                        name:"test",
-                        valueField: 'type',
-                        style: { marginRight: '5px' },
-                        store:  Ext.create('Ext.data.Store', {
-                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"GEOJSON", label:"GeoJSON" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
-                            })
-                    },
-                    {xtype: 'button', text: 'Sluiten', handler: function() {
-                        me.popup.hide();
-                    }}
-                ]
-            }]
-        });
-        this.downloadForm = Ext.create('Ext.form.Panel', {
-            renderTo: me.getContentDiv(),
-            url: actionBeans["download"],
-            border: 0,
-            visible: false,
-            standardSubmit: true,
-            items: [{
-                    xtype: "hidden",
-                    name: "filter",
-                    itemId: 'filter'
-                },
+            items: [
                 {
-                    xtype: "hidden",
-                    name: "appLayer",
-                    itemId: 'appLayer'
+                    id: this.name + 'LayerSelectorPanel',
+                    xtype: "container",
+                    padding: this.config.showLayerSelectorTabs ? 0 : "4px",
+                    height: this.config.showLayerSelectorTabs ? 44 : 40,
+                    items: [
+                        this.layerSelector.getLayerSelector()
+                    ]
+                },{
+                    id: this.name + 'mainGridPanel',
+                    xtype: "container",
+                    // autoScroll: true,
+                    flex: 1,
+                    layout: 'fit'
+                },{
+                    id: this.name + 'mainPagerPanel',
+                        xtype: "container"
                 },
-                {
-                    xtype: "hidden",
-                    name: "application",
-                    itemId: "application"
-                },
-                {
-                    xtype: "hidden",
-                    name: "type",
-                    itemId: "type"
-                },
-                {
-                    xtype: "hidden",
-                    name: "params",
-                    itemId: "params"
-                }
+                closingPanelOptions
             ]
-        });
+        };
+        if(!this.config.isPopup) {
+            topContainerOptions.title = !this.config.viewerController.layoutManager.isTabComponent(this.name) ? this.config.title : '';
+            // topContainerOptions.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 0 10 0';
+        } else {
+            closingPanelOptions.items.push({
+                xtype: 'button', text: 'Sluiten', handler: function() {
+                    me.popup.hide();
+                }
+            });
+        }
+
+        this.topContainer = Ext.create(this.config.isPopup ? 'Ext.container.Container' : 'Ext.panel.Panel', topContainerOptions);
+        var parent = this.getContentContainer();
+        parent.add(this.topContainer);
     },
     layerSelectorInit: function(evt) {
         if(!evt.hasBeenInitialized) {
@@ -289,11 +270,13 @@ Ext.define ("viewer.components.AttributeList",{
             }
         }, this);
     },
-    showWindow : function (){
-        if (this.topContainer==null){
-            this.loadWindow();
+    showWindow : function() {
+        if(this.config.isPopup) {
+            if (this.topContainer == null) {
+                this.loadWindow();
+            }
+            this.popup.show();
         }
-        this.popup.show();
         if(this.layerSelector.getVisibleLayerCount() === 0) {
             this.resolveDeferred();
         }
@@ -369,7 +352,7 @@ Ext.define ("viewer.components.AttributeList",{
     },
     // Called when the layerSelector was changed.
     layerChanged : function (appLayer){
-        if(!appLayer || !this.popup.isVisible()) {
+        if(!appLayer || (this.config.isPopup && !this.popup.isVisible())) {
             return true;
         }
         if(this.config.addZoomTo) {
