@@ -54,9 +54,20 @@ Ext.define ("viewer.components.LayerContext",{
     },
     layerClicked: function(layerObj) {
         // Check if any data is present
-        if( typeof layerObj.metadata !== 'undefined' ||typeof layerObj.download !== 'undefined' || typeof layerObj.info !== 'undefined' || typeof layerObj.url !== 'undefined' ||
-            (   typeof layerObj.appLayer !== 'undefined' && (typeof layerObj.appLayer.details !== 'undefined' &&
-            (typeof layerObj.appLayer.details.context !== 'undefined' || layerObj.appLayer.details.metadataurl !== 'undefined'  ) ))) {
+        if(
+            typeof layerObj.metadata !== 'undefined' ||
+            typeof layerObj.download !== 'undefined' ||
+            typeof layerObj.info !== 'undefined' ||
+            typeof layerObj.url !== 'undefined' ||
+            (
+                typeof layerObj.appLayer !== 'undefined' &&
+                typeof layerObj.appLayer.details !== 'undefined' &&
+                (
+                    typeof layerObj.appLayer.details.context !== 'undefined' ||
+                    typeof layerObj.appLayer.details.metadataurl !== 'undefined'
+                )
+            )
+        ) {
             this.renderWindow(layerObj);
         }
     },
