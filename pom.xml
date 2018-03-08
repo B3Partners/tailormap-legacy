@@ -55,7 +55,7 @@
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
-        <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
         <tomcat.version>7.0.85</tomcat.version>
     </properties>
     <dependencyManagement>
