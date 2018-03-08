@@ -1,5 +1,5 @@
 dist: trusty
-sudo: false
+sudo: required
 language: java
 
 addons:
@@ -26,6 +26,9 @@ before_install:
   - psql -U postgres -a -c "CREATE ROLE flamingo4 LOGIN PASSWORD 'flamingo4' SUPERUSER CREATEDB;"
   - psql -U postgres -a -c 'create database flamingo4;'
   - psql -U postgres -a -c 'ALTER DATABASE flamingo4 OWNER TO flamingo4;'
+  # see https://github.com/travis-ci/travis-ci/issues/9309#issuecomment-371492492
+  - ls -la ~
+  - sudo chown travis:travis ~/.gitconfig
   - ls -la ~
 
 install:
