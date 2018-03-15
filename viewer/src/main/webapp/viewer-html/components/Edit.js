@@ -27,6 +27,7 @@ Ext.define("viewer.components.Edit", {
     inputContainer: null,
     geomlabel: null,
     savebutton: null,
+    pixelTolerance:0,
     showGeomType: null,
     newGeomType: null,
     tekstGeom: 'feature',
@@ -101,6 +102,7 @@ Ext.define("viewer.components.Edit", {
         this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
+            handlerOptions: {pixelTolerance:me.pixelTolerance},
             handler: {
                 fn: this.mapClicked,
                 scope: this
