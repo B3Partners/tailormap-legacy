@@ -32,10 +32,7 @@ import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
-import nl.b3p.viewer.config.services.FeatureTypeRelation;
-import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.Layer;
@@ -48,7 +45,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -218,8 +214,7 @@ public class FeatureInfoActionBean implements ActionBean {
         return this.layer;
     }
     //</editor-fold>
-    
-    @DefaultHandler
+
     public Resolution info() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
 
@@ -494,7 +489,7 @@ public class FeatureInfoActionBean implements ActionBean {
                 } while (false);
             } catch (Exception e) {
                 log.error("Exception loading feature info for " + exceptionMsg, e);
-                error = "Exception: " + e.getLocalizedMessage();
+                error = "Exception: " + e.toString();
             } finally {
                 if (error != null) {
                     response.put("error", error);
@@ -556,13 +551,12 @@ public class FeatureInfoActionBean implements ActionBean {
                     response.put("related_features", jsonFeats);
 
                 }
-
             }
         }
 
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
-    
+
     /**
      * This will execute the actual featureinfo query, can be overridden in
      * subclasses to modify behaviour such as workflow.
