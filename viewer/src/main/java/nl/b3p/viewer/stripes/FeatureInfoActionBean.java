@@ -26,8 +26,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
-
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
@@ -41,13 +39,13 @@ import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
-import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -108,8 +106,6 @@ public class FeatureInfoActionBean implements ActionBean {
     private boolean ordered = false;
 
     private Layer layer;
-
-    private static final String RIJKSDRIEHOEK_STELSEL = "epsg:28992";
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -314,7 +310,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
                     }
 
-                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? FlamingoCQL.toFilter(filter, em) : null;
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
 
                     if (currentFilter!=null){
                         currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
@@ -331,9 +327,8 @@ public class FeatureInfoActionBean implements ActionBean {
 
                     q.setFilter(f);
                     q.setMaxFeatures(limit +1);
-                    q.setCoordinateSystem(CRS.decode(RIJKSDRIEHOEK_STELSEL));
 
-                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q, em, application, context.getRequest());
+                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
                     if(features.length() > limit){
                         JSONArray newArray = new JSONArray();
                         for (int j = 0; j < features.length(); j++) {
@@ -375,11 +370,11 @@ public class FeatureInfoActionBean implements ActionBean {
      * @throws JSONException if transforming to json fails
      * @throws Exception if any
      */
-    protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q, EntityManager em, Application application, HttpServletRequest request)
+    protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
             throws IOException, JSONException, Exception {
 
         FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, true /*aliases*/, false /*returnNullval*/, attributesToInclude, ordered);
-        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null, em, application, request);
+        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null);
         return features;
     }
 }
