@@ -74,7 +74,7 @@ os:
 matrix:
   fast_finish: true
   allow_failures:
-    - oraclejdk9
+    - jdk: oraclejdk9
 
 cache:
   directories:
