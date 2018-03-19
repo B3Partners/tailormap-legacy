@@ -45,7 +45,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>19-beta</geotools.version>
+        <geotools.version>19.0</geotools.version>
         <powermock.version>1.7.3</powermock.version>
         <hsqldb.version>2.4.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
