@@ -1829,6 +1829,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
             if(isBookmarked){
                 appLayer.checked = true;
+                appLayer.removed = false;
             }else{
                 appLayer.checked = false;
             }
