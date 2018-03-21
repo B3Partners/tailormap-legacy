@@ -458,14 +458,33 @@ Ext.define("viewer.components.SearchConfiguration",{
         solrConfigContainer.setVisible(true);
         this.panel.updateLayout();
     },
-    addPdokConfig: function(configid){
-        var searchConfig = this.getConfig(configid);
-        var pdokConfigContainer = Ext.ComponentQuery.query('#pdokConfig' + configid)[0];
-        pdokConfigContainer.setVisible(true);
-        this.panel.updateLayout();
-    },
     
     addAttributeSourceConfig: function (searchconfigId) {
+        var solrConfigContainer = Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0];
+        var me = this;
+        if(!this.attribuutbronSearchconfigs.hasOwnProperty(searchconfigId)) {
+            
+            var searchConfig = me.getConfig(searchconfigId);
+            if(!searchConfig.asConfig) {
+                searchConfig.asConfig = {};
+            }
+            var checked = [];
+            if(searchConfig && searchConfig.hasOwnProperty('asConfig')) {
+                Ext.Object.each(searchConfig.asConfig, function(key, value) {
+                    checked.push(value.solrConfigid);
+                });
+            }
+            // Show the filterableCheckboxes component with all Solr configs
+            this.attribuutbronSearchconfigs[searchconfigId] = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
+                requestUrl: this.getContextpath() + "/action/configuresolr?getSearchconfigData=true",
+                parentContainer: solrConfigContainer,
+                titleField: 'name',
+                checked: checked
+            });
+        }
+        solrConfigContainer.setVisible(true);
+        this.panel.updateLayout();
+        /*
         var attributeConfigContainer = Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0];
         var me = this;
         if (!this.attribuutbronSearchconfigs.hasOwnProperty(searchconfigId)) {
@@ -511,6 +530,13 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
         }
         attributeConfigContainer.setVisible(true);
+        this.panel.updateLayout();*/
+    },
+    
+    addPdokConfig: function(configid){
+        var searchConfig = this.getConfig(configid);
+        var pdokConfigContainer = Ext.ComponentQuery.query('#pdokConfig' + configid)[0];
+        pdokConfigContainer.setVisible(true);
         this.panel.updateLayout();
     },
     
@@ -642,10 +668,30 @@ Ext.define("viewer.components.SearchConfiguration",{
     
     saveASConfig: function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
+        // Should not happen
+        if(searchConfig === null) return;
+        // Get old config or create new config object
+        var Config = searchConfig.asConfig || {};
+        // Check if the solrconfig FilterableCheckboxes object exists
+        if(this.attribuutbronSearchconfigs.hasOwnProperty(searchconfigId)) {
+            // Get the checked solr configs
+            var checkedASConfigs = this.attribuutbronSearchconfigs[searchconfigId].getChecked();
+            // For each of the checked solr configs we will create a config object
+           Ext.Array.each(checkedASConfigs, function(asConfigId) {
+                // Replace previous config object
+                Config[asConfigId] = {
+                    // Config id
+                    'solrConfigid': asConfigId
+                };
+            });
+        }
+        // Set Solr config to searchconfig object
+        searchConfig.asConfig = Config;
+       /* var searchConfig = this.getConfig(searchconfigId);
         if( Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0]){
             var searchConfigId = Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0].value;
             searchConfig.searchConfigId = searchConfigId;
-        }
+        }*/
     },
     savePDOKConfig:function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
