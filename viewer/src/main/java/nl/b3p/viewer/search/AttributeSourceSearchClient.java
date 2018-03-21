@@ -51,10 +51,25 @@ public class AttributeSourceSearchClient extends SearchClient {
 
     @Override
     public SearchResult search(String query) {
+            JSONObject asConfig = config.getJSONObject("asConfig");
+            
+            JSONArray processedResults = new JSONArray();
+            for (Iterator<String> iterator = asConfig.keys(); iterator.hasNext();) {
+                String configId = iterator.next();
+                Integer id = Integer.parseInt(configId);
+                getResults(query,id,processedResults);
+            }
+            
+            SearchResult sr = new SearchResult();
+            sr.setResults(processedResults);           
+            return sr;
+    }
+
+    private void getResults(String query, Integer solrConfigId,JSONArray processedResults ) {
+
         try {
             EntityManager em = Stripersist.getEntityManager();
-            SearchResult sr = new SearchResult();
-            Integer solrConfigId = config.getInt("searchConfigId");
+
             SolrConf conf = em.find(SolrConf.class, solrConfigId.longValue());
             List<String> queryAttributes = conf.getIndexAttributes();
             List<String> resultAttributes = conf.getResultAttributes();
@@ -68,13 +83,13 @@ public class AttributeSourceSearchClient extends SearchClient {
             q.setMaxFeatures(FeatureToJson.MAX_FEATURES);
             JSONArray features = ftoj.getJSONFeatures(null, ft, gtFS, q, null, null);
 
-            JSONArray processedResults = new JSONArray();
             for (Object feature : features) {
                 JSONObject newFeature = new JSONObject();
                 JSONObject oldFeature = (JSONObject) feature;
                 String label = "";
                 for (String name : resultAttributes) {
-                    Object value = oldFeature.get(name);
+
+                    Object value = oldFeature.optString(name, "");
                     newFeature.put(name, value);
                     label += " " + value;
                 }
@@ -88,18 +103,13 @@ public class AttributeSourceSearchClient extends SearchClient {
                 bbox.put("maxy", env.getMaxY());
 
                 newFeature.put("location", bbox);
-                newFeature.put("type", config.getString("name"));
+                newFeature.put("type", conf.getName());
                 newFeature.put("label", label);
                 processedResults.put(newFeature);
-
             }
 
-            sr.setResults(processedResults);
-
-            return sr;
         } catch (Exception ex) {
             log.error("Error searching", ex);
-            return null;
         }
     }
 
