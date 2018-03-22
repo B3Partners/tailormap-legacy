@@ -68,6 +68,9 @@ Ext.define("viewer.components.Snapping", {
             requestParams["layers"] = this.config.layers;
             requestParams["hasConfiguredLayers"] = true;
             requestParams["bufferable"] = true;
+        } else {
+            requestParams["hasConfiguredLayers"] = false;
+            requestParams["bufferable"] = true;
         }
 
         Ext.Ajax.request({
