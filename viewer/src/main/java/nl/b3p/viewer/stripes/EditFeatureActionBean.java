@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -291,7 +290,7 @@ public class EditFeatureActionBean  implements ActionBean {
                         }
                         json.put("success", Boolean.TRUE);
                     } catch (Exception ex) {
-                        Logger.getLogger(EditFeatureActionBean.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error(String.format("cannot save relatedFeature Exception: ",ex));
                     }
                 }
 
