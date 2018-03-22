@@ -24,8 +24,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
@@ -296,7 +294,7 @@ public class EditFeatureActionBean  implements ActionBean {
                         }
                         json.put("success", Boolean.TRUE);
                     } catch (Exception ex) {
-                        Logger.getLogger(EditFeatureActionBean.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error(String.format("cannot save relatedFeature Exception: ",ex));
                     }
                 }
 
