@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>5.1.1</version>
+        <version>5.1.2-SNAPSHOT</version>
     </parent>
     <name>viewer-commons</name>
   
