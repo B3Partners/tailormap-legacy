@@ -66,8 +66,7 @@ Ext.define("viewer.EditFeature", {
             url: this.config.actionbeanUrl+extendUrl,
             params: obj,
             success: function(result) {
-                var response = Ext.JSON.decode(result.responseText);
-                
+                var response = Ext.JSON.decode(result.responseText);             
                 if(response.success) {                    
                     successFunction();
                 } else {

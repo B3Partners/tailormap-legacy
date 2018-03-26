@@ -214,7 +214,11 @@ public class FeatureInfoActionBean implements ActionBean {
         return this.layer;
     }
     //</editor-fold>
+<<<<<<< HEAD
 
+=======
+    @DefaultHandler
+>>>>>>> cleaned up the code: removed commented out code & unneeded newlines
     public Resolution info() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
 
@@ -357,36 +361,27 @@ public class FeatureInfoActionBean implements ActionBean {
     
     public Resolution relatedInfo() throws JSONException, Exception {
         JSONArray queries = new JSONArray(queryJSON);
-
         Boolean checkRelated = true;
-
         ApplicationLayer al = null;
-
         JSONObject response = new JSONObject();
-
         JSONObject jFeat = null;
-
         JSONArray responses = new JSONArray();
-
         FeatureSource fs = null;
-
         EntityManager em = Stripersist.getEntityManager();
+        
         for (int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
-
             response = new JSONObject();
             responses.put(response);
             response.put("request", query);
             if (requestId != null) {
                 response.put("requestId", requestId);
             }
-
             String error = null;
             String exceptionMsg = query.toString();
             try {
                 al = null;
                 GeoService gs = null;
-
                 if (query.has("appLayer")) {
                     al = em.find(ApplicationLayer.class, query.getLong("appLayer"));
                 } else {
@@ -401,13 +396,6 @@ public class FeatureInfoActionBean implements ActionBean {
                         error = "Not authorized";
                         break;
                     }
-                    // Edit component does not handle this very gracefully
-                    // but the error when saving is ok
-
-                    //if(edit && !Authorizations.isAppLayerWriteAuthorized(application, al, context.getRequest())) {
-                    //    error = "U heeft geen rechten om deze kaartlaag te bewerken";
-                    //    break;
-                    //}
                     if (al != null) {
                         layer = al.getService().getLayer(al.getLayerName(), em);
                     } else {
@@ -422,17 +410,14 @@ public class FeatureInfoActionBean implements ActionBean {
                         break;
                     } else {
                         response.put("featureType", layer.getFeatureType().getId());
-
                     }
+                    
                     String filter = query.optString("filter", null);
-
                     fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
                     Query q = new Query(fs.getName().toString());
-
                     String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
 
                     FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-
                     Filter spatialFilter = null;
 
                     boolean useIntersect = false;
@@ -444,7 +429,6 @@ public class FeatureInfoActionBean implements ActionBean {
                         Point point = new GeometryFactory().createPoint(new Coordinate(
                                 Double.parseDouble(x),
                                 Double.parseDouble(y)));
-
                         spatialFilter = ff.dwithin(ff.property(geomAttribute), ff.literal(point), Double.parseDouble(distance), "meters");
                     } else {
                         GeometricShapeFactory shapeFact = new GeometricShapeFactory();
@@ -455,7 +439,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         Polygon p = shapeFact.createCircle();
                         spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
                     }
-
+                    
                     Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
 
                     if (currentFilter != null) {
@@ -463,17 +447,15 @@ public class FeatureInfoActionBean implements ActionBean {
                     }
 
                     Filter f = currentFilter != null ? ff.and(spatialFilter, currentFilter) : spatialFilter;
-                    //only remove unit if it is a JDBC datastore
                     if (JDBCFeatureSource.PROTOCOL.equals(layer.getService().getProtocol())) {
                         f = (Filter) f.accept(new RemoveDistanceUnit(), null);
                     }
 
                     f = FeatureToJson.reformatFilter(f, layer.getFeatureType());
-
                     q.setFilter(f);
                     q.setMaxFeatures(limit + 1);
-
                     JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
+                    
                     if (features.length() > limit) {
                         JSONArray newArray = new JSONArray();
                         for (int j = 0; j < features.length(); j++) {
@@ -507,17 +489,15 @@ public class FeatureInfoActionBean implements ActionBean {
             attrs.forEach((attr) -> {
                 attributesToInclude.add(attr.getId());
             });
-
             if (jFeat.has("related_featuretypes")) {
-
                 JSONObject js = jFeat.getJSONArray("related_featuretypes").getJSONObject(0);
                 if (js.has("filter")) {
                     String s = js.getString("filter");
                     int fid = Integer.parseInt(s.replaceAll("[\\D]", ""));
                     jFeat.put("fid", fid);
-
                 }
             }
+            
             String label;
             FeatureToJson ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude);
             for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
@@ -542,18 +522,13 @@ public class FeatureInfoActionBean implements ActionBean {
                     int numFeats = features.length();
                     int maxFeatures = Math.min(numFeats, 10);
                     for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
-                        // remove FID
-                        //features.getJSONObject(featureCount).remove(FID);
                         colCount = features.getJSONObject(featureCount).length();
                         jsonFeats.put(features.getJSONObject(featureCount));
                     }
-
                     response.put("related_features", jsonFeats);
-
                 }
             }
         }
-
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
 
