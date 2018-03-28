@@ -37,6 +37,7 @@ import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -146,8 +147,9 @@ public class ProxyActionBean implements ActionBean {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
    
-        HttpClientConfigured client = getHttpClient(theUrl, em);
+        HttpClientConfigured client =  new HttpClientConfigured(theUrl.toString());
         HttpUriRequest req = getHttpRequest(theUrl);
+        addBasicAuthorizationHeaderIfUserAuthorized(req, em);
         
         HttpResponse response;
         try {
@@ -245,7 +247,7 @@ public class ProxyActionBean implements ActionBean {
         return theUrl;
     }
     
-    protected HttpClientConfigured getHttpClient(URL theUrl, EntityManager em) {
+    protected void addBasicAuthorizationHeaderIfUserAuthorized(HttpUriRequest req, EntityManager em) throws UnsupportedEncodingException {
         String username = null;
         String password = null;
         if (mustLogin && serviceId != null) {
@@ -265,11 +267,25 @@ public class ProxyActionBean implements ActionBean {
             if (allowed) {
                 username = gs.getUsername();
                 password = gs.getPassword();
+
+                log.info(String.format("User '%s' is authorized to access service id %d, URL %s, adding authorization header with username '%s'",
+                        context.getRequest().getRemoteUser(),
+                        gs.getId(),
+                        req.getURI(),
+                        username
+                ));
+                req.addHeader("Authorization", "Basic " + Base64.encodeBase64String(new String(username + ":" + password).getBytes("UTF-8")));
+            } else {
+                log.warn(String.format("Mustlogin is true but user '%s' (roles: %s) is NOT authorized to access service id %d (readers: %s), URL %s, not adding authorization header!!!",
+                        context.getRequest().getRemoteUser(),
+                        userroles,
+                        gs.getId(),
+                        readers,
+                        req.getURI(),
+                        username
+                ));
             }
         }
-
-        final HttpClientConfigured client = new HttpClientConfigured(username, password, theUrl.toString());
-        return client;
     }
 
     protected HttpUriRequest getHttpRequest(URL url) throws URISyntaxException{

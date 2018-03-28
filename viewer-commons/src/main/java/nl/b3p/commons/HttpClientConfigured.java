@@ -1,20 +1,12 @@
 package nl.b3p.commons;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.ProxySelector;
-import java.net.URL;
 import java.util.Arrays;
 import javax.net.ssl.SSLContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
@@ -24,9 +16,6 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -47,22 +36,16 @@ public class HttpClientConfigured {
 
     private HttpClient httpClient;
     private HttpClientContext httpContext;
-    
-    private String username;
-    private String password;
 
-    public HttpClientConfigured(String username, String password, String url) {
-        this( username,  password,url, -1);
+    public HttpClientConfigured(String url) {
+        this(url, -1);
     }
 
-    public HttpClientConfigured(String username, String password, String url, int timeout) {
-        this.password = password;
-        this.username = username;
+    public HttpClientConfigured(String url, int timeout) {
+
         if (timeout < 0) {
             timeout = maxResponseTime;
         }
-        boolean preemptive = true;
- 
 
         RequestConfig defaultRequestConfig = RequestConfig.custom()
             .setStaleConnectionCheckEnabled(false)
@@ -95,45 +78,6 @@ public class HttpClientConfigured {
         }
 
         HttpClientContext context = HttpClientContext.create();
-        if (username != null && password != null) {
-            String hostname = null; //any
-            int port = -1; //any
-            URL aURL;
-            try {
-                aURL = new URL(url);
-                hostname = aURL.getHost();
-                port = aURL.getPort();
-            } catch (MalformedURLException ex) {
-                // ignore
-            }
-
-            CredentialsProvider credentialsProvider
-                    =                    new BasicCredentialsProvider();
-            Credentials defaultcreds =
-                    new UsernamePasswordCredentials(username, password);
-            AuthScope authScope =
-                    new AuthScope(hostname, port);
-            credentialsProvider.setCredentials(authScope, defaultcreds);
-
-            hcb = hcb.setDefaultCredentialsProvider(credentialsProvider);
-
-            //preemptive not possible without hostname
-            if (preemptive && hostname!=null) {
-                // Create AuthCache instance for preemptive authentication
-                AuthCache authCache = new BasicAuthCache();
-                BasicScheme basicAuth = new BasicScheme();
-                HttpHost targetHost = new HttpHost(hostname, port);
-                authCache.put(targetHost, basicAuth);
-                // Add AuthCache to the execution context
-                context.setCredentialsProvider(credentialsProvider);
-                context.setAuthCache(authCache);
-                log.debug("Preemptive credentials: hostname: " + hostname
-                        + ", port: " + port
-                        + ", username: " + username
-                        + ", password: ****.");
-            }
-
-        }
         //Use standard JRE proxy selector to obtain proxy information
         SystemDefaultRoutePlanner routePlanner =
                 new SystemDefaultRoutePlanner(ProxySelector.getDefault());
@@ -208,13 +152,5 @@ public class HttpClientConfigured {
      */
     public static void setAllowSelfSignedCerts(boolean assc) {
         allowSelfSignedCerts = assc;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }
