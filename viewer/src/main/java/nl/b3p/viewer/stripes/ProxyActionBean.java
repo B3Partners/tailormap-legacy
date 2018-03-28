@@ -136,7 +136,7 @@ public class ProxyActionBean implements ActionBean {
         HttpServletRequest request = getContext().getRequest();
         
         if(!"GET".equals(request.getMethod())) {
-            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Requested method for proxy is unacceptable");
         }
 
         URL theUrl;
@@ -144,7 +144,7 @@ public class ProxyActionBean implements ActionBean {
         try{
              theUrl = getRequestRL(em);
         }catch(IllegalAccessException ex){
-            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Requested url for proxy is denied");
         }
    
         HttpClientConfigured client =  new HttpClientConfigured(theUrl.toString());
@@ -153,6 +153,8 @@ public class ProxyActionBean implements ActionBean {
         
         HttpResponse response;
         try {
+
+            // perhaps we should skip the request if the user is not allowed?
             response = client.execute(req);
 
             int statusCode = response.getStatusLine().getStatusCode();
@@ -247,7 +249,7 @@ public class ProxyActionBean implements ActionBean {
         return theUrl;
     }
     
-    protected void addBasicAuthorizationHeaderIfUserAuthorized(HttpUriRequest req, EntityManager em) throws UnsupportedEncodingException {
+    private void addBasicAuthorizationHeaderIfUserAuthorized(HttpUriRequest req, EntityManager em) throws UnsupportedEncodingException {
         String username = null;
         String password = null;
         if (mustLogin && serviceId != null) {
@@ -268,7 +270,7 @@ public class ProxyActionBean implements ActionBean {
                 username = gs.getUsername();
                 password = gs.getPassword();
 
-                log.info(String.format("User '%s' is authorized to access service id %d, URL %s, adding authorization header with username '%s'",
+                log.debug(String.format("User '%s' is authorized to access service id %d, URL %s, adding authorization header with username '%s'",
                         context.getRequest().getRemoteUser(),
                         gs.getId(),
                         req.getURI(),
