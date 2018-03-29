@@ -704,8 +704,6 @@ Ext.define ("viewer.components.Search",{
         if(this.getCurrentSearchType() === "solr"){
             var appLayers = this.config.viewerController.getVisibleLayers();
             params["visibleLayers"] = appLayers.join(", ");
-        }else{
-            // Nothing to do here
         }
     }, 
     simpleListSearch:function(term){
