@@ -484,53 +484,6 @@ Ext.define("viewer.components.SearchConfiguration",{
         }
         solrConfigContainer.setVisible(true);
         this.panel.updateLayout();
-        /*
-        var attributeConfigContainer = Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0];
-        var me = this;
-        if (!this.attribuutbronSearchconfigs.hasOwnProperty(searchconfigId)) {
-   
-            var searchConfig = me.getConfig(searchconfigId);
-            if (!searchConfig.asConfig) {
-                searchConfig.asConfig = {};
-            }
-            var combo = Ext.ComponentQuery.query('#asSearchConfig' + searchconfigId)[0];
-            if(!combo){
-                Ext.Ajax.request({
-                    url: this.getContextpath() + "/action/configuresolr?getSearchconfigData=true",
-                    params:{},
-                    scope: this,
-                    success: function (result, request) {
-                        var searchConfigs = Ext.JSON.decode(result.responseText);
-                        this.searchConfigStore = Ext.create('Ext.data.Store', {
-                            fields: ['id', 'name'],
-                            data: searchConfigs
-                        });
-
-                        var container = Ext.create('Ext.container.Container', {
-                            items: [{
-                                    xtype: 'combo',
-                                    fieldLabel: 'Zoekbron',
-                                    store: this.searchConfigStore,
-                                    itemId: "asSearchConfig" + searchconfigId,
-                                    queryMode: "local",
-                                    displayField: "name",
-                                    editable: false,
-                                    width: 350,
-                                    value: searchConfig.searchConfigId ? searchConfig.searchConfigId : null,
-                                    valueField: "id"
-                                }]
-                        });
-                        attributeConfigContainer.add(container);
-                    },
-                    failure: function () {
-                        Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met attribuutbronnen niet kan worden weergegeven");
-
-                    }
-                });
-            }
-        }
-        attributeConfigContainer.setVisible(true);
-        this.panel.updateLayout();*/
     },
     
     addPdokConfig: function(configid){
@@ -687,11 +640,6 @@ Ext.define("viewer.components.SearchConfiguration",{
         }
         // Set Solr config to searchconfig object
         searchConfig.asConfig = Config;
-       /* var searchConfig = this.getConfig(searchconfigId);
-        if( Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0]){
-            var searchConfigId = Ext.ComponentQuery.query('#asSearchConfig'+searchconfigId)[0].value;
-            searchConfig.searchConfigId = searchConfigId;
-        }*/
     },
     savePDOKConfig:function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
