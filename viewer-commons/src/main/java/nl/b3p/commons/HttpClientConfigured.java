@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
@@ -99,21 +98,21 @@ public class HttpClientConfigured {
             String hostname = null; //any
             int port = -1; //any
             URL aURL;
+            String scheme = null;
             try {
                 aURL = new URL(url);
                 hostname = aURL.getHost();
                 port = aURL.getPort();
+                scheme = aURL.getProtocol();
             } catch (MalformedURLException ex) {
                 // ignore
             }
 
-            CredentialsProvider credentialsProvider
-                    =                    new BasicCredentialsProvider();
-            Credentials defaultcreds =
-                    new UsernamePasswordCredentials(username, password);
-            AuthScope authScope =
-                    new AuthScope(hostname, port);
-            credentialsProvider.setCredentials(authScope, defaultcreds);
+            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(
+                    new AuthScope(hostname, port),
+                    new UsernamePasswordCredentials(username, password)
+            );
 
             hcb = hcb.setDefaultCredentialsProvider(credentialsProvider);
 
@@ -122,13 +121,14 @@ public class HttpClientConfigured {
                 // Create AuthCache instance for preemptive authentication
                 AuthCache authCache = new BasicAuthCache();
                 BasicScheme basicAuth = new BasicScheme();
-                HttpHost targetHost = new HttpHost(hostname, port);
+                HttpHost targetHost = new HttpHost(hostname, port, scheme);
                 authCache.put(targetHost, basicAuth);
                 // Add AuthCache to the execution context
                 context.setCredentialsProvider(credentialsProvider);
                 context.setAuthCache(authCache);
                 log.debug("Preemptive credentials: hostname: " + hostname
                         + ", port: " + port
+                        + ", proto: " + scheme
                         + ", username: " + username
                         + ", password: ****.");
             }
