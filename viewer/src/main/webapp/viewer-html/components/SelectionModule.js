@@ -1617,6 +1617,9 @@ Ext.define ("viewer.components.SelectionModule",{
                 var service = me.services[recordOrigData.service];
                 serviceId = service.id;
             }
+            if(me.appLayers[recordOrigData.id] && me.appLayers[recordOrigData.id].removed) {
+                me.appLayers[recordOrigData.id].removed = false;
+            }
             me.addedLayers.push({
                 background: false,
                 checked: this.autoCheck(),
