@@ -46,7 +46,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         return {
             details: {
                 minWidth: 340,
-                minHeight: 415
+                minHeight: 500
             }
         };
     }
