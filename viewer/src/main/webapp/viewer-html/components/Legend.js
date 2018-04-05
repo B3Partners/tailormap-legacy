@@ -359,12 +359,20 @@ Ext.define("viewer.components.Legend", {
         }
     },
 
-    getTocTree: function() {
+    getToc: function() {
         var tocs = this.config.viewerController.getComponentsByClassName("viewer.components.TOC");
         if(tocs.length === 0) {
             return null;
         }
-        return tocs[0].getTree();
+        return tocs[0];
+    },
+
+    getTocTree: function() {
+        var toc = this.getToc();
+        if(!toc) {
+            return null;
+        }
+        return toc.getTree();
     },
 
     loadTreeNodes: function() {
@@ -379,8 +387,20 @@ Ext.define("viewer.components.Legend", {
         }
         tree.getEl().dom.addEventListener("click", this.toggleLegendImage);
     },
-    
+
     appendLegendToToc: function(appLayer, legendElement) {
+        
+        if(this.tocRendered) {
+            this._appendLegendToToc(appLayer, legendElement)
+        }
+        var toc = this.getToc();
+        if(toc) {
+            toc.getRenderPromise().then(this._appendLegendToToc.bind(this, appLayer, legendElement));
+        }
+    },
+
+    _appendLegendToToc: function(appLayer, legendElement) {
+        this.tocRendered = true;
         if(this.treenodes === null) {
             this.loadTreeNodes();
         }
