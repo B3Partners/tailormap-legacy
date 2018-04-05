@@ -51,12 +51,13 @@ Ext.define ("viewer.components.Drawing",{
         label: "",
         details: {
             minWidth: 340,
-            minHeight: 450
+            minHeight: 500
         }
     },
     constructor: function (conf){
+        conf.details.useExtLayout = true;
         this.initConfig(conf);
-	viewer.components.Drawing.superclass.constructor.call(this, this.config);
+	    viewer.components.Drawing.superclass.constructor.call(this, this.config);
         if(this.config.color === ""){
             this.config.color = "ff0000";
         }
@@ -141,11 +142,6 @@ Ext.define ("viewer.components.Drawing",{
         this.colorPicker = Ext.create("Ext.ux.ColorField",{
             width: 70,
             showText: false,
-            /*style: {
-                marginTop: MobileManager.isMobile() ? '8px' : '0px',
-                marginLeft: MobileManager.isMobile() ? '8px' : '0px',
-                marginRight: MobileManager.isMobile() ? '8px' : '0px'
-            },*/
             name: 'color',
             id:'color',
             value: this.config.color ? this.config.color : 'FF0000',
@@ -159,11 +155,9 @@ Ext.define ("viewer.components.Drawing",{
 
         this.labelField = Ext.create("Ext.form.field.Text",{
             name: 'labelObject',
-            fieldLabel: 'Label geselecteerd object',
-            labelWidth: 150,///*MobileManager.isMobile() ? 200 : */150,
+            flex: 1,
             style: {
-                marginRight: /*MobileManager.isMobile() ? '15px' : */'5px',
-                //marginTop: MobileManager.isMobile() ? '8px': '0px'
+                marginRight:'5px'
             },
             id: 'labelObject' + this.name,
             listeners:{
@@ -254,26 +248,26 @@ Ext.define ("viewer.components.Drawing",{
                     border: '0px none'
                 },
                 items: [
-                {
-                    xtype: 'label',
-                    text: 'Objecten op de kaart tekenen'
-                },
-                {
-                    xtype: 'fieldset',
-                    border: 0,
-                    margin: 0,
-                    padding: 0,
-                    style: {
-                        border: 0
+                    {
+                        xtype: 'label',
+                        text: 'Objecten op de kaart tekenen'
                     },
-                    layout:{
-                        type: 'hbox'
-                    },
-                    defaults: {
-                        margin: '5 5 5 0'
-                    },
-                    items: drawingItems
-                }
+                    {
+                        xtype: 'fieldset',
+                        border: 0,
+                        margin: 0,
+                        padding: 0,
+                        style: {
+                            border: 0
+                        },
+                        layout:{
+                            type: 'hbox'
+                        },
+                        defaults: {
+                            margin: '5 5 0 0'
+                        },
+                        items: drawingItems
+                    }
                 ]
             }]
         });
@@ -293,20 +287,34 @@ Ext.define ("viewer.components.Drawing",{
                     marginBottom: '0px',
                     padding: '0px'
                 },
-                layout:'hbox',
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
                 items: [
-                this.labelField,
-                {
-                    xtype: 'button',
-                    icon: this.iconPath+"delete.png",
-                    tooltip: "Verwijder geselecteerd object",
-                        listeners: {
-                        click:{
-                            scope: me,
-                            fn: me.deleteObject
-                        }
+                    {
+                        xtype: 'label',
+                        text: 'Label geselecteerd object'
+                    },
+                    {
+                        xtype: 'container',
+                        layout: 'hbox',
+                        margin: '5 0 0 0',
+                        items: [
+                            this.labelField,
+                            {
+                                xtype: 'button',
+                                icon: this.iconPath+"delete.png",
+                                tooltip: "Verwijder geselecteerd object",
+                                listeners: {
+                                    click:{
+                                        scope: me,
+                                        fn: me.deleteObject
+                                    }
+                                }
+                            }
+                        ]
                     }
-                }
                 ]
             }
             ]
@@ -317,14 +325,16 @@ Ext.define ("viewer.components.Drawing",{
             fieldLabel: 'Titel',
             name: 'title',
             allowBlank:false,
-            id: 'title'+ this.name
+            id: 'title'+ this.name,
+            margin: '0 0 2 0'
         });
         this.description = Ext.create("Ext.form.field.TextArea",
         {
             fieldLabel: 'Opmerking',
             allowBlank:false,
             name: 'description',
-            id: 'description'
+            id: 'description',
+            margin: '0 0 2 0'
         });
         // Build the saving form
         this.formsave = new Ext.form.FormPanel({
@@ -334,10 +344,15 @@ Ext.define ("viewer.components.Drawing",{
             style: {
                 marginBottom: '10px'
             },
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             items: [
                 {
                     xtype: 'label',
-                    text: 'Op de kaart getekende objecten opslaan'
+                    text: 'Op de kaart getekende objecten opslaan',
+                    margin: '0 0 5 0'
                 },
                 this.titleField,
                 this.description,
@@ -347,48 +362,67 @@ Ext.define ("viewer.components.Drawing",{
                     id: 'saveObject'
                 },
                 {
-                    xtype: 'button',
-                    text: 'Opslaan als bestand',
-                    listeners: {
-                        click:{
-                            scope: me,
-                            fn: me.saveFile
+                    xtype: 'container',
+                    layout: {
+                        type: 'hbox',
+                        pack: 'end'
+                    },
+                    items: [
+                        {
+                            xtype: 'button',
+                            text: 'Opslaan als bestand',
+                            listeners: {
+                                click:{
+                                    scope: me,
+                                    fn: me.saveFile
+                                }
+                            }
                         }
-                    }
+                    ]
                 }
             ]
         });
 
         this.file = Ext.create("Ext.form.field.File", {
-            fieldLabel: 'Tekstbestand',
             name: 'featureFile',
-            allowBlank:false,
+            allowBlank: false,
             msgTarget: 'side',
-            anchor: '100%',
             buttonText: 'Bladeren',
-            id: 'featureFile'
+            id: 'featureFile',
+            margin: '0 0 2 0'
         });
         this.formopen = new Ext.form.FormPanel({
             border: 0,
-            style: {
-                marginBottom: '10px'
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
             },
             items: [
-            {
-                xtype: 'label',
-                text: 'Bestand met getekende objecten openen'
-            },
-            this.file,
-            {
-                xtype: 'button',
-                text: 'bestand openen',
-                listeners: {
-                    click:{
-                        scope: me,
-                        fn: me.openFile
-                    }
+                {
+                    xtype: 'label',
+                    text: 'Bestand met getekende objecten openen',
+                    margin: '0 0 5 0'
+                },
+                this.file,
+                {
+                    xtype: 'container',
+                    layout: {
+                        type: 'hbox',
+                        pack: 'end'
+                    },
+                    items: [
+                        {
+                            xtype: 'button',
+                            text: 'Bestand openen',
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: me.openFile
+                                }
+                            }
+                        }
+                    ]
                 }
-            }
             ]
         });
 
@@ -398,8 +432,6 @@ Ext.define ("viewer.components.Drawing",{
         }
         this.mainContainer = Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
-            width: '100%',
-            height: '100%',
             layout: {
                 type: 'vbox',
                 align: 'stretch'
@@ -407,38 +439,35 @@ Ext.define ("viewer.components.Drawing",{
             style: {
                 backgroundColor: 'White'
             },
-            renderTo: this.getContentDiv(),
             items: [
                 {
                     id: this.name + 'ContentPanel',
                     xtype: "container",
                     autoScroll: true,
-                    style: {
-                        marginLeft: '10px',
-                        marginRight: '10px'
-                    },
                     flex: 1,
-                    items: items
+                    items: items,
+                    padding: 5
                 }, {
                     id: this.name + 'ClosingPanel',
                     xtype: "container",
-                    style: {
-                        marginTop: '5px',
-                        marginRight: '5px'
-                    },
                     layout: {
                         type:'hbox',
                         pack:'end'
                     },
+                    margin: 5,
                     items: [
-                        {xtype: 'button', text: 'Sluiten', handler: function() {
-                            me.popup.hide();
-                        }}
+                        {
+                            xtype: 'button',
+                            text: 'Sluiten',
+                            handler: function() {
+                                me.popup.hide();
+                            }
+                        }
                     ]
                 }
             ]
         });
-
+        this.getContentContainer().add(this.mainContainer);
         this.formselect.setVisible(false);
     },
 
@@ -494,6 +523,7 @@ Ext.define ("viewer.components.Drawing",{
         }
     },
     toggleSelectForm : function(visible){
+        this.mainContainer.updateLayout();
         this.formselect.setVisible(visible);
     },
     hideMobilePopup: function() {
@@ -550,14 +580,29 @@ Ext.define ("viewer.components.Drawing",{
             icon: Ext.Msg.WARNING
         });
     },
-    deleteObject: function(){
-        delete this.features[this.activeFeature.id];
-        this.vectorLayer.removeFeature(this.activeFeature);
-        this.toggleSelectForm(false);
-        if(this.activeFeature !== null){
-            this.activeFeature=null;
-        }
-        this.labelField.setValue("");
+    deleteObject: function() {
+        Ext.Msg.show({
+            title: "Weet u het zeker?",
+            msg: "Weet u zeker dat u het geselecteerde object wil weggooien?",
+            fn: function(button) {
+                if (button === 'yes') {
+                    delete this.features[this.activeFeature.id];
+                    this.vectorLayer.removeFeature(this.activeFeature);
+                    this.toggleSelectForm(false);
+                    if(this.activeFeature !== null){
+                        this.activeFeature=null;
+                    }
+                    this.labelField.setValue("");
+                }
+            },
+            scope: this,
+            buttons: Ext.Msg.YESNO,
+            buttonText: {
+                no: "Nee",
+                yes: "Ja"
+            },
+            icon: Ext.Msg.WARNING
+        });
     },
     saveFile: function(){
         var form = this.formsave.getForm();
