@@ -80,6 +80,7 @@ Ext.define ("viewer.components.TOC",{
             // If the configuration option was set in the past but is turned off, remove old saved state
             this.config.viewerController.removeSavedCheckedState();
         }
+        this.renderPromise = new Ext.Deferred();
         this.renderButton();
         this.loadTree();
         this.loadInitLayers();
@@ -151,7 +152,7 @@ Ext.define ("viewer.components.TOC",{
             ];
         }
 
-        this.panel =Ext.create('Ext.tree.Panel', {
+        this.panel = Ext.create('Ext.tree.Panel', {
             title: title,
             height: "100%",
             scrollable: true,
@@ -168,6 +169,12 @@ Ext.define ("viewer.components.TOC",{
                     toc: this,
                     fn: this.checkboxClicked,
                     scope: this
+                },
+                afterrender: {
+                    scope: this,
+                    fn: function() {
+                        this.renderPromise.resolve();
+                    }
                 }
             },
             store: store,
@@ -384,6 +391,9 @@ Ext.define ("viewer.components.TOC",{
             node: treeNodeLayer,
             checked: retChecked
         };
+    },
+    getRenderPromise: function() {
+        return this.renderPromise.promise;
     },
     addToBackground : function (node){
         this.backgroundLayers.push(node);
