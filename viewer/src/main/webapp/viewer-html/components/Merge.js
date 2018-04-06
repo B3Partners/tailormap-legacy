@@ -237,7 +237,8 @@ Ext.define("viewer.components.Merge", {
             viewerController: this.config.viewerController
         });
         var me = this;
-        featureInfo.editFeatureInfo(x, y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
+        featureInfo.editFeatureInfo(x, y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (response) {
+            var features = response.features;
             me.featuresReceived(features);
         }, function (msg) {
             me.failed(msg, me);
