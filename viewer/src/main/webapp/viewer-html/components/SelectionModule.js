@@ -143,7 +143,8 @@ Ext.define ("viewer.components.SelectionModule",{
         // call constructor and init config
         this.initConfig(conf);
 		viewer.components.SelectionModule.superclass.constructor.call(this, this.config);
-        this.renderButton();
+        this.originalLevels = Ext.clone(this.config.viewerController.app.levels);
+		this.renderButton();
         // if there is no selected content, show selection module
         var me = this;
         this.menus = Ext.create("viewer.components.SelectionModuleMenu",{selectionModule:this});
@@ -214,8 +215,6 @@ Ext.define ("viewer.components.SelectionModule",{
         me.moveDownIcon = FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/move-down.gif';
         // get data from viewer controller
         me.initViewerControllerData();
-        me.originalLevels = Ext.clone(me.config.viewerController.app.levels);
-
         // init base interface
         me.initInterface();
         // init tree containers
@@ -328,13 +327,12 @@ Ext.define ("viewer.components.SelectionModule",{
     },
 
     initViewerControllerData: function() {
-        var me = this;
         // We make a cloned reference, so we can easily edit this array and merge it to the original after clicking 'Ok'
-        me.selectedContent = Ext.clone(this.config.viewerController.app.selectedContent);
-        me.appLayers = this.config.viewerController.app.appLayers;
-        me.levels = Ext.clone(this.config.viewerController.app.levels);
-        me.services = this.config.viewerController.app.services;
-        me.rootLevel = this.config.viewerController.app.rootLevel;
+        this.selectedContent = Ext.clone(this.config.viewerController.app.selectedContent);
+        this.appLayers = this.config.viewerController.app.appLayers;
+        this.levels = Ext.clone(this.config.viewerController.app.levels);
+        this.services = this.config.viewerController.app.services;
+        this.rootLevel = this.config.viewerController.app.rootLevel;
     },
 
     loadCustomService: function() {
