@@ -32,7 +32,10 @@ import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.Layer;
@@ -45,6 +48,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -214,11 +218,7 @@ public class FeatureInfoActionBean implements ActionBean {
         return this.layer;
     }
     //</editor-fold>
-<<<<<<< HEAD
-
-=======
     @DefaultHandler
->>>>>>> cleaned up the code: removed commented out code & unneeded newlines
     public Resolution info() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
 
@@ -368,7 +368,7 @@ public class FeatureInfoActionBean implements ActionBean {
         JSONArray responses = new JSONArray();
         FeatureSource fs = null;
         EntityManager em = Stripersist.getEntityManager();
-        
+
         for (int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
             response = new JSONObject();
@@ -411,7 +411,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     } else {
                         response.put("featureType", layer.getFeatureType().getId());
                     }
-                    
+
                     String filter = query.optString("filter", null);
                     fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
                     Query q = new Query(fs.getName().toString());
@@ -439,8 +439,8 @@ public class FeatureInfoActionBean implements ActionBean {
                         Polygon p = shapeFact.createCircle();
                         spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
                     }
-                    
-                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
+
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? FlamingoCQL.toFilter(filter,em) : null;
 
                     if (currentFilter != null) {
                         currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
@@ -455,7 +455,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     q.setFilter(f);
                     q.setMaxFeatures(limit + 1);
                     JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
-                    
+
                     if (features.length() > limit) {
                         JSONArray newArray = new JSONArray();
                         for (int j = 0; j < features.length(); j++) {
@@ -497,7 +497,6 @@ public class FeatureInfoActionBean implements ActionBean {
                     jFeat.put("fid", fid);
                 }
             }
-            
             String label;
             FeatureToJson ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude);
             for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
@@ -509,7 +508,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     String leftSide = keys.get(0).getLeftSide().getName();
                     String rightSide = keys.get(0).getRightSide().getName();
 
-                    Query q = new Query(fType.getTypeName(), ECQL.toFilter(rightSide + "=" + jFeat.get(leftSide)));
+                    Query q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(rightSide + "=" + jFeat.get(leftSide),em));
                     q.setMaxFeatures(10 + 1);
                     q.setHandle("FeatureReportActionBean_related_attributes");
 
@@ -531,7 +530,7 @@ public class FeatureInfoActionBean implements ActionBean {
         }
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
-
+    
     /**
      * This will execute the actual featureinfo query, can be overridden in
      * subclasses to modify behaviour such as workflow.
