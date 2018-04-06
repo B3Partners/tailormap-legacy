@@ -126,30 +126,24 @@ Ext.define("viewer.FeatureInfo", {
                 }
             }
         });
-    },  
-    editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams, extendUrl) {
-        if(extendUrl === undefined){
-            extendUrl = "";
-        }
+    },
+    editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams) {
         var query = [{appLayer: appLayer.id}];
         var params ={application: this.config.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};
         if(extraParams){
             Ext.merge(params, extraParams);
         }
         Ext.Ajax.request({
-            url: this.config.actionbeanUrl+extendUrl,
+            url: this.config.actionbeanUrl,
             params: params,
             timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText)[0];
+                
                 if(response.error) {
                     failureFunction("Error finding feature to edit: " + response.error);
                 } else {
-                    if(extendUrl !== ""){
-                        successFunction(response);
-                    }else{
-                        successFunction(response.features);
-                    }
+                    successFunction(response);
                 }
             },
             failure: function(result) {
