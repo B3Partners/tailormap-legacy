@@ -195,7 +195,8 @@ Ext.define("viewer.components.Graph", {
                 var featureInfo = Ext.create("viewer.FeatureInfo", {
                     viewerController: me.config.viewerController
                 });
-                featureInfo.editFeatureInfo(x,y,me.config.viewerController.mapComponent.getMap().getResolution() * 4,appLayer, function (features){
+                featureInfo.editFeatureInfo(x,y,me.config.viewerController.mapComponent.getMap().getResolution() * 4,appLayer, function (response){
+                    var features = response.features;
                     me.featuresReceived(features, attributes, config, index);
                 },function(msg){me.failed(msg);},extraParams);
             })(graphConfig[i], i);
