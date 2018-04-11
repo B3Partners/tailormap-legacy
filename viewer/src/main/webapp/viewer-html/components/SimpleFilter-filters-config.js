@@ -19,8 +19,10 @@ Ext.define("viewer.components.sf.Config", {
     configObject: null,
     id: null,
     form: null,
+    configurator: null,
     constructor: function (config) {
         this.configObject = config.configObject;
+        this.configurator = config.configurator;
         this.id = this.configObject.id ? this.configObject.id : Date.now();
         var items = this.getFormItems();
         this.form = Ext.create("Ext.form.Panel", {
@@ -256,6 +258,33 @@ Ext.define("viewer.components.sf.ComboConfig", {
         viewer.components.sf.ComboConfig.superclass.constructor.call(this, config);
     },
     getFormItems : function(){
+        var filters = [];
+        var currentConfig = null;
+        for(var i = 0 ; i <this.configurator.filterConfigs.length; i++){
+            var f = this.configurator.filterConfigs[i];
+            if(f.config.id !== this.id){
+                var type = "";
+                var appLayer = this.configurator.getAppConfig().appLayers[f.appLayerId];
+                filters.push({
+                    label: this.configurator.createDescription(type, appLayer, f),
+                    id: f.config.id
+                });
+            }else{
+                currentConfig = f;
+            }
+        }
+            
+        if(currentConfig){
+            var currentAppLayer = this.configurator.getAppConfig().appLayers[currentConfig.appLayerId];
+            var attrs = [];
+            Ext.Array.each(currentAppLayer.attributes, function(attr) {
+                attrs.push({
+                    name : attr.name,
+                    label : attr.alias || attr.name,
+                    type : attr.type
+                });
+            });
+        }
         var items = this.callParent();
         items = items.concat([ {
             xtype: 'combo',
@@ -277,10 +306,10 @@ Ext.define("viewer.components.sf.ComboConfig", {
             listeners: {
                 scope: this,
                 change: function(obj, newValue){
-                    this.toggleComboType(newValue)
+                    this.toggleComboType(newValue);
                 },
                 render: function(obj) {
-                    this.toggleComboType(this.configObject.comboType || "unique")
+                    this.toggleComboType(this.configObject.comboType || "unique");
                 }
             }
         },
@@ -344,6 +373,57 @@ Ext.define("viewer.components.sf.ComboConfig", {
                     });
                 }
             }
+        },{ 
+            xtype: 'combo',
+            store: Ext.create("Ext.data.Store", {
+                fields: ["id", "label"],
+                data: filters
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "id",
+            fieldLabel: "Gekoppeld filter",
+            name: "linkedFilter",
+            hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
+            id: "linkedFilter",
+            qtip: "Kies hier het filter dat kan dienen als invoer voor dit filter. Gebruik dit om getrapte zoekers te maken.",
+            value: this.configObject.linkedFilter ? this.configObject.linkedFilter : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                },
+                scope:this
+            }
+        },
+        { 
+            xtype: 'combo',
+            store: Ext.create("Ext.data.Store", {
+                fields: ["name", "label", "type"],
+                data: attrs
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "name",
+            fieldLabel: "Gekoppeld filter",
+            name: "linkedFilterAttribute",
+            hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
+            id: "linkedFilterAttribute",
+            qtip: "Kies hier het attribuut waarop het filter hierboven effect op heeft",
+            value: this.configObject.linkedFilterAttribute ? this.configObject.linkedFilterAttribute : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                },
+                scope:this
+            }
         }
         ]);
         return items;
@@ -353,21 +433,29 @@ Ext.define("viewer.components.sf.ComboConfig", {
         var max = Ext.getCmp("max");
         var ownValues = Ext.getCmp("ownValues");
         var maxFeatures = Ext.getCmp("maxFeatures");
+        var linkedFilter = Ext.getCmp("linkedFilter");
+        var linkedFilterAttribute = Ext.getCmp("linkedFilterAttribute");
         if(newValue === "unique" ){
             min.hide();
             max.hide();
             ownValues.hide();
             maxFeatures.show();
+            linkedFilter.show();
+            linkedFilterAttribute.show();
         }else if (newValue === "range"){
             min.show();
             max.show();
             ownValues.hide();
             maxFeatures.hide();
+            linkedFilter.hide();
+            linkedFilterAttribute.hide();
         }else if (newValue === "own"){
             min.hide();
             max.hide();
             ownValues.show();
             maxFeatures.hide();
+            linkedFilter.hide();
+            linkedFilterAttribute.hide();
         }
     },
     getDefaultStartValue : function (){

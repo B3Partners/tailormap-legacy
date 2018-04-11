@@ -296,7 +296,8 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.filterConfigurer = Ext.create(configurerClass, {
             configObject: config,
-            container: Ext.ComponentQuery.query("#filterConfigFieldset")[0]
+            container: Ext.ComponentQuery.query("#filterConfigFieldset")[0],
+            configurator:this
         });
         Ext.ComponentQuery.query("#filterConfigFieldset")[0].updateLayout();
     },
