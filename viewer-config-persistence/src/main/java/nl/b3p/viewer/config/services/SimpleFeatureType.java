@@ -16,16 +16,15 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
-import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.filter.Filter;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -146,11 +145,15 @@ public class SimpleFeatureType {
     }
     
     public List<String> calculateUniqueValues(String attributeName) throws Exception {
-        return featureSource.calculateUniqueValues(this, attributeName, MAX_FEATURES_DEFAULT);
+        return featureSource.calculateUniqueValues(this, attributeName, MAX_FEATURES_DEFAULT,null);
     }    
     
     public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws Exception {
-        return featureSource.calculateUniqueValues(this, attributeName, maxFeatures);
+        return featureSource.calculateUniqueValues(this, attributeName, maxFeatures, null);
+    }
+    
+    public List<String> calculateUniqueValues(String attributeName, int maxFeatures, Filter filter) throws Exception {
+        return featureSource.calculateUniqueValues(this, attributeName, maxFeatures, filter);
     }
 
     public Map<String, String> getKeysValues(String key, String label, int maxFeatures) throws Exception {

@@ -23,16 +23,12 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Function;
-import org.opengis.filter.sort.SortBy;
-import org.opengis.filter.sort.SortOrder;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -130,15 +126,19 @@ public abstract class FeatureSource {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }    
     
-    List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception{
+    List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures, Filter filter) throws Exception{
         org.geotools.data.FeatureSource fs = null;
         try {
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
             Function unique = ff.function("Collection_Unique", ff.property(attributeName));
             Filter notNull = ff.not( ff.isNull( ff.property(attributeName) ));
-            
-            org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), notNull);
+            Filter f = notNull;
+            if(filter != null){
+                f = ff.and(notNull, filter);
+            }
+            org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), f);
             q.setMaxFeatures(maxFeatures);
+        
             fs = sft.openGeoToolsFeatureSource();
             FeatureCollection fc = fs.getFeatures(q);
             

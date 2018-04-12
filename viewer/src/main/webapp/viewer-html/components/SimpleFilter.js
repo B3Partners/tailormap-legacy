@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext */
+
 Ext.define("viewer.components.SimpleFilter", {
     extend: "viewer.components.Component",
     container: null,
@@ -63,6 +65,15 @@ Ext.define("viewer.components.SimpleFilter", {
                 appLayerId: appLayerId
             });
         });
+        Ext.Array.each(this.simpleFilters, function (fbase) {
+            Ext.Array.each(me.simpleFilters, function (flinked) {
+                if(fbase.config.filterConfig.linkedFilter === flinked.config.filterConfig.id){
+                    flinked.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,fbase.handleLinkedfilterChanged,fbase);
+                }
+            });
+        });
+        // register linked filters to eachother
+        
         return this;
     },
 
@@ -73,6 +84,14 @@ Ext.define("viewer.components.SimpleFilter", {
         this.layerVisibilityChanged();
     },
 
+    getFilterById:function(filterId){
+        for(var i = 0; i < this.allFilters.length; i++) {
+            if(this.allFilters.filter.filterConfig.id === filterId){
+                return this.allFilters.filter;
+            }
+        }
+        return null;
+    },
     // Handler for changes to the visibility of layers
     layerVisibilityChanged: function() {
         var visibleLayers = this.config.viewerController.getVisibleLayers(true);
