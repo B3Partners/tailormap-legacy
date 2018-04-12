@@ -215,10 +215,16 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         return val;
     },
     handleLinkedfilterChanged: function(linkedFilter){
-        this.config.viewerController.logger.error("SimpleFilter.handleLinkedfilterChanged() not yet implemented in subclass");
+        this.reset();
+        var extraFilter = linkedFilter.getCQL(this.config.filterConfig.linkedFilterAttribute, linkedFilter.getValue());
+        this.initCalculatedValues(extraFilter);
+        this.setFilter(extraFilter, true);
     },
     getValue: function(){
         this.config.viewerController.logger.error("SimpleFilter.getValue() not yet implemented in subclass");
+    },
+    initCalculatedValues: function(){
+        this.config.viewerController.logger.error("SimpleFilter.initCalculatedValues() not yet implemented in subclass");
     }
 });
 
@@ -407,7 +413,6 @@ Ext.define("viewer.components.sf.Radio", {
     }
 });
 
-
 Ext.define("viewer.components.sf.Combo", {
     extend: "viewer.components.sf.SimpleFilter",
     combo: null,
@@ -573,11 +578,8 @@ Ext.define("viewer.components.sf.Combo", {
         this.callParent();
         this.applyFilter();
     },
-    handleLinkedfilterChanged: function(linkedFilter){
-        this.reset();
-        var extraFilter = this.getCQL(this.config.filterConfig.linkedFilterAttribute, linkedFilter.getValue());
+    initCalculatedValues: function(extraFilter){
         this.getValues("#UNIQUE#", extraFilter);
-        this.setFilter(extraFilter,true );
     },
     getValue: function(){
         return this.combo.getValue();
@@ -669,61 +671,29 @@ Ext.define("viewer.components.sf.Slider", {
         simpleFilter: null,
         slider: null
     },
-
+    start:null,
     constructor: function(conf) {
         this.initConfig(conf);
-		viewer.components.sf.Slider.superclass.constructor.call(this, this.config);
+        viewer.components.sf.Slider.superclass.constructor.call(this, this.config);
 
         var filterChangeDelay = 500;
 
-        var c = this.config.filterConfig;
+        var c = JSON.parse(JSON.stringify(this.config.filterConfig));
         var n = this.config.name;
-
-        var autoMin = false, autoMax = false;
-
+        
+        this.initCalculatedValues();
         c.step = Number(c.step);
-        if(c.min === "") {
-            this.getValues("#MIN#");
-            autoMin = true;
+        if (c.min === "") {
             c.min = 0;
         } else {
             c.min = Number(c.min);
         }
-        if(c.max === "") {
-            this.getValues("#MAX#");
-            autoMax = true;
+        if (c.max === "") {
             c.max = 1;
         } else {
             c.max = Number(c.max);
         }
-
-        this.autoMinStart = false;
-        this.autoMaxStart = false;
-        this.autoStart = false;
-
-        if(c.sliderType === "range") {
-            c.start = c.start.split(",");
-            if(c.start[0] === "min") {
-                this.autoMinStart = autoMin;
-                c.start[0] = c.min;
-            } else {
-                c.start[0] = Number(c.start[0]);
-            }
-            if(c.start[1] === "max") {
-                this.autoMaxStart = autoMax;
-                c.start[1] = c.max;
-            } else {
-                c.start[1] = Number(c.start[1]);
-            }
-        } else {
-            if(c.start === "min" || c.start === "max") {
-                this.autoStart = c.start;
-                c.start = c[c.start];
-            } else {
-                c.start = Number(c.start);
-            }
-        }
-
+        
         var templatecontents = [
             "<tr>",
                 "<td colspan=\"3\"><div id=\"{name}_slider\"></div></td>",
@@ -800,9 +770,54 @@ Ext.define("viewer.components.sf.Slider", {
             this.sliderChange();
         }
     },
+    
+    initCalculatedValues: function(filter){
+        var autoMin = false, autoMax = false;
+        this.autoMinStart = false;
+        this.autoMaxStart = false;
+        this.autoStart = false;
+        
+        var c = JSON.parse(JSON.stringify(this.config.filterConfig));  //y is a clone of x
+        
+        if(c.min === "") {
+            this.getValues("#MIN#",filter);
+            autoMin = true;
+        } else {
+            c.min = Number(c.min);
+        }
+        if(c.max === "") {
+            this.getValues("#MAX#",filter);
+            autoMax = true;
+        } else {
+            c.max = Number(c.max);
+        }
+        
+        if(c.sliderType === "range") {
+            c.start = c.start.split(",");
+            if(c.start[0] === "min") {
+                this.autoMinStart = autoMin;
+                c.start[0] = c.min;
+            } else {
+                c.start[0] = Number(c.start[0]);
+            }
+            if(c.start[1] === "max") {
+                this.autoMaxStart = autoMax;
+                c.start[1] = c.max;
+            } else {
+                c.start[1] = Number(c.start[1]);
+            }
+        } else {
+            if(c.start === "min" || c.start === "max") {
+                this.autoStart = c.start;
+                c.start = c[c.start];
+            } else {
+                c.start = Number(c.start);
+            }
+        }
+    },
 
     updateValues: function(minOrMax, response) {
-        var value = response.value;
+        var value = Number(response.value);
         if(minOrMax === "#MIN#") {
             this.slider.setMinValue(value);
         } else {
@@ -811,21 +826,21 @@ Ext.define("viewer.components.sf.Slider", {
 
         if(this.config.filterConfig.sliderType === "range") {
             if(minOrMax === "#MIN#" && this.autoMinStart) {
-                this.config.filterConfig.start[0] = value;
+                this.start[0] = value;
                 this.slider.setValue(0, value, false);
             }
             if(minOrMax === "#MAX#" && this.autoMaxStart) {
-                this.config.filterConfig.start[1] = value;
+                this.start[1] = value;
                 this.slider.setValue(0, this.slider.getValue(0), false);
                 this.slider.setValue(1, value, false);
             }
         } else {
-            this.config.filterConfig.start = value;
+            this.start = value;
             if(this.autoStart === "min" && minOrMax === "#MIN#") {
-                this.slider.setValue(0, value, false);
+                this.slider.setValue( value);
             }
             if(this.autoStart === "max" && minOrMax === "#MAX#") {
-                this.slider.setValue(0, value, false);
+                this.slider.setValue(value);
             }
         }
     },
@@ -886,11 +901,12 @@ Ext.define("viewer.components.sf.Slider", {
     },
     reset : function(){
         if(this.config.filterConfig.sliderType === "range") {
-            this.slider.setValue(0, this.config.filterConfig.start[0]);
-            this.slider.setValue(1, this.config.filterConfig.start[1]);
+            this.slider.setValue(this.start[0]);
+            this.slider.setValue(this.start[1]);
         }else{
-            this.slider.setValue(this.config.filterConfig.start);
+            this.slider.setValue(this.start);
         }
+        this.initCalculatedValues();
         this.callParent();
         this.applyFilter();
     }

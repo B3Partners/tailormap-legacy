@@ -128,20 +128,20 @@ public class SimpleFeatureType {
     }
     //</editor-fold>
     
-    public Object getMaxValue ( String attributeName )throws Exception {
-        return featureSource.getMaxValue(this, attributeName, MAX_FEATURES_DEFAULT);
+    public Object getMaxValue ( String attributeName, Filter f )throws Exception {
+        return featureSource.getMaxValue(this, attributeName, MAX_FEATURES_DEFAULT, f);
     }
     
     public Object getMaxValue ( String attributeName, int maxFeatures )throws Exception {
-        return featureSource.getMaxValue(this, attributeName, maxFeatures);
+        return featureSource.getMaxValue(this, attributeName, maxFeatures,null);
     }
     
-    public Object getMinValue ( String attributeName )throws Exception {
-        return featureSource.getMinValue(this, attributeName, MAX_FEATURES_DEFAULT);
+    public Object getMinValue ( String attributeName, Filter f )throws Exception {
+        return featureSource.getMinValue(this, attributeName, MAX_FEATURES_DEFAULT, f);
     }
     
     public Object getMinValue ( String attributeName, int maxFeatures )throws Exception {
-        return featureSource.getMinValue(this, attributeName, maxFeatures);
+        return featureSource.getMinValue(this, attributeName, maxFeatures, null);
     }
     
     public List<String> calculateUniqueValues(String attributeName) throws Exception {

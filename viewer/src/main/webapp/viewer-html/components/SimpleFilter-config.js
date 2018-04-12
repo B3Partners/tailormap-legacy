@@ -191,7 +191,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         collapsible: false,
                         defaultType: "textfield",
                         layout: "fit",
-                        height: 400,
+                        height: 600,
                         scrollable: true,
                         // defaults: {
                         //     anchor: '100%',

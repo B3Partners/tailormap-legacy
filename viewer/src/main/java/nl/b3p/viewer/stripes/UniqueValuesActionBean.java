@@ -190,11 +190,12 @@ public class UniqueValuesActionBean implements ActionBean {
             Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
             if(layer != null && layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
+                Filter  f = filter != null ? FlamingoCQL.toFilter(filter,Stripersist.getEntityManager()) : null;
                 Object value;
                 if(operator.equals("#MAX#")) {
-                    value = sft.getMaxValue(attribute);
+                    value = sft.getMaxValue(attribute, f);
                 } else {
-                    value = sft.getMinValue(attribute);
+                    value = sft.getMinValue(attribute, f);
                 }
 
                 json.put("value", value.toString());
