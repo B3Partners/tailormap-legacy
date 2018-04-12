@@ -194,14 +194,14 @@ public abstract class FeatureSource {
         }
     }
 
-    public Object getMaxValue(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception {
+    public Object getMaxValue(SimpleFeatureType sft, String attributeName, int maxFeatures, Filter f) throws Exception {
         org.geotools.data.FeatureSource fs = null;
         try {
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
             Function max = ff.function("Collection_Max", ff.property(attributeName));
 
             fs = sft.openGeoToolsFeatureSource();
-            FeatureCollection fc = fs.getFeatures();
+            FeatureCollection fc = f != null ? fs.getFeatures(f) : fs.getFeatures();
             Object value = max.evaluate(fc);
             return value;
         } catch (Exception ex) {
@@ -213,14 +213,14 @@ public abstract class FeatureSource {
         }
     }
 
-    public Object getMinValue(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception {
+    public Object getMinValue(SimpleFeatureType sft, String attributeName, int maxFeatures, Filter filter) throws Exception {
         org.geotools.data.FeatureSource fs = null;
         try {
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
             Function minFunction = ff.function("Collection_Min", ff.property(attributeName));
             fs = sft.openGeoToolsFeatureSource();
             
-            FeatureCollection f = fs.getFeatures();
+            FeatureCollection f = filter != null ? fs.getFeatures(filter) : fs.getFeatures();
 
             Object o = minFunction.evaluate(f);
             return o;

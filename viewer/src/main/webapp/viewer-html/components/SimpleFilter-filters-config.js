@@ -77,6 +77,50 @@ Ext.define("viewer.components.sf.Config", {
     },
     getTitle : function(){
         console.log("Error: getTitle() not yet implemented");
+    },
+    getOtherFilters: function(){
+         var filters = [];
+        var currentConfig = null;
+        for(var i = 0 ; i <this.configurator.filterConfigs.length; i++){
+            var f = this.configurator.filterConfigs[i];
+            if(f.config.id !== this.id && f.appLayerId !== null){
+                var type = "";
+                var appLayer = this.configurator.getAppConfig().appLayers[f.appLayerId];
+                filters.push({
+                    label: this.configurator.createDescription(type, appLayer, f),
+                    id: f.config.id
+                });
+            }
+        }
+        return filters;
+        if(currentConfig){
+            var currentAppLayer = this.configurator.getAppConfig().appLayers[currentConfig.appLayerId];
+            var attrs = [];
+            Ext.Array.each(currentAppLayer.attributes, function(attr) {
+                attrs.push({
+                    name : attr.name,
+                    label : attr.alias || attr.name,
+                    type : attr.type
+                });
+            });
+        }
+    },
+    getAttributes: function(){
+        for (var i = 0; i < this.configurator.filterConfigs.length; i++) {
+            var f = this.configurator.filterConfigs[i];
+            if (f.config.id === this.id) {
+                var currentAppLayer = this.configurator.getAppConfig().appLayers[f.appLayerId];
+                var attrs = [];
+                Ext.Array.each(currentAppLayer.attributes, function (attr) {
+                    attrs.push({
+                        name: attr.name,
+                        label: attr.alias || attr.name,
+                        type: attr.type
+                    });
+                });
+                return attrs;
+            }
+        }
     }
 });
 
@@ -258,33 +302,6 @@ Ext.define("viewer.components.sf.ComboConfig", {
         viewer.components.sf.ComboConfig.superclass.constructor.call(this, config);
     },
     getFormItems : function(){
-        var filters = [];
-        var currentConfig = null;
-        for(var i = 0 ; i <this.configurator.filterConfigs.length; i++){
-            var f = this.configurator.filterConfigs[i];
-            if(f.config.id !== this.id){
-                var type = "";
-                var appLayer = this.configurator.getAppConfig().appLayers[f.appLayerId];
-                filters.push({
-                    label: this.configurator.createDescription(type, appLayer, f),
-                    id: f.config.id
-                });
-            }else{
-                currentConfig = f;
-            }
-        }
-            
-        if(currentConfig){
-            var currentAppLayer = this.configurator.getAppConfig().appLayers[currentConfig.appLayerId];
-            var attrs = [];
-            Ext.Array.each(currentAppLayer.attributes, function(attr) {
-                attrs.push({
-                    name : attr.name,
-                    label : attr.alias || attr.name,
-                    type : attr.type
-                });
-            });
-        }
         var items = this.callParent();
         items = items.concat([ {
             xtype: 'combo',
@@ -377,7 +394,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
             xtype: 'combo',
             store: Ext.create("Ext.data.Store", {
                 fields: ["id", "label"],
-                data: filters
+                data: this.getOtherFilters()
             }),
             queryModes: "local",
             displayField: "label",
@@ -403,13 +420,13 @@ Ext.define("viewer.components.sf.ComboConfig", {
             xtype: 'combo',
             store: Ext.create("Ext.data.Store", {
                 fields: ["name", "label", "type"],
-                data: attrs
+                data: this.getAttributes()
             }),
             queryModes: "local",
             displayField: "label",
             editable: false,
             valueField: "name",
-            fieldLabel: "Gekoppeld filter",
+            fieldLabel: "Attribuut voor gekoppeld filter",
             name: "linkedFilterAttribute",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilterAttribute",
@@ -608,6 +625,58 @@ Ext.define("viewer.components.sf.SliderConfig", {
                         text: c.qtip
                     });
                 }
+            }
+        },
+    ,{ 
+            xtype: 'combo',
+            store: Ext.create("Ext.data.Store", {
+                fields: ["id", "label"],
+                data: this.getOtherFilters()
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "id",
+            fieldLabel: "Gekoppeld filter",
+            name: "linkedFilter",
+            hidden: false,// (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
+            id: "linkedFilter",
+            qtip: "Kies hier het filter dat kan dienen als invoer voor dit filter. Gebruik dit om getrapte zoekers te maken.",
+            value: this.configObject.linkedFilter ? this.configObject.linkedFilter : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                },
+                scope:this
+            }
+        },
+        { 
+            xtype: 'combo',
+            store: Ext.create("Ext.data.Store", {
+                fields: ["name", "label", "type"],
+                data: this.getAttributes()
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "name",
+            fieldLabel: "Attribuut voor gekoppeld filter",
+            name: "linkedFilterAttribute",
+            hidden: false,//(this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
+            id: "linkedFilterAttribute",
+            qtip: "Kies hier het attribuut waarop het filter hierboven effect op heeft",
+            value: this.configObject.linkedFilterAttribute ? this.configObject.linkedFilterAttribute : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                },
+                scope:this
             }
         }]);
         return items;
