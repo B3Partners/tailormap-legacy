@@ -17,7 +17,6 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import net.sourceforge.stripes.action.ActionBean;
@@ -29,11 +28,13 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.filter.Filter;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -56,6 +57,8 @@ public class UniqueValuesActionBean implements ActionBean {
     private String operator;
     @Validate
     private int maxFeatures = 250;
+    @Validate
+    private String filter;
 
     // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
     public ActionBeanContext getContext() {
@@ -106,6 +109,13 @@ public class UniqueValuesActionBean implements ActionBean {
         this.maxFeatures = maxFeatures;
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
     // </editor-fold>
 
     @DefaultHandler
@@ -124,7 +134,8 @@ public class UniqueValuesActionBean implements ActionBean {
             JSONObject uniqueValues = new JSONObject();
             for (int i = 0; i < attributes.length; i++) {
                 String attribute = attributes[i];
-                List<String> beh = this.featureType.calculateUniqueValues(attribute,maxFeatures);
+                Filter  f = filter != null ? FlamingoCQL.toFilter(filter,Stripersist.getEntityManager()) : null;
+                List<String> beh = this.featureType.calculateUniqueValues(attribute,maxFeatures,f);
 
                 uniqueValues.put(attribute, new JSONArray(beh));
                 json.put("success", Boolean.TRUE);

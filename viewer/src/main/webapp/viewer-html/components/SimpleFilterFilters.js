@@ -17,8 +17,14 @@
 /* global Ext, actionBeans */
 
 Ext.define("viewer.components.sf.SimpleFilterBase", {
+    extend: "Ext.util.Observable",
     filterID: null,
     visible: true,
+    constructor: function(config){
+        this.initConfig(config);
+        viewer.components.sf.SimpleFilterBase.superclass.constructor.call(this, this.config);
+        return this;
+    },
     /**
      * @param visible boolean
      */
@@ -80,7 +86,9 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         id:null,
         label:null,
         autoStart: null,
-        viewerController:null
+        viewerController:null,
+        linkedFilterAttribute:null,
+        linkedFilter:null
     },
     constructor : function(conf){
         this.ready = false;
@@ -89,6 +97,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         this.initConfig(conf);
         this.loadAttributes();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.layersInitialized, this);
+        viewer.components.sf.SimpleFilter.superclass.constructor.call(this, this.config);
     },
     layersInitialized: function(){
         this.layersLoaded = true;
@@ -107,18 +116,19 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     getCQL : function(){
         this.config.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
     },
-    setFilter : function(cql){
+    setFilter : function(cql,linked){
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this,this);
         var layer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
         if (!layer || !layer.checked) {
             return;
         }
         this.config.viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
-            id: this.config.name,
+            id: this.config.name + (linked ? "_linked" : ""),
             cql: cql,
             operator: "AND"
         }), layer);
     },
-    getValues: function(operator) {
+    getValues: function(operator, extraFilter) {
         if( (operator === "#MIN#" && this.minRetrieved) && (operator === "#MAX#" && this.maxRetrieved)){
             return;
         }
@@ -132,6 +142,9 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         };
         if(operator !== "#UNIQUE#"){
             params.getMinMaxValue = 't';
+        }
+        if(extraFilter){
+            params["filter"] = extraFilter;
         }
         Ext.Ajax.request({
             url: actionBeans.unique,
@@ -157,8 +170,12 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             return;
         }
         this.config.viewerController.removeFilter(this.config.name, layer);
+        this.config.viewerController.removeFilter(this.config.name + "_linked", layer);
     },
-    mustEscapeAttribute : function(){
+    mustEscapeAttribute : function(attr){
+        if(!attr){
+            attr = this.config.attributeName;
+        }
         var appLayer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
         var attributes = this.config.viewerController.getAttributesFromAppLayer(appLayer, null, false);
         if(!attributes){
@@ -166,7 +183,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         }
         for (var i = 0 ; i < attributes.length ; i++){
             var attribute = attributes[i];
-            if(attribute.name === this.config.attributeName){
+            if(attribute.name === attr){
                 return attribute.type === "string";
             }
         }
@@ -196,6 +213,12 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             val = val.replace(/\'/g,'\'\'');
         }
         return val;
+    },
+    handleLinkedfilterChanged: function(linkedFilter){
+        this.config.viewerController.logger.error("SimpleFilter.handleLinkedfilterChanged() not yet implemented in subclass");
+    },
+    getValue: function(){
+        this.config.viewerController.logger.error("SimpleFilter.getValue() not yet implemented in subclass");
     }
 });
 
@@ -534,15 +557,30 @@ Ext.define("viewer.components.sf.Combo", {
         }
     },
 
-    getCQL : function(){
-        var mustEscape = this.mustEscapeAttribute();
-        var cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(this.combo.getValue(),mustEscape) + (mustEscape ? "'" : "");
+    getCQL : function(attribute, value){
+        if(!attribute){
+            attribute = this.config.attributeName;
+        }
+        if(!value){
+            value = this.combo.getValue();
+        }
+        var mustEscape = this.mustEscapeAttribute(attribute);
+        var cql = attribute + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(value,mustEscape) + (mustEscape ? "'" : "");
         return cql;
     },
     reset : function() {
         this.combo.setValue(null);
         this.callParent();
         this.applyFilter();
+    },
+    handleLinkedfilterChanged: function(linkedFilter){
+        this.reset();
+        var extraFilter = this.getCQL(this.config.filterConfig.linkedFilterAttribute, linkedFilter.getValue());
+        this.getValues("#UNIQUE#", extraFilter);
+        this.setFilter(extraFilter,true );
+    },
+    getValue: function(){
+        return this.combo.getValue();
     }
 });
 
