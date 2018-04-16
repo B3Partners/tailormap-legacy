@@ -173,6 +173,7 @@ public class AttributesActionBeanTest extends TestUtil{
 
     /**
      * Test of store method, of class AttributesActionBean.
+     * @throws java.lang.Exception if any
      */
     @Test
     public void testStoreFirstPageGS() throws Exception {
@@ -188,7 +189,12 @@ public class AttributesActionBeanTest extends TestUtil{
         JSONArray features = result.getJSONArray("features");
         assertEquals(10, features.length());
     }
-    
+
+    /**
+     * Test of store method, of class AttributesActionBean.
+     *
+     * @throws Exception if any
+     */
     @Test
     public void testStoreSecondPageGS() throws Exception {
         System.out.println("store");
@@ -206,6 +212,7 @@ public class AttributesActionBeanTest extends TestUtil{
     
     /**
      * Test of store method, of class AttributesActionBean.
+     * @throws java.lang.Exception if any
      */
     @Test //at the time of committing, the service was down.
     public void testStoreFirstPageDG() throws Exception {
@@ -222,6 +229,11 @@ public class AttributesActionBeanTest extends TestUtil{
         assertEquals(10, features.length());
     }
     
+    /**
+     * Test of store method, of class AttributesActionBean.
+     *
+     * @throws Exception if any
+     */
     @Test //at the time of committing, the service was down.
     public void testStoreSecondPageDG() throws Exception {
         System.out.println("store");
@@ -237,6 +249,10 @@ public class AttributesActionBeanTest extends TestUtil{
         assertEquals(10, features.length());
     }
     
+    /**
+     *
+     * @throws Exception if any
+     */
     @Test
     public void testGetJSONFeaturesRelatedFeaturetypeSub() throws Exception {
         System.out.println("store");
@@ -256,6 +272,10 @@ public class AttributesActionBeanTest extends TestUtil{
         assertEquals(10, features.length());
     }
     
+    /**
+     *
+     * @throws Exception if any
+     */
     @Test
     public void testGetJSONFeaturesRelatedFeaturetypeMain() throws Exception {
         initData(false);
