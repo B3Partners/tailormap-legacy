@@ -196,7 +196,7 @@
                 <version>1.2.4</version>
                 <exclusions>
                     <exclusion>
-                        <!-- drags in servlet api 2.5-->
+                        <!-- drags in servlet api 2.5 -->
                         <groupId>javax.servlet</groupId>
                         <artifactId>servlet-api</artifactId>
                     </exclusion>
@@ -205,6 +205,12 @@
                         <artifactId>jsp-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-endorsed-api</artifactId>
+                <version>6.0</version>
+                <scope>provided</scope>
             </dependency>
             <!-- geozet openls -->
             <dependency>
