@@ -103,6 +103,9 @@ public class FeatureToJson {
 
     /**
      *
+     * @param arrays {@code true} when???
+     * @param edit {@code true} to return editable data
+     * @param graph {@code true} when??
      * @param aliases {@code true} to return aliases in the response
      * @param returnNullval {@code true} to return empty string for null value
      * @param attributesToInclude List of attributes to return in the response

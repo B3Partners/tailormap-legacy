@@ -73,6 +73,7 @@ public class IPAuthenticationFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
+    @Override
     public void doFilter(ServletRequest r, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
@@ -159,7 +160,7 @@ public class IPAuthenticationFilter implements Filter {
 
     /**
      * Return the filter configuration object for this filter.
-     * @return 
+     * @return filter configuration object
      */
     public FilterConfig getFilterConfig() {
         return (this.filterConfig);
@@ -182,8 +183,9 @@ public class IPAuthenticationFilter implements Filter {
     }
 
     /**
-     * Init method for this filter
-     * @param filterConfig
+     * Init method for this filter.
+     *
+     * @param filterConfig filter configuration object
      */
     @Override
     public void init(FilterConfig filterConfig) {        
