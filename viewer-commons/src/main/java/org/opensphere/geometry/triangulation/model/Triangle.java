@@ -169,7 +169,8 @@ public class Triangle {
 	/**
 	 * Add an edge to the triangle.
 	 * 
-	 * @return
+     * @param edge the edge to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addEdge(Edge edge) {
@@ -178,8 +179,8 @@ public class Triangle {
 
 	/**
 	 * Add edges to the triangle.
-	 * 
-	 * @return
+	 * @param edges the edges to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addEdges(List<Edge> edges) {
@@ -188,8 +189,8 @@ public class Triangle {
 
 	/**
 	 * Remove an edge of the triangle.
-	 * 
-	 * @return
+	 * @param edge the edge to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeEdge(Edge edge) {
@@ -198,8 +199,9 @@ public class Triangle {
 
 	/**
 	 * Remove edges of the triangle.
-	 * 
-	 * @return
+	 *
+     * @param edges the edges to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeEdges(List<Edge> edges) {
@@ -210,7 +212,8 @@ public class Triangle {
 	/**
 	 * Add a neighbour triangle to the triangle.
 	 * 
-	 * @return
+     * @param triangle neighbour to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addNeighbour(Triangle triangle) {
@@ -220,7 +223,8 @@ public class Triangle {
 	/**
 	 * Add neighbour triangles to the triangle.
 	 * 
-	 * @return
+     * @param triangles neighbours to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addNeighbours(List<Triangle> triangles) {
@@ -230,7 +234,8 @@ public class Triangle {
 	/**
 	 * Remove a neighbour triangle of the triangle.
 	 * 
-	 * @return
+     * @param triangle neighbour to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeNeighbour(Triangle triangle) {
@@ -240,7 +245,8 @@ public class Triangle {
 	/**
 	 * Remove neighbour triangles of the triangle.
 	 * 
-	 * @return
+     * @param triangles neighbours to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeNeighbours(List<Triangle> triangles) {

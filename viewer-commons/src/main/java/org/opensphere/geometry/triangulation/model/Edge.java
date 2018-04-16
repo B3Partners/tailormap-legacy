@@ -292,7 +292,8 @@ public class Edge {
 	/**
 	 * Add a triangle in relationship with the edge.
 	 * 
-	 * @return
+     * @param triangle the triangle to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addTriangle(Triangle triangle) {
@@ -302,7 +303,8 @@ public class Edge {
 	/**
 	 * Add triangles in relationship with the edge.
 	 * 
-	 * @return
+     * @param triangles the triangles to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addTriangles(List<Triangle> triangles) {
@@ -312,7 +314,8 @@ public class Edge {
 	/**
 	 * Remove a triangle in relationship with the edge.
 	 * 
-	 * @return
+     * @param triangle the triangle to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeTriangle(Triangle triangle) {
@@ -322,7 +325,8 @@ public class Edge {
 	/**
 	 * Remove triangles in relationship with the edge.
 	 * 
-	 * @return
+     * @param triangles the triangles to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeTriangles(List<Triangle> triangles) {
@@ -332,7 +336,8 @@ public class Edge {
 	/**
 	 * Add an incident edge in relationship with the edge.
 	 * 
-	 * @return
+     * @param edge incident edge to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addIncidentEdge(Edge edge) {
@@ -342,7 +347,8 @@ public class Edge {
 	/**
 	 * Add incident edges in relationship with the edge.
 	 * 
-	 * @return
+     * @param edges incident edges to add
+   	 * @return
 	 * 		true if added, false otherwise
 	 */
 	public boolean addIncidentEdges(List<Edge> edges) {
@@ -352,7 +358,8 @@ public class Edge {
 	/**
 	 * Remove an incident edge in relationship with the edge.
 	 * 
-	 * @return
+     * @param edge incident edge to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeIncidentEdge(Edge edge) {
@@ -362,7 +369,8 @@ public class Edge {
 	/**
 	 * Remove incident edges in relationship with the edge.
 	 * 
-	 * @return
+     * @param edges incident edges to remove
+   	 * @return
 	 * 		true if removed, false otherwise
 	 */
 	public boolean removeAllIncidentEdges(List<Edge> edges) {
