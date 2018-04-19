@@ -119,7 +119,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     getCQL : function(){
         this.config.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
     },
-    setFilter : function(cql,linked){
+    setFilter : function(cql,linked,isReset){
         var layer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
         if (!layer || !layer.checked) {
             return;
@@ -129,7 +129,9 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             cql: cql,
             operator: "AND"
         }), layer);
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this,this);
+        if(!isReset){
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this,this);
+        }
     },
     getValues: function(operator, extraFilter) {
         if( (operator === "#MIN#" && this.minRetrieved) && (operator === "#MAX#" && this.maxRetrieved)){
@@ -218,13 +220,16 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         }
         return val;
     },
-    handleLinkedfilterChanged: function(linkedFilter){
+    handleLinkedfilterChanged: function(reset){
+        if(!this.parentFilterInstance){
+            return;
+        }
         this.reset();
-        var extraFilter = linkedFilter.getCQL(this.config.filterConfig.linkedFilterAttribute, linkedFilter.getValue(),true);
+        var extraFilter = reset ? "" : this.parentFilterInstance.getCQL(this.config.filterConfig.linkedFilterAttribute, this.parentFilterInstance.getValue(),true);
         this.initCalculatedValues(extraFilter);
         
         this.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_VALUES_UPDATED,function(){
-            this.setFilter(extraFilter,true);
+            this.setFilter(extraFilter,true,reset);
         }, this,{single:true});
         
     },
@@ -267,6 +272,7 @@ Ext.define("viewer.components.sf.Reset", {
         for (var i = 0 ; i < filters.length ; i++ ){
             var filter = filters[i];
             filter.reset();
+            filter.handleLinkedfilterChanged(true);
         }
     }
 });
