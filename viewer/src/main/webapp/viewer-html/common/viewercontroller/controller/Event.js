@@ -229,6 +229,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         
         /**
          * @field
+         * Fired when the values of a filter are being updated (for example when a linked filter has been changed
+         */
+        ON_FILTER_VALUES_UPDATED                : "ON_FILTER_VALUES_UPDATED",
+        
+        /**
+         * @field
          * Occurs when a control/tool is activated
          */
         ON_ACTIVATE                             : "ON_ACTIVATE",

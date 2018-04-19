@@ -77,6 +77,8 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     attributesLoaded:null,
     minRetrieved: null,
     maxRetrieved: null,
+    parentFilterInstance:null,
+    childFilters:null,
     config:{
         container: null,
         name: null,
@@ -91,6 +93,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         linkedFilter:null
     },
     constructor : function(conf){
+        this.childFilters = [];
         this.ready = false;
         this.minRetrieved = false;
         this.maxRetrieved = false;
@@ -117,7 +120,6 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         this.config.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
     },
     setFilter : function(cql,linked){
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this,this);
         var layer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
         if (!layer || !layer.checked) {
             return;
@@ -127,6 +129,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             cql: cql,
             operator: "AND"
         }), layer);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this,this);
     },
     getValues: function(operator, extraFilter) {
         if( (operator === "#MIN#" && this.minRetrieved) && (operator === "#MAX#" && this.maxRetrieved)){
@@ -155,6 +158,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
                 var res = Ext.JSON.decode(result.responseText);
                 if(res.success) {
                     me.updateValues(operator, res);
+                    this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_VALUES_UPDATED,this,this);
                 } else {
                     this.config.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.config.attributeName + ". Oorzaak: " + res.msg);
                 }
@@ -216,9 +220,13 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     },
     handleLinkedfilterChanged: function(linkedFilter){
         this.reset();
-        var extraFilter = linkedFilter.getCQL(this.config.filterConfig.linkedFilterAttribute, linkedFilter.getValue());
+        var extraFilter = linkedFilter.getCQL(this.config.filterConfig.linkedFilterAttribute, linkedFilter.getValue(),true);
         this.initCalculatedValues(extraFilter);
-        this.setFilter(extraFilter, true);
+        
+        this.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_VALUES_UPDATED,function(){
+            this.setFilter(extraFilter,true);
+        }, this,{single:true});
+        
     },
     getValue: function(){
         this.config.viewerController.logger.error("SimpleFilter.getValue() not yet implemented in subclass");
@@ -562,7 +570,7 @@ Ext.define("viewer.components.sf.Combo", {
         }
     },
 
-    getCQL : function(attribute, value){
+    getCQL : function(attribute, value, allIfValueIsNull){
         if(!attribute){
             attribute = this.config.attributeName;
         }
@@ -570,8 +578,27 @@ Ext.define("viewer.components.sf.Combo", {
             value = this.combo.getValue();
         }
         var mustEscape = this.mustEscapeAttribute(attribute);
-        var cql = attribute + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(value,mustEscape) + (mustEscape ? "'" : "");
-        return cql;
+        if(value !== null){
+            var cql = attribute + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(value,mustEscape) + (mustEscape ? "'" : "");
+            return cql;
+        }else{
+            if(allIfValueIsNull){
+                var data = this.getData();
+                var cql = attribute + " IN (";
+                for(var i = 0 ; i < data.length ;i++){
+                    var val = data[i];
+                    val = (mustEscape ? "'" : "") + this.sanitizeValue(val.value,mustEscape) + (mustEscape ? "'" : "");
+                    if( i > 0){
+                        cql += ",";
+                    }
+                    cql += val;
+                }
+                cql += ")";
+                return cql;
+            }else{
+                return null;
+            }
+        }
     },
     reset : function() {
         this.combo.setValue(null);
@@ -906,7 +933,7 @@ Ext.define("viewer.components.sf.Slider", {
         }else{
             this.slider.setValue(this.start);
         }
-        this.initCalculatedValues();
+      //  this.initCalculatedValues();
         this.callParent();
         this.applyFilter();
     }

@@ -65,10 +65,12 @@ Ext.define("viewer.components.SimpleFilter", {
                 appLayerId: appLayerId
             });
         });
-        Ext.Array.each(this.simpleFilters, function (fbase) {
-            Ext.Array.each(me.simpleFilters, function (flinked) {
-                if(fbase.config.filterConfig.linkedFilter === flinked.config.filterConfig.id){
-                    flinked.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,fbase.handleLinkedfilterChanged,fbase);
+        Ext.Array.each(this.simpleFilters, function (child) {
+            Ext.Array.each(me.simpleFilters, function (parent) {
+                if(child.config.filterConfig.linkedFilter === parent.config.filterConfig.id){
+                    child.parentFilterInstance = parent;
+                    parent.childFilters.push(child);
+                    parent.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,child.handleLinkedfilterChanged,child);
                 }
             });
         });
