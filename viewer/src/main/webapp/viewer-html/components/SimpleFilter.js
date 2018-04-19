@@ -70,7 +70,9 @@ Ext.define("viewer.components.SimpleFilter", {
                 if(child.config.filterConfig.linkedFilter === parent.config.filterConfig.id){
                     child.parentFilterInstance = parent;
                     parent.childFilters.push(child);
-                    parent.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,child.handleLinkedfilterChanged,child);
+                    parent.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function(){
+                        child.handleLinkedfilterChanged();
+                    },child);
                 }
             });
         });
