@@ -76,8 +76,6 @@ Ext.define("viewer.components.SimpleFilter", {
                 }
             });
         });
-        // register linked filters to eachother
-        
         return this;
     },
 
