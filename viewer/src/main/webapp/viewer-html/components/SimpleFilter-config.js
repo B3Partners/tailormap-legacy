@@ -39,6 +39,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {type: "numberrange", label: "Getalrange"},
                 {type: "combo", label: "Selectielijst"},
                 {type: "checkbox", label: "Vinkvak"},
+                {type: "date", label: "Datum"},
                 {type: "radio", label: "Keuzerondje"},
                 {type: "reset", label: "Reset filter knop"},
                 {type: "textlabel", label: "Tekst label"}

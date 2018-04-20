@@ -296,6 +296,37 @@ Ext.define("viewer.components.sf.RadioConfig", {
     }
 });
 
+Ext.define("viewer.components.sf.DateConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor : function (config) {
+        viewer.components.sf.DateConfig.superclass.constructor.call(this, config, /*setDefaultValue=*/false);
+    },
+    getFormItems : function(){
+        var items = this.callParent();
+        items = items.concat([{
+            xtype: 'combo',
+            fieldLabel: "Type",
+            name: "datepickerType",
+            store: Ext.create("Ext.data.Store", {
+                fields: ["type", "label"],
+                data: [
+                    {type: "bt", label: "Attribuut ligt tussen datum"}
+                ]
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "type",
+            value: this.configObject.datepickerType ? this.configObject.datepickerType : "bt"
+        }]);
+
+        return items;
+    },
+    getTitle : function(){
+        return "Datum";
+    }
+});
+
 Ext.define("viewer.components.sf.ComboConfig", {
     extend: "viewer.components.sf.Config",
     constructor: function(config) {
