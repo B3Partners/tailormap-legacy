@@ -1062,3 +1062,65 @@ Ext.define("viewer.components.sf.Numberrange", {
         this.applyFilter();
     }
 });
+
+
+Ext.define("viewer.components.sf.Date", {
+    extend: "viewer.components.sf.SimpleFilter",
+    config: {
+        name: "",
+        label: "",
+        attributeName: ""
+    },
+    constructor: function(conf) {
+        this.initConfig(conf);
+        viewer.components.sf.Date.superclass.constructor.call(this, this.config);
+        var filterConfig = this.config.filterConfig;
+        this.options = filterConfig.options;
+        var t = this.wrapSimpleFilter(filterConfig.label, [
+            "<tr>",
+            "<td colspan=\"3\"><div id=\"{name}_datefrom\"></div></td>",
+            "</tr>",
+            "<tr>",
+            "<td colspan=\"3\"><div id=\"{name}_dateto\"></div></td>",
+            "</tr>"
+        ]);
+        new Ext.Template(t).append(this.config.container, {
+            label: filterConfig.label,
+            name: this.config.name
+        });
+
+        this.createDates();
+    },
+    createDates : function(){
+        Ext.create("Ext.button.Button", {
+            id: "datefrom" + this.config.name,
+            name: "datefrom" + this.config.name,
+            text: "Datum van",
+            renderTo: this.config.name + "_datefrom",
+            listeners: {
+                click:{
+                    scope:this,
+                    fn: function(){
+
+                    }
+                }
+            }
+        });
+    },
+    applyFilter : function(){
+        var cql = this.getCQL();
+        this.setFilter(cql);
+    },
+    getCQL : function(){
+        var cql = [];
+        var mustEscape = this.mustEscapeAttribute();
+
+        return cql.join(" AND ");
+    },
+    reset : function(){
+        this.minField.setValue(this.config.defaultValues.Min);
+        this.maxField.setValue(this.config.defaultValues.Max);
+        this.callParent();
+        this.applyFilter();
+    }
+});
