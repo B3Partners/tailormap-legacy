@@ -38,6 +38,7 @@ import nl.b3p.viewer.image.CombineImageSettings;
 import nl.b3p.viewer.image.CombineImageWkt;
 import nl.b3p.viewer.image.ImageTool;
 import nl.b3p.viewer.util.ChangeMatchCase;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -250,7 +251,7 @@ public class BufferActionBean implements ActionBean {
     
     private List<CombineImageWkt> getFeatures(Bbox bbox, EntityManager em ) throws Exception {
         List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
-        GeoService gs = Stripersist.getEntityManager().find(GeoService.class, serviceId);
+        GeoService gs = em.find(GeoService.class, serviceId);
         Layer l = gs.getLayer(layerName, em);
 
         if (l.getFeatureType() == null) {
@@ -268,7 +269,7 @@ public class BufferActionBean implements ActionBean {
         Filter featureFilter = ff.intersects(ff.property(geomAttribute),ff.literal(p));
 
         if(filter != null){
-            Filter attributeFilter = CQL.toFilter(filter);
+            Filter attributeFilter = FlamingoCQL.toFilter(filter, em);
             attributeFilter = (Filter)attributeFilter.accept(new ChangeMatchCase(false), null);
             
             if(filter.indexOf("POINT") == -1){

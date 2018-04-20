@@ -33,6 +33,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -48,6 +49,8 @@ import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.geometry.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
 
 /**
  * Determines the extent of one or more features. Note that feaurure ids must be
@@ -118,7 +121,7 @@ public class FeatureExtentActionBean implements ActionBean {
             FeatureSource fs = null;
             try {
                 fs = this.layer.getFeatureType().openGeoToolsFeatureSource();
-                BoundingBox extent = this.getExtent(fs);
+                BoundingBox extent = this.getExtent(fs, Stripersist.getEntityManager());
                 JSONObject e = new JSONObject();
                 e.put("minx", extent.getMinX());
                 e.put("miny", extent.getMinY());
@@ -148,8 +151,8 @@ public class FeatureExtentActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
-    private BoundingBox getExtent(FeatureSource fs) throws CQLException, IOException {
-        Filter f = ECQL.toFilter(this.filter);
+    private BoundingBox getExtent(FeatureSource fs, EntityManager em) throws CQLException, IOException {
+        Filter f = FlamingoCQL.toFilter(this.filter, em);
         Query q = new Query(fs.getName().toString());
         q.setFilter(f);
         q.setHandle("extent-query");
