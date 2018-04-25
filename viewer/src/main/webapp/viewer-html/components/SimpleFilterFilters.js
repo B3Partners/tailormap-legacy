@@ -1066,6 +1066,8 @@ Ext.define("viewer.components.sf.Numberrange", {
 
 Ext.define("viewer.components.sf.Date", {
     extend: "viewer.components.sf.SimpleFilter",
+    from:null,
+    to:null,
     config: {
         name: "",
         label: "",
@@ -1091,20 +1093,54 @@ Ext.define("viewer.components.sf.Date", {
 
         this.createDates();
     },
-    createDates : function(){
-        Ext.create("Ext.button.Button", {
-            id: "datefrom" + this.config.name,
-            name: "datefrom" + this.config.name,
-            text: "Datum van",
-            renderTo: this.config.name + "_datefrom",
-            listeners: {
-                click:{
-                    scope:this,
-                    fn: function(){
+    createDates : function() {
+        var pickers = [];
+        var start = new Date(), end = new Date();
+        if(this.config.filterConfig.start === 'curweek'){
+            var curr = new Date; // get current date
+            var first = curr.getDate() - curr.getDay()+ 1; // First day is the day of the month - the day of the week
+            var last = first + 6; // last day is the first day + 6
 
-                    }
+            start = new Date(curr.setDate(first));
+            end = new Date(curr.setDate(last));
+
+        }
+        if (this.config.filterConfig.datepickerType === "gt" || this.config.filterConfig.datepickerType === "bt"){
+            this.from = Ext.create({
+                xtype: 'datefield',
+                anchor: '100%',
+                fieldLabel: 'Van',
+                name: 'from_date',
+                format:'d-m-Y',
+                value: start,
+                listeners: {
+                    scope: this,
+                    select: this.applyFilter
                 }
-            }
+            });
+            pickers.push(this.from);
+        }
+
+        if (this.config.filterConfig.datepickerType === "lt" || this.config.filterConfig.datepickerType === "bt") {
+            this.to = Ext.create({
+                xtype: 'datefield',
+                anchor: '100%',
+                fieldLabel: 'Tot',
+                name: 'to_date',
+                value: end,
+                format:'d-m-Y',
+                listeners: {
+                    scope: this,
+                    select: this.applyFilter
+                }
+            });
+            pickers.push(this.to);
+        }
+        Ext.create('Ext.form.Panel', {
+            renderTo:  this.config.name + "_datefrom",/// Ext.getBody(),
+            width: "100%",
+            bodyPadding: 10,
+            items: pickers
         });
     },
     applyFilter : function(){
@@ -1115,6 +1151,17 @@ Ext.define("viewer.components.sf.Date", {
         var cql = [];
         var mustEscape = this.mustEscapeAttribute();
 
+        if(this.from){
+            var val = Ext.Date.format(this.from.getValue(), "Y-m-d") + "T00:00:00";
+            var c = this.config.attributeName + " >= " + val;
+            cql.push(c);
+        }
+
+        if(this.to){
+            var val = Ext.Date.format(this.to.getValue(), "Y-m-d") + "T00:00:00";
+            var c = this.config.attributeName + " <= " + val;
+            cql.push(c);
+        }
         return cql.join(" AND ");
     },
     reset : function(){
