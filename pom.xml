@@ -46,10 +46,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <geotools.version>19.0</geotools.version>
-        <powermock.version>1.7.3</powermock.version>
+        <powermock.version>1.7.4</powermock.version>
         <hsqldb.version>2.4.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.2.0</postgresql.version>
+        <postgresql.version>42.2.2</postgresql.version>
         <apache.poi.version>3.17</apache.poi.version>
         <apache.httpcomponents.version>4.5.5</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
@@ -196,7 +196,7 @@
                 <version>1.2.4</version>
                 <exclusions>
                     <exclusion>
-                        <!-- drags in servlet api 2.5-->
+                        <!-- drags in servlet api 2.5 -->
                         <groupId>javax.servlet</groupId>
                         <artifactId>servlet-api</artifactId>
                     </exclusion>
@@ -205,6 +205,12 @@
                         <artifactId>jsp-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-endorsed-api</artifactId>
+                <version>6.0</version>
+                <scope>provided</scope>
             </dependency>
             <!-- geozet openls -->
             <dependency>
@@ -245,7 +251,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.15.0</version>
+                <version>2.18.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -342,7 +348,7 @@
                 <exclusions>
                     <exclusion>
                         <!--
-                        exclude old javassist so we can use 3.22.0-CR1, see issue #745
+                        exclude old javassist so we can use 3.22.0-CR2, see issue #745
                         when upgrading hibernate this should be removed
                         -->
                         <groupId>javassist</groupId>
@@ -485,7 +491,11 @@
                 <artifactId>hsqldb</artifactId>
                 <version>${hsqldb.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
@@ -529,9 +539,8 @@
                     <version>3.0.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -558,19 +567,16 @@
                     <version>${maven-surefire-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>

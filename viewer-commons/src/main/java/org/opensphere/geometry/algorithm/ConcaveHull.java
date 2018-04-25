@@ -51,7 +51,7 @@ import com.vividsolutions.jts.triangulate.quadedge.QuadEdge;
 import com.vividsolutions.jts.triangulate.quadedge.QuadEdgeSubdivision;
 import com.vividsolutions.jts.triangulate.quadedge.QuadEdgeTriangle;
 import com.vividsolutions.jts.util.UniqueCoordinateArrayFilter;
-import org.openshere.geometry.triangulation.DoubleComparator;
+import org.opensphere.geometry.triangulation.DoubleComparator;
 
 
 /**
@@ -89,10 +89,10 @@ public class ConcaveHull {
 
 	/**
 	 * Create a new concave hull construction for the input {@link Geometry}.
-	 * 
-	 * @param geometry
-	 * @param threshold
-	 */
+	 *
+     * @param geometry the geometry
+     * @param threshold the maximum length of border edges of the concave hull
+     */
 	public ConcaveHull(Geometry geometry, double threshold) {
 		this.geometries = transformIntoPointGeometryCollection(geometry);
 		this.threshold = threshold;
@@ -101,10 +101,10 @@ public class ConcaveHull {
 	
 	/**
 	 * Create a new concave hull construction for the input {@link GeometryCollection}.
-	 * 
-	 * @param geometries
-	 * @param threshold
-	 */
+	 *
+     * @param geometries collection of geometries
+     * @param threshold the maximum length of border edges of the concave hull
+     */
 	public ConcaveHull(GeometryCollection geometries, double threshold) {
 		this.geometries = transformIntoPointGeometryCollection(geometries);
 		this.threshold = threshold;

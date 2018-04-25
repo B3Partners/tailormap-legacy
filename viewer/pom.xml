@@ -128,6 +128,10 @@
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.servlet.jsp.jstl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-endorsed-api</artifactId>
+        </dependency>
         <!-- geozet openls -->
         <dependency>
             <groupId>nl.geozet</groupId>
@@ -456,7 +460,6 @@
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
-                    <version>${postgresql.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

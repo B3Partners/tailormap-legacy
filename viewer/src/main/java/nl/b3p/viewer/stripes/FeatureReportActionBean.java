@@ -43,6 +43,7 @@ import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.FeaturePropertiesArrayHelper;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -227,7 +228,7 @@ public class FeatureReportActionBean implements ActionBean {
                             }
 
                             // collect related feature attributes
-                            q = new Query(fType.getTypeName(), ECQL.toFilter(query));
+                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, Stripersist.getEntityManager()));
                             q.setMaxFeatures(this.maxrelatedfeatures + 1);
                             q.setHandle("FeatureReportActionBean_related_attributes");
                             LOG.debug("Related features query: " + q);

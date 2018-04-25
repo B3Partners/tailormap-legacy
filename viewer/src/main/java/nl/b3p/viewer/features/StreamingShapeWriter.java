@@ -71,7 +71,11 @@ public class StreamingShapeWriter {
     private CoordinateReferenceSystem defaultCoordRefSys = null;
 
     /**
-     * Constructor with shapeIndex=true
+     * Constructor with shapeIndex=true.
+     *
+     * @param workingDir The working dir where the shape writer is going to
+     * write the shape files
+     * @param defaultCoordRefSys output CRS
      */
     public StreamingShapeWriter(String workingDir, CoordinateReferenceSystem defaultCoordRefSys) throws IOException {
         this(workingDir);
@@ -79,7 +83,12 @@ public class StreamingShapeWriter {
     }
 
     /**
-     * Constructor with shapeIndex=true
+     * Constructor with shapeIndex=true.
+     *
+     * @param workingDir The working dir where the shape writer is going to
+     * write the shape files
+     * @throws java.io.IOException if the working dir is not writable or does
+     * not exist
      */
     public StreamingShapeWriter(String workingDir) throws IOException {
         this(workingDir, true);
@@ -94,6 +103,8 @@ public class StreamingShapeWriter {
      * @param shapeIndex If true a index wil be created on the shape files.
      * @param skipAttributeNames a list of attribute names that needs to be
      * skipped (default only boundedBy)
+     * @throws java.io.IOException if the working dir is not writable or does
+     * not exist
      */
     public StreamingShapeWriter(String workingDir, boolean shapeIndex, List<String> skipAttributeNames) throws IOException {
         this(workingDir, shapeIndex);
@@ -107,6 +118,8 @@ public class StreamingShapeWriter {
      * @param workingDir The working dir where the shape writer is going to
      * write the shape files
      * @param shapeIndex If true a index wil be created on the shape files.
+     * @throws java.io.IOException if the working dir is not writable or does
+     * not exist
      */
     public StreamingShapeWriter(String workingDir, boolean shapeIndex) throws IOException {
         props.put(ShapefileDataStoreFactory.URLP.key, "");
@@ -130,10 +143,20 @@ public class StreamingShapeWriter {
     }
 
     /**
-     * Writes a feature to a shape file. It also seperates the different
+     * Writes a feature to a shape file. It also separates the different
      * GeometryTypes into different shapefiles.
+     *
+     * @param f feature to write
+     * @throws java.io.IOException if writing fails
+     * @throws org.xml.sax.SAXException if parsing fails
+     * @throws javax.xml.transform.TransformerConfigurationException if parsing
+     * fails
+     * @throws javax.xml.parsers.ParserConfigurationException if parsing fails
+     * @throws org.opengis.referencing.operation.TransformException if
+     * transforming fails
+     * @throws org.opengis.referencing.FactoryException if factory lookup fails
      */
-    public void write(SimpleFeature f) throws IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException, SAXException, TransformException, FactoryException {
+    public void write(SimpleFeature f) throws IOException, SAXException, TransformerConfigurationException, TransformerException, ParserConfigurationException, TransformException, FactoryException {
 
         featuresGiven++;
         Class newGeomClass = null;
@@ -274,8 +297,8 @@ public class StreamingShapeWriter {
      * @param suffix A suffix after the shapefile name to indicate the
      * difference between geometry types. For example "_p" (for points)
      * @return a new featurewriter
-     * @throws MalformedURLException
-     * @throws IOException
+     * @throws MalformedURLException if any
+     * @throws IOException if any
      */
     private FeatureWriter createNewWriter(Class geomClass, SimpleFeatureType type, String suffix) throws MalformedURLException, IOException {
         //create the file path
@@ -346,6 +369,9 @@ public class StreamingShapeWriter {
 
     /**
      * Function to change the geometryBinding of a GeometryDescriptor
+     * @param gd geometry descriptor
+     * @param geomBinding geometry class
+     * @return the new geometry descriptor
      */
     public static AttributeDescriptor changeGeometryBinding(GeometryDescriptor gd, Class geomBinding) {
         AttributeTypeBuilder builder = new AttributeTypeBuilder();

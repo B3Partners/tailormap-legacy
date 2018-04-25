@@ -39,6 +39,7 @@ import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -308,7 +309,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
                     }
 
-                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? FlamingoCQL.toFilter(filter, em) : null;
 
                     if (currentFilter!=null){
                         currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);

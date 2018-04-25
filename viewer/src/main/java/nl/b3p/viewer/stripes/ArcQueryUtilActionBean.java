@@ -37,6 +37,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -140,7 +141,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
             AxlSpatialQuery aq = new AxlSpatialQuery();
             FilterToArcXMLSQL visitor = new FilterToArcXMLSQL(aq);
 
-            Filter filter = CQL.toFilter(cql);
+            Filter filter = FlamingoCQL.toFilter(cql, Stripersist.getEntityManager());
             String where = visitor.encodeToString(filter);
             
             if(whereOnly) {
@@ -196,7 +197,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
                 if (layer.getFeatureType().getFeatureSource() instanceof nl.b3p.viewer.config.services.ArcGISFeatureSource) {
                     fs = layer.getFeatureType().openGeoToolsFeatureSource();
                     final Query q = new Query(fs.getName().toString());
-                    setFilter(q);
+                    setFilter(q, Stripersist.getEntityManager());
                     ArcGISFeatureReader agfr = new ArcGISFeatureReader((ArcGISFeatureSource) fs, q);
                     List objIds = agfr.getObjectIds();
 
@@ -223,9 +224,9 @@ public class ArcQueryUtilActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
-    private void setFilter(Query q) throws Exception {
+    private void setFilter(Query q, EntityManager em) throws Exception {
         if (cql != null && cql.trim().length() > 0) {
-            Filter f = CQL.toFilter(cql);
+            Filter f = FlamingoCQL.toFilter(cql,em);
             f = (Filter) f.accept(new RemoveDistanceUnit(), null);
             q.setFilter(f);
         }

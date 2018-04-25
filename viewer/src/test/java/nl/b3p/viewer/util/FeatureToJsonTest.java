@@ -58,6 +58,7 @@ public class FeatureToJsonTest {
 
     /**
      * Test of getJSONFeatures method, of class FeatureToJson.
+     * @throws java.lang.Exception if any
      */
     @Test
     public void testGetJSONFeaturesFirstPage() throws Exception {

@@ -56,6 +56,7 @@ import nl.b3p.viewer.features.GeoJSONDownloader;
 import nl.b3p.viewer.features.ShapeDownloader;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -251,7 +252,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
                 final Query q = new Query(fs.getName().toString());
 
-                setFilter(q, ft);
+                setFilter(q, ft, Stripersist.getEntityManager());
 
                 Map<String, AttributeDescriptor> featureTypeAttributes = new HashMap<String, AttributeDescriptor>();
                 featureTypeAttributes = makeAttributeDescriptorList(ft);
@@ -381,9 +382,9 @@ public class DownloadFeaturesActionBean implements ActionBean {
         return featureTypeAttributes;
     }
 
-    private void setFilter(Query q, SimpleFeatureType ft) throws Exception {
+    private void setFilter(Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
-            Filter f = CQL.toFilter(filter);
+            Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter) f.accept(new RemoveDistanceUnit(), null);
             f = (Filter) f.accept(new ChangeMatchCase(false), null);
             f = FeatureToJson.reformatFilter(f, ft);

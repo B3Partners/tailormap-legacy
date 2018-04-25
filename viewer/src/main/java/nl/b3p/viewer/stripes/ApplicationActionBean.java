@@ -33,7 +33,6 @@ import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ComponentRegistryInitializer;
-import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.ClobElement;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
@@ -342,6 +341,7 @@ public class ApplicationActionBean implements ActionBean {
      * meant to be a secure hash, the roles of a user are not secret.
      *
      * @param request servlet request with user credential
+     * @param em the entitymanahger to use for database access
      * @return a key to use as a cache identifyer
      */
     public static int getRolesCachekey(HttpServletRequest request, EntityManager em) {
