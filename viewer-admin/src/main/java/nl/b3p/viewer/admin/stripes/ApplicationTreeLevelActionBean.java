@@ -16,24 +16,30 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.io.StringReader;
-import java.util.*;
-import javax.annotation.security.RolesAllowed;
-import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.*;
-import nl.b3p.viewer.config.security.*;
-import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.Document;
+import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -246,8 +252,15 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             level.getStartLevels().put(application, sl);
         }
         em.persist(level);
-        application.authorizationsModified();
-        SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
+
+
+        List<Application> mashups = application.getMashups(em);
+        mashups.add(application);
+        for (Application app : mashups) {
+
+            app.authorizationsModified();
+            SelectedContentCache.setApplicationCacheDirty(app, true, false, em);
+        }
         em.getTransaction().commit();
         
     }
