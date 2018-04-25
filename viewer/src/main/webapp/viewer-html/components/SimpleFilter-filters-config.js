@@ -302,7 +302,24 @@ Ext.define("viewer.components.sf.DateConfig", {
         viewer.components.sf.DateConfig.superclass.constructor.call(this, config, /*setDefaultValue=*/false);
     },
     getFormItems : function(){
-        var items = this.callParent();
+        var items =  [{
+            fieldLabel: 'Label',
+            name: 'label',
+            value: this.configObject.label ? this.configObject.label : ""
+        }, {
+            fieldLabel: "Beginwaarde(s)",
+            name: "start",
+            value: Ext.isDefined(this.configObject.start) ? this.configObject.start : this.getDefaultStartValue(),
+            qtip: "Vul een vaste waarde in. Gebruik 'curweek' i.c.m. twee datumprikkers om in het begin te filteren op de huidige week.",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
+        }];
         items = items.concat([{
             xtype: 'combo',
             fieldLabel: "Type",
@@ -310,7 +327,9 @@ Ext.define("viewer.components.sf.DateConfig", {
             store: Ext.create("Ext.data.Store", {
                 fields: ["type", "label"],
                 data: [
-                    {type: "bt", label: "Attribuut ligt tussen datum"}
+                    {type: "bt", label: "Attribuut ligt tussen datum"},
+                    {type: "gt", label: "Attribuut ligt na datum"},
+                    {type: "lt", label: "Attribuut ligt voor datum"}
                 ]
             }),
             queryModes: "local",
