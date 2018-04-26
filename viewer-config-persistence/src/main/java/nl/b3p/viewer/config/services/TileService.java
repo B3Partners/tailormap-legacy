@@ -17,29 +17,16 @@
 package nl.b3p.viewer.config.services;
 
 import com.vividsolutions.jts.geom.Envelope;
-import java.io.IOException;
-import java.util.*;
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -52,7 +39,14 @@ import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+
+import javax.persistence.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
+import java.io.IOException;
+import java.util.*;
 
 /**
  *
@@ -164,7 +158,47 @@ public class TileService extends GeoService {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(url);
+
+            String username = null;
+            String password = null;
+
+            if(params.containsKey(GeoService.PARAM_USERNAME) && params.containsKey(GeoService.PARAM_PASSWORD)){
+                username = (String)params.get(GeoService.PARAM_USERNAME);
+                password = (String)params.get(GeoService.PARAM_PASSWORD);
+            }
+
+
+            final HttpClientConfigured client = new HttpClientConfigured(username, password, url);
+
+            HttpUriRequest req = new HttpGet(url);
+
+            HttpResponse response;
+            Document doc = null;
+            try {
+                response = client.execute(req);
+
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode >= 200 && statusCode < 300) {
+                    final HttpResponse finalResponse = response;
+                    final HttpEntity entity = response.getEntity();
+
+                    try {
+                        doc = builder.parse(entity.getContent());
+                    } catch(Exception e){
+                        log.error("Failed to retrieve getcapabilities: " + e.getLocalizedMessage());
+                        return null;
+                    }finally {
+                        if (finalResponse != null) {
+                            client.close(finalResponse);
+                        }
+                        client.close();
+                    }
+                }
+            } catch(IOException e){
+                log.error("Failed to retrieve getcapabilities: " + e.getLocalizedMessage());
+                return null;
+            }
+
             XPathFactory xPathfactory = XPathFactory.newInstance();
             XPath xpath = xPathfactory.newXPath();
             
@@ -214,7 +248,7 @@ public class TileService extends GeoService {
             // Matrices
             
             return s;
-        }catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException ex) {
+        }catch (ParserConfigurationException | XPathExpressionException ex) {
             log.error("Error reading capabilities: ", ex);
         }
         return s;
@@ -444,7 +478,7 @@ public class TileService extends GeoService {
     }
     
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags, EntityManager em) throws JSONException {
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, EntityManager em) throws JSONException {
         return toJSONObject(flatten, layersToInclude,validXmlTags, false,em);
     }    
     

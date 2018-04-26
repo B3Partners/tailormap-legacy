@@ -5,26 +5,27 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import nl.b3p.viewer.util.TestUtil;
+import nl.b3p.web.WaitPageStatus;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import nl.b3p.viewer.config.ClobElement;
-import static nl.b3p.viewer.config.services.Layer.DETAIL_WMS_STYLES;
-import nl.b3p.viewer.util.TestUtil;
-import nl.b3p.web.WaitPageStatus;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Test;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -83,25 +84,10 @@ public class TileServiceTest extends TestUtil{
         
     }
 
-    /**
-     * Test of parseWMTSCapabilities method, of class TileService.
-     */
-    @Test
-    public void testParseWMTSCapabilities() {
-        URL u = TileServiceTest.class.getResource("singleLayer.xml");
-        String url = u.toString();
-        Map params = new HashMap();
-        params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
-        WaitPageStatus status = new WaitPageStatus();
-        
-        GeoService result = instance.parseWMTSCapabilities(url, params, status, entityManager);
-        entityManager.getTransaction().commit();
-        compareWMTS (result, url);
-    }
     
     @Test
-    public void testLoadBRTWMTSFromURL() {
-        URL u = TileServiceTest.class.getResource("pdok_brt.xml");
+    public void testLoadBRTWMTSFromURL() throws MalformedURLException {
+        URL u = new URL("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities");
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
@@ -109,9 +95,9 @@ public class TileServiceTest extends TestUtil{
         WaitPageStatus status = new WaitPageStatus();
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
-        assertEquals("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
+        assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
         Layer topLayer = result.getTopLayer();
-        assertEquals(36, topLayer.getChildren().size());
+        assertEquals(45, topLayer.getChildren().size());
         
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
@@ -129,10 +115,10 @@ public class TileServiceTest extends TestUtil{
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
-        assertEquals(8, matrixSets.length());
+        assertEquals(4, matrixSets.length());
         JSONObject matrix = matrixSets.getJSONObject(1);
         JSONArray matrices = matrix.getJSONArray("matrices");
-        assertEquals(22, matrices.length());
+        assertEquals(15, matrices.length());
         assertTrue(serviceObj.has("layers"));
         JSONObject layers = serviceObj.getJSONObject("layers");
         JSONObject jsonLayer = layers.getJSONObject("brtachtergrondkaart");
@@ -141,8 +127,8 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
-    public void testLoadArcGisWMTSFromURL() {
-        URL u = TileServiceTest.class.getResource("arcgis_wmts.xml");
+    public void testLoadArcGisWMTSFromURL() throws MalformedURLException {
+        URL u = new URL("http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?request=getcapabilities");
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
@@ -162,10 +148,10 @@ public class TileServiceTest extends TestUtil{
         assertEquals(1, tijdreis.getBoundingBoxes().size());
 
         BoundingBox bbox = tijdreis.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
-        assertEquals(-2193.08, bbox.getMiny(), 0.01);
-        assertEquals(-22789.15, bbox.getMinx(), 0.01);
-        assertEquals(312447.48, bbox.getMaxx(), 0.01);
-        assertEquals(662400.47, bbox.getMaxy(), 0.01);
+        assertEquals(-7191.98, bbox.getMiny(), 0.01);
+        assertEquals(-22948.36, bbox.getMinx(), 0.01);
+        assertEquals(312588.49, bbox.getMaxx(), 0.01);
+        assertEquals(662400.48, bbox.getMaxy(), 0.01);
         
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
@@ -182,8 +168,8 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
-    public void testLoadTopoWMTSFromURL() {
-        URL u = TileServiceTest.class.getResource("topo.xml");
+    public void testLoadTopoWMTSFromURL() throws MalformedURLException {
+        URL u = new URL("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities");
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
@@ -192,38 +178,37 @@ public class TileServiceTest extends TestUtil{
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
-        assertEquals(1, topLayer.getChildren().size());
-        assertEquals("http://webservices.gbo-provincies.nl/geowebcache/service/wmts?", result.getUrl());
+        assertEquals(45, topLayer.getChildren().size());
+        assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
         
         Layer brt = topLayer.getChildren().get(0);
-        assertEquals("Topografie", brt.getName());
-        assertEquals(0, brt.getBoundingBoxes().size());
+        assertEquals("brtachtergrondkaart", brt.getName());
+        assertEquals(1, brt.getBoundingBoxes().size());
 
         BoundingBox bbox = brt.getMatrixSets().get(0).getBbox();
-        assertEquals(595401.92, bbox.getMaxx(), 0.01);
-        assertEquals(903402.0, bbox.getMaxy(), 0.01);
-        assertEquals(-285401.92, bbox.getMinx(), 0.01);
-        assertEquals(22598.16, bbox.getMiny(), 0.01);
+        assertEquals(4046516.59, bbox.getMaxx(), 0.01);
+        assertEquals(8298457.58, bbox.getMaxy(), 0.01);
+        assertEquals(-2404683.40, bbox.getMinx(), 0.01);
+        assertEquals(3997657.58, bbox.getMiny(), 0.01);
         
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
-        assertEquals(6, matrixSets.length());
+        assertEquals(4, matrixSets.length());
         JSONObject matrix = matrixSets.getJSONObject(1);
         JSONArray matrices = matrix.getJSONArray("matrices");
-        assertEquals(22, matrices.length());
+        assertEquals(15, matrices.length());
         assertTrue(serviceObj.has("layers"));
         JSONObject layers = serviceObj.getJSONObject("layers");
-        JSONObject jsonLayer = layers.getJSONObject("Topografie");
+        JSONObject jsonLayer = layers.getJSONObject("brtachtergrondkaart");
         assertNotNull(jsonLayer);
-        assertTrue(!jsonLayer.has("bbox"));
+        assertTrue(jsonLayer.has("bbox"));
 
     }
-    
-    
-    @Test
-    public void testLoadLufoWMTSFromURL() {
-        URL u = TileServiceTest.class.getResource("wmtsgetcapLufo.xml");
+
+   // @Test
+    public void testLoadLufoWMTSFromURL() throws MalformedURLException {
+        URL u = new URL("http://webservices.gbo-provincies.nl/lufo/services/wmts?request=GetCapabilities");
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
@@ -258,38 +243,7 @@ public class TileServiceTest extends TestUtil{
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
     }
-    
-    
-    @Test
-    public void testLoadWMTSMultipleLayersFromURL() {
-        URL u = TileServiceTest.class.getResource("multipleLayers.xml");
-        String url = u.toString();
-        Map params = new HashMap();
-        params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
-        params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
-        WaitPageStatus status = new WaitPageStatus();
-        
-        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
-        Layer topLayer = result.getTopLayer();
-        assertEquals(2, topLayer.getChildren().size());
-        
-    }
-    
-    
-    @Test
-    public void testLoadWMTSFromURL() {
-        URL u = TileServiceTest.class.getResource("singleLayer.xml");
-        String url = u.toString();
-        Map params = new HashMap();
-        params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
-        params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
-        WaitPageStatus status = new WaitPageStatus();
-        
-        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
-        compareWMTS (result, url);
-        
-    }
-    
+
     private void compareWMTS(GeoService result, String url){
             
         assertEquals("tiled", result.getProtocol());

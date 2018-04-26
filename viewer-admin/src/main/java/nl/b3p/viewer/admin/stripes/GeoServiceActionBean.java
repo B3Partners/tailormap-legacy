@@ -16,17 +16,33 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.SelectedContentCache;
+import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.geotools.filter.FilterTransformer;
+import org.geotools.filter.text.cql2.CQL;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.opengis.filter.Filter;
+import org.stripesstuff.plugin.waitpage.WaitPage;
+import org.stripesstuff.stripersist.Stripersist;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
+
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.xml.XMLConstants;
@@ -39,44 +55,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.validation.*;
-import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level;
-import nl.b3p.viewer.config.security.Group;
-import nl.b3p.viewer.config.services.ArcGISService;
-import nl.b3p.viewer.config.services.ArcIMSService;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
-import nl.b3p.viewer.config.services.BoundingBox;
-import nl.b3p.viewer.config.services.Category;
-import nl.b3p.viewer.config.services.CoordinateReferenceSystem;
-import nl.b3p.viewer.config.services.FeatureSource;
-import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.config.services.StyleLibrary;
-import nl.b3p.viewer.config.services.TileService;
-import nl.b3p.viewer.config.services.TileSet;
-import nl.b3p.viewer.config.services.Updatable;
-import nl.b3p.viewer.config.services.UpdateResult;
-import nl.b3p.viewer.config.services.WMSExceptionType;
-import nl.b3p.viewer.config.services.WMSService;
-import nl.b3p.viewer.util.SelectedContentCache;
-import nl.b3p.web.WaitPageStatus;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.logging.*;
-import org.geotools.filter.FilterTransformer;
-import org.geotools.filter.text.cql2.CQL;
-import org.json.*;
-import org.opengis.filter.Filter;
-import org.stripesstuff.plugin.waitpage.WaitPage;
-import org.stripesstuff.stripersist.Stripersist;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXParseException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.*;
 
 /**
  *
@@ -818,23 +802,19 @@ public class GeoServiceActionBean implements ActionBean {
 
         Map params = new HashMap();
 
+        params.put(GeoService.PARAM_USERNAME, username);
+        params.put(GeoService.PARAM_PASSWORD, password);
         if (protocol.equals(WMSService.PROTOCOL)) {
             params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
             params.put(WMSService.PARAM_SKIP_DISCOVER_WFS, skipDiscoverWFS);
-            params.put(WMSService.PARAM_USERNAME, username);
-            params.put(WMSService.PARAM_PASSWORD, password);
             service = new WMSService().loadFromUrl(url, params, status, em);
             ((WMSService) service).setException_type(exception_type);
             service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement("" + useProxy));
         } else if (protocol.equals(ArcGISService.PROTOCOL)) {
-            params.put(ArcGISService.PARAM_USERNAME, username);
-            params.put(ArcGISService.PARAM_PASSWORD, password);
             params.put(ArcGISService.PARAM_ASSUME_VERSION, agsVersion);
             service = new ArcGISService().loadFromUrl(url, params, status, em);
         } else if (protocol.equals(ArcIMSService.PROTOCOL)) {
             params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
-            params.put(ArcIMSService.PARAM_USERNAME, username);
-            params.put(ArcIMSService.PARAM_PASSWORD, password);
             service = new ArcIMSService().loadFromUrl(url, params, status, em);
         } else if (protocol.equals(TileService.PROTOCOL)) {
             params.put(TileService.PARAM_SERVICENAME, serviceName);

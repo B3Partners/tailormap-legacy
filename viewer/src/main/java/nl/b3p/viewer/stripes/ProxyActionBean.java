@@ -16,21 +16,6 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.commons.HttpClientConfigured;
@@ -44,6 +29,18 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  *
@@ -209,6 +206,12 @@ public class ProxyActionBean implements ActionBean {
         allowedParams.add("SLD_BODY");
         //vendor
         allowedParams.add("MAP");
+        // wmts
+        allowedParams.add("TILEMATRIXSET");
+        allowedParams.add("TILEMATRIX");
+        allowedParams.add("TILEROW");
+        allowedParams.add("TILECOL");
+        allowedParams.add("STYLE");
 
         String query = theUrl.getQuery();
         Map paramsMap = new HashMap(getContext().getRequest().getParameterMap());
