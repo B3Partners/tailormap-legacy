@@ -704,7 +704,8 @@ Ext.define("viewer.components.sf.Slider", {
     retrieveStartMaxVal: null,
     retrieveMinVal: null,
     retrieveMaxVal: null,
-
+    sliderType:null,
+    startValues:null,
     config: {
         filterConfig: {
             max: null,
@@ -726,9 +727,9 @@ Ext.define("viewer.components.sf.Slider", {
             "<td colspan=\"3\"><div id=\"{name}_slider\"></div></td>",
             "</tr>"
         ];
-        var sliderType = c.sliderType;
+        this.sliderType = c.sliderType;
         if(!Ext.isEmpty(c.valueFormatString)) {
-            if (sliderType === "range") {
+            if (this.sliderType === "range") {
                 templatecontents.push(
                     "<tr>",
                     "<td><span id=\"{name}_min\"></span></td>",
@@ -739,9 +740,9 @@ Ext.define("viewer.components.sf.Slider", {
             } else {
                 templatecontents.push(
                     "<tr>",
-                    "<td width=\"33%\"><span id=\"{name}_minvalue\">{minvalue}</span></td>",
+                    "<td width=\"33%\"><span id=\"{name}_min\">{minvalue}</span></td>",
                     "<td width=\"33%\" align=\"center\"><span id=\"{name}_value\">{value}</span></td>",
-                    "<td width=\"34%\" align=\"right\"><span id=\"{name}_maxvalue\">{maxvalue}</span></td>",
+                    "<td width=\"34%\" align=\"right\"><span id=\"{name}_max\">{maxvalue}</span></td>",
                     "</tr>"
                 );
             }
@@ -757,39 +758,19 @@ Ext.define("viewer.components.sf.Slider", {
 
         this.retrieveStartMinVal = false, this.retrieveStartMaxVal = false;
         this.retrieveMinVal = false, this.retrieveMaxVal = false;
+        this.startValues = [];
         this.initCalculatedValues();
-
-      /*  this.slider = Ext.create('Ext.slider.Multi', {
-            id: n + "_extSlider",
-            width: "100%",
-            values: values,
-            increment: parseInt(c.step),
-            minValue: min,
-            maxValue: max,
-            constrainThumbs: true,
-            renderTo: n + "_slider",
-            listeners: {
-                change: {
-                    fn: this.sliderChange,
-                    buffer: 500,
-                    scope: this
-                }
-            }
-        });*/
-
-
     },
     
     initCalculatedValues: function(filter){
         var c = this.config.filterConfig;
-        var sliderType = c.sliderType;
-        this.createSlider(sliderType);
+        this.createSlider();
         var values = [];
         var min = 0, max = 0;
         // min/max zijn geldend
         // start waardes zijn alleen maar de values, niet de min/max
 
-        if (sliderType === "range") {
+        if (this.sliderType === "range") {
             c.start = c.start.split(",");
             var vals = c.start;
 
@@ -805,22 +786,33 @@ Ext.define("viewer.components.sf.Slider", {
             }else {
                 values[1] = vals[1];
             }
+        }else{
+            var vals = c.start;
 
-            if(c.min === "min"){
-                min = 0;
-                this.retrieveMinVal = true;
-            }else{
-                min = c.min;
-            }
-
-            if(c.max === "max"){
-                max = 0;
-                this.retrieveMaxVal = true;
-            }else{
-                max = c.max;
+            if(vals === "min"){
+                values[0] = 0;
+                this.retrieveStartMinVal = true;
+            }else if(vals === "max"){
+                values[0] = 0;
+                this.retrieveStartMaxVal = true;
+            }else {
+                values[0] = vals
             }
         }
 
+        if(c.min === "min"){
+            min = 0;
+            this.retrieveMinVal = true;
+        }else{
+            min = c.min;
+        }
+
+        if(c.max === "max"){
+            max = 0;
+            this.retrieveMaxVal = true;
+        }else{
+            max = c.max;
+        }
 
         this.slider.setMinValue(min);
         this.slider.setMaxValue(max);
@@ -833,13 +825,13 @@ Ext.define("viewer.components.sf.Slider", {
         }
     },
 
-    createSlider: function(type) {
+    createSlider: function() {
         if (!this.slider) {
             var n = this.config.name;
             this.slider = Ext.create('Ext.slider.Multi', {
                 id: n + "_extSlider",
                 width: "100%",
-                values: type === "range" ? [0,0] : [0],
+                values: this.sliderType === "range" ? [0,0] : [0],
                 increment: parseInt(this.config.filterConfig.step),
                 minValue: 1,
                 maxValue: 1,
@@ -860,18 +852,23 @@ Ext.define("viewer.components.sf.Slider", {
         var value = parseInt(response.value);
         var values = this.slider.getValue();
         var c = this.config.filterConfig;
+
         if(minOrMax === "#MAX#"){
             if(this.retrieveMaxVal){
                 this.slider.setMaxValue(value);
             }
 
             if(this.retrieveStartMaxVal){
-                values[1] = value;
+                values[(this.sliderType === "range" ? 1 : 0)] = value;
             }else{
                 if(this.retrieveMaxVal) {
                     // als de startwaarde niet wordt opgehaald, maar wel de grenswaarde, zal initieel de startwaarde op 0 staan doordat het wordt beperkt door de maxValue van de slider.
                     // zet daarom nogmaals de slider op de startwaarde
-                    values [1] = c.start[1];
+                    if(this.sliderType === "range"){
+                        values [1] = c.start[1];
+                    }else{
+                        values[0] = c.start;
+                    }
                 }
             }
         }
@@ -891,6 +888,7 @@ Ext.define("viewer.components.sf.Slider", {
                 }
             }
         }
+        this.startValues = values;
         this.slider.setValue(values);
     },
     applyFilter : function(){
@@ -906,7 +904,29 @@ Ext.define("viewer.components.sf.Slider", {
         this.setFilter(cql);
     },
     updateValueString : function (slider){
+        var formatString = this.config.filterConfig.valueFormatString;
+        if(!slider || !formatString){
+            return;
+        }
 
+        var name = this.config.name;
+        var value = slider.getValue();
+
+        var spanMin = name + "_min";
+        var spanMax = name + "_max";
+        var min = Ext.get(spanMin);
+        var max = Ext.get(spanMax);
+        if(this.sliderType === "range"){
+            min.dom.innerHTML = Ext.util.Format.number(value[0],formatString);
+            max.dom.innerHTML = Ext.util.Format.number(value[1],formatString);
+        }else{
+            var spanId = name+ "_value";
+            var span = Ext.get(spanId);
+            span.dom.innerHTML = Ext.util.Format.number(value,formatString);
+
+            min.dom.innerHTML = this.slider.minValue;
+            max.dom.innerHTML = this.slider.maxValue;
+        }
     },
     getCQL : function(){
         var cql = "";
@@ -929,7 +949,9 @@ Ext.define("viewer.components.sf.Slider", {
         }
         return cql;
     },
-    reset : function(){
+    reset: function () {
+        this.slider.setValue(this.startValues);
+        this.callParent();
     }
 });
 
