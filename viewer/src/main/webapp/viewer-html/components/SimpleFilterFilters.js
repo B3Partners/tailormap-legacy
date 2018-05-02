@@ -698,55 +698,50 @@ Ext.define("viewer.components.sf.Number", {
 
 Ext.define("viewer.components.sf.Slider", {
     extend: "viewer.components.sf.SimpleFilter",
+    slider:null,
+
+    retrieveStartMinVal: null,
+    retrieveStartMaxVal: null,
+    retrieveMinVal: null,
+    retrieveMaxVal: null,
+
     config: {
-        autoMinStart: null,
-        autoMaxStart: null,
-        simpleFilter: null,
-        slider: null
+        filterConfig: {
+            max: null,
+            min: null,
+            sliderType: null,
+            start: null,
+            step: null,
+            valueFormatString: null
+        }
     },
-    start:null,
     constructor: function(conf) {
         this.initConfig(conf);
         viewer.components.sf.Slider.superclass.constructor.call(this, this.config);
-
-        var filterChangeDelay = 500;
-
-        var c = JSON.parse(JSON.stringify(this.config.filterConfig));
+        var c = conf.filterConfig;
         var n = this.config.name;
-        
-        this.initCalculatedValues();
-        c.step = Number(c.step);
-        if (c.min === "") {
-            c.min = 0;
-        } else {
-            c.min = Number(c.min);
-        }
-        if (c.max === "") {
-            c.max = 1;
-        } else {
-            c.max = Number(c.max);
-        }
-        
+
         var templatecontents = [
             "<tr>",
-                "<td colspan=\"3\"><div id=\"{name}_slider\"></div></td>",
+            "<td colspan=\"3\"><div id=\"{name}_slider\"></div></td>",
             "</tr>"
         ];
+        var sliderType = c.sliderType;
         if(!Ext.isEmpty(c.valueFormatString)) {
-            if (c.sliderType === "range") {
+            if (sliderType === "range") {
                 templatecontents.push(
                     "<tr>",
-                        "<td><span id=\"{name}_min\"></span></td>",
-                        "<td></td>",
-                        "<td align=\"right\"><span id=\"{name}_max\">{value}</span></td>",
+                    "<td><span id=\"{name}_min\"></span></td>",
+                    "<td></td>",
+                    "<td align=\"right\"><span id=\"{name}_max\">{value}</span></td>",
                     "</tr>"
                 );
             } else {
                 templatecontents.push(
                     "<tr>",
-                        "<td width=\"33%\"><span id=\"{name}_minvalue\">{minvalue}</span></td>",
-                        "<td width=\"33%\" align=\"center\"><span id=\"{name}_value\">{value}</span></td>",
-                        "<td width=\"34%\" align=\"right\"><span id=\"{name}_maxvalue\">{maxvalue}</span></td>",
+                    "<td width=\"33%\"><span id=\"{name}_minvalue\">{minvalue}</span></td>",
+                    "<td width=\"33%\" align=\"center\"><span id=\"{name}_value\">{value}</span></td>",
+                    "<td width=\"34%\" align=\"right\"><span id=\"{name}_maxvalue\">{maxvalue}</span></td>",
                     "</tr>"
                 );
             }
@@ -754,128 +749,149 @@ Ext.define("viewer.components.sf.Slider", {
         var t = this.wrapSimpleFilter(c.label, templatecontents);
         new Ext.Template(t).append(this.config.container, {
             label: c.label,
-            name: this.config.name,
+            name: n,
             value: c.start,
             minvalue: c.min,
             maxvalue: c.max
         });
 
-        if(c.sliderType === "range") {
-            this.slider = Ext.create('Ext.slider.Multi', {
-                id: n + "_extSlider",
-                width: "100%",
-                values: [c.start[0], c.start[1]],
-                increment: c.step,
-                minValue: c.min,
-                maxValue: c.max,
-                constrainThumbs: true,
-                renderTo: n + "_slider",
-                listeners: {
-                    change: {
-                        fn: this.sliderChange,
-                        buffer: filterChangeDelay,
-                        scope: this
-                    }
-                }
-            });
-            this.updateValueString(this.slider);
-        } else if(c.sliderType === "eq" || c.sliderType === "gt" || c.sliderType === "lt" )  {
-            this.slider = Ext.create('Ext.slider.Single', {
-                id: n + "_extSlider",
-                width: "100%",
-                value: c.start,
-                increment: c.step,
-                minValue: c.min,
-                maxValue: c.max,
-                constrainThumbs: true,
-                renderTo: n + "_slider",
-                listeners: {
-                    change: {
-                        fn: this.sliderChange,
-                        buffer: filterChangeDelay,
-                        scope: this
-                    }
-                }
-            });
-        }
+        this.retrieveStartMinVal = false, this.retrieveStartMaxVal = false;
+        this.retrieveMinVal = false, this.retrieveMaxVal = false;
+        this.initCalculatedValues();
 
-        if(!this.autoStart){
-            this.sliderChange();
-        }
+      /*  this.slider = Ext.create('Ext.slider.Multi', {
+            id: n + "_extSlider",
+            width: "100%",
+            values: values,
+            increment: parseInt(c.step),
+            minValue: min,
+            maxValue: max,
+            constrainThumbs: true,
+            renderTo: n + "_slider",
+            listeners: {
+                change: {
+                    fn: this.sliderChange,
+                    buffer: 500,
+                    scope: this
+                }
+            }
+        });*/
+
+
     },
     
     initCalculatedValues: function(filter){
-        var autoMin = false, autoMax = false;
-        this.autoMinStart = false;
-        this.autoMaxStart = false;
-        this.autoStart = false;
-        
-        var c = JSON.parse(JSON.stringify(this.config.filterConfig));  //y is a clone of x
-        
-        if(c.min === "") {
-            this.getValues("#MIN#",filter);
-            autoMin = true;
-        } else {
-            c.min = Number(c.min);
-        }
-        if(c.max === "") {
-            this.getValues("#MAX#",filter);
-            autoMax = true;
-        } else {
-            c.max = Number(c.max);
-        }
-        
-        if(c.sliderType === "range") {
+        var c = this.config.filterConfig;
+        var sliderType = c.sliderType;
+        this.createSlider(sliderType);
+        var values = [];
+        var min = 0, max = 0;
+        // min/max zijn geldend
+        // start waardes zijn alleen maar de values, niet de min/max
+
+        if (sliderType === "range") {
             c.start = c.start.split(",");
-            if(c.start[0] === "min") {
-                this.autoMinStart = autoMin;
-                c.start[0] = c.min;
-            } else {
-                c.start[0] = Number(c.start[0]);
+            var vals = c.start;
+
+            if(vals[0] === "min"){
+                values[0] = 0;
+                this.retrieveStartMinVal = true;
+            }else {
+                values[0] = vals[0];
             }
-            if(c.start[1] === "max") {
-                this.autoMaxStart = autoMax;
-                c.start[1] = c.max;
-            } else {
-                c.start[1] = Number(c.start[1]);
+            if(vals[1] === "max"){
+                values[1] = 0;
+                this.retrieveStartMaxVal = true;
+            }else {
+                values[1] = vals[1];
             }
-        } else {
-            if(c.start === "min" || c.start === "max") {
-                this.autoStart = c.start;
-                c.start = c[c.start];
-            } else {
-                c.start = Number(c.start);
+
+            if(c.min === "min"){
+                min = 0;
+                this.retrieveMinVal = true;
+            }else{
+                min = c.min;
             }
+
+            if(c.max === "max"){
+                max = 0;
+                this.retrieveMaxVal = true;
+            }else{
+                max = c.max;
+            }
+        }
+
+
+        this.slider.setMinValue(min);
+        this.slider.setMaxValue(max);
+        this.slider.setValue(values);
+        if(this.retrieveMaxVal || this.retrieveStartMaxVal){
+            this.getValues("#MAX#", filter);
+        }
+        if(this.retrieveMinVal || this.retrieveStartMinVal){
+            this.getValues("#MIN#", filter);
+        }
+    },
+
+    createSlider: function(type) {
+        if (!this.slider) {
+            var n = this.config.name;
+            this.slider = Ext.create('Ext.slider.Multi', {
+                id: n + "_extSlider",
+                width: "100%",
+                values: type === "range" ? [0,0] : [0],
+                increment: parseInt(this.config.filterConfig.step),
+                minValue: 1,
+                maxValue: 1,
+                constrainThumbs: true,
+                renderTo: n + "_slider",
+                listeners: {
+                    change: {
+                        fn: this.sliderChange,
+                        buffer: 500,
+                        scope: this
+                    }
+                }
+            });
         }
     },
 
     updateValues: function(minOrMax, response) {
-        var value = Number(response.value);
-        if(minOrMax === "#MIN#") {
-            this.slider.setMinValue(value);
-        } else {
-            this.slider.setMaxValue(value);
+        var value = parseInt(response.value);
+        var values = this.slider.getValue();
+        var c = this.config.filterConfig;
+        if(minOrMax === "#MAX#"){
+            if(this.retrieveMaxVal){
+                this.slider.setMaxValue(value);
+            }
+
+            if(this.retrieveStartMaxVal){
+                values[1] = value;
+            }else{
+                if(this.retrieveMaxVal) {
+                    // als de startwaarde niet wordt opgehaald, maar wel de grenswaarde, zal initieel de startwaarde op 0 staan doordat het wordt beperkt door de maxValue van de slider.
+                    // zet daarom nogmaals de slider op de startwaarde
+                    values [1] = c.start[1];
+                }
+            }
         }
 
-        if(this.config.filterConfig.sliderType === "range") {
-            if(minOrMax === "#MIN#" && this.autoMinStart) {
-                this.start[0] = value;
-                this.slider.setValue(0, value, false);
+        if(minOrMax === "#MIN#"){
+            if(this.retrieveMinVal){
+                this.slider.setMinValue(value);
             }
-            if(minOrMax === "#MAX#" && this.autoMaxStart) {
-                this.start[1] = value;
-                this.slider.setValue(0, this.slider.getValue(0), false);
-                this.slider.setValue(1, value, false);
-            }
-        } else {
-            this.start = value;
-            if(this.autoStart === "min" && minOrMax === "#MIN#") {
-                this.slider.setValue( value);
-            }
-            if(this.autoStart === "max" && minOrMax === "#MAX#") {
-                this.slider.setValue(value);
+
+            if(this.retrieveStartMinVal){
+                values [0] = value;
+            }else{
+                if(this.retrieveMinVal) {
+                    // als de startwaarde niet wordt opgehaald, maar wel de grenswaarde, zal initieel de startwaarde op 0 staan doordat het wordt beperkt door de minValue van de slider.
+                    // zet daarom nogmaals de slider op de startwaarde
+                    values [0] = c.start[0];
+                }
             }
         }
+        this.slider.setValue(values);
     },
     applyFilter : function(){
         this.sliderChange();
@@ -890,26 +906,7 @@ Ext.define("viewer.components.sf.Slider", {
         this.setFilter(cql);
     },
     updateValueString : function (slider){
-        var formatString = this.config.filterConfig.valueFormatString;
-        if(!slider || !formatString){
-            return;
-        }
-        var slidername = slider.getName();
-        var name = slidername.substring(0,slidername.indexOf("_extSlider"));
-        var value = slider.getValue();
 
-        if(slider.$className === "Ext.slider.Multi"){
-            var spanMin = name + "_min";
-            var spanMax = name + "_max";
-            var min = Ext.get(spanMin);
-            var max = Ext.get(spanMax);
-            min.dom.innerHTML = Ext.util.Format.number(value[0],formatString);
-            max.dom.innerHTML = Ext.util.Format.number(value[1],formatString);
-        }else{
-            var spanId = name+ "_value";
-            var span = Ext.get(spanId);
-            span.dom.innerHTML = Ext.util.Format.number(value,formatString);
-        }
     },
     getCQL : function(){
         var cql = "";
@@ -933,15 +930,6 @@ Ext.define("viewer.components.sf.Slider", {
         return cql;
     },
     reset : function(){
-        if(this.config.filterConfig.sliderType === "range") {
-            this.slider.setValue(this.start[0]);
-            this.slider.setValue(this.start[1]);
-        }else{
-            this.slider.setValue(this.start);
-        }
-      //  this.initCalculatedValues();
-        this.callParent();
-        this.applyFilter();
     }
 });
 
