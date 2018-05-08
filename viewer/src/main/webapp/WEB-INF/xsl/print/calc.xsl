@@ -5,35 +5,42 @@
 	xmlns:svg="http://www.w3.org/2000/svg" exclude-result-prefixes="fo">
     <xsl:output method="xml" version="1.0" omit-xml-declaration="no" indent="yes"/>
 
-    <!-- berekent de breedte van de kaart in meters na correctie vanwege verschil
-	in verhouding hoogte/breedte kaart op scherm en van kaart in template -->
-    <xsl:template name="calc-bbox-width-m-corrected">
-        <xsl:param name="bbox"/>
+    <!-- berekent de bepaalt van de kaart indien opgegeven bij kaart, globaal opgegeven bij template
+		of raadt de schaal op basis van quality (werkt alleen indien niet aangepast -->
+    <xsl:template name="calc-local-scale">
+         <xsl:param name="bbox"/>
+        <xsl:param name="scale"/>
+        <xsl:param name="quality"/>
+			<xsl:choose>
+				<xsl:when test="$scale"><xsl:value-of select="$scale"/></xsl:when>
+				<xsl:when test="$global-scale"><xsl:value-of select="$global-scale"/></xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="guess-scale">
+						<xsl:with-param name="bbox" select="$bbox" />
+						<xsl:with-param name="quality" select="$quality" />
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
+    </xsl:template>
 
+    <xsl:template name="guess-scale">
+        <xsl:param name="bbox"/>
+        <xsl:param name="quality"/>
         <xsl:variable name="xmin" select="substring-before($bbox, ',')"/>
         <xsl:variable name="bbox1" select="substring-after($bbox, ',')"/>
-        <xsl:variable name="ymin" select="substring-before($bbox1, ',')"/>
         <xsl:variable name="bbox2" select="substring-after($bbox1, ',')"/>
         <xsl:variable name="xmax" select="substring-before($bbox2, ',')"/>
-        <xsl:variable name="ymax" select="substring-after($bbox2, ',')"/>
-        <xsl:variable name="bbox-width-m" select="$xmax - $xmin"/>
-        <xsl:variable name="bbox-height-m" select="$ymax - $ymin"/>
-        <xsl:variable name="bbox-ratio" select="($map-width-px * $bbox-height-m) div ($map-height-px * $bbox-width-m)"/>
-        <xsl:choose>
-            <xsl:when test="$bbox-ratio &gt; 1">
-                <xsl:value-of select="$bbox-width-m * $bbox-ratio"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:value-of select="$bbox-width-m"/>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
+        <xsl:variable name="bbox-width-m" select="$xmax -$xmin"/>
+        <!-- omrekening van pixels naar mm -->
+        <xsl:variable name="screen-width-mm" select="$quality div $ppm"/>
+		 		<xsl:value-of select="$bbox-width-m * 1000 div $screen-width-mm"/>
+	</xsl:template>
 
     <!-- berekent nieuwe bbox indien verhouding hoogte/breedte van kaart op scherm
-    anders is dan verhouding van kaart in template, kaart in template bevat minimaal
-    dekking van kaart op scherm, maar mogelijk meer -->
+    anders is dan verhouding van kaart in template, probeert schaal gelijk te houden -->
     <xsl:template name="correct-bbox">
         <xsl:param name="bbox"/>
+        <xsl:param name="scale"/>
 
         <xsl:variable name="xmin" select="substring-before($bbox, ',')"/>
         <xsl:variable name="bbox1" select="substring-after($bbox, ',')"/>
@@ -41,38 +48,34 @@
         <xsl:variable name="bbox2" select="substring-after($bbox1, ',')"/>
         <xsl:variable name="xmax" select="substring-before($bbox2, ',')"/>
         <xsl:variable name="ymax" select="substring-after($bbox2, ',')"/>
+		<xsl:call-template name="create-bbox">
+			<xsl:with-param name="xmin" select="$xmin"/>
+			<xsl:with-param name="ymin" select="$ymin"/>
+			<xsl:with-param name="xmax" select="$xmax"/>
+			<xsl:with-param name="ymax" select="$ymax"/>
+			<xsl:with-param name="bbox-width-m-corrected" select="($map-width-px div $ppm) * ($scale div 1000)"/>
+			<xsl:with-param name="bbox-height-m-corrected" select="($map-height-px div $ppm) * ($scale div 1000)"/>
+		</xsl:call-template>
+    </xsl:template>
+    
+    <xsl:template name="create-bbox">
+        <xsl:param name="xmin"/>
+        <xsl:param name="ymin"/>
+        <xsl:param name="xmax"/>
+        <xsl:param name="ymax"/>
+		<xsl:param name="bbox-width-m-corrected"/>
+		<xsl:param name="bbox-height-m-corrected"/>
         <xsl:variable name="xmid" select="($xmin + $xmax) div 2"/>
         <xsl:variable name="ymid" select="($ymin + $ymax) div 2"/>
-        <xsl:variable name="bbox-width-m" select="$xmax - $xmin"/>
-        <xsl:variable name="bbox-height-m" select="$ymax - $ymin"/>
-        <xsl:variable name="bbox-ratio" select="($map-width-px * $bbox-height-m) div ($map-height-px * $bbox-width-m)"/>
-        <xsl:choose>
-            <xsl:when test="$bbox-ratio = 1">
-                <xsl:value-of select="$bbox"/>
-            </xsl:when>
-            <xsl:when test="$bbox-ratio &gt; 1">
-                <xsl:variable name="bbox-width-m-corrected" select="$bbox-width-m * $bbox-ratio"/>
-                <xsl:value-of select="$xmid - ($bbox-width-m-corrected div 2)"/>
-                <xsl:text>,</xsl:text>
-                <xsl:value-of select="$ymin"/>
-                <xsl:text>,</xsl:text>
-                <xsl:value-of select="$xmid + ($bbox-width-m-corrected div 2)"/>
-                <xsl:text>,</xsl:text>
-                <xsl:value-of select="$ymax"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:variable name="bbox-height-m-corrected" select="$bbox-height-m div $bbox-ratio"/>
-                <xsl:value-of select="$xmin"/>
-                <xsl:text>,</xsl:text>
-                <xsl:value-of select="$ymid - ($bbox-height-m-corrected div 2)"/>
-                <xsl:text>,</xsl:text>
-                <xsl:value-of select="$xmax"/>
-                <xsl:text>,</xsl:text>
-                <xsl:value-of select="$ymid + ($bbox-height-m-corrected div 2)"/>
-            </xsl:otherwise>
-        </xsl:choose>
+		<xsl:value-of select="$xmid - ($bbox-width-m-corrected div 2)"/>
+		<xsl:text>,</xsl:text>
+		<xsl:value-of select="$ymid - ($bbox-height-m-corrected div 2)"/>
+		<xsl:text>,</xsl:text>
+		<xsl:value-of select="$xmid + ($bbox-width-m-corrected div 2)"/>
+		<xsl:text>,</xsl:text>
+		<xsl:value-of select="$ymid + ($bbox-height-m-corrected div 2)"/>
     </xsl:template>
-
+    	
 <!-- berekent en tekent de schaalstok, houdt rekening met echte schaal op kaart -->
     <xsl:template name="calc-scale">
         <xsl:param name="m-width"/>
