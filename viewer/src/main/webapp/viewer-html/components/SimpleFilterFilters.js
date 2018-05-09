@@ -374,6 +374,9 @@ Ext.define("viewer.components.sf.Checkbox", {
                 cql += this.config.attributeName +  operator + (mustEscape ? "'" : "")  + this.sanitizeValue(name,mustEscape) + (mustEscape ? "'" : "");
             }
         }
+        if(cql.length > 0 && this.options.length > 1){
+            cql = "(" + cql + ")";
+        }
         return cql;
     },
     reset : function(){
