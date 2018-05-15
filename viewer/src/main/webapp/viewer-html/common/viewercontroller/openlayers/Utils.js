@@ -309,6 +309,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
     defaultHandlerOptions: {
         'single': true,
         'double': false,
+        pixelTolerance: 10,
         'stopSingle': false,
         'stopDouble': false
     },
@@ -337,6 +338,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
         this.handler = new OpenLayers.Handler.Click(
             this, {
                 'click': this.onClick,
+                pixelTolerance: 10,
                 'dblclick': this.onDblclick
             }, this.handlerOptions
         );

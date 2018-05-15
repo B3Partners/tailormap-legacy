@@ -213,7 +213,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             this.wmsGetFeatureInfoControl.deactivate();
         }
     },
-    handleClick: function(tool,options){                
+    handleClick: function(tool,options){
         this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     }, 
     //called when wms layers return data.           
