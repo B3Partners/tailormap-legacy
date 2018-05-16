@@ -519,6 +519,32 @@ hier niet op gecontroleerd.'
                 value: usernameAttrValue
             }]
         });
+        var upload = true;
+
+        editPanelItems.push({
+            xtype: 'panel',
+            title: 'Upload',
+            itemId: 'upload-panel',
+            style: {
+                "margin-top": "5px"
+            },
+            items: [{
+                xtype: 'label',
+                text: 'Maak het mogelijk om bestanden te uploaden'
+            }, {
+                fieldLabel: 'Alleen keuze uit lijst', name: 'allowValueListOnly', inputValue: 1, checked: upload, xtype: 'checkbox'
+            }/* ,{
+                xtype: 'combobox',
+                store: attributeStore,
+                displayField: 'name',
+                queryMode: 'local',
+                hideMode: 'visibility',
+                fieldLabel: 'Attribuut',
+                itemId: 'ext_editfeature_usernameAttribute',
+                labelWidth: 150,
+                value: usernameAttrValue
+            }*/]
+        });
 
         return editPanelItems;
     },
