@@ -22,7 +22,10 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.print.*;
 import nl.b3p.viewer.util.FeaturePropertiesArrayHelper;
 import nl.b3p.viewer.util.FeatureToJson;
@@ -83,6 +86,11 @@ public class PrintActionBean implements ActionBean {
 
     public static final String FID = FeatureInfoActionBean.FID;
     private static final int TIMEOUT = 5000;
+
+    @Validate
+    private int maxrelatedfeatures = 10;
+    @Validate
+    private int maxFeatures = 500;
 
     @Validate
     private String params;
@@ -158,12 +166,11 @@ public class PrintActionBean implements ActionBean {
         }
 
         if (jRequest.has("includeAttributes") && jRequest.getBoolean("includeAttributes")){
-            JSONObject result = processAttributes(jRequest, em);
-
             if(!jRequest.has("extra")){
                 jRequest.put("extra", new JSONArray());
             }
-            jRequest.getJSONArray("extra").put(result);
+
+            processAttributes(jRequest, em, jRequest);
         }
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
@@ -308,14 +315,12 @@ public class PrintActionBean implements ActionBean {
         }       
     }
 
-    private JSONObject processAttributes(JSONObject req, EntityManager em){
-        JSONObject result = new JSONObject();
-        result.put("className","attributes");
-        result.put("componentName", "AttributeList");
-
+    private void processAttributes(JSONObject req, EntityManager em, JSONObject jRequest){
         JSONArray attrsObj = req.getJSONArray("attributesObject");
         JSONObject info = new JSONObject();
         for (int i = 0; i < attrsObj.length(); i++) {
+            JSONObject result = new JSONObject();
+            result.put("className","attributes");
 
             JSONObject obj = attrsObj.getJSONObject(i);
             Long appLayerId = obj.getLong("appLayer");
@@ -325,20 +330,25 @@ public class PrintActionBean implements ActionBean {
 
                 ApplicationLayer appLayer = em.find(ApplicationLayer.class,appLayerId);
                 Layer layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), em);
-                JSONArray features = getFeatures(appLayer, layer, filter, em);
-                JSONObject layerFeatures = new JSONObject();
+
+                SimpleFeatureType ft = layer.getFeatureType();
+                String l = appLayer.getDisplayName(em);
+                result.put("componentName", l);
+
+                JSONArray features = getFeatures(appLayer, layer, filter, em, jRequest);
 
                 info.put("al_" +appLayerId, features);
+                result.put("info", info);
+
+                jRequest.getJSONArray("extra").put(result);
             } catch (Exception e) {
                 log.error("Cannot retrieve attributes for appLayerId " + appLayerId, e);
             }
         }
-        result.put("info", info);
-        return result;
+
     }
 
-    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em) throws Exception {
-
+    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em, JSONObject params) throws Exception {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
         List<Long> attributesToInclude = new ArrayList<>();
@@ -348,20 +358,96 @@ public class PrintActionBean implements ActionBean {
         attrs.forEach((attr) -> {
             attributesToInclude.add(attr.getId());
         });
-        Filter filter = FlamingoCQL.toFilter(f, em);
-        Query q = new Query(fs.getName().toString(), filter);
-
+        Query q = null;
+        if(f != null ) {
+            Filter filter = FlamingoCQL.toFilter(f, em);
+            q = new Query(fs.getName().toString(), filter);
+        }else{
+            q = new Query(fs.getName().toString());
+        }
+        q.setMaxFeatures(maxFeatures);
         q.setHandle("PrintActionBean_attributes");
 
         FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
         JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
 
+        fs.getDataStore().dispose();
 
         for (int i = 0; i < features.length(); i++) {
             JSONArray jFeat = features.getJSONArray(i);
             FeaturePropertiesArrayHelper.removeKey(jFeat, FID);
             FeaturePropertiesArrayHelper.removeKey(jFeat, geomAttribute);
             FeaturePropertiesArrayHelper.removeKey(jFeat, "related_featuretypes");
+
+            // get related features and add to extra data
+            if (layer.getFeatureType().hasRelations()) {
+                String label;
+                ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude, true);
+                for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
+                    if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
+                        SimpleFeatureType fType = rel.getForeignFeatureType();
+                        label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
+                        log.debug("Processing related featuretype: " + label);
+
+                        List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
+                        String leftSide = keys.get(0).getLeftSide().getName();
+                        String rightSide = keys.get(0).getRightSide().getName();
+
+                        JSONObject info = new JSONObject();
+                        if (FeaturePropertiesArrayHelper.containsKey(jFeat, leftSide)) {
+                            String type = keys.get(0).getLeftSide().getExtJSType();
+                            String query = rightSide + "=";
+                            if (type.equalsIgnoreCase("string")
+                                    || type.equalsIgnoreCase("date")
+                                    || type.equalsIgnoreCase("auto")) {
+                                query += "'" + FeaturePropertiesArrayHelper.getByKey(jFeat, leftSide) + "'";
+                            } else {
+                                query += FeaturePropertiesArrayHelper.getByKey(jFeat, leftSide);
+                            }
+
+                            // collect related feature attributes
+                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, Stripersist.getEntityManager()));
+                            q.setMaxFeatures(this.maxrelatedfeatures + 1);
+                            q.setHandle("FeatureReportActionBean_related_attributes");
+                            log.debug("Related features query: " + q);
+
+                            fs = fType.openGeoToolsFeatureSource(TIMEOUT);
+                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+
+                            JSONArray jsonFeats = new JSONArray();
+                            int featureCount;
+                            int colCount = 0;
+                            int numFeats = relatedFeatures.length();
+                            int maxFeatures = Math.min(numFeats, this.maxrelatedfeatures);
+                            for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
+                                // remove FID
+                                JSONArray feat = relatedFeatures.getJSONArray(featureCount);
+                                FeaturePropertiesArrayHelper.removeKey(feat, FID);//.remove(FID);
+                                colCount = feat.length();
+                                jsonFeats.put(feat);
+                            }
+                            info.put("features", jsonFeats);
+                            info.putOnce("colCount", colCount);
+                            info.putOnce("rowCount", featureCount);
+
+                            if (numFeats > this.maxrelatedfeatures) {
+                                info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                            }
+                        } else {
+                            info.putOnce("errorMessage", "Kolom met naam '" + leftSide + "' moet beschikbaar zijn voor het ophalen van gerelateerde items.");
+                        }
+
+                        JSONObject related = new JSONObject();
+                        related.put("related_features", info);
+                        info.put("title", label);
+                        jFeat.put(related);
+
+                        log.debug("extra data: " + info);
+
+                        fs.getDataStore().dispose();
+                    }
+                }
+            }
         }
         return features;
     }
@@ -381,6 +467,22 @@ public class PrintActionBean implements ActionBean {
 
     public void setParams(String params) {
         this.params = params;
+    }
+
+    public int getMaxrelatedfeatures() {
+        return maxrelatedfeatures;
+    }
+
+    public void setMaxrelatedfeatures(int maxrelatedfeatures) {
+        this.maxrelatedfeatures = maxrelatedfeatures;
+    }
+
+    public int getMaxFeatures() {
+        return maxFeatures;
+    }
+
+    public void setMaxFeatures(int maxFeatures) {
+        this.maxFeatures = maxFeatures;
     }
     //</editor-fold>
 
