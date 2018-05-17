@@ -16,32 +16,44 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.*;
+import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
+import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.print.*;
+import nl.b3p.viewer.util.FeaturePropertiesArrayHelper;
+import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+import org.apache.xmlgraphics.util.MimeConstants;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.print.Legend;
-import nl.b3p.viewer.print.PrintExtraInfo;
-import nl.b3p.viewer.print.PrintGenerator;
-import nl.b3p.viewer.print.PrintInfo;
-import nl.b3p.viewer.print.PrintUtil;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
-import org.apache.xmlgraphics.util.MimeConstants;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -71,6 +83,15 @@ public class PrintActionBean implements ActionBean {
     public static final String LANDSCAPE = "landscape";
     public static final String PORTRAIT = "portrait";
     public static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", new Locale("NL"));
+
+    public static final String FID = FeatureInfoActionBean.FID;
+    private static final int TIMEOUT = 5000;
+
+    @Validate
+    private int maxrelatedfeatures = 10;
+    @Validate
+    private int maxFeatures = 500;
+
     @Validate
     private String params;
     
@@ -80,10 +101,11 @@ public class PrintActionBean implements ActionBean {
     public Resolution print() throws JSONException, Exception {
         boolean mailprint=false;
         JSONObject jRequest = new JSONObject(params);
-        
+
         //get the appId:
         Long appId = jRequest.optLong("appId");
-        Application app = Stripersist.getEntityManager().find(Application.class, appId);
+        EntityManager em = Stripersist.getEntityManager();
+        Application app = em.find(Application.class, appId);
         
         //get the image url:
         String imageUrl = PrintUtil.getImageUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId());
@@ -118,7 +140,6 @@ public class PrintActionBean implements ActionBean {
             info.setQuality(jRequest.getInt("quality"));
         }
         
-        /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
                 JSONArray jarray=null;
@@ -143,7 +164,14 @@ public class PrintActionBean implements ActionBean {
             }
             info.cacheLegendImagesAndReadDimensions();
         }
-        
+
+        if (jRequest.has("includeAttributes") && jRequest.getBoolean("includeAttributes")){
+            if(!jRequest.has("extra")){
+                jRequest.put("extra", new JSONArray());
+            }
+
+            processAttributes(jRequest, em, jRequest);
+        }
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;
@@ -286,6 +314,144 @@ public class PrintActionBean implements ActionBean {
             return A4_Portrait;
         }       
     }
+
+    private void processAttributes(JSONObject req, EntityManager em, JSONObject jRequest){
+        JSONArray attrsObj = req.getJSONArray("attributesObject");
+        JSONObject info = new JSONObject();
+        for (int i = 0; i < attrsObj.length(); i++) {
+            JSONObject result = new JSONObject();
+            result.put("className","attributes");
+
+            JSONObject obj = attrsObj.getJSONObject(i);
+            Long appLayerId = obj.getLong("appLayer");
+            try {
+                String filter = obj.optString("filter");
+                filter = filter.isEmpty() ? null : filter;
+
+                ApplicationLayer appLayer = em.find(ApplicationLayer.class,appLayerId);
+                Layer layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), em);
+
+                SimpleFeatureType ft = layer.getFeatureType();
+                String l = appLayer.getDisplayName(em);
+                result.put("componentName", l);
+
+                JSONArray features = getFeatures(appLayer, layer, filter, em, jRequest);
+
+                info.put("al_" +appLayerId, features);
+                result.put("info", info);
+
+                jRequest.getJSONArray("extra").put(result);
+            } catch (Exception e) {
+                log.error("Cannot retrieve attributes for appLayerId " + appLayerId, e);
+            }
+        }
+
+    }
+
+    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em, JSONObject params) throws Exception {
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+        List<Long> attributesToInclude = new ArrayList<>();
+        List<ConfiguredAttribute> attrs = appLayer.getAttributes(layer.getFeatureType(), true);
+        String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
+
+        attrs.forEach((attr) -> {
+            attributesToInclude.add(attr.getId());
+        });
+        Query q = null;
+        if(f != null ) {
+            Filter filter = FlamingoCQL.toFilter(f, em);
+            q = new Query(fs.getName().toString(), filter);
+        }else{
+            q = new Query(fs.getName().toString());
+        }
+        q.setMaxFeatures(maxFeatures);
+        q.setHandle("PrintActionBean_attributes");
+
+        FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
+        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
+
+        fs.getDataStore().dispose();
+
+        for (int i = 0; i < features.length(); i++) {
+            JSONArray jFeat = features.getJSONArray(i);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, FID);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, geomAttribute);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, "related_featuretypes");
+
+            // get related features and add to extra data
+            if (layer.getFeatureType().hasRelations()) {
+                String label;
+                ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude, true);
+                for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
+                    if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
+                        SimpleFeatureType fType = rel.getForeignFeatureType();
+                        label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
+                        log.debug("Processing related featuretype: " + label);
+
+                        List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
+                        String leftSide = keys.get(0).getLeftSide().getName();
+                        String rightSide = keys.get(0).getRightSide().getName();
+
+                        JSONObject info = new JSONObject();
+                        if (FeaturePropertiesArrayHelper.containsKey(jFeat, leftSide)) {
+                            String type = keys.get(0).getLeftSide().getExtJSType();
+                            String query = rightSide + "=";
+                            if (type.equalsIgnoreCase("string")
+                                    || type.equalsIgnoreCase("date")
+                                    || type.equalsIgnoreCase("auto")) {
+                                query += "'" + FeaturePropertiesArrayHelper.getByKey(jFeat, leftSide) + "'";
+                            } else {
+                                query += FeaturePropertiesArrayHelper.getByKey(jFeat, leftSide);
+                            }
+
+                            // collect related feature attributes
+                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, Stripersist.getEntityManager()));
+                            q.setMaxFeatures(this.maxrelatedfeatures + 1);
+                            q.setHandle("FeatureReportActionBean_related_attributes");
+                            log.debug("Related features query: " + q);
+
+                            fs = fType.openGeoToolsFeatureSource(TIMEOUT);
+                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+
+                            JSONArray jsonFeats = new JSONArray();
+                            int featureCount;
+                            int colCount = 0;
+                            int numFeats = relatedFeatures.length();
+                            int maxFeatures = Math.min(numFeats, this.maxrelatedfeatures);
+                            for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
+                                // remove FID
+                                JSONArray feat = relatedFeatures.getJSONArray(featureCount);
+                                FeaturePropertiesArrayHelper.removeKey(feat, FID);//.remove(FID);
+                                colCount = feat.length();
+                                jsonFeats.put(feat);
+                            }
+                            info.put("features", jsonFeats);
+                            info.putOnce("colCount", colCount);
+                            info.putOnce("rowCount", featureCount);
+
+                            if (numFeats > this.maxrelatedfeatures) {
+                                info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                            }
+                        } else {
+                            info.putOnce("errorMessage", "Kolom met naam '" + leftSide + "' moet beschikbaar zijn voor het ophalen van gerelateerde items.");
+                        }
+
+                        JSONObject related = new JSONObject();
+                        related.put("related_features", info);
+                        info.put("title", label);
+                        jFeat.put(related);
+
+                        log.debug("extra data: " + info);
+
+                        fs.getDataStore().dispose();
+                    }
+                }
+            }
+        }
+        return features;
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
         return context;
@@ -302,11 +468,23 @@ public class PrintActionBean implements ActionBean {
     public void setParams(String params) {
         this.params = params;
     }
+
+    public int getMaxrelatedfeatures() {
+        return maxrelatedfeatures;
+    }
+
+    public void setMaxrelatedfeatures(int maxrelatedfeatures) {
+        this.maxrelatedfeatures = maxrelatedfeatures;
+    }
+
+    public int getMaxFeatures() {
+        return maxFeatures;
+    }
+
+    public void setMaxFeatures(int maxFeatures) {
+        this.maxFeatures = maxFeatures;
+    }
     //</editor-fold>
 
 
-    
-
-
-    
 }
