@@ -1025,15 +1025,19 @@ Ext.define ("viewer.components.Print",{
             }
         }
         if(config.includeAttributes){
-            var attributeList = this.viewerController.getComponentsByClassName("viewer.components.AttributeList")[0];
-            var appLayer = attributeList.layerSelector.getValue();
-            var appLayerId = appLayer.id;
-            var filter = appLayer.filter ? appLayer.filter.getCQL() : null;
-            var attributesObject = {
-                appLayer : appLayerId,
-                filter: filter
-            };
-            config.attributesObject = [attributesObject];
+            var attributeList = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
+            if(attributeList) {
+                var appLayer = attributeList.layerSelector.getValue();
+                if (appLayer) {
+                    var appLayerId = appLayer.id;
+                    var filter = appLayer.filter ? appLayer.filter.getCQL() : null;
+                    var attributesObject = {
+                        appLayer: appLayerId,
+                        filter: filter
+                    };
+                    config.attributesObject = [attributesObject];
+                }
+            }
         }
         return config;
     },
