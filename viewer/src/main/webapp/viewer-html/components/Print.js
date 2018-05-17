@@ -1030,8 +1030,9 @@ Ext.define ("viewer.components.Print",{
             }
         }
         if(config.includeAttributes){
-            var attributeList = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
-            if(attributeList) {
+            var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
+            if(attributeLists.length > 0) {
+                var attributeList = attributeLists[0]
                 var appLayer = attributeList.layerSelector.getValue();
                 if (appLayer) {
                     var appLayerId = appLayer.id;
