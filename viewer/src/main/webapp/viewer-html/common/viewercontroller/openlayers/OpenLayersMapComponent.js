@@ -83,6 +83,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             defaultTool.setVisible(false);
             defaultTool.activate();
         }
+
+        var dummyVector = this.createVectorLayer({name:"DUMMYVECTOR_FOR_STUPID_PANIDENTIFYBUG", viewerController:this.viewerController});
+        this.getMap().addLayer(dummyVector);
     },
 
     /**

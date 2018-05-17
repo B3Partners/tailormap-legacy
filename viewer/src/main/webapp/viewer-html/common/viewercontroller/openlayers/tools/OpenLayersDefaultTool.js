@@ -51,7 +51,10 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
             handler: {
                     fn: this.handleClick,
                     scope: this
-                }
+                },
+            handlerOptions:{
+                pixelTolerance: 10
+            }
         });
         /* The default tool can be added by the mapcomponent.checkTools. It's added
          * when there is no other tool added. The layers are already added then, so 
