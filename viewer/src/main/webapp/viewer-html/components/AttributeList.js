@@ -317,7 +317,11 @@ Ext.define ("viewer.components.AttributeList",{
         if(this.grids.main){
             this.grids.main.getView().setLoading("Bezig met laden...");
         }
+<<<<<<< Updated upstream
         this.requestThresholdCounter =  setTimeout(function(){
+=======
+        this.requestThresholdCounter = setTimeout(function(){
+>>>>>>> Stashed changes
             me.requestThresholdCounter = null;
             me.retrieveAttributes(appLayer);
         }, this.config.requestThreshold);
