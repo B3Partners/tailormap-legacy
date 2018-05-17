@@ -16,32 +16,41 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.*;
+import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.print.*;
+import nl.b3p.viewer.util.FeaturePropertiesArrayHelper;
+import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+import org.apache.xmlgraphics.util.MimeConstants;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.print.Legend;
-import nl.b3p.viewer.print.PrintExtraInfo;
-import nl.b3p.viewer.print.PrintGenerator;
-import nl.b3p.viewer.print.PrintInfo;
-import nl.b3p.viewer.print.PrintUtil;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
-import org.apache.xmlgraphics.util.MimeConstants;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -71,6 +80,10 @@ public class PrintActionBean implements ActionBean {
     public static final String LANDSCAPE = "landscape";
     public static final String PORTRAIT = "portrait";
     public static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", new Locale("NL"));
+
+    public static final String FID = FeatureInfoActionBean.FID;
+    private static final int TIMEOUT = 5000;
+
     @Validate
     private String params;
     
@@ -80,10 +93,11 @@ public class PrintActionBean implements ActionBean {
     public Resolution print() throws JSONException, Exception {
         boolean mailprint=false;
         JSONObject jRequest = new JSONObject(params);
-        
+
         //get the appId:
         Long appId = jRequest.optLong("appId");
-        Application app = Stripersist.getEntityManager().find(Application.class, appId);
+        EntityManager em = Stripersist.getEntityManager();
+        Application app = em.find(Application.class, appId);
         
         //get the image url:
         String imageUrl = PrintUtil.getImageUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId());
@@ -118,7 +132,6 @@ public class PrintActionBean implements ActionBean {
             info.setQuality(jRequest.getInt("quality"));
         }
         
-        /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
                 JSONArray jarray=null;
@@ -143,7 +156,15 @@ public class PrintActionBean implements ActionBean {
             }
             info.cacheLegendImagesAndReadDimensions();
         }
-        
+
+        if (jRequest.has("includeAttributes") && jRequest.getBoolean("includeAttributes")){
+            JSONObject result = processAttributes(jRequest, em);
+
+            if(!jRequest.has("extra")){
+                jRequest.put("extra", new JSONArray());
+            }
+            jRequest.getJSONArray("extra").put(result);
+        }
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;
@@ -286,6 +307,65 @@ public class PrintActionBean implements ActionBean {
             return A4_Portrait;
         }       
     }
+
+    private JSONObject processAttributes(JSONObject req, EntityManager em){
+        JSONObject result = new JSONObject();
+        result.put("className","attributes");
+        result.put("componentName", "AttributeList");
+
+        JSONArray attrsObj = req.getJSONArray("attributesObject");
+        JSONObject info = new JSONObject();
+        for (int i = 0; i < attrsObj.length(); i++) {
+
+            JSONObject obj = attrsObj.getJSONObject(i);
+            Long appLayerId = obj.getLong("appLayer");
+            try {
+                String filter = obj.optString("filter");
+                filter = filter.isEmpty() ? null : filter;
+
+                ApplicationLayer appLayer = em.find(ApplicationLayer.class,appLayerId);
+                Layer layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), em);
+                JSONArray features = getFeatures(appLayer, layer, filter, em);
+                JSONObject layerFeatures = new JSONObject();
+
+                info.put("al_" +appLayerId, features);
+            } catch (Exception e) {
+                log.error("Cannot retrieve attributes for appLayerId " + appLayerId, e);
+            }
+        }
+        result.put("info", info);
+        return result;
+    }
+
+    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em) throws Exception {
+
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+        List<Long> attributesToInclude = new ArrayList<>();
+        List<ConfiguredAttribute> attrs = appLayer.getAttributes(layer.getFeatureType(), true);
+        String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
+
+        attrs.forEach((attr) -> {
+            attributesToInclude.add(attr.getId());
+        });
+        Filter filter = FlamingoCQL.toFilter(f, em);
+        Query q = new Query(fs.getName().toString(), filter);
+
+        q.setHandle("PrintActionBean_attributes");
+
+        FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
+        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
+
+
+        for (int i = 0; i < features.length(); i++) {
+            JSONArray jFeat = features.getJSONArray(i);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, FID);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, geomAttribute);
+            FeaturePropertiesArrayHelper.removeKey(jFeat, "related_featuretypes");
+        }
+        return features;
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
         return context;
@@ -305,8 +385,4 @@ public class PrintActionBean implements ActionBean {
     //</editor-fold>
 
 
-    
-
-
-    
 }
