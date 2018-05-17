@@ -311,6 +311,9 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         Ext.Error.raise({msg: "Map.getScale() Not implemented! Must be implemented in sub-class"});
     },
 
+    getActualScale: function(){
+        Ext.Error.raise({msg: "Map.getScale() Not implemented! Must be implemented in sub-class"});
+    },
     /**
      * Gets the resolution of this map
      * @return The current resolution of this map

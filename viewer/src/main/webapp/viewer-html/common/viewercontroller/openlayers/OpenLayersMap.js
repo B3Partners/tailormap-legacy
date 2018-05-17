@@ -399,6 +399,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     getScale : function(){
         return this.getResolution();
     },
+    getActualScale: function(){
+        var curScale = OpenLayers.Util.getScaleFromResolution(this.getResolution(), this.units);
+        return  Math.round( curScale  );;
+    },
     
     /**
     *See @link Map.getResolution

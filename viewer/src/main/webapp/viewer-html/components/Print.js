@@ -53,7 +53,7 @@ Ext.define ("viewer.components.Print",{
         useA5: false,
         details: {
             minWidth: 550,
-            minHeight: 575
+            minHeight: 650
         }
     },
     /**
@@ -432,8 +432,13 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'checkbox',
                                 name: 'includeAttributes',
                                 inputValue: true,
-                                checked:true,
+                                checked:false,
                                 boxLabel: 'Attributen toevoegen'
+                            },{
+                                name: 'scale',
+                                fieldLabel: 'Schaal',
+                                xtype:"textfield",
+                                value: this.config.viewerController.mapComponent.getMap().getActualScale()
                             },{
                                 xtype: 'checkbox',
                                 name: 'includeOverview',

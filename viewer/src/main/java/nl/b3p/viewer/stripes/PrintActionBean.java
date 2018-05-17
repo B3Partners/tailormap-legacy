@@ -139,6 +139,10 @@ public class PrintActionBean implements ActionBean {
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
         }
+
+        if(jRequest.has("scale")){
+            info.setScale(jRequest.optString("scale"));
+        }
         
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
