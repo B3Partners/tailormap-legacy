@@ -17,7 +17,6 @@
 /* global Ext, MobileManager, actionBeans */
 /**
  * Print component
- * Creates a AttributeList component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 /* Modified: 2014, Eddy Scheper, ARIS B.V.
@@ -429,6 +428,12 @@ Ext.define ("viewer.components.Print",{
                                         scope:this
                                     }
                                 }
+                            },{
+                                xtype: 'checkbox',
+                                name: 'includeAttributes',
+                                inputValue: true,
+                                checked:true,
+                                boxLabel: 'Attributen toevoegen'
                             },{
                                 xtype: 'checkbox',
                                 name: 'includeOverview',
@@ -1018,6 +1023,17 @@ Ext.define ("viewer.components.Print",{
                 config.overview.extent = overview.config.lox + "," + overview.config.loy + "," + overview.config.rbx + "," + overview.config.rby;
                 config.overview.protocol = url.toLowerCase().indexOf("getmap") > 0 ? 'WMS' : 'IMAGE';
             }
+        }
+        if(config.includeAttributes){
+            var attributeList = this.viewerController.getComponentsByClassName("viewer.components.AttributeList")[0];
+            var appLayer = attributeList.layerSelector.getValue();
+            var appLayerId = appLayer.id;
+            var filter = appLayer.filter ? appLayer.filter.getCQL() : null;
+            var attributesObject = {
+                appLayer : appLayerId,
+                filter: filter
+            };
+            config.attributesObject = [attributesObject];
         }
         return config;
     },
