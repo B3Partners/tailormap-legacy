@@ -79,6 +79,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.defaultIcon = {};
         this.markerIcons = {
             "default": FlamingoAppLoader.get('contextPath') + '/viewer-html/common/openlayers/img/marker.png',
+            "circle": FlamingoAppLoader.get('contextPath') + '/resources/images/circle.svg',
             "spinner": FlamingoAppLoader.get('contextPath') + '/resources/images/spinner.gif'
         };
         this.markers=new Object();
@@ -262,7 +263,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     *see @link Map.setMarker
     *TODO: marker icon path...
     */
-    setMarker : function(markerName,x,y,type){
+    setMarker : function(markerName,x,y,type,pxSize){
         if (this.markerLayer===null){
             this.markerLayer = new OpenLayers.Layer.Markers("Markers");
             this.frameworkMap.addLayer(this.markerLayer);
@@ -271,7 +272,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             type = "default";
         }
         if(!Ext.isDefined(this.defaultIcon[type])){
-            var size = new OpenLayers.Size(17,17);
+            pxSize = pxSize || 17;
+            var size = new OpenLayers.Size(pxSize,pxSize);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
             var icon = this.markerIcons.hasOwnProperty(type) ? this.markerIcons[type] : this.markerIcons['default'];
             this.defaultIcon [type] =  new OpenLayers.Icon(icon, size, offset);

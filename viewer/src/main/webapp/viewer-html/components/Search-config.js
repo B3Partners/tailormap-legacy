@@ -47,6 +47,20 @@ Ext.define("viewer.components.SearchConfiguration",{
                 marginRight: "90px"
             }
         });
+        this.form.add({
+            xtype: "combobox",
+            fields: ['value','text'],
+            fieldLabel: "Type marker",
+            value: this.configObject.marker ? this.configObject.marker : "default",
+            name: "marker",
+            emptyText:'Maak uw keuze',
+            store: [
+                ["default","Standaard marker"],
+                ["circle","Cirkel"],
+                ["none","Geen marker"]
+            ],
+            labelWidth: this.labelWidth
+        });
         this.initSearchconfigs(configObject);
     },
     initSearchconfigs: function(config) {
