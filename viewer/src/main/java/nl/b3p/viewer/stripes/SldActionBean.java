@@ -558,7 +558,11 @@ public class SldActionBean implements ActionBean {
                     json.put("success", Boolean.TRUE);
                 }
             }else{
-                error="No filter to transform or no applicationlayer";
+                log.debug("No filter to transform or no applicationlayer, removing existing filter.");
+                String sId = context.getRequest().getSession().getId();
+                Map<String, String> sharedData = SharedSessionData.find(sId);
+                sharedData.remove(applicationLayer.getId().toString());
+                json.put("success", Boolean.TRUE);
             }
         }catch(Exception e){
             log.error("Error while reformating filter",e);

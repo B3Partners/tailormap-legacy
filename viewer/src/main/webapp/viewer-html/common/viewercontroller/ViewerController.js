@@ -1517,31 +1517,29 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(!appLayer.filter){
             appLayer.filter = Ext.create("viewer.components.CQLFilterWrapper", { id: "", cql: "", operator : "" });
         }
-        if(appLayer.filter.getCQL() && appLayer.filter.getCQL() !== ""){
-            var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
-            Ext.create("viewer.SLD",{
-                actionbeanUrl : url
-            })
-            .transformFilter(appLayer.filter.getCQL(),appLayer.id,
-                function(newFilter, hash, sessionId){
+        var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
+        Ext.create("viewer.SLD", {
+            actionbeanUrl: url
+        }).transformFilter(appLayer.filter.getCQL(), appLayer.id,
+            function (newFilter, hash, sessionId) {
+                if (appLayer.filter.getCQL() && appLayer.filter.getCQL() !== "") {
                     //success
-                    var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper",{
+                    var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper", {
                         id: "",
                         cql: newFilter,
-                        operator : ""
+                        operator: ""
                     });
-                    //cqlBandage.addOrReplace(newFilter);
                     mapLayer.setQuery(cqlBandage, hash, sessionId);
-                    me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,null,appLayer);
-                },function(message){
-                    //failure
-                    me.logger.error("Error while transforming SLD for joined/related featuretypes: "+ message);
+
+                } else {
+                    mapLayer.setQuery(appLayer.filter);
                 }
-            );
-        }else{
-            mapLayer.setQuery(appLayer.filter);
-            this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
-        }
+                me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED, appLayer.filter, appLayer);
+            }, function (message) {
+                //failure
+                me.logger.error("Error while transforming SLD for joined/related featuretypes: " + message);
+            }
+        );
     },
 
     /**

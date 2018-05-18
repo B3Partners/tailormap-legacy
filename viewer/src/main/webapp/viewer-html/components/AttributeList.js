@@ -794,14 +794,10 @@ Ext.define ("viewer.components.AttributeList",{
     download : function(){
         var appLayer = this.appLayer;
         var filter = "";
-        if(appLayer.filter){
-            filter=appLayer.filter.getCQL();
-        }
         var url =  actionBeans["download"];
 
         url += '?appLayer=' + appLayer.id;
         url += '&application=' + FlamingoAppLoader.get("appId");
-        url += '&filter=' + encodeURIComponent(filter);
         url += '&type=' + Ext.getCmp("downloadType").getValue();
         url += '&params=' + this.config.downloadParams;
 
