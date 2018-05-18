@@ -772,28 +772,24 @@ Ext.define('viewer.LayoutManager', {
     },
 
     alignFloatingPanel: function(panel) {
+        var alignmentParent = null;
+        var centerpart = Ext.select('.layout-content');
+        if(centerpart.elements.length !== 0) {
+            alignmentParent = centerpart.elements[0];
+        } else {
+            alignmentParent = Ext.getBody();
+        }
         // Default alignment = top-left
         var extAlignment = 'tl';
-        // Default parent = body
-        var alignmentParent = Ext.getBody();
-        // Default position = 10, 10
-        var extAlignmentPos = [10, 10];
         // Special settings for right alignment
         if(panel.alignment === 'right') {
             extAlignment = 'tr';
-        }
-        // Special settings for center alignment
-        if(panel.alignment === 'center') {
-            var centerpart = Ext.select('.layout-content');
-            if(centerpart.elements.length !== 0) {
-                alignmentParent = centerpart.elements[0];
-            }
-            extAlignmentPos = [5, 5];
         }
         // Direct setting of extAlignment
         if(panel.extAlignment) {
             extAlignment = panel.extAlignment;
         }
+        var extAlignmentPos = [5, 5];
         // If right aligned, first pos needs to be negative
         if(extAlignment.substr(1) === 'r') {
             extAlignmentPos[0] = extAlignmentPos[0] * -1;
