@@ -15,7 +15,12 @@
     <xsl:param name="versionParam" select="'1.0'"/>
 
     <xsl:variable name="map-width-px" select="'940'"/>
-    <xsl:variable name="map-height-px" select="'660'"/>
+    <xsl:variable name="map-height-px" select="'661'"/>
+
+		<!-- laat deze waarde leeg indien geen vaste schaal -->
+		<xsl:variable name="global-scale" select="''"/>
+		<!-- omrekening van pixels naar mm -->
+    <xsl:variable name="ppm" select="'2.8'"/>
 
     <!-- See legend.xsl (does not currently affect size of other elements!) -->
     <xsl:variable name="legend-width-cm" select="5.6"/>
@@ -101,12 +106,15 @@
 			</fo:block>
 
 			<fo:block>
+				<xsl:variable name="local-scale">
+					<xsl:call-template name="calc-local-scale">
+						<xsl:with-param name="bbox" select="bbox" />
+						<xsl:with-param name="scale" select="scale" />
+						<xsl:with-param name="quality" select="quality" />
+					</xsl:call-template>
+				</xsl:variable>
 				<xsl:call-template name="calc-scale">
-					<xsl:with-param name="m-width">
-						<xsl:call-template name="calc-bbox-width-m-corrected">
-							<xsl:with-param name="bbox" select="bbox"/>
-						</xsl:call-template>
-					</xsl:with-param>
+					<xsl:with-param name="m-width" select="($map-width-px div $ppm) * ($local-scale div 1000)"/>
 					<xsl:with-param name="px-width" select="$map-width-px"/>
 				</xsl:call-template>
 			</fo:block>
@@ -129,14 +137,22 @@
 
     <!-- kaartje -->
     <xsl:template name="map-block">
+				<xsl:variable name="local-scale">
+					<xsl:call-template name="calc-local-scale">
+						<xsl:with-param name="bbox" select="bbox" />
+						<xsl:with-param name="scale" select="scale" />
+						<xsl:with-param name="quality" select="quality" />
+					</xsl:call-template>
+	    	</xsl:variable>    	
         <xsl:variable name="bbox-corrected">
             <xsl:call-template name="correct-bbox">
                 <xsl:with-param name="bbox" select="bbox" />
+                <xsl:with-param name="scale" select="$local-scale" />
             </xsl:call-template>
         </xsl:variable>
         <xsl:variable name="px-ratio" select="format-number($map-height-px div $map-width-px,'0.##','MyFormat')" />
-        <xsl:variable name="map-height-px-corrected" select="quality"/>
-        <xsl:variable name="map-width-px-corrected" select="format-number(quality div $px-ratio,'0','MyFormat')"/>
+        <xsl:variable name="map-width-px-corrected" select="quality"/>
+        <xsl:variable name="map-height-px-corrected" select="format-number(quality * $px-ratio,'0','MyFormat')"/>
         <xsl:variable name="map">
             <xsl:value-of select="imageUrl"/>
             <xsl:text>&amp;width=</xsl:text>

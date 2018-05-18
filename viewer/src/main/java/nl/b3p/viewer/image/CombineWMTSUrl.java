@@ -54,7 +54,7 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
             TileMatrix tm = set.getMatrices().get(zoomlevel);
             return url + "request=GetTile&version=1.0.0&format=image/png&SERVICE=WMTS&layer=" + getLayername() + "&TileMatrixSet="
                     + URLEncoder.encode(set.getIdentifier(), "UTF-8") + "&TileRow=" + indexY + "&TileCol=" + indexX
-                    + "&TileMatrix=" + URLEncoder.encode(tm.getIdentifier(), "UTF-8");
+                    + "&TileMatrix=" + URLEncoder.encode(tm.getIdentifier(), "UTF-8") + "&STYLE=default";
         } catch (UnsupportedEncodingException ex) {
             log.error("Cannot encode url");
             return null;
