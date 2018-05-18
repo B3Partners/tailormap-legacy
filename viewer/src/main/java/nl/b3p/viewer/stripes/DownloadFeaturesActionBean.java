@@ -57,6 +57,7 @@ import nl.b3p.viewer.features.ShapeDownloader;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.FlamingoCQL;
+import nl.b3p.web.SharedSessionData;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -106,9 +107,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
     @Validate
     private int limit;
-
-    @Validate
-    private String filter;
 
     @Validate
     private boolean debug;
@@ -178,14 +176,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
         this.limit = limit;
     }
 
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
     public boolean isDebug() {
         return debug;
     }
@@ -231,7 +221,9 @@ public class DownloadFeaturesActionBean implements ActionBean {
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
-
+        String sId = context.getRequest().getSession().getId();
+        Map<String, String> sharedData = SharedSessionData.find(sId);
+        String filter = sharedData.get(appLayer.getId().toString());
         File output = null;
         try {
             if (featureType != null || (layer != null && layer.getFeatureType() != null)) {
@@ -252,7 +244,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
                 final Query q = new Query(fs.getName().toString());
 
-                setFilter(q, ft, Stripersist.getEntityManager());
+                setFilter(filter, q, ft, Stripersist.getEntityManager());
 
                 Map<String, AttributeDescriptor> featureTypeAttributes = new HashMap<String, AttributeDescriptor>();
                 featureTypeAttributes = makeAttributeDescriptorList(ft);
@@ -382,7 +374,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
         return featureTypeAttributes;
     }
 
-    private void setFilter(Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
+    private void setFilter(String filter, Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
             Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter) f.accept(new RemoveDistanceUnit(), null);
@@ -397,7 +389,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
      *
      * @param q the query on which the sort is added
      * @param sort the name of the sort column
-     * @param dir sorting direction DESC or ASC
      */
     private void setSortBy(Query q, String sort) {
         FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
