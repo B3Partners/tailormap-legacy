@@ -210,6 +210,7 @@ Ext.define ("viewer.components.Print",{
         if (restart){
             this.redrawPreview();
             this.createLegendSelector();
+            Ext.ComponentQuery.query('#scale')[0].setValue(this.config.viewerController.mapComponent.getMap().getActualScale());
         }
     },
     /**
@@ -436,6 +437,7 @@ Ext.define ("viewer.components.Print",{
                                 boxLabel: 'Attributen toevoegen'
                             },{
                                 name: 'scale',
+                                itemId: 'scale',
                                 fieldLabel: 'Schaal',
                                 xtype:"textfield",
                                 value: this.config.viewerController.mapComponent.getMap().getActualScale()
