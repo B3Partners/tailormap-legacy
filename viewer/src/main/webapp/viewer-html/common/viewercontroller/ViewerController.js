@@ -153,11 +153,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
 
-        // Listen for orientation changes
-        if(window.onorientationchange && window.addEventListener) {
+        // Listen for resize & orientation changes
+        if(window.addEventListener) {
             window.addEventListener("orientationchange", (function() {
                 this.resizeComponents(true);
             }).bind(this), false);
+            window.addEventListener('resize', (function() {
+                this.resizeComponents(true);
+            }).bind(this));
         }
         Ext.on('resize', function () {
             this.resizeComponents(true);
