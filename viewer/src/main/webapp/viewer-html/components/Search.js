@@ -57,6 +57,10 @@ Ext.define ("viewer.components.Search",{
     showSearchButtons: true,
     simpleSearchResults: false,
     searchFieldTriggers: null,
+    markerSizes: {
+        circle: 25,
+        default: 17
+    },
     config:{
         title: null,
         iconUrl: null,
@@ -64,6 +68,7 @@ Ext.define ("viewer.components.Search",{
         searchconfigs: null,
         formHeight:null,
         label: "",
+        marker: "default",
         //not yet configurable:
         showRemovePin: true,
         details: {
@@ -585,8 +590,11 @@ Ext.define ("viewer.components.Search",{
         result.x = (result.location.maxx + result.location.minx) / 2;
         result.y = (result.location.maxy + result.location.miny) / 2;
         this.config.viewerController.mapComponent.getMap().zoomToExtent(result.location);
+        if(this.config.marker === "none") {
+            return;
+        }
         this.config.viewerController.mapComponent.getMap().removeMarker("searchmarker");
-        this.config.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y,"marker");
+        this.config.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y, this.config.marker, this.markerSizes[this.config.marker] || 17);
         
         var type = this.getCurrentSearchType(result);
         if(type === "solr"){
