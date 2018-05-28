@@ -78,8 +78,21 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.markerLayer=null;
         this.defaultIcon = {};
         this.markerIcons = {
-            "default": FlamingoAppLoader.get('contextPath') + '/viewer-html/common/openlayers/img/marker.png',
-            "spinner": FlamingoAppLoader.get('contextPath') + '/resources/images/spinner.gif'
+            "default": {
+                "icon": FlamingoAppLoader.get('contextPath') + '/viewer-html/common/openlayers/img/marker.png',
+                "defaultSize": 17,
+                "align": "bottom"
+            },
+            "circle": {
+                "icon": FlamingoAppLoader.get('contextPath') + '/resources/images/circle.svg',
+                "defaultSize": 25,
+                "align": "center"
+            },
+            "spinner": {
+                "icon": FlamingoAppLoader.get('contextPath') + '/resources/images/spinner.gif',
+                "defaultSize": 17,
+                "align": "bottom"
+            }
         };
         this.markers=new Object();
         this.getFeatureInfoControl = null;
@@ -271,10 +284,14 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             type = "default";
         }
         if(!Ext.isDefined(this.defaultIcon[type])){
-            var size = new OpenLayers.Size(17,17);
+            var marker = this.markerIcons.hasOwnProperty(type) ? this.markerIcons[type] : this.markerIcons['default'];
+            var pxSize = marker.defaultSize || 17;
+            var size = new OpenLayers.Size(pxSize,pxSize);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-            var icon = this.markerIcons.hasOwnProperty(type) ? this.markerIcons[type] : this.markerIcons['default'];
-            this.defaultIcon [type] =  new OpenLayers.Icon(icon, size, offset);
+            if(marker.align === "center") {
+                offset = new OpenLayers.Pixel(-(size.w/2), -(size.h/2));
+            }
+            this.defaultIcon [type] =  new OpenLayers.Icon(marker.icon, size, offset);
         }
         var defaultIcon = this.defaultIcon[type];
         var icon= defaultIcon.clone();
@@ -398,6 +415,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     */
     getScale : function(){
         return this.getResolution();
+    },
+    getActualScale: function(){
+        var curScale = OpenLayers.Util.getScaleFromResolution(this.getResolution(), this.units);
+        return  Math.round( curScale  );;
     },
     
     /**

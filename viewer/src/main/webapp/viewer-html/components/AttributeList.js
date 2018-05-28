@@ -311,13 +311,13 @@ Ext.define ("viewer.components.AttributeList",{
     },
     loadAttributes: function(appLayer) {
         var me = this;
-        if(this.requestThresholdCounter){
+        if (this.requestThresholdCounter) {
             clearTimeout(this.requestThresholdCounter);
         }
-        if(this.grids.main){
+        if (this.grids.main) {
             this.grids.main.getView().setLoading("Bezig met laden...");
         }
-        this.requestThresholdCounter =  setTimeout(function(){
+        this.requestThresholdCounter = setTimeout(function(){
             me.requestThresholdCounter = null;
             me.retrieveAttributes(appLayer);
         }, this.config.requestThreshold);
@@ -363,12 +363,14 @@ Ext.define ("viewer.components.AttributeList",{
             this.download();
         }
     },
-    filterChanged : function (filter,appLayer){
-        if (this.layerSelector !== null){
-            var selectedLayer = this.layerSelector.getValue();
-            if(selectedLayer){
-                if(selectedLayer.id == appLayer.id){
-                   this.loadAttributes(appLayer);
+    filterChanged : function (filter,appLayer) {
+        if (!Ext.Object.isEmpty(this.grids)) {
+            if (this.layerSelector !== null) {
+                var selectedLayer = this.layerSelector.getValue();
+                if (selectedLayer) {
+                    if (selectedLayer.id == appLayer.id) {
+                        this.loadAttributes(appLayer);
+                    }
                 }
             }
         }
@@ -792,14 +794,10 @@ Ext.define ("viewer.components.AttributeList",{
     download : function(){
         var appLayer = this.appLayer;
         var filter = "";
-        if(appLayer.filter){
-            filter=appLayer.filter.getCQL();
-        }
         var url =  actionBeans["download"];
 
         url += '?appLayer=' + appLayer.id;
         url += '&application=' + FlamingoAppLoader.get("appId");
-        url += '&filter=' + encodeURIComponent(filter);
         url += '&type=' + Ext.getCmp("downloadType").getValue();
         url += '&params=' + this.config.downloadParams;
 

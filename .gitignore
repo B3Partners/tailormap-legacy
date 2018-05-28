@@ -10,3 +10,5 @@ dependency-updates.log
 plugin-updates.log
 vuln-check.log
 /viewer/nbproject/
+/.idea/
+*.iml

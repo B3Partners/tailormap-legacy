@@ -17,7 +17,6 @@
 /* global Ext, MobileManager, actionBeans */
 /**
  * Print component
- * Creates a AttributeList component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 /* Modified: 2014, Eddy Scheper, ARIS B.V.
@@ -54,7 +53,7 @@ Ext.define ("viewer.components.Print",{
         useA5: false,
         details: {
             minWidth: 550,
-            minHeight: 575
+            minHeight: 650
         }
     },
     /**
@@ -211,6 +210,7 @@ Ext.define ("viewer.components.Print",{
         if (restart){
             this.redrawPreview();
             this.createLegendSelector();
+            Ext.ComponentQuery.query('#scale')[0].setValue(this.config.viewerController.mapComponent.getMap().getActualScale());
         }
     },
     /**
@@ -429,6 +429,18 @@ Ext.define ("viewer.components.Print",{
                                         scope:this
                                     }
                                 }
+                            },{
+                                xtype: 'checkbox',
+                                name: 'includeAttributes',
+                                inputValue: true,
+                                checked:false,
+                                boxLabel: 'Attributen toevoegen'
+                            },{
+                                name: 'scale',
+                                itemId: 'scale',
+                                fieldLabel: 'Schaal',
+                                xtype:"textfield",
+                                value: this.config.viewerController.mapComponent.getMap().getActualScale()
                             },{
                                 xtype: 'checkbox',
                                 name: 'includeOverview',
@@ -1017,6 +1029,22 @@ Ext.define ("viewer.components.Print",{
                 config.overview.overviewUrl = url;
                 config.overview.extent = overview.config.lox + "," + overview.config.loy + "," + overview.config.rbx + "," + overview.config.rby;
                 config.overview.protocol = url.toLowerCase().indexOf("getmap") > 0 ? 'WMS' : 'IMAGE';
+            }
+        }
+        if(config.includeAttributes){
+            var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
+            if(attributeLists.length > 0) {
+                var attributeList = attributeLists[0]
+                var appLayer = attributeList.layerSelector.getValue();
+                if (appLayer) {
+                    var appLayerId = appLayer.id;
+                    var filter = appLayer.filter ? appLayer.filter.getCQL() : null;
+                    var attributesObject = {
+                        appLayer: appLayerId,
+                        filter: filter
+                    };
+                    config.attributesObject = [attributesObject];
+                }
             }
         }
         return config;

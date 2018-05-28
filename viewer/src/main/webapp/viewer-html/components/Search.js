@@ -64,6 +64,7 @@ Ext.define ("viewer.components.Search",{
         searchconfigs: null,
         formHeight:null,
         label: "",
+        marker: "default",
         //not yet configurable:
         showRemovePin: true,
         details: {
@@ -260,7 +261,7 @@ Ext.define ("viewer.components.Search",{
                         specialkey: function(field, e){
                             if (e.getKey() === e.ENTER) {
                                 var item = null;
-                                if(field.picker && field.picker.highlightedItem){
+                                if(field.picker && field.picker.highlightedItem && !me.simpleSearchResults){
                                     item = field.picker.highlightedItem;
                                 }
                                 if(!item){
@@ -585,8 +586,11 @@ Ext.define ("viewer.components.Search",{
         result.x = (result.location.maxx + result.location.minx) / 2;
         result.y = (result.location.maxy + result.location.miny) / 2;
         this.config.viewerController.mapComponent.getMap().zoomToExtent(result.location);
+        if(this.config.marker === "none") {
+            return;
+        }
         this.config.viewerController.mapComponent.getMap().removeMarker("searchmarker");
-        this.config.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y,"marker");
+        this.config.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y, this.config.marker);
         
         var type = this.getCurrentSearchType(result);
         if(type === "solr"){
