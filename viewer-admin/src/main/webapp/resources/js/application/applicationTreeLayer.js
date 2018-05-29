@@ -519,7 +519,12 @@ hier niet op gecontroleerd.'
                 value: usernameAttrValue
             }]
         });
-        var upload = true;
+
+
+        var upload = false;
+        if (Ext.get('details_editfeature_uploadDocument')){
+            upload = Ext.get('details_editfeature_uploadDocument').getValue();
+        }
 
         editPanelItems.push({
             xtype: 'panel',
@@ -532,18 +537,13 @@ hier niet op gecontroleerd.'
                 xtype: 'label',
                 text: 'Maak het mogelijk om bestanden te uploaden'
             }, {
-                fieldLabel: 'Alleen keuze uit lijst', name: 'allowValueListOnly', inputValue: 1, checked: upload, xtype: 'checkbox'
-            }/* ,{
-                xtype: 'combobox',
-                store: attributeStore,
-                displayField: 'name',
-                queryMode: 'local',
-                hideMode: 'visibility',
-                fieldLabel: 'Attribuut',
-                itemId: 'ext_editfeature_usernameAttribute',
-                labelWidth: 150,
-                value: usernameAttrValue
-            }*/]
+                fieldLabel: 'Maak het mogelijk om bestanden te uploaden',
+                name: 'uploadDocuments',
+                inputValue: false,
+                itemId: 'ext_details_editfeature_uploadDocument',
+                checked: upload,
+                xtype: 'checkbox'
+            }]
         });
 
         return editPanelItems;
@@ -920,6 +920,11 @@ hier niet op gecontroleerd.'
         if (document.getElementById('details_editfeature_usernameAttribute') && this.getComponentByItemId('#ext_editfeature_usernameAttribute')){
             document.getElementById('details_editfeature_usernameAttribute').value = this.getComponentByItemId('#ext_editfeature_usernameAttribute').getValue();
         }
+
+        if (document.getElementById('details_editfeature_uploadDocument') && this.getComponentByItemId('#ext_details_editfeature_uploadDocument')){
+            document.getElementById('details_editfeature_uploadDocument').value = this.getComponentByItemId('#ext_details_editfeature_uploadDocument').getValue();
+        }
+
         var frm = document.forms[0];
         frm.action = "?save=t";
         frm.submit();
