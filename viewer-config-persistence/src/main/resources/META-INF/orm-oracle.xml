@@ -249,4 +249,14 @@
             </id>
         </attributes>
     </entity>
+
+    <entity class="nl.b3p.viewer.config.app.FileUpload">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="file_upload_id_seq"/>
+                <sequence-generator name="file_upload_id_seq" sequence-name="file_upload_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
 </entity-mappings>

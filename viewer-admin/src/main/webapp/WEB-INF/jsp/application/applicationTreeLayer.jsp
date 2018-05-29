@@ -40,6 +40,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 Laat leeg om de naam uit het gegevensregister te gebruiken.
                             </td>
                         </tr>
+                        <tr>
+                            <td>Titel voor editing:</td>
+                            <td><stripes:text name="details['editfunction.title']" maxlength="255" size="30"/></td>
+                        </tr>
                         <c:choose>
                             <c:when test="${!empty actionBean.styles}">
                                 <tr>
@@ -154,16 +158,13 @@ Wijken: &lt;br /&gt;
                                             <td valign="top">Opties:</td>
                                             <td>
                                                 <label><stripes:checkbox name="details['summary.noHtmlEncode']"/>HTML tags in attribuutwaarden toestaan</label><br>
-                                                <label><stripes:checkbox name="details['summary.nl2br']"/>Regeleindes in attribuutwaarden toestaan</label>
+                                                <label><stripes:checkbox name="details['summary.nl2br']"/>Regeleindes in attribuutwaarden toestaan</label><br>
+                                                <label><stripes:checkbox name="details['summary.retrieveUploads']"/>Laat uploads zien</label><br>
                                             </td>
                                         </tr>
                                     </table>
                                 </fieldset>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Titel voor editing:</td>
-                            <td><stripes:text name="details['editfunction.title']" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
                 </div>
@@ -181,6 +182,7 @@ Wijken: &lt;br /&gt;
                 </div>
                 <div id="edit-tab" class="tabdiv">
                     <stripes:hidden name="details['editfeature.usernameAttribute']" id="details_editfeature_usernameAttribute"/>
+                    <stripes:hidden name="details['editfeature.uploadDocument']" id="details_editfeature_uploadDocument"/>
                     <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
                         <c:when test="${actionBean.editable}">

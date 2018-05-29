@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -53,6 +52,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
 import org.stripesstuff.stripersist.Stripersist;
+
 
 /**
  *
@@ -75,6 +75,7 @@ public class EditFeatureActionBean  implements ActionBean {
 
     @Validate
     private ApplicationLayer appLayer;
+
 
     private Layer layer;
 

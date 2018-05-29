@@ -324,6 +324,7 @@
                                 <param>${viewerhtml.path}/common/ajax/EditFeature.js</param>
                                 <param>${viewerhtml.path}/common/ajax/ArcQueryUtil.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureExtent.js</param>
+                                <param>${viewerhtml.path}/common/ajax/File.js</param>
                                 <!-- Abstracts MapComponent -->
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Map.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/controller/Layer.js</param>
