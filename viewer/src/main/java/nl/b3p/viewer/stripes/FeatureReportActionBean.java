@@ -63,6 +63,8 @@ import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
 
+import javax.persistence.EntityManager;
+
 /**
  * @author Mark Prins
  */
@@ -186,8 +188,9 @@ public class FeatureReportActionBean implements ActionBean {
             q.setMaxFeatures(1);
             q.setHandle("FeatureReportActionBean_attributes");
 
+            EntityManager em  = Stripersist.getEntityManager();
             FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
-            JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
+            JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em);
 
             // if there are more than one something is very wrong in datamodel or datasource
             JSONArray jFeat = features.getJSONArray(0);
@@ -228,13 +231,13 @@ public class FeatureReportActionBean implements ActionBean {
                             }
 
                             // collect related feature attributes
-                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, Stripersist.getEntityManager()));
+                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, em));
                             q.setMaxFeatures(this.maxrelatedfeatures + 1);
                             q.setHandle("FeatureReportActionBean_related_attributes");
                             LOG.debug("Related features query: " + q);
 
                             fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                            features = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+                            features = ftjson.getJSONFeatures(appLayer, fType, fs, q, em);
 
                             JSONArray jsonFeats = new JSONArray();
                             int featureCount;

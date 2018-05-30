@@ -9,6 +9,7 @@ import nl.b3p.viewer.config.services.Layer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -133,6 +134,22 @@ public class FileUploadActionBean implements ActionBean {
             }
         }
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+    }
 
+    public static JSONObject retrieveUploads(String fid, ApplicationLayer appLayer, EntityManager em){
+        JSONObject uploads = new JSONObject();
+        Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
+        List<FileUpload> fups= em.createQuery("FROM FileUpload WHERE sft = :sft and fid = :fid", FileUpload.class)
+                .setParameter("sft", layer.getFeatureType()).setParameter("fid", fid).getResultList();
+
+
+        for (FileUpload fup: fups) {
+            if(!uploads.has(fup.getType_())){
+                uploads.put(fup.getType_(), new JSONArray());
+            }
+            JSONArray ar = uploads.getJSONArray(fup.getType_());
+            ar.put(fup.toJSON());
+        }
+        return uploads;
     }
 }

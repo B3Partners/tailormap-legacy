@@ -373,7 +373,7 @@ public class PrintActionBean implements ActionBean {
         q.setHandle("PrintActionBean_attributes");
 
         FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
-        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
+        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em);
 
         fs.getDataStore().dispose();
 
@@ -410,13 +410,13 @@ public class PrintActionBean implements ActionBean {
                             }
 
                             // collect related feature attributes
-                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, Stripersist.getEntityManager()));
+                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, em));
                             q.setMaxFeatures(this.maxrelatedfeatures + 1);
                             q.setHandle("FeatureReportActionBean_related_attributes");
                             log.debug("Related features query: " + q);
 
                             fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q, em);
 
                             JSONArray jsonFeats = new JSONArray();
                             int featureCount;
