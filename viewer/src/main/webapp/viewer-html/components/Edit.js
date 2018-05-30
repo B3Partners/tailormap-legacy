@@ -969,7 +969,6 @@ Ext.define("viewer.components.Edit", {
 
         this.editingLayer.reload();
         this.currentFID = fid;
-        var uploader = Ext.create("viewer.File", {});
         var types = this.uploadTypes;
         var isUploading = false;
         for (var i = 0; i < types.length; i++) {

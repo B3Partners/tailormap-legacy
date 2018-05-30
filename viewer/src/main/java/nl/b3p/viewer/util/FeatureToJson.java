@@ -31,6 +31,8 @@ import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
+
+import nl.b3p.viewer.stripes.FileUploadActionBean;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStore;
@@ -47,6 +49,8 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
+
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -129,6 +133,7 @@ public class FeatureToJson {
      * @param ft The featuretype that must be used to get the features
      * @param fs The featureSource
      * @param q The query
+     * @param em The entitymanager of the session, for retrieving uploads
      * @return JSONArray with features.
      * @throws IOException if any
      * @throws JSONException if transforming to json fails
@@ -137,10 +142,10 @@ public class FeatureToJson {
      * @see #getJSONFeatures(nl.b3p.viewer.config.app.ApplicationLayer,
      * nl.b3p.viewer.config.services.SimpleFeatureType,
      * org.geotools.data.FeatureSource, org.geotools.data.Query,
-     * java.lang.String, java.lang.String)
+     * java.lang.String, java.lang.String, javax.persistence.EntityManager)
      */
-    public JSONArray getJSONFeatures(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q) throws IOException, JSONException, Exception {
-        return this.getJSONFeatures(al, ft, fs, q, null, null);
+    public JSONArray getJSONFeatures(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q, EntityManager em) throws IOException, JSONException, Exception {
+        return this.getJSONFeatures(al, ft, fs, q, null, null, em);
     }
 
     /**
@@ -159,7 +164,7 @@ public class FeatureToJson {
      * @throws JSONException if transforming to json fails
      * @throws Exception if any
      */
-    public JSONArray getJSONFeatures(ApplicationLayer al,SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir) throws IOException, JSONException, Exception{
+    public JSONArray getJSONFeatures(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir, EntityManager em) throws IOException, JSONException, Exception{
         Map<String,String> attributeAliases = new HashMap<String,String>();
         if(!edit) {
             for(AttributeDescriptor ad: ft.getAttributes()) {
@@ -216,11 +221,17 @@ public class FeatureToJson {
                 /* if offset not supported and there are more features returned then
                  * only get the features after index >= start*/
                 if (offsetSupported || featureIndex >= start){
+                    JSONObject uploads = null;
+                    if(al.getDetails().containsKey("summary.retrieveUploads") && Boolean.parseBoolean(al.getDetails().get("summary.retrieveUploads").getValue())){
+                        uploads = FileUploadActionBean.retrieveUploads(feature.getID(), al,em);
+                    }
+                    JSONObject jsonFeature = new JSONObject();
+                    jsonFeature.put("uploads", uploads);
                     if(this.ordered) {
-                        JSONArray j = this.toJSONFeatureOrdered(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);
+                        JSONArray j = this.toJSONFeatureOrdered(jsonFeature,feature,ft,al,propertyNames,attributeAliases,0);
                         features.put(j);
                     } else {
-                        JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);
+                        JSONObject j = this.toJSONFeature(jsonFeature,feature,ft,al,propertyNames,attributeAliases,0);
                         features.put(j);
                     }
                 }

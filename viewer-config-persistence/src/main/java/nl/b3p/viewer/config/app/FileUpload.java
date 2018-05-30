@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.app;
 
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -42,6 +43,8 @@ public class FileUpload {
     private Date createdAt;
     
     private String createdBy;
+
+    private String type_;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
 
@@ -93,10 +96,22 @@ public class FileUpload {
         this.fid = fid;
     }
 
+    public String getType_() {
+        return type_;
+    }
+
+    public void setType_(String type_) {
+        this.type_ = type_;
+    }
     // </editor-fold>
 
 
     public String toString(){
         return file;
+    }
+
+    public JSONObject toJSON(){
+        JSONObject obj = new JSONObject();
+        return obj;
     }
 }

@@ -530,7 +530,7 @@ public class AttributesActionBean implements ActionBean {
 
                 FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
 
-                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
+                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir, em);
 
                 if (!startIndexSupported){
                     if (features.length() < limit){
