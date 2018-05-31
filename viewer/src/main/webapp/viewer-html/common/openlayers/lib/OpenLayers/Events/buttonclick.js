@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2012 by OpenLayers Contributors (see authors.txt for 
+/* Copyright (c) 2006-2015 by OpenLayers Contributors (see authors.txt for
  * full list of contributors). Published under the 2-clause BSD license.
  * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
@@ -23,14 +23,14 @@
  *     relative to the button.
  */
 OpenLayers.Events.buttonclick = OpenLayers.Class({
-    
+
     /**
      * Property: target
      * {<OpenLayers.Events>} The events instance that the buttonclick event will
      * be triggered on.
      */
     target: null,
-    
+
     /**
      * Property: events
      * {Array} Events to observe and conditionally stop from propagating when
@@ -41,7 +41,7 @@ OpenLayers.Events.buttonclick = OpenLayers.Class({
         'mousedown', 'mouseup', 'click', 'dblclick',
         'touchstart', 'touchmove', 'touchend', 'keydown'
     ],
-    
+
     /**
      * Property: startRegEx
      * {RegExp} Regular expression to test Event.type for events that start
@@ -62,12 +62,19 @@ OpenLayers.Events.buttonclick = OpenLayers.Class({
      *     a buttonclick sequence.
      */
     completeRegEx: /^mouseup|touchend$/,
-    
+
+    /**
+     * Property: isDeviceTouchCapable
+     * {Boolean} Tells whether the browser detects touch events.
+     */
+    isDeviceTouchCapable: 'ontouchstart' in window ||
+    window.DocumentTouch && document instanceof window.DocumentTouch,
+
     /**
      * Property: startEvt
      * {Event} The event that started the click sequence
      */
-    
+
     /**
      * Constructor: OpenLayers.Events.buttonclick
      * Construct a buttonclick event type. Applications are not supposed to
@@ -86,7 +93,7 @@ OpenLayers.Events.buttonclick = OpenLayers.Class({
             });
         }
     },
-    
+
     /**
      * Method: destroy
      */
@@ -123,6 +130,26 @@ OpenLayers.Events.buttonclick = OpenLayers.Class({
     },
 
     /**
+     * Method: ignore
+     * Check for event target elements that should be ignored by OpenLayers.
+     *
+     * Parameters:
+     * element - {DOMElement} The event target.
+     */
+    ignore: function(element) {
+        var depth = 3,
+            ignore = false;
+        do {
+            if (element.nodeName.toLowerCase() === 'a') {
+                ignore = true;
+                break;
+            }
+            element = element.parentNode;
+        } while (--depth > 0 && element);
+        return ignore;
+    },
+
+    /**
      * Method: buttonClick
      * Check if a button was clicked, and fire the buttonclick event
      *
@@ -132,24 +159,34 @@ OpenLayers.Events.buttonclick = OpenLayers.Class({
     buttonClick: function(evt) {
         var propagate = true,
             element = OpenLayers.Event.element(evt);
-        if (element && (OpenLayers.Event.isLeftClick(evt) || !~evt.type.indexOf("mouse"))) {
+
+        if (element &&
+            (OpenLayers.Event.isLeftClick(evt) &&
+                !this.isDeviceTouchCapable ||
+                !~evt.type.indexOf("mouse"))) {
             // was a button pressed?
             var button = this.getPressedButton(element);
             if (button) {
                 if (evt.type === "keydown") {
                     switch (evt.keyCode) {
-                    case OpenLayers.Event.KEY_RETURN:
-                    case OpenLayers.Event.KEY_SPACE:
-                        this.target.triggerEvent("buttonclick", {
-                            buttonElement: button
-                        });
-                        OpenLayers.Event.stop(evt);
-                        propagate = false;
-                        break;
+                        case OpenLayers.Event.KEY_RETURN:
+                        case OpenLayers.Event.KEY_SPACE:
+                            this.target.triggerEvent("buttonclick", {
+                                buttonElement: button
+                            });
+                            OpenLayers.Event.stop(evt);
+                            propagate = false;
+                            break;
                     }
                 } else if (this.startEvt) {
                     if (this.completeRegEx.test(evt.type)) {
                         var pos = OpenLayers.Util.pagePosition(button);
+                        var viewportElement = OpenLayers.Util.getViewportElement();
+                        var scrollTop = window.pageYOffset || viewportElement.scrollTop;
+                        var scrollLeft = window.pageXOffset || viewportElement.scrollLeft;
+                        pos[0] = pos[0] - scrollLeft;
+                        pos[1] = pos[1] - scrollTop;
+
                         this.target.triggerEvent("buttonclick", {
                             buttonElement: button,
                             buttonXY: {
@@ -159,7 +196,11 @@ OpenLayers.Events.buttonclick = OpenLayers.Class({
                         });
                     }
                     if (this.cancelRegEx.test(evt.type)) {
-                        delete this.startEvt;
+                        if (evt.touches && this.startEvt.touches &&
+                            (Math.abs(evt.touches[0].olClientX - this.startEvt.touches[0].olClientX) > 4 ||
+                                Math.abs(evt.touches[0].olClientY - this.startEvt.touches[0].olClientY)) > 4) {
+                            delete this.startEvt;
+                        }
                     }
                     OpenLayers.Event.stop(evt);
                     propagate = false;
@@ -170,10 +211,11 @@ OpenLayers.Events.buttonclick = OpenLayers.Class({
                     propagate = false;
                 }
             } else {
+                propagate = !this.ignore(OpenLayers.Event.element(evt));
                 delete this.startEvt;
             }
         }
         return propagate;
     }
-    
+
 });
