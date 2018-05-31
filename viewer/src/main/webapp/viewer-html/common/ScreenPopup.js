@@ -56,6 +56,7 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     component: null,
     currentOrientation: null,
+    isBodyDisabled: false,
     constructor: function (conf){
         var me = this;
         viewer.components.ScreenPopup.superclass.constructor.call(this, conf);
@@ -144,7 +145,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         if(config.resizable) {
             config.resizable = {
                 listeners: {
-                    'beforeresize': {
+                    'resizedrag': {
                         fn: function() {
                             this.disableBody();
                         },
@@ -240,11 +241,16 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.popupWin.hide();
     },
     disableBody : function (){
+        if(this.isBodyDisabled) {
+            return;
+        }
+        this.isBodyDisabled = true;
         var mask = Ext.getBody().mask();
         mask.on('click', this.enableBody, this);
         mask.setZIndex(this.popupWin.getEl().getZIndex() - 1);
     },
     enableBody : function(){
+        this.isBodyDisabled = false;
         Ext.getBody().unmask();
     },
     setIconClass: function(iconCls) {
