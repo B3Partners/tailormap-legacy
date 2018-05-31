@@ -69,8 +69,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <td><stripes-dynattr:text name="username" required="" disabled="${!empty actionBean.user.username}" maxlength="255" size="30">${user.username}</stripes-dynattr:text></td>
                                     </tr>
                                     <tr>
-                                        <td>Wachtwoord *:</td>
-                                        <td><stripes-dynattr:password name="password" autocomplete="new-password" required="" maxlength="255" size="30"/></td>
+                                        <td>Wachtwoord ${empty actionBean.user.username ? '*' : '(laat leeg om niet te wijzigen)'}:</td>
+                                        <td>
+                                          <c:choose>
+                                            <c:when test="${empty actionBean.user.username}">
+                                              <stripes-dynattr:password name="password" autocomplete="new-password" required="" maxlength="255" size="30"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                              <stripes-dynattr:password name="password" autocomplete="new-password" maxlength="255" size="30"/>
+                                            </c:otherwise>
+                                          </c:choose>
+                                        </td>
                                     </tr>
                                 </table>
                             </td>
