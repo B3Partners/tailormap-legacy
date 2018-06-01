@@ -228,7 +228,7 @@
             <dependency>
                 <artifactId>solr-solrj</artifactId>
                 <groupId>org.apache.solr</groupId>
-                <version>4.6.0</version>
+                <version>6.6.4</version>
                 <scope>compile</scope>
             </dependency>
 
