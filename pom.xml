@@ -344,7 +344,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>3.6.10.Final</version>
+                <version>4.3.11.Final</version>
                 <exclusions>
                     <exclusion>
                         <!--
