@@ -523,9 +523,10 @@ Ext.define("viewer.components.Edit", {
                     var t = types[i];
                     var container =new Ext.form.FormPanel({
                         title: t.label,
+                        border: 0,
                         id: "uploadContainer" + t.type,
                         name: "uploadContainer" + t.type,
-                        collapsable: true,
+                        collapsable: false,
                         items:[this.createUploadBox(t, 0)]
                     });
                     nonGrouped.push(container);
@@ -770,6 +771,79 @@ Ext.define("viewer.components.Edit", {
             } else {
                 this.currentFID = feature.__fid;
             }
+
+            if(this.appLayer.details ["editfeature.uploadDocument"]){
+                var uploads = feature.uploads;
+                for(var key in uploads){
+                    if(uploads.hasOwnProperty(key)){
+                        var files = uploads[key];
+                        var container = Ext.getCmp("uploadContainer" + key);
+                        for(var i = 0 ; i <files.length;i++){
+                            var file = files[i];
+                            var remover = Ext.create('Ext.container.Container', {
+                                name: "fileremover-"+file.id,
+                                id: "fileremover-"+file.id,
+                                layout: {
+                                    type: 'hbox'
+                                },
+                                items: [{
+                                    xtype: 'label',
+                                    text: file.filename
+                                },{
+                                    xtype: "button",
+                                    text: "x",
+                                    listeners:{
+                                        scope:this,
+                                        click:function(button){
+                                            var owner = button.ownerCt;
+                                            var id = owner.id;
+                                            var fileId = id.substring(id.lastIndexOf("-")+1);
+
+                                            Ext.Msg.show({
+                                                title: "Weet u het zeker?",
+                                                msg: "Weet u zeker dat u deze upload wilt weggooien?",
+                                                fn: function(button) {
+                                                    if (button === 'yes') {
+                                                        Ext.Ajax.request({
+                                                            url: actionBeans["file"],
+                                                            scope: this,
+                                                            params: {
+                                                                removeUpload: true,
+                                                                upload: fileId
+                                                            },
+                                                            success: function(result) {
+                                                                var response = Ext.JSON.decode(result.responseText);
+                                                                var removerId = "fileremover-" + response.uploadid;
+                                                                var remover = Ext.getCmp(removerId);
+                                                                remover.ownerCt.remove(remover);
+                                                            },
+                                                            failure: function(result) {
+                                                                if(failureFunction != undefined) {
+                                                                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                                                                }
+                                                            }
+                                                        });
+
+                                                    }
+                                                },
+                                                scope: this,
+                                                buttons: Ext.Msg.YESNO,
+                                                buttonText: {
+                                                    no: "Nee",
+                                                    yes: "Ja"
+                                                },
+                                                icon: Ext.Msg.WARNING
+                                            });
+                                        }
+                                    }
+
+                                }]
+                            });
+                            container.add(remover);
+                        }
+                    }
+                }
+            }
             if (this.geometryEditable) {
                 var wkt = feature[this.appLayer.geometryAttribute];
                 var feat = Ext.create("viewer.viewercontroller.controller.Feature", {
@@ -975,11 +1049,15 @@ Ext.define("viewer.components.Edit", {
             var t = types[i];
             var form = Ext.getCmp("uploadContainer" + t.type);
             var hasFile = false;
-            for(var j = 0 ; j < form.items.length ;j++) {
-                var file = form.items.get(j).fileInputEl.dom.files[0]
-                if (file) {
-                    hasFile = true;
-                    break;
+            for (var j = 0; j < form.items.length; j++) {
+                var inputEl = form.items.get(j).fileInputEl;
+                if (inputEl) {
+
+                    var file = inputEl.dom.files[0]
+                    if (file) {
+                        hasFile = true;
+                        break;
+                    }
                 }
             }
             me.messageFunction = messageFunction;
@@ -1006,26 +1084,6 @@ Ext.define("viewer.components.Edit", {
                     }
                 });
             }
-           /* for (var j = 0; j < container.items.items.length; j++) {
-                var fileField = container.items.items[j];
-                var file = fileField.fileInputEl.dom.files[0];
-                var me = this;
-                me.fileField = fileField;
-                me.messageFunction = messageFunction;
-                if (file) {
-                    isUploading = true;
-                    fileField.mask();
-                    uploader.upload(fid, this.appLayer, FlamingoAppLoader.get('appId'), file, function () {
-                        me.fileField.unmask();
-                        me.messageFunction();
-                    }, function (errortext) {
-                        me.fileField.unmask();
-                        me.messageFunction(errortext);
-                    });
-                }
-
-            }*/
-            var fileField = 0;
         }
 
         if (!isUploading) {

@@ -144,6 +144,12 @@
     max-width: 100px;
     max-height: 60px;
 }
+
+.feature_upload_image img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 .feature_callback_link{
     clear: none;
     text-align: right;
