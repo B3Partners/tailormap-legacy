@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 import org.opengis.geometry.BoundingBox;
 
 @XmlRootElement(name="info")
-@XmlType(propOrder = {"title", "subtitle", "username", "date", "imageUrl", "legendUrls", "bbox", "remark", "quality", "angle", "overviewUrl", "extra", "scale"})
+@XmlType(propOrder = {"title", "subtitle", "username", "date", "imageUrl", "legendUrls", "bbox", "remark", "quality", "angle", "overviewUrl", "extra", "scale", "uploadURL"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
     
@@ -66,6 +66,8 @@ public class PrintInfo {
     private List<File> tempFiles = new ArrayList();
     
     private String overviewUrl;
+
+    private String uploadURL;
     
     public PrintInfo() {
     }    
@@ -193,6 +195,14 @@ public class PrintInfo {
 
     public void setScale(String scale) {
         this.scale = scale;
+    }
+
+    public String getUploadURL() {
+        return uploadURL;
+    }
+
+    public void setUploadURL(String uploadURL) {
+        this.uploadURL = uploadURL;
     }
 
     public void cacheLegendImagesAndReadDimensions() {

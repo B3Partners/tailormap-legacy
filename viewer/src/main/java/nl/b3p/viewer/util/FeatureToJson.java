@@ -226,7 +226,7 @@ public class FeatureToJson {
                         uploads = FileUploadActionBean.retrieveUploads(feature.getID(), al,em);
                     }
                     JSONObject jsonFeature = new JSONObject();
-                    jsonFeature.put("uploads", uploads);
+                    jsonFeature.put("__UPLOADS__", uploads);
                     if(this.ordered) {
                         JSONArray j = this.toJSONFeatureOrdered(jsonFeature,feature,ft,al,propertyNames,attributeAliases,0);
                         features.put(j);
