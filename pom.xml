@@ -122,18 +122,6 @@
                 <version>2.3</version>
             </dependency>
             <dependency>
-                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
-                <groupId>org.apache.xmlgraphics</groupId>
-                <artifactId>batik-i18n</artifactId>
-                <version>1.9.1</version>
-            </dependency>
-            <dependency>
-                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
-                <groupId>org.apache.xmlgraphics</groupId>
-                <artifactId>batik-constants</artifactId>
-                <version>1.9.1</version>
-            </dependency>
-            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.6</version>
