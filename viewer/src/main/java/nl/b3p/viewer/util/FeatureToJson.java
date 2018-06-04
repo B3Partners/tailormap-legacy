@@ -272,6 +272,7 @@ public class FeatureToJson {
 
     private JSONArray toJSONFeatureOrdered(JSONObject j,SimpleFeature f, SimpleFeatureType ft, ApplicationLayer al, List<String> propertyNames,Map<String,String> attributeAliases, int index) throws JSONException, Exception{
         JSONArray ordered = new JSONArray();
+        ordered.put(j);
         for (String name : propertyNames) {
             ordered.put(this.addKeyValue(new JSONObject(), f, name, attributeAliases));
         }

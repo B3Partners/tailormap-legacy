@@ -32,7 +32,7 @@ public class FileUpload {
     @Id
     private Long id;
 
-    private String file;
+    private String location;
 
     @ManyToOne
     private SimpleFeatureType sft;
@@ -44,7 +44,11 @@ public class FileUpload {
     
     private String createdBy;
 
+    private String filename;
+
     private String type_;
+
+    private String mimetype;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
 
@@ -56,13 +60,6 @@ public class FileUpload {
         this.id = id;
     }
 
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
 
     public SimpleFeatureType getSft() {
         return sft;
@@ -103,15 +100,45 @@ public class FileUpload {
     public void setType_(String type_) {
         this.type_ = type_;
     }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getMimetype() {
+        return mimetype;
+    }
+
+    public void setMimetype(String mimetype) {
+        this.mimetype = mimetype;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     // </editor-fold>
 
 
     public String toString(){
-        return file;
+        return location;
     }
 
     public JSONObject toJSON(){
         JSONObject obj = new JSONObject();
+        obj.put("filename", filename);
+        obj.put("fid", fid);
+        obj.put("type", type_);
+        obj.put("id", id);
+        obj.put("sft", sft.getId());
         return obj;
     }
 }
