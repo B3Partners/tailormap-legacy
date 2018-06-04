@@ -106,12 +106,23 @@ public class PrintActionBean implements ActionBean {
         Long appId = jRequest.optLong("appId");
         EntityManager em = Stripersist.getEntityManager();
         Application app = em.find(Application.class, appId);
-        
+
+        String baseUrl = context.getRequest().getRequestURL().toString();
         //get the image url:
-        String imageUrl = PrintUtil.getImageUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId());
+        String imageUrl = PrintUtil.getImageUrl(params, baseUrl, context.getRequest().getSession().getId());
         
         //get the form settings
         final PrintInfo info = new PrintInfo();
+
+
+        RedirectResolution to = new RedirectResolution(FileUploadActionBean.class,"view");
+        RedirectResolution from = new RedirectResolution(PrintActionBean.class);
+        // url van print actionbean naar combineimage action bean, kopieer de sessionid naar de url
+        // tomcat specifiek gedrag
+
+        String viewUploadURL = baseUrl.replace(from.getUrl(new Locale("NL")), to.getUrl(new Locale("NL")));
+
+        info.setUploadURL(viewUploadURL);
         if (jRequest.has("title")){
             info.setTitle(jRequest.getString("title"));
         }

@@ -363,7 +363,7 @@ Ext.define ("viewer.components.Maptip",{
                         descriptionDiv.insertHtml("beforeEnd",desc);
                         if(appLayer.details["summary.retrieveUploads"]){
                             var indexedAttrs= feature.getIndexedAttributes();
-                            var uploads = indexedAttrs.uploads;
+                            var uploads = indexedAttrs["__UPLOADS__"];
                             for(var key in uploads){
                                 if(uploads.hasOwnProperty(key)){
                                     var files = uploads[key];
