@@ -170,7 +170,7 @@
                 <!-- do not upgrade because that would enforce "use strict;" -->
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20161201</version>
+                <version>vv20180506</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
