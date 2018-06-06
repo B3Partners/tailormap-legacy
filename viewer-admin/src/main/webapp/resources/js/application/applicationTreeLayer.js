@@ -522,14 +522,26 @@ hier niet op gecontroleerd.'
 
 
         var upload = false;
+        var types = [];
+        var uploadCategories = [this.createUploadBox("",0, false)];
         if (Ext.get('details_editfeature_uploadDocument')){
             upload = Ext.get('details_editfeature_uploadDocument').getValue();
+            types= Ext.get('details_editfeature_uploadDocument_types').getValue();
+            if(types && types.length > 0){
+                types = Ext.JSON.decode(types);
+                uploadCategories = [];
+                for(var i = 0 ; i < types.length;i++){
+                    uploadCategories.push(this.createUploadBox(types[i], false,i));
+                }
+            }
         }
 
         editPanelItems.push({
             xtype: 'panel',
             title: 'Upload',
+
             itemId: 'upload-panel',
+            id: 'upload-panel',
             style: {
                 "margin-top": "5px"
             },
@@ -543,10 +555,46 @@ hier niet op gecontroleerd.'
                 itemId: 'ext_details_editfeature_uploadDocument',
                 checked: upload,
                 xtype: 'checkbox'
-            }]
+            },
+                {
+                    xtype: "container",
+                    name: "uploadTypes",
+                    id: "uploadTypes",
+                    items: uploadCategories
+                },
+                {
+                    xtype: 'button',
+                    text: '+',
+                    style: {
+                        marginLeft: '10px'
+                    },
+                    listeners: {
+                        click: {
+                            fn: function () {
+                                this.createUploadBox("", true);
+                            },
+                            scope: this
+                        }
+                    }
+                }
+            ]
         });
 
         return editPanelItems;
+    },
+    createUploadBox: function (value, append, idx) {
+        var container = Ext.getCmp("uploadTypes");
+        var index = container ? container.items.items.length  : idx;
+        var config = {
+            fieldLabel: 'Categorie upload',
+            name: 'uploadType' + (index),
+            value: value,
+            xtype: 'textfield'
+        };
+        if(append){
+            container.insert(index -1,Ext.create("Ext.form.field.Text", config));
+        }
+        return config;
     },
 
     getAttributeEditSettings: function(attribute, name) {
@@ -923,6 +971,13 @@ hier niet op gecontroleerd.'
 
         if (document.getElementById('details_editfeature_uploadDocument') && this.getComponentByItemId('#ext_details_editfeature_uploadDocument')){
             document.getElementById('details_editfeature_uploadDocument').value = this.getComponentByItemId('#ext_details_editfeature_uploadDocument').getValue();
+            var items = Ext.getCmp("uploadTypes").items.items;
+            var typeConfig = [];
+            for(var i = 0 ; i < items.length;i++){
+                var item = items[i];
+                typeConfig.push(item.getValue());
+            }
+            document.getElementById('details_editfeature_uploadDocument_types').value = Ext.JSON.encode(typeConfig);
         }
 
         var frm = document.forms[0];
