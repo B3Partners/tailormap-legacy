@@ -15,7 +15,7 @@
         <developerConnection>scm:git:git@github.com:flamingo-mc/flamingo.git</developerConnection>
         <url>https://github.com/flamingo-mc/flamingo.git</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
     <distributionManagement>
         <repository>
             <id>repo.b3p.nl</id>
