@@ -438,7 +438,7 @@ public class Application {
             JSONObject c = new JSONObject();
             o.put("components", c);
             for (ConfiguredComponent comp : components) {
-                if (Authorizations.isConfiguredComponentAuthorized(comp, request)) {
+                if (Authorizations.isConfiguredComponentAuthorized(comp, request, em)) {
                     c.put(comp.getName(), comp.toJSON());
                 }
             }
