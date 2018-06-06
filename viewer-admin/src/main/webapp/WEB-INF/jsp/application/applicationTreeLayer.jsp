@@ -183,6 +183,7 @@ Wijken: &lt;br /&gt;
                 <div id="edit-tab" class="tabdiv">
                     <stripes:hidden name="details['editfeature.usernameAttribute']" id="details_editfeature_usernameAttribute"/>
                     <stripes:hidden name="details['editfeature.uploadDocument']" id="details_editfeature_uploadDocument"/>
+                    <stripes:hidden name="details['editfeature.uploadDocument.types']" id="details_editfeature_uploadDocument_types"/>
                     <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
                         <c:when test="${actionBean.editable}">
@@ -206,7 +207,7 @@ Wijken: &lt;br /&gt;
             </div>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
-            <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js?123"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/layer/attributes.js"></script>
             <script type="text/javascript">
                 Ext.onReady(function() {
