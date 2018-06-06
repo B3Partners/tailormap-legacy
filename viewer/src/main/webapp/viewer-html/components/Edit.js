@@ -103,16 +103,6 @@ Ext.define("viewer.components.Edit", {
         });
         this.schema = new Ext.data.schema.Schema();
 
-        var types = [{
-            type: "photo",
-            label: "Foto"
-        },{
-            type: "pdf",
-            label: "PDF"
-        }];
-
-        this.uploadTypes = types;
-
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         return this;
@@ -517,15 +507,15 @@ Ext.define("viewer.components.Edit", {
                     this.setButtonDisabled("editButton", false);
                 }
             }
-            if(appLayer.details["editfeature.uploadDocument"]){
-                var types = this.uploadTypes;
+            if(appLayer.details["editfeature.uploadDocument"] && appLayer.details["editfeature.uploadDocument.types"]){
+                var types = Ext.JSON.decode(appLayer.details["editfeature.uploadDocument.types"]);
                 for(var i = 0 ; i < types.length ; i++){
                     var t = types[i];
                     var container =new Ext.form.FormPanel({
-                        title: t.label,
+                        title: t,
                         border: 0,
-                        id: "uploadContainer" + t.type,
-                        name: "uploadContainer" + t.type,
+                        id: "uploadContainer" + t,
+                        name: "uploadContainer" + t,
                         collapsable: false,
                         items:[this.createUploadBox(t, 0)]
                     });
@@ -548,14 +538,13 @@ Ext.define("viewer.components.Edit", {
         var me = this;
         var file = Ext.create('Ext.form.field.File', {
             label: "Upload een document",
-            name: 'files' +"[" + index + "]",
-            accept: 'image',
-            id: "uploadedFile" + t.type+ index,
+            name: 'files[' + index + "]",
+            id: "uploadedFile" + t + index,
             labelClsExtra: this.editLblClass,
             listeners:{
                 change: function(a,b,c,d){
-                    var container = Ext.getCmp("uploadContainer" + t.type);
-                    var size = container.items.length
+                    var container = Ext.getCmp("uploadContainer" + t);
+                    var size = container.items.length;
                     var upload = this.createUploadBox(t,size);
                     container.insert(size,upload);
                 },
@@ -773,7 +762,7 @@ Ext.define("viewer.components.Edit", {
             }
 
             if(this.appLayer.details ["editfeature.uploadDocument"]){
-                var uploads = feature.uploads;
+                var uploads = feature["__UPLOADS__"];
                 for(var key in uploads){
                     if(uploads.hasOwnProperty(key)){
                         var files = uploads[key];
@@ -839,7 +828,7 @@ Ext.define("viewer.components.Edit", {
 
                                 }]
                             });
-                            container.add(remover);
+                            container.insert(0,remover);
                         }
                     }
                 }
@@ -1043,48 +1032,51 @@ Ext.define("viewer.components.Edit", {
 
         this.editingLayer.reload();
         this.currentFID = fid;
-        var types = this.uploadTypes;
         var isUploading = false;
-        for (var i = 0; i < types.length; i++) {
-            var t = types[i];
-            var form = Ext.getCmp("uploadContainer" + t.type);
-            var hasFile = false;
-            for (var j = 0; j < form.items.length; j++) {
-                var inputEl = form.items.get(j).fileInputEl;
-                if (inputEl) {
+        if (this.appLayer.details["editfeature.uploadDocument.types"]) {
+            var types = Ext.JSON.decode(this.appLayer.details["editfeature.uploadDocument.types"]);
+            for (var i = 0; i < types.length; i++) {
+                var t = types[i];
+                var form = Ext.getCmp("uploadContainer" + t);
+                var hasFile = false;
+                for (var j = 0; j < form.items.length; j++) {
+                    var inputEl = form.items.get(j).fileInputEl;
+                    if (inputEl) {
 
-                    var file = inputEl.dom.files[0]
-                    if (file) {
-                        hasFile = true;
-                        break;
+                        var file = inputEl.dom.files[0]
+                        if (file) {
+                            hasFile = true;
+                            break;
+                        }
                     }
                 }
-            }
-            me.messageFunction = messageFunction;
-            if (hasFile) {
-                isUploading =  true;
-                form.submit({
-                    scope: this,
-                    url: actionBeans["file"],
-                    waitMsg: 'Bezig met uploaden...',
-                    waitTitle: "Even wachten...",
-                    params:{
-                        uploadFile : true,
-                        fid: fid,
-                        type: t.type,
-                        appLayer: this.appLayer.id,
-                        application:  FlamingoAppLoader.get('appId')
-                    },
-                    success: function (response) {
-                        var resp = Ext.decode(response.responseText, true);
-                        me.messageFunction("Bestanden opgeslagen");
-                    },
-                    failure: function () {
-                        Ext.Msg.alert('Mislukt', 'Uw bestand kon niet geupload worden.');
-                    }
-                });
+                me.messageFunction = messageFunction;
+                if (hasFile) {
+                    isUploading = true;
+                    form.submit({
+                        scope: this,
+                        url: actionBeans["file"],
+                        waitMsg: 'Bezig met uploaden...',
+                        waitTitle: "Even wachten...",
+                        params: {
+                            uploadFile: true,
+                            fid: fid,
+                            type: t,
+                            appLayer: this.appLayer.id,
+                            application: FlamingoAppLoader.get('appId')
+                        },
+                        success: function (response) {
+                            var resp = Ext.decode(response.responseText, true);
+                            me.messageFunction("Bestanden opgeslagen");
+                        },
+                        failure: function () {
+                            Ext.Msg.alert('Mislukt', 'Uw bestand kon niet geupload worden.');
+                        }
+                    });
+                }
             }
         }
+
 
         if (!isUploading) {
             messageFunction();

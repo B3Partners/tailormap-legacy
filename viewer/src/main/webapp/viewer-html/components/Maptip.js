@@ -372,7 +372,7 @@ Ext.define ("viewer.components.Maptip",{
                                         var uploadDiv = new Ext.Element(document.createElement("div"));
                                         var link = actionBeans["file"] +"?view=true&upload="+ f.id;
                                         var linkText;
-                                        if(f.type === "photo"){
+                                        if(f.mimetype.indexOf("image") !== -1){
                                             linkText = "<img src='"+ link + "'/>";
                                             uploadDiv.addCls("feature_upload_image");
                                         }else{
