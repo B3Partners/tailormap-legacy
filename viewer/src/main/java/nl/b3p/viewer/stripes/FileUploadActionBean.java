@@ -136,7 +136,7 @@ public class FileUploadActionBean implements ActionBean {
                         fu.setType_(type);
                         fu.setFilename(fb.getFileName());
 
-                        fu.setMimetype(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(f));
+                        fu.setMimetype(fb.getContentType());
                         fu.setLocation(f.getName());
                         fu.setSft(layer.getFeatureType());
                         em.persist(fu);

@@ -137,6 +137,7 @@ public class FileUpload {
         obj.put("filename", filename);
         obj.put("fid", fid);
         obj.put("type", type_);
+        obj.put("mimetype", mimetype);
         obj.put("id", id);
         obj.put("sft", sft.getId());
         return obj;
