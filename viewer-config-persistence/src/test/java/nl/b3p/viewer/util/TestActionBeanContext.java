@@ -43,11 +43,14 @@ public class TestActionBeanContext extends ActionBeanContext{
         MockHttpServletRequest request=  new MockHttpServletRequest("", "");
         request.setUserPrincipal(user);
         request.setSession(session);
-        Set<String> roles = new HashSet<>();
-        for (Group group : user.getGroups()) {
-            roles.add(group.getName());
+
+        if (user != null) {
+            Set<String> roles = new HashSet<>();
+            for (Group group : user.getGroups()) {
+                roles.add(group.getName());
+            }
+            request.setRoles(roles);
         }
-        request.setRoles(roles);
         return request;
     }
     
