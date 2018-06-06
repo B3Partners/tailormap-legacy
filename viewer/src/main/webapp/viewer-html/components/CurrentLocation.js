@@ -54,8 +54,9 @@ Ext.define ("viewer.components.CurrentLocation",{
      */
     createButton: function(){
         //if there is a interval defined. Make the button a toggle
+        var renderButton = this.config.interval==0;
         var type=viewer.viewercontroller.controller.Tool.TOGGLE;
-        if (this.config.interval==0){
+        if (renderButton){
             type=viewer.viewercontroller.controller.Tool.BUTTON;
         }
         this.button= this.config.viewerController.mapComponent.createTool({
@@ -63,10 +64,11 @@ Ext.define ("viewer.components.CurrentLocation",{
             id: this.getName(),
             displayClass: "currentLocation",
             tooltip: this.config.tooltip || null,
-            viewerController: this.config.viewerController
+            viewerController: this.config.viewerController,
+            preventActivationAsFirstTool: renderButton
         });
         this.config.viewerController.mapComponent.addTool(this.button);
-        
+        this.button.blocksDefaultTool = false;
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         if (this.config.interval>0){
             this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);

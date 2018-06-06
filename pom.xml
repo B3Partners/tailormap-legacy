@@ -56,7 +56,7 @@
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
-        <tomcat.version>7.0.85</tomcat.version>
+        <tomcat.version>7.0.88</tomcat.version>
     </properties>
     <dependencyManagement>
         <!--
@@ -119,19 +119,7 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.2</version>
-            </dependency>
-            <dependency>
-                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
-                <groupId>org.apache.xmlgraphics</groupId>
-                <artifactId>batik-i18n</artifactId>
-                <version>1.9.1</version>
-            </dependency>
-            <dependency>
-                <!-- work-around for https://issues.apache.org/jira/browse/BATIK-1185 -->
-                <groupId>org.apache.xmlgraphics</groupId>
-                <artifactId>batik-constants</artifactId>
-                <version>1.9.1</version>
+                <version>2.3</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -209,7 +197,7 @@
             <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-endorsed-api</artifactId>
-                <version>6.0</version>
+                <version>7.0</version>
                 <scope>provided</scope>
             </dependency>
             <!-- geozet openls -->
@@ -526,7 +514,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -610,7 +598,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>

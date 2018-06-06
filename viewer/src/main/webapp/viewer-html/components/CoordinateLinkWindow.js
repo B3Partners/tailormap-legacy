@@ -75,7 +75,7 @@ Ext.define("viewer.components.CoordinateLinkWindow", {
         
         newUrl=newUrl.replace(/\[RDX\]/g, x);
         newUrl=newUrl.replace(/\[RDY\]/g, y);
-        this.window = window.open(newUrl, 'name', 'height=' + this.config.height + ',width=' + this.config.width + ',location=no,status=no,toolbar=no,menubar=no');
+        this.window = window.open(newUrl, 'name', 'height=' + this.config.height + ',width=' + this.config.width + ',location=no,resizable=yes,status=no,toolbar=no,menubar=no');
         if (window.focus) {
             this.window.focus();
         }
