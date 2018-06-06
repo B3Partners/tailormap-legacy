@@ -37,7 +37,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>4.8.1.7</flamingo.version>
+        <flamingo.version>4.8.1.7-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.8</project.build.sourceVersion>
         <project.build.targetVersion>1.8</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
