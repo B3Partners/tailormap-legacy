@@ -274,12 +274,12 @@ public class ApplicationActionBean implements ActionBean {
             user.put("name", username);
             JSONObject roles = new JSONObject();
             user.put("roles", roles);
-            for(String role: Authorizations.getRoles(context.getRequest())) {
+            for(String role: Authorizations.getRoles(context.getRequest(),em)) {
                 roles.put(role, Boolean.TRUE);
             }
         }
 
-        buildComponentSourceHTML();
+        buildComponentSourceHTML(em);
 
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
@@ -331,8 +331,8 @@ public class ApplicationActionBean implements ActionBean {
      * @param request servlet request with user credential
      * @return a key to use as a cache identifyer
      */
-    public static int getRolesCachekey(HttpServletRequest request) {
-        Set<String> roles = Authorizations.getRoles(request);
+    public static int getRolesCachekey(HttpServletRequest request, EntityManager em) {
+        Set<String> roles = Authorizations.getRoles(request, em);
 
         if(roles.isEmpty()) {
             return 0;
@@ -360,7 +360,7 @@ public class ApplicationActionBean implements ActionBean {
         return login;
     }
 
-    private void buildComponentSourceHTML() throws IOException {
+    private void buildComponentSourceHTML(EntityManager em) throws IOException {
 
         StringBuilder sb = new StringBuilder();
 
@@ -373,7 +373,7 @@ public class ApplicationActionBean implements ActionBean {
             Set<String> classNamesDone = new HashSet<>();
             for(ConfiguredComponent cc: comps) {
 
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest(),em)) {
                     continue;
                 }
 
@@ -409,7 +409,7 @@ public class ApplicationActionBean implements ActionBean {
             int hash = 0;
             Set<String> classNamesDone = new HashSet<>();
             for(ConfiguredComponent cc: comps) {
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
                     continue;
                 }
 
@@ -421,7 +421,7 @@ public class ApplicationActionBean implements ActionBean {
             }
             if(user != null) {
                 // Update component sources when roles of user change
-                hash = hash ^ getRolesCachekey(context.getRequest());
+                hash = hash ^ getRolesCachekey(context.getRequest(), em);
 
                 // Update component sources when roles of configured components
                 // may have changed

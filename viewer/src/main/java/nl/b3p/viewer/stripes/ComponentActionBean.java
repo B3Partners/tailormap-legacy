@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
@@ -38,6 +39,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -123,11 +125,12 @@ public class ComponentActionBean implements ActionBean {
     @Before(stages=LifecycleStage.EventHandling)
     public void load() {
         application = ApplicationActionBean.findApplication(app, version);
+        EntityManager em = Stripersist.getEntityManager();
         if(application != null && className != null) {
             for(ConfiguredComponent cc: application.getComponents()) {
                 if(cc.getClassName().equals(className)) {
                     
-                    if(Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                    if(Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
                         component = cc.getViewerComponent();
                         break;
                     }
@@ -154,9 +157,9 @@ public class ComponentActionBean implements ActionBean {
             Set<String> classNamesDone = new HashSet<String>();
 
             List<File> fileList = new ArrayList<File>();
-
+            EntityManager em = Stripersist.getEntityManager();
             for(ConfiguredComponent cc: comps) {
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
                     continue;
                 }
                 if(!classNamesDone.contains(cc.getClassName())) {
