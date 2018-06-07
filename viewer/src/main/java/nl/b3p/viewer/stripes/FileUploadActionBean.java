@@ -5,6 +5,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.FileUpload;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.FileUtils;
@@ -17,6 +18,7 @@ import org.stripesstuff.stripersist.Stripersist;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
@@ -109,115 +111,175 @@ public class FileUploadActionBean implements ActionBean {
     @DefaultHandler
     public Resolution uploadFile() {
         JSONObject json = new JSONObject();
-        String datadir = context.getServletContext().getInitParameter(DATA_DIR);
-        if (datadir.isEmpty()) {
+        String error = null;
+
+        if(appLayer == null ) {
+            error = "App layer or service not found";
+        }
+
+        if (error == null) {
+            if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+                error = "Not authorized";
+            }
+        }
+        if(error != null){
             json.put("success", false);
-            json.put("message", "Upload directory niet geconfigureerd. Neem contact op met de systeembeheerder.");
-        } else {
-            File dir = new File(datadir);
-            if (dir.exists() && dir.canWrite()) {
-                Long time = System.currentTimeMillis();
-                EntityManager em = Stripersist.getEntityManager();
-                Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
-                for (FileBean fb : files) {
-                    String filename = fb.getFileName();
-                    String extension = filename.substring(filename.lastIndexOf("."));
-                    filename = filename.substring(0, filename.lastIndexOf("."));
-
-                    File f = new File(dir, "uploads" + File.separator + appLayer.getLayerName() + "_" + fid + "_" + filename + "_" + time + extension);
-                    try {
-                        FileUtils.copyToFile(fb.getInputStream(), f);
-                        if (!em.getTransaction().isActive()) {
-                            em.getTransaction().begin();
-                        }
-                        FileUpload fu = new FileUpload();
-                        fu.setCreatedAt(new Date());
-                        fu.setFid(fid);
-                        fu.setType_(type);
-                        fu.setFilename(fb.getFileName());
-
-                        fu.setMimetype(fb.getContentType());
-                        fu.setLocation(f.getName());
-                        fu.setSft(layer.getFeatureType());
-                        em.persist(fu);
-                        em.getTransaction().commit();
-                    } catch (IOException e) {
-                        log.error("Cannot write file", e);
-                    }
-                }
-                json.put("success", true);
-            } else {
+            json.put("message", error);
+        }else {
+            String datadir = context.getServletContext().getInitParameter(DATA_DIR);
+            if (datadir.isEmpty()) {
                 json.put("success", false);
-                json.put("message", "Upload directory niet goed geconfigureerd: bestaat niet of kan niet schrijven. Neem contact op met de systeembeheerder.");
+                json.put("message", "Upload directory niet geconfigureerd. Neem contact op met de systeembeheerder.");
+            } else {
+                File dir = new File(datadir);
+                if (dir.exists() && dir.canWrite()) {
+                    Long time = System.currentTimeMillis();
+                    EntityManager em = Stripersist.getEntityManager();
+                    Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
+                    for (FileBean fb : files) {
+                        String filename = fb.getFileName();
+                        String extension = filename.substring(filename.lastIndexOf("."));
+                        filename = filename.substring(0, filename.lastIndexOf("."));
+
+                        File f = new File(dir, "uploads" + File.separator + appLayer.getLayerName() + "_" + fid + "_" + filename + "_" + time + extension);
+                        try {
+                            FileUtils.copyToFile(fb.getInputStream(), f);
+                            if (!em.getTransaction().isActive()) {
+                                em.getTransaction().begin();
+                            }
+                            FileUpload fu = new FileUpload();
+                            fu.setCreatedAt(new Date());
+                            fu.setFid(fid);
+                            fu.setType_(type);
+                            fu.setFilename(fb.getFileName());
+
+                            fu.setMimetype(fb.getContentType());
+                            fu.setLocation(f.getName());
+                            fu.setSft(layer.getFeatureType());
+                            em.persist(fu);
+                            em.getTransaction().commit();
+                        } catch (IOException e) {
+                            log.error("Cannot write file", e);
+                        }
+                    }
+                    json.put("success", true);
+                } else {
+                    json.put("success", false);
+                    json.put("message", "Upload directory niet goed geconfigureerd: bestaat niet of kan niet schrijven. Neem contact op met de systeembeheerder.");
+                }
             }
         }
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
-    public static JSONObject retrieveUploads(String fid, ApplicationLayer appLayer, EntityManager em) {
+    public static JSONObject retrieveUploads(String fid, ApplicationLayer appLayer, EntityManager em, Application application, HttpServletRequest request) {
         JSONObject uploads = new JSONObject();
-        Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
-        List<FileUpload> fups = em.createQuery("FROM FileUpload WHERE sft = :sft and fid = :fid", FileUpload.class)
-                .setParameter("sft", layer.getFeatureType()).setParameter("fid", fid).getResultList();
+        String error = null;
 
-        for (FileUpload fup : fups) {
-            if (!uploads.has(fup.getType_())) {
-                uploads.put(fup.getType_(), new JSONArray());
+        if(appLayer == null ) {
+            error = "App layer or service not found";
+        }
+
+        if (error == null) {
+            if (!Authorizations.isAppLayerReadAuthorized(application, appLayer, request, Stripersist.getEntityManager())) {
+                error = "Not authorized";
             }
-            JSONArray ar = uploads.getJSONArray(fup.getType_());
-            ar.put(fup.toJSON());
+        }
+        if(error == null) {
+
+
+            Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
+            List<FileUpload> fups = em.createQuery("FROM FileUpload WHERE sft = :sft and fid = :fid", FileUpload.class)
+                    .setParameter("sft", layer.getFeatureType()).setParameter("fid", fid).getResultList();
+
+            for (FileUpload fup : fups) {
+                if (!uploads.has(fup.getType_())) {
+                    uploads.put(fup.getType_(), new JSONArray());
+                }
+                JSONArray ar = uploads.getJSONArray(fup.getType_());
+                ar.put(fup.toJSON());
+            }
         }
         return uploads;
     }
 
     public Resolution view() {
         final FileUpload up = upload;
+        String error = null;
+        if(appLayer == null ) {
+            error = "App layer or service not found";
+        }
 
-        String datadir = context.getServletContext().getInitParameter(DATA_DIR);
-        File dir = new File(datadir);
-        File f = new File(dir, "uploads" + File.separator + up.getLocation());
-        final FileInputStream fis;
-        try {
-            fis = new FileInputStream(f);
+        if (error == null) {
+            if (!Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+                error = "Not authorized";
+            }
+        }
+        if(error == null) {
+            String datadir = context.getServletContext().getInitParameter(DATA_DIR);
+            File dir = new File(datadir);
+            File f = new File(dir, "uploads" + File.separator + up.getLocation());
+            final FileInputStream fis;
+            try {
+                fis = new FileInputStream(f);
 
-            StreamingResolution res = new StreamingResolution(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(f)) {
-                @Override
-                public void stream(HttpServletResponse response) throws Exception {
-                    OutputStream out = response.getOutputStream();
-                    IOUtils.copy(fis, out);
-                    fis.close();
-                }
-            };
-            String name = up.getFilename();
-            res.setFilename(name);
-            res.setAttachment(false);
-            return res;
-        } catch (FileNotFoundException e) {
-            log.error("Cannot retrieve file: ", e);
-            return new ErrorMessageResolution("Cannot retrieve upload:" + e.getLocalizedMessage());
+                StreamingResolution res = new StreamingResolution(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(f)) {
+                    @Override
+                    public void stream(HttpServletResponse response) throws Exception {
+                        OutputStream out = response.getOutputStream();
+                        IOUtils.copy(fis, out);
+                        fis.close();
+                    }
+                };
+                String name = up.getFilename();
+                res.setFilename(name);
+                res.setAttachment(false);
+                return res;
+            } catch (FileNotFoundException e) {
+                log.error("Cannot retrieve file: ", e);
+                return new ErrorMessageResolution("Cannot retrieve upload:" + e.getLocalizedMessage());
+            }
+        }else{
+            log.error("User unauthorized: " + error);
+            return new ErrorMessageResolution("User unauthorized: " + error);
         }
     }
 
     public Resolution removeUpload() {
+        String error = null;
+
         JSONObject json = new JSONObject();
         json.put("uploadid", upload.getId());
         json.put("success", false);
-        String datadir = context.getServletContext().getInitParameter(DATA_DIR);
-        File dir = new File(datadir);
-        File f = new File(dir, "uploads" + File.separator + upload.getLocation());
-        EntityManager em = Stripersist.getEntityManager();
-        if (f.exists()) {
-            boolean deleted = f.delete();
-            if (deleted) {
-                json.put("success", true);
-            }else{
-                log.error("Kan bestand niet verwijderen: " + upload.getFilename());
-            }
-        } else {
-            json.put("message", "Bestand bestaat niet");
+        if(appLayer == null ) {
+            error = "App layer or service not found";
         }
-        em.remove(upload);
-        em.getTransaction().commit();
+
+        if (error == null) {
+            if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+                error = "Not authorized";
+            }
+        }
+        if(error == null) {
+            String datadir = context.getServletContext().getInitParameter(DATA_DIR);
+            File dir = new File(datadir);
+            File f = new File(dir, "uploads" + File.separator + upload.getLocation());
+            EntityManager em = Stripersist.getEntityManager();
+            if (f.exists()) {
+                boolean deleted = f.delete();
+                if (deleted) {
+                    json.put("success", true);
+                } else {
+                    log.error("Kan bestand niet verwijderen: " + upload.getFilename());
+                }
+            } else {
+                json.put("message", "Bestand bestaat niet");
+            }
+            em.remove(upload);
+            em.getTransaction().commit();
+        }else{
+            json.put("message",error );
+        }
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 }

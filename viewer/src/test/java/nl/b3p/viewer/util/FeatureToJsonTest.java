@@ -73,7 +73,7 @@ public class FeatureToJsonTest {
         List<Long> attributesToInclude = new ArrayList<>();
         
         FeatureToJson instance = new FeatureToJson(false, true, false, attributesToInclude);
-        JSONArray result = instance.getJSONFeatures(al, ft, gtFS, q, sort, dir, null);
+        JSONArray result = instance.getJSONFeatures(al, ft, gtFS, q, sort, dir, null,null ,null);
         assertNotNull(result);
         assertFalse(result.length() == 0);
         assertEquals(10, result.length());
@@ -92,7 +92,7 @@ public class FeatureToJsonTest {
         List<Long> attributesToInclude = new ArrayList<>();
         
         FeatureToJson instance = new FeatureToJson(false, true, false, attributesToInclude);
-        JSONArray result = instance.getJSONFeatures(al, ft, gtFS, q, sort, dir, null);
+        JSONArray result = instance.getJSONFeatures(al, ft, gtFS, q, sort, dir, null,null ,null);
         assertNotNull(result);
         assertFalse(result.length() == 0);
         assertEquals(10, result.length());

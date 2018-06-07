@@ -511,14 +511,7 @@ Ext.define("viewer.components.Edit", {
                 var types = Ext.JSON.decode(appLayer.details["editfeature.uploadDocument.types"]);
                 for(var i = 0 ; i < types.length ; i++){
                     var t = types[i];
-                    var container =new Ext.form.FormPanel({
-                        title: t,
-                        border: 0,
-                        id: "uploadContainer" + t,
-                        name: "uploadContainer" + t,
-                        collapsable: false,
-                        items:[this.createUploadBox(t, 0)]
-                    });
+                    var container = this.createFileForm(t,true);
                     nonGrouped.push(container);
                 }
             }
@@ -529,20 +522,38 @@ Ext.define("viewer.components.Edit", {
         } else {
             this.geomlabel.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
             this.setButtonDisabled("editButton", true);
-            this.setButtonDisabled("newButton", true);
+            this.setButtonDisabled("newButton", true);f
             this.setButtonDisabled("deleteButton", true);
             this.setButtonDisabled("copyButton", true);
         }
+    },
+    createFileForm: function(t, makeUpload){
+        var items = [];
+        if(makeUpload){
+            items.push(this.createUploadBox(t, 0));
+        }
+        var container =new Ext.form.FormPanel({
+            title: t,
+            border: 0,
+            id: "uploadContainer" + t,
+            name: "uploadContainer" + t,
+            collapsable: false,
+            items:items
+        });
+        return container;
     },
     createUploadBox: function(t, index){
         var me = this;
         var file = Ext.create('Ext.form.field.File', {
             label: "Upload een document",
             name: 'files[' + index + "]",
+            width: "70%",
             id: "uploadedFile" + t + index,
             labelClsExtra: this.editLblClass,
             listeners:{
-                change: function(a,b,c,d){
+                change: function(fld,value){
+                    var newValue = value.replace(/C:\\fakepath\\/g, '');
+                    fld.setRawValue(newValue);
                     var container = Ext.getCmp("uploadContainer" + t);
                     var size = container.items.length;
                     var upload = this.createUploadBox(t,size);
@@ -767,6 +778,10 @@ Ext.define("viewer.components.Edit", {
                     if(uploads.hasOwnProperty(key)){
                         var files = uploads[key];
                         var container = Ext.getCmp("uploadContainer" + key);
+                        if(!container){
+                            container = this.createFileForm(key, false);
+                            this.inputContainer.add(container);
+                        }
                         for(var i = 0 ; i <files.length;i++){
                             var file = files[i];
                             var remover = Ext.create('Ext.container.Container', {
@@ -798,13 +813,20 @@ Ext.define("viewer.components.Edit", {
                                                             scope: this,
                                                             params: {
                                                                 removeUpload: true,
-                                                                upload: fileId
+                                                                upload: fileId,
+                                                                appLayer: this.appLayer.id,
+                                                                application: FlamingoAppLoader.get("appId")
                                                             },
                                                             success: function(result) {
                                                                 var response = Ext.JSON.decode(result.responseText);
-                                                                var removerId = "fileremover-" + response.uploadid;
-                                                                var remover = Ext.getCmp(removerId);
-                                                                remover.ownerCt.remove(remover);
+                                                                if (response.success) {
+                                                                    var removerId = "fileremover-" + response.uploadid;
+                                                                    var remover = Ext.getCmp(removerId);
+                                                                    remover.ownerCt.remove(remover);
+                                                                } else {
+
+                                                                    Ext.Msg.alert('Mislukt', "De upload is niet verwijderd: " + response.message);
+                                                                }
                                                             },
                                                             failure: function(result) {
                                                                 if(failureFunction != undefined) {
