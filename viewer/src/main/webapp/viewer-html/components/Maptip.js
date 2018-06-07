@@ -370,7 +370,7 @@ Ext.define ("viewer.components.Maptip",{
                                     for(var i = 0 ; i < files.length ;i++){
                                         var f = files[i];
                                         var uploadDiv = new Ext.Element(document.createElement("div"));
-                                        var link = actionBeans["file"] +"?view=true&upload="+ f.id;
+                                        var link = actionBeans["file"] +"?view=true&upload="+ f.id + "&appLayer=" + appLayer.id + "&application=" +FlamingoAppLoader.get("appId");
                                         var linkText;
                                         if(f.mimetype.indexOf("image") !== -1){
                                             linkText = "<img src='"+ link + "'/>";

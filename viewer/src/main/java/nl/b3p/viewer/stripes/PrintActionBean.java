@@ -46,6 +46,7 @@ import org.opengis.filter.FilterFactory2;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URL;
@@ -185,7 +186,7 @@ public class PrintActionBean implements ActionBean {
                 jRequest.put("extra", new JSONArray());
             }
 
-            processAttributes(jRequest, em, jRequest);
+            processAttributes(jRequest, em, jRequest, app, context.getRequest());
         }
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
@@ -330,7 +331,7 @@ public class PrintActionBean implements ActionBean {
         }       
     }
 
-    private void processAttributes(JSONObject req, EntityManager em, JSONObject jRequest){
+    private void processAttributes(JSONObject req, EntityManager em, JSONObject jRequest, Application application, HttpServletRequest request){
         JSONArray attrsObj = req.getJSONArray("attributesObject");
         JSONObject info = new JSONObject();
         for (int i = 0; i < attrsObj.length(); i++) {
@@ -350,7 +351,7 @@ public class PrintActionBean implements ActionBean {
                 String l = appLayer.getDisplayName(em);
                 result.put("componentName", l);
 
-                JSONArray features = getFeatures(appLayer, layer, filter, em, jRequest);
+                JSONArray features = getFeatures(appLayer, layer, filter, em, jRequest, application, request);
 
                 info.put("al_" +appLayerId, features);
                 result.put("info", info);
@@ -363,7 +364,7 @@ public class PrintActionBean implements ActionBean {
 
     }
 
-    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em, JSONObject params) throws Exception {
+    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em, JSONObject params, Application application, HttpServletRequest request) throws Exception {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
         List<Long> attributesToInclude = new ArrayList<>();
@@ -384,7 +385,7 @@ public class PrintActionBean implements ActionBean {
         q.setHandle("PrintActionBean_attributes");
 
         FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
-        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em);
+        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em, application, request);
 
         fs.getDataStore().dispose();
 
@@ -427,7 +428,7 @@ public class PrintActionBean implements ActionBean {
                             log.debug("Related features query: " + q);
 
                             fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q, em);
+                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q, em, application, request);
 
                             JSONArray jsonFeats = new JSONArray();
                             int featureCount;

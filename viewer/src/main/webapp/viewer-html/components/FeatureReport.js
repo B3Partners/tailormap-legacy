@@ -176,6 +176,10 @@ Ext.define("viewer.components.FeatureReport", {
                     id: this.name + 'formappLayer'
                 }, {
                     xtype: "hidden",
+                    name: "application",
+                    id: this.name + 'formapplication'
+                }, {
+                    xtype: "hidden",
                     name: "fid",
                     id: this.name + 'formFid'
                 }, {
@@ -195,6 +199,7 @@ Ext.define("viewer.components.FeatureReport", {
      */
     handleAction: function (feature, appLayer) {
         Ext.getCmp(this.name + 'formappLayer').setValue(appLayer.id);
+        Ext.getCmp(this.name + 'formapplication').setValue(FlamingoAppLoader.get('appId'));
         Ext.getCmp(this.name + 'formFid').setValue(feature.getAttribute('__fid'));
         Ext.getCmp(this.name + 'maxFeats').setValue(this.config.numOfRelatedFeatures);
 
