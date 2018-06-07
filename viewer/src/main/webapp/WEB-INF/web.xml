@@ -138,12 +138,14 @@
         <filter-name>HeaderAuthenticationFilter</filter-name>
         <filter-class>nl.b3p.web.filter.HeaderAuthenticationFilter</filter-class>
         <init-param>
-            <!-- Only enable when the webapp is ONLY reachable proxied by the
-             webserver correctly configured to clear the userHeader on the
-             authPath. Must not be directly reachable by the Tomcat HTTP
-             connector, disable it or bind it to localhost! -->
-            <param-name>iHaveSecuredMyServerAndDisabledTheTomcatHttpConnector</param-name>
-            <param-value>false</param-value>
+            <!-- Must be set to a secret random prefix to enable.
+
+            These filter init-params can be overridden withs a context-parameter
+            using param-name prefix headerAuth and capitalizing the filter
+            init-param name, for example headerAuthPrefix,
+            -->
+            <param-name>prefix</param-name>
+            <param-value>[disabled]</param-value>
         </init-param>
         <init-param>
             <param-name>commonRole</param-name>
@@ -151,7 +153,7 @@
         </init-param>
         <init-param>
             <param-name>saveExtraHeaders</param-name>
-            <param-value>MELLON_SESSION</param-value>
+            <param-value>_SESSION</param-value>
         </init-param>
     </filter>
     <servlet>
