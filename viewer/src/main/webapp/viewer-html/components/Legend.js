@@ -53,6 +53,7 @@ Ext.define("viewer.components.Legend", {
      */
     orderedElements: null,
     treenodes: null,
+    treelegendcache: {},
     config: {
         title: "Legenda",
         titlebarIcon: "",
@@ -76,6 +77,7 @@ Ext.define("viewer.components.Legend", {
         
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChange,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.TOC_EXPANDED, this.tocExpanded, this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_ZOOM_END,this.onZoomEnd,this);
           
@@ -350,6 +352,7 @@ Ext.define("viewer.components.Legend", {
 
     resetInlineLegend: function() {
         this.treenodes = null;
+        this.treelegendcache = {};
         var tree = this.getTocTree();
         if(tree === null) {
             return;
@@ -391,7 +394,8 @@ Ext.define("viewer.components.Legend", {
     appendLegendToToc: function(appLayer, legendElement) {
         
         if(this.tocRendered) {
-            this._appendLegendToToc(appLayer, legendElement)
+            this._appendLegendToToc(appLayer, legendElement);
+            return;
         }
         var toc = this.getToc();
         if(toc) {
@@ -407,31 +411,66 @@ Ext.define("viewer.components.Legend", {
         if(!legendElement) {
             return;
         }
+        var legendAdded = false;
+        var imageClone = this.createLegendElementClone(legendElement);
         for(var i = 0; i < this.treenodes.length; i++) {
             if(this.treenodes[i].layerObj.appLayer.id === appLayer.id) {
-                this.createLegendInToc(this.treenodes[i], legendElement);
+                this.createLegendInToc(this.treenodes[i].layerObj, imageClone);
+                legendAdded = true;
             }
         }
+        if(!legendAdded) {
+            this.treelegendcache[appLayer.id] = imageClone;
+        }
+    },
+
+    tocExpanded: function(node) {
+        if(Ext.Object.isEmpty(this.treelegendcache)) {
+            return;
+        }
+        node.eachChild(function(child) {
+            if(!child.isLeaf()) {
+                return;
+            }
+            var layerObj = child.get("layerObj");
+            if(!layerObj) {
+                return;
+            }
+            var data = child.getData();
+            if(!Ext.Array.contains(this.treenodes, data)) {
+                this.treenodes.push(data);
+            }
+            if(this.treelegendcache.hasOwnProperty(layerObj.appLayer.id)) {
+                this.createLegendInToc(layerObj, this.treelegendcache[layerObj.appLayer.id]);
+            }
+        }, this);
     },
     
-    createLegendInToc: function(treenode, legendElement) {
-        var el = document.getElementById("span_" + treenode.layerObj.nodeId);
+    createLegendInToc: function(layerObj, imageClone) {
+        var el = document.getElementById("span_" + layerObj.nodeId);
         if(el) {
             if(el.parentNode.querySelector('.legend-toggle') !== null) {
                 return;
             }
-            var image = legendElement.querySelector(".image");
-            if(image) {
-                var clonedImage = image.cloneNode(true);
-                clonedImage.style.display = 'none';
+            if(imageClone) {
                 var link = document.createElement('a');
                 link.href = "#";
                 link.className = 'legend-toggle';
                 el.style.display = 'inline-block';
                 el.parentNode.insertBefore(link, el);
-                el.appendChild(clonedImage);
+                el.appendChild(imageClone);
             }
         }
+    },
+
+    createLegendElementClone: function(legendElement) {
+        var image = legendElement.querySelector(".image");
+        if(image) {
+            var clonedImage = image.cloneNode(true);
+            clonedImage.style.display = 'none';
+            return clonedImage;
+        }
+        return null;
     },
 
     toggleLegendImage: function(e) {
