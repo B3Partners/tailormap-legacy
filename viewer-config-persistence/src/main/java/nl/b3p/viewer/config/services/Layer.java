@@ -163,8 +163,20 @@ public class Layer implements Cloneable, Serializable {
 
     public Layer(org.geotools.data.ows.Layer l, GeoService service) {
         name = l.getName();
+        if (name != null && name.length() > 254) {
+            log.warn("Layer name longer than 254 char will be truncated, was: " + name);
+            // fix issue#1078
+            name = name.substring(0, 252) + "...";
+            log.warn("Truncated layer name is: " + name);
+        }
         virtual = name == null;
         title = l.getTitle();
+        if (title != null && title.length() > 254) {
+            log.warn("Layer title longer than 254 char will be truncated, was: " + title);
+            // fix issue#1078
+            title = title.substring(0, 252) + "...";
+            log.warn("Truncated layer title is: " + title);
+        }
         minScale = l.getScaleDenominatorMin();
         this.service = service;
         if(Double.isNaN(minScale)) {
