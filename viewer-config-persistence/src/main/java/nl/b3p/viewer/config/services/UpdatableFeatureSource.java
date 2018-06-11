@@ -24,12 +24,15 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.persistence.EntityManager;
+
 /**
  *
  * @author Roy Braam
  */
 public abstract class UpdatableFeatureSource extends FeatureSource{    
     private static final Log log = LogFactory.getLog(UpdatableFeatureSource.class);
+    private final int updatebatchsize = 5;
 
     /**
      * Update this featuresource.
@@ -37,10 +40,11 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
      * @return the result of the update
      * @throws java.lang.Exception if any
      */
-    public FeatureSourceUpdateResult update() throws Exception{
+    public FeatureSourceUpdateResult update(EntityManager em) throws Exception{
         final FeatureSourceUpdateResult result = new FeatureSourceUpdateResult(this);         
         try{
             List<SimpleFeatureType> newFeatureTypes = this.createFeatureTypes(result.getWaitPageStatus().subtask("",80));
+            int processed = 0;
             //update and add the new featuretypes.
             for(SimpleFeatureType newFt : newFeatureTypes){
                 MutableBoolean updated = new MutableBoolean();
@@ -58,7 +62,24 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
                         ftResult.setRight(UpdateResult.Status.UNMODIFIED);
                     }
                 }
+                processed++;
+                if(processed == updatebatchsize){
+                    processed = 0;
+                    if(!em.getTransaction().isActive()){
+                        em.getTransaction().begin();
+                    }
+                    em.persist(this);
+                    em.getTransaction().commit();
+                    em.getTransaction().begin();
+                }
             }
+            if(!em.getTransaction().isActive()){
+                em.getTransaction().begin();
+            }
+            em.persist(this);
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            processed = 0;
             //remove featuretypes when not there
             Iterator<SimpleFeatureType> it = this.getFeatureTypes().iterator();
             while (it.hasNext()){
@@ -72,6 +93,15 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
                 }
                 if(!stillExists){
                     it.remove();
+                }
+                if(processed == updatebatchsize){
+                    processed = 0;
+                    if(!em.getTransaction().isActive()){
+                        em.getTransaction().begin();
+                    }
+                    em.persist(this);
+                    em.getTransaction().commit();
+                    em.getTransaction().begin();
                 }
             }
             result.setStatus(UpdateResult.Status.UPDATED);
