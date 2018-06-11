@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.8.1.13</version>
+    <version>4.8.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -14,7 +14,7 @@
         <connection>scm:git:git@github.com:flamingo-mc/flamingo.git</connection>
         <developerConnection>scm:git:git@github.com:flamingo-mc/flamingo.git</developerConnection>
         <url>https://github.com/flamingo-mc/flamingo.git</url>
-      <tag>v4.8.1.13</tag>
+      <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <repository>
@@ -37,7 +37,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>4.8.1.13</flamingo.version>
+        <flamingo.version>4.8.2-SNAPSHOT</flamingo.version>
         <project.build.sourceVersion>1.8</project.build.sourceVersion>
         <project.build.targetVersion>1.8</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
