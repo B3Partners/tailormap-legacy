@@ -230,11 +230,12 @@ public class AttributeSourceActionBean implements ActionBean {
                     featureSource.getProtocol()));
             return new ForwardResolution(EDITJSP);
         }
-        FeatureSourceUpdateResult result = ((UpdatableFeatureSource)featureSource).update();
+        EntityManager em = Stripersist.getEntityManager();
+        FeatureSourceUpdateResult result = ((UpdatableFeatureSource)featureSource).update(em);
         
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
-            Stripersist.getEntityManager().getTransaction().rollback();
+            em.getTransaction().rollback();
             return new ForwardResolution(EDITJSP);
         }
         
@@ -260,8 +261,8 @@ public class AttributeSourceActionBean implements ActionBean {
             byStatus.get(UpdateResult.Status.MISSING).size()
         )));
         
-        Stripersist.getEntityManager().persist(featureSource);
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.persist(featureSource);
+        em.getTransaction().commit();
         
         return new ForwardResolution(EDITJSP);
     }
