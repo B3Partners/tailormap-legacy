@@ -48,6 +48,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,6 +108,8 @@ public class FeatureInfoActionBean implements ActionBean {
     private boolean ordered = false;
 
     private Layer layer;
+
+    private static final String RIJKSDRIEHOEK_STELSEL = "epsg:28992";
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -328,6 +331,7 @@ public class FeatureInfoActionBean implements ActionBean {
 
                     q.setFilter(f);
                     q.setMaxFeatures(limit +1);
+                    q.setCoordinateSystem(CRS.decode(RIJKSDRIEHOEK_STELSEL));
 
                     JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q, em, application, context.getRequest());
                     if(features.length() > limit){
