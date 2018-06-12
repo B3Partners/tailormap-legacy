@@ -46,6 +46,7 @@ import org.opengis.filter.FilterFactory2;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URL;
@@ -106,12 +107,23 @@ public class PrintActionBean implements ActionBean {
         Long appId = jRequest.optLong("appId");
         EntityManager em = Stripersist.getEntityManager();
         Application app = em.find(Application.class, appId);
-        
+
+        String baseUrl = context.getRequest().getRequestURL().toString();
         //get the image url:
-        String imageUrl = PrintUtil.getImageUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId());
+        String imageUrl = PrintUtil.getImageUrl(params, baseUrl, context.getRequest().getSession().getId());
         
         //get the form settings
         final PrintInfo info = new PrintInfo();
+
+
+        RedirectResolution to = new RedirectResolution(FileUploadActionBean.class,"view");
+        RedirectResolution from = new RedirectResolution(PrintActionBean.class);
+        // url van print actionbean naar combineimage action bean, kopieer de sessionid naar de url
+        // tomcat specifiek gedrag
+
+        String viewUploadURL = baseUrl.replace(from.getUrl(new Locale("NL")), to.getUrl(new Locale("NL")));
+
+        info.setUploadURL(viewUploadURL);
         if (jRequest.has("title")){
             info.setTitle(jRequest.getString("title"));
         }
@@ -174,7 +186,7 @@ public class PrintActionBean implements ActionBean {
                 jRequest.put("extra", new JSONArray());
             }
 
-            processAttributes(jRequest, em, jRequest);
+            processAttributes(jRequest, em, jRequest, app, context.getRequest());
         }
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
@@ -319,7 +331,7 @@ public class PrintActionBean implements ActionBean {
         }       
     }
 
-    private void processAttributes(JSONObject req, EntityManager em, JSONObject jRequest){
+    private void processAttributes(JSONObject req, EntityManager em, JSONObject jRequest, Application application, HttpServletRequest request){
         JSONArray attrsObj = req.getJSONArray("attributesObject");
         JSONObject info = new JSONObject();
         for (int i = 0; i < attrsObj.length(); i++) {
@@ -339,7 +351,7 @@ public class PrintActionBean implements ActionBean {
                 String l = appLayer.getDisplayName(em);
                 result.put("componentName", l);
 
-                JSONArray features = getFeatures(appLayer, layer, filter, em, jRequest);
+                JSONArray features = getFeatures(appLayer, layer, filter, em, jRequest, application, request);
 
                 info.put("al_" +appLayerId, features);
                 result.put("info", info);
@@ -352,7 +364,7 @@ public class PrintActionBean implements ActionBean {
 
     }
 
-    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em, JSONObject params) throws Exception {
+    private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em, JSONObject params, Application application, HttpServletRequest request) throws Exception {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
         List<Long> attributesToInclude = new ArrayList<>();
@@ -373,7 +385,7 @@ public class PrintActionBean implements ActionBean {
         q.setHandle("PrintActionBean_attributes");
 
         FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
-        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
+        JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em, application, request);
 
         fs.getDataStore().dispose();
 
@@ -410,13 +422,13 @@ public class PrintActionBean implements ActionBean {
                             }
 
                             // collect related feature attributes
-                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, Stripersist.getEntityManager()));
+                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, em));
                             q.setMaxFeatures(this.maxrelatedfeatures + 1);
                             q.setHandle("FeatureReportActionBean_related_attributes");
                             log.debug("Related features query: " + q);
 
                             fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+                            JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q, em, application, request);
 
                             JSONArray jsonFeats = new JSONArray();
                             int featureCount;

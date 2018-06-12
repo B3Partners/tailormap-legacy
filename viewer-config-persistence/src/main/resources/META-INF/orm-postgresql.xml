@@ -245,4 +245,12 @@
         </attributes>
     </entity>
 
+    <entity class="nl.b3p.viewer.config.app.FileUpload">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
 </entity-mappings>

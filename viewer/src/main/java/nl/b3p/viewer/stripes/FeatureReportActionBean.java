@@ -18,22 +18,10 @@ package nl.b3p.viewer.stripes;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import net.sourceforge.stripes.action.ActionBean;
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.After;
-import net.sourceforge.stripes.action.Before;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.ErrorResolution;
-import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
@@ -53,7 +41,6 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.visitor.BoundsVisitor;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
@@ -62,6 +49,12 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mark Prins
@@ -86,6 +79,10 @@ public class FeatureReportActionBean implements ActionBean {
      */
     @Validate
     private String fid;
+
+    @Validate
+    private Application application;
+
 
     /**
      * max. number of related features to retrieve.
@@ -186,8 +183,9 @@ public class FeatureReportActionBean implements ActionBean {
             q.setMaxFeatures(1);
             q.setHandle("FeatureReportActionBean_attributes");
 
+            EntityManager em  = Stripersist.getEntityManager();
             FeatureToJson ftjson = new FeatureToJson(false, false, false, true, false, attributesToInclude, true);
-            JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q);
+            JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em, application, context.getRequest());
 
             // if there are more than one something is very wrong in datamodel or datasource
             JSONArray jFeat = features.getJSONArray(0);
@@ -228,13 +226,13 @@ public class FeatureReportActionBean implements ActionBean {
                             }
 
                             // collect related feature attributes
-                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, Stripersist.getEntityManager()));
+                            q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(query, em));
                             q.setMaxFeatures(this.maxrelatedfeatures + 1);
                             q.setHandle("FeatureReportActionBean_related_attributes");
                             LOG.debug("Related features query: " + q);
 
                             fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                            features = ftjson.getJSONFeatures(appLayer, fType, fs, q);
+                            features = ftjson.getJSONFeatures(appLayer, fType, fs, q, em, application, context.getRequest());
 
                             JSONArray jsonFeats = new JSONArray();
                             int featureCount;
@@ -382,5 +380,13 @@ public class FeatureReportActionBean implements ActionBean {
     public void setMaxrelatedfeatures(int maxrelatedfeatures) {
         this.maxrelatedfeatures = maxrelatedfeatures;
     }
-    //</editor-fold>
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+//</editor-fold>
 }

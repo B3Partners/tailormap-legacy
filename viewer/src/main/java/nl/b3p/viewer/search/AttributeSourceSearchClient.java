@@ -81,7 +81,7 @@ public class AttributeSourceSearchClient extends SearchClient {
             FeatureToJson ftoj = new FeatureToJson(false, false, false, true, null);
             Query q = createQuery(queryAttributes, gtFS, query);
             q.setMaxFeatures(FeatureToJson.MAX_FEATURES);
-            JSONArray features = ftoj.getJSONFeatures(null, ft, gtFS, q, null, null);
+            JSONArray features = ftoj.getJSONFeatures(null, ft, gtFS, q, null, null, em, null, null);
 
             for (Object feature : features) {
                 JSONObject newFeature = new JSONObject();

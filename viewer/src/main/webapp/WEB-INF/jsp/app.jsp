@@ -100,8 +100,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <c:choose>
             <c:when test="${!(param.debug == true)}">
-                <script type="text/javascript" src="${contextPath}/viewer-html/viewer-min.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/${actionBean.viewerType}-min.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/viewer-min.js?${project.version}"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/${actionBean.viewerType}-min.js?${version}"></script>
             </c:when>
             <c:otherwise>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/AppLoader.js"></script>
@@ -258,7 +258,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "cyclorama":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CycloramaActionBean"/></js:quote>,
                 "featureExtent":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureExtentActionBean"/></js:quote>,
                 "featureReport":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureReportActionBean"/></js:quote>,
-                "ontbrandings":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.OntbrandingsActionBean"/></js:quote>
+                "ontbrandings":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.OntbrandingsActionBean"/></js:quote>,
+                "file":               <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FileUploadActionBean"/></js:quote>
             };
 
             <c:if test="${actionBean.viewerType == 'openlayers'}">

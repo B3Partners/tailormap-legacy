@@ -128,7 +128,7 @@ public class AttributesActionBean implements ActionBean {
      * @see nl.b3p.viewer.config.services.Layer#getPreventGeomEditors()
      * @see
      * nl.b3p.viewer.config.security.Authorizations#isLayerGeomWriteAuthorized(nl.b3p.viewer.config.services.Layer,
-     * javax.servlet.http.HttpServletRequest)
+     * javax.servlet.http.HttpServletRequest, EntityManager)
      * 
      */
     private boolean userAllowedToEditGeom = true;
@@ -530,7 +530,7 @@ public class AttributesActionBean implements ActionBean {
 
                 FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
 
-                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
+                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir, em, null, null);
 
                 if (!startIndexSupported){
                     if (features.length() < limit){

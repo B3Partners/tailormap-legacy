@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,9 +31,9 @@ import org.apache.commons.logging.LogFactory;
  * end users (the webserver MUST be configured correctly to avoid security
  * problems).
  * <p>
- * <b>WARNING: only enable when all requests to authPath are proxied via a webserver
- * which overwrites the client request header configured as userHeader! If you
- * use mod_proxy_ajp, DISABLE access through the Tomcat HTTP connector!</b>
+ * <b>WARNING: pick a random header name prefix for each installation so that
+ * users cannot send their own headers when connecting directly to the Tomcat
+ * HTTP connector if that is enabled and not firewalled.</b>
  * <p>
  * Note that if you only want to use SAML authentication, you can use Apache
  * authentication by setting the tomcatAuthentication attribute on the AJP
@@ -43,11 +44,8 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * <p>
  * This filter trusts HTTP request headers, which must be set by Apache on the
- * configured authPath to overwrite any headers sent by the client! Unfortunately,
- * the more secure way of passing information using environment variables is not
- * supported by mod_proxy_ajp and Tomcat. Environment variables can be propagated using
- * the AJP_ prefix, but these are only set on the CoyoteRequest which is not available
- * to the web application.
+ * configured authPath. Pick a random header prefix to prevent a user from
+ * maliciously providing the headers directly to the HTTP connector.
  * </p>
  * <h2>Usage with mod_auth_mellon for SAML support</h2>
  * Configure Mellon as follows:
@@ -75,33 +73,39 @@ import org.apache.commons.logging.LogFactory;
  *     # with packetSize:
  *     # &lt;Connector port="8009" protocol="AJP/1.3" redirectPort="8443" packetSize="65536"/&gt;
  *     #MellonSessionDump On
- *     #RequestHeader set MELLON_SESSION "%{MELLON_SESSION}e"
+ *     #RequestHeader set [prefix]_SESSION "%{MELLON_SESSION}e"
  *     # Set this outside the &lt;Location&gt; block
  *     #ProxyIOBufferSize 65536
  *
  *     # Look at the base64 decoded MELLON_SESSION (using printenv.pl or similar)
  *     # to see the oids of the returned attributes. This oid is for uid
  *     MellonSetEnvNoPrefix "MELLON_uid" "urn:oid:0.9.2342.19200300.100.1.1"
- *     RequestHeader set MELLON_uid "%{MELLON_uid}e"
+ *     RequestHeader set [prefix]_uid "%{MELLON_uid}e"
  *
  *     # oid for FriendlyName="eduPersonAffiliation"
  *     # Supported in newer Mellon versions:
  *     #MellonMergeEnvVars On
  *     MellonSetEnvNoPrefix "MELLON_roles" "urn:oid:1.3.6.1.4.1.5923.1.1.1.1"
- *     RequestHeader set MELLON_roles "%{MELLON_roles}e"
+ *     RequestHeader set [prefix]_roles "%{MELLON_roles}e"
  *     # If merging is not supported, use multiple request headers, for a maximum
  *     # number of groups, add more to increase maximum
- *     RequestHeader set MELLON_roles_0 "%{MELLON_roles_0}e"
- *     RequestHeader set MELLON_roles_1 "%{MELLON_roles_1}e"
- *     RequestHeader set MELLON_roles_2 "%{MELLON_roles_2}e"
- *     RequestHeader set MELLON_roles_3 "%{MELLON_roles_3}e"
- *     RequestHeader set MELLON_roles_4 "%{MELLON_roles_4}e"
- *     RequestHeader set MELLON_roles_5 "%{MELLON_roles_5}e"
+ *     RequestHeader set [prefix]_roles_0 "%{MELLON_roles_0}e"
+ *     RequestHeader set [prefix]_roles_1 "%{MELLON_roles_1}e"
+ *     RequestHeader set [prefix]_roles_2 "%{MELLON_roles_2}e"
+ *     RequestHeader set [prefix]_roles_3 "%{MELLON_roles_3}e"
+ *     RequestHeader set [prefix]_roles_4 "%{MELLON_roles_4}e"
+ *     RequestHeader set [prefix]_roles_5 "%{MELLON_roles_5}e"
  *  &lt;/Location&gt;
  * </pre>
  * <h2>Servlet filter configuration</h2>
- * Configure with a filter-mapping for the entire webapp with the init parameters
- * as described in the JavaDoc.
+ * <p>Configure with a filter-mapping for the entire webapp with the init parameters
+ * as described in the JavaDoc.</p>
+ * <p>To support custom deployments overriding parameters without having to overwrite
+ * web.xml (which needs to be kept up-to-date with new versions), context parameters
+ * can also be set to override filter init-params by prefixing them with headerAuth and
+ * uppercasing the first character of the parameter name, so to set the "prefix"
+ * parameter using a context parameter, use "headerAuthPrefix" as the parameter name.
+ * </p>
  * <h2>Logging out</h2>
  * Not currently supported. To enable logout by IdP calling the SingleLogoutService
  * binding, we would need to enable MellonEnable info for all URL's and check if
@@ -118,8 +122,21 @@ public class HeaderAuthenticationFilter implements Filter {
     private FilterConfig filterConfig = null;
 
     /**
+     * Prefix for context global parameters which can be set to override filter
+     * init params for easier deployments without overwriting web.xml.
+     */
+    private static final String CONTEXT_PARAM_PREFIX = "headerAuth";
+
+    /**
+     * Random header prefix which must be kept secret and changed on each
+     * deployment. If this is not changed from the default, this filter is not
+     * enabled.
+     */
+    public static final String PARAM_HEADER_PREFIX = "prefix";
+
+    /**
      * userHeader init-param: the request header that contains
-     * the username, default MELLON_uid.
+     * the username, default _uid.
      */
     public static final String PARAM_USER_HEADER = "userHeader";
 
@@ -172,23 +189,15 @@ public class HeaderAuthenticationFilter implements Filter {
 
     /**
      * saveExtraHeaders init-param: extra headers to save sent to authPath, such
-     * as MELLON_SESSION, separated by ','. Retrieve using getExtraAuthHeaders().
+     * as [prefix]_SESSION, separated by ','. Retrieve using getExtraAuthHeaders().
      */
     public static final String PARAM_SAVE_EXTRA_HEADERS = "saveExtraHeaders";
-
-    /**
-     * Filter only works when this init-param is set to true, which must only be
-     * done when the client cannot send the userHeader - meaning the Tomcat
-     * HTTP connector must be disabled as all requests must go through Apache
-     * mod_proxy_ajp configured as above to clear this header and only sets it
-     * when properly authenticated.
-     */
-    public static final String PARAM_ENABLED = "iHaveSecuredMyServerAndDisabledTheTomcatHttpConnector";
 
     private static final String ATTR_RETURN_TO = HeaderAuthenticationFilter.class.getName() + ".RETURN_TO";
     private static final String ATTR_PRINCIPAL = HeaderAuthenticationFilter.class.getName() + ".PRINCIPAL";
     private static final String ATTR_EXTRA_HEADERS = HeaderAuthenticationFilter.class.getName() + ".EXTRA_HEADERS";
 
+    private String headerPrefix;
     private String userHeader;
     private String authPath;
     private String authInitPath;
@@ -202,22 +211,39 @@ public class HeaderAuthenticationFilter implements Filter {
     public HeaderAuthenticationFilter() {
     }
 
+    /**
+     * Get a filter init-parameter which can be overriden by a context parameter
+     * when prefixed with "headerAuth".
+     */
+    private String getInitParameter(String paramName) {
+        String contextParamName = CONTEXT_PARAM_PREFIX + StringUtils.capitalize(paramName);
+        String value = filterConfig.getServletContext().getInitParameter(contextParamName);
+        if(value == null) {
+            value = filterConfig.getInitParameter(paramName);
+            log.debug("Using filter init parameter " + paramName + ": " + value);
+        } else {
+            log.debug("Using context parameter " + contextParamName + ": " + value);
+        }
+        return value;
+    }
+
     @Override
     public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
 
-        this.enabled = "true".equals(filterConfig.getInitParameter(PARAM_ENABLED));
-        this.userHeader = ObjectUtils.firstNonNull(filterConfig.getInitParameter(PARAM_USER_HEADER), "MELLON_uid");
-        this.authPath = ObjectUtils.firstNonNull(filterConfig.getInitParameter(PARAM_AUTH_PATH), "auth/saml");
-        this.authInitPath = ObjectUtils.firstNonNull(filterConfig.getInitParameter(PARAM_AUTH_PATH), "auth/init");
-        this.rolesHeader = ObjectUtils.firstNonNull(filterConfig.getInitParameter(PARAM_ROLES_HEADER), "MELLON_roles");
-        this.rolesSeparator = filterConfig.getInitParameter(PARAM_ROLES_SEPARATOR);
+        this.headerPrefix = ObjectUtils.firstNonNull(getInitParameter(PARAM_HEADER_PREFIX), "[disabled]");
+        this.enabled = !"[disabled]".equals(this.headerPrefix);
+        this.userHeader = this.headerPrefix + ObjectUtils.firstNonNull(getInitParameter(PARAM_USER_HEADER), "_uid");
+        this.authPath = ObjectUtils.firstNonNull(getInitParameter(PARAM_AUTH_PATH), "auth/saml");
+        this.authInitPath = ObjectUtils.firstNonNull(getInitParameter(PARAM_AUTH_PATH), "auth/init");
+        this.rolesHeader = this.headerPrefix + ObjectUtils.firstNonNull(getInitParameter(PARAM_ROLES_HEADER), "_roles");
+        this.rolesSeparator = getInitParameter(PARAM_ROLES_SEPARATOR);
         if(this.rolesSeparator != null) {
             this.useRolesNSuffix = false;
         }
-        this.useRolesNSuffix = "true".equals(filterConfig.getInitParameter(PARAM_USE_ROLES_NSUFFIX)) || this.rolesSeparator == null;
-        this.commonRole = filterConfig.getInitParameter(PARAM_COMMON_ROLE);
-        this.saveExtraHeaders = filterConfig.getInitParameter(PARAM_SAVE_EXTRA_HEADERS);
+        this.useRolesNSuffix = "true".equals(getInitParameter(PARAM_USE_ROLES_NSUFFIX)) || this.rolesSeparator == null;
+        this.commonRole = getInitParameter(PARAM_COMMON_ROLE);
+        this.saveExtraHeaders = getInitParameter(PARAM_SAVE_EXTRA_HEADERS);
         log.info("Initialized - " + toString());
     }
 
@@ -312,13 +338,13 @@ public class HeaderAuthenticationFilter implements Filter {
                 }
             }
 
-            log.info("Authenticated user from header " + userHeader + ": " + user + ", roles: " + roles);
+            log.info("Authenticated user from header [prefix]" + userHeader.substring(this.headerPrefix.length()) + ": " + user + ", roles: " + roles);
             session.setAttribute(ATTR_PRINCIPAL, new HeaderAuthenticatedPrincipal(user, roles));
 
             if(saveExtraHeaders != null) {
                 Map<String,String> extraHeaders = new HashMap();
                 for(String h: saveExtraHeaders.split(",")) {
-                    extraHeaders.put(h, request.getHeader(h));
+                    extraHeaders.put(h, request.getHeader(this.headerPrefix + h));
                 }
                 session.setAttribute(ATTR_EXTRA_HEADERS, extraHeaders);
                 log.info("Extra headers saved from auth request: " + extraHeaders);

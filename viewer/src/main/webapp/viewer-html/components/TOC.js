@@ -512,8 +512,11 @@ Ext.define ("viewer.components.TOC",{
      * created in the DOM
      */
     onExpand: function(node){
+        var me = this;
+        setTimeout(function() {
+            me.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.TOC_EXPANDED, node);
+        }, 0);
         if (this.qtips.length > 0){
-            var me = this;
             setTimeout(function(){
                 me.registerQtips();
             },500);

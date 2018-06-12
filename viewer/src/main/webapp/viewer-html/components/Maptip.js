@@ -360,8 +360,30 @@ Ext.define ("viewer.components.Maptip",{
                             descriptionDiv.setHeight(Number(this.config.heightDescription));
                         }
                         var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br, appLayer);
-
                         descriptionDiv.insertHtml("beforeEnd",desc);
+                        if(appLayer.details["summary.retrieveUploads"]){
+                            var indexedAttrs= feature.getIndexedAttributes();
+                            var uploads = indexedAttrs["__UPLOADS__"];
+                            for(var key in uploads){
+                                if(uploads.hasOwnProperty(key)){
+                                    var files = uploads[key];
+                                    for(var i = 0 ; i < files.length ;i++){
+                                        var f = files[i];
+                                        var uploadDiv = new Ext.Element(document.createElement("div"));
+                                        var link = actionBeans["file"] +"?view=true&upload="+ f.id + "&appLayer=" + appLayer.id + "&application=" +FlamingoAppLoader.get("appId");
+                                        var linkText;
+                                        if(f.mimetype.indexOf("image") !== -1){
+                                            linkText = "<img src='"+ link + "'/>";
+                                            uploadDiv.addCls("feature_upload_image");
+                                        }else{
+                                            linkText = f.filename;
+                                        }
+                                        uploadDiv.insertHtml("beforeEnd","<a href='" + link + "' target='_blank'>"+ linkText +"</a>")
+                                        descriptionDiv.appendChild(uploadDiv);
+                                    }
+                                }
+                            }
+                        }
                         leftColumnDiv.appendChild(descriptionDiv);
                     }
                     //link

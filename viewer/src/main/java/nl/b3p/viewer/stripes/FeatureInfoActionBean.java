@@ -26,6 +26,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
@@ -327,7 +329,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     q.setFilter(f);
                     q.setMaxFeatures(limit +1);
 
-                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
+                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q, em, application, context.getRequest());
                     if(features.length() > limit){
                         JSONArray newArray = new JSONArray();
                         for (int j = 0; j < features.length(); j++) {
@@ -369,11 +371,11 @@ public class FeatureInfoActionBean implements ActionBean {
      * @throws JSONException if transforming to json fails
      * @throws Exception if any
      */
-    protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
+    protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q, EntityManager em, Application application, HttpServletRequest request)
             throws IOException, JSONException, Exception {
 
         FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, true /*aliases*/, false /*returnNullval*/, attributesToInclude, ordered);
-        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null);
+        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null, em, application, request);
         return features;
     }
 }

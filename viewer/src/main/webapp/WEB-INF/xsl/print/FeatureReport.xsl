@@ -33,7 +33,6 @@
     <!-- See legend.xsl ('none', 'before', 'right') -->
     <xsl:variable name="legend-labels-pos" select="'before'"/>
     <xsl:variable name="legend-scale-images-same-ratio" select="true()"/>
- 
     <!-- formatter -->
     <xsl:decimal-format name="MyFormat" decimal-separator="." grouping-separator=","
                         infinity="INFINITY" minus-sign="-" NaN="Not a Number" percent="%" per-mille="m"
@@ -90,7 +89,13 @@
 										<fo:block xsl:use-attribute-sets="header-font">Geselecteerd Object</fo:block>
 										<xsl:call-template name="table-2column"/>
 									</xsl:for-each>
-							 
+
+							 		<!-- uploads -->
+									<xsl:for-each select="extra/info[@classname='feature']/root">
+										<fo:block xsl:use-attribute-sets="header-font">Uploads</fo:block>
+										<xsl:call-template name="table-uploads"/>
+									</xsl:for-each>
+
 							</fo:list-item-label>
 							<fo:list-item-body start-indent="body-start()">
 									<xsl:call-template name="info-block"/>
@@ -216,7 +221,7 @@
                 <fo:table-column column-width="{$tWidthRight}mm" />
                 <fo:table-body>
                     <xsl:for-each select="*">
-                        <xsl:for-each select="*">
+                        <xsl:for-each select="*[local-name()!='__UPLOADS__']">
                             <fo:table-row>
                                 <fo:table-cell>
                                     <fo:block>
@@ -231,6 +236,45 @@
                                     </fo:block>
                                 </fo:table-cell>
                             </fo:table-row>
+                        </xsl:for-each>
+                    </xsl:for-each>
+                </fo:table-body>
+            </fo:table>
+        </fo:block>
+    </xsl:template>
+
+    <xsl:template name="table-uploads">
+        <!-- create a simple 2-column table, width can be given in mm for either column, default is 50 -->
+        <xsl:param name="tWidthLeft">65</xsl:param>
+        <xsl:param name="tWidthRight">65</xsl:param>
+        <fo:block xsl:use-attribute-sets="default-font">
+            <fo:table table-layout="fixed" width="{$tWidthLeft + $tWidthRight}mm">
+                <fo:table-column column-width="{$tWidthLeft}mm" />
+                <fo:table-column column-width="{$tWidthRight}mm" />
+                <fo:table-body>
+                    <xsl:for-each select="*">
+                        <xsl:for-each select="*[local-name()='__UPLOADS__']">
+                            <xsl:for-each select="*">
+                                <xsl:variable name="uploadURL">
+                                    <xsl:value-of select="/info/uploadURL"/><xsl:value-of select="'&amp;upload='"/><xsl:value-of select="./id"/>
+                                </xsl:variable>
+                                <fo:table-row>
+                                    <fo:table-cell>
+                                        <fo:block>
+                                            <xsl:value-of select="./filename"/>
+                                        </fo:block>
+                                    </fo:table-cell>
+                                    <fo:table-cell>
+                                        <fo:block>
+                                            <fo:basic-link
+                                                    external-destination="url('{$uploadURL}')"
+                                                    color="blue" text-decoration="underline">
+                                                <xsl:value-of select="./filename"/>
+                                            </fo:basic-link>
+                                        </fo:block>
+                                    </fo:table-cell>
+                                </fo:table-row>
+                            </xsl:for-each>
                         </xsl:for-each>
                     </xsl:for-each>
                 </fo:table-body>

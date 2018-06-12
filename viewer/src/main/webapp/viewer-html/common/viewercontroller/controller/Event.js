@@ -121,6 +121,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          */
         ON_LAYER_CLICKED                        : "ON_LAYER_CLICKED",
         /**
+         * @field
+         * Occures when a folder in the TOC is expanded.
+         * @param node the node that is expanded
+         */
+        TOC_EXPANDED                            : "TOC_EXPANDED",
+        /**
          *@field
          *occures when a mouse is moved and the maptip must be cancelled
          *@param map the map object that called this event.
