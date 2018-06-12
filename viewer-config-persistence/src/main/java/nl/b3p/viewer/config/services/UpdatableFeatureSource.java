@@ -32,7 +32,7 @@ import javax.persistence.EntityManager;
  */
 public abstract class UpdatableFeatureSource extends FeatureSource{    
     private static final Log log = LogFactory.getLog(UpdatableFeatureSource.class);
-    private final int updatebatchsize = 5;
+    private final int updatebatchsize = 50;
 
     /**
      * Update this featuresource.
