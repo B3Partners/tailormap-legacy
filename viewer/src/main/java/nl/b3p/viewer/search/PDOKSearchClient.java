@@ -18,7 +18,6 @@ package nl.b3p.viewer.search;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.json.JSONObject;
 /**
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
- * @author mprins
  */
 public class PDOKSearchClient extends SearchClient {
 
@@ -47,23 +45,6 @@ public class PDOKSearchClient extends SearchClient {
     private SolrServer server;
     private WKTReader2 wkt;
     private String filter;
-
-    /* This is a lookup table with a distance per type of object so we can generate a sensible
-        bbox to zoom to, these values are used when we only get a point for a hit.
-        The map has "type":distance (meter, because epsg:28995)
-     */
-    private static final HashMap<String, Double> BUFFERS = new HashMap<>();
-
-    static {
-        BUFFERS.put("gemeente", 5000d);
-        BUFFERS.put("woonplaats", 2500d);
-        // weg is the default
-        BUFFERS.put("weg", 50d);
-        BUFFERS.put("postcode", 50d);
-        BUFFERS.put("adres", 10d);
-        BUFFERS.put("hectometerpaal", 35d);
-        BUFFERS.put("perceel", 25d);
-    }
     
     public PDOKSearchClient(String filter){
         server = new HttpSolrServer("http://geodata.nationaalgeoregister.nl/locatieserver");
@@ -83,10 +64,6 @@ public class PDOKSearchClient extends SearchClient {
                 term += " " + this.filter;
             }
             query.setQuery(term);
-            // specify fields to retrieve (null values wil be omitted in the response),
-            //   the default is listed at https://github.com/PDOK/locatieserver/wiki/API-Locatieserver#52url-parameters
-            //   this list is probably still longer than needed, so maybe could be pruned
-            query.setParam("fl", "identificatie,weergavenaam,bron,type,openbareruimte_id,openbareruimtetype,straatnaam,adresseerbaarobject_id,nummeraanduiding_id,huisnummer,huisletter,huisnummertoevoeging,huis_nlt,postcode,woonplaatscode,woonplaatsnaam,gemeentenaam,provinciecode,provincienaam,kadastraal_object_id,kadastrale_gemeentecode,kadastrale_gemeentenaam,kadastrale_sectie,perceelnummer,kadastrale_grootte,gekoppeld_perceel,kadastrale_aanduiding,centroide_rd,boundingbox_rd,geometrie_rd,score");
             query.setRequestHandler("/free");
             QueryResponse rsp = server.query(query);
             SolrDocumentList list = rsp.getResults();
@@ -117,38 +94,18 @@ public class PDOKSearchClient extends SearchClient {
             Map<String, Object> values = doc.getFieldValueMap();
             result = new JSONObject();
             for (String key : values.keySet()) {
-                switch (key) {
-                    // some fields to skip
-                    case "geometrie_rd":
-                    case "boundingbox_rd":
-                    case "centroide_rd":
-                        // because calculated clientside
-                        break;
-                    default:
-                        result.put(key, values.get(key));
-                }
+                result.put(key, values.get(key));
             }
-
-            String geom = (String) doc.getFieldValue("centroide_rd");
-            if (values.containsKey("geometrie_rd")) {
+            String centroide = (String)doc.getFieldValue("centroide_rd");
+            
+            String geom = centroide;
+            if(values.containsKey("geometrie_rd")){
                 geom = (String) values.get("geometrie_rd");
-            } else if (values.containsKey("boundingbox_rd")) {
-                geom = (String) values.get("boundingbox_rd");
             }
             Geometry g = wkt.read(geom);
-
-            if (g instanceof Point) {
-                // if got a point buffer the geom
-                Double d = BUFFERS.get(result.getString("type"));
-                if (d == null) {
-                    // unknown type in response, fall back to "weg"
-                    d = BUFFERS.get("weg");
-                }
-                g = g.buffer(d);
-            }
-
-            if (geom != null) {
-                Envelope env = g.getEnvelopeInternal();
+            Envelope env = g.getEnvelopeInternal();
+            
+            if (centroide != null) {
                 Map bbox = new HashMap();
                 bbox.put("minx", env.getMinX());
                 bbox.put("miny", env.getMinY());
