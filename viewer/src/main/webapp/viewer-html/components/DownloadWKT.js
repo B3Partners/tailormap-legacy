@@ -21,7 +21,7 @@ Ext.define("viewer.components.DownloadWKT", {
     extend: "viewer.components.Component",
     vectorLayer: null,
     config: {
-        types:null
+        types: null
     },
     /**
      * @constructor
@@ -71,7 +71,7 @@ Ext.define("viewer.components.DownloadWKT", {
                 backgroundColor: 'White'
             },
             padding: 4,
-            border:0,
+            border: 0,
             renderTo: this.getContentDiv(),
             items: [
                 {
@@ -100,18 +100,37 @@ Ext.define("viewer.components.DownloadWKT", {
                     margin: '0 0 2 0'
                 },
                 {
-                    xtype: "button",
-                    text: "Teken vlak",
-                    id: this.config.name + 'RetrieveFeaturesButton',
-                    listeners: {
-                        click: {
-                            scope: this,
-                            fn: function () {
-                                this.vectorLayer.removeAllFeatures();
-                                this.vectorLayer.drawFeature("Polygon");
+                    xtype: 'container',
+                    layout: "hbox",
+                    items: [{
+                            xtype: "button",
+                            text: "Teken vlak",
+                            flex:1,
+                            id: this.config.name + 'drawPolygon',
+                            listeners: {
+                                click: {
+                                    scope: this,
+                                    fn: function () {
+                                        this.vectorLayer.removeAllFeatures();
+                                        this.vectorLayer.drawFeature("Polygon");
+                                    }
+                                }
                             }
-                        }
-                    }
+                        }, {
+                            xtype: 'button',
+                            flex:1,
+                            id: this.config.name + 'drawBox',
+                            text: "Teken vierkant",
+                            listeners: {
+                                click: {
+                                    scope: this,
+                                    fn: function () {
+                                        this.vectorLayer.removeAllFeatures();
+                                        this.vectorLayer.drawFeature("Box");
+                                    }
+                                }
+                            }
+                        }]
                 },
                 {
                     xtype: "button",
@@ -130,17 +149,17 @@ Ext.define("viewer.components.DownloadWKT", {
     submit: function () {
         var params = this.maincontainer.getForm().getValues();
         params.application = FlamingoAppLoader.get("appId");
-         var features = new Array();
-         var fs = this.vectorLayer.getAllFeatures(true);
-        for (var featurekey in fs){
-            if(fs.hasOwnProperty(featurekey)) {
+        var features = new Array();
+        var fs = this.vectorLayer.getAllFeatures(true);
+        for (var featurekey in fs) {
+            if (fs.hasOwnProperty(featurekey)) {
                 var feature = fs[featurekey];
                 features.push(feature.toJsonObject());
             }
         }
-        
-        
-            
+
+
+
         params.wkt = Ext.JSON.encode(features);
         Ext.Ajax.request({
             url: actionBeans.wkt,
@@ -148,9 +167,9 @@ Ext.define("viewer.components.DownloadWKT", {
             scope: this,
             success: function (result) {
                 var response = Ext.JSON.decode(result.responseText);
-                if(response.success){
+                if (response.success) {
                     Ext.MessageBox.alert('Info', "Bestand opgeslagen.");
-                }else{
+                } else {
                     this.config.viewerController.logger.error(result);
                     Ext.MessageBox.alert('Fout', response.message);
                 }
