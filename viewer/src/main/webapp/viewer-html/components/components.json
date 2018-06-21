@@ -936,5 +936,15 @@
         "sources": ["tools/Tool.js","CoordinateLinkWindow.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","CoordinateLinkWindow-config.js"],
         "restrictions": ["top_menu"]
+    },
+    {
+        "className": "viewer.components.ExternalLinks",
+        "name": "Externe links",
+        "shortName": "EL",
+        "group": "Component",
+        "sources": ["ExternalLinks.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","ExternalLinks-config.js"],
+        "restrictions": ["content"],
+        "singleton": true
     }
 ]

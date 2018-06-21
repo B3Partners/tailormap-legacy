@@ -398,7 +398,7 @@ public class ApplicationActionBean implements ActionBean {
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
 
-                    if(cc.getViewerComponent().getSources() != null) {
+                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
                         for(File f: cc.getViewerComponent().getSources()) {
                             String url = new ForwardResolution(ComponentActionBean.class, "source")
                                     .addParameter("app", name)
