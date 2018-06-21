@@ -946,5 +946,17 @@
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","ExternalLinks-config.js"],
         "restrictions": ["content"],
         "singleton": true
+    },
+    {
+        "className": "viewer.components.DownloadWKT",
+        "name": "DownloadWKT",
+        "shortName": "DW",
+        "group": "Component",
+        "sources": ["DownloadWKT.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","DownloadWKT-config.js"],
+        "restrictions": ["left_menu"],
+        "type": "popup",
+        "singleton": true,
+        "showHelp": true
     }
 ]
