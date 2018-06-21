@@ -55,14 +55,14 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                             name: 'title',
                             value: config.title,
                             labelWidth:me.labelWidth,
-                            width: 500
+                            width: 700
                         },{                        
                             xtype: 'textfield',
                             fieldLabel: 'Titelbalk icoon',
                             name: 'iconUrl',
                             value: config.iconUrl,
                             labelWidth:me.labelWidth,
-                            width: 500,
+                            width: 700,
                             listeners: {
                                 blur: function(textField,options){
                                     me.onIconChange(textField,options);
@@ -92,7 +92,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                 name: 'label',
                 value: label,
                 labelWidth: me.labelWidth,
-                width: 500
+                width: 700
             });
         }
     },
