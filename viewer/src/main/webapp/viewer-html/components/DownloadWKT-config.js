@@ -24,13 +24,13 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.addForm(configObject);
         var types = configObject.types;
-        for(var i = 0 ; i < types.length;i++){
-            this.createRow(types[i]);
+        if(types){
+            for (var i = 0; i < types.length; i++) {
+                this.createRow(types[i]);
+            }
         }
     },
-    addForm: function(configObject, paramkey, label) {
-         var configWaardes = configObject[paramkey];
-  
+    addForm: function() {
         this.form.add({ 
                 xtype: 'textfield',
                 fieldLabel: 'Basispad *',
@@ -65,7 +65,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: "typecontainer",
             itemId: "typecontainer"
         });
-       var a = 0;
     },
     createRow: function(typeconfig) {
         var config = {
