@@ -227,7 +227,11 @@ public class FeatureToJson {
                  * only get the features after index >= start*/
                 if (offsetSupported || featureIndex >= start){
                     JSONObject uploads = null;
-                    if(al.getDetails().containsKey("summary.retrieveUploads") && Boolean.parseBoolean(al.getDetails().get("summary.retrieveUploads").getValue()) && application != null && request != null){
+                    if (al != null
+                            && al.getDetails().containsKey("summary.retrieveUploads")
+                            && Boolean.parseBoolean(al.getDetails().get("summary.retrieveUploads").getValue())
+                            && application != null && request != null) {
+                        // 'al' can be null when this method is called from DirectSearch
                         uploads = FileUploadActionBean.retrieveUploads(feature.getID(), al,em, application, request);
                     }
                     JSONObject jsonFeature = new JSONObject();
