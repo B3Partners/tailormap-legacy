@@ -93,6 +93,8 @@ Ext.define("viewer.components.ExternalLinks", {
     procesURL: function (url, x, y) {
         var map = this.config.viewerController.mapComponent.getMap();
         var coord = map.pixelToCoordinate(x, y);
+        coord.x = parseFloat(coord.x.toFixed(2));
+        coord.y = parseFloat(coord.y.toFixed(2));
         var extent = map.getExtent();
         var dest = new Proj4js.Proj("EPSG:4236");
         var source = new Proj4js.Proj("EPSG:28992");
@@ -100,14 +102,14 @@ Ext.define("viewer.components.ExternalLinks", {
         Proj4js.transform(source,dest,wgs);
         
         var currentVariables = {
-            X: coord.x.toFixed(2),
-            Y: coord.y.toFixed(2),
+            X: coord.x,
+            Y: coord.y,
             MINX: extent.minx,
             MAXX: extent.maxx,
             MINY: extent.miny,
             MAXY: extent.maxy,
-            X_WGS84: wgs.x,
-            Y_WGS84: wgs.y,
+            X_WGS84: wgs.x.toFixed(7),
+            Y_WGS84: wgs.y.toFixed(7),
             BBOX: extent.minx + "," + extent.miny+ "," + extent.maxx+ "," + extent.maxy
         };
         var newUrl = url;
