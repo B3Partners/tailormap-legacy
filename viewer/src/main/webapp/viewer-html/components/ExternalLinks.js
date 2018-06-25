@@ -100,8 +100,8 @@ Ext.define("viewer.components.ExternalLinks", {
         Proj4js.transform(source,dest,wgs);
         
         var currentVariables = {
-            X: coord.x,
-            Y: coord.y,
+            X: coord.x.toFixed(2),
+            Y: coord.y.toFixed(2),
             MINX: extent.minx,
             MAXX: extent.maxx,
             MINY: extent.miny,
