@@ -25,7 +25,7 @@ Ext.define("viewer.components.DownloadWKT", {
     },
     /**
      * @constructor
-     * creating a print module.
+     * creating a DownloadWKT module.
      */
     constructor: function (conf) {
         this.initConfig(conf);
