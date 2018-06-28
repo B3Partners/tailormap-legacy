@@ -285,7 +285,21 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 appendOnly: false,
                 allowContainerDrops: true,
                 allowParentInserts: true,
-                sortOnDrop: true
+                sortOnDrop: true,
+                dropZone: {
+                    onNodeOver: function(target, dd, e, data) {
+                        if(me.checkDropAllowed(target, data.records)) {
+                            return Ext.dd.DropZone.prototype.dropAllowed;
+                        }
+                        return Ext.dd.DropZone.prototype.dropNotAllowed;
+                    },
+                    onContainerOver: function(source, e, data) {
+                        if(me.checkDropAllowed('container', data.records)) {
+                            return Ext.dd.DropZone.prototype.dropAllowed;
+                        }
+                        return Ext.dd.DropZone.prototype.dropNotAllowed;
+                    }
+                }
             },
             getRowClass: function(record, index, rowParams, store) {
                 var hasParentRemoved = false;
@@ -319,7 +333,16 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }  
         };
     },
-    
+
+    checkDropAllowed: function(target, records) {
+        for(var i = 0; i < records.length; i++) {
+            if(target === 'container' && this.forceRealParent && records[i].get("type") === "layer") {
+                return false;
+            }
+        }
+        return true;
+    },
+
     /**
      * Add/Remove layers after drag
      */
@@ -581,18 +604,16 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
                 var objData = this.copyNode(record);
-                if (nodeType === "layer") {
-                    this.readdedLayers.push({
-                        'id': objData.id.substring(1),
-                        'type': objData.type
-                        }
-                    );
-                }
                 var expandAfter = objData.children && objData.children.length && !objData.isLeaf;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = this.getTreeNode(record);
-
                 if (treenode) {
+                    if (nodeType === "layer") {
+                        this.readdedLayers.push({
+                            'id': objData.id.substring(1),
+                            'type': objData.type
+                        });
+                    }
                     if (!treenode.isExpanded()) {
                         treenode.expand();
                     }
