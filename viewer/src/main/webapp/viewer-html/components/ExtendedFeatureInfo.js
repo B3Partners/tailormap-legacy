@@ -73,6 +73,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, this.featureEdited, this);
         if(this.config.hasSharedPopup){
       //      document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
         }
@@ -104,6 +105,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
      */
     onDataReturned: function(options){
         var data = options.data;
+        this.setRefreshing(false);
         if (!data) {
             return;
         }
@@ -134,7 +136,19 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.activateResultsDiv();
         this.createPagination(this.currentLayer);
         if(data[0].requestId === this.currentRequestId){
-            this.showPage(0);
+            this.showPage(0, this.currentFeatureId);
+            this.currentFeatureId = null;
+        }
+    },
+    setRefreshing: function(isRefreshing) {
+        if(isRefreshing) {
+            var pages = this.panel.query('container');
+            this.currentFeatureId = pages[this.currentIndex] ? pages[this.currentIndex].config.featureId : null;
+            this.panel.removeAll(true);
+            this.totalPages = 0;
+            this.panel.setLoading("Bezig met verversen");
+        } else {
+            this.panel.setLoading(false);
         }
     },
     activateResultsDiv: function(){
@@ -150,9 +164,14 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         var components = this.createInfoHtmlElements([data], this.currentOptions);
         var contentEl = new Ext.Element(document.createElement('div'));
         contentEl.append(components);
+        var featureId = null;
+        if(data.features[0] && data.features[0].__fid) {
+            featureId = data.features[0].__fid;
+        }
         var container = Ext.create('Ext.container.Container', {
             contentEl: contentEl,
             hidden: false,
+            featureId: featureId,
             listeners: {
                 beforedestroy: function() {
                     // Manually destroy element: solves errors from Ext's garbage collector
@@ -163,12 +182,20 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         });
         this.panel.add(container);
     },
-    showPage: function(index){
+    showPage: function(index, currentFeatureId){
+        var pages = this.panel.query('container');
+        if(currentFeatureId) {
+            for(var j = 0; j < pages.length; j++) {
+                if(pages[j].config.featureId === currentFeatureId) {
+                    index = j;
+                }
+            }
+        }
         this.currentIndex = index;
         if(this.currentIndex < 0) {
             this.currentIndex = 0;
+            index = 0;
         }
-        var pages = this.panel.query('container');
         for(var i = 0; i < pages.length; i++) {
             if(i === index && pages[i].isHidden()) {
                 pages[i].setHidden(false);
