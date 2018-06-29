@@ -336,7 +336,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
     checkDropAllowed: function(target, records) {
         for(var i = 0; i < records.length; i++) {
-            if(target === 'container' && this.forceRealParent && records[i].get("type") === "layer") {
+            if(this.forceRealParent && records[i].get("type") === "layer" && this.getTreeNode(records[i]) === null) {
                 return false;
             }
         }
