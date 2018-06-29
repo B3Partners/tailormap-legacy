@@ -1047,8 +1047,12 @@ Ext.define("viewer.components.Edit", {
     },
     saveSucces: function (fid) {
         var me = this;
-        var messageFunction = function(extratext){
-            Ext.Msg.alert('Gelukt', "Het feature is aangepast. " + extratext);
+        var messageFunction = function(extratext) {
+            var msg = "Het feature is aangepast.";
+            if(extratext) {
+                msg += " " + extratext;
+            }
+            Ext.Msg.alert('Gelukt', msg);
             me.cancel();
         };
 
