@@ -553,6 +553,7 @@ Ext.define ("viewer.components.Maptip",{
                 featureDiv.appendChild(attributesDiv);
             }
         }
+        featureDiv.selectable();
         cDiv.appendChild(featureDiv);
         this.popup.show();
     },
