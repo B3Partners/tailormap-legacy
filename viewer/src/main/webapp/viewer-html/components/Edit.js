@@ -999,6 +999,7 @@ Ext.define("viewer.components.Edit", {
             feature,
             function (fid) {
                 me.saveSucces(fid);
+                me.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, me.editingLayer, feature);
             }, function (error) {
                 me.failed(error);
             });
