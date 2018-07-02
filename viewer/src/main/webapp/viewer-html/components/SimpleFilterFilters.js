@@ -699,6 +699,78 @@ Ext.define("viewer.components.sf.Number", {
     }
 });
 
+
+Ext.define("viewer.components.sf.Text", {
+    extend: "viewer.components.sf.SimpleFilter",
+    config: {
+        simpleFilter: null,
+        filterConfig: null
+    },
+    textField: null,
+    constructor: function(conf) {
+        this.initConfig(conf);
+		viewer.components.sf.Text.superclass.constructor.call(this, this.config);
+        var templatecontents = [
+            "<tr>",
+                "<td><div id=\"{name}_field\">{value}</div></td>",
+            "</tr>"
+        ];
+        var t = this.wrapSimpleFilter(this.config.filterConfig.label, templatecontents);
+        new Ext.Template(t).append(this.config.container, {
+            label: this.config.filterConfig.label,
+            name: this.config.name
+        });
+        this.textField = this.createElement();
+    },
+    createElement : function () {
+        var filterChangeDelay = 500;
+        return Ext.create("Ext.form.field.Text", {
+            renderTo: this.config.name + "_field",
+            name:  this.config.name,
+            value: this.config.filterConfig.start ? this.config.filterConfig.start : "",
+            width: "100%",
+            listeners: {
+                change: {
+                    scope: this,
+                    fn: function(){
+                        this.applyFilter();
+                    },
+                    buffer: filterChangeDelay
+                }
+            }
+         });
+    },
+    applyFilter : function(){
+        if(!this.ready){
+            // This function will be called via eventlistener
+            return;
+        }
+        var cql = this.getCQL();
+        this.setFilter(cql);
+    },
+    getCQL : function(){
+        var cql = "";
+        var type = this.config.filterConfig.filterType;
+        var mustEscape = this.mustEscapeAttribute();
+        var val = this.textField.getValue();
+        if (val && val.length > 0) {
+            var value = (mustEscape ? "'" : "") + val + (mustEscape ? "'" : "");
+            if (type === "eq") {
+                cql = this.config.attributeName + " = " + value;
+            } else if (type === "ilike") {
+                value = (mustEscape ? "'%" : "%") + val + (mustEscape ? "%'" : "%");;
+                cql = this.config.attributeName + " ILIKE " + value;
+            }
+        }
+        return cql;
+    },
+    reset: function () {
+        this.textField.setValue(this.config.filterConfig.start || "");
+        this.callParent();
+        this.applyFilter();
+    }
+});
+
 Ext.define("viewer.components.sf.Slider", {
     extend: "viewer.components.sf.SimpleFilter",
     slider:null,
