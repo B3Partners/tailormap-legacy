@@ -63,6 +63,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     constructor: function (conf){
         conf.isPopup=true;
+        conf.mustBeOnTop = true;
         this.initConfig(conf);
 	viewer.components.Maptip.superclass.constructor.call(this, this.config);
         this.showMaxFeaturesText = true;
@@ -1132,6 +1133,9 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         try {
             Ext.WindowManager.eachTopDown(function(comp){
                 var zIndex = comp.getEl().getZIndex();
+                if(comp.mustBeOnTop){
+                    zIndex = -1;
+                }
                 if(zIndex > updatedZIndex) {
                     updatedZIndex = zIndex;
                 }
