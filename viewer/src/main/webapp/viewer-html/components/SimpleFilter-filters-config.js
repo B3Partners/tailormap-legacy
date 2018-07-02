@@ -608,6 +608,42 @@ Ext.define("viewer.components.sf.NumberConfig", {
 
 });
 
+
+Ext.define("viewer.components.sf.TextConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor: function(config) {
+        viewer.components.sf.TextConfig.superclass.constructor.call(this, config);
+    },
+    getFormItems : function(){
+        var items = this.callParent();
+        items = items.concat([{
+            xtype: 'combo',
+            fieldLabel: "Type",
+            name: "filterType",
+            store: Ext.create("Ext.data.Store", {
+                fields: ["type", "label"],
+                data: [
+                    {type: "eq", label: "Attribuut gelijk aan ingevuld nummer"},
+                    {type: "ilike", label: "Attribuut bevat waarde (hoofdletter ongevoelig)"}
+                ]
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "type",
+            value: this.configObject.filterType ? this.configObject.filterType : "eq"
+        }]);
+        return items;
+    },
+    getDefaultStartValue : function (){
+        return "";
+    },
+    getTitle : function(){
+        return "Tekstfilter";
+    }
+
+});
+
 Ext.define("viewer.components.sf.SliderConfig", {
     extend: "viewer.components.sf.Config",
     constructor: function(config) {
