@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * ScreenPopup
  * A generic component to which can render itself
@@ -57,6 +59,7 @@ Ext.define ("viewer.components.ScreenPopup",{
     component: null,
     currentOrientation: null,
     isBodyDisabled: false,
+    zIndex: 14000,
     constructor: function (conf){
         var me = this;
         viewer.components.ScreenPopup.superclass.constructor.call(this, conf);
@@ -77,6 +80,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             scrollable: true,
             constrainHeader: true,
             iconCls: this.config.iconCls || "",
+            mustBeOnTop: this.config.mustBeOnTop || false,
             bodyStyle: {},
             cls: "screen-popup"
         };
@@ -233,9 +237,25 @@ Ext.define ("viewer.components.ScreenPopup",{
     getContentContainer: function() {
         return this.popupWin;
     },
-    show : function() {
+    show: function () {
         this.popupWin.show();
-        this.popupWin.zIndexManager.bringToFront(this.popupWin);
+        this.bringToFront();
+    },
+    bringToFront: function(){
+        var updatedZIndex = this.zIndex;
+        try {
+            Ext.WindowManager.eachTopDown(function (comp) {
+                var zIndex = comp.getEl().getZIndex();
+                if (zIndex > updatedZIndex) {
+                    updatedZIndex = zIndex;
+                }
+            });
+        } catch (e) {
+        }
+        if (updatedZIndex) {
+            this.zIndex = updatedZIndex + 1;
+        }
+        this.popupWin.setZIndex(this.zIndex);
     },
     hide : function(){
         this.popupWin.hide();
