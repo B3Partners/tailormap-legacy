@@ -484,47 +484,50 @@ public class FeatureInfoActionBean implements ActionBean {
         }
 
         if (layer.getFeatureType().hasRelations() && checkRelated) {
-            List<Long> attributesToInclude = new ArrayList<>();
-            List<ConfiguredAttribute> attrs = al.getAttributes(layer.getFeatureType(), true);
-            attrs.forEach((attr) -> {
-                attributesToInclude.add(attr.getId());
-            });
-            if (jFeat.has("related_featuretypes")) {
-                JSONObject js = jFeat.getJSONArray("related_featuretypes").getJSONObject(0);
-                if (js.has("filter")) {
-                    String s = js.getString("filter");
-                    int fid = Integer.parseInt(s.replaceAll("[\\D]", ""));
-                    jFeat.put("fid", fid);
-                }
-            }
-            String label;
-            FeatureToJson ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude);
-            for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
-                if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
-                    SimpleFeatureType fType = rel.getForeignFeatureType();
-                    label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
-
-                    List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
-                    String leftSide = keys.get(0).getLeftSide().getName();
-                    String rightSide = keys.get(0).getRightSide().getName();
-
-                    Query q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(rightSide + "=" + jFeat.get(leftSide),em));
-                    q.setMaxFeatures(10 + 1);
-                    q.setHandle("FeatureReportActionBean_related_attributes");
-
-                    fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                    JSONArray features = ftjson.getJSONFeatures(al, fType, fs, q);
-
-                    JSONArray jsonFeats = new JSONArray();
-                    int featureCount;
-                    int colCount = 0;
-                    int numFeats = features.length();
-                    int maxFeatures = Math.min(numFeats, 10);
-                    for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
-                        colCount = features.getJSONObject(featureCount).length();
-                        jsonFeats.put(features.getJSONObject(featureCount));
+            for (int i = 0; i < response.getJSONArray("features").length(); i++) {
+                jFeat = response.getJSONArray("features").getJSONObject(i);
+                List<Long> attributesToInclude = new ArrayList<>();
+                List<ConfiguredAttribute> attrs = al.getAttributes(layer.getFeatureType(), true);
+                attrs.forEach((attr) -> {
+                    attributesToInclude.add(attr.getId());
+                });
+                if (jFeat.has("related_featuretypes")) {
+                    JSONObject js = jFeat.getJSONArray("related_featuretypes").getJSONObject(0);
+                    if (js.has("filter")) {
+                        String s = js.getString("filter");
+                        int fid = Integer.parseInt(s.replaceAll("[\\D]", ""));
+                        jFeat.put("fid", fid);
                     }
-                    response.put("related_features", jsonFeats);
+                }
+                String label;
+                FeatureToJson ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude);
+                for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
+                    if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
+                        SimpleFeatureType fType = rel.getForeignFeatureType();
+                        label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
+
+                        List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
+                        String leftSide = keys.get(0).getLeftSide().getName();
+                        String rightSide = keys.get(0).getRightSide().getName();
+
+                        Query q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(rightSide + "=" + jFeat.get(leftSide), em));
+                        q.setMaxFeatures(10 + 1);
+                        q.setHandle("FeatureReportActionBean_related_attributes");
+
+                        fs = fType.openGeoToolsFeatureSource(TIMEOUT);
+                        JSONArray features = ftjson.getJSONFeatures(al, fType, fs, q);
+
+                        JSONArray jsonFeats = new JSONArray();
+                        int featureCount;
+                        int colCount = 0;
+                        int numFeats = features.length();
+                        int maxFeatures = Math.min(numFeats, 10);
+                        for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
+                            colCount = features.getJSONObject(featureCount).length();
+                            jsonFeats.put(features.getJSONObject(featureCount));
+                        }
+                        jFeat.put("related_features", jsonFeats);
+                    }
                 }
             }
         }
