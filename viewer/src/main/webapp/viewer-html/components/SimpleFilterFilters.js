@@ -746,9 +746,7 @@ Ext.define("viewer.components.sf.Text", {
             return;
         }
         var cql = this.getCQL();
-        if (cql.length > 0) {
-            this.setFilter(cql);
-        }
+        this.setFilter(cql);
     },
     getCQL : function(){
         var cql = "";

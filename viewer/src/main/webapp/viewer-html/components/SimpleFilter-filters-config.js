@@ -623,7 +623,7 @@ Ext.define("viewer.components.sf.TextConfig", {
             store: Ext.create("Ext.data.Store", {
                 fields: ["type", "label"],
                 data: [
-                    {type: "eq", label: "Attribuut gelijk aan ingevuld nummer"},
+                    {type: "eq", label: "Attribuut gelijk aan ingevulde waarde"},
                     {type: "ilike", label: "Attribuut bevat waarde (hoofdletter ongevoelig)"}
                 ]
             }),
