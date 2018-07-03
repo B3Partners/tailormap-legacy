@@ -526,6 +526,7 @@ hier niet op gecontroleerd.'
         var uploadCategories = [this.createUploadBox("",0, false)];
         if (Ext.get('details_editfeature_uploadDocument')){
             upload = Ext.get('details_editfeature_uploadDocument').getValue();
+            upload = (upload ? (upload === 'true') : false);
             types= Ext.get('details_editfeature_uploadDocument_types').getValue();
             if(types && types.length > 0){
                 types = Ext.JSON.decode(types);
@@ -539,7 +540,6 @@ hier niet op gecontroleerd.'
         editPanelItems.push({
             xtype: 'panel',
             title: 'Upload',
-
             itemId: 'upload-panel',
             id: 'upload-panel',
             style: {
