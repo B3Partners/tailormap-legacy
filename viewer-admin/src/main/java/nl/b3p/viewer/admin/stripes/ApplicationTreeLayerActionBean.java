@@ -355,7 +355,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "metadataurl",
                 "summary.noHtmlEncode",
                 "summary.nl2br",
-                "editfeature.usernameAttribute"
+                "summary.retrieveUploads",
+                "editfeature.usernameAttribute",
+                "editfeature.uploadDocument",
+                "editfeature.uploadDocument.types"
         ));     
         for(Map.Entry<String,String> e: details.entrySet()) {
             if(e.getValue() != null) { // Don't insert null value ClobElement 
