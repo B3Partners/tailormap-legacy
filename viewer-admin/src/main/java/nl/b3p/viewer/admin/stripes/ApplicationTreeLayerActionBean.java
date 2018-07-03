@@ -355,6 +355,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "metadataurl",
                 "summary.noHtmlEncode",
                 "summary.nl2br",
+                "summary.retrieveUploads",
                 "editfeature.usernameAttribute"
         ));     
         for(Map.Entry<String,String> e: details.entrySet()) {
