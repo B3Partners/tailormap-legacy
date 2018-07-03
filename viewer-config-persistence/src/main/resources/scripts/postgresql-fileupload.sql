@@ -1,4 +1,5 @@
 
+    drop table if exists file_upload;
 
     create table file_upload (
         id  bigserial not null,
