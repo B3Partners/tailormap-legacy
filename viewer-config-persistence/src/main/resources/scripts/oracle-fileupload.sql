@@ -1,13 +1,27 @@
 
+-- drop table if exists
+    BEGIN
+       EXECUTE IMMEDIATE 'DROP TABLE file_upload';
+    EXCEPTION
+       WHEN OTHERS THEN
+          IF SQLCODE != -942 THEN
+             RAISE;
+          END IF;
+    END;
+
     create table file_upload (
         id number(19,0) not null,
         created_at timestamp,
         created_by varchar2(255 char),
         fid varchar2(255 char),
-        file varchar2(255 char),
+        filename varchar2(255 char),
+        location varchar2(255 char),
+        mimetype varchar2(255 char),
+        type_ varchar2(255 char),
         sft number(19,0),
         primary key (id)
     );
+
 
     alter table file_upload 
         add constraint FK7D6832246F7FEB1E 
