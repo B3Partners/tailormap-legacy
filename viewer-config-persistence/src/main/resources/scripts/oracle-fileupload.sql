@@ -1,4 +1,13 @@
 
+-- drop table if exists
+    BEGIN
+       EXECUTE IMMEDIATE 'DROP TABLE file_upload';
+    EXCEPTION
+       WHEN OTHERS THEN
+          IF SQLCODE != -942 THEN
+             RAISE;
+          END IF;
+    END;
 
     create table file_upload (
         id number(19,0) not null,
