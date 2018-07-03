@@ -99,6 +99,7 @@ Ext.define("viewer.components.Legend", {
         var title = "";
         if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) title = this.config.title;
         var tools = [];
+        var me = this;
         // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
             tools = [{
