@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Ext, actionBeans */
+/* global Ext, actionBeans, FlamingoAppLoader */
 
 Ext.define("viewer.components.DownloadWKT", {
     extend: "viewer.components.Component",
@@ -168,7 +168,7 @@ Ext.define("viewer.components.DownloadWKT", {
             success: function (result) {
                 var response = Ext.JSON.decode(result.responseText);
                 if (response.success) {
-                    Ext.MessageBox.alert('Info', "Bestand opgeslagen.");
+                    Ext.MessageBox.alert('Info', "Uw aanvraag is in behandeling. U ontvangt zo spoedig mogelijk een e-mailbericht met het resultaat.");
                 } else {
                     this.config.viewerController.logger.error(result);
                     Ext.MessageBox.alert('Fout', response.message);
