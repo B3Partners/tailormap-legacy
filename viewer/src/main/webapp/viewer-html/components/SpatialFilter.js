@@ -238,13 +238,13 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     layerChanged: function (appLayer, previousAppLayer, scope) {
         var buttons = Ext.getCmp(this.config.name +"filterButtons");
+	    
+        this.features = [];
         if(appLayer !== null){
             buttons.setDisabled(false);
             this.vectorLayer.removeAllFeatures();
-            this.features = [];
         }else{
             buttons.setDisabled(true);
-            this.features = [];
             this.cancel();
         }
     },
