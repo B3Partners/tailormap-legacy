@@ -63,7 +63,6 @@ Ext.define ("viewer.components.Maptip",{
      */
     constructor: function (conf){
         conf.isPopup=true;
-        conf.mustBeOnTop = true;
         this.initConfig(conf);
 	viewer.components.Maptip.superclass.constructor.call(this, this.config);
         this.showMaxFeaturesText = true;
@@ -423,6 +422,7 @@ Ext.define ("viewer.components.Maptip",{
                         var detailLink = new Ext.Element(detailElem);
                         detailLink.addListener("click",
                             function (evt,el,o){
+                                evt.stopPropagation();
                                 me.showDetails(el.appLayer,el.feature);
                             },
                             this);
@@ -945,15 +945,14 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloon.applyStyles({
             'position': 'absolute',
             'width':""+this.balloonWidth+"px",
-            'height':""+this.balloonHeight+"px",
-            'z-index':this.zIndex
+            'height':""+this.balloonHeight+"px"
         });
 
         //arrows
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+this.balloonArrowHeight+"px;' src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+(2*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px; z-index:"+(this.zIndex+2)+";'><img style='left: -"+(3*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+this.balloonArrowHeight+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(2*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(3*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
 
         //content
         var balloonContentEl = document.createElement("div");
@@ -975,6 +974,9 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloonContentWrapper.addCls('balloonContentWrapper');
         this.balloonContent.appendChild(this.balloonContentWrapper);
         this.balloon.appendChild(this.balloonContent);
+        this.balloon.on("click",function(){
+            this.bringToFront();
+        },this);
 
         this.x=x;
         this.y=y;
@@ -1074,15 +1076,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             //pop up is top right of the point
             this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"}).addCls('arrowVisible');
         }
-
-        // Update z-indexes
-        this.balloon.applyStyles({
-            'z-index': this.zIndex
-        });
-        this.balloon.select(".balloonArrowTopLeft").applyStyles({"z-index": this.zIndex+2});
-        this.balloon.select(".balloonArrowTopRight").applyStyles({"z-index": this.zIndex+2});
-        this.balloon.select(".balloonArrowBottomRight").applyStyles({"z-index": this.zIndex+2});
-        this.balloon.select(".balloonArrowBottomLeft").applyStyles({"z-index": this.zIndex+2});
+        this.bringToFront();
     };
     /**
      *called by internal elements if the mouse is moved in 1 of the maptip element
@@ -1116,6 +1110,34 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         }
         return false;
     };
+    
+    this.bringToFront = function () {
+        var updatedZIndex = this.zIndex;
+        try {
+            Ext.WindowManager.eachTopDown(function (comp) {
+                var zIndex = comp.getEl().getZIndex();
+                if (zIndex > updatedZIndex) {
+                    updatedZIndex = zIndex;
+                }
+            });
+        } catch (e) {
+        }
+        if (updatedZIndex) {
+            this.zIndex = updatedZIndex + 1;
+        }
+        if(!this.balloon){
+            return;
+        }
+        // Update z-indexes
+        this.balloon.applyStyles({
+            'z-index': this.zIndex
+        });
+        this.balloon.select(".balloonArrowTopLeft").applyStyles({"z-index": this.zIndex + 2});
+        this.balloon.select(".balloonArrowTopRight").applyStyles({"z-index": this.zIndex + 2});
+        this.balloon.select(".balloonArrowBottomRight").applyStyles({"z-index": this.zIndex + 2});
+        this.balloon.select(".balloonArrowBottomLeft").applyStyles({"z-index": this.zIndex + 2});
+   
+    };
 
     /**
      *Set the position of this balloon. Create it if not exists
@@ -1129,21 +1151,6 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //new maptip position so update the maptipId
         this.maptipId++;
 
-        var updatedZIndex = this.zIndex;
-        try {
-            Ext.WindowManager.eachTopDown(function(comp){
-                var zIndex = comp.getEl().getZIndex();
-                if(comp.mustBeOnTop){
-                    zIndex = -1;
-                }
-                if(zIndex > updatedZIndex) {
-                    updatedZIndex = zIndex;
-                }
-            });
-        } catch(e) {}
-        if(updatedZIndex) {
-            this.zIndex = updatedZIndex + 1;
-        }
         if (!this.balloon){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){
