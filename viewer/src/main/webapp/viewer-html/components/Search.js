@@ -44,7 +44,6 @@ Ext.define ("viewer.components.Search",{
     mainContainer: null,
     searchResult: null,
     results: null,
-    margin: "0 5 0 0",
     autosuggestStore:null,
     searchField:null,
     searchName:null,
@@ -77,8 +76,8 @@ Ext.define ("viewer.components.Search",{
         this.initConfig(conf);
 		viewer.components.Search.superclass.constructor.call(this, this.config);
         this.renderButton(); 
-        var notUrlConfigs = new Array();
-        this.onlyUrlConfig = new Array();
+        var notUrlConfigs = [];
+        this.onlyUrlConfig = [];
         if(this.config.searchconfigs === null) {
             this.config.searchconfigs = [];
         }
@@ -92,7 +91,7 @@ Ext.define ("viewer.components.Search",{
         }
         this.searchconfigs = notUrlConfigs; 
         this.currentSeachId = this.searchconfigs.length > 0 ? this.searchconfigs[0].id : null; 
-        this.dynamicSearchEntries = new Array();
+        this.dynamicSearchEntries = [];
         this.loadWindow();
         return this;
     },
@@ -135,7 +134,7 @@ Ext.define ("viewer.components.Search",{
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
             height: this.config.formHeight,
-            padding: this.config.formHeight ? 0 : '0 0 5px 0',
+            padding: 0,
             items: this.getFormItems(),
             title: title,
             tools: tools,
@@ -143,22 +142,18 @@ Ext.define ("viewer.components.Search",{
             layout: {
                 type: 'vbox',
                 align: 'stretch'
-            },
-            style: { 
-                padding: '5px 10px 0px 10px'
             }
         });
 
         this.resultPanel = Ext.create('Ext.container.Container', {
             xtype: "container",
-            autoScroll: true,
-            flex: 1
+            flex: 1,
+            componentCls: 'resultPanel',
+            scrollable: true
         });
 
         var options = {
             itemId: this.name + 'Container',
-            width: '100%',
-            height: '100%',
             layout: {
                 type: 'vbox',
                 align: 'stretch'
@@ -169,8 +164,7 @@ Ext.define ("viewer.components.Search",{
             items: [ this.form, this.resultPanel ]
         };
         if(!this.config.isPopup) {
-            options.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 0 10 0';
-            options.renderTo = this.getContentDiv();
+            options.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 5 10 5';
         } else {
             options.items.push({
                 itemId: this.name + 'ClosingPanel',
@@ -193,13 +187,15 @@ Ext.define ("viewer.components.Search",{
         this.mainContainer = Ext.create(this.config.isPopup ? 'Ext.container.Container' : 'Ext.panel.Panel', options);
         if(this.config.isPopup) {
             this.popup.getContentContainer().add(this.mainContainer);
+        } else {
+            this.getContentContainer().add(this.mainContainer);
         }
         this.form.query("#cancel"+ this.name)[0].setVisible(false);
         this.loadingContainer = this.resultPanel;
     },
     getFormItems: function(){
         var me = this;
-        var itemList = new Array();
+        var itemList = [];
         if (this.searchconfigs) {
             var configs = Ext.create('Ext.data.Store', {
                 fields: ['id', 'name', 'url'],
@@ -212,7 +208,6 @@ Ext.define ("viewer.components.Search",{
                 hidden: this.searchconfigs.length === 1,
                 displayField: 'name',
                 valueField: 'id',
-                margin:"0 5 5 0 ",
                 anchor: '100%',
                 emptyText: 'Maak uw keuze',
                 name: 'searchName' + this.name,
@@ -256,8 +251,8 @@ Ext.define ("viewer.components.Search",{
                     name: 'searchfield',
                     hideTrigger: me.searchFieldTriggers === null,
                     triggers: me.searchFieldTriggers === null ? {} : me.searchFieldTriggers,
-                    flex:1,
-                    anchor: '100%',
+                    flex: 1,
+                    margin: this.showSearchButtons ? '0 1 0 0' : 0,
                     editable: true,
                     triggerAction: 'query',
                     queryParam: "searchText",
@@ -316,11 +311,13 @@ Ext.define ("viewer.components.Search",{
                     layout: {
                         type: this.showSearchButtons ? 'hbox' : 'fit'
                     },
-                    autoScroll: true,
-                    items: [this.searchField,{
+                    scrollable: false,
+                    padding: '0 1 0 0',
+                    items: [
+                        this.searchField,
+                        {
                             xtype: 'button',
                             text: 'Zoeken',
-                            margin: this.margin,
                             hidden: !this.showSearchButtons,
                             listeners: {
                                 click: {
@@ -328,7 +325,8 @@ Ext.define ("viewer.components.Search",{
                                     fn: this.search
                                 }
                             }
-                        }]
+                        }
+                    ]
                 });
                 itemList.push(searchFieldAndButton);
             }
@@ -336,7 +334,6 @@ Ext.define ("viewer.components.Search",{
         itemList.push({ 
             xtype: 'button',
             text: 'Zoekactie afbreken',
-            margin: this.margin,
             name: 'cancel',
             itemId: 'cancel'+ this.name,
             hidden: !this.showSearchButtons,
@@ -351,7 +348,6 @@ Ext.define ("viewer.components.Search",{
         itemList.push({
             xtype: 'button',
             text: 'Verwijder marker',
-            margin: this.margin,
             name: 'removePin',
             itemId: 'removePin'+ this.name,
             hidden: true,
@@ -403,7 +399,7 @@ Ext.define ("viewer.components.Search",{
     },
     executeSearch: function(searchText, searchName) {
         var requestPath=  FlamingoAppLoader.get('contextPath')+"/action/search";
-        this.searchResult = new Array();
+        this.searchResult = [];
         if (this.getCurrentSearchType() === "simplelist") {
             this.simpleListSearch(searchText);
         } else if (this.getCurrentSearchType() === "dynamic") {
@@ -506,6 +502,19 @@ Ext.define ("viewer.components.Search",{
                     style: {
                         padding: '0px 0px 10px 0px'
                     },
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    listeners: {
+                        expand: function() {
+                            this.updateLayout();
+                        },
+                        collapse: function() {
+                            this.updateLayout();
+                        },
+                        scope: this
+                    },
                     items: list
                 });
                 panelList.push(subSetPanel);
@@ -513,24 +522,24 @@ Ext.define ("viewer.components.Search",{
 
         }
         this.resultPanel.removeAll();
-        this.resultPanel.add(Ext.create('Ext.panel.Panel', {
+        var results = Ext.create('Ext.panel.Panel', {
             title: 'Resultaten (' +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
             html: html,
-            height: '100%',
-            width: '100%',
+            componentCls: 'resultPanelPanel',
             layout:{
                 type: 'accordion',
                 titleCollapse: true,
                 animate: true,
-                flex:1,
-                multi:true
+                flex: 1,
+                multi: true
             },
             autoScroll: false,
-            style: { 
+            style: {
                 padding: '0px 0px 10px 0px'
             },
             items: panelList
-        }));
+        });
+        this.resultPanel.add(results);
         if(this.searchResult && this.searchResult.length === 1){
             this.handleSearchResult(this.searchResult[0]);
         }else{
@@ -538,12 +547,17 @@ Ext.define ("viewer.components.Search",{
                 this.popup.show();
             }
         }
-        
+        this.updateLayout();
+    },
+    updateLayout: function() {
+        setTimeout((function() {
+            this.resultPanel.updateLayout();
+        }).bind(this), 0);
     },
     addResult : function(result,index){
         var type = result.type;
         if(!this.groupedResult.hasOwnProperty(type)){
-            this.groupedResult[type] = new Array();
+            this.groupedResult[type] = [];
         }
         var item = this.createResult(result,index);
         this.groupedResult[type].push(item);
@@ -553,8 +567,9 @@ Ext.define ("viewer.components.Search",{
         var item = {
             text: result.label,
             xtype: 'button',
-            componentCls: 'searchResultButton',
-            tooltip: 'Zoom naar locatie',
+            textAlign: 'left',
+            // componentCls: 'searchResultButton',
+            tooltip: result.label + "<br /><br />Zoom naar locatie",
             itemId: "searchButton_" + index,
             listeners: {
                 click: {
@@ -731,7 +746,7 @@ Ext.define ("viewer.components.Search",{
         var config = this.getCurrentSearchconfig();
         var values = config.simpleSearchConfig;
         term = term.toLowerCase();
-        var results = new Array();
+        var results = [];
         for(var i = 0 ; i < values.length; i++){
             var entry = values[i];
             var value = Ext.isEmpty (entry.value ) ? entry.label : entry.value;
