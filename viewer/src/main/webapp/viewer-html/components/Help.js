@@ -30,7 +30,8 @@ Ext.define ("viewer.components.Help",{
         defaultText: "",
         details: {
             minWidth: 400,
-            minHeight: 250
+            minHeight: 250,
+            useExtLayout: true
         }
     },
     /**
@@ -61,18 +62,15 @@ Ext.define ("viewer.components.Help",{
     renderWindow: function(componentConfig) {
         if(this.container === null) {
             var config = {
-                width: '100%',
-                height: '100%',
                 padding: 0,
                 border: 0,
-                renderTo: this.getContentDiv(),
-                autoScroll: true,
-                layout: 'fit'
+                autoScroll: true
             };
             if(!this.showAsPopup) {
                 config.title = this.config.title;
             }
             this.container = Ext.create(this.showAsPopup ? 'Ext.container.Container' : 'Ext.panel.Panel', config);
+            this.getContentContainer().add(this.container);
         }
         this.container.removeAll();
         if( componentConfig !== null && typeof componentConfig.helpUrl !== 'undefined') {
