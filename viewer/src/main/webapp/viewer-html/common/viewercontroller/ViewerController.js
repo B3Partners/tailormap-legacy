@@ -477,7 +477,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if(level.layers) {
                 for(var j = 0; j < level.layers.length; j++) {
                     var layer = app.appLayers[level.layers[j]];
-                    if(!layer.removed){
+                    if(layer && !layer.removed){
                         onAppLayer(layer);
                     }
                 }

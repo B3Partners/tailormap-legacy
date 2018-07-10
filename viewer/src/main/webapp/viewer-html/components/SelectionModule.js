@@ -1239,7 +1239,9 @@ Ext.define ("viewer.components.SelectionModule",{
             newParentNode = parentNode.appendChild(insertNode);
         if(insertNode.origData && insertNode.origData.children) {
             Ext.Array.each(insertNode.origData.children, function(childNode) {
-                me.insertNode(newParentNode, childNode);
+                if(childNode){
+                    me.insertNode(newParentNode, childNode);
+                }
             });
         }
         return newParentNode;
