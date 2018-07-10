@@ -42,6 +42,7 @@ Ext.define("viewer.components.DownloadWKT", {
             tooltip: me.config.tooltip,
             label: me.config.label
         });
+        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
     },
     showWindow: function () {
         if (!this.maincontainer) {
@@ -107,6 +108,7 @@ Ext.define("viewer.components.DownloadWKT", {
                             text: "Teken vlak",
                             flex:1,
                             id: this.config.name + 'drawPolygon',
+                            icon: this.iconPath+"shape_polygon_red.png",
                             listeners: {
                                 click: {
                                     scope: this,
@@ -121,12 +123,26 @@ Ext.define("viewer.components.DownloadWKT", {
                             flex:1,
                             id: this.config.name + 'drawBox',
                             text: "Teken vierkant",
+                            icon: this.iconPath+"shape_square_red.png",
                             listeners: {
                                 click: {
                                     scope: this,
                                     fn: function () {
                                         this.vectorLayer.removeAllFeatures();
                                         this.vectorLayer.drawFeature("Box");
+                                    }
+                                }
+                            }
+                        }, {
+                            xtype: 'button',
+                            icon: this.iconPath + "delete.png",
+                            tooltip: "Verwijder alle objecten",
+                            flex:1,
+                            listeners: {
+                                click: {
+                                    scope: this,
+                                    fn: function () {
+                                        this.vectorLayer.removeAllFeatures();
                                     }
                                 }
                             }
