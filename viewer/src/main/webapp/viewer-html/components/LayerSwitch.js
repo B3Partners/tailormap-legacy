@@ -165,7 +165,8 @@ Ext.define ("viewer.components.LayerSwitch",{
         var foundLevel = null;
         Ext.each(this.selectedBackgroundLevels, function(level) {
             Ext.each(level.layers, function(appLayerId) {
-                if(me.config.viewerController.getAppLayerById(appLayerId).checked) {
+                var appLayer = me.config.viewerController.getAppLayerById(appLayerId);
+                if(appLayer && appLayer.checked) {
                     foundLevel = level;
                     return false;
                 }
@@ -186,7 +187,9 @@ Ext.define ("viewer.components.LayerSwitch",{
                 var checked = level == selectedLevel;
                 Ext.each(level.layers, function(appLayerId) {
                     var appLayer = me.config.viewerController.getAppLayerById(appLayerId);
-                    me.config.viewerController.setLayerVisible(appLayer, checked);                    
+                    if(appLayer){
+                        me.config.viewerController.setLayerVisible(appLayer, checked);                    
+                    }
                 });
             });
         }
