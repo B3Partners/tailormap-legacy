@@ -1601,6 +1601,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return result;
     },
     /**
+     * Get the components by an incomplete classname
+     * @param {String} classname the incomplete name of the class
+     * @return {Array} of found components.
+     */
+    getComponentsByIncompleteClassName : function(className) {
+        var result = [];
+        for(var name in this.components) {
+            if(this.components.hasOwnProperty(name)) {
+                var component = this.components[name];
+                if(component.className.toLowerCase().indexOf(className)!== -1) {
+                    result.push(component.instance);
+                }
+            }
+        }
+        return result;
+    },
+    /**
      * Get the components by classnames
      * @param {Array} classNames full names of the class(es)
      * @return {Array} of found components.
@@ -1792,9 +1809,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }else if (key ==="forceLoadLayers") {
                 layersLoaded = true;
             }else{
-                var component=this.getComponentByName(key);
-                if (component && !Ext.isEmpty(value)){
-                    component.loadVariables(value);
+                if (!Ext.isEmpty(value)) {
+                    var component = this.getComponentByName(key);
+                    if (component) {
+                        component.loadVariables(value);
+                    } else {
+                        var comps = this.getComponentsByIncompleteClassName(key);
+                        if (comps.length > 0 ) {
+                            for (var i = 0; i < comps.length; i++) {
+                                var comp = comps[i];
+                                comp.loadVariables(value);
+                            }
+                        }
+                    }
                 }
             }
         }
