@@ -73,7 +73,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, this.featureEdited, this);
+        this.getViewerController().addListener(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, this.featureEdited, this);
+        this.getViewerController().addListener(viewer.viewercontroller.controller.Event.ON_EDIT_REMOVE_SUCCESS, this.featureEdited, this);
         if(this.config.hasSharedPopup){
       //      document.getElementById(this.popup.getContentId()).addEventListener('click', this.relatedFeaturesListener.bind(this));
         }

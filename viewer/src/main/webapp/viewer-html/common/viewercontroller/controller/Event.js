@@ -175,6 +175,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param feature the feature that was edited
          */
         ON_EDIT_SUCCESS                       : "ON_EDIT_SUCCESS",
+        /**
+         * Occurs when a feature has been successfully removed by Edit component
+         * @param layer the layer for which the feature is removed
+         * @param feature the feature that was removed
+         */
+        ON_EDIT_REMOVE_SUCCESS                : "ON_EDIT_REMOVE_SUCCESS",
         // Tool events:                             100 - 150
         ON_EVENT_DOWN                         : "ON_EVENT_DOWN",
         /** @field */
