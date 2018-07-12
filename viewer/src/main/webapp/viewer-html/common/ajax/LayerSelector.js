@@ -167,27 +167,35 @@ Ext.define ("viewer.components.LayerSelector",{
         for(var i = 0 ; i < this.forcedLayers.length; i++){
             visibleLayers.push(this.forcedLayers[i].id);
         }
-        this.layerstore.removeAll();
-        if(this.config.useTabs) {
-            this.layerselector.removeAll();
-        }
         var addedLayers = 0;
+        var layers = [];
         if(this.layerList != null){
-            for (var i = 0 ; i < this.layerList.length ;i++){
-                var l = this.layerList[i];
+            for (var n = 0 ; n < this.layerList.length ;n++){
+                var l = this.layerList[n];
                 for ( var j = 0 ; j < visibleLayers.length ;j++){
                     //var appLayer = this.config.viewerController.getAppLayerById(visibleLayers[j]);                    
-                    if (visibleLayers[j] == l.id || visibleLayers[j] == (""+l.id)){                
-                        this.layerstore.add({
-                            layerId: l.id,
-                            title: l.alias || l.layerName,
-                            layer: l
-                        });
-                        addedLayers++;
+                    if (visibleLayers[j] === l.id || visibleLayers[j] === (""+l.id)){
+                        layers.push(l);
                         break;
                     }
                 }
             }
+        }
+        var layerschanged = this.checkLayersChanged(layers);
+        if(!layerschanged) {
+            return;
+        }
+        this.layerstore.removeAll();
+        if(this.config.useTabs) {
+            this.layerselector.removeAll();
+        }
+        for(var k = 0; k < layers.length; k++) {
+            this.layerstore.add({
+                layerId: layers[k].id,
+                title: layers[k].alias || layers[k].layerName,
+                layer: layers[k]
+            });
+            addedLayers++;
         }
         if(addedLayers === 0) {
             // this.layerselector.inputEl.dom.placeholder='Geen kaartlagen beschikbaar';
@@ -207,7 +215,30 @@ Ext.define ("viewer.components.LayerSelector",{
             }
         }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS,
-                {store: this.layerstore, layers: this.layerList, hasBeenInitialized: hasBeenInitialized}, this);
+            { store: this.layerstore, layers: this.layerList, hasBeenInitialized: hasBeenInitialized }, this);
+    },
+
+    checkLayersChanged: function(newLayers) {
+        // Check if there is a new layer that is not in the store
+        for(var i = 0; i < newLayers.length; i++) {
+            if(this.findLayerInStore(newLayers[i].id) === null) {
+                return true;
+            }
+        }
+        // Check if there is a layer in the store that is not in the newlayers list anymore
+        var layerRemoved = false;
+        this.layerstore.each(function(val) {
+            var inList = false;
+            for(var i = 0; i < newLayers.length; i++) {
+                if("" + newLayers[i].id === "" + val.get("layerId")) {
+                    inList = true;
+                }
+            }
+            if(!inList) {
+                layerRemoved = true;
+            }
+        });
+        return layerRemoved;
     },
 
     initTabs: function(skipSetActiveTab) {
