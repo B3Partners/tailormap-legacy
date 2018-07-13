@@ -26,10 +26,16 @@ public class UpdateElement {
 
     private List<String> elements;
     private Class clazz;
+    private boolean canFail = false;
 
     public UpdateElement(List<String> elements, Class clazz) {
+        this(elements, clazz, false);
+    }
+
+    public UpdateElement(List<String> elements, Class clazz, boolean canFail) {
         this.elements = elements;
         this.clazz = clazz;
+        this.canFail = canFail;
     }
 
     public void add(String element) {
@@ -52,5 +58,12 @@ public class UpdateElement {
         this.clazz = clazz;
     }
 
+    public boolean canFail() {
+        return canFail;
+    }
+
+    public void setCanFail(boolean canFail) {
+        this.canFail = canFail;
+    }
     
 }
