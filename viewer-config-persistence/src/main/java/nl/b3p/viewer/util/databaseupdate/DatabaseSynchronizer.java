@@ -157,7 +157,9 @@ public class DatabaseSynchronizer implements Servlet {
         // 5.1.5 / 5.2.0-rc1 / 5.3.0
         updates.put("30", new UpdateElement(Collections.singletonList("emptySql.sql"), String.class));
         // 5.3.1 / 5.2.0
-        updates.put("31", new UpdateElement(Collections.singletonList("fileupload.sql"), String.class, true));
+        updates.put("31", new UpdateElement(Collections.singletonList("emptySql.sql"), String.class));
+        updates.put("32", new UpdateElement(Collections.singletonList("dropfileupload.sql"), String.class, true));
+        updates.put("33", new UpdateElement(Collections.singletonList("fileupload.sql"), String.class, true));
         // NB when adding an update also update the metadata version in the testdata.sql file around line 343
     }
 
