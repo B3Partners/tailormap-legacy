@@ -65,14 +65,14 @@ public class ScriptRunner {
      * @throws IOException if any occurs connecting to the database
      * @throws SQLException if any occurs executing the script
      */
-    public void runScript(Reader reader) throws IOException, SQLException {
+    public void runScript(Reader reader, boolean canFail) throws IOException, SQLException {
         try {
             boolean originalAutoCommit = connection.getAutoCommit();
             try {
                 if (originalAutoCommit != this.autoCommit) {
                     connection.setAutoCommit(this.autoCommit);
                 }
-                runScript(connection, reader);
+                runScript(connection, reader, canFail);
             } finally {
                 connection.setAutoCommit(originalAutoCommit);
             }
@@ -94,7 +94,7 @@ public class ScriptRunner {
      * @throws SQLException if any SQL errors occur
      * @throws IOException if there is an error reading from the Reader
      */
-    private void runScript(Connection conn, Reader reader) throws IOException,
+    private void runScript(Connection conn, Reader reader, boolean canFail) throws IOException,
             SQLException {
         StringBuffer command = null;
         try {
@@ -171,14 +171,15 @@ public class ScriptRunner {
             if (!autoCommit) {
                 conn.commit();
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.fillInStackTrace();
-            log.error("Error executing: " + command,e);
-            throw e;
-        } catch (IOException e) {
-            e.fillInStackTrace();
-            log.error("Error executing: " + command,e);
-            throw e;
+            
+            if(!canFail){
+                log.error("Error executing: " + command,e);
+                throw e;
+            }else{
+                log.error("Error executing: " + command + " but ignoring, because it is allowed to fail." + e.getLocalizedMessage());
+            }
         } finally {
             if (!this.autoCommit){
                 conn.rollback();
