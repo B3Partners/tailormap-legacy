@@ -80,7 +80,6 @@ Ext.define ("viewer.components.ScreenPopup",{
             scrollable: true,
             constrainHeader: true,
             iconCls: this.config.iconCls || "",
-            mustBeOnTop: this.config.mustBeOnTop || false,
             bodyStyle: {},
             cls: "screen-popup"
         };
@@ -151,12 +150,14 @@ Ext.define ("viewer.components.ScreenPopup",{
                 listeners: {
                     'resizedrag': {
                         fn: function() {
+                            this.bringToFront();
                             this.disableBody();
                         },
                         scope: this
                     },
                     'resize': {
                         fn: function() {
+                            this.bringToFront();
                             this.enableBody();
                         },
                         scope: this
@@ -178,6 +179,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             this.popupWin.addListener("dragend", function() {
                 this.enableBody();
                 positionChanged = true;
+                this.bringToFront();
             }, this);
         }
         this.popupWin.addListener('hide', function() {
@@ -186,6 +188,9 @@ Ext.define ("viewer.components.ScreenPopup",{
             }
             this.enableBody();
             this.fireEvent("hide",this);
+        }, this);
+        this.popupWin.addListener('focus', function() {
+            this.bringToFront();
         }, this);
         this.popupWin.addListener('show', function() {
             if (conf.viewerController) {
@@ -241,7 +246,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.popupWin.show();
         this.bringToFront();
     },
-    bringToFront: function(){
+    computeMaxZIndex: function () {
         var updatedZIndex = this.zIndex;
         try {
             Ext.WindowManager.eachTopDown(function (comp) {
@@ -252,9 +257,20 @@ Ext.define ("viewer.components.ScreenPopup",{
             });
         } catch (e) {
         }
+        var balloons = document.querySelectorAll(".infoBalloon");
+        var balloonIndex;
+        for (var i = 0; i < balloons.length; i++) {
+            balloonIndex = balloons[i].style.zIndex;
+            if (balloonIndex > updatedZIndex) {
+                updatedZIndex = +(balloonIndex);
+            }
+        }
         if (updatedZIndex) {
             this.zIndex = updatedZIndex + 1;
-        }
+        }  
+    },
+    bringToFront: function(){
+        this.computeMaxZIndex();
         this.popupWin.setZIndex(this.zIndex);
     },
     hide : function(){
@@ -267,7 +283,8 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.isBodyDisabled = true;
         var mask = Ext.getBody().mask();
         mask.on('click', this.enableBody, this);
-        mask.setZIndex(this.popupWin.getEl().getZIndex() - 1);
+        this.computeMaxZIndex();
+        mask.setZIndex(this.zIndex -2);
     },
     enableBody : function(){
         this.isBodyDisabled = false;

@@ -210,8 +210,9 @@ public class SimpleFeatureType {
                 for(AttributeDescriptor newAttribute: update.attributes){
                     
                     if(attributes.get(i).getName().equals(newAttribute.getName())){
-                        notFound = false;
-                        if(attributes.get(i).getType().equals(newAttribute.getType())){
+                        notFound = false;  
+                        AttributeDescriptor oldAttr  = attributes.get(i);
+                        if(Objects.equals(oldAttr.getType(), newAttribute.getType())){
                             // ! expression didnt work(???) so dummy if-else (else is only used)
                         }else{
                             attributes.remove(i);

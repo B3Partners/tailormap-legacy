@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.3.1-SNAPSHOT</version>
+    <version>5.3.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -37,7 +37,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.3.1-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.3.4-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -51,7 +51,7 @@
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.2</postgresql.version>
         <apache.poi.version>3.17</apache.poi.version>
-        <apache.httpcomponents.version>4.5.5</apache.httpcomponents.version>
+        <apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -153,11 +153,31 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.4</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
                         <artifactId>persistence-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.geotools</groupId>
+                        <artifactId>gt-epsg-hsql</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.geotools</groupId>
+                        <artifactId>gt-opengis</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.geotools.xsd</groupId>
+                        <artifactId>gt-xsd-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.geotools.xsd</groupId>
+                        <artifactId>gt-xsd-gml2</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.geotools.xsd</groupId>
+                        <artifactId>gt-xsd-gml3</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
