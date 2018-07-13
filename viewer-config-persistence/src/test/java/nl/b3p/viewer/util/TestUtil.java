@@ -151,7 +151,7 @@ public abstract class TestUtil extends LoggingTestUtil {
             Session session = (Session) entityManager.getDelegate();
             conn = (Connection) session.connection();
             ScriptRunner sr = new ScriptRunner(conn, true, true);
-            sr.runScript(f);
+            sr.runScript(f, false);
             conn.commit();
             entityManager.flush();
         } finally {
