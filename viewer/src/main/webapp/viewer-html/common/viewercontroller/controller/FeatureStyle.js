@@ -28,6 +28,8 @@ Ext.define("viewer.viewercontroller.controller.FeatureStyle", {
         labelAlign: null,
         fontSize: null,
         fontColor: null,
+        fontStyle:null,
+        fontWeight:null,
         rotation: null,
         labelXOffset: null,
         labelYOffset: null,

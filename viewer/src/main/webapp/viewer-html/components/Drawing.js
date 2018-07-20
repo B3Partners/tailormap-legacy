@@ -144,7 +144,7 @@ Ext.define ("viewer.components.Drawing",{
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
-            showmeasures:false,
+            showmeasures:true,
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.defaultStyle,
             addStyleToFeature: true
@@ -351,6 +351,57 @@ Ext.define ("viewer.components.Drawing",{
                                     min: 0,
                                     width: "100%",
                                     max: 100,
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: 'Labelplaatsing',
+                                    queryMode: 'local',
+                                    store: [['rb', 'Linksboven'], // First off: it's called labelAlign, but's counterintuitive: it's the position of the point
+                                        ['cb', 'Middenboven'], //  relative to the label. So 'rb' means the anchorpoint of the label is on the right bottem of the label. Yeah.
+                                        ['lb', 'Rechtsboven'], // Also: This is not very useful for something other than points, as for lines it uses the first
+                                        ['rm', 'Linksmidden'],  // point and polygons it's center.
+                                        ['cm', 'Midden'], 
+                                        ['lm', 'Rechtsmidden'], 
+                                        ['rt', 'Linksonder'], 
+                                        ['ct', 'Middenonder'], 
+                                        ['lt', 'Rechtsonder']],
+                                    name: 'labelAlign',
+                                    itemId: 'labelAlign',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: 'Lettertypestijl',
+                                    queryMode: 'local',
+                                    multiSelect:true,
+                                    store: [ ['bold', 'Dikgedrukt'], ['italic', 'Schuin']],
+                                    name: 'fontStyle',
+                                    itemId: 'fontStyle',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: 'Lettergrootte',
+                                    queryMode: 'local',
+                                    store: [['8px', '8px'], ['13px', '13px'], ['18px', '18px'], ['24px', '24px']],
+                                    name: 'fontSize',
+                                    itemId: 'fontSize',
                                     listeners: {
                                         change: {
                                             scope: this,
@@ -595,11 +646,20 @@ Ext.define ("viewer.components.Drawing",{
         var ds = this.getContentContainer().query('#dashStyle')[0];
         var lw = this.getContentContainer().query('#lineWidth')[0];
         var fo = this.getContentContainer().query('#fillOpacity')[0];
+        var fs = this.getContentContainer().query('#fontSize')[0];
+        var la = this.getContentContainer().query('#labelAlign')[0];
+        var fw = this.getContentContainer().query('#fontStyle')[0];
         
-        var type = ds.getValue();
+        
+        var dashstyle = ds.getValue();
         var width = lw.getValue();        
         var color = this.config.color;
         var opacity = fo.getValue()/ 100;
+        var fontsize = fs.getValue();
+        var labelAlign = la.getValue();
+        var font = fw.getValue();
+        var fontWeight = font && font.indexOf("bold") !== -1;
+        var fontStyle = font && font.indexOf("italic") !== -1;
         
         var layer = this.vectorLayer;
         
@@ -611,26 +671,43 @@ Ext.define ("viewer.components.Drawing",{
         featureStyle.set('strokeColor', '#' + color);
         featureStyle.set('fillColor', '#' + color);
         featureStyle.set('fillOpacity', opacity);
-        featureStyle.set('strokeDashstyle', type);
+        featureStyle.set('strokeDashstyle', dashstyle);
         featureStyle.set('strokeWidth',width);
+        featureStyle.set('fontSize', fontsize);
+        featureStyle.set('labelAlign', labelAlign);
+        featureStyle.set('fontStyle', fontStyle ? "italic" : "normal");
+        featureStyle.set('fontWeight', fontWeight ? "bold" : "normal");
         if(this.activeFeature){
             layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
         }
     },
     changeFormToCurrentFeature: function(feature){
-        var fs = this.vectorLayer.frameworkStyleToFeatureStyle(feature);
+        var featureStyle = this.vectorLayer.frameworkStyleToFeatureStyle(feature);
         var ds = this.getContentContainer().query('#dashStyle')[0];
         var lw = this.getContentContainer().query('#lineWidth')[0];
         var fo = this.getContentContainer().query('#fillOpacity')[0];
+        var fs = this.getContentContainer().query('#fontSize')[0];
+        var la = this.getContentContainer().query('#labelAlign')[0];
+        var fw = this.getContentContainer().query('#fontStyle')[0];
         
         var color = feature.style.fillColor;// this.features[feature.config.id].color;
         color = color.substring(1);
         this.colorPicker.setColor(color);
         this.config.color = color;
         
-        ds.setValue(fs.getStrokeDashstyle());
-        lw.setValue(fs.getStrokeWidth());
-        fo.setValue(fs.getFillOpacity()*100);
+        var fontWeight = featureStyle.getFontWeight();
+        fontWeight = fontWeight === "normal" ? null : fontWeight;
+        var fontStyle = featureStyle.getFontStyle();
+        
+        fontStyle = fontStyle === "normal" ? null : fontStyle;
+        var font = [fontWeight,fontStyle];
+        
+        ds.setValue(featureStyle.getStrokeDashstyle());
+        lw.setValue(featureStyle.getStrokeWidth());
+        fo.setValue(featureStyle.getFillOpacity()*100);
+        fs.setValue(featureStyle.getFontSize());
+        la.setValue(featureStyle.getLabelAlign());
+        fw.setValue(font);
     },
     colorChanged : function (hexColor){
         this.config.color = hexColor;
