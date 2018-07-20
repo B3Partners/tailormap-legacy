@@ -297,7 +297,7 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     {
                         xtype: 'fieldset',
-                        title: "geavanceerd",
+                        title: "Geavanceerd",
                         collapsed:false,
                         collapsible:true,
                         border: 0,
@@ -334,6 +334,22 @@ Ext.define ("viewer.components.Drawing",{
                                     store: [['2', 'Dun'], ['3', 'Normaal'], ['8', 'Dik']],
                                     name: 'lineWidth',
                                     itemId: 'lineWidth',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'slider',
+                                    fieldLabel: 'Transparantie',
+                                    name: 'fillOpacity',
+                                    itemId: 'fillOpacity',
+                                    value: 50,
+                                    increment: 10,
+                                    min: 0,
+                                    width: "100%",
+                                    max: 100,
                                     listeners: {
                                         change: {
                                             scope: this,
@@ -575,10 +591,12 @@ Ext.define ("viewer.components.Drawing",{
     featureStyleChanged: function(){
         var ds = this.getContentContainer().query('#dashStyle')[0];
         var lw = this.getContentContainer().query('#lineWidth')[0];
+        var fo = this.getContentContainer().query('#fillOpacity')[0];
         
         var type = ds.getValue();
         var width = lw.getValue();        
         var color = this.config.color;
+        var opacity = fo.getValue()/ 100;
         
         var layer = this.vectorLayer;
         
@@ -589,21 +607,27 @@ Ext.define ("viewer.components.Drawing",{
         
         featureStyle.set('strokeColor', '#' + color);
         featureStyle.set('fillColor', '#' + color);
+        featureStyle.set('fillOpacity', opacity);
         featureStyle.set('strokeDashstyle', type);
         featureStyle.set('strokeWidth',width);
-        layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
+        if(this.activeFeature){
+            layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
+        }
     },
     changeFormToCurrentFeature: function(feature){
         var fs = this.vectorLayer.frameworkStyleToFeatureStyle(feature);
         var ds = this.getContentContainer().query('#dashStyle')[0];
         var lw = this.getContentContainer().query('#lineWidth')[0];
+        var fo = this.getContentContainer().query('#fillOpacity')[0];
+        
         var color = feature.style.fillColor;// this.features[feature.config.id].color;
         color = color.substring(1);
         this.colorPicker.setColor(color);
         this.config.color = color;
         
         ds.setValue(fs.getStrokeDashstyle());
-        lw.setValue("" +fs.getStrokeWidth());
+        lw.setValue(fs.getStrokeWidth());
+        fo.setValue(fs.getFillOpacity()*100);
     },
     colorChanged : function (hexColor){
         this.config.color = hexColor;
