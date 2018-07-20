@@ -1,5 +1,6 @@
 /**
  * @class
+ * @constructor
  * @augments MapComponent
  * @description MapComponent subclass for OpenLayers
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -34,14 +35,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 resolutions = null;
                 startResolution = null;
             } else {
-                var rString = (config.resolutions).split(",");
-                resolutions = [];
-                for (var i = 0; i < rString.length; i++) {
-                    var res = Number(rString[i]);
-                    if (!isNaN(res)) {
-                        resolutions.push(res);
-                    }
+            var rString = (config.resolutions).split(",");
+            resolutions=[];
+            for (var i = 0; i < rString.length; i++){
+                var res=Number(rString[i]);
+                if (!isNaN(res)){
+                    resolutions.push(res);
                 }
+            }
             }
         }else{
             resolutions = [3440.64,1720.32,860.16,430.08,215.04,107.52,53.76,26.88,13.44,6.72,3.36,1.68,0.84,0.42,0.21,0.105];
@@ -53,7 +54,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else{
             maxExtentBounds = new OpenLayers.Bounds(7700,304000,280000,620000);
         }
-         //set some default options.
+        //set some default options.
          var proj = new OpenLayers.Projection(this.projection);
         this.mapOptions =  {
             projection:proj,
@@ -534,12 +535,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
-        }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE  ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
-            var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
-            if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
-                measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
-            }
+        }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
+            conf.frameworkOptions = frameworkOptions;
+            var measureTool = new viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool(conf);
             return measureTool;
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
             return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions));
@@ -594,7 +592,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
-            this.viewerController.logger.warning(i18next.t('viewer_viewercontroller_openlayersmapcomponent_0', {type:type}));
+            this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
         }
     },
     activateGetFeatureControls : function(){
@@ -620,10 +618,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addTool : function(tool){
         /* if (!(tool instanceof OpenLayersTool)){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_1')});
+        Ext.Error.raise({msg: "The given tool is not of type 'OpenLayersTool'"});
     }*/
         if (this.maps.length==0){
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_2')});
+            Ext.Error.raise({msg: "No map in MapComponent!"});
         }
         if( tool instanceof Array){
             for(var i = 0 ; i < tool.length; i++){
@@ -726,7 +724,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     removeTool : function (tool){
         if (!(tool instanceof OpenLayersTool)){
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_3')});
+            Ext.Error.raise({msg: "The given tool is not of type 'OpenLayersTool'"});
         }
         if (tool.type==Tool.NAVIGATION_HISTORY){
             OpenLayers.Util.removeItem(this.getPanel().controls, tool.getFrameworkTool().next);
@@ -746,7 +744,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     },
     addComponent: function(component){
         if(Ext.isEmpty(component)){
-            this.viewerController.logger.warning(i18next.t('viewer_viewercontroller_openlayersmapcomponent_4'));
+            this.viewerController.logger.warning("Empty component added to OpenLayersMapComponent. \nProbably not yet implemented");
         }else{
             //add the component to the map
             this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());
@@ -759,10 +757,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addMap : function (map){
         if (!(map instanceof viewer.viewercontroller.openlayers.OpenLayersMap)){
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_5')});
+            Ext.Error.raise({msg: "The given map is not of the type 'OpenLayersMap'"});
         }
         if (this.maps.length>=1)
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_6')});
+            Ext.Error.raise({msg: "Multiple maps not supported yet"});
         this.maps.push(map);
 
         this.createMenus(this.mapOptions.options.top,this.mapOptions.options.bottom);
