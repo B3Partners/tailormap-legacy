@@ -115,17 +115,44 @@ Ext.define ("viewer.components.Drawing",{
         }
     },
     createVectorLayer : function (){
+         /* var defaultProps = {
+            'fontColor': "#000000",
+            'fontSize': "13px",
+            'labelOutlineColor': "#ffffff",
+            'labelOutlineWidth': 2,
+            'labelAlign': "cm",
+            'fillColor': this.config.color ||"FF0000",
+            'fillOpacity': 0.5,
+            'strokeColor': this.config.color ||"FF0000",
+            'strokeOpacity': 0.5
+        };*/
+        this.config.color = this.config.color ?  this.config.color : 'FF0000';
+        var defaultProps = {
+            'fontColor': "#000000",
+            'fontSize': "13px",
+            'labelOutlineColor': "#ffffff",
+            'labelOutlineWidth': 2,
+            'labelAlign': "cm",
+            'fillColor': '#' + this.config.color,
+            'fillOpacity': 0.5,
+            'strokeColor': '#' + this.config.color,
+            'strokeOpacity': 0.5
+        };
+        this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
+        
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
             showmeasures:false,
             viewerController: this.config.viewerController,
-            style: {
+            defaultFeatureStyle: this.defaultStyle,
+            addStyleToFeature: true
+            /*style: {
                 'fillcolor': this.config.color || 'FF0000',
                 'fillopacity': 50,
                 'strokecolor': this.config.color ||"FF0000",
                 'strokeopacity': 50
-            }
+            }*/
         });
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
@@ -267,7 +294,54 @@ Ext.define ("viewer.components.Drawing",{
                             margin: '5 5 0 0'
                         },
                         items: drawingItems
-                    }
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: "geavanceerd",
+                        collapsed:false,
+                        collapsible:true,
+                        border: 0,
+                        margin: 0,
+                        padding: 0,
+                        style: {
+                            border: 0
+                        },
+                        layout:{
+                            type: 'vbox'
+                        },
+                        defaults: {
+                                margin: '5 5 0 0'
+                            },
+                            items: [{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: 'Lijntype',
+                                    queryMode: 'local',
+                                    store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
+                                    name: 'dashStyle',
+                                    itemId: 'dashStyle',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: 'Lijndikte',
+                                    queryMode: 'local',
+                                    store: [['2', 'Dun'], ['3', 'Normaal'], ['8', 'Dik']],
+                                    name: 'lineWidth',
+                                    itemId: 'lineWidth',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                }]
+                        }
                 ]
             }]
         });
@@ -478,17 +552,16 @@ Ext.define ("viewer.components.Drawing",{
      **/
     activeFeatureChanged : function (vectorLayer,feature){
         this.toggleSelectForm(true);
-        if(this.features[feature.config.id] == undefined){
+        this.activeFeature = this.features[feature.config.id];
+        if(this.features[feature.config.id] === undefined){
             feature.color = this.config.color;
             this.features[feature.config.id] = feature;
         }else{
-            var color = this.features[feature.config.id].color;
-         //   color = color.substring(2);
-            this.colorPicker.setColor(color);
-            this.config.color = color;
+            if(this.activeFeature.getId() === feature.getId()){
+                this.changeFormToCurrentFeature(feature);
+            }
         }
-        this.activeFeature = this.features[feature.config.id];
-        this.labelField.setValue(this.activeFeature.label);
+        //this.labelField.setValue(this.activeFeature.label);
     },
     //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
@@ -499,9 +572,43 @@ Ext.define ("viewer.components.Drawing",{
         });
         this.showMobilePopup();
     },
+    featureStyleChanged: function(){
+        var ds = this.getContentContainer().query('#dashStyle')[0];
+        var lw = this.getContentContainer().query('#lineWidth')[0];
+        
+        var type = ds.getValue();
+        var width = lw.getValue();        
+        var color = this.config.color;
+        
+        var layer = this.vectorLayer;
+        
+        var featureStyle = this.defaultStyle;// layer.mapStyleConfigToFeatureStyle();
+        if(!featureStyle) {
+            featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', {});
+        }
+        
+        featureStyle.set('strokeColor', '#' + color);
+        featureStyle.set('fillColor', '#' + color);
+        featureStyle.set('strokeDashstyle', type);
+        featureStyle.set('strokeWidth',width);
+        layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
+    },
+    changeFormToCurrentFeature: function(feature){
+        var fs = this.vectorLayer.frameworkStyleToFeatureStyle(feature);
+        var ds = this.getContentContainer().query('#dashStyle')[0];
+        var lw = this.getContentContainer().query('#lineWidth')[0];
+        var color = feature.style.fillColor;// this.features[feature.config.id].color;
+        color = color.substring(1);
+        this.colorPicker.setColor(color);
+        this.config.color = color;
+        
+        ds.setValue(fs.getStrokeDashstyle());
+        lw.setValue("" +fs.getStrokeWidth());
+    },
     colorChanged : function (hexColor){
         this.config.color = hexColor;
-        this.vectorLayer.style.fillcolor = this.config.color;
+        this.featureStyleChanged();
+        /*this.vectorLayer.style.fillcolor = this.config.color;
         this.vectorLayer.style.strokecolor = this.config.color;
         this.vectorLayer.adjustStyle();
         if(this.activeFeature !== null){
@@ -514,7 +621,7 @@ Ext.define ("viewer.components.Drawing",{
             this.vectorLayer.removeFeature(this.activeFeature);
             delete this.features[this.activeFeature.getId()];
             this.vectorLayer.addFeature(this.activeFeature);
-        }
+        }*/
     },
     labelChanged : function (field,newValue){
         if(this.activeFeature !== null){
