@@ -135,6 +135,7 @@ Ext.define ("viewer.components.Drawing",{
             'labelAlign': "cm",
             'fillColor': '#' + this.config.color,
             'fillOpacity': 0.5,
+            'strokeDashstyle' : 'solid',
             'strokeColor': '#' + this.config.color,
             'strokeOpacity': 0.5
         };
@@ -577,7 +578,9 @@ Ext.define ("viewer.components.Drawing",{
                 this.changeFormToCurrentFeature(feature);
             }
         }
-        //this.labelField.setValue(this.activeFeature.label);
+        if(this.activeFeature){
+            this.labelField.setValue(this.activeFeature.label);
+        }
     },
     //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
