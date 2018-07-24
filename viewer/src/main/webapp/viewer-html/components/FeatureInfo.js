@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.FeatureInfo",{
     extend: "viewer.components.Maptip",   
     progressElement: null,
+    requestHistory: [],
     /**
      * Overwrite constructor to set some other settings then maptip.
      */
@@ -66,7 +67,9 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT, this.onChangeExtent,this);
-        return this;        
+        this.getViewerController().addListener(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, this.featureEdited, this);
+        this.getViewerController().addListener(viewer.viewercontroller.controller.Event.ON_EDIT_REMOVE_SUCCESS, this.featureEdited, this);
+        return this;
     },    
     /**
      * Event handler for when a layer is added to the map
@@ -146,12 +149,31 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.balloon.hide();
         this.setMaptipEnabled(false);
     },
+    executeServerRequest: function(options, radius, inScaleLayers) {
+        this.requestHistory.push({ options: Object.assign({}, options), radius: radius, inScaleLayers: inScaleLayers });
+        this.callParent(arguments);
+    },
+    featureEdited: function(layer) {
+        if(this.requestHistory.length === 0) {
+            return;
+        }
+        var lastRequest = this.requestHistory[this.requestHistory.length - 1];
+        var editLayerInLastRequest = Ext.Array.findBy(lastRequest.inScaleLayers, function(inScaleLayer) { return inScaleLayer.id === layer.id; }, this) !== null;
+        if(editLayerInLastRequest) {
+            this.setRefreshing(true);
+            this.executeServerRequest(lastRequest.options, lastRequest.radius, lastRequest.inScaleLayers);
+        }
+    },
+    setRefreshing: function(isRefreshing) {
+        // Set refresing state, maybe show spinner in info area?
+    },
     /**
      * 
      */
     onDataReturned: function(options){
         var found=false;
         var data = options.data;
+        this.setRefreshing(false);
         for (var layerIndex in data) {
             if(!data.hasOwnProperty(layerIndex)){
                 continue;
