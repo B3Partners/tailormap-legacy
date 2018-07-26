@@ -478,8 +478,8 @@ Ext.define ("viewer.components.Drawing",{
      **/
     activeFeatureChanged : function (vectorLayer,feature){
         this.toggleSelectForm(true);
-        if(this.features[feature.config.id] == undefined){
-            feature.color = this.config.color;
+        if(!this.features.hasOwnProperty(feature.config.id)) {
+            feature.color = feature.color || (feature.style || {}).color || this.config.color;
             this.features[feature.config.id] = feature;
         }else{
             var color = this.features[feature.config.id].color;
