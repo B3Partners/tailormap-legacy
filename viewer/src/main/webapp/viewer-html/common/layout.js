@@ -200,8 +200,9 @@ Ext.define('viewer.LayoutManager', {
                         /*alignment=*/regionitems[i].regionConfig.layout.floatingPosition
                     );
                     if(regionitems[i].regionConfig.layout.floatingPosition && regionitems[i].regionConfig.layout.floatingPosition.substr(1) !== 'r') {
-                        // Add some CSS to move tools to the right place // TODO: Fix this, probably not the right place
-                        var css = '.olControlPanel { left: 68px; } .olControlPanWestItemInactive { left: 68px !important; }';
+                        // Add some CSS to move tools to the right place
+                        var left = floatLayout.width + 10;
+                        var css = '.olControlPanel { left: ' + left + 'px; right: 0; width: auto; } .olControlPanWestItemInactive { left: ' + left + 'px !important; }';
                         Ext.util.CSS.createStyleSheet(css, "floatingmenu");
                     }
                 }
