@@ -157,7 +157,7 @@ public class DatabaseSynchronizer implements Servlet {
         // 5.1.5 / 5.2.0-rc1 / 5.3.0
         updates.put("30", new UpdateElement(Collections.singletonList("emptySql.sql"), String.class));
         // 5.3.1 / 5.2.0
-        updates.put("31", new UpdateElement(Collections.singletonList("fileupload.sql"), String.class));
+        updates.put("31", new UpdateElement(Collections.singletonList("fileupload.sql"), String.class, true));
         // NB when adding an update also update the metadata version in the testdata.sql file around line 343
     }
 
@@ -367,7 +367,7 @@ public class DatabaseSynchronizer implements Servlet {
                                 throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
                             }
                             log.info("Running database upgrade script: " + scriptName);
-                            runner.runScript(new InputStreamReader(is));
+                            runner.runScript(new InputStreamReader(is), element.canFail());
                             if (!this.errored){
                                 this.successVersion = entry.getKey();
                             }
