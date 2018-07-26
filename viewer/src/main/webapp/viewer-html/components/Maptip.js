@@ -609,7 +609,7 @@ Ext.define ("viewer.components.Maptip",{
             if(nl2br) {
                 value = Ext.util.Format.nl2br(value);
             }
-            if(this.config.hasOwnProperty('detailHideNullValues') && this.config.detailHideNullValues && value.toLowerCase() === 'null') {
+            if(this.config.hasOwnProperty('detailHideNullValues') && this.config.detailHideNullValues && typeof value === "string" && value.toLowerCase() === 'null') {
                 value = "";
             }
             newText=newText.replace(regex,value);
