@@ -374,6 +374,7 @@ Ext.define ("viewer.components.AttributeList",{
         }
         if(this.config.isPopup && !this.popup.isVisible()) {
             this.loadLayerOnPopupShow = appLayer;
+            return true;
         }
         if(this.config.addZoomTo) {
             Ext.ComponentQuery.query('#zoomToAll')[0].setDisabled(!this.hasGeometry(appLayer));
