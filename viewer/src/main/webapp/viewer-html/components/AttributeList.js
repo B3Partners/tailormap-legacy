@@ -53,7 +53,8 @@ Ext.define ("viewer.components.AttributeList",{
     topContainer: null,
     schema: null,
     featureExtentService: null,
-    
+    firstLayerLoaded: false,
+    loadLayerOnPopupShow: "",
     constructor: function (conf){
         conf.details.useExtLayout = true;
         this.initConfig(conf);
@@ -65,7 +66,11 @@ Ext.define ("viewer.components.AttributeList",{
             handler: function() {
                 var deferred = me.createDeferred();
                 me.showWindow();
-                me.layerSelector.initLayers();
+                if(me.loadLayerOnPopupShow) {
+                    me.loadAttributes(me.loadLayerOnPopupShow);
+                } else {
+                    me.loadFirstLayer();
+                }
                 return deferred.promise;
             },
             text: me.config.title,
@@ -213,14 +218,25 @@ Ext.define ("viewer.components.AttributeList",{
     },
     layerSelectorInit: function(evt) {
         if(!evt.hasBeenInitialized) {
-            // First clear selection so we are sure to get an 'changed' event
-            this.layerSelector.clearSelection();
-            // Select first layer
-            this.layerSelector.selectFirstLayer();
+            this.loadFirstLayer();
         }
         if(this.config.showAttributelistLinkInFeatureInfo) {
             this.createFeatureInfoLink(evt.layers);
         }
+    },
+    loadFirstLayer: function() {
+        if(this.firstLayerLoaded || this.config.isPopup && !this.popup.isVisible()) {
+            this.resolveDeferred();
+            return true;
+        }
+        this.firstLayerLoaded = true;
+        if(this.layerSelector.getVisibleLayerCount() === 0) {
+            return;
+        }
+        // First clear selection so we are sure to get an 'changed' event
+        this.layerSelector.clearSelection();
+        // Select first layer
+        this.layerSelector.selectFirstLayer();
     },
     createFeatureInfoLink: function(attributelistLayers) {
         if(this.attributeListLinkInFeatureInfoCreated) {
@@ -317,6 +333,7 @@ Ext.define ("viewer.components.AttributeList",{
         if (this.grids.main) {
             this.grids.main.getView().setLoading("Bezig met laden...");
         }
+        me.loadLayerOnPopupShow = "";
         this.requestThresholdCounter = setTimeout(function(){
             me.requestThresholdCounter = null;
             me.retrieveAttributes(appLayer);
@@ -352,7 +369,11 @@ Ext.define ("viewer.components.AttributeList",{
     },
     // Called when the layerSelector was changed.
     layerChanged : function (appLayer){
-        if(!appLayer || (this.config.isPopup && !this.popup.isVisible())) {
+        if(!appLayer) {
+            return true;
+        }
+        if(this.config.isPopup && !this.popup.isVisible()) {
+            this.loadLayerOnPopupShow = appLayer;
             return true;
         }
         if(this.config.addZoomTo) {
