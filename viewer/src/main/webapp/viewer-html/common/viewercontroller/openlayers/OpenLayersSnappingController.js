@@ -114,23 +114,29 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         if (appLayer.attributes === undefined) {
             // find geom attribute, then load data
             featureService.loadAttributes(appLayer, function (result) {
-                me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex], featureService, appLayer);
+                me.loadAttributes(featureService, appLayer);
             });
         } else {
-            me.loadAttributes(appLayer.attributes[appLayer.geometryAttributeIndex], featureService, appLayer);
+            me.loadAttributes(featureService, appLayer);
         }
 
     },
     /**
      * fetch/load geometries.
-     * @param {type} geomAttribute
      * @param {type} featureService
      * @param {Object} appLayer
      * @returns {void}
      */
-    loadAttributes: function (geomAttribute, featureService, appLayer) {
+    loadAttributes: function (featureService, appLayer) {
         var me = this;
         var extent = me.config.viewerController.mapComponent.getMap().getExtent();
+        var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
+        // sometimes (WFS?) geometryAttributeIndex is not there (null 0r undefined)
+        if (!geomAttribute) {
+            geomAttribute = Ext.Array.findBy(appLayer.attributes, function (item, index) {
+                return item.name === appLayer.geometryAttribute;
+            });
+        }
         featureService.loadFeatures(
                 appLayer,
                 me.parseFeatures,
