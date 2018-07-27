@@ -171,6 +171,7 @@ Ext.define("viewer.components.Legend", {
     },
     
     onLayersInitialized: function() {
+        this.resetLegend();
         this.initLegend();
     },
     
