@@ -153,7 +153,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.0.4</version>
+                <version>5.0.5</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
