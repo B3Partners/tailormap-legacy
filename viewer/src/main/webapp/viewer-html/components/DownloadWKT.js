@@ -33,9 +33,7 @@ Ext.define("viewer.components.DownloadWKT", {
         var me = this;
         this.renderButton({
             handler: function () {
-                var deferred = me.createDeferred();
                 me.showWindow();
-                return deferred.promise;
             },
             text: me.config.title,
             icon: me.config.iconUrl,
