@@ -299,7 +299,7 @@ Ext.define ("viewer.components.Drawing",{
                     {
                         xtype: 'fieldset',
                         title: "Geavanceerd",
-                        collapsed:false,
+                        collapsed:true,
                         collapsible:true,
                         border: 0,
                         margin: 0,
@@ -444,6 +444,17 @@ Ext.define ("viewer.components.Drawing",{
                         margin: '5 0 0 0',
                         items: [
                             this.labelField,
+                             {
+                                xtype: 'button',
+                                icon: this.iconPath+"calculator_edit.png",
+                                tooltip: "Verwijder geselecteerd object",
+                                listeners: {
+                                    click:{
+                                        scope: me,
+                                        fn: me.measureToLabel
+                                    }
+                                }
+                            },
                             {
                                 xtype: 'button',
                                 icon: this.iconPath+"delete.png",
@@ -790,6 +801,16 @@ Ext.define ("viewer.components.Drawing",{
             },
             icon: Ext.Msg.WARNING
         });
+    },
+    measureToLabel: function(){
+      var feature = this.activeFeature;
+      if(feature){
+          var size = this.vectorLayer.getFeatureSize(feature.getId());
+          if(size){
+              var postfix = feature.getWktgeom().indexOf("LINESTRING") !== -1 ? " m" : " m2";
+              this.labelField.setValue(Math.round(size * 100) / 100 + postfix);
+          }
+      }
     },
     deleteObject: function() {
         Ext.Msg.show({
