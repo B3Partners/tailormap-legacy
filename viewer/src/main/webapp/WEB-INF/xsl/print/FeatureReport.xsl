@@ -23,9 +23,9 @@
     <xsl:variable name="map-width-px" select="'368'"/>
     <xsl:variable name="map-height-px" select="'220'"/>
 
-		<!-- laat deze waarde leeg indien geen vaste schaal -->
-		<xsl:variable name="global-scale" select="''"/>
-		<!-- omrekening van pixels naar mm -->
+        <!-- laat deze waarde leeg indien geen vaste schaal -->
+        <xsl:variable name="global-scale" select="''"/>
+        <!-- omrekening van pixels naar mm -->
     <xsl:variable name="ppm" select="'2.8'"/>
 
     <!-- See legend.xsl (does not currently affect size of other elements!) -->
@@ -41,11 +41,11 @@
     <!-- master set -->
     <xsl:template name="layout-master-set">
         <fo:layout-master-set>
-				<fo:simple-page-master master-name="a4-staand" page-height="297mm" page-width="210mm" margin-top="10mm" margin-bottom="10mm" margin-left="10mm" margin-right="10mm">
-					<fo:region-body region-name="body" margin-bottom="10mm" margin-top="25mm"/>
-					<fo:region-before region-name="before" extent="0mm"/>
-					<fo:region-after region-name="after" extent="0mm"/>
-				</fo:simple-page-master>
+                <fo:simple-page-master master-name="a4-staand" page-height="297mm" page-width="210mm" margin-top="10mm" margin-bottom="10mm" margin-left="10mm" margin-right="10mm">
+                    <fo:region-body region-name="body" margin-bottom="10mm" margin-top="25mm"/>
+                    <fo:region-before region-name="before" extent="0mm"/>
+                    <fo:region-after region-name="after" extent="0mm"/>
+                </fo:simple-page-master>
         </fo:layout-master-set>
     </xsl:template>
 
@@ -55,21 +55,21 @@
 
             <fo:page-sequence master-reference="a4-staand">
                   <fo:static-content flow-name="before">
- 					<fo:list-block provisional-label-separation="5mm" provisional-distance-between-starts="132mm">
-						<fo:list-item wrap-option="no-wrap">
-							<fo:list-item-label end-indent="label-end()">
-								<fo:block xsl:use-attribute-sets="title-font">
-									<xsl:value-of select="title"/>
-								</fo:block>
-								<fo:block xsl:use-attribute-sets="default-font">
-									<xsl:value-of select="subtitle"/>
-								</fo:block>
-									</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()">
-									<xsl:call-template name="logo-block"/>
-							</fo:list-item-body>
-						</fo:list-item>
-					</fo:list-block> 
+                    <fo:list-block provisional-label-separation="5mm" provisional-distance-between-starts="132mm">
+                        <fo:list-item wrap-option="no-wrap">
+                            <fo:list-item-label end-indent="label-end()">
+                                <fo:block xsl:use-attribute-sets="title-font">
+                                    <xsl:value-of select="title"/>
+                                </fo:block>
+                                <fo:block xsl:use-attribute-sets="default-font">
+                                    <xsl:value-of select="subtitle"/>
+                                </fo:block>
+                                    </fo:list-item-label>
+                            <fo:list-item-body start-indent="body-start()">
+                                    <xsl:call-template name="logo-block"/>
+                            </fo:list-item-body>
+                        </fo:list-item>
+                    </fo:list-block> 
                 </fo:static-content>
 
                  <fo:static-content flow-name="after">
@@ -79,42 +79,44 @@
                </fo:static-content>
                
                <fo:flow flow-name="body">               
-					<fo:list-block provisional-label-separation="5mm" provisional-distance-between-starts="132mm">
-						<fo:list-item wrap-option="no-wrap">
-							<fo:list-item-label end-indent="label-end()">
-									<xsl:call-template name="map-block"/>
-			
-									<!-- attribute tables  -->
-									<xsl:for-each select="extra/info[@classname='feature']/root">
-										<fo:block xsl:use-attribute-sets="header-font">Geselecteerd Object</fo:block>
-										<xsl:call-template name="table-2column"/>
-									</xsl:for-each>
+                    <fo:list-block provisional-label-separation="5mm" provisional-distance-between-starts="132mm">
+                        <fo:list-item wrap-option="no-wrap">
+                            <fo:list-item-label end-indent="label-end()">
+                                    <xsl:call-template name="map-block"/>
+            
+                                    <!-- attribute tables  -->
+                                    <xsl:for-each select="extra/info[@classname='feature']/root">
+                                        <fo:block xsl:use-attribute-sets="header-font">Geselecteerd Object</fo:block>
+                                        <xsl:call-template name="table-2column"/>
+                                    </xsl:for-each>
 
-							 		<!-- uploads -->
-									<xsl:for-each select="extra/info[@classname='feature']/root">
-										<fo:block xsl:use-attribute-sets="header-font">Uploads</fo:block>
-										<xsl:call-template name="table-uploads"/>
-									</xsl:for-each>
+                                    <!-- uploads, if any -->
+                                    <xsl:if test="count(//extra/info[@classname='feature']/root/attr/__UPLOADS__) &gt; 0">
+                                        <xsl:for-each select="extra/info[@classname='feature']/root">
+                                            <fo:block xsl:use-attribute-sets="header-font">Uploads</fo:block>
+                                            <xsl:call-template name="table-uploads"/>
+                                        </xsl:for-each>
+                                    </xsl:if>
 
-							</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()">
-									<xsl:call-template name="info-block"/>
-							</fo:list-item-body>
-						</fo:list-item>
-					</fo:list-block> 
+                            </fo:list-item-label>
+                            <fo:list-item-body start-indent="body-start()">
+                                    <xsl:call-template name="info-block"/>
+                            </fo:list-item-body>
+                        </fo:list-item>
+                    </fo:list-block> 
   
-					<xsl:for-each select="extra/info[@classname='related']/root">
-						<fo:block xsl:use-attribute-sets="header-font">
-							<xsl:value-of select="ancestor::info[1]/@componentname" />
-						</fo:block>
-						<xsl:call-template name="table-related" />
-					</xsl:for-each>
+                    <xsl:for-each select="extra/info[@classname='related']/root">
+                        <fo:block xsl:use-attribute-sets="header-font">
+                            <xsl:value-of select="ancestor::info[1]/@componentname" />
+                        </fo:block>
+                        <xsl:call-template name="table-related" />
+                    </xsl:for-each>
 
-					<xsl:if test="count(//extra/info[@classname='related']) = 0">
-						<fo:block xsl:use-attribute-sets="default-font">
-							<xsl:text>Geen gerelateerde data gevonden</xsl:text>
-						</fo:block>
-					</xsl:if>
+                    <xsl:if test="count(//extra/info[@classname='related']) = 0">
+                        <fo:block xsl:use-attribute-sets="default-font">
+                            <xsl:text>Geen gerelateerde data gevonden</xsl:text>
+                        </fo:block>
+                    </xsl:if>
                 </fo:flow>
             </fo:page-sequence>
         </fo:root>
@@ -122,51 +124,51 @@
 
 
     <xsl:template name="info-block">
-		<fo:block xsl:use-attribute-sets="default-font">
-			<!-- create scalebar -->
-			<fo:block>
-				<xsl:text>schaal</xsl:text>
-			</fo:block>
+        <fo:block xsl:use-attribute-sets="default-font">
+            <!-- create scalebar -->
+            <fo:block>
+                <xsl:text>schaal</xsl:text>
+            </fo:block>
 
-			<fo:block>
-				<xsl:variable name="local-scale">
-					<xsl:call-template name="calc-local-scale">
-						<xsl:with-param name="bbox" select="bbox" />
-						<xsl:with-param name="scale" select="scale" />
-						<xsl:with-param name="quality" select="quality" />
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:call-template name="calc-scale">
-					<xsl:with-param name="m-width" select="($map-width-px div $ppm) * ($local-scale div 1000)"/>
-					<xsl:with-param name="px-width" select="$map-width-px"/>
-				</xsl:call-template>
-			</fo:block>
-		</fo:block>
-		 
-		<fo:block xsl:use-attribute-sets="header-font">
-				<xsl:text>legenda</xsl:text>
-		</fo:block>
-		<xsl:call-template name="legend" />
-	   
-		<!-- overzichtskaart
-		<xsl:call-template name="overview-block">
-				<xsl:with-param name="width" select="'112'" />
-				<xsl:with-param name="height" select="'80'" />
-				<xsl:with-param name="width" select="'112px'" />
-				<xsl:with-param name="height" select="'80px'" />
-		</xsl:call-template>
-		-->
+            <fo:block>
+                <xsl:variable name="local-scale">
+                    <xsl:call-template name="calc-local-scale">
+                        <xsl:with-param name="bbox" select="bbox" />
+                        <xsl:with-param name="scale" select="scale" />
+                        <xsl:with-param name="quality" select="quality" />
+                    </xsl:call-template>
+                </xsl:variable>
+                <xsl:call-template name="calc-scale">
+                    <xsl:with-param name="m-width" select="($map-width-px div $ppm) * ($local-scale div 1000)"/>
+                    <xsl:with-param name="px-width" select="$map-width-px"/>
+                </xsl:call-template>
+            </fo:block>
+        </fo:block>
+         
+        <fo:block xsl:use-attribute-sets="header-font">
+                <xsl:text>legenda</xsl:text>
+        </fo:block>
+        <xsl:call-template name="legend" />
+       
+        <!-- overzichtskaart
+        <xsl:call-template name="overview-block">
+                <xsl:with-param name="width" select="'112'" />
+                <xsl:with-param name="height" select="'80'" />
+                <xsl:with-param name="width" select="'112px'" />
+                <xsl:with-param name="height" select="'80px'" />
+        </xsl:call-template>
+        -->
     </xsl:template>
 
     <!-- kaartje -->
     <xsl:template name="map-block">
-				<xsl:variable name="local-scale">
-					<xsl:call-template name="calc-local-scale">
-						<xsl:with-param name="bbox" select="bbox" />
-						<xsl:with-param name="scale" select="scale" />
-						<xsl:with-param name="quality" select="quality" />
-					</xsl:call-template>
-	    	</xsl:variable>
+                <xsl:variable name="local-scale">
+                    <xsl:call-template name="calc-local-scale">
+                        <xsl:with-param name="bbox" select="bbox" />
+                        <xsl:with-param name="scale" select="scale" />
+                        <xsl:with-param name="quality" select="quality" />
+                    </xsl:call-template>
+            </xsl:variable>
         <xsl:variable name="bbox-corrected">
             <xsl:call-template name="correct-bbox">
                 <xsl:with-param name="bbox" select="bbox" />
@@ -289,7 +291,7 @@
                 <fo:block xsl:use-attribute-sets="default-font">
                     <xsl:variable name="numOfCols" select="colCount" as="xsl:integer"/>
                     <xsl:variable name="numOfrows" select="rowCount" as="xsl:integer"/>
-					
+                    
                     <fo:table table-layout="fixed" inline-progression-dimension="auto">
                         <fo:table-header xsl:use-attribute-sets="table-header-font">
                             <xsl:comment>header rij</xsl:comment>
