@@ -71,8 +71,8 @@ public class WMSGeoServiceABTest extends TestUtil {
     public static Collection params() {
         return Arrays.asList(new Object[][]{
             // {"url",skipWFS,"serviceProtocol", "attrServiceProtocol",serviceTypecount,groupLayerCount},
-            {"http://ibis.b3p.nl/geoserver/wms?SERVICE=WMS&", true, "wms", null, 3, 1},
-            {"http://ibis.b3p.nl/geoserver/wms?SERVICE=WMS&", false, "wms", "wfs", 3, 1}
+            {"https://flamingo4.b3p.nl:443/geoserver/Test_omgeving/wms?SERVICE=WMS&", true, "wms", null, 5, 0},
+            {"https://flamingo4.b3p.nl:443/geoserver/Test_omgeving/wms?SERVICE=WMS&", false, "wms", "wfs", 5, 0}
         });
     }
     private ActionBeanContext context;

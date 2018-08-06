@@ -82,18 +82,8 @@ public class WFSTypeNamingTest extends TestUtil {
     public static Collection params() {
         return Arrays.asList(new Object[][]{
             // {"url","name","wfs",typecount},
-            {"http://ibis.b3p.nl/geoserver/ibis/wfs?SERVICE=WFS", "geoserver-namespaced-wfsurl", "wfs", 3, 0},
-            {"http://ibis.b3p.nl/geoserver/wfs?SERVICE=WFS", "geoserver-wfsurl", "wfs", 3, 0},
-            // Disable for now, as this now fails because of a geotools bug regarding names/namespaces of featuretypes. Fixed in geotools 16.x
-          // {"http://afnemers.ruimtelijkeplannen.nl/afnemers/services?Version=1.0.0", "ro-online", "wfs", 43, 0},
-        //    {"http://services.geodataoverijssel.nl/geoserver/B07_Adressen/wfs?SERVICE=WFS", "geoserver", "wfs", 0, 0},
-            // {"http://services.geodataoverijssel.nl/geoserver/wfs?SERVICE=WFS", "geoserver", "wfs", 467,0},
-            {"http://ibis.b3p.nl/geoserver/wms?SERVICE=WMS&", "geoserver-wmsurl", "wms", 3, 1},
-            {"http://ibis.b3p.nl/geoserver/ibis/wms?SERVICE=WMS&", "geoserver-namespaced-wmsurl", "wms", 3, 1}
-        // disable for now as the describeFeatureType responses fail to validate
-        // ,{"http://geoservices.rijkswaterstaat.nl/verkeersscheidingsstelsel_noordzee?SERVICE=WFS", "mapserver", "wfs", 10,0}
-        //    http://geoservices.knmi.nl/cgi-bin/SCIA__CONS_V___IMAP____L2__2004.cgi?SERVICE=WFS
-        //    http://geoservices.rijkswaterstaat.nl/verkeersscheidingsstelsel_noordzee?SERVICE=WFS
+            {"https://flamingo4.b3p.nl:443/geoserver/Test_omgeving/wfs?SERVICE=WFS&", "geoserver-namespaced-wfsurl", "wfs", 4, 0},
+            {"https://flamingo4.b3p.nl:443/geoserver/Test_omgeving/wms?SERVICE=WMS&", "geoserver-namespaced-wmsurl", "wms", 5, 0}
         });
     }
 
