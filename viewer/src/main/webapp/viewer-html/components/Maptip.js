@@ -210,8 +210,11 @@ Ext.define ("viewer.components.Maptip",{
         }else{
             options.useCursorForWaiting = true;
         }
+        this.executeServerRequest(options, radius, inScaleLayers);
+    },
+    executeServerRequest: function(options, radius, inScaleLayers) {
         this.currentRequestId = Ext.id();
-
+        var me = this;
         this.requestManager.request(this.currentRequestId, options, radius, inScaleLayers,  function(data) {
             if(me.config.spinnerWhileIdentify && me.requestManager.requestsFinished(me.currentRequestId)){
                 me.viewerController.mapComponent.getMap().removeMarker("edit");
@@ -220,18 +223,18 @@ Ext.define ("viewer.components.Maptip",{
             var curExtent = me.config.viewerController.mapComponent.getMap().getExtent();
             if (curExtent.equals(me.requestExtent)){
                 for( var i = 0 ; i < data.length ;i++){
-                    var data = data[i];
-                    if(data.error) {
-                        me.config.viewerController.logger.error(data.error);
+                    var row = data[i];
+                    if(row.error) {
+                        me.config.viewerController.logger.error(row.error);
                         continue;
                     }
-                    var layer = me.config.viewerController.getLayer(data.appLayer);
-                    layer.fireEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, data.appLayer,data);
+                    var layer = me.config.viewerController.getLayer(row.appLayer);
+                    layer.fireEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, row.appLayer, row);
                 }
             }
 
             me.onMapData(null, options);
-        }, this.onFailure, me, (this.useOrderedAttributes ? { ordered: true } : {}));
+        }, this.onFailure, this, (this.useOrderedAttributes ? { ordered: true } : {}));
     },
     /**
      * Handles when the mapping framework returns with data
@@ -607,7 +610,7 @@ Ext.define ("viewer.components.Maptip",{
             if(nl2br) {
                 value = Ext.util.Format.nl2br(value);
             }
-            if(this.config.hasOwnProperty('detailHideNullValues') && this.config.detailHideNullValues && value.toLowerCase() === 'null') {
+            if(this.config.hasOwnProperty('detailHideNullValues') && this.config.detailHideNullValues && typeof value === "string" && value.toLowerCase() === 'null') {
                 value = "";
             }
             newText=newText.replace(regex,value);
@@ -1150,7 +1153,30 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.setPosition = function (x,y,resetPositionOfBalloon,browserZoomRatio){
         //new maptip position so update the maptipId
         this.maptipId++;
-
+      
+        var updatedZIndex = this.zIndex;
+        try {
+            var messageBoxIndex = 0;
+            Ext.WindowManager.eachTopDown(function(comp){
+                var zIndex = comp.getEl().getZIndex();
+                if(comp.mustBeOnTop){
+                    zIndex = -1;
+                }
+                if(zIndex > updatedZIndex) {
+                    updatedZIndex = zIndex;
+                }
+                if(comp.is("messagebox")) {
+                    messageBoxIndex = zIndex;
+                }
+            });
+        } catch(e) {}
+        if(messageBoxIndex) {
+            // make sure balloon is under messageboxes / shades
+            updatedZIndex = messageBoxIndex - 10;
+        }
+        if(updatedZIndex) {
+            this.zIndex = updatedZIndex + 1;
+        }
         if (!this.balloon){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){

@@ -53,6 +53,9 @@ Ext.define("viewer.components.CoordinateLinkWindow", {
         return this;
     },
     initComp: function () {
+        if(this.toolMapClick !== null) {
+            return;
+        }
         this.toolMapClick = this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",

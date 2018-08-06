@@ -44,7 +44,7 @@ Ext.define ("viewer.components.HTML",{
             autoScroll: true
         });
         
-        this.container.update(this.config.html, this.config.loadScripts);
+        this.container.getEl().setHtml(this.config.html, this.config.loadScripts, function(){}, null);
     },
     getExtComponents: function() {
         return [ this.container.getId() ];

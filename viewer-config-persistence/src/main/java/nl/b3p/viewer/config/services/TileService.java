@@ -193,9 +193,11 @@ public class TileService extends GeoService {
                         }
                         client.close();
                     }
+                } else {
+                    throw new IOException("HTTP status: " + statusCode + " reason: " + response.getStatusLine().getReasonPhrase());
                 }
             } catch(IOException e){
-                log.error("Failed to retrieve getcapabilities: " + e.getLocalizedMessage());
+                log.error("Check request; Failed to retrieve getcapabilities: " + e.getLocalizedMessage());
                 return null;
             }
 

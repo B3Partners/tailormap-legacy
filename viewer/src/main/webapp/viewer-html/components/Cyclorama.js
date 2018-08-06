@@ -60,6 +60,9 @@ Ext.define ("viewer.components.Cyclorama",{
         if(!this.config.layers) {
             return;
         }
+        if(this.toolMapClick !== null) {
+            return;
+        }
         this.toolMapClick =  this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",

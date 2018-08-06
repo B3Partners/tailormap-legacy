@@ -522,7 +522,7 @@ Ext.define("viewer.components.Edit", {
         } else {
             this.geomlabel.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
             this.setButtonDisabled("editButton", true);
-            this.setButtonDisabled("newButton", true);f
+            this.setButtonDisabled("newButton", true);
             this.setButtonDisabled("deleteButton", true);
             this.setButtonDisabled("copyButton", true);
         }
@@ -999,6 +999,7 @@ Ext.define("viewer.components.Edit", {
             feature,
             function (fid) {
                 me.saveSucces(fid);
+                me.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, me.editingLayer, feature);
             }, function (error) {
                 me.failed(error);
             });
@@ -1027,6 +1028,7 @@ Ext.define("viewer.components.Edit", {
                 feature,
                 function (fid) {
                     me.deleteSucces();
+                    me.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_EDIT_REMOVE_SUCCESS, me.editingLayer, feature);
                 }, function (error) {
             me.failed(error);
         });
