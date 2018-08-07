@@ -42,13 +42,13 @@ import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.ecql.ECQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -515,7 +515,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         q.setHandle("FeatureReportActionBean_related_attributes");
 
                         fs = fType.openGeoToolsFeatureSource(TIMEOUT);
-                        JSONArray features = ftjson.getJSONFeatures(al, fType, fs, q);
+                        JSONArray features = ftjson.getJSONFeatures(al, fType, fs, q,em,application, context.getRequest());
 
                         JSONArray jsonFeats = new JSONArray();
                         int featureCount;
@@ -551,7 +551,7 @@ public class FeatureInfoActionBean implements ActionBean {
             throws IOException, JSONException, Exception {
 
         FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, true /*aliases*/, false /*returnNullval*/, attributesToInclude, ordered);
-        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null);
+        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null,Stripersist.getEntityManager(),application, context.getRequest());
         return features;
     }
 }
