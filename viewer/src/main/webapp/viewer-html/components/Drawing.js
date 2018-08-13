@@ -256,12 +256,12 @@ Ext.define ("viewer.components.Drawing",{
         drawingItems.push(this.colorPicker);
         drawingItems.push({
             xtype: 'button',
-            icon: this.iconPath+"delete.png",
-            tooltip: "Verwijder alle objecten",
+            icon: this.iconPath + "delete.png",
+            tooltip: "Verwijder geselecteerd object",
             listeners: {
-                click:{
+                click: {
                     scope: me,
-                    fn: me.deleteAll
+                    fn: me.deleteObject
                 }
             }
         });
@@ -454,17 +454,6 @@ Ext.define ("viewer.components.Drawing",{
                                         fn: me.measureToLabel
                                     }
                                 }
-                            },
-                            {
-                                xtype: 'button',
-                                icon: this.iconPath+"delete.png",
-                                tooltip: "Verwijder geselecteerd object",
-                                listeners: {
-                                    click:{
-                                        scope: me,
-                                        fn: me.deleteObject
-                                    }
-                                }
                             }
                         ]
                     }
@@ -609,6 +598,13 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     margin: 5,
                     items: [
+                         {
+                            xtype: 'button',
+                            text: 'Verwijder alles',
+                            handler: function() {
+                                me.deleteAll();
+                            }
+                        },
                         {
                             xtype: 'button',
                             text: 'Sluiten',
