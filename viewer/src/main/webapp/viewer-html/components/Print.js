@@ -212,6 +212,13 @@ Ext.define ("viewer.components.Print",{
             this.createLegendSelector();
             Ext.ComponentQuery.query('#scale')[0].setValue(this.config.viewerController.mapComponent.getMap().getActualScale());
         }
+        // enable attributes checkbox if attr list is available
+        var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
+        if (attributeLists && attributeLists.length > 0) {
+            Ext.ComponentQuery.query('#includeAttributes')[0].setDisabled(false);
+        } else {
+            Ext.ComponentQuery.query('#includeAttributes')[0].setDisabled(true);
+        }
     },
     /**
      * Create the print form.
@@ -432,10 +439,12 @@ Ext.define ("viewer.components.Print",{
                             },{
                                 xtype: 'checkbox',
                                 name: 'includeAttributes',
+                                itemId: 'includeAttributes',
                                 inputValue: true,
-                                checked:false,
+                                checked: false,
+                                disabled: true,
                                 boxLabel: 'Attributen toevoegen'
-                            },{
+                            }, {
                                 name: 'scale',
                                 itemId: 'scale',
                                 fieldLabel: 'Schaal',
@@ -1103,4 +1112,3 @@ Ext.define ("viewer.components.Print",{
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }
 });
-

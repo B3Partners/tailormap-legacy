@@ -185,8 +185,9 @@ public class PrintActionBean implements ActionBean {
             if(!jRequest.has("extra")){
                 jRequest.put("extra", new JSONArray());
             }
-
-            processAttributes(jRequest, em, jRequest, app, context.getRequest());
+            if (jRequest.has("attributesObject")) {
+                processAttributes(jRequest, em, jRequest, app, context.getRequest());
+            }
         }
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");

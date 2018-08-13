@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * Edit component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -405,9 +407,9 @@ Ext.define("viewer.components.Edit", {
     initAttributeInputs: function (appLayer) {
         var attributes = appLayer.attributes;
         var type = "geometry";
-        if (appLayer.geometryAttributeIndex != undefined || appLayer.geometryAttributeIndex != null) {
+        if (appLayer.geometryAttributeIndex !== undefined || appLayer.geometryAttributeIndex !== null) {
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
-            if (geomAttribute.editValues != undefined && geomAttribute.editValues != null && geomAttribute.editValues.length >= 1) {
+            if (geomAttribute.editValues !== undefined && geomAttribute.editValues !== null && geomAttribute.editValues.length >= 1) {
                 type = geomAttribute.editValues[0];
             } else {
                 type = geomAttribute.type;
@@ -461,7 +463,7 @@ Ext.define("viewer.components.Edit", {
                 this.setButtonDisabled("editButton", false);
                 this.setButtonDisabled("deleteButton", false);
                 this.setButtonDisabled("copyButton", false);
-                if (this.newGeomType == null) {
+                if (this.newGeomType === null) {
                     tekst = "Geometrie mag alleen bewerkt worden";
                 } else {
                     this.setButtonDisabled("newButton", false);
@@ -482,10 +484,10 @@ Ext.define("viewer.components.Edit", {
                 if (appLayer.featureType && attribute.featureType === appLayer.featureType && attribute.editable) {
                     var values = Ext.clone(attribute.editValues);
                     var input = null;
-                    if (i == appLayer.geometryAttributeIndex) {
+                    if (i === appLayer.geometryAttributeIndex) {
                         continue;
                     }
-                    if (attribute.valueList !== "dynamic" && (values == undefined || values.length == 1)) {
+                    if (attribute.valueList !== "dynamic" && (values === undefined || values.length === 1)) {
                         input = this.createStaticInput(attribute, values);
                     } else if (attribute.valueList === "dynamic" || (values && values.length > 1)) {
                         input = this.createDynamicInput(attribute, values);
@@ -514,6 +516,7 @@ Ext.define("viewer.components.Edit", {
                     var container = this.createFileForm(t,true);
                     nonGrouped.push(container);
                 }
+                this.setButtonDisabled("editButton", false);
             }
             this.inputContainer.add(nonGrouped);
             for(var label in groupedInputs) if(groupedInputs.hasOwnProperty(label)) {
