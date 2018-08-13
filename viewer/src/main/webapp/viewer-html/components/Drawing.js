@@ -362,15 +362,12 @@ Ext.define ("viewer.components.Drawing",{
                                     editable: false,
                                     fieldLabel: 'Labelplaatsing',
                                     queryMode: 'local',
-                                    store: [['rb', 'Linksboven'], // First off: it's called labelAlign, but's counterintuitive: it's the position of the point
-                                        ['cb', 'Middenboven'], //  relative to the label. So 'rb' means the anchorpoint of the label is on the right bottem of the label. Yeah.
-                                        ['lb', 'Rechtsboven'], // Also: This is not very useful for something other than points, as for lines it uses the first
-                                        ['rm', 'Linksmidden'],  // point and polygons it's center.
+                                    store: [// First off: it's called labelAlign, but's counterintuitive: it's the position of the point
+                                         //  relative to the label. So 'rb' means the anchorpoint of the label is on the right bottem of the label. Yeah.
+                                         // Also: This is not very useful for something other than points, as for lines it uses the first
+                                        ['rm', 'Links'],  // point and polygons it's center.
                                         ['cm', 'Midden'], 
-                                        ['lm', 'Rechtsmidden'], 
-                                        ['rt', 'Linksonder'], 
-                                        ['ct', 'Middenonder'], 
-                                        ['lt', 'Rechtsonder']],
+                                        ['lm', 'Rechts']],
                                     name: 'labelAlign',
                                     itemId: 'labelAlign',
                                     listeners: {
