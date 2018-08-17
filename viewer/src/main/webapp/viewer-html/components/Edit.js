@@ -56,6 +56,7 @@ Ext.define("viewer.components.Edit", {
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor',
         showEditLinkInFeatureInfo: false,
+        isPopup: true,
         details: {
             minWidth: 400,
             minHeight: 250
@@ -141,7 +142,9 @@ Ext.define("viewer.components.Edit", {
         }
         this.mobileHide = false;
         this.layerSelector.initLayers();
-        this.popup.popupWin.setTitle(this.config.title);
+        if(this.config.isPopup) {
+            this.popup.popupWin.setTitle(this.config.title);
+        }
         this.config.viewerController.deactivateControls(this.config.cancelOtherControls);
         this.setFormVisible(false);
         this.untoggleButtons();
@@ -149,13 +152,14 @@ Ext.define("viewer.components.Edit", {
         if (buttons.length === 1 && !buttons[0].isDisabled()) {
             buttons[0].fireEvent("click", buttons[0]);
         }
-        this.popup.show();
-        this.popup.popupWin.addListener('hide', function () {
-            this.cancel();
-        }.bind(this));
+        if(this.config.isPopup) {
+            this.popup.show();
+            this.popup.popupWin.addListener('hide', function () {
+                this.cancel();
+            }.bind(this));
+        }
     },
     loadWindow: function () {
-        this.createLayerSelector();
         this.maincontainer = Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
@@ -169,69 +173,75 @@ Ext.define("viewer.components.Edit", {
                 backgroundColor: 'White'
             },
             padding: 10,
-            renderTo: this.getContentDiv(),
-            items: [this.layerSelector.getLayerSelector(),
-                {
-                    itemId: 'buttonPanel',
-                    xtype: "container",
-                    items: this.createActionButtons()
-                },
-                {
-                    itemId: "geomLabel",
-                    margin: '5 0',
-                    text: '',
-                    xtype: "label"
-                },
-                {
-                    itemId: 'inputPanel',
-                    border: 0,
-                    xtype: "form",
-                    autoScroll: true,
-                    flex: 1,
-                    layout: this.config.formLayout,
-                    hidden: true
-                }, {
-                    itemId: 'savePanel',
-                    xtype: "container",
-                    layout: {
-                        type: 'hbox',
-                        pack: 'end'
-                    },
-                    defaults: {
-                        xtype: 'button'
-                    },
-                    items: [
-                        {
-                            itemId: "cancelButton",
-                            tooltip: "Annuleren",
-                            text: "Annuleren",
-                            listeners: {
-                                click: {
-                                    scope: this,
-                                    fn: this.cancel
-                                }
-                            }
-                        },
-                        {
-                            itemId: "saveButton",
-                            tooltip: "Opslaan",
-                            text: "Opslaan",
-                            listeners: {
-                                click: {
-                                    scope: this,
-                                    fn: this.save
-                                }
-                            }
-                        }
-                    ],
-                    hidden: true
-                }
-            ]
+            items: this.getFormItems(),
+            renderTo: this.getContentDiv()
         });
         this.inputContainer = this.maincontainer.down('#inputPanel');
         this.geomlabel = this.maincontainer.down("#geomLabel");
         this.savebutton = this.maincontainer.down("#saveButton");
 
+    },
+    getFormItems: function() {
+        this.createLayerSelector();
+        return [
+            this.layerSelector.getLayerSelector(),
+            {
+                itemId: 'buttonPanel',
+                xtype: "container",
+                items: this.createActionButtons()
+            },
+            {
+                itemId: "geomLabel",
+                margin: '5 0',
+                text: '',
+                xtype: "label"
+            },
+            {
+                itemId: 'inputPanel',
+                border: 0,
+                xtype: "form",
+                autoScroll: true,
+                flex: 1,
+                layout: this.config.formLayout,
+                hidden: true
+            },
+            {
+                itemId: 'savePanel',
+                xtype: "container",
+                layout: {
+                    type: 'hbox',
+                    pack: 'end'
+                },
+                defaults: {
+                    xtype: 'button'
+                },
+                items: [
+                    {
+                        itemId: "cancelButton",
+                        tooltip: "Annuleren",
+                        text: "Annuleren",
+                        listeners: {
+                            click: {
+                                scope: this,
+                                fn: this.cancel
+                            }
+                        }
+                    },
+                    {
+                        itemId: "saveButton",
+                        tooltip: "Opslaan",
+                        text: "Opslaan",
+                        listeners: {
+                            click: {
+                                scope: this,
+                                fn: this.save
+                            }
+                        }
+                    }
+                ],
+                hidden: true
+            }
+        ]
     },
     createActionButtons: function () {
         var buttons = [];
@@ -345,7 +355,9 @@ Ext.define("viewer.components.Edit", {
     },
     handleFeatureInfoLink: function (feature, appLayer, coords) {
         // Show the window
-        this.showWindow();
+        if(this.config.isPopup) {
+            this.showWindow();
+        }
         // Add event handler to get features for coordinates
         this.afterLoadAttributes = function () {
             this.afterLoadAttributes = null;
@@ -375,7 +387,7 @@ Ext.define("viewer.components.Edit", {
             }
             this.mode = null;
             this.config.viewerController.mapComponent.getMap().removeMarker("edit");
-            if (appLayer.details && appLayer.details["editfunction.title"]) {
+            if (appLayer.details && appLayer.details["editfunction.title"] && this.config.isPopup) {
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
             this.inputContainer.setLoading("Laadt attributen...");
@@ -956,13 +968,13 @@ Ext.define("viewer.components.Edit", {
         this.showAndFocusForm();
     },
     hideMobilePopup: function() {
-        if(viewer.components.MobileManager.isMobile()) {
+        if(this.config.isPopup && viewer.components.MobileManager.isMobile()) {
             this.mobileHide = true;
             this.popup.hide();
         }
     },
     showMobilePopup: function() {
-        if(viewer.components.MobileManager.isMobile()) {
+        if(this.config.isPopup && viewer.components.MobileManager.isMobile()) {
             this.mobileHide = false;
             this.popup.show();
         }
@@ -1127,7 +1139,9 @@ Ext.define("viewer.components.Edit", {
             return;
         }
         this.resetForm();
-        this.popup.hide();
+        if(this.config.isPopup) {
+            this.popup.hide();
+        }
     },
     resetForm: function () {
         this.setButtonDisabled("editButton", true);
