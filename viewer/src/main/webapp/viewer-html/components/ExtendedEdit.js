@@ -59,7 +59,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.maincontainer = Ext.create('Ext.panel.Panel', {
             title: title,
             items: [
-                { xtype: 'container', items: this.getFormItems() }
+                { xtype: 'container', items: this.getFormItems(), padding: 10 }
             ],
             autoScroll: true,
             dockedItems: [this.buttons]
