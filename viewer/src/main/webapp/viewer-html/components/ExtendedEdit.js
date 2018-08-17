@@ -64,7 +64,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
             autoScroll: true,
             dockedItems: [this.buttons]
         });
-        this.layerSelector.getLayerSelector().setVisible(false);
+        // this.layerSelector.getLayerSelector().setVisible(false);
         this.getContentContainer().add(this.maincontainer);
         // this.maincontainer, inputContainer, geomlabel, savebutton are used in edit component
         this.inputContainer = this.maincontainer.down('#inputPanel');
@@ -83,11 +83,11 @@ Ext.define ("viewer.components.ExtendedEdit",{
         } else {
             this.layerSelector.setValue(this.currentLayer);
         }
-        if(this.layerSelector.getVisibleLayerCount() > 1) {
-            this.layerSelector.getLayerSelector().setVisible(true);
-        } else {
-            this.layerSelector.getLayerSelector().setVisible(false);
-        }
+        // if(this.layerSelector.getVisibleLayerCount() > 1) {
+        //     this.layerSelector.getLayerSelector().setVisible(true);
+        // } else {
+        //     this.layerSelector.getLayerSelector().setVisible(false);
+        // }
     },
     selectedLayerChanged: function(layer) {
         this.currentLayer = layer;
