@@ -615,7 +615,19 @@
         "group": "Component",
         "sources": ["Edit.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
-        "restrictions": ["left_menu"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
+        "type": "popup",
+        "singleton": true,
+        "showHelp": true
+    },
+    {
+        "className": "viewer.components.ExtendedEdit",
+        "name": "Extended Edit",
+        "shortName": "EEd",
+        "group": "Component",
+        "sources": ["Edit.js", "ExtendedEdit.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
         "type": "popup",
         "singleton": true,
         "showHelp": true
