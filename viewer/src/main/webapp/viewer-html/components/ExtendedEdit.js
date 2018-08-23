@@ -140,6 +140,11 @@ Ext.define ("viewer.components.ExtendedEdit",{
         if(!layer) {
             return;
         }
+        var currentScale = this.config.viewerController.mapComponent.getMap().getScale();
+        var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
+        if (!this.config.viewerController.isWithinScale(layer, currentScale) || !visibleAppLayers.hasOwnProperty(layer.id)) {
+            return;
+        }
         var featureInfo = Ext.create("viewer.FeatureInfo", {
             viewerController: this.config.viewerController
         });
