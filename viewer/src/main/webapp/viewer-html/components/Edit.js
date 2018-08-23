@@ -901,7 +901,7 @@ Ext.define("viewer.components.Edit", {
     createNew: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
-        this.geomlabel.setText("Voeg een nieuw " + this.tekstGeom + " toe op de kaart");
+        this.geomlabel.setHtml("Voeg een nieuw " + this.tekstGeom + " toe op de kaart");
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if (this.newGeomType != null && this.geometryEditable) {
@@ -914,7 +914,7 @@ Ext.define("viewer.components.Edit", {
     edit: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
-        this.geomlabel.setText("Selecteer een te bewerken " + this.tekstGeom + " in de kaart");
+        this.geomlabel.setHtml("Selecteer een te bewerken " + this.tekstGeom + " in de kaart");
         this.mode = "edit";
         this.activateMapClick();
         this.savebutton.setText("Opslaan");
@@ -923,7 +923,7 @@ Ext.define("viewer.components.Edit", {
     copy: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
-        this.geomlabel.setText("Selecteer een te kopieren " + this.tekstGeom + " in de kaart");
+        this.geomlabel.setHtml("Selecteer een te kopieren " + this.tekstGeom + " in de kaart");
         this.mode = "copy";
         this.activateMapClick();
         this.savebutton.setText("Opslaan");
@@ -935,7 +935,7 @@ Ext.define("viewer.components.Edit", {
         }
         this.hideMobilePopup();
         this.clearFeatureAndForm();
-        this.geomlabel.setText("Selecteer een te verwijderen " + this.tekstGeom + " in de kaart");
+        this.geomlabel.setHtml("Selecteer een te verwijderen " + this.tekstGeom + " in de kaart");
         this.mode = "delete";
         this.activateMapClick();
         this.savebutton.setText("Verwijderen");
@@ -956,12 +956,18 @@ Ext.define("viewer.components.Edit", {
         }
     },
     activateMapClick: function () {
+        if(!this.toolMapClick) {
+            return;
+        }
         if (Array.isArray(this.deActivatedTools) && this.deActivatedTools.length === 0) {
             this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         }
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function () {
+        if(!this.toolMapClick) {
+            return;
+        }
         for (var i = 0; i < this.deActivatedTools.length; i++) {
             this.deActivatedTools[i].activate();
         }
