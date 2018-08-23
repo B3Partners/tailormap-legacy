@@ -507,7 +507,8 @@ Ext.define("viewer.components.Edit", {
                     this.setButtonDisabled("editButton", false);
                 }
             }
-            if(appLayer.details["editfeature.uploadDocument"] && appLayer.details["editfeature.uploadDocument.types"]){
+            var useUpload = viewer.components.Component.parseBooleanValue(appLayer.details["editfeature.uploadDocument"]);
+            if(useUpload && appLayer.details["editfeature.uploadDocument.types"]){
                 var types = Ext.JSON.decode(appLayer.details["editfeature.uploadDocument.types"]);
                 for(var i = 0 ; i < types.length ; i++){
                     var t = types[i];
@@ -772,7 +773,7 @@ Ext.define("viewer.components.Edit", {
                 this.currentFID = feature.__fid;
             }
 
-            if(this.appLayer.details ["editfeature.uploadDocument"]){
+            if(viewer.components.Component.parseBooleanValue(this.appLayer.details["editfeature.uploadDocument"])){
                 var uploads = feature["__UPLOADS__"];
                 for(var key in uploads){
                     if(uploads.hasOwnProperty(key)){
@@ -1061,7 +1062,7 @@ Ext.define("viewer.components.Edit", {
         this.editingLayer.reload();
         this.currentFID = fid;
         var isUploading = false;
-        if (this.appLayer.details["editfeature.uploadDocument.types"]) {
+        if (viewer.components.Component.parseBooleanValue(this.appLayer.details["editfeature.uploadDocument"]) && this.appLayer.details["editfeature.uploadDocument.types"]) {
             var types = Ext.JSON.decode(this.appLayer.details["editfeature.uploadDocument.types"]);
             for (var i = 0; i < types.length; i++) {
                 var t = types[i];

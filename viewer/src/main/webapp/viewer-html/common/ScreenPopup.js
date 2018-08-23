@@ -69,8 +69,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             hideMode: 'offsets',
             width: ("" + this.config.details.width).indexOf('%') !== -1 ? this.config.details.width : parseInt(this.config.details.width),
             height: ("" + this.config.details.height).indexOf('%') !== -1 ? this.config.details.height : parseInt(this.config.details.height),
-            resizable: this.parseBooleanValue(this.config.details.changeableSize),
-            draggable: this.parseBooleanValue(this.config.details.changeablePosition),
+            resizable: viewer.components.Component.parseBooleanValue(this.config.details.changeableSize),
+            draggable: viewer.components.Component.parseBooleanValue(this.config.details.changeablePosition),
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
@@ -217,12 +217,6 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.popupWin.getEl().dom.addEventListener('touchstart', function(){});
 
         return this;
-    },
-    parseBooleanValue: function(val) {
-        if (val === true || val === false) {
-            return val;
-        }
-        return ("true" === val);
     },
     setComponent: function(component) {
         this.component = component;

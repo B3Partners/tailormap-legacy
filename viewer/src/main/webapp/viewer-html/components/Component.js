@@ -25,6 +25,14 @@
  */
 Ext.define("viewer.components.Component",{
     extend: "Ext.util.Observable",
+    statics: {
+        parseBooleanValue: function(val) {
+            if (val === true || val === false) {
+                return val;
+            }
+            return ("true" === val);
+        }
+    },
     events: null,
     popup: null,
     config: {
