@@ -195,14 +195,14 @@ Ext.define("viewer.components.Edit", {
             {
                 itemId: "geomLabel",
                 margin: '5 0',
-                text: '',
-                xtype: "label"
+                html: '',
+                xtype: "container"
             },
             {
                 itemId: 'inputPanel',
                 border: 0,
                 xtype: "form",
-                autoScroll: true,
+                scrollable: true,
                 flex: 1,
                 layout: this.config.formLayout,
                 hidden: true
@@ -304,7 +304,7 @@ Ext.define("viewer.components.Edit", {
         if(firstField) {
             firstField.focus();
         }
-        this.geomlabel.setText("");
+        this.geomlabel.setHtml("");
         this.untoggleButtons();
     },
     setFormVisible: function (visible) {
@@ -489,7 +489,7 @@ Ext.define("viewer.components.Edit", {
             } else {
                 tekst = 'Geometrie mag niet bewerkt worden.';
             }
-            this.geomlabel.setText(tekst);
+            this.geomlabel.setHtml(tekst);
 
             var groupedInputs = {};
             var nonGrouped = [];
@@ -538,7 +538,7 @@ Ext.define("viewer.components.Edit", {
                 this.inputContainer.add(groupedInputs[label]);
             }
         } else {
-            this.geomlabel.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
+            this.geomlabel.setHtml("Geometrietype onbekend. Bewerken niet mogelijk.");
             this.setButtonDisabled("editButton", true);
             this.setButtonDisabled("newButton", true);
             this.setButtonDisabled("deleteButton", true);
@@ -1160,7 +1160,7 @@ Ext.define("viewer.components.Edit", {
         this.savebutton.setText("Opslaan");
         this.mode = null;
         this.layerSelector.clearSelection();
-        this.geomlabel.setText("");
+        this.geomlabel.setHtml("");
         this.inputContainer.removeAll();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         if (this.vectorLayer) {
