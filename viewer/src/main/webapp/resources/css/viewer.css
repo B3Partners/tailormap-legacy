@@ -482,6 +482,32 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
     }
 }
 
+/** Alerts, taken from Bootstrap **/
+.alert-message {
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+}
+.alert-message.error {
+    color: rgb(114, 28, 36);
+    background-color: rgb(248, 215, 218);
+    border-color: rgb(245, 198, 203);
+}
+.alert-message.warning {
+    color: rgb(133, 100, 4);
+    background-color: rgb(255, 243, 205);
+    border-color: rgb(255, 238, 186);
+}
+.alert-message.success {
+    color: rgb(21, 87, 36);
+    background-color: rgb(212, 237, 218);
+    border-color: rgb(195, 230, 203);
+}
+.icon-green {
+    color: rgb(21, 87, 36);
+}
+
 /* Override font-face declarations form Ext to fix IE errors (embedded-opentype) */
 @font-face {
     font-family: 'Open Sans';
