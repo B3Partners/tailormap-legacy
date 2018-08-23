@@ -57,6 +57,14 @@ Ext.define ("viewer.components.ExtendedEdit",{
         if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) {
             title = this.config.title;
         }
+        var formItems = this.getFormItems();
+        formItems.push({
+            xtype: 'container',
+            itemId: 'removeMessage',
+            html: 'Het feature is verwijderd.',
+            hidden: true,
+            componentCls: 'alert-message success'
+        });
         this.maincontainer = Ext.create('Ext.panel.Panel', {
             title: title,
             items: [
@@ -68,7 +76,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
                         align: 'stretch'
                     },
                     padding: 10,
-                    items: this.getFormItems()
+                    items: formItems
                 }
             ],
             scrollable: true,
@@ -185,7 +193,6 @@ Ext.define ("viewer.components.ExtendedEdit",{
             this.currentIndex = 0;
             index = 0;
         }
-        this.buttonPanel.setVisible(false);
         for(var i = 0; i < this.feature_data.length; i++) {
             if(i === index) {
                 this.clearFeatureAndForm();
@@ -195,6 +202,11 @@ Ext.define ("viewer.components.ExtendedEdit",{
             }
         }
         this.createPagination();
+    },
+    showAndFocusForm: function() {
+        this.buttonPanel.setVisible(false);
+        this.maincontainer.down('#removeMessage').setVisible(false);
+        this.callParent([]);
     },
     createPagination: function(){
         if(this.totalPages <= 1) {
@@ -221,17 +233,38 @@ Ext.define ("viewer.components.ExtendedEdit",{
     },
     saveSucces: function(fid) {
         this.savedFeatureId = fid;
-        if(this.mode === "new") {
-            var feature = this.vectorLayer.getFeature(0);
-            if(feature) {
-                this.currentCoords = this.vectorLayer.getFeatureGeometry(feature.id).getCentroid();
-            }
+        var feature = this.vectorLayer.getFeature(0);
+        if(feature) {
+            this.currentCoords = this.vectorLayer.getFeatureGeometry(feature.id).getCentroid();
+        }
+        if(this.mode === "new" || this.mode === "edit") {
+            this.addSuccesIconToButton(this.savebutton);
+        }
+        if(this.mode === "copy") {
+            this.addSuccesIconToButton(this.maincontainer.down('#copyButton'));
         }
         if(this.currentCoords) {
             this.startEdit(null, { coord: this.currentCoords });
         }
-        this.callParent(arguments);
+        this.callParent([fid, true]);
         this.layerSelectorInit();
+    },
+    deleteSucces: function() {
+        this.callParent([true]);
+        var removeMessage = this.maincontainer.down('#removeMessage');
+        removeMessage.setVisible(true);
+        setTimeout(function() {
+            removeMessage.setVisible(false);
+        }, 5000);
+    },
+    addSuccesIconToButton(btn) {
+        if(!btn) {
+            return;
+        }
+        btn.setIconCls("x-fa fa-check-circle icon-green");
+        setTimeout(function() {
+            btn.setIconCls("");
+        }, 5000);
     },
     resetForm: function () {
         this.currentCoords = null;
