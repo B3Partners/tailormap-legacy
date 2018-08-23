@@ -32,16 +32,17 @@ Ext.define ("viewer.components.ExtendedEdit",{
     feature_data: [],
     currentCoords: null,
     currentLayer: null,
+    initialLoad: false,
     constructor: function (conf){
         conf.isPopup = false;
         this.initConfig(conf);
-        viewer.components.ExtendedEdit.superclass.constructor.call(this, this.config);
+        viewer.components.Edit.superclass.constructor.call(this, this.config);
         var me = this;
 
         this.schema = new Ext.data.schema.Schema();
 
-        this.navigateBackButton = this.createButton('left', 'Vorige');
-        this.navigateForwardButton = this.createButton('right', 'Volgende');
+        this.navigateBackButton = this.createPaginationButton('left', 'Vorige');
+        this.navigateForwardButton = this.createPaginationButton('right', 'Volgende');
         this.buttons = Ext.create('Ext.toolbar.Toolbar', {
             xtype: 'toolbar',
             dock: 'bottom',
@@ -59,17 +60,32 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.maincontainer = Ext.create('Ext.panel.Panel', {
             title: title,
             items: [
-                { xtype: 'container', items: this.getFormItems(), padding: 10 }
+                {
+                    xtype: 'container',
+                    scrollable: false,
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    padding: 10,
+                    items: this.getFormItems()
+                }
             ],
-            autoScroll: true,
+            scrollable: true,
+            layout: 'fit',
             dockedItems: [this.buttons]
         });
-        // this.layerSelector.getLayerSelector().setVisible(false);
         this.getContentContainer().add(this.maincontainer);
         // this.maincontainer, inputContainer, geomlabel, savebutton are used in edit component
         this.inputContainer = this.maincontainer.down('#inputPanel');
         this.geomlabel = this.maincontainer.down("#geomLabel");
         this.savebutton = this.maincontainer.down("#saveButton");
+        this.buttonPanel = this.maincontainer.down("#buttonPanel");
+        var editButton = this.buttonPanel.down("#editButton");
+        if(editButton) {
+            editButton.setVisible(false);
+        }
+        this.createVectorLayer();
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO, this.startEdit, this);
@@ -83,16 +99,18 @@ Ext.define ("viewer.components.ExtendedEdit",{
         } else {
             this.layerSelector.setValue(this.currentLayer);
         }
-        // if(this.layerSelector.getVisibleLayerCount() > 1) {
-        //     this.layerSelector.getLayerSelector().setVisible(true);
-        // } else {
-        //     this.layerSelector.getLayerSelector().setVisible(false);
-        // }
+    },
+    initAttributeInputs: function() {
+        this.callParent(arguments);
+        if(!this.initialLoad) {
+            this.initialLoad = true;
+            this.edit();
+        }
     },
     selectedLayerChanged: function(layer) {
         this.currentLayer = layer;
     },
-    createButton: function(direction, label) {
+    createPaginationButton: function(direction, label) {
         return Ext.create('Ext.button.Button', {
             text: label,
             flex: 1,
@@ -167,14 +185,12 @@ Ext.define ("viewer.components.ExtendedEdit",{
             this.currentIndex = 0;
             index = 0;
         }
+        this.buttonPanel.setVisible(false);
         for(var i = 0; i < this.feature_data.length; i++) {
             if(i === index) {
-                if (this.vectorLayer == null) {
-                    this.createVectorLayer();
-                }
                 this.clearFeatureAndForm();
-                this.mode = "edit";
                 var feat = this.indexFeatureToNamedFeature(this.feature_data[i].feature);
+                this.showAndFocusForm();
                 this.handleFeature(feat);
             }
         }
@@ -205,10 +221,28 @@ Ext.define ("viewer.components.ExtendedEdit",{
     },
     saveSucces: function(fid) {
         this.savedFeatureId = fid;
+        if(this.mode === "new") {
+            var feature = this.vectorLayer.getFeature(0);
+            if(feature) {
+                this.currentCoords = this.vectorLayer.getFeatureGeometry(feature.id).getCentroid();
+            }
+        }
         if(this.currentCoords) {
             this.startEdit(null, { coord: this.currentCoords });
         }
         this.callParent(arguments);
         this.layerSelectorInit();
+    },
+    resetForm: function () {
+        this.currentCoords = null;
+        this.totalPages = 0;
+        this.createPagination();
+
+        this.setFormVisible(false);
+        this.buttonPanel.setVisible(true);
+        this.savebutton.setText("Opslaan");
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.vectorLayer.removeAllFeatures();
+        this.edit();
     }
 });
