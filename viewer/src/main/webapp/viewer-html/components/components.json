@@ -627,7 +627,7 @@
         "group": "Component",
         "sources": ["Edit.js", "ExtendedEdit.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
-        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom"],
         "type": "popup",
         "singleton": true,
         "showHelp": true
