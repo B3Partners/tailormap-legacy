@@ -185,12 +185,35 @@ Ext.define("viewer.components.Edit", {
     },
     getFormItems: function() {
         this.createLayerSelector();
+        var bottomButtons = this.copyDeleteButtons();
+        bottomButtons.push(
+            {
+                itemId: "cancelButton",
+                text: "Annuleren",
+                listeners: {
+                    click: {
+                        scope: this,
+                        fn: this.cancel
+                    }
+                }
+            },
+            {
+                itemId: "saveButton",
+                text: "Opslaan",
+                listeners: {
+                    click: {
+                        scope: this,
+                        fn: this.save
+                    }
+                }
+            }
+        );
         return [
             this.layerSelector.getLayerSelector(),
             {
                 itemId: 'buttonPanel',
                 xtype: "container",
-                items: this.createActionButtons()
+                items: this.createEditButtons()
             },
             {
                 itemId: "geomLabel",
@@ -217,63 +240,45 @@ Ext.define("viewer.components.Edit", {
                 defaults: {
                     xtype: 'button'
                 },
-                items: [
-                    {
-                        itemId: "cancelButton",
-                        tooltip: "Annuleren",
-                        text: "Annuleren",
-                        listeners: {
-                            click: {
-                                scope: this,
-                                fn: this.cancel
-                            }
-                        }
-                    },
-                    {
-                        itemId: "saveButton",
-                        tooltip: "Opslaan",
-                        text: "Opslaan",
-                        listeners: {
-                            click: {
-                                scope: this,
-                                fn: this.save
-                            }
-                        }
-                    }
-                ],
+                items: bottomButtons,
                 hidden: true
             }
         ]
     },
-    createActionButtons: function () {
+    createEditButtons: function () {
         var buttons = [];
         if (this.config.allowNew) {
-            buttons.push(this.createButton("newButton", "Nieuw", this.createNew));
-        }
-        if (this.config.allowCopy) {
-            buttons.push(this.createButton("copyButton", "Kopie", this.copy, "Kopie bewerken"));
+            buttons.push(this.createButton("newButton", "Nieuw", this.createNew, true));
         }
         if (this.config.allowEdit) {
-            buttons.push(this.createButton("editButton", "Bewerken", this.edit));
+            buttons.push(this.createButton("editButton", "Bewerken", this.edit, true));
+        }
+        return buttons;
+    },
+    copyDeleteButtons: function() {
+        var buttons = [];
+        if (this.config.allowCopy) {
+            buttons.push(this.createButton("copyButton", "Kopie", this.copy));
         }
         if (this.config.allowDelete) {
             buttons.push(this.createButton("deleteButton", "Verwijder", this.deleteFeature));
         }
         return buttons;
     },
-    createButton: function (itemid, label, fn, tooltip) {
+    createButton: function (itemid, label, fn, allowToggle) {
         return {
             xtype: 'button',
             itemId: itemid,
-            tooltip: tooltip || label,
-            componentCls: 'button-toggle',
+            componentCls: allowToggle ? 'button-toggle' : '',
             disabled: true,
             text: label,
             listeners: {
                 click: {
                     scope: this,
                     fn: function (btn) {
-                        btn.addCls("active-state");
+                        if(allowToggle) {
+                            btn.addCls("active-state");
+                        }
                         fn.call(this);
                     }
                 }
@@ -922,28 +927,21 @@ Ext.define("viewer.components.Edit", {
         this.untoggleButtons("editButton");
     },
     copy: function () {
-        this.hideMobilePopup();
-        this.clearFeatureAndForm();
-        this.geomlabel.setHtml("Selecteer een te kopieren " + this.tekstGeom + " in de kaart");
         this.mode = "copy";
-        this.activateMapClick();
-        this.savebutton.setText("Opslaan");
-        this.untoggleButtons("copyButton");
+        this.save();
     },
     deleteFeature: function () {
         if (!this.config.allowDelete) {
             return;
         }
-        this.hideMobilePopup();
-        this.clearFeatureAndForm();
-        this.geomlabel.setHtml("Selecteer een te verwijderen " + this.tekstGeom + " in de kaart");
-        this.mode = "delete";
-        this.activateMapClick();
-        this.savebutton.setText("Verwijderen");
-        this.untoggleButtons("deleteButton");
+        Ext.MessageBox.confirm('Weet u het zeker', 'Weet u zeker dat u dit object wilt verwijderen?', function(btn, text){
+            if (btn === 'yes') {
+                this.remove();
+            }
+        }, this);
     },
     untoggleButtons: function (filter) {
-        var buttons = ["newButton", "editButton", "copyButton", "deleteButton"];
+        var buttons = ["newButton", "editButton"];
         var itemid;
         var button;
         for (var i = 0; i < buttons.length; i++) {
@@ -1006,6 +1004,7 @@ Ext.define("viewer.components.Edit", {
             feature.__fid = this.currentFID;
         }
         if (this.mode === "copy") {
+            this.currentFID = null;
             delete feature.__fid;
         }
         var me = this;
@@ -1071,14 +1070,16 @@ Ext.define("viewer.components.Edit", {
     allowedEditable: function (attribute) {
         return true;
     },
-    saveSucces: function (fid) {
+    saveSucces: function (fid, skipSuccessMessage) {
         var me = this;
         var messageFunction = function(extratext) {
             var msg = "Het feature is aangepast.";
             if(extratext) {
                 msg += " " + extratext;
             }
-            Ext.Msg.alert('Gelukt', msg);
+            if(!skipSuccessMessage) {
+                Ext.Msg.alert('Gelukt', msg);
+            }
             me.cancel();
         };
 
@@ -1134,10 +1135,12 @@ Ext.define("viewer.components.Edit", {
             messageFunction();
         }
     },
-    deleteSucces: function () {
+    deleteSucces: function (skipSuccessMessage) {
         this.editingLayer.reload();
         this.currentFID = null;
-        Ext.Msg.alert('Gelukt', "Het feature is verwijderd.");
+        if(!skipSuccessMessage) {
+            Ext.Msg.alert('Gelukt', "Het feature is verwijderd.");
+        }
         this.cancel();
     },
     saveFailed: function (msg) {
@@ -1155,8 +1158,6 @@ Ext.define("viewer.components.Edit", {
     resetForm: function () {
         this.setButtonDisabled("editButton", true);
         this.setButtonDisabled("newButton", true);
-        this.setButtonDisabled("deleteButton", true);
-        this.setButtonDisabled("copyButton", true);
         this.savebutton.setText("Opslaan");
         this.mode = null;
         this.layerSelector.clearSelection();
