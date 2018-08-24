@@ -56,7 +56,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.panel = Ext.create('Ext.panel.Panel', {
             title: title,
             items: [],
-            autoScroll: true,
+            scrollable: true,
+            layout: 'fit',
             dockedItems: [this.buttons],
             listeners: {
                 render: function(panel) {
@@ -143,7 +144,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
     },
     setRefreshing: function(isRefreshing) {
         if(isRefreshing) {
-            var pages = this.panel.query('container');
+            var pages = this.panel.query('[cls=feature-info-page]');
             this.currentFeatureId = pages[this.currentIndex] ? pages[this.currentIndex].config.featureId : null;
             this.panel.removeAll(true);
             this.totalPages = 0;
@@ -171,6 +172,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         }
         var container = Ext.create('Ext.container.Container', {
             contentEl: contentEl,
+            cls: 'feature-info-page',
             hidden: false,
             featureId: featureId,
             listeners: {
@@ -184,7 +186,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.panel.add(container);
     },
     showPage: function(index, currentFeatureId){
-        var pages = this.panel.query('container');
+        var pages = this.panel.query('[cls=feature-info-page]');
         if(currentFeatureId) {
             for(var j = 0; j < pages.length; j++) {
                 if(pages[j].config.featureId === currentFeatureId) {
