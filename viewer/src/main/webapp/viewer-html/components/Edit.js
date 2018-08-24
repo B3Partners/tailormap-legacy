@@ -49,6 +49,7 @@ Ext.define("viewer.components.Edit", {
         tooltip: "",
         layers: null,
         label: "",
+        clickRadius: 4,
         allowDelete: false,
         allowCopy: false,
         allowNew: true,
@@ -756,7 +757,7 @@ Ext.define("viewer.components.Edit", {
             viewerController: this.config.viewerController
         });
         var me = this;
-        featureInfo.editFeatureInfo(coords.x, coords.y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
+        featureInfo.editFeatureInfo(coords.x, coords.y, this.config.viewerController.mapComponent.getMap().getResolution() * (this.config.clickRadius || 4), layer, function (features) {
             me.featuresReceived(features);
         }, function (msg) {
             me.failed(msg);
