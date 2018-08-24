@@ -150,7 +150,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         });
         var me = this;
         this.currentCoords = options.coord;
-        featureInfo.editFeatureInfo(options.coord.x, options.coord.y, this.config.viewerController.mapComponent.getMap().getResolution() * 4, layer, function (features) {
+        featureInfo.editFeatureInfo(options.coord.x, options.coord.y, this.config.viewerController.mapComponent.getMap().getResolution() * (this.config.clickRadius || 4), layer, function (features) {
             me.featuresReceived(features);
         }, function (msg) {
             // me.failed(msg);

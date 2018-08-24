@@ -30,6 +30,16 @@ Ext.define("viewer.components.CustomConfiguration", {
 
         this.form.add([
             {
+                xtype: 'numberfield',
+                fieldLabel: 'Klik nauwkeurigheid',
+                name: 'clickRadius',
+                value: this.configObject.clickRadius !== undefined ? this.configObject.clickRadius : 4,
+                labelWidth: this.labelWidth,
+                style: {
+                    marginRight: "70px"
+                }
+            },
+            {
                 xtype: 'checkbox',
                 fieldLabel: 'Bewerken toestaan',
                 name: 'allowEdit',
