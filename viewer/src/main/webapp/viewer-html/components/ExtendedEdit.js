@@ -112,7 +112,9 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.callParent(arguments);
         if(!this.initialLoad) {
             this.initialLoad = true;
-            this.edit();
+            if(this.config.allowEdit) {
+                this.edit();
+            }
         }
     },
     selectedLayerChanged: function(layer) {
@@ -134,6 +136,9 @@ Ext.define ("viewer.components.ExtendedEdit",{
      * When a feature info starts.
      */
     startEdit: function(map, options) {
+        if(!this.config.allowEdit) {
+            return;
+        }
         this.totalPages = 0;
         this.feature_data = [];
         var layer = this.layerSelector.getValue();
@@ -281,6 +286,8 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.savebutton.setText("Opslaan");
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
-        this.edit();
+        if(this.config.allowEdit) {
+            this.edit();
+        }
     }
 });
