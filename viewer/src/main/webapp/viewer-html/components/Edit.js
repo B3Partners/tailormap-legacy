@@ -1157,13 +1157,10 @@ Ext.define("viewer.components.Edit", {
         }
     },
     resetForm: function () {
-        this.setButtonDisabled("editButton", true);
-        this.setButtonDisabled("newButton", true);
         this.savebutton.setText("Opslaan");
         this.mode = null;
-        this.layerSelector.clearSelection();
         this.geomlabel.setHtml("");
-        this.inputContainer.removeAll();
+        this.setFormVisible(false);
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         if (this.vectorLayer) {
             // vector layer may be null when cancel() is called
