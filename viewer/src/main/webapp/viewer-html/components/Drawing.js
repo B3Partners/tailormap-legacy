@@ -42,6 +42,7 @@ Ext.define ("viewer.components.Drawing",{
     features:null,
     // Boolean to check if window is hidden temporarily for mobile mode
     mobileHide: false,
+    pointType:"circle",
     config:{
         title: "",
         reactivateTools:null,
@@ -196,20 +197,81 @@ Ext.define ("viewer.components.Drawing",{
             }
         });
         var drawingItems = [{
-            xtype: 'button',
-            id: this.drawingButtonIds.point,
-            icon: this.iconPath+"bullet_red.png",
-            tooltip: "Teken een punt",
-            enableToggle: true,
-            toggleGroup: 'drawingTools',
-            listeners: {
-                click:{
-                    scope: me,
-                    fn: me.drawPoint
-                }
-            }
-        },
-        {
+                xtype: "splitbutton",
+                icon: this.iconPath + "circle.png",
+                id: this.drawingButtonIds.point,                
+                listeners: {
+                    click:{
+                        scope: me,
+                        fn: me.drawPoint
+                    }
+                },
+                menu: new Ext.menu.Menu({
+                    items: [
+                        {
+                            icon: this.iconPath + "circle.png",
+                            text: 'Rondje',
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("circle");}
+                                }
+                            }
+                        },
+                        {
+                            text: 'Vierkant',
+                            icon: this.iconPath + "square.png",
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("square");}
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "cross.png",
+                            text: 'Kruis',
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("cross");}
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "star.png",
+                            text: 'Ster',
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("star");}
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "x.png",
+                            text: 'X',
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("x");}
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "triangle.png",
+                            text: 'Driehoek',
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("triangle");}
+                                }
+                            }
+                        }                        
+                    ]
+                })
+            },
+            {
             xtype: 'button',
             id: this.drawingButtonIds.line,
             icon: this.iconPath+"line_red.png",
@@ -444,7 +506,7 @@ Ext.define ("viewer.components.Drawing",{
                              {
                                 xtype: 'button',
                                 icon: this.iconPath+"calculator_edit.png",
-                                tooltip: "Verwijder geselecteerd object",
+                                tooltip: "Gebruik lengte/oppervlakte als label",
                                 listeners: {
                                     click:{
                                         scope: me,
@@ -617,6 +679,13 @@ Ext.define ("viewer.components.Drawing",{
         this.formselect.setVisible(false);
     },
 
+    drawingTypeChanged: function (type) {
+        var cmp = Ext.getCmp(this.drawingButtonIds.point);
+        cmp.setIcon(this.iconPath + type+".png");
+        this.pointType = type;
+        this.featureStyleChanged();
+        this.drawPoint();
+    },
     /**
      * @param vectorLayer The vectorlayer from which the feature comes
      * @param feature the feature which has been activated
@@ -681,6 +750,10 @@ Ext.define ("viewer.components.Drawing",{
         featureStyle.set('labelAlign', labelAlign);
         featureStyle.set('fontStyle', fontStyle ? "italic" : "normal");
         featureStyle.set('fontWeight', fontWeight ? "bold" : "normal");
+        
+        featureStyle.set('graphicWidth',28);
+        featureStyle.set('graphicHeight', 28);
+        featureStyle.set("graphicName",this.pointType);
         if(this.activeFeature){
             layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
         }
