@@ -5,8 +5,8 @@
  */
 package nl.b3p.viewer.search;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
