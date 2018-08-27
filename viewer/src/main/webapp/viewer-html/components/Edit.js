@@ -179,7 +179,7 @@ Ext.define("viewer.components.Edit", {
         this.inputContainer = this.maincontainer.down('#inputPanel');
         this.geomlabel = this.maincontainer.down("#geomLabel");
         this.savebutton = this.maincontainer.down("#saveButton");
-        if(!this.config.isPopup && this.vectorLayer == null) {
+        if (!this.config.isPopup && this.vectorLayer == null) {
             this.createVectorLayer();
         }
     },

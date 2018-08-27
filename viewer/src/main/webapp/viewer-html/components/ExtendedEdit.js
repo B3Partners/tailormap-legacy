@@ -93,7 +93,10 @@ Ext.define ("viewer.components.ExtendedEdit",{
         if(editButton) {
             editButton.setVisible(false);
         }
-        this.createVectorLayer();
+        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, function () {
+            this.createVectorLayer();
+        }, this);
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO, this.startEdit, this);
