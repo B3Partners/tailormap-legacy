@@ -214,7 +214,7 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("circle");}
+                                    fn: function () { this.drawingTypeChanged("circle", true);}
                                 }
                             }
                         },
@@ -224,7 +224,7 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("square");}
+                                    fn: function () { this.drawingTypeChanged("square", true);}
                                 }
                             }
                         },
@@ -234,7 +234,7 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("cross");}
+                                    fn: function () { this.drawingTypeChanged("cross", true);}
                                 }
                             }
                         },
@@ -244,7 +244,7 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("star");}
+                                    fn: function () { this.drawingTypeChanged("star", true);}
                                 }
                             }
                         },
@@ -254,7 +254,7 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("x");}
+                                    fn: function () { this.drawingTypeChanged("x", true);}
                                 }
                             }
                         },
@@ -264,7 +264,7 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("triangle");}
+                                    fn: function () { this.drawingTypeChanged("triangle", true);}
                                 }
                             }
                         }                        
@@ -679,12 +679,14 @@ Ext.define ("viewer.components.Drawing",{
         this.formselect.setVisible(false);
     },
 
-    drawingTypeChanged: function (type) {
+    drawingTypeChanged: function (type, activateDraw) {
         var cmp = Ext.getCmp(this.drawingButtonIds.point);
         cmp.setIcon(this.iconPath + type+".png");
         this.pointType = type;
         this.featureStyleChanged();
-        this.drawPoint();
+        if(activateDraw){
+            this.drawPoint();
+        }
     },
     /**
      * @param vectorLayer The vectorlayer from which the feature comes
@@ -785,6 +787,9 @@ Ext.define ("viewer.components.Drawing",{
         fs.setValue(featureStyle.getFontSize());
         la.setValue(featureStyle.getLabelAlign());
         fw.setValue(font);
+        if(featureStyle.getGraphicName()){
+            this.drawingTypeChanged(featureStyle.getGraphicName(),false);
+        }
     },
     colorChanged : function (hexColor){
         this.config.color = hexColor;
