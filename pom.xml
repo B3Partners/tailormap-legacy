@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.3.4-SNAPSHOT</version>
+    <version>5.3.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -37,7 +37,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.3.4-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.3.6-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -56,7 +56,7 @@
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
-        <tomcat.version>7.0.88</tomcat.version>
+        <tomcat.version>7.0.90</tomcat.version>
     </properties>
     <dependencyManagement>
         <!--
@@ -92,7 +92,7 @@
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20180130</version>
+                <version>20180813</version>
             </dependency>
             <!-- Stripes -->
             <dependency>
@@ -184,7 +184,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.7</version>
+                <version>3.8</version>
             </dependency>
             <dependency>
                 <!-- do not upgrade because that would enforce "use strict;" -->
