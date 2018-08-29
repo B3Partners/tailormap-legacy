@@ -43,6 +43,7 @@ Ext.define ("viewer.components.Drawing",{
     // Boolean to check if window is hidden temporarily for mobile mode
     mobileHide: false,
     pointType:"circle",
+    defaultProps:null,
     config:{
         title: "",
         reactivateTools:null,
@@ -84,7 +85,7 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
-        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
+        this.iconPath = FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
             this.popup.addListener("hide", this.hideWindow, this);
@@ -116,19 +117,8 @@ Ext.define ("viewer.components.Drawing",{
         }
     },
     createVectorLayer : function (){
-         /* var defaultProps = {
-            'fontColor': "#000000",
-            'fontSize': "13px",
-            'labelOutlineColor': "#ffffff",
-            'labelOutlineWidth': 2,
-            'labelAlign': "cm",
-            'fillColor': this.config.color ||"FF0000",
-            'fillOpacity': 0.5,
-            'strokeColor': this.config.color ||"FF0000",
-            'strokeOpacity': 0.5
-        };*/
         this.config.color = this.config.color ?  this.config.color : 'FF0000';
-        var defaultProps = {
+        this.defaultProps = {
             'fontColor': "#000000",
             'fontSize': "13px",
             'labelOutlineColor': "#ffffff",
@@ -140,7 +130,7 @@ Ext.define ("viewer.components.Drawing",{
             'strokeColor': '#' + this.config.color,
             'strokeOpacity': 0.5
         };
-        this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', defaultProps);
+        this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);
         
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
@@ -149,12 +139,6 @@ Ext.define ("viewer.components.Drawing",{
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.defaultStyle,
             addStyleToFeature: true
-            /*style: {
-                'fillcolor': this.config.color || 'FF0000',
-                'fillopacity': 50,
-                'strokecolor': this.config.color ||"FF0000",
-                'strokeopacity': 50
-            }*/
         });
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
@@ -176,7 +160,7 @@ Ext.define ("viewer.components.Drawing",{
             value: this.config.color ? this.config.color : 'FF0000',
             listeners :{
                 select : {
-                    fn: this.colorChanged,
+                    fn: this.featureStyleChanged,
                     scope : this
                 }
             }
@@ -697,8 +681,9 @@ Ext.define ("viewer.components.Drawing",{
         this.toggleSelectForm(true);
         this.activeFeature = this.features[feature.config.id];
         if(!this.features.hasOwnProperty(feature.config.id)) {
-            feature.color = feature.color || (feature.style || {}).color || this.config.color;
+            feature.color = feature.color || (feature.style || {}).color || this.colorPicker.getColor();
             this.features[feature.config.id] = feature;
+            this.featureStyleChanged();
         }else{
             if(this.activeFeature.getId() === feature.getId()){
                 this.changeFormToCurrentFeature(feature);
@@ -708,7 +693,6 @@ Ext.define ("viewer.components.Drawing",{
             this.labelField.setValue(this.activeFeature.label);
         }
     },
-    //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
         this.activeFeature.config.wktgeom = feature.config.wktgeom;
         Ext.Object.each(this.drawingButtonIds, function(key, id) {
@@ -716,6 +700,7 @@ Ext.define ("viewer.components.Drawing",{
             if(button) button.toggle(false);
         });
         this.showMobilePopup();
+        this.featureStyleChanged();
     },
     featureStyleChanged: function(){
         var ds = this.getContentContainer().query('#dashStyle')[0];
@@ -725,10 +710,9 @@ Ext.define ("viewer.components.Drawing",{
         var la = this.getContentContainer().query('#labelAlign')[0];
         var fw = this.getContentContainer().query('#fontStyle')[0];
         
-        
         var dashstyle = ds.getValue();
         var width = lw.getValue();        
-        var color = this.config.color;
+        var color = this.colorPicker.getColor();
         var opacity = fo.getValue()/ 100;
         var fontsize = fs.getValue();
         var labelAlign = la.getValue();
@@ -738,10 +722,7 @@ Ext.define ("viewer.components.Drawing",{
         
         var layer = this.vectorLayer;
         
-        var featureStyle = this.defaultStyle;// layer.mapStyleConfigToFeatureStyle();
-        if(!featureStyle) {
-            featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', {});
-        }
+        var featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);// this.defaultStyle;// layer.mapStyleConfigToFeatureStyle();
         
         featureStyle.set('strokeColor', '#' + color);
         featureStyle.set('fillColor', '#' + color);
@@ -757,6 +738,7 @@ Ext.define ("viewer.components.Drawing",{
         featureStyle.set('graphicHeight', 28);
         featureStyle.set("graphicName",this.pointType);
         if(this.activeFeature){
+            this.features[this.activeFeature.getId()].setStyle(featureStyle);
             layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
         }
     },
@@ -769,9 +751,9 @@ Ext.define ("viewer.components.Drawing",{
         var la = this.getContentContainer().query('#labelAlign')[0];
         var fw = this.getContentContainer().query('#fontStyle')[0];
         
-        var color = feature.style.fillColor;// this.features[feature.config.id].color;
+        var color = feature.style.fillColor;
         color = color.substring(1);
-        this.colorPicker.setColor(color);
+        this.colorPicker.setValue(color);
         this.config.color = color;
         
         var fontWeight = featureStyle.getFontWeight();
@@ -790,24 +772,6 @@ Ext.define ("viewer.components.Drawing",{
         if(featureStyle.getGraphicName()){
             this.drawingTypeChanged(featureStyle.getGraphicName(),false);
         }
-    },
-    colorChanged : function (hexColor){
-        this.config.color = hexColor;
-        this.featureStyleChanged();
-        /*this.vectorLayer.style.fillcolor = this.config.color;
-        this.vectorLayer.style.strokecolor = this.config.color;
-        this.vectorLayer.adjustStyle();
-        if(this.activeFeature !== null){
-            this.activeFeature.color = this.config.color;
-            var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
-            this.activeFeature.config.wktgeom = feature.config.wktgeom;
-            if(this.activeFeature.label) {
-                this.activeFeature.config.label = this.activeFeature.label;
-            }
-            this.vectorLayer.removeFeature(this.activeFeature);
-            delete this.features[this.activeFeature.getId()];
-            this.vectorLayer.addFeature(this.activeFeature);
-        }*/
     },
     labelChanged : function (field,newValue){
         if(this.activeFeature !== null){
@@ -917,7 +881,7 @@ Ext.define ("viewer.components.Drawing",{
                 features.push(feature.toJsonObject());
             }
         }
-        form.setValues({
+       form.setValues({
             "saveObject":Ext.JSON.encode(features)
         });
         this.formsave.submit({
@@ -962,13 +926,12 @@ Ext.define ("viewer.components.Drawing",{
         for ( var i = 0 ; i < features.length;i++){
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
-            this.vectorLayer.style.fillcolor = featureObject._color;
-            this.vectorLayer.style.strokecolor = featureObject._color;
-            this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
+            
+            this.vectorLayer.setFeatureStyle(featureObject.getId(), featureObject.style);
+            this.vectorLayer.adjustStyle();
             this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
         }
-
     },
 
     getBookmarkState: function(shortUrl){

@@ -25,13 +25,20 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
         if(!this.label){
             this.label = "";
         }
+        if(config.style){
+            this.style = Ext.create("viewer.viewercontroller.controller.FeatureStyle", config.style);
+        }
+    },
+    
+    setStyle: function (style){
+        this.style = style;
     },
 
     /**
      * @returns {FeatureStyle|null}
      */
     getStyle: function() {
-        return this.config.style;
+        return this.style;
     },
 
     getAttributes: function() {
@@ -46,8 +53,8 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
         var json = {};
         json.id = this._id;
         json.wktgeom = this._wktgeom;
-        json.color = this.color;
         json.label = this.label;
+        json.style = this.style.getProperties();
         return json;
     },
     /**
