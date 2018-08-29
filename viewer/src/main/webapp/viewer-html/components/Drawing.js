@@ -123,6 +123,7 @@ Ext.define ("viewer.components.Drawing",{
             'fontSize': "13px",
             'labelOutlineColor': "#ffffff",
             'labelOutlineWidth': 2,
+            'pointRadius': 6,
             'labelAlign': "cm",
             'fillColor': '#' + this.config.color,
             'fillOpacity': 0.5,
@@ -381,6 +382,20 @@ Ext.define ("viewer.components.Drawing",{
                                     store: [['2', 'Dun'], ['3', 'Normaal'], ['8', 'Dik']],
                                     name: 'lineWidth',
                                     itemId: 'lineWidth',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: 'Puntgrootte',
+                                    queryMode: 'local',
+                                    store: [['2', 'Klein'], ['6', 'Normaal'], ['10', 'Groot']],
+                                    name: 'pointRadius',
+                                    itemId: 'pointRadius',
                                     listeners: {
                                         change: {
                                             scope: this,
@@ -709,6 +724,7 @@ Ext.define ("viewer.components.Drawing",{
         var fs = this.getContentContainer().query('#fontSize')[0];
         var la = this.getContentContainer().query('#labelAlign')[0];
         var fw = this.getContentContainer().query('#fontStyle')[0];
+        var pr = this.getContentContainer().query('#pointRadius')[0];
         
         var dashstyle = ds.getValue();
         var width = lw.getValue();        
@@ -717,6 +733,7 @@ Ext.define ("viewer.components.Drawing",{
         var fontsize = fs.getValue();
         var labelAlign = la.getValue();
         var font = fw.getValue();
+        var pointRadius = pr.getValue();
         var fontWeight = font && font.indexOf("bold") !== -1;
         var fontStyle = font && font.indexOf("italic") !== -1;
         
@@ -731,6 +748,7 @@ Ext.define ("viewer.components.Drawing",{
         featureStyle.set('strokeWidth',width);
         featureStyle.set('fontSize', fontsize);
         featureStyle.set('labelAlign', labelAlign);
+        featureStyle.set('pointRadius', pointRadius);
         featureStyle.set('fontStyle', fontStyle ? "italic" : "normal");
         featureStyle.set('fontWeight', fontWeight ? "bold" : "normal");
         
@@ -750,6 +768,7 @@ Ext.define ("viewer.components.Drawing",{
         var fs = this.getContentContainer().query('#fontSize')[0];
         var la = this.getContentContainer().query('#labelAlign')[0];
         var fw = this.getContentContainer().query('#fontStyle')[0];
+        var pr = this.getContentContainer().query('#pointRadius')[0];
         
         var color = feature.style.fillColor;
         color = color.substring(1);
@@ -765,6 +784,7 @@ Ext.define ("viewer.components.Drawing",{
         
         ds.setValue(featureStyle.getStrokeDashstyle());
         lw.setValue(featureStyle.getStrokeWidth());
+        pr.setValue(featureStyle.getPointRadius());
         fo.setValue(featureStyle.getFillOpacity()*100);
         fs.setValue(featureStyle.getFontSize());
         la.setValue(featureStyle.getLabelAlign());
