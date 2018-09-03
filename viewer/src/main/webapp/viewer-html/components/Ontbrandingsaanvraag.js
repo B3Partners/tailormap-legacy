@@ -92,7 +92,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             obj[conf[i].label] = {
                 distance: conf[i].distance,
                 fan: conf[i].fan
-            }
+            };
         }
     },
 
@@ -477,6 +477,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'zonedistance_consumer', type: 'string' },
                 { name: 'custom_zonedistance_consumer', type: 'number' },
                 { name: 'custom_fireworktype_consumer', type: 'string' },
+                { name: 'lengthdistanceline', type: 'boolean', defaultValue: true },
+                { name: 'showcircle', type: 'boolean', defaultValue: true },
+                { name: 'distanceline', type: 'boolean', defaultValue: true },
                 { name: 'fireworks_type', type: 'string', defaultValue: 'consumer' },
                 { name: 'zonedistance_professional', type: 'string' },
                 { name: 'custom_zonedistance_professional', type: 'number' },
@@ -616,6 +619,38 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             name: 'fireworks_type',
                             inputValue: 'professional',
                             itemId: 'fireworks_type_choice_professional'
+                        }
+                    ]
+                },{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Laat op kaart zien na berekening:',
+                    height: 65,
+                    defaultType: 'checkbox',
+                    defaults: {
+                        flex: 1,
+                        listeners: {
+                            change: this.toggleZonedistancesForm,
+                            blur: this.saveIgnitionLocation,
+                            scope: this
+                        }
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            boxLabel: 'Binnencirkel tonen',
+                            name: 'showcircle',
+                            itemId: 'showcircle',
+                            value: true
+                        },{
+                            boxLabel: 'Afstandslijn',
+                            name: 'distanceline',
+                            itemId: 'distanceline',
+                            value: true
+                        }, {
+                            boxLabel: 'Lengte afstandslijn',
+                            name: 'lengthdistanceline',
+                            itemId: 'lengthdistanceline',
+                            value: true
                         }
                     ]
                 },

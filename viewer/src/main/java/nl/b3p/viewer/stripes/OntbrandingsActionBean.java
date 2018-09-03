@@ -203,7 +203,9 @@ public class OntbrandingsActionBean implements ActionBean {
         Geometry g = con.getConcaveHull();
         TopologyPreservingSimplifier tp = new TopologyPreservingSimplifier(g);
         tp.setDistanceTolerance(0.5);
-        gs.put(createFeature(tp.getResultGeometry(), "safetyZone", ""));
+        if(attributes.getBoolean("showcircle")){
+            gs.put(createFeature(tp.getResultGeometry(), "safetyZone", ""));
+        }
 
         createSafetyDistances(gs, audience, ignition, g);
     }
@@ -265,7 +267,10 @@ public class OntbrandingsActionBean implements ActionBean {
         Geometry ignition = wkt.read(feature.getString("wktgeom"));
         Geometry audience = wkt.read(audienceObj.getString("wktgeom"));
         Geometry zone = createNormalSafetyZone(feature,ignition);
-        gs.put(createFeature(zone, "safetyZone", ""));
+        JSONObject attributes = feature.getJSONObject("attributes");
+        if(attributes.getBoolean("showcircle")){
+            gs.put(createFeature(zone, "safetyZone", ""));
+        }
         createSafetyDistances(gs, audience, ignition, zone);
     }
 
