@@ -22,7 +22,7 @@
  * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 Ext.define ("viewer.components.Ontbrandingsaanvraag",{
-    extend: "viewer.components.tools.DownloadMap",
+    extend: "viewer.components.Component",
     vectorLayer: null,
     extraObjectsLayer: null,
     calculationResultLayer: null,
