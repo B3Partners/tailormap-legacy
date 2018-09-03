@@ -345,19 +345,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.createWizardPage("Opslaan en printen", [
                 {
                     xtype: 'button',
-                    html: 'Situatietekening opslaan .JSON',
+                    html: 'Situatietekening voor eigen gebruik en volgende aanvragen (JSON)',
                     margin: this.defaultMargin,
                     listeners: { click: this.saveFile, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: 'Situatietekening opslaan .PNG',
-                    margin: this.defaultMargin,
-                    listeners: { click: this.makeImage, scope: this }
-                },
-                {
-                    xtype: 'button',
-                    html: 'Situatietekening opslaan .PDF',
+                    html: 'Situatietekening voor aanvraag/melding (PDF)',
                     margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
                 },
@@ -632,7 +626,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: 'Zoneafstanden',
+                    fieldLabel: 'Vuurwerkcategorie',
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('consumerZoneDistanceStore'),
                     displayField: 'label',
@@ -657,7 +651,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'numberfield',
-                    fieldLabel: 'Handmatige zoneafstand',
+                    fieldLabel: 'Handmatige vuurwerkcategorie',
                     hidden: true,
                     name: 'custom_zonedistance_consumer',
                     itemId: 'custom_zonedistance_consumer'
@@ -665,7 +659,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: 'Zoneafstanden',
+                    fieldLabel: 'Vuurwerkcategoriën',
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('professionalZoneDistanceStore'),
                     displayField: 'label',
@@ -691,7 +685,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'numberfield',
-                    fieldLabel: 'Handmatige zoneafstand',
+                    fieldLabel: 'Handmatige vuurwerkcategorie',
                     hidden: true,
                     name: 'custom_zonedistance_professional',
                     itemId: 'custom_zonedistance_professional'
@@ -1477,12 +1471,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         for(var i = count - 1; i >= 0; i--) {
             this._removeLocation(grid, i);
         }
-    },
-    makeImage: function() {
-        var features = this.getAllFeatures();
-        this.buttonDown();
-    },
-    
+    },    
     printRequest:function(){
         this.printComponent.buttonClick();
         this.printComponent.qualitySlider.setValue(this.printComponent.qualitySlider.maxValue);
@@ -1651,7 +1640,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');
         var firework_type_custom = fireworks_type === 'consumer' ? location.get('custom_fireworktype_consumer') : location.get('custom_fireworktype_professional');
         if(zone_distance === this.OTHER_LABEL && !zone_distance_custom) {
-            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige zoneafstand" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige vuurwerkcategorie" voor afsteeklocatie ' + location.get('label'));
             return false;
         }
         if(zone_distance === this.OTHER_LABEL && !firework_type_custom) {

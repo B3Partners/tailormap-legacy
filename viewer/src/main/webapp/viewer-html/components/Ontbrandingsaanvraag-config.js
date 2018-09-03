@@ -53,8 +53,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             configObject = {};
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        this.addForm(configObject, "zonedistances_consumer", "Zoneafstanden consumenten vuurwerk", "Zoneafstand consumenten vuurwerk", this.DEFAULT_ZONE_DISTANCES_CONSUMER);
-        this.addForm(configObject, "zonedistances_professional", "Zoneafstanden professioneel vuurwerk", "Zoneafstand professioneel vuurwerk", this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
+        this.addForm(configObject, "zonedistances_consumer", "Vuurwerkcategoriën consumenten vuurwerk", "Vuurwerkcategorie consumenten vuurwerk", this.DEFAULT_ZONE_DISTANCES_CONSUMER);
+        this.addForm(configObject, "zonedistances_professional", "Vuurwerkcategoriën professioneel vuurwerk", "Vuurwerkcategorie professioneel vuurwerk", this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
     },
     addForm: function(configObject, paramkey, label, label_singular, defaults) {
         var distances = [];

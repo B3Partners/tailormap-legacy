@@ -60,7 +60,13 @@
   <!-- Security configuration -->
   <!-- use LockOutRealm instead of CombinedRealm to prevent brute-forcing -->
   <Realm className="org.apache.catalina.realm.LockOutRealm">
-    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
+    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" 
+           roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_">
+        
+            <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+                               algorithm="SHA-1"
+            />
+    </Realm>
     <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
              http://tomcat.apache.org/tomcat-8.0-doc/config/realm.html
