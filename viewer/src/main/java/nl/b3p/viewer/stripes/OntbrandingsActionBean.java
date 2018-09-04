@@ -90,7 +90,6 @@ public class OntbrandingsActionBean implements ActionBean {
         
         JSONArray safetyZones = new JSONArray();
         JSONObject referenceLine = calculateReferenceLine(jsonFeatures,mainLocation);
-        safetyZones.put(referenceLine.getJSONObject("feature"));
         for (Iterator<Object> iterator = jsonFeatures.iterator(); iterator.hasNext();) {
             JSONObject feature = (JSONObject) iterator.next();
             try {
@@ -240,10 +239,10 @@ public class OntbrandingsActionBean implements ActionBean {
             gs.put(createFeature(tp.getResultGeometry(), "safetyZone", ""));
         }
 
-        createSafetyDistances(gs, audience, ignition, g, attributes, referenceLine);
+        createSafetyDistances(gs, audience, ignition, g, attributes, referenceLine, true);
     }
 
-    private void createSafetyDistances(JSONArray gs, Geometry audience, Geometry ignition, Geometry safetyZone, JSONObject attributes,JSONObject referenceLine) throws TransformException {
+    private void createSafetyDistances(JSONArray gs, Geometry audience, Geometry ignition, Geometry safetyZone, JSONObject attributes,JSONObject referenceLine, boolean isFan) throws TransformException {
         // Create safetydistances
         // 1. afstand tussen rand afsteekzone en safetyzone: loodrecht op publiek
         Point audienceCentroid = audience.getCentroid();
@@ -281,7 +280,7 @@ public class OntbrandingsActionBean implements ActionBean {
         
         boolean showLength = attributes.getBoolean("lengthdistanceline");
         boolean showLine = attributes.getBoolean("distanceline");
-        if(showLine){
+        if(showLine&& isFan){
             gs.put(createFeature(cutoffLoodlijn, "safetyDistance", showLength ? (int)cutoffLoodlijn.getLength() + " m" : ""));
         }
 
@@ -291,7 +290,7 @@ public class OntbrandingsActionBean implements ActionBean {
         LineString continuousLine = gf.createLineString(endContinuousLine);
         Geometry cutoffContLine = continuousLine.intersection(safetyZone);
         cutoffContLine = cutoffContLine.difference(ignition);
-        if(showLine){
+        if(showLine ){
             gs.put(createFeature(cutoffContLine, "safetyDistance", showLength? (int)cutoffContLine.getLength() + " m" : ""));
         }
     }
@@ -317,7 +316,7 @@ public class OntbrandingsActionBean implements ActionBean {
         if(attributes.getBoolean("showcircle")){
             gs.put(createFeature(zone, "safetyZone", ""));
         }
-        createSafetyDistances(gs, audience, ignition, zone, attributes, referenceLine);
+        createSafetyDistances(gs, audience, ignition, zone, attributes, referenceLine, false);
     }
 
     private Geometry createNormalSafetyZone(JSONObject feature, Geometry ignition) throws ParseException {
