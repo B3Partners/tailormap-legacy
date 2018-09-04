@@ -34,7 +34,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler", 
                 }
                 var px= measureTool.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
                 measureValueDiv.style.top = px.y + "px";
-                measureValueDiv.style.left = px.x + 10 + 'px';
+                measureValueDiv.style.left = px.x + 30 + 'px';
                 measureValueDiv.style.display = "block";
                 var measureValueText = document.getElementById(divId + 'Text');
                 var decimals = conf.decimals || 3;

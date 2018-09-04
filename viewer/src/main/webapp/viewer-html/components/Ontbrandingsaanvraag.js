@@ -645,11 +645,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             boxLabel: 'Afstandslijn',
                             name: 'distanceline',
                             itemId: 'distanceline',
-                            value: true
+                            value: true,
+                            listeners:{
+                                scope:this,
+                                change:function(field, newValue){
+                                    var lengthDistanceCmp = Ext.getCmp("lengthdistanceline");
+                                    lengthDistanceCmp.setDisabled(!newValue);
+                                }
+                            }
                         }, {
                             boxLabel: 'Lengte afstandslijn',
                             name: 'lengthdistanceline',
                             itemId: 'lengthdistanceline',
+                            id: 'lengthdistanceline',
                             value: true
                         }
                     ]
