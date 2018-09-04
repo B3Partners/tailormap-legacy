@@ -89,7 +89,7 @@ public class OntbrandingsActionBean implements ActionBean {
         }
         
         JSONArray safetyZones = new JSONArray();
-        JSONObject referenceLine = calculateReferenceLine(jsonFeatures,mainLocation);
+        JSONObject referenceLine = calculateReferenceLine(jsonFeatures);
         for (Iterator<Object> iterator = jsonFeatures.iterator(); iterator.hasNext();) {
             JSONObject feature = (JSONObject) iterator.next();
             try {
@@ -109,11 +109,9 @@ public class OntbrandingsActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(result.toString()));
     }
 
-    private JSONObject calculateReferenceLine(JSONArray features, JSONObject mainlocation) {
+    private JSONObject calculateReferenceLine(JSONArray features) {
         JSONObject referenceLine = new JSONObject();
         try {
-            Geometry audience = wkt.read(mainlocation.getString("wktgeom"));
-            Point audienceCentroid = audience.getCentroid();
             List<Point> centroids = new ArrayList<>();
             for (Iterator<Object> iterator = features.iterator(); iterator.hasNext();) {
                 JSONObject feature = (JSONObject) iterator.next();
@@ -121,11 +119,9 @@ public class OntbrandingsActionBean implements ActionBean {
                 String type = attributes.getString("type");
 
                 if (type.equals("ignitionLocation")) {
-
                     Geometry ignition = wkt.read(feature.getString("wktgeom"));
                     centroids.add(ignition.getCentroid());
                 }
-
             }
             GeometryCollection gc = new GeometryCollection(centroids.toArray(new Geometry[0]), gf);
             Point centerCentroid = gc.getCentroid();
