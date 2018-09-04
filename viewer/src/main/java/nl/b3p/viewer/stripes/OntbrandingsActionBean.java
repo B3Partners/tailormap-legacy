@@ -16,8 +16,10 @@
  */
 package nl.b3p.viewer.stripes;
 
+import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
@@ -28,9 +30,9 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import java.awt.geom.AffineTransform;
 import java.io.StringReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
@@ -85,12 +87,14 @@ public class OntbrandingsActionBean implements ActionBean {
             }
 
         }
+        
         JSONArray safetyZones = new JSONArray();
+        JSONObject referenceLine = calculateReferenceLine(jsonFeatures,mainLocation);
+        safetyZones.put(referenceLine.getJSONObject("feature"));
         for (Iterator<Object> iterator = jsonFeatures.iterator(); iterator.hasNext();) {
             JSONObject feature = (JSONObject) iterator.next();
-            JSONObject safetyZone;
             try {
-                JSONArray obs = calculateSafetyZone(feature, mainLocation);
+                JSONArray obs = calculateSafetyZone(feature, mainLocation, referenceLine);
                 if (obs != null && obs.length() > 0) {
                     for (Iterator<Object> iterator1 = obs.iterator(); iterator1.hasNext();) {
                         JSONObject g = (JSONObject) iterator1.next();
@@ -106,7 +110,36 @@ public class OntbrandingsActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(result.toString()));
     }
 
-    private JSONArray calculateSafetyZone(JSONObject feature, JSONObject mainLocation) throws ParseException, TransformException {
+    private JSONObject calculateReferenceLine(JSONArray features, JSONObject mainlocation) {
+        JSONObject referenceLine = new JSONObject();
+        try {
+            Geometry audience = wkt.read(mainlocation.getString("wktgeom"));
+            Point audienceCentroid = audience.getCentroid();
+            List<Point> centroids = new ArrayList<>();
+            for (Iterator<Object> iterator = features.iterator(); iterator.hasNext();) {
+                JSONObject feature = (JSONObject) iterator.next();
+                JSONObject attributes = feature.getJSONObject("attributes");
+                String type = attributes.getString("type");
+
+                if (type.equals("ignitionLocation")) {
+
+                    Geometry ignition = wkt.read(feature.getString("wktgeom"));
+                    centroids.add(ignition.getCentroid());
+                }
+
+            }
+            GeometryCollection gc = new GeometryCollection(centroids.toArray(new Geometry[0]), gf);
+            Point centerCentroid = gc.getCentroid();
+            referenceLine.put("x", centerCentroid.getX());
+            referenceLine.put("y", centerCentroid.getY());
+                    
+        } catch (ParseException ex) {
+            LOG.error("Cannot parse wkt for reference line", ex);
+        }
+        return referenceLine;
+    }
+
+    private JSONArray calculateSafetyZone(JSONObject feature, JSONObject mainLocation,JSONObject referenceLine) throws ParseException, TransformException {
         JSONObject attributes = feature.getJSONObject("attributes");
         String type = attributes.getString("type");
         JSONArray gs = new JSONArray();
@@ -119,15 +152,15 @@ public class OntbrandingsActionBean implements ActionBean {
             }
 
             if (fan) {
-                calculateFan(feature, mainLocation, gs);
+                calculateFan(feature, mainLocation, gs, referenceLine);
             } else {
-                calculateNormalSafetyZone(feature, mainLocation,gs);
+                calculateNormalSafetyZone(feature, mainLocation,gs, referenceLine);
             }
         }
         return gs;
     }
 
-    private void calculateFan(JSONObject feature, JSONObject mainLocation, JSONArray gs) throws ParseException, TransformException {
+    private void calculateFan(JSONObject feature, JSONObject mainLocation, JSONArray gs,JSONObject referenceLine) throws ParseException, TransformException {
         // Bereken centroide van feature: [1]
         // bereken centroide van hoofdlocatie: [2]
         // bereken lijn tussen de twee [1] en [2] centroides: [3]
@@ -207,10 +240,10 @@ public class OntbrandingsActionBean implements ActionBean {
             gs.put(createFeature(tp.getResultGeometry(), "safetyZone", ""));
         }
 
-        createSafetyDistances(gs, audience, ignition, g, attributes);
+        createSafetyDistances(gs, audience, ignition, g, attributes, referenceLine);
     }
 
-    private void createSafetyDistances(JSONArray gs, Geometry audience, Geometry ignition, Geometry safetyZone, JSONObject attributes) throws TransformException {
+    private void createSafetyDistances(JSONArray gs, Geometry audience, Geometry ignition, Geometry safetyZone, JSONObject attributes,JSONObject referenceLine) throws TransformException {
         // Create safetydistances
         // 1. afstand tussen rand afsteekzone en safetyzone: loodrecht op publiek
         Point audienceCentroid = audience.getCentroid();
@@ -223,13 +256,20 @@ public class OntbrandingsActionBean implements ActionBean {
         double length = audience2ignition.getLength();
         double ratioX = (dx / length);
         double ratioY = (dy / length);
-        double fanX = ratioX * 1000;
-        double fanY = ratioY * 1000;
-
+        double fanX = ratioX * -1000;
+        double fanY = ratioY * -1000;
+        
+        double x = referenceLine.getDouble("x");
+        double y = referenceLine.getDouble("y");
+        Coordinate centerTip = new Coordinate(x, y);
+        Coordinate audienceTail = audienceCentroid.getCoordinate();
+        Coordinate ignitionTip = ignitionCentroid.getCoordinate();
+        double angle = Angle.angleBetweenOriented(centerTip, audienceTail, ignitionTip);
+        
         Point eindLoodlijn = gf.createPoint(new Coordinate(ignitionCentroid.getX() + fanX, ignitionCentroid.getY() + fanY));
         Coordinate ancorPoint = ignitionCentroid.getCoordinate();
         
-        double angleRad = Math.toRadians(90);
+        double angleRad = Math.toRadians(angle >= 0 ? -90 : 90);
         AffineTransform affineTransform = AffineTransform.getRotateInstance(angleRad, ancorPoint.x, ancorPoint.y);
         MathTransform mathTransform = new AffineTransform2D(affineTransform);
 
@@ -269,7 +309,7 @@ public class OntbrandingsActionBean implements ActionBean {
         return ellipse;
     }
 
-    private void calculateNormalSafetyZone(JSONObject feature, JSONObject audienceObj, JSONArray gs) throws ParseException, TransformException {
+    private void calculateNormalSafetyZone(JSONObject feature, JSONObject audienceObj, JSONArray gs, JSONObject referenceLine) throws ParseException, TransformException {
         Geometry ignition = wkt.read(feature.getString("wktgeom"));
         Geometry audience = wkt.read(audienceObj.getString("wktgeom"));
         Geometry zone = createNormalSafetyZone(feature,ignition);
@@ -277,7 +317,7 @@ public class OntbrandingsActionBean implements ActionBean {
         if(attributes.getBoolean("showcircle")){
             gs.put(createFeature(zone, "safetyZone", ""));
         }
-        createSafetyDistances(gs, audience, ignition, zone, attributes);
+        createSafetyDistances(gs, audience, ignition, zone, attributes, referenceLine);
     }
 
     private Geometry createNormalSafetyZone(JSONObject feature, Geometry ignition) throws ParseException {
