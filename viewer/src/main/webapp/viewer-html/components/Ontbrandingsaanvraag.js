@@ -1646,7 +1646,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.addMessageInContainer('#calculation_messages', 'U dient minimaal één publiekslocatie toe te voegen');
             return false;
         }
-        if(store.find('mainLocation', true).length === 0) {
+        if(store.find('mainLocation', true) === -1) {
             this.addMessageInContainer('#calculation_messages', 'U dient één publiekslocatie toe te voegen en als hoofdlocatie aan te merken');
             return false;
         }
