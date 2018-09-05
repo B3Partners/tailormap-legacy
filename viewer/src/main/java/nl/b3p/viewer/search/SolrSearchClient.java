@@ -98,9 +98,9 @@ public class SolrSearchClient extends SearchClient {
            
 
         } catch (SolrServerException ex) {
-            log.error(ex);
+            log.error("Error doing solr search:", ex);
         } catch (JSONException ex) {
-            log.error(ex);
+            log.error("Error doing solr search:",ex);
         } 
         
         return result;
