@@ -84,7 +84,9 @@ Ext.onReady(function() {
         // DIV-ID to which the selection buttons are rendered
         layerSelectionButtons: 'layerselection-buttons',
         // DIV-ID to which the move buttons are rendered
-        layerMoveButtons: 'layermove-buttons'
+        layerMoveButtons: 'layermove-buttons',
+        // URL to get path
+        pathSelectionUrl: pathSelectionUrl,
     }));
     
     // document tree
