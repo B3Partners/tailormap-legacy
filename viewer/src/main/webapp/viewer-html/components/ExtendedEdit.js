@@ -216,8 +216,14 @@ Ext.define ("viewer.components.ExtendedEdit",{
         }
         this.createPagination();
     },
+    layerChanged: function (appLayer) {
+        this.buttonPanel.setVisible(true);
+        this.callParent([appLayer]);
+    },
     showAndFocusForm: function() {
-        this.buttonPanel.setVisible(false);
+        if(this.mode !== null) {
+            this.buttonPanel.setVisible(false);
+        }
         this.maincontainer.down('#removeMessage').setVisible(false);
         this.callParent([]);
     },
