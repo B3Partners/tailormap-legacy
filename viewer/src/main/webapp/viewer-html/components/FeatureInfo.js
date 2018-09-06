@@ -150,7 +150,7 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.setMaptipEnabled(false);
     },
     executeServerRequest: function(options, radius, inScaleLayers) {
-        this.requestHistory.push({ options: Object.assign({}, options), radius: radius, inScaleLayers: inScaleLayers });
+        this.requestHistory.push({ options: Ext.Object.merge({}, options), radius: radius, inScaleLayers: inScaleLayers });
         this.callParent(arguments);
     },
     featureEdited: function(layer) {
