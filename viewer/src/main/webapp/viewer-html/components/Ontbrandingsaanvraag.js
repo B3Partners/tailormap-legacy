@@ -651,6 +651,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                                 change:function(field, newValue){
                                     var lengthDistanceCmp = Ext.getCmp("lengthdistanceline");
                                     lengthDistanceCmp.setDisabled(!newValue);
+                                   // this.saveIgnitionLocation();
                                 }
                             }
                         }, {
@@ -1589,6 +1590,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
                 scope: this,
+                timeout: 1200000,
                 params: {
                     features: Ext.JSON.encode(features),
                     showIntermediateResults:false
