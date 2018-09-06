@@ -593,12 +593,14 @@ Ext.define("viewer.components.Edit", {
         if (typeof values !== 'undefined') {
             fieldText = values[0];
         }
+        var disallowNull = attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue;
         var options = {
             name: attribute.name,
             fieldLabel: attribute.editAlias || attribute.name,
             value: fieldText,
             disabled: !this.allowedEditable(attribute),
-            labelClsExtra: this.editLblClass
+            labelClsExtra: this.editLblClass,
+            allowBlank: !disallowNull
         };
         var input;
         if (attribute.editHeight) {
@@ -627,6 +629,7 @@ Ext.define("viewer.components.Edit", {
         return input;
     },
     createDynamicInput: function (attribute, values) {
+        var disallowNull = attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue;
         var valueStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'label']
         });
@@ -712,12 +715,13 @@ Ext.define("viewer.components.Edit", {
             name: attribute.name,
             id: attribute.name,
             valueField: 'id',
+            allowBlank: !disallowNull,
             disabled: !this.allowedEditable(attribute),
             editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
             labelClsExtra: this.editLblClass
         });
 
-        if (attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue) {
+        if (disallowNull) {
             try {
                 if (valueStore.loadCount !== 0) { // if store is loaded already load event is not fired anymore
                     input.select(valueStore.getAt(0));
@@ -990,6 +994,10 @@ Ext.define("viewer.components.Edit", {
     save: function () {
         if (this.mode === "delete") {
             this.remove();
+            return;
+        }
+
+        if (!this.inputContainer.isValid()) {
             return;
         }
 
