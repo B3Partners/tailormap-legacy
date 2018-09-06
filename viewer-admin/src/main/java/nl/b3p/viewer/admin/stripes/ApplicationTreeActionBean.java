@@ -55,6 +55,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     @Validate(on="addLevel",required=true)
     private String name;
 
+    @Validate(on="loadRegistryPath",required=true)
+    private String layerId;
+
     private Level rootLevel;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
@@ -105,6 +108,14 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
     public void setTargetLevelId(String targetLevelId) {
         this.targetLevelId = targetLevelId;
+    }
+
+    public String setLayerId() {
+        return layerId;
+    }
+
+    public void setLayerId(String layerId) {
+        this.layerId = layerId;
     }
     
     //</editor-fold>
@@ -197,6 +208,55 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
            public void stream(HttpServletResponse response) throws Exception {
                response.getWriter().print(children.toString());
            }
+        };
+    }
+
+    public Resolution loadRegistryPath() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
+        String layerType = layerId.substring(0, 1);
+        String appLayerType = layerId.substring(0, 2);
+
+        JSONArray path = new JSONArray();
+        if(appLayerType.equals("al") || layerType.equals("l")) {
+            Layer foundLayer = null;
+            if(appLayerType.equals("al")) {
+                int id = Integer.parseInt(layerId.substring(2));
+                ApplicationLayer appl = em.find(ApplicationLayer.class, (long)id);
+                GeoService gs = appl.getService();
+                List<Layer> layers = gs.loadLayerTree(em);
+                for (Layer l : layers) {
+                    if(l.getName() != null && l.getName().equals(appl.getLayerName())) {
+                        foundLayer = l;
+                        break;
+                    }
+                }
+            } else {
+                int id = Integer.parseInt(layerId.substring(1));
+                foundLayer = em.find(Layer.class, (long)id);
+            }
+            if(foundLayer != null) {
+                Layer parent = foundLayer.getParent();
+                path.put("l" + foundLayer.getId());
+                while(parent != null) {
+                    if(!parent.isVirtual()) {
+                        path.put("l" + parent.getId());
+                    }
+                    parent = parent.getParent();
+                }
+                path.put("s" + foundLayer.getService().getId());
+                Category c = foundLayer.getService().getCategory();
+                while(c != null) {
+                    path.put("c" + c.getId());
+                    c = c.getParent();
+                }
+            }
+        }
+
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(path);
+            }
         };
     }
     
