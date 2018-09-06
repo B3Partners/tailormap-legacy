@@ -284,6 +284,9 @@ Ext.define("viewer.components.Edit", {
             button.setDisabled(disabled);
     },
     showAndFocusForm: function () {
+        if(this.mode === null) {
+            return;
+        }
         this.showMobilePopup();
         this.setFormVisible(true);
         var firstField = this.inputContainer.down("field");
@@ -380,6 +383,8 @@ Ext.define("viewer.components.Edit", {
             this.inputContainer.removeAll();
             this.loadAttributes(appLayer);
             this.inputContainer.setLoading(false);
+            // Make form invisible first, New or Edit has to be clicked first
+            this.setFormVisible(false);
         } else {
             this.cancel();
         }
@@ -970,6 +975,10 @@ Ext.define("viewer.components.Edit", {
         }
     },
     save: function () {
+        if(this.mode === null) {
+            return;
+        }
+
         if (this.mode === "delete") {
             this.remove();
             return;
@@ -985,6 +994,9 @@ Ext.define("viewer.components.Edit", {
             if (this.vectorLayer.getActiveFeature()) {
                 var wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
                 feature[this.appLayer.geometryAttribute] = wkt;
+            }
+            if(!feature[this.appLayer.geometryAttribute]) {
+                return;
             }
         }
         if (this.mode === "edit") {
