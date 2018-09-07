@@ -629,7 +629,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     defaults: {
                         flex: 1,
                         listeners: {
-                            change: this.toggleZonedistancesForm,
+                            change: function(field,newValue){
+                                if(field.getName() === "distanceline"){
+                                    var lengthDistanceCmp = Ext.getCmp("lengthdistanceline");
+                                    lengthDistanceCmp.setDisabled(!newValue);
+                                }
+                                this.toggleZonedistancesForm();
+                            },
                             blur: this.saveIgnitionLocation,
                             scope: this
                         }
@@ -645,15 +651,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             boxLabel: 'Afstandslijn',
                             name: 'distanceline',
                             itemId: 'distanceline',
-                            value: true,
-                            listeners:{
-                                scope:this,
-                                change:function(field, newValue){
-                                    var lengthDistanceCmp = Ext.getCmp("lengthdistanceline");
-                                    lengthDistanceCmp.setDisabled(!newValue);
-                                   // this.saveIgnitionLocation();
-                                }
-                            }
+                            value: true
                         }, {
                             boxLabel: 'Lengte afstandslijn',
                             name: 'lengthdistanceline',
