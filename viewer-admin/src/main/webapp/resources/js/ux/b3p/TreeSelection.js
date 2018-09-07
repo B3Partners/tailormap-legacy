@@ -350,15 +350,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 result.reverse();
                 me.tree.ensureVisible("/" + result.join("/"), {
                     focus: true,
-                    select: true,
-                    callback: function(success, record, node) {
-                        console.log(success, record, node);
-                    }
+                    select: true
                 });
             },
-            failure: function() {
-                console.log("Error getting path", arguments);
-            }
+            failure: function() {}
         });
     },
     checkDropAllowed: function(target, records) {
