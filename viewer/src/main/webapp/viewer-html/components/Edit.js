@@ -161,22 +161,29 @@ Ext.define("viewer.components.Edit", {
         }
     },
     loadWindow: function () {
-        this.maincontainer = Ext.create('Ext.container.Container', {
+        this.maincontainer = Ext.create(!this.config.isPopup ? 'Ext.panel.Panel' : 'Ext.container.Container', {
             id: this.name + 'Container',
-            width: '100%',
-            height: '100%',
-            autoScroll: true,
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
+            title: this.getPanelTitle(),
             style: {
                 backgroundColor: 'White'
             },
-            padding: 10,
-            items: this.getFormItems(),
-            renderTo: this.getContentDiv()
+            items: [
+                {
+                    xtype: 'container',
+                    scrollable: false,
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    padding: 10,
+                    items: this.getFormItems()
+                }
+            ],
+            scrollable: true,
+            layout: 'fit',
+            tools: this.getHelpToolConfig()
         });
+        this.getContentContainer().add(this.maincontainer);
         this.inputContainer = this.maincontainer.down('#inputPanel');
         this.geomlabel = this.maincontainer.down("#geomLabel");
         this.savebutton = this.maincontainer.down("#saveButton");

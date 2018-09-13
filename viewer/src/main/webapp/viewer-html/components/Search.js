@@ -115,29 +115,11 @@ Ext.define ("viewer.components.Search",{
         if(this.form){
             this.form.destroy();
         }
-        var tools = [];
-        var me = this;
-        if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false" && !this.config.isPopup) {
-            tools = [{
-                type:'help',
-                handler: function(event, toolEl, panel){
-                    me.config.viewerController.showHelp(me.config);
-                }
-            }];
-        }
-        
-        var title = "";
-        
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup){
-            title = this.config.title;
-        }
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
             height: this.config.formHeight,
             padding: 0,
             items: this.getFormItems(),
-            title: title,
-            tools: tools,
             border: 0,
             layout: {
                 type: 'vbox',
@@ -153,6 +135,8 @@ Ext.define ("viewer.components.Search",{
         });
 
         var options = {
+            title: this.getPanelTitle(),
+            tools: this.getHelpToolConfig(),
             itemId: this.name + 'Container',
             layout: {
                 type: 'vbox',

@@ -113,20 +113,6 @@ Ext.define ("viewer.components.TOC",{
         store.addListener("nodebeforeexpand",this.beforeExpand, this);
         store.addListener("nodeexpand",this.onExpand,this);
 
-        var title = "";
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) title = this.config.title;
-
-        var tools = [];
-        // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
-        if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
-            tools = [{
-                type:'help',
-                handler: function(event, toolEl, panel){
-                    me.config.viewerController.showHelp(me.config);
-                }
-            }];
-        }
-
         var dockedItems = [];
         if(this.showAllLayersOn || this.showAllLayersOff){
             dockedItems = [
@@ -153,7 +139,7 @@ Ext.define ("viewer.components.TOC",{
         }
 
         this.panel = Ext.create('Ext.tree.Panel', {
-            title: title,
+            title: this.getPanelTitle(),
             height: "100%",
             scrollable: true,
             useArrows: true,
@@ -178,7 +164,7 @@ Ext.define ("viewer.components.TOC",{
                 }
             },
             store: store,
-            tools: tools,
+            tools: this.getHelpToolConfig(),
             dockedItems: dockedItems
         });
         var parent = this.getContentContainer();

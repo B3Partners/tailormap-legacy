@@ -243,6 +243,28 @@ Ext.define("viewer.components.Component",{
         }
     },
 
+    getHelpToolConfig: function() {
+        var tools = [];
+        if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
+            tools = [{
+                type: 'help',
+                scope: this,
+                handler: function(event, toolEl, panel){
+                    this.config.viewerController.showHelp(this.config);
+                }
+            }];
+        }
+        return tools;
+    },
+
+    getPanelTitle: function() {
+        var title = "";
+        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) {
+            title = this.config.title;
+        }
+        return title;
+    },
+
     getSvgIcon: function(iconCls) {
         var appSprite = this.config.viewerController.getApplicationSprite();
         var baseClass = this.getBaseClass().replace("viewercomponents", "").toLowerCase();
