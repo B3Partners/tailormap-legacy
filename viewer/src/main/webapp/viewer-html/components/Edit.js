@@ -601,7 +601,7 @@ Ext.define("viewer.components.Edit", {
         var disallowNull = attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue;
         var options = {
             name: attribute.name,
-            fieldLabel: attribute.editAlias || attribute.name,
+            fieldLabel: attribute.editAlias || attribute.alias || attribute.name,
             value: fieldText,
             disabled: !this.allowedEditable(attribute),
             labelClsExtra: this.editLblClass,
@@ -713,7 +713,7 @@ Ext.define("viewer.components.Edit", {
         }
 
         var input = Ext.create('Ext.form.field.ComboBox', {
-            fieldLabel: attribute.editAlias || attribute.name,
+            fieldLabel: attribute.editAlias || attribute.alias || attribute.name,
             store: valueStore,
             queryMode: 'local',
             displayField: 'label',
