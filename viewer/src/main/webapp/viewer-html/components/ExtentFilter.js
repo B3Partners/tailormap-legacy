@@ -27,7 +27,7 @@ Ext.define ("viewer.components.ExtentFilter",{
     constructor: function (conf){ 
         this.initConfig(conf);
         this.layers = [];
-        this.initializeLayers();
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initialLoad, this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.initializeLayers,this );
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT, this.changedExtent, this);
         return this;
@@ -47,6 +47,11 @@ Ext.define ("viewer.components.ExtentFilter",{
         this.config.viewerController.traverseSelectedContent(Ext.emptyFn, function(appLayer) {
             me.layers.push(appLayer);
         });
+    },
+    initialLoad: function() {
+        this.initializeLayers();
+        var map = this.config.viewerController.mapComponent.getMap();
+        this.changedExtent(map, { extent: map.getExtent() });
     },
     getExtComponents: function() {
         return [];
