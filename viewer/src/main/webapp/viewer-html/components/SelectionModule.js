@@ -910,13 +910,16 @@ Ext.define ("viewer.components.SelectionModule",{
     filterRemote: function(tree, textvalue) {
         var treeStore = tree.getStore();
         if(textvalue !== '') {
-            treeStore.getProxy().extraParams = {
+            treeStore.getProxy().setExtraParams({
                 search: 'search',
                 q: textvalue
-            };
+            });
         }
-        treeStore.load();
-        treeStore.getProxy().extraParams = {};
+        var listener = treeStore.on("load", function() {
+            listener.destroy();
+            treeStore.getProxy().setExtraParams({});
+        }, this, { destroyable: true });
+        treeStore.reload();
     },
 
     addLayerToLevel : function(levelNode, layerNodes){
