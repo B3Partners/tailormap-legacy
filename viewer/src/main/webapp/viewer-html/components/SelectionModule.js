@@ -944,13 +944,17 @@ Ext.define ("viewer.components.SelectionModule",{
     },
     
     filterNodes: function(tree, textvalue) {
-        var me = this;
         var store = tree.getStore();
-        var listener = store.on("refresh", function() {
-            tree.expandAll();
-            listener.destroy();
-        }, this, { destroyable: true });
-        store.filter("text", textvalue);
+        if(textvalue !== '') {
+            var listener = store.on("refresh", function () {
+                listener.destroy();
+                tree.expandAll();
+            }, this, {destroyable: true});
+            store.filter("text", textvalue);
+        } else {
+            tree.collapseAll();
+            store.clearFilter();
+        }
     },
 
     hasLeftTrees: function() {
