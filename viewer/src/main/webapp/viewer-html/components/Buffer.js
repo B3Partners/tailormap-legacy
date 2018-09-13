@@ -173,7 +173,7 @@ Ext.define ("viewer.components.Buffer",{
             this.config.viewerController.mapComponent.getMap().addLayer(imageLayer);
             if(viewer.components.MobileManager.isMobile()) {
                 this.popup.hide();
-            }            
+            }
         }
     },
     removeBuffer : function(){
@@ -190,6 +190,28 @@ Ext.define ("viewer.components.Buffer",{
                     this.imageLayers.splice(i,1);
                 }
             }
+        }
+    },
+    getBookmarkState: function() {
+        var state = [];
+        for (var i = 0; i < this.imageLayers.length; i++){
+            state.push({
+                id: this.imageLayers[i].id,
+                url: this.imageLayers[i].url,
+                bbox: this.imageLayers[i].extent
+            });
+        }
+        return state;
+    },
+
+    loadVariables: function (state) {
+        state = Ext.decode(state);
+        if (state.length > 0) {
+            this.imageLayers = [];
+            for(var i = 0; i < state.length; i++) {
+                this.imageLayers.push(this.config.viewerController.mapComponent.createImageLayer(state[i].id, state[i].url, state[i].bbox));
+            }
+            this.selectedContentChanged();
         }
     },
     getExtComponents: function() {
