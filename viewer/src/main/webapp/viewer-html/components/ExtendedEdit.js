@@ -53,10 +53,6 @@ Ext.define ("viewer.components.ExtendedEdit",{
             ]
         });
 
-        var title = "";
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) {
-            title = this.config.title;
-        }
         var formItems = this.getFormItems();
         formItems.push({
             xtype: 'container',
@@ -66,7 +62,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
             componentCls: 'alert-message success'
         });
         this.maincontainer = Ext.create('Ext.panel.Panel', {
-            title: title,
+            title: this.getPanelTitle(),
             items: [
                 {
                     xtype: 'container',
@@ -81,6 +77,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
             ],
             scrollable: true,
             layout: 'fit',
+            tools: this.getHelpToolConfig(),
             dockedItems: [this.buttons]
         });
         this.getContentContainer().add(this.maincontainer);

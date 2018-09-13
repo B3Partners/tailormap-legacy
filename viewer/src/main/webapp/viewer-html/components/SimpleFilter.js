@@ -36,13 +36,25 @@ Ext.define("viewer.components.SimpleFilter", {
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.layersInitialized, this);
 
+        var renderInPanel = false;
+        var opts = {};
+        if(this.config.title || (this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false")) {
+            renderInPanel = true;
+            opts = {
+                title: this.getPanelTitle(),
+                tools: this.getHelpToolConfig(),
+                padding: 0,
+                border: 0
+            };
+        }
+
         var containerContentId = Ext.id();
-        this.container = Ext.create('Ext.container.Container', {
+        this.container = Ext.create(renderInPanel ? 'Ext.panel.Panel' : 'Ext.container.Container', Ext.Object.merge(opts, {
             width: '100%',
             height: '100%',
             renderTo: this.div,
             html: '<div class="simple-filter-wrapper" id="' + containerContentId + '"></div>'
-        });
+        }));
 
         var me = this;
         Ext.Array.each(this.config.filters, function(filter, index) {

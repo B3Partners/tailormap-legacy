@@ -202,7 +202,8 @@ Ext.define ("viewer.components.AttributeList",{
             ]
         };
         if(!this.config.isPopup) {
-            topContainerOptions.title = !this.config.viewerController.layoutManager.isTabComponent(this.name) ? this.config.title : '';
+            topContainerOptions.title = this.getPanelTitle();
+            topContainerOptions.tools = this.getHelpToolConfig();
             // topContainerOptions.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 0 10 0';
         } else {
             closingPanelOptions.items.push({

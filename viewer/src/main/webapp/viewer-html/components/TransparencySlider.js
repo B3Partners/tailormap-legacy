@@ -38,26 +38,13 @@ Ext.define ("viewer.components.TransparencySlider",{
         if(this.config.layers != null) {
             transparencySlider_layersArrayIndexesToAppLayerIds(this.config);
         }
-        
-        var me = this;
-        var title = "";
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
-        var tools = [];
-        // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
-        if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
-            tools = [{
-                type:'help',
-                handler: function(event, toolEl, panel){
-                    me.config.viewerController.showHelp(me.config);
-                }
-            }];
-        }
+
         this.panel = Ext.create('Ext.panel.Panel', {
             renderTo: this.getContentDiv(),
-            title: title,
+            title: this.getPanelTitle(),
             height: "100%",
             autoScroll: true,
-            tools: tools,
+            tools: this.getHelpToolConfig(),
             bodyPadding: 10
         });
         conf.parentContainer = this.panel;

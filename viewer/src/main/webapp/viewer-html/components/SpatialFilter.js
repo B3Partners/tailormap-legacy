@@ -408,7 +408,8 @@ Ext.define ("viewer.components.SpatialFilter",{
             id: this.config.name + 'ApplyDirect'
         });
         this.createLayerSelector();
-        this.maincontainer = Ext.create('Ext.container.Container', {
+        this.maincontainer = Ext.create(!this.config.isPopup ? 'Ext.panel.Panel' : 'Ext.container.Container', {
+            title: this.getPanelTitle(),
             id: this.config.name + 'Container',
             width: '100%',
             height: '100%',
@@ -419,8 +420,9 @@ Ext.define ("viewer.components.SpatialFilter",{
             style: {
                 backgroundColor: 'White'
             },
-            padding: 4,
+            padding: !this.config.isPopup ? 0 : 4,
             renderTo: this.getContentDiv(),
+            tools: this.getHelpToolConfig(),
             items: [
             this.layerSelector.getLayerSelector(),
                 this.sourceLayerSelector.getLayerSelector(),
