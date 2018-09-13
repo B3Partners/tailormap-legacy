@@ -77,27 +77,19 @@ Ext.define ("viewer.components.SelectionModule",{
     treePanels: {
         applicationTree: {
             treePanel: null,
-            treeStore: null,
-            filteredNodes: [],
-            hiddenNodes: []
+            treeStore: null
         },
         registryTree: {
             treePanel: null,
-            treeStore: null,
-            filteredNodes: [],
-            hiddenNodes: []
+            treeStore: null
         },
         customServiceTree: {
             treePanel: null,
-            treeStore: null,
-            filteredNodes: [],
-            hiddenNodes: []
+            treeStore: null
         },
         selectionTree: {
             treePanel: null,
-            treeStore: null,
-            filteredNodes: [],
-            hiddenNodes: []
+            treeStore: null
         }
     },
     activeTree: null,
@@ -717,7 +709,8 @@ Ext.define ("viewer.components.SelectionModule",{
             },
             proxy: {
                 type: 'memory'
-            }
+            },
+            filterer: 'bottomup'
         };
 
         var defaultTreeConfig = {
@@ -952,87 +945,16 @@ Ext.define ("viewer.components.SelectionModule",{
     
     filterNodes: function(tree, textvalue) {
         var me = this;
-        var rootNode = tree.getRootNode();
-        var treePanelType = tree.treePanelType;
-        if(textvalue === '') {
-            me.setAllNodesVisible(true, treePanelType);
-        } else {
-            me.setAllNodesVisible(true, treePanelType);
-            var re = new RegExp(Ext.String.escapeRegex(textvalue), 'i');
-            var visibleParents = [];
-            var filter = function(node) {// descends into child nodes
-                var addParents = function(node) {
-                    if(node.parentNode != null) {// Dont add the root
-                        var nodeid = node.get('id');
-                        if(!Ext.Array.contains(nodeid)) visibleParents.push(nodeid);
-                        addParents(node.parentNode);
-                    }
-                };
-                if(node.get('type') !== 'cswresult' || (node.get('type') === 'cswresult') && node.data.loadedService) {
-                    node.expand(false, function() {// expand all nodes
-                        if(node.hasChildNodes()) {
-                            node.eachChild(function(childNode) {
-                                if(childNode.isLeaf()) {
-                                    if(!re.test(childNode.data.text)) {
-                                        me.treePanels[treePanelType].filteredNodes.push(childNode.get('id'));
-                                    } else {
-                                        addParents(childNode.parentNode);
-                                    }
-                                } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
-                                    addParents(childNode.parentNode);
-                                } else {
-                                    filter(childNode);
-                                }
-                            });
-                        }
-                        if(!re.test(node.data.text)) {
-                            me.treePanels[treePanelType].filteredNodes.push(node.get('id'));
-                        }
-                    });
-                } else {
-                    if(!re.test(node.data.text)) {
-                        me.treePanels[treePanelType].filteredNodes.push(node.get('id'));
-                    }
-                }
-            };
-            visibleParents = [];
-            filter(rootNode);
-            me.setAllNodesVisible(false, treePanelType, visibleParents);
-        }
+        var store = tree.getStore();
+        var listener = store.on("refresh", function() {
+            tree.expandAll();
+            listener.destroy();
+        }, this, { destroyable: true });
+        store.filter("text", textvalue);
     },
 
     hasLeftTrees: function() {
         return (this.config.selectGroups || this.config.selectLayers || this.config.selectOwnServices || this.config.selectCsw);
-    },
-
-    setAllNodesVisible: function(visible, treePanelName, visibleParents) {
-        var me = this;
-        if(!visible) {
-            // !visible -> A filter is being applied
-            // Save all nodes that are being filtered in hiddenNodes array
-            me.treePanels[treePanelName].hiddenNodes = me.treePanels[treePanelName].filteredNodes;
-        } else {
-            // visible -> No filter is applied
-            // filteredNodes = hiddenNodes, so all hidden nodes will be made visible
-            me.treePanels[treePanelName].filteredNodes = me.treePanels[treePanelName].hiddenNodes;
-            me.treePanels[treePanelName].hiddenNodes = [];
-        }
-        var store = me.treePanels[treePanelName].treePanel.getStore();
-        var view = me.treePanels[treePanelName].treePanel.getView();
-        Ext.each(me.treePanels[treePanelName].filteredNodes, function(n) {
-            var record = store.getNodeById(n);
-            if (record !== null) {
-                var el = Ext.fly(view.getNodeByRecord(record));
-                if(el !== null) {
-                    var tmpvis = visible;
-                    if(Ext.isDefined(visibleParents) && Ext.Array.contains(visibleParents, n)) {
-                        tmpvis = true;
-                    }
-                    el.setDisplayed(tmpvis);
-                }
-            }
-        });
-        me.treePanels[treePanelName].filteredNodes = [];
     },
 
     initApplicationLayers: function() {
