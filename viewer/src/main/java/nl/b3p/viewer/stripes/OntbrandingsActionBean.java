@@ -239,7 +239,7 @@ public class OntbrandingsActionBean implements ActionBean {
     }
 
     private void createSafetyDistances(JSONArray gs, Geometry audience, Geometry ignition, Geometry safetyZone, JSONObject attributes,JSONObject referenceLine, boolean isFan, double fanLength, double fanHeight) throws TransformException {
-        
+        ignition = ignition.buffer(0);
         boolean showLength = attributes.getBoolean("lengthdistanceline");
         boolean showLine = attributes.getBoolean("distanceline");
         if(!showLine){
@@ -287,10 +287,11 @@ public class OntbrandingsActionBean implements ActionBean {
             LineString testLine = gf.createLineString(coords);
             distanceLine = testLine;
         }
+        double length = distanceLine.getLength();        
+        gs.put(createFeature(distanceLine, "safetyDistance", showLength ? (int) length+ " m" : ""));
         
         double dx = beginpointDistanceline.getX() - eindpointDistanceline.getX();
         double dy = beginpointDistanceline.getY() - eindpointDistanceline.getY();
-        double length = distanceLine.getLength();
         double ratioX = (dx / length);
         double ratioY = (dy / length);
         double fanX = ratioX * -1000;
@@ -305,17 +306,12 @@ public class OntbrandingsActionBean implements ActionBean {
         
         // 1. afstand tussen rand afsteekzone en safetyzone: richting publiek
         Point eindLoodlijn = gf.createPoint(new Coordinate(beginpointDistanceline.getX() + fanX, beginpointDistanceline.getY() + fanY));
-        Coordinate[] endContinuousLine = {beginpointDistanceline.getCoordinate(), eindLoodlijn.getCoordinate()};
-        LineString continuousLine = gf.createLineString(endContinuousLine);
-        Geometry cutoffContLine = continuousLine.intersection(safetyZone);
-        cutoffContLine = cutoffContLine.difference(ignition);
-        gs.put(createFeature(cutoffContLine, "safetyDistance", showLength ? (int) (cutoffContLine.getLength() + 0.5)+ " m" : ""));
-        
+     
                // 2. afstand tussen rand afsteekzone en safetyzone: haaks op lijn uit 1.
         if (isFan) {
             double angle = Angle.angleBetweenOriented(centerTip, audienceTail, ignitionTip);
             double angleRad = Math.toRadians(angle >= 0 ? -90 : 90);
-
+            Geometry foundLoodLijn = null;
             for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i += offset) {
                 Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
 
@@ -328,11 +324,18 @@ public class OntbrandingsActionBean implements ActionBean {
                 cutoffLoodlijn = cutoffLoodlijn.difference(ignition);
                 length = cutoffLoodlijn.getLength();
                 if ((length + theta) >= fanLength && ((length - theta) <= fanLength)) {
-                    
-                    gs.put(createFeature(cutoffLoodlijn, "safetyDistance", showLength ? (int) (cutoffLoodlijn.getLength() + 0.5) + " m" : ""));
+                    foundLoodLijn = cutoffLoodlijn;
                     break;
                 }
             }
+            if (foundLoodLijn == null) {
+                Coordinate[] endContinuousLine = {beginpointDistanceline.getCoordinate(), eindLoodlijn.getCoordinate()};
+                LineString continuousLine = gf.createLineString(endContinuousLine);
+                Geometry cutoffContLine = continuousLine.intersection(safetyZone);
+                foundLoodLijn = cutoffContLine.difference(ignition);
+            }
+            
+            gs.put(createFeature(foundLoodLijn, "safetyDistance", showLength ? (int) (foundLoodLijn.getLength() + 0.5) + " m" : ""));
         }
     }
 
