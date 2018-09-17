@@ -64,6 +64,9 @@ public class ApplicationActionBean implements ActionBean {
     private String version;
 
     @Validate
+    private String bookmark;
+
+    @Validate
     private boolean debug;
 
     @Validate(on = "retrieveAppConfigJSON")
@@ -175,6 +178,14 @@ public class ApplicationActionBean implements ActionBean {
     public void setUnknown(boolean unknown) {
         this.unknown = unknown;
     }
+
+    public String getBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(String bookmark) {
+        this.bookmark = bookmark;
+    }
     //</editor-fold>
 
     static Application findApplication(String name, String version) {
@@ -266,6 +277,7 @@ public class ApplicationActionBean implements ActionBean {
                 .addParameter("version", version)
                 .addParameter("debug", debug)
                 .addParameter("uitloggen", true)
+                .addParameter("bookmark", bookmark)
                 .includeRequestParameters(true);
 
         loginUrl = login.getUrl(context.getLocale());
@@ -370,10 +382,12 @@ public class ApplicationActionBean implements ActionBean {
         && "true".equals(context.getRequest().getParameter("returnAfterLogout"))) {
             return new RedirectResolution(ApplicationActionBean.class)
                     .addParameter("name", application.getName())
+                    .addParameter("bookmark", bookmark)
                     .addParameter("version", application.getVersion());
         } else {
             return new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName())
+                    .addParameter("bookmark", bookmark)
                     .addParameter("version", application.getVersion());
         }
     }
