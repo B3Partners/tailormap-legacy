@@ -83,7 +83,9 @@ Ext.define("viewer.components.ExternalLinks", {
         });
     },
     hideFired : function(){
-        this.menu.hide();
+        if(this.menu){
+            this.menu.hide();
+        }
     },
     createLink: function (link, index, x, y) {
         var hasCoordsInLink = link.url.indexOf("[") !== -1;
