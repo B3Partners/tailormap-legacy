@@ -280,6 +280,9 @@ public class ApplicationActionBean implements ActionBean {
                 .addParameter("bookmark", bookmark)
                 .includeRequestParameters(true);
 
+        if(bookmark != null){
+            login.addParameter("bookmark", bookmark);
+        }
         loginUrl = login.getUrl(context.getLocale());
 
         String username = context.getRequest().getRemoteUser();
@@ -380,15 +383,23 @@ public class ApplicationActionBean implements ActionBean {
 
         if("true".equals(context.getRequest().getParameter("logout"))
         && "true".equals(context.getRequest().getParameter("returnAfterLogout"))) {
-            return new RedirectResolution(ApplicationActionBean.class)
+            RedirectResolution r = new RedirectResolution(ApplicationActionBean.class)
                     .addParameter("name", application.getName())
                     .addParameter("bookmark", bookmark)
                     .addParameter("version", application.getVersion());
+            if(bookmark != null ){
+                r.addParameter("bookmark", bookmark);
+            }
+            return r;
         } else {
-            return new RedirectResolution(LoginActionBean.class)
+            RedirectResolution r = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName())
                     .addParameter("bookmark", bookmark)
                     .addParameter("version", application.getVersion());
+            if(bookmark != null){
+                r.addParameter("bookmark", bookmark);
+            }
+            return r;
         }
     }
 

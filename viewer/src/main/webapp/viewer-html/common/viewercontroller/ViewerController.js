@@ -1747,10 +1747,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             var value = params[key];
             if(key === "bookmark"){
-                var me = this;
-                Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
-                layersLoaded = true;
-                bookmark = true;
+                if(value){
+                    var me = this;
+                    Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
+                    layersLoaded = true;
+                    bookmark = true;
+                }
             }else if(key === "layers"){
                 if(!Ext.isArray(value)){
                     value = value.split(",");
@@ -1877,6 +1879,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.valuesFromURL(params);
     },
     failureReadUrl : function(code){
+        this.logger.error("Cannot retrieve bookmarklayers. " + code);
     },
     getBookmarkUrl : function(){
         var paramJSON = {
