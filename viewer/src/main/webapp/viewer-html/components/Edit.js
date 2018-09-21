@@ -57,10 +57,12 @@ Ext.define("viewer.components.Edit", {
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor',
         showEditLinkInFeatureInfo: false,
+        editHelpText: "",
         isPopup: true,
         details: {
             minWidth: 400,
-            minHeight: 250
+            minHeight: 250,
+            useExtLayout: true
         }
     },
     editLblClass: 'editCmpLbl',
@@ -167,6 +169,7 @@ Ext.define("viewer.components.Edit", {
             style: {
                 backgroundColor: 'White'
             },
+            padding: 10,
             items: [
                 {
                     xtype: 'container',
@@ -175,7 +178,6 @@ Ext.define("viewer.components.Edit", {
                         type: 'vbox',
                         align: 'stretch'
                     },
-                    padding: 10,
                     items: this.getFormItems()
                 }
             ],
@@ -187,6 +189,7 @@ Ext.define("viewer.components.Edit", {
         this.inputContainer = this.maincontainer.down('#inputPanel');
         this.geomlabel = this.maincontainer.down("#geomLabel");
         this.savebutton = this.maincontainer.down("#saveButton");
+        this.editHelpLabel = this.maincontainer.down("#editHelpLabel");
         if (!this.config.isPopup && this.vectorLayer == null) {
             this.createVectorLayer();
         }
@@ -216,7 +219,7 @@ Ext.define("viewer.components.Edit", {
                 }
             }
         );
-        return [
+        var formItems = [
             this.layerSelector.getLayerSelector(),
             {
                 itemId: 'buttonPanel',
@@ -251,7 +254,16 @@ Ext.define("viewer.components.Edit", {
                 items: bottomButtons,
                 hidden: true
             }
-        ]
+        ];
+        if(this.config.editHelpText) {
+            formItems.splice(0, 0, {
+                itemId: "editHelpLabel",
+                margin: '0 0 10 0',
+                html: this.config.editHelpText,
+                xtype: "container"
+            });
+        }
+        return formItems;
     },
     createEditButtons: function () {
         var buttons = [];
