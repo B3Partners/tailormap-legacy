@@ -152,7 +152,7 @@ Ext.define("viewer.components.Edit", {
         this.setFormVisible(false);
         this.untoggleButtons();
         var buttons = this.maincontainer.down("#buttonPanel").query("button");
-        if (buttons.length === 1 && !buttons[0].isDisabled()) {
+        if (buttons.length === 1 && !buttons[0].isDisabled() && !viewer.components.MobileManager.isMobile()) {
             buttons[0].fireEvent("click", buttons[0]);
         }
         if(this.config.isPopup) {
@@ -188,6 +188,7 @@ Ext.define("viewer.components.Edit", {
         this.getContentContainer().add(this.maincontainer);
         this.inputContainer = this.maincontainer.down('#inputPanel');
         this.geomlabel = this.maincontainer.down("#geomLabel");
+        this.buttonPanel = this.maincontainer.down("#buttonPanel");
         this.savebutton = this.maincontainer.down("#saveButton");
         this.editHelpLabel = this.maincontainer.down("#editHelpLabel");
         if (!this.config.isPopup && this.vectorLayer == null) {
@@ -326,6 +327,10 @@ Ext.define("viewer.components.Edit", {
         if(this.mode === null) {
             return;
         }
+        var buttons = this.maincontainer.down("#buttonPanel").query("button");
+        if (buttons.length === 1) {
+            this.buttonPanel.setVisible(false);
+        }
         this.showMobilePopup();
         this.setFormVisible(true);
         var firstField = this.inputContainer.down("field");
@@ -357,6 +362,11 @@ Ext.define("viewer.components.Edit", {
         }
         if (this.config.showEditLinkInFeatureInfo) {
             this.createFeatureInfoLink(evt.layers);
+        }
+        if(this.layerSelector.getVisibleLayerCount() > 1) {
+            this.layerSelector.getLayerSelector().setVisible(true);
+        } else {
+            this.layerSelector.getLayerSelector().setVisible(false);
         }
     },
     createFeatureInfoLink: function (editableLayers) {
@@ -411,6 +421,7 @@ Ext.define("viewer.components.Edit", {
         }, this);
     },
     layerChanged: function (appLayer) {
+        this.buttonPanel.setVisible(true);
         if (appLayer != null) {
             if (this.vectorLayer) {
                 this.vectorLayer.removeAllFeatures();
@@ -1200,6 +1211,7 @@ Ext.define("viewer.components.Edit", {
         this.mode = null;
         this.geomlabel.setHtml("");
         this.setFormVisible(false);
+        this.buttonPanel.setVisible(true);
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         if (this.vectorLayer) {
             // vector layer may be null when cancel() is called
