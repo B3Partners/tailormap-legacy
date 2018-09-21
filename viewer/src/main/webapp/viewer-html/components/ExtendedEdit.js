@@ -107,6 +107,11 @@ Ext.define ("viewer.components.ExtendedEdit",{
         } else {
             this.layerSelector.setValue(this.currentLayer);
         }
+        if(this.layerSelector.getVisibleLayerCount() > 1) {
+            this.layerSelector.getLayerSelector().setVisible(true);
+        } else {
+            this.layerSelector.getLayerSelector().setVisible(false);
+        }
     },
     initAttributeInputs: function() {
         this.callParent(arguments);
@@ -212,10 +217,6 @@ Ext.define ("viewer.components.ExtendedEdit",{
             }
         }
         this.createPagination();
-    },
-    layerChanged: function (appLayer) {
-        this.buttonPanel.setVisible(true);
-        this.callParent([appLayer]);
     },
     showAndFocusForm: function() {
         if(this.mode !== null) {
