@@ -402,6 +402,7 @@ Ext.define('viewer.LayoutManager', {
             height: layout.height ? (layout.height + windowPadding) : '90%', // we are adding 12 px to account for borders and margins of the window
             resizable: false,
             draggable: false,
+            shadow: regionClass === "left_menu" ? false : 'sides',
             layout: extLayout,
             modal: false,
             renderTo: Ext.getBody(),
@@ -447,7 +448,8 @@ Ext.define('viewer.LayoutManager', {
                 xtype: 'panel',
                 border: 0,
                 collapsible: true,
-                id: id,
+                itemId: id,
+                titleCollapse: true,
                 animCollapse: false,
                 title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
                 collapsed: regionLayout.hasOwnProperty('defaultCollapsed') && regionLayout.defaultCollapsed,
@@ -755,7 +757,10 @@ Ext.define('viewer.LayoutManager', {
     
     expandRegion: function(componentId) {
         if(this.collapsibleComponents.hasOwnProperty(componentId)) {
-            Ext.getCmp(this.collapsibleComponents[componentId]).expand();
+            var comp = Ext.ComponentQuery.query("#" + this.collapsibleComponents[componentId]);
+            if(comp.length === 1) {
+                comp[0].expand();
+            }
         }
     },
 
