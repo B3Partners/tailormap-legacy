@@ -73,6 +73,15 @@ Ext.define("viewer.components.CustomConfiguration", {
                 name: 'showEditLinkInFeatureInfo',
                 value: this.configObject.showEditLinkInFeatureInfo !== undefined ? this.configObject.showEditLinkInFeatureInfo : false,
                 labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'textarea',
+                fieldLabel: 'Hulp tekst bij bewerken',
+                name: 'editHelpText',
+                value: this.configObject.hasOwnProperty("editHelpText") ? this.configObject.editHelpText : "",
+                labelWidth: this.labelWidth,
+                grow: true,
+                width: 700
             }
         ]);
     },
