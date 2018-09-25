@@ -185,7 +185,7 @@ public class OntbrandingsActionBean implements ActionBean {
         Point ignitionCentroid = ignition.getCentroid();
         Point audienceCentroid = audience.getCentroid();
 
-        double offset = 0.1;// fanHeight / 2;
+        double offset = 0.1;
         int endIndex = (int) lil.getEndIndex();
 
         Geometry zone = createNormalSafetyZone(feature, ignition, fanHeight);

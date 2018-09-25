@@ -121,7 +121,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "distance",
                 fieldLabel: "Afstand",
                 value: distance,
-                xtype: 'textfield',
+                xtype: 'numberfield',
+                allowDecimals:true,
+                decimalSeparator:',',
                 labelWidth: 50,
                 width: 150
             }, {
