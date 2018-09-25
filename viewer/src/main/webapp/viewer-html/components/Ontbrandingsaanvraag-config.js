@@ -73,7 +73,6 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         this.form.add({
             xtype: "panel",
-            height: 250,
             width: '100%',
             title: label,
             layout: {
@@ -90,7 +89,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     listeners: {
                         click: function(){
                             var distancesContainer = Ext.ComponentQuery.query("#" + containerKey)[0];
-                            distancesContainer.add(this.createRow('', '', paramkey === 'zonedistances_consumer'));
+                            distancesContainer.add(this.createRow('', '', paramkey === 'zonedistances_professional'));
                         },
                         scope:this
                     }

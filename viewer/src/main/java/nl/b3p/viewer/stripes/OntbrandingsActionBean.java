@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 B3Partners B.V.
+ * Copyright (C) 2017-2018 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -86,7 +86,6 @@ public class OntbrandingsActionBean implements ActionBean {
                 mainLocation = feature;
                 break;
             }
-
         }
         
         JSONArray safetyZones = new JSONArray();
@@ -195,27 +194,6 @@ public class OntbrandingsActionBean implements ActionBean {
         double dx = ignitionCentroid.getX() - audienceCentroid.getX();
         double dy = ignitionCentroid.getY() - audienceCentroid.getY();
 
-        // if (showIntermediateResults) {
-
-        /* double length = ls.getLength();
-            double ratioX = (dx / length);
-            double ratioY = (dy / length);
-            double fanX = ratioX * fanLength;
-            double fanY = ratioY * fanLength;
-            Point eindLoodlijn = gf.createPoint(new Coordinate(ignitionCentroid.getX() + fanX, ignitionCentroid.getY() + fanY));
-            Coordinate ancorPoint = ignitionCentroid.getCoordinate();
-
-            double angleRad = Math.toRadians(90);
-            AffineTransform affineTransform = AffineTransform.getRotateInstance(angleRad, ancorPoint.x, ancorPoint.y);
-            MathTransform mathTransform = new AffineTransform2D(affineTransform);
-
-            Geometry rotatedPoint = JTS.transform(eindLoodlijn, mathTransform);
-            Coordinate[] loodLijnCoords = {ignitionCentroid.getCoordinate(), rotatedPoint.getCoordinate()};
-            LineString loodLijn = gf.createLineString(loodLijnCoords);*/
- /*  gs.put(createFeature(eindLoodlijn, "temp", "eindLoodlijn"));
-            gs.put(createFeature(loodLijn, "temp", "loodLijn"));
-            gs.put(createFeature(rotatedPoint, "temp", "loodLijn2"));*/
-        //}
         double theta = Math.atan2(dy, dx);
         double correctBearing = (Math.PI / 2);
         double rotation = theta - correctBearing;
@@ -308,7 +286,7 @@ public class OntbrandingsActionBean implements ActionBean {
         // 1. afstand tussen rand afsteekzone en safetyzone: richting publiek
         Point eindLoodlijn = gf.createPoint(new Coordinate(beginpointDistanceline.getX() + fanX, beginpointDistanceline.getY() + fanY));
      
-               // 2. afstand tussen rand afsteekzone en safetyzone: haaks op lijn uit 1.
+        // 2. afstand tussen rand afsteekzone en safetyzone: haaks op lijn uit 1.
         if (isFan) {
             double angle = Angle.angleBetweenOriented(centerTip, audienceTail, ignitionTip);
             double angleRad = Math.toRadians(angle >= 0 ? -90 : 90);
@@ -346,7 +324,6 @@ public class OntbrandingsActionBean implements ActionBean {
                 foundLoodLijn = cutoffContLine.difference(ignition);
                 length = foundLoodLijn.getLength();
             }
-            
             gs.put(createFeature(foundLoodLijn, "safetyDistance", showLength ? (double) Math.round(length * 10) / 10 + " m" : ""));
         }
     }
