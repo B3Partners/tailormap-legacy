@@ -22,6 +22,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
@@ -258,7 +259,7 @@ public class OntbrandingsActionBean implements ActionBean {
         LengthIndexedLine audienceIndexedLine = new LengthIndexedLine(audienceBoundaryBounds);
         
         double offset = 0.1;
-        double theta = 0.1;
+        double theta = 0.01;
         Geometry distanceLine = null;
         for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i+= offset) {
             Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
@@ -288,7 +289,7 @@ public class OntbrandingsActionBean implements ActionBean {
             distanceLine = testLine;
         }
         double length = distanceLine.getLength();        
-        gs.put(createFeature(distanceLine, "safetyDistance", showLength ? (int) length+ " m" : ""));
+        gs.put(createFeature(distanceLine, "safetyDistance", showLength ? (double) Math.round(length * 10) / 10 + " m" : ""));
         
         double dx = beginpointDistanceline.getX() - eindpointDistanceline.getX();
         double dy = beginpointDistanceline.getY() - eindpointDistanceline.getY();
@@ -322,6 +323,16 @@ public class OntbrandingsActionBean implements ActionBean {
                 LineString loodLijn = gf.createLineString(loodLijnCoords);
                 Geometry cutoffLoodlijn = loodLijn.intersection(safetyZone);
                 cutoffLoodlijn = cutoffLoodlijn.difference(ignition);
+                if (cutoffLoodlijn instanceof MultiLineString) {
+                    MultiLineString ms = (MultiLineString) cutoffLoodlijn;
+                    for (int j = 0; j < ms.getNumGeometries(); j++) {
+                        Geometry g = ms.getGeometryN(j);
+                        double l = g.getLength();
+                        if ((l + theta) >= fanLength && ((l - theta) <= fanLength)) {
+                            cutoffLoodlijn = g;
+                        }
+                    }
+                }
                 length = cutoffLoodlijn.getLength();
                 if ((length + theta) >= fanLength && ((length - theta) <= fanLength)) {
                     foundLoodLijn = cutoffLoodlijn;
@@ -333,9 +344,10 @@ public class OntbrandingsActionBean implements ActionBean {
                 LineString continuousLine = gf.createLineString(endContinuousLine);
                 Geometry cutoffContLine = continuousLine.intersection(safetyZone);
                 foundLoodLijn = cutoffContLine.difference(ignition);
+                length = foundLoodLijn.getLength();
             }
             
-            gs.put(createFeature(foundLoodLijn, "safetyDistance", showLength ? (int) (foundLoodLijn.getLength() + 0.5) + " m" : ""));
+            gs.put(createFeature(foundLoodLijn, "safetyDistance", showLength ? (double) Math.round(length * 10) / 10 + " m" : ""));
         }
     }
 

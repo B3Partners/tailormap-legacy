@@ -1515,6 +1515,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
     },    
     printRequest:function(){
+        this.deselectAllFeatures();
         this.printComponent.buttonClick();
         this.printComponent.qualitySlider.setValue(this.printComponent.qualitySlider.maxValue);
     },
