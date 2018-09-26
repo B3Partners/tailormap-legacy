@@ -45,17 +45,20 @@ public class ApplicationTest extends TestUtil {
         copy.setVersion("" + 666);
         entityManager.detach(app);
         entityManager.persist(copy);
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        Application toTest = entityManager.find(Application.class, copy.getId());
 
-        assertFalse(app.getId().equals(copy.getId()));
-        assertEquals(expectedStartLayerSize, copy.getStartLayers().size());
-        assertEquals(expectedStartLevelSize, copy.getStartLevels().size());
+        assertFalse(app.getId().equals(toTest.getId()));
+        assertEquals(expectedStartLayerSize, toTest.getStartLayers().size());
+        assertEquals(expectedStartLevelSize, toTest.getStartLevels().size());
 
-        for (StartLayer startLayer : copy.getStartLayers()) {
-            assertEquals(copy.getId(), startLayer.getApplication().getId());
+        for (StartLayer startLayer : toTest.getStartLayers()) {
+            assertEquals(toTest.getId(), startLayer.getApplication().getId());
         }
 
-        for (StartLevel startLevel : copy.getStartLevels()) {
-            assertEquals(copy.getId(), startLevel.getApplication().getId());
+        for (StartLevel startLevel : toTest.getStartLevels()) {
+            assertEquals(toTest.getId(), startLevel.getApplication().getId());
         }
         app = entityManager.merge(app);
     }

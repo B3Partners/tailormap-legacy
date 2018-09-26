@@ -52,6 +52,8 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
             ActionBeanContext context = new ActionBeanContext();
             caab.setContext(context);
+            int startLevelsMotherApp = app.getStartLevels().size();
+            int startLayersMotherApp = app.getStartLayers().size();
 
             Application mashup = app.createMashup("mashup", entityManager, true);
             entityManager.persist(mashup);
@@ -65,6 +67,9 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             Application prev = entityManager.merge(app);
+            
+            assertEquals(startLayersMotherApp, workVersion.getStartLayers().size());
+            assertEquals(startLevelsMotherApp, workVersion.getStartLevels().size());
            //objectsToRemove.add(entityManager.merge(mashup));
        //     objectsToRemove.add(prev);
 
