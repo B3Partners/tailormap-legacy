@@ -610,12 +610,12 @@ public class Application {
         copy.setId(null);
         copy.setBookmarks(null);
         copy.setTreeCache(null);
-        copy.setStartLayers(new ArrayList<StartLayer>());
-        copy.setStartLevels(new ArrayList<StartLevel>());
-        copy.setReaders(new HashSet<String>());
+        copy.setStartLayers(new ArrayList<>());
+        copy.setStartLevels(new ArrayList<>());
+        copy.setReaders(new HashSet<>());
         // user reference is not deep copied, of course
 
-        copy.setDetails(new HashMap<String, ClobElement>(details));
+        copy.setDetails(new HashMap<>(details));
         if (startExtent != null) {
             copy.setStartExtent(startExtent.clone());
         }
@@ -623,7 +623,7 @@ public class Application {
             copy.setMaxExtent(maxExtent.clone());
         }
 
-        copy.setComponents(new HashSet<ConfiguredComponent>());
+        copy.setComponents(new HashSet<>());
         for (ConfiguredComponent cc : components) {
             ConfiguredComponent componentCopy = cc.deepCopy(copy);
             copy.getComponents().add(componentCopy);
