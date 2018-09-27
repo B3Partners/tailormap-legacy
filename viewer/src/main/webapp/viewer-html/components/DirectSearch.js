@@ -45,6 +45,16 @@ Ext.define ("viewer.components.DirectSearch",{
     loadWindow : function() {
         var me = this;
 
+        var align = this.config.alignposition || 'tl';
+        var alignedAtBottom = false;
+        if(align.substr(0, 1) === 'b') {
+            alignedAtBottom = true;
+        }
+        if(alignedAtBottom && Number(this.config.top || 10) <= this.getPickerMaxHeight()) {
+            // Always expand up if the picker is aligned at the bottom
+            this.pickerAlignment = "bl-tl";
+        }
+
         this.form = Ext.create("Ext.form.Panel", {
             frame: false,
             items: this.getFormItems(),
