@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -146,15 +147,15 @@ public class ExcelDownloader extends FeatureDownloader{
                 Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
                 String value = null;
                 cell = row.createCell(colNum);
-                cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+                cell.setCellType(CellType.NUMERIC);
                 cell.setCellStyle(styles.get("cell_normal"));
 
                 if (attribute == null) {
                     cell.setCellValue(value);
-                    cell.setCellType(Cell.CELL_TYPE_BLANK);
+                    cell.setCellType(CellType.BLANK);
                 } else if (attribute instanceof Boolean) {
                     cell.setCellValue((Boolean) attribute);
-                    cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
+                    cell.setCellType(CellType.BOOLEAN);
                 } else if (attribute instanceof Number) {
                     cell.setCellValue(((Number) attribute).doubleValue());
                 } else if (attribute instanceof Date) {
@@ -166,7 +167,7 @@ public class ExcelDownloader extends FeatureDownloader{
                 } else {
                     value = attribute.toString();
                     cell.setCellValue(value);                    
-                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellType(CellType.STRING);
                 }
                 colNum++;
             }
