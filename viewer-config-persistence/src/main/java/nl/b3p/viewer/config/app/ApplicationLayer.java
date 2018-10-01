@@ -323,23 +323,24 @@ public class ApplicationLayer {
         }
     }
 
-    ApplicationLayer deepCopy(Map originalToCopy, Application app) throws Exception {
+    ApplicationLayer deepCopy(Map originalToCopy, Application app, boolean processStartLayers) throws Exception {
         ApplicationLayer copy = (ApplicationLayer) BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
         copy.setId(null);
         
         // service reference is not deep copied, of course
+        copy.setReaders(new HashSet<>(readers));
+        copy.setWriters(new HashSet<>(writers));
+        copy.setDetails(new HashMap<>(details));
         
-        copy.setReaders(new HashSet<String>(readers));
-        copy.setWriters(new HashSet<String>(writers));
-        copy.setDetails(new HashMap<String,ClobElement>(details));
-        
-        copy.setAttributes( new ArrayList<ConfiguredAttribute>());
+        copy.setAttributes( new ArrayList<>());
         for(ConfiguredAttribute a: attributes) {
             copy.getAttributes().add(a.deepCopy());
         }
-        copy.setStartLayers(new HashMap<Application, StartLayer>());
-        copy.processStartLayers(app,this, app);
+        copy.setStartLayers(new HashMap<>());
+        if(processStartLayers){
+            copy.processStartLayers(app,this, app);
+        }
         
         return copy;
     }

@@ -587,6 +587,37 @@ public class Application {
         mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(this.isMashup_cached + ""));
         return mashup;
     }
+    
+    public Application createWorkVersion(EntityManager em, String version, ActionBeanContext context) throws Exception {
+        Application base = this;
+        Application copy = deepCopyAllButLevels(false);
+        copy.setVersion(version);
+        // don't save changes to original app and it's mashups
+        
+        Set<Application> apps = base.getRoot().findApplications(em);
+        for (Application app : apps) {
+            em.detach(app);
+        }
+        copy.setRoot(null);
+        // save application, so it will have an id
+        em.persist(copy);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        
+        copy.originalToCopy = new HashMap();
+        if (root != null) {
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy,false));
+            root.processForMashup(copy, base);
+        }
+
+        em.persist(copy);
+        em.flush();
+        Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
+        copy.processBookmarks(prev, context, em);
+        SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
+        em.getTransaction().commit();
+        return copy;
+    }
 
     public List<Application> getMashups(EntityManager em) {
         return em.createQuery(
@@ -599,7 +630,7 @@ public class Application {
 
         copy.originalToCopy = new HashMap();
         if (root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy));
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy,true));
         }
 
         return copy;
