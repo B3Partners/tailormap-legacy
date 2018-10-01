@@ -434,21 +434,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             em.getTransaction().commit();
             return mashup;
         } else {
-            Application copy = base.deepCopy();
-            copy.setVersion(version);
-            // don't save changes to original app and it's mashups
-
-            Set<Application> apps = base.getRoot().findApplications(em);
-            for (Application app : apps) {
-                em.detach(app);
-            }
-
-            em.persist(copy);
-            em.flush();
-            Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
-            copy.processBookmarks(prev, context, em);
-            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
-            em.getTransaction().commit();
+            Application copy = base.createWorkVersion(em,version, context);
             return copy;
         }
     }

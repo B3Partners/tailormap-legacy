@@ -319,7 +319,7 @@ public class Level implements Comparable{
        if(sl != null){
            this.getStartLevels().put(app, sl.deepCopy(app, this));
        }else if (Objects.equals(app.getId(), copyFrom.getId())){
-            List<StartLevel> sls = new ArrayList<StartLevel>(original.startLevels.values());
+            List<StartLevel> sls = new ArrayList<>(original.startLevels.values());
             for (int i = 0; i < sls.size(); i++) {
                 StartLevel value = sls.get(i);
                 this.getStartLevels().put(app, value.deepCopy(app, this));
@@ -327,29 +327,31 @@ public class Level implements Comparable{
         }
     }
 
-    Level deepCopy(Level parent, Map originalToCopy, Application app) throws Exception {
+    Level deepCopy(Level parent, Map originalToCopy, Application app, boolean processStartMap) throws Exception {
         Level copy = (Level)BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
         copy.setId(null);
         copy.setParent(parent);
         
-        copy.setChildren(new ArrayList<Level>());
+        copy.setChildren(new ArrayList<>());
         for(Level child: children) {
-            copy.getChildren().add(child.deepCopy(copy, originalToCopy, app));
+            copy.getChildren().add(child.deepCopy(copy, originalToCopy, app,processStartMap));
         }
         
-        copy.setLayers(new ArrayList<ApplicationLayer>());
+        copy.setLayers(new ArrayList<>());
         for(ApplicationLayer appLayer: layers) {
-            copy.getLayers().add(appLayer.deepCopy(originalToCopy, app));
+            copy.getLayers().add(appLayer.deepCopy(originalToCopy, app,processStartMap));
         }
         
-        copy.setStartLevels(new HashMap<Application,StartLevel>());
-        copy.processStartLevels(app, this, app);
+        copy.setStartLevels(new HashMap<>());
+        if(processStartMap){
+            copy.processStartLevels(app, this, app);
+        }
         
         // do not clone documents, only the list
-        copy.setDocuments(new ArrayList<Document>(documents));
+        copy.setDocuments(new ArrayList<>(documents));
         
-        copy.setReaders(new HashSet<String>(readers));
+        copy.setReaders(new HashSet<>(readers));
         
         copy.setInfo(info);
         
