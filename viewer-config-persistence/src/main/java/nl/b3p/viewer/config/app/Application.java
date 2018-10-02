@@ -46,7 +46,7 @@ import org.json.JSONObject;
         uniqueConstraints
         = @UniqueConstraint(columnNames = {"name", "version"})
 )
-public class Application {
+public class Application implements Comparable<Application>{
 
     private static final Log log = LogFactory.getLog(Application.class);
 
@@ -278,6 +278,15 @@ public class Application {
 
     public TreeCache getTreeCache() {
         return treeCache;
+    }
+
+    @Override
+    public int compareTo(Application o) {
+        if(o != null){
+            return o.getId().compareTo(this.getId());
+        }else{
+            return -1;
+        }
     }
 
     public static class TreeCache {
@@ -592,12 +601,6 @@ public class Application {
         Application base = this;
         Application copy = deepCopyAllButLevels(false);
         copy.setVersion(version);
-        // don't save changes to original app and it's mashups
-        
-        Set<Application> apps = base.getRoot().findApplications(em);
-        for (Application app : apps) {
-            em.detach(app);
-        }
         copy.setRoot(null);
         // save application, so it will have an id
         em.persist(copy);
@@ -606,10 +609,26 @@ public class Application {
         
         copy.originalToCopy = new HashMap();
         if (root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy,false));
-            root.processForMashup(copy, base);
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy, false));
+            // reverse originalToCopy
+            Map reverse = new HashMap();
+            
+            Set keys = copy.originalToCopy.keySet();
+            for (Object key : keys) {
+                Object value = copy.originalToCopy.get(key);
+                reverse.put(value, key);
+            }
+            copy.originalToCopy = reverse;
+
+            copy.getRoot().processForWorkversion(copy, base);
         }
 
+        Set<Application> apps = base.getRoot().findApplications(em);
+        for (Application app : apps) {
+            em.detach(app);
+        }
+        // don't save changes to original app and it's mashups
+        
         em.persist(copy);
         em.flush();
         Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();

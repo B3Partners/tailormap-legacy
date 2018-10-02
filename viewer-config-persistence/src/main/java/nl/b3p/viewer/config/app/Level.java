@@ -314,6 +314,16 @@ public class Level implements Comparable{
         processStartLevels(mashup, this, motherApp);
     }
     
+    public void processForWorkversion(Application workversion, Application base) throws Exception{
+        for (Level child : children) {
+            child.processForWorkversion(workversion, base);
+        }
+        for (ApplicationLayer layer : layers) {
+            layer.processStartLayers(workversion, (ApplicationLayer)workversion.originalToCopy.get(layer), base);
+        }
+        processStartLevels(workversion, (Level)workversion.originalToCopy.get(this), base);
+    }
+    
     private void processStartLevels(Application app, Level original, Application copyFrom) throws Exception{
        StartLevel sl = original.getStartLevels().get(copyFrom);
        if(sl != null){
