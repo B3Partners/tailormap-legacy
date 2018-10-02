@@ -237,7 +237,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
             sdf.applyPattern("HH-mm_dd-MM-yyyy");
             String now = sdf.format(nowDate);
-            String uniqueVersion = ApplicationSettingsActionBean.findUniqueVersion(applicationToDelete.getName(), "B_" + now);
+            String uniqueVersion = ApplicationSettingsActionBean.findUniqueVersion(applicationToDelete.getName(), "B_" + now, em);
             applicationToDelete.setVersion(uniqueVersion);
             em.getTransaction().commit();
         } else {

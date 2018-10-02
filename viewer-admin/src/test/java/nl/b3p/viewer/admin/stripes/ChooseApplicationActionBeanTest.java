@@ -13,6 +13,8 @@ import nl.b3p.viewer.util.TestActionBeanContext;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.AssertionFailure;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -74,6 +76,60 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
        //     objectsToRemove.add(prev);
 
           //  objectsToRemove.add(workVersion);
+        } catch (Exception e) {
+            log.error("Fout", e);
+            fail(e.getLocalizedMessage());
+        }
+    }
+    
+    @Test
+    public void publishWorkVersionWhereCurrentPublishedHasMashup() {
+        initData(true);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            ActionBeanContext context = new ActionBeanContext();
+            caab.setContext(context);
+            int startLevelsMotherApp = app.getStartLevels().size();
+            int startLayersMotherApp = app.getStartLayers().size();
+
+            app.setVersion(null);
+            entityManager.persist(app);
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            mashup.loadTreeCache(entityManager);
+
+            long mashupStartLevelId = mashup.getStartLevels().get(0).getLevel().getId();
+            
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(app, entityManager, version);
+
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            Application prev = entityManager.merge(app);
+            
+            assertEquals(startLayersMotherApp, workVersion.getStartLayers().size());
+            assertEquals(startLevelsMotherApp, workVersion.getStartLevels().size());
+          
+            
+            ApplicationSettingsActionBean asab = new ApplicationSettingsActionBean();
+            asab.setContext(context);
+            asab.setApplication(workVersion);
+            asab.setMashupMustPointToPublishedVersion(true);
+            asab.setName(app.getName());
+            asab.publish(entityManager);
+            
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            Application newMashup = entityManager.find(Application.class, mashup.getId());
+            newMashup.loadTreeCache(entityManager);
+
+            long newRootStartLevelId = newMashup.getStartLevels().get(0).getLevel().getId();
+            Assert.assertNotEquals(mashupStartLevelId, newRootStartLevelId);
         } catch (Exception e) {
             log.error("Fout", e);
             fail(e.getLocalizedMessage());
