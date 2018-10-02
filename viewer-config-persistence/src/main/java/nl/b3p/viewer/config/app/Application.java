@@ -611,13 +611,8 @@ public class Application implements Comparable<Application>{
         if (root != null) {
             copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy, false));
             // reverse originalToCopy
-            Map reverse = new HashMap();
+            Map reverse = reverse(copy.originalToCopy);
             
-            Set keys = copy.originalToCopy.keySet();
-            for (Object key : keys) {
-                Object value = copy.originalToCopy.get(key);
-                reverse.put(value, key);
-            }
             copy.originalToCopy = reverse;
 
             copy.getRoot().processForWorkversion(copy, base);
@@ -636,6 +631,17 @@ public class Application implements Comparable<Application>{
         SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
         em.getTransaction().commit();
         return copy;
+    }
+    
+    private Map reverse(Map orig) {
+        Map reverse = new HashMap();
+
+        Set keys = orig.keySet();
+        for (Object key : keys) {
+            Object value = orig.get(key);
+            reverse.put(value, key);
+        }
+        return reverse;
     }
 
     public List<Application> getMashups(EntityManager em) {
@@ -705,6 +711,12 @@ public class Application implements Comparable<Application>{
         originalToCopy = new HashMap();
         loadTreeCache(em);
         visitLevelForMashuptransfer(old.getRoot(), originalToCopy);
+        Map reverse = reverse(originalToCopy);
+        List<StartLayer> startlayersAdded = new ArrayList<>();
+        List<StartLevel> startlevelsAdded = new ArrayList<>();
+        replaceLevel(root,reverse, startlayersAdded, startlevelsAdded);
+        getStartLevels().retainAll(startlevelsAdded);
+        getStartLayers().retainAll(startLayers);
         processCopyMap();
         // Loop alle levels af van de oude applicatie
         // Per level alle children
@@ -714,6 +726,36 @@ public class Application implements Comparable<Application>{
         //zoek voor elke level (uit oude applicatie) de bijbehorende NIEUWE level
         // sla in originalToCopy de ids op van de level
         // Roep postPersist aan.
+        
+    }
+    
+    private void replaceLevel(Level l,  Map reverse, List<StartLayer> startlayersAdded, List<StartLevel> startlevelsAdded) {
+        for (Level level : l.getChildren()) {
+            replaceLevel(level, reverse,startlayersAdded, startlevelsAdded);
+        }
+        
+        for (ApplicationLayer layer : l.getLayers()) {
+            replaceLayer(layer,reverse, startlayersAdded);
+        }
+        Object o = reverse.get(l);
+        if (o != null) {
+            StartLevel sl = ((Level) o).getStartLevels().get(this);
+            if (sl != null) {
+                sl.setLevel(l);
+                startlevelsAdded.add(sl);
+            }
+        }
+    }
+    
+    private void replaceLayer(ApplicationLayer al,Map reverse, List<StartLayer> startlayersAdded){
+        Object o = reverse.get(al);
+        if (o != null) {
+            StartLayer sl = ((ApplicationLayer) o).getStartLayers().get(this);
+            if (sl != null) {
+                sl.setApplicationLayer(al);
+                startlayersAdded.add(sl);
+            }
+        }
     }
 
     private void visitLevelForMashuptransfer(Level oldLevel, Map originalToCopy) {
