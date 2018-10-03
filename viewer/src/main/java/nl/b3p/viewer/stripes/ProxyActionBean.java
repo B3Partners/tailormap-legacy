@@ -257,14 +257,18 @@ public class ProxyActionBean implements ActionBean {
             Set<String> userroles = Authorizations.getRoles(context.getRequest(), em);
 
             boolean allowed = false;
+            String roleGranted = "";
             for (String userrole : userroles) {
                 for (String reader : readers) {
                     if (userrole.equals(reader)) {
                         allowed = true;
+                        roleGranted += userrole + ",";
                         break;
                     }
                 }
             }
+            log.debug(String.format("proxy for URL %s login reguired: granted for role %s for user %s; all user roles=%s, all service readers=%s", theUrl.toString(), roleGranted, context.getRequest().getRemoteUser(), userroles.toString(), readers.toString()));
+
             if (allowed) {
                 username = gs.getUsername();
                 password = gs.getPassword();
