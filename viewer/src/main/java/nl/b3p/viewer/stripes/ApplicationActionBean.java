@@ -63,9 +63,21 @@ public class ApplicationActionBean implements ActionBean {
     @Validate
     private String version;
 
+    // <editor-fold desc="bookmark variables" defaultstate="collapsed">
     @Validate
     private String bookmark;
-
+    
+    @Validate
+    private String extent;
+    
+    @Validate
+    private String layers;
+    
+    @Validate
+    private String levelOrder;
+    
+    // </editor-fold>
+    
     @Validate
     private boolean debug;
 
@@ -186,6 +198,30 @@ public class ApplicationActionBean implements ActionBean {
     public void setBookmark(String bookmark) {
         this.bookmark = bookmark;
     }
+
+    public String getExtent() {
+        return extent;
+    }
+
+    public void setExtent(String extent) {
+        this.extent = extent;
+    }
+
+    public String getLayers() {
+        return layers;
+    }
+
+    public void setLayers(String layers) {
+        this.layers = layers;
+    }
+
+    public String getLevelOrder() {
+        return levelOrder;
+    }
+
+    public void setLevelOrder(String levelOrder) {
+        this.levelOrder = levelOrder;
+    }
     //</editor-fold>
 
     static Application findApplication(String name, String version) {
@@ -277,12 +313,9 @@ public class ApplicationActionBean implements ActionBean {
                 .addParameter("version", version)
                 .addParameter("debug", debug)
                 .addParameter("uitloggen", true)
-                .addParameter("bookmark", bookmark)
                 .includeRequestParameters(true);
 
-        if(bookmark != null){
-            login.addParameter("bookmark", bookmark);
-        }
+        addBookmarkParameters(login);
         loginUrl = login.getUrl(context.getLocale());
 
         String username = context.getRequest().getRemoteUser();
@@ -385,21 +418,31 @@ public class ApplicationActionBean implements ActionBean {
         && "true".equals(context.getRequest().getParameter("returnAfterLogout"))) {
             RedirectResolution r = new RedirectResolution(ApplicationActionBean.class)
                     .addParameter("name", application.getName())
-                    .addParameter("bookmark", bookmark)
                     .addParameter("version", application.getVersion());
-            if(bookmark != null ){
-                r.addParameter("bookmark", bookmark);
-            }
+            addBookmarkParameters(r);
             return r;
         } else {
             RedirectResolution r = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName())
-                    .addParameter("bookmark", bookmark)
                     .addParameter("version", application.getVersion());
-            if(bookmark != null){
-                r.addParameter("bookmark", bookmark);
-            }
+            addBookmarkParameters(r);
             return r;
+        }
+    }
+
+    private void addBookmarkParameters(RedirectResolution r) {
+        if (bookmark != null) {
+            r.addParameter("bookmark", bookmark);
+        }
+        if(extent != null){
+            r.addParameter("extent", extent);
+        }
+        if(layers != null){
+            r.addParameter("layers", layers);
+        
+        }
+        if(levelOrder != null){
+            r.addParameter("levelOrder", levelOrder);
         }
     }
 
