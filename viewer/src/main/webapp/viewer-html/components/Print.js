@@ -883,6 +883,9 @@ Ext.define ("viewer.components.Print",{
         properties.angle = this.rotateSlider.getValue();
         properties.quality = this.qualitySlider.getValue();
         properties.appId = this.viewerController.app.id;
+        if(properties.scale === ""){
+            delete properties.scale;
+        }
         var mapProperties=this.getMapValues();
         Ext.apply(properties, mapProperties);
         return properties;
