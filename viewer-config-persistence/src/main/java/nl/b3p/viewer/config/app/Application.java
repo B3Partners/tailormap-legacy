@@ -73,6 +73,9 @@ public class Application {
     @Column(length = 30)
     private String version;
 
+    @Column()
+    private String title;
+
     @Lob
     @org.hibernate.annotations.Type(type = "org.hibernate.type.StringClobType")
     private String layout;
@@ -161,6 +164,14 @@ public class Application {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getLayout() {
@@ -409,6 +420,7 @@ public class Application {
             o.put("layout", new JSONObject(layout));
         }
         o.put("version", version);
+        o.put("title", title);
 
         if (!onlyServicesAndLayers) {
             JSONObject d = new JSONObject();

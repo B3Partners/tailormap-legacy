@@ -77,6 +77,8 @@ public class ApplicationActionBean implements ActionBean {
 
     private String viewerType;
 
+    private String title;
+
     private JSONObject user;
 
     private String loginUrl;
@@ -145,6 +147,14 @@ public class ApplicationActionBean implements ActionBean {
 
     public void setViewerType(String viewerType){
         this.viewerType = viewerType;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
     }
 
     public JSONObject getUser() {
@@ -310,6 +320,10 @@ public class ApplicationActionBean implements ActionBean {
 
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
+        this.title = application.getTitle();
+        if(title.isEmpty()) {
+            this.title = application.getName();
+        }
 
         //make hashmap for jsonobject.
         this.globalLayout = new HashMap<String,Object>();

@@ -51,6 +51,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td><stripes:text name="version" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
+                                <td>Titel (optioneel):</td>
+                                <td><stripes:text name="title" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
                                 <td>Steunkleur 1 (achtergrond):</td>
                                 <td>
                                     <stripes:text name="details['steunkleur1']" maxlength="255" size="15" style="float: left;" id="steunkleur1" />
