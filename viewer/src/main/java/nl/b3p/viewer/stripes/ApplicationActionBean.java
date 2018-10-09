@@ -41,6 +41,7 @@ import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -354,7 +355,7 @@ public class ApplicationActionBean implements ActionBean {
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
         this.title = application.getTitle();
-        if(title.isEmpty()) {
+        if(StringUtils.isBlank(title)) {
             this.title = application.getName();
         }
 
