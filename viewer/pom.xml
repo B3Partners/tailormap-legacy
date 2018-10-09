@@ -384,6 +384,7 @@
                                 <!-- OpenLayers Tools -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersMeasureHandler.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
                         </compilation>
