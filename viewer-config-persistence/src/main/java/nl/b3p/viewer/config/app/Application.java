@@ -46,7 +46,7 @@ import org.json.JSONObject;
         uniqueConstraints
         = @UniqueConstraint(columnNames = {"name", "version"})
 )
-public class Application {
+public class Application implements Comparable<Application>{
 
     private static final Log log = LogFactory.getLog(Application.class);
 
@@ -278,6 +278,15 @@ public class Application {
 
     public TreeCache getTreeCache() {
         return treeCache;
+    }
+
+    @Override
+    public int compareTo(Application o) {
+        if(o != null){
+            return o.getId().compareTo(this.getId());
+        }else{
+            return -1;
+        }
     }
 
     public static class TreeCache {
@@ -587,6 +596,53 @@ public class Application {
         mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(this.isMashup_cached + ""));
         return mashup;
     }
+    
+    public Application createWorkVersion(EntityManager em, String version, ActionBeanContext context) throws Exception {
+        Application base = this;
+        Application copy = deepCopyAllButLevels(false);
+        copy.setVersion(version);
+        copy.setRoot(null);
+        // save application, so it will have an id
+        em.persist(copy);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        
+        copy.originalToCopy = new HashMap();
+        if (root != null) {
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy, false));
+            // reverse originalToCopy
+            Map reverse = reverse(copy.originalToCopy);
+            
+            copy.originalToCopy = reverse;
+
+            copy.getRoot().processForWorkversion(copy, base);
+        }
+
+        Set<Application> apps = base.getRoot().findApplications(em);
+        for (Application app : apps) {
+            em.detach(app);
+        }
+        // don't save changes to original app and it's mashups
+        
+        em.persist(copy);
+        em.flush();
+        Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
+        copy.processBookmarks(prev, context, em);
+        SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
+        em.getTransaction().commit();
+        return copy;
+    }
+    
+    private Map reverse(Map orig) {
+        Map reverse = new HashMap();
+
+        Set keys = orig.keySet();
+        for (Object key : keys) {
+            Object value = orig.get(key);
+            reverse.put(value, key);
+        }
+        return reverse;
+    }
 
     public List<Application> getMashups(EntityManager em) {
         return em.createQuery(
@@ -599,7 +655,7 @@ public class Application {
 
         copy.originalToCopy = new HashMap();
         if (root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy));
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy,true));
         }
 
         return copy;
@@ -610,12 +666,12 @@ public class Application {
         copy.setId(null);
         copy.setBookmarks(null);
         copy.setTreeCache(null);
-        copy.setStartLayers(new ArrayList<StartLayer>());
-        copy.setStartLevels(new ArrayList<StartLevel>());
-        copy.setReaders(new HashSet<String>());
+        copy.setStartLayers(new ArrayList<>());
+        copy.setStartLevels(new ArrayList<>());
+        copy.setReaders(new HashSet<>());
         // user reference is not deep copied, of course
 
-        copy.setDetails(new HashMap<String, ClobElement>(details));
+        copy.setDetails(new HashMap<>(details));
         if (startExtent != null) {
             copy.setStartExtent(startExtent.clone());
         }
@@ -623,7 +679,7 @@ public class Application {
             copy.setMaxExtent(maxExtent.clone());
         }
 
-        copy.setComponents(new HashSet<ConfiguredComponent>());
+        copy.setComponents(new HashSet<>());
         for (ConfiguredComponent cc : components) {
             ConfiguredComponent componentCopy = cc.deepCopy(copy);
             copy.getComponents().add(componentCopy);
@@ -655,6 +711,12 @@ public class Application {
         originalToCopy = new HashMap();
         loadTreeCache(em);
         visitLevelForMashuptransfer(old.getRoot(), originalToCopy);
+        Map reverse = reverse(originalToCopy);
+        List<StartLayer> startlayersAdded = new ArrayList<>();
+        List<StartLevel> startlevelsAdded = new ArrayList<>();
+        replaceLevel(root,reverse, startlayersAdded, startlevelsAdded);
+        getStartLevels().retainAll(startlevelsAdded);
+        getStartLayers().retainAll(startLayers);
         processCopyMap();
         // Loop alle levels af van de oude applicatie
         // Per level alle children
@@ -664,6 +726,36 @@ public class Application {
         //zoek voor elke level (uit oude applicatie) de bijbehorende NIEUWE level
         // sla in originalToCopy de ids op van de level
         // Roep postPersist aan.
+        
+    }
+    
+    private void replaceLevel(Level l,  Map reverse, List<StartLayer> startlayersAdded, List<StartLevel> startlevelsAdded) {
+        for (Level level : l.getChildren()) {
+            replaceLevel(level, reverse,startlayersAdded, startlevelsAdded);
+        }
+        
+        for (ApplicationLayer layer : l.getLayers()) {
+            replaceLayer(layer,reverse, startlayersAdded);
+        }
+        Object o = reverse.get(l);
+        if (o != null) {
+            StartLevel sl = ((Level) o).getStartLevels().get(this);
+            if (sl != null) {
+                sl.setLevel(l);
+                startlevelsAdded.add(sl);
+            }
+        }
+    }
+    
+    private void replaceLayer(ApplicationLayer al,Map reverse, List<StartLayer> startlayersAdded){
+        Object o = reverse.get(al);
+        if (o != null) {
+            StartLayer sl = ((ApplicationLayer) o).getStartLayers().get(this);
+            if (sl != null) {
+                sl.setApplicationLayer(al);
+                startlayersAdded.add(sl);
+            }
+        }
     }
 
     private void visitLevelForMashuptransfer(Level oldLevel, Map originalToCopy) {

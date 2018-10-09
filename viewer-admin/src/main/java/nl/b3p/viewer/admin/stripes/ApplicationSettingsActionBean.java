@@ -443,7 +443,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
             sdf.applyPattern("HH-mm_dd-MM-yyyy");
             String now = sdf.format(nowDate);
-            String uniqueVersion = findUniqueVersion(name, "B_"+now );
+            String uniqueVersion = findUniqueVersion(name, "B_"+now , em);
             oldPublished.setVersion(uniqueVersion);
             em.persist(oldPublished);
             if(mashupMustPointToPublishedVersion){
@@ -472,7 +472,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
      *
      * @return A unique name for a FeatureSource
      */
-    public static String findUniqueVersion(String name, String version) {
+    public static String findUniqueVersion(String name, String version, EntityManager em) {
         int uniqueCounter = 0;
         while(true) {
             String testVersion;
@@ -482,7 +482,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 testVersion = version + " (" + uniqueCounter + ")";
             }
             try {
-                Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name AND version = :version")
+                em.createQuery("select 1 from Application where name = :name AND version = :version")
                     .setParameter("name", name)
                     .setParameter("version", testVersion)
                     .setMaxResults(1)
