@@ -62,7 +62,7 @@ Ext.define('vieweradmin.components.SolrConfig', {
                 id: 'edit',
                 header: '',
                 dataIndex: 'id',
-                width: 300,
+                width: 415,
                 sortable: false,
                 hideable: false,
                 menuDisabled: true,

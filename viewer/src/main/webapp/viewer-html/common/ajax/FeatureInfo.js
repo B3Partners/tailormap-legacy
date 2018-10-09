@@ -139,11 +139,11 @@ Ext.define("viewer.FeatureInfo", {
             timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText)[0];
-
+                
                 if(response.error) {
                     failureFunction("Error finding feature to edit: " + response.error);
                 } else {
-                    successFunction(response.features);
+                    successFunction(response);
                 }
             },
             failure: function(result) {

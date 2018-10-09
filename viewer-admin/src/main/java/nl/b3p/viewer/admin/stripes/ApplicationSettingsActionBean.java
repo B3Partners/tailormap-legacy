@@ -52,6 +52,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     @Validate
     private String version;
     @Validate
+    private String title;
+    @Validate
     private String owner;
     @Validate
     private boolean authenticatedRequired;
@@ -130,6 +132,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         this.version = version;
     }
 
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
+
     public BoundingBox getStartExtent() {
         return startExtent;
     }
@@ -190,6 +196,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             startExtent = application.getStartExtent();
             maxExtent = application.getMaxExtent();
             name = application.getName();
+            title = application.getTitle();
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
             groupsRead.addAll (application.getReaders());
@@ -265,6 +272,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
         application.setName(name);
         application.setVersion(version);
+        application.setTitle(title);
 
         if (owner != null) {
             User appOwner = Stripersist.getEntityManager().find(User.class, owner);
@@ -443,7 +451,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
             sdf.applyPattern("HH-mm_dd-MM-yyyy");
             String now = sdf.format(nowDate);
-            String uniqueVersion = findUniqueVersion(name, "B_"+now );
+            String uniqueVersion = findUniqueVersion(name, "B_"+now , em);
             oldPublished.setVersion(uniqueVersion);
             em.persist(oldPublished);
             if(mashupMustPointToPublishedVersion){
@@ -472,7 +480,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
      *
      * @return A unique name for a FeatureSource
      */
-    public static String findUniqueVersion(String name, String version) {
+    public static String findUniqueVersion(String name, String version, EntityManager em) {
         int uniqueCounter = 0;
         while(true) {
             String testVersion;
@@ -482,7 +490,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 testVersion = version + " (" + uniqueCounter + ")";
             }
             try {
-                Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name AND version = :version")
+                em.createQuery("select 1 from Application where name = :name AND version = :version")
                     .setParameter("name", name)
                     .setParameter("version", testVersion)
                     .setMaxResults(1)

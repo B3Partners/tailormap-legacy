@@ -41,6 +41,7 @@ import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +64,21 @@ public class ApplicationActionBean implements ActionBean {
     @Validate
     private String version;
 
+    // <editor-fold desc="bookmark variables" defaultstate="collapsed">
+    @Validate
+    private String bookmark;
+    
+    @Validate
+    private String extent;
+    
+    @Validate
+    private String layers;
+    
+    @Validate
+    private String levelOrder;
+    
+    // </editor-fold>
+    
     @Validate
     private boolean debug;
 
@@ -73,6 +89,8 @@ public class ApplicationActionBean implements ActionBean {
     private String appConfigJSON;
 
     private String viewerType;
+
+    private String title;
 
     private JSONObject user;
 
@@ -144,6 +162,14 @@ public class ApplicationActionBean implements ActionBean {
         this.viewerType = viewerType;
     }
 
+    public String getTitle(){
+        return title;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
+
     public JSONObject getUser() {
         return user;
     }
@@ -174,6 +200,38 @@ public class ApplicationActionBean implements ActionBean {
 
     public void setUnknown(boolean unknown) {
         this.unknown = unknown;
+    }
+
+    public String getBookmark() {
+        return bookmark;
+    }
+
+    public void setBookmark(String bookmark) {
+        this.bookmark = bookmark;
+    }
+
+    public String getExtent() {
+        return extent;
+    }
+
+    public void setExtent(String extent) {
+        this.extent = extent;
+    }
+
+    public String getLayers() {
+        return layers;
+    }
+
+    public void setLayers(String layers) {
+        this.layers = layers;
+    }
+
+    public String getLevelOrder() {
+        return levelOrder;
+    }
+
+    public void setLevelOrder(String levelOrder) {
+        this.levelOrder = levelOrder;
     }
     //</editor-fold>
 
@@ -268,6 +326,7 @@ public class ApplicationActionBean implements ActionBean {
                 .addParameter("uitloggen", true)
                 .includeRequestParameters(true);
 
+        addBookmarkParameters(login);
         loginUrl = login.getUrl(context.getLocale());
 
         String username = context.getRequest().getRemoteUser();
@@ -295,6 +354,10 @@ public class ApplicationActionBean implements ActionBean {
 
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
+        this.title = application.getTitle();
+        if(StringUtils.isBlank(title)) {
+            this.title = application.getName();
+        }
 
         //make hashmap for jsonobject.
         this.globalLayout = new HashMap<String,Object>();
@@ -368,13 +431,33 @@ public class ApplicationActionBean implements ActionBean {
 
         if("true".equals(context.getRequest().getParameter("logout"))
         && "true".equals(context.getRequest().getParameter("returnAfterLogout"))) {
-            return new RedirectResolution(ApplicationActionBean.class)
+            RedirectResolution r = new RedirectResolution(ApplicationActionBean.class)
                     .addParameter("name", application.getName())
                     .addParameter("version", application.getVersion());
+            addBookmarkParameters(r);
+            return r;
         } else {
-            return new RedirectResolution(LoginActionBean.class)
+            RedirectResolution r = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName())
                     .addParameter("version", application.getVersion());
+            addBookmarkParameters(r);
+            return r;
+        }
+    }
+
+    private void addBookmarkParameters(RedirectResolution r) {
+        if (bookmark != null) {
+            r.addParameter("bookmark", bookmark);
+        }
+        if(extent != null){
+            r.addParameter("extent", extent);
+        }
+        if(layers != null){
+            r.addParameter("layers", layers);
+        
+        }
+        if(levelOrder != null){
+            r.addParameter("levelOrder", levelOrder);
         }
     }
 

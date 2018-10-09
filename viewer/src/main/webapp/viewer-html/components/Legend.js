@@ -97,21 +97,7 @@ Ext.define("viewer.components.Legend", {
 
         css = Ext.String.format(css, this.config.margin);
         Ext.util.CSS.createStyleSheet(css, "legend");
-        
-        var title = "";
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) title = this.config.title;
-        var tools = [];
-        var me = this;
-        // Only if 'showHelpButton' configuration is present and not set to "false" we will show the help button
-        if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
-            tools = [{
-                type:'help',
-                handler: function(event, toolEl, panel){
-                    me.config.viewerController.showHelp(me.config);
-                }
-            }];
-        }
-        
+
         this.renderButton();
 
         this.legendContainer = document.createElement('div');
@@ -119,9 +105,9 @@ Ext.define("viewer.components.Legend", {
         document.body.appendChild(this.legendContainer);
 
         var config = {
-            title: title,
+            title: this.getPanelTitle(),
             height: "100%",
-            tools: tools
+            tools: this.getHelpToolConfig()
         };
 
         if(this.config.infoText) {

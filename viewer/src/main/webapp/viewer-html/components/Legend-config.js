@@ -55,7 +55,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Titel',
                 name: 'title',
-                value: configObject.title || 'Legenda',
+                value: configObject.hasOwnProperty("title") ? configObject.title : 'Legenda',
                 labelWidth: this.labelWidth
             },
             {

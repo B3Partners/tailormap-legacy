@@ -48,6 +48,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     useArrowLeftAsDelete: false,
     forceRealParent: false,
     allowReadLayer:false,
+    pathSelectionUrl: '',
     
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -198,6 +199,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                     }
                     me.disableMoveButtons(disableButtons);
                     if(me.deleteButton) me.deleteButton.setIcon(record.get("isRemoved") === true ? me.unremoveIcon : me.removeIcon);
+                    me.getApplicationLayerPath(record);
                 }
             }
         });
@@ -333,7 +335,27 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }  
         };
     },
-
+    getApplicationLayerPath: function(appLayer) {
+        var me = this;
+        if(!me.pathSelectionUrl) {
+            return;
+        }
+        Ext.Ajax.request({
+            url: me.pathSelectionUrl,
+            params: {
+                layerId: appLayer.get('id')
+            },
+            success: function ( result, request ) {
+                result = Ext.JSON.decode(result.responseText);
+                result.reverse();
+                me.tree.ensureVisible("/" + result.join("/"), {
+                    focus: true,
+                    select: true
+                });
+            },
+            failure: function() {}
+        });
+    },
     checkDropAllowed: function(target, records) {
         for(var i = 0; i < records.length; i++) {
             if(this.forceRealParent && records[i].get("type") === "layer" && this.getTreeNode(records[i]) === null) {

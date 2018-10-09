@@ -26,15 +26,16 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
-
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.Layer;
@@ -48,7 +49,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
-import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,8 +108,6 @@ public class FeatureInfoActionBean implements ActionBean {
     private boolean ordered = false;
 
     private Layer layer;
-
-    private static final String RIJKSDRIEHOEK_STELSEL = "epsg:28992";
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -220,7 +218,7 @@ public class FeatureInfoActionBean implements ActionBean {
         return this.layer;
     }
     //</editor-fold>
-
+    @DefaultHandler
     public Resolution info() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
 
@@ -314,7 +312,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
                     }
 
-                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? FlamingoCQL.toFilter(filter, em) : null;
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
 
                     if (currentFilter!=null){
                         currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
@@ -331,9 +329,8 @@ public class FeatureInfoActionBean implements ActionBean {
 
                     q.setFilter(f);
                     q.setMaxFeatures(limit +1);
-                    q.setCoordinateSystem(CRS.decode(RIJKSDRIEHOEK_STELSEL));
 
-                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q, em, application, context.getRequest());
+                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
                     if(features.length() > limit){
                         JSONArray newArray = new JSONArray();
                         for (int j = 0; j < features.length(); j++) {
@@ -361,7 +358,182 @@ public class FeatureInfoActionBean implements ActionBean {
 
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
+    
+    public Resolution relatedInfo() throws JSONException, Exception {
+        JSONArray queries = new JSONArray(queryJSON);
+        Boolean checkRelated = true;
+        ApplicationLayer al = null;
+        JSONObject response = new JSONObject();
+        JSONObject jFeat = null;
+        JSONArray responses = new JSONArray();
+        FeatureSource fs = null;
+        EntityManager em = Stripersist.getEntityManager();
 
+        for (int i = 0; i < queries.length(); i++) {
+            JSONObject query = queries.getJSONObject(i);
+            response = new JSONObject();
+            responses.put(response);
+            response.put("request", query);
+            if (requestId != null) {
+                response.put("requestId", requestId);
+            }
+            String error = null;
+            String exceptionMsg = query.toString();
+            try {
+                al = null;
+                GeoService gs = null;
+                if (query.has("appLayer")) {
+                    al = em.find(ApplicationLayer.class, query.getLong("appLayer"));
+                } else {
+                    gs = em.find(GeoService.class, query.getLong("service"));
+                }
+                do {
+                    if (al == null && gs == null) {
+                        error = "App layer or service not found";
+                        break;
+                    }
+                    if (!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
+                        error = "Not authorized";
+                        break;
+                    }
+                    if (al != null) {
+                        layer = al.getService().getLayer(al.getLayerName(), em);
+                    } else {
+                        layer = gs.getLayer(query.getString("layer"), em);
+                    }
+                    if (layer == null) {
+                        error = "Layer not found";
+                        break;
+                    }
+                    if (layer.getFeatureType() == null) {
+                        response.put("noFeatureType", true);
+                        break;
+                    } else {
+                        response.put("featureType", layer.getFeatureType().getId());
+                    }
+
+                    String filter = query.optString("filter", null);
+                    fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    Query q = new Query(fs.getName().toString());
+                    String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
+
+                    FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+                    Filter spatialFilter = null;
+
+                    boolean useIntersect = false;
+                    if (layer.getService().getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)) {
+                        ClobElement ce = layer.getService().getDetails().get(GeoService.DETAIL_USE_INTERSECT);
+                        useIntersect = Boolean.parseBoolean(ce.getValue());
+                    }
+                    if (!useIntersect) {
+                        Point point = new GeometryFactory().createPoint(new Coordinate(
+                                Double.parseDouble(x),
+                                Double.parseDouble(y)));
+                        spatialFilter = ff.dwithin(ff.property(geomAttribute), ff.literal(point), Double.parseDouble(distance), "meters");
+                    } else {
+                        GeometricShapeFactory shapeFact = new GeometricShapeFactory();
+                        shapeFact.setNumPoints(32);
+                        shapeFact.setCentre(new Coordinate(
+                                Double.parseDouble(x), Double.parseDouble(y)));
+                        shapeFact.setSize(Double.parseDouble(distance) * 2);
+                        Polygon p = shapeFact.createCircle();
+                        spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
+                    }
+
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? FlamingoCQL.toFilter(filter,em) : null;
+
+                    if (currentFilter != null) {
+                        currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
+                    }
+
+                    Filter f = currentFilter != null ? ff.and(spatialFilter, currentFilter) : spatialFilter;
+                    if (JDBCFeatureSource.PROTOCOL.equals(layer.getService().getProtocol())) {
+                        f = (Filter) f.accept(new RemoveDistanceUnit(), null);
+                    }
+
+                    f = FeatureToJson.reformatFilter(f, layer.getFeatureType());
+                    q.setFilter(f);
+                    q.setMaxFeatures(limit + 1);
+                    JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
+
+                    if (features.length() > limit) {
+                        JSONArray newArray = new JSONArray();
+                        for (int j = 0; j < features.length(); j++) {
+                            if (j < limit) {
+                                newArray.put(features.get(j));
+                            }
+                        }
+                        features = newArray;
+                        response.put("moreFeaturesAvailable", true);
+                    }
+                    jFeat = features.getJSONObject(0);
+                    response.put("features", features);
+                } while (false);
+            } catch (Exception e) {
+                log.error("Exception loading feature info for " + exceptionMsg, e);
+                error = "Exception: " + e.getLocalizedMessage();
+            } finally {
+                if (error != null) {
+                    response.put("error", error);
+                    checkRelated = false;
+                }
+                if (fs != null) {
+                    fs.getDataStore().dispose();
+                }
+            }
+        }
+
+        if (layer.getFeatureType().hasRelations() && checkRelated) {
+            for (int i = 0; i < response.getJSONArray("features").length(); i++) {
+                jFeat = response.getJSONArray("features").getJSONObject(i);
+                List<Long> attributesToInclude = new ArrayList<>();
+                List<ConfiguredAttribute> attrs = al.getAttributes(layer.getFeatureType(), true);
+                attrs.forEach((attr) -> {
+                    attributesToInclude.add(attr.getId());
+                });
+                if (jFeat.has("related_featuretypes")) {
+                    JSONObject js = jFeat.getJSONArray("related_featuretypes").getJSONObject(0);
+                    if (js.has("filter")) {
+                        String s = js.getString("filter");
+                        int fid = Integer.parseInt(s.replaceAll("[\\D]", ""));
+                        jFeat.put("fid", fid);
+                    }
+                }
+                String label;
+                FeatureToJson ftjson = new FeatureToJson(false, false, false, true, true, attributesToInclude);
+                for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
+                    if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
+                        SimpleFeatureType fType = rel.getForeignFeatureType();
+                        label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
+
+                        List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
+                        String leftSide = keys.get(0).getLeftSide().getName();
+                        String rightSide = keys.get(0).getRightSide().getName();
+
+                        Query q = new Query(fType.getTypeName(), FlamingoCQL.toFilter(rightSide + "=" + jFeat.get(leftSide), em));
+                        q.setMaxFeatures(10 + 1);
+                        q.setHandle("FeatureReportActionBean_related_attributes");
+
+                        fs = fType.openGeoToolsFeatureSource(TIMEOUT);
+                        JSONArray features = ftjson.getJSONFeatures(al, fType, fs, q,em,application, context.getRequest());
+
+                        JSONArray jsonFeats = new JSONArray();
+                        int featureCount;
+                        int colCount = 0;
+                        int numFeats = features.length();
+                        int maxFeatures = Math.min(numFeats, 10);
+                        for (featureCount = 0; featureCount < maxFeatures; featureCount++) {
+                            colCount = features.getJSONObject(featureCount).length();
+                            jsonFeats.put(features.getJSONObject(featureCount));
+                        }
+                        jFeat.put("related_features", jsonFeats);
+                    }
+                }
+            }
+        }
+        return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
+    }
+    
     /**
      * This will execute the actual featureinfo query, can be overridden in
      * subclasses to modify behaviour such as workflow.
@@ -375,11 +547,11 @@ public class FeatureInfoActionBean implements ActionBean {
      * @throws JSONException if transforming to json fails
      * @throws Exception if any
      */
-    protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q, EntityManager em, Application application, HttpServletRequest request)
+    protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
             throws IOException, JSONException, Exception {
 
         FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, true /*aliases*/, false /*returnNullval*/, attributesToInclude, ordered);
-        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null, em, application, request);
+        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null,Stripersist.getEntityManager(),application, context.getRequest());
         return features;
     }
 }

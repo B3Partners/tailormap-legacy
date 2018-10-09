@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html class="x-border-box theme-triton">
     <head>
-        <title><c:out value="${actionBean.application.name}"/></title>
+        <title><c:out value="${actionBean.title}"/></title>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">

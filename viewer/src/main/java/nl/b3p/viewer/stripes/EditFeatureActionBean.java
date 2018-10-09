@@ -31,7 +31,9 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,7 +54,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
 import org.stripesstuff.stripersist.Stripersist;
-
 
 /**
  *
@@ -75,7 +76,6 @@ public class EditFeatureActionBean  implements ActionBean {
 
     @Validate
     private ApplicationLayer appLayer;
-
 
     private Layer layer;
 
@@ -211,7 +211,99 @@ public class EditFeatureActionBean  implements ActionBean {
 
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
+    
+    public Resolution saveRelatedFeatures() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
+        String error = null;
 
+        FeatureSource fs = null;
+        EntityManager em = Stripersist.getEntityManager();
+        if (appLayer == null) {
+            error = "App layer or service not found";
+
+        }
+        if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+            error = "U heeft geen rechten om deze kaartlaag te bewerken";
+
+        }
+
+        layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
+
+        if (layer.getFeatureType().hasRelations()) {
+            String label;
+            for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
+                if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
+                    try {
+                        SimpleFeatureType fType = rel.getForeignFeatureType();
+                        label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
+
+                        fs = fType.openGeoToolsFeatureSource(5000);
+                        store = (SimpleFeatureStore) fs;
+                        jsonFeature = new JSONObject(feature);
+                        String fid = jsonFeature.optString(FID, null);
+                        if (fid == null || fid.equals("")) {
+                            json.put(FID, addNewFeature());
+                        } else {
+                            jsonFeature.remove("rel_id");
+                            //editFeature(fid);
+                            Transaction transaction = new DefaultTransaction("edit");
+                            store.setTransaction(transaction);
+
+                            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+                            Filter filter = ff.id(new FeatureIdImpl(fid));
+
+                            List<String> attributes = new ArrayList<String>();
+                            List values = new ArrayList();
+                            for (Iterator<String> it = jsonFeature.keys(); it.hasNext();) {
+                                String attribute = it.next();
+                                if (!FID.equals(attribute)) {
+
+                                    AttributeDescriptor ad = store.getSchema().getDescriptor(attribute);
+
+                                    if (ad != null) {
+                                        attributes.add(attribute);
+                                        //System.out.println(attribute);
+                                        String v = jsonFeature.getString(attribute);
+                                        //System.out.println(v);
+                                        values.add(StringUtils.defaultIfBlank(v, null));
+                                    }
+                                }
+                            }
+
+                            log.debug(String.format("Modifying feature source #%d fid=%s, attributes=%s, values=%s",
+                                    layer.getFeatureType().getId(),
+                                    fid,
+                                    attributes.toString(),
+                                    values.toString()));
+
+                            try {
+                                store.modifyFeatures(attributes.toArray(new String[]{}), values.toArray(), filter);
+
+                                transaction.commit();
+                            } catch (Exception e) {
+                                transaction.rollback();
+                                throw e;
+                            } finally {
+                                transaction.close();
+                            }
+
+                            json.put(FID, fid);
+                        }
+                        json.put("success", Boolean.TRUE);
+                    } catch (Exception ex) {
+                        log.error(String.format("cannot save relatedFeature Exception: ",ex));
+                    }
+                }
+
+            }
+
+            fs.getDataStore().dispose();
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+    }   
+    
     public Resolution delete() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -293,6 +385,46 @@ public class EditFeatureActionBean  implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
+    public Resolution removeRelatedFeatures() throws JSONException, Exception {
+        JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
+        String error = null;
+        FeatureSource fs = null;
+        EntityManager em = Stripersist.getEntityManager();
+        
+        if (appLayer == null) {
+            error = "App layer or service not found";
+        }
+        if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+            error = "U heeft geen rechten om deze kaartlaag te bewerken";
+        }
+
+        layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
+        if (layer.getFeatureType().hasRelations()) {
+            String label;
+            for (FeatureTypeRelation rel : layer.getFeatureType().getRelations()) {
+                if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
+                    SimpleFeatureType fType = rel.getForeignFeatureType();
+                    label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
+                    fs = fType.openGeoToolsFeatureSource(5000);
+                    store = (SimpleFeatureStore) fs;
+                    jsonFeature = new JSONObject(feature);
+                    String fid = jsonFeature.optString(FID, null);
+                    if (fid == null || fid.equals("")) {
+                        error = "Feature without FID can't be deleted";
+                        break;
+                    } else {
+                        deleteFeature(fid);
+                    }
+                    json.put("success", Boolean.TRUE);
+                }
+            }
+            fs.getDataStore().dispose();
+        }
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+
+    }
+    
     protected String addNewFeature() throws Exception {
 
         SimpleFeature f = DataUtilities.template(store.getSchema());

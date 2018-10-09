@@ -49,12 +49,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             ]
         });
 
-        var title = "";
-        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name) && !this.config.isPopup) {
-            title = this.config.title;
-        }
         this.panel = Ext.create('Ext.panel.Panel', {
-            title: title,
+            title: this.getPanelTitle(),
             items: [],
             scrollable: true,
             layout: 'fit',
@@ -64,7 +60,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
                     this.panel.getEl().dom.addEventListener('click', this.relatedFeaturesListener.bind(this));
                 },
                 scope: this
-            }
+            },
+            tools: this.getHelpToolConfig()
         });
         this.getContentContainer().add(this.panel);
         

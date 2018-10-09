@@ -110,8 +110,8 @@ Ext.define("viewer.AppLoader", {
      * @param {Object} appConfig
      */
     processAppConfig: function(appConfig){
-        if(appConfig.name) {
-            document.title = appConfig.name;
+        if(appConfig.title || appConfig.name) {
+            document.title = appConfig.title || appConfig.name;
         }
         this.createApplicationStyle(appConfig);
         Ext.onReady(function() {
