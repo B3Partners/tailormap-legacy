@@ -85,7 +85,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                 width: 200,
                 labelWidth: 50,
                 name: 'filterField',
-                fieldLabel: 'Filter',
+                fieldLabel: i18next.t('viewer_admin_selectiongrid_0'),
                 enableKeyEvents: true,
                 listeners: {
                     keyup: function(textfield, e, eOpts) {
@@ -111,7 +111,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                 "->",
                 {
                     xtype:'button',
-                    text: 'Slider toevoegen',
+                    text: i18next.t('viewer_admin_selectiongrid_1'),
                     listeners: {
                         click: function() {
                             me.appendNewSlider();
@@ -138,18 +138,18 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                 width: 400,
                 labelAlign: 'top',
                 name: 'sliderName',
-                fieldLabel: 'Slidernaam'
+                fieldLabel: i18next.t('viewer_admin_selectiongrid_2')
             },{
                 xtype: 'textfield',
                 id: 'sliderTransparency',
                 width: 150,
                 labelAlign: 'top',
                 name: 'sliderTransparency',
-                fieldLabel: 'Initiele transparantie (%)'
+                fieldLabel: i18next.t('viewer_admin_selectiongrid_3')
             },{
                 xtype: 'button',
                 id: 'sliderSaveButton',
-                text: 'Opslaan',
+                text: i18next.t('viewer_admin_selectiongrid_4'),
                 disabled: true,
                 listeners: {
                     click: function() {
@@ -165,7 +165,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             },{
                 xtype: 'button',
                 id: 'sliderRemoveButton',
-                text: 'Verwijder',
+                text: i18next.t('viewer_admin_selectiongrid_5'),
                 disabled: true,
                 listeners: {
                     click: function() {
@@ -198,7 +198,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                 me.render();
             },
             failure: function() {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                Ext.MessageBox.alert(i18next.t('viewer_admin_selectiongrid_6'), i18next.t('viewer_admin_selectiongrid_7'));
             }
         });
     },

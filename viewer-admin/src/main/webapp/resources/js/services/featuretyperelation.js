@@ -36,7 +36,7 @@ Ext.define('vieweradmin.components.FeaturetypeRelation', {
         return [
             {
                 id: 'featuretype',
-                text: "Feature type",
+                text: i18next.t('viewer_admin_featuretyperelation_0'),
                 dataIndex: 'featuretype',
                 flex: 1,
                 filter: {
@@ -44,7 +44,7 @@ Ext.define('vieweradmin.components.FeaturetypeRelation', {
                 }
             },{
                 id: 'foreignFeaturetype',
-                text: "In relatie met",
+                text: i18next.t('viewer_admin_featuretyperelation_1'),
                 dataIndex: 'foreignFeaturetype',
                 flex: 1,
                 filter: {

@@ -66,7 +66,7 @@ Ext.onReady(function(){
         columns: [
             {
                 id: 'id',
-                text: "Id",
+                text: i18next.t('viewer_admin_layarsource_0'),
                 dataIndex: 'id',
                 flex: 1,
                 filter: {
@@ -74,7 +74,7 @@ Ext.onReady(function(){
                 }
             },{
                 id: 'featureType',
-                text: "Attribuutbron",
+                text: i18next.t('viewer_admin_layarsource_1'),
                 dataIndex: 'featureType',
                 flex: 1,
                 filter: {
@@ -82,7 +82,7 @@ Ext.onReady(function(){
                 }
             },{
                 id: 'layarService',
-                text: "Layar Service",
+                text: i18next.t('viewer_admin_layarsource_2'),
                 dataIndex: 'layarService',
                 flex: 1,
                 filter: {

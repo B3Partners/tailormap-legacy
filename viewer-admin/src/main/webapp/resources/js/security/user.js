@@ -36,7 +36,7 @@ Ext.define('vieweradmin.components.User', {
         return [
             {
                 id: 'username',
-                text: "Naam",
+                text: i18next.t('viewer_admin_user_0'),
                 dataIndex: 'username',
                 flex: 1,
                 filter: {
@@ -44,7 +44,7 @@ Ext.define('vieweradmin.components.User', {
                 }
             },{
                 id: 'organization',
-                text: "Organisatie",
+                text: i18next.t('viewer_admin_user_1'),
                 dataIndex: 'organization',
                 flex: 1,
                 filter: {
@@ -53,7 +53,7 @@ Ext.define('vieweradmin.components.User', {
                 sortable: false
             },{
                 id: 'position',
-                text: "Functie",
+                text: i18next.t('viewer_admin_user_2'),
                 dataIndex: 'position',
                 flex: 1,
                 filter: {

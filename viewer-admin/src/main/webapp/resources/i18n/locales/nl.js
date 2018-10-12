@@ -1,4 +1,10 @@
-{
+
+        i18next.init({
+            lng: 'nl',
+            fallbackLng: 'nl',
+            resources: {
+                nl: {
+                    translation: {
     "viewer_admin_applicationsettings_0": "Configuratie",
     "viewer_admin_applicationsettings_1": "Beveiliging",
     "viewer_admin_applicationsettings_10": "Maak een mashup",
@@ -16,7 +22,7 @@
     "viewer_admin_applicationtree_0": "Subniveau toevoegen",
     "viewer_admin_applicationtree_1": "Verwijderen",
     "viewer_admin_applicationtree_10": "Niveau verwijderen",
-    "viewer_admin_applicationtree_11": "Weet u zeker dat u het niveau ",
+    "viewer_admin_applicationtree_11": "Weet u zeker dat u het niveau {{niveau}} wilt verwijderen?",
     "viewer_admin_applicationtree_12": "Foutmelding",
     "viewer_admin_applicationtree_13": "Vast niveau \"Achtergrond\" niet toegestaan om te verwijderen.",
     "viewer_admin_applicationtree_2": "Naam wijzigen",
@@ -983,3 +989,6 @@
     "viewer_viewercontroller_openlayersmapcomponent_4": "Multiple maps not supported yet",
     "viewer_viewercontroller_viewercontroller_0": "cancel() Not implemented for component: "
 }
+                }
+            }
+        });
