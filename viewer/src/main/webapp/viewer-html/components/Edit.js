@@ -203,7 +203,7 @@ Ext.define("viewer.components.Edit", {
         bottomButtons.push(
             {
                 itemId: "cancelButton",
-                text: "Annuleren",
+                text: i18next.t('viewer_components_edit_0'),
                 listeners: {
                     click: {
                         scope: this,
@@ -213,7 +213,7 @@ Ext.define("viewer.components.Edit", {
             },
             {
                 itemId: "saveButton",
-                text: "Opslaan",
+                text: i18next.t('viewer_components_edit_1'),
                 listeners: {
                     click: {
                         scope: this,
@@ -861,7 +861,7 @@ Ext.define("viewer.components.Edit", {
                                     text: file.filename
                                 },{
                                     xtype: "button",
-                                    text: "x",
+                                    text: i18next.t('viewer_components_edit_2'),
                                     listeners:{
                                         scope:this,
                                         click:function(button){
@@ -870,8 +870,8 @@ Ext.define("viewer.components.Edit", {
                                             var fileId = id.substring(id.lastIndexOf("-")+1);
 
                                             Ext.Msg.show({
-                                                title: "Weet u het zeker?",
-                                                msg: "Weet u zeker dat u deze upload wilt weggooien?",
+                                                title: i18next.t('viewer_components_edit_3'),
+                                                msg: i18next.t('viewer_components_edit_4'),
                                                 fn: function(button) {
                                                     if (button === 'yes') {
                                                         Ext.Ajax.request({
@@ -891,7 +891,7 @@ Ext.define("viewer.components.Edit", {
                                                                     remover.ownerCt.remove(remover);
                                                                 } else {
 
-                                                                    Ext.Msg.alert('Mislukt', "De upload is niet verwijderd: " + response.message);
+                                                                    Ext.MessageBox.alert(i18next.t('viewer_components_edit_8'), i18next.t('viewer_components_edit_9') + response.message);
                                                                 }
                                                             },
                                                             failure: function(result) {
@@ -977,7 +977,7 @@ Ext.define("viewer.components.Edit", {
         if (!this.config.allowDelete) {
             return;
         }
-        Ext.MessageBox.confirm('Weet u het zeker', 'Weet u zeker dat u dit object wilt verwijderen?', function(btn, text){
+        Ext.MessageBox.confirm(i18next.t('viewer_components_edit_10'), i18next.t('viewer_components_edit_11'), function(btn, text){
             if (btn === 'yes') {
                 this.remove();
             }
@@ -1083,7 +1083,7 @@ Ext.define("viewer.components.Edit", {
     },
     remove: function () {
         if (!this.config.allowDelete || !this.geometryEditable) {
-            Ext.Msg.alert('Mislukt', "Verwijderen is niet toegestaan.");
+            Ext.MessageBox.alert(i18next.t('viewer_components_edit_12'), i18next.t('viewer_components_edit_13'));
             return;
         }
 
@@ -1178,7 +1178,7 @@ Ext.define("viewer.components.Edit", {
                             me.messageFunction("Bestanden opgeslagen");
                         },
                         failure: function () {
-                            Ext.Msg.alert('Mislukt', 'Uw bestand kon niet geupload worden.');
+                            Ext.MessageBox.alert(i18next.t('viewer_components_edit_14'), i18next.t('viewer_components_edit_15'));
                         }
                     });
                 }
@@ -1194,7 +1194,7 @@ Ext.define("viewer.components.Edit", {
         this.editingLayer.reload();
         this.currentFID = null;
         if(!skipSuccessMessage) {
-            Ext.Msg.alert('Gelukt', "Het feature is verwijderd.");
+            Ext.MessageBox.alert(i18next.t('viewer_components_edit_16'), i18next.t('viewer_components_edit_17'));
         }
         this.cancel();
     },
@@ -1308,7 +1308,7 @@ Ext.define("viewer.components.Edit", {
                     items: [{
                             xtype: "button",
                             id: this.name + "SelectFeatureButtonFeaturesWindow",
-                            text: "Bewerk geselecteerd feature",
+                            text: i18next.t('viewer_components_edit_5'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -1319,7 +1319,7 @@ Ext.define("viewer.components.Edit", {
                         {
                             xtype: "button",
                             id: this.name + "CancelFeatureButtonFeaturesWindow",
-                            text: "Annuleren",
+                            text: i18next.t('viewer_components_edit_6'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -1336,7 +1336,7 @@ Ext.define("viewer.components.Edit", {
             width: 500,
             height: 300,
             layout: 'fit',
-            title: "Kies één feature",
+            title: i18next.t('viewer_components_edit_7'),
             items: [container]
         });
 
