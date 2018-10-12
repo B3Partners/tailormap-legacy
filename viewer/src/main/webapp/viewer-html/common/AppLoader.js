@@ -37,18 +37,7 @@ Ext.define("viewer.AppLoader", {
      */
     constructor: function(config) {
         this.initConfig(config);
-        this.initI18n();
         this.exposeGlobalVariables();
-    },
-
-    initI18n: function() {
-        i18next.use(i18nextXHRBackend).init({
-            lng: 'nl',
-            fallbackLng: 'nl',
-            backend: {
-                loadPath: this.config.contextPath + '/viewer-html/i18n/locales/{{lng}}.json'
-            }
-        });
     },
 
     reloadApplication: function(appConfig) {
