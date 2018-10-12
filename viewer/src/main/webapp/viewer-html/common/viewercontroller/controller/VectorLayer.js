@@ -52,28 +52,28 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         viewer.viewercontroller.controller.VectorLayer.superclass.constructor.call(this, config);
     },
     removeAllFeatures : function(){
-        Ext.Error.raise({msg: "VectorLayer.removeAllFeatures() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_0')});
     },
     removeFeature : function (feature){    
-        Ext.Error.raise({msg: "VectorLayer.removeFeature() Not implemented! Must be implemented in sub-class"});    
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_1')});    
     },
     getActiveFeature : function(){
-        Ext.Error.raise({msg: "VectorLayer.getActiveFeature() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_2')});
     },
     getFeature : function(id){
-        Ext.Error.raise({msg: "VectorLayer.getFeature() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_3')});
     },
     getFeatureById : function (featureId){
-        Ext.Error.raise({msg: "VectorLayer.getFeatureById() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_4')});
     },
     getAllFeatures : function(){
-        Ext.Error.raise({msg: "VectorLayer.getAllFeatures() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_5')});
     },
     addFeature : function(feature){
-        Ext.Error.raise({msg: "VectorLayer.addFeature() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_6')});
     },
     addFeatures : function(features){
-        Ext.Error.raise({msg: "VectorLayer.addFeatures() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_7')});
     },
     /**
      ** Note: subclasses should call this method to add the keylistener.
@@ -119,17 +119,17 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     },
     /** handle CTRL-Z key when drawing. */
     undoSketch: function () {
-        Ext.Error.raise({msg: "VectorLayer.undoSketch() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_8')});
     },
     /** handle CTRL-Y key when drawing. */
     redoSketch: function () {
-        Ext.Error.raise({msg: "VectorLayer.redoSketch() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_9')});
     },
     /** handle ESC key when drawing. */
     cancelSketch: function () {
-        Ext.Error.raise({msg: "VectorLayer.cancelSketch() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_10')});
     },
     frameworkStyleToFeatureStyle: function(frameworkStyle){
-        Ext.Error.raise({msg: "VectorLayer.frameworkStyleToFeatureStyle() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_11')});
     }
 });

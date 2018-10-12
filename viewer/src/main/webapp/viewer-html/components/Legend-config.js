@@ -33,7 +33,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             margin: '10 0 0 0',
             value: configObject.infoText || '',
             name: 'infoText',
-            fieldLabel: 'Informatie tekst',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_111'),
             labelWidth: 100,
             plugins: [
                 new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
@@ -53,21 +53,21 @@ Ext.define("viewer.components.CustomConfiguration",{
             },*/
             items: [{
                 xtype: 'textfield',
-                fieldLabel: 'Titel',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_112'),
                 name: 'title',
                 value: configObject.hasOwnProperty("title") ? configObject.title : 'Legenda',
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'textfield',
-                fieldLabel: 'Marge rond legenda (bijv. \"3px\")',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_113'),
                 name: 'margin',
                 value: configObject.margin || '0px',
                 labelWidth: this.labelWidth
             },
             { 
                 xtype: 'checkbox',
-                fieldLabel: 'Toon achtergrond kaarten',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_114'),
                 name: 'showBackground',
                 inputValue: true,
                 value: configObject.showBackground || false,
@@ -75,7 +75,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             { 
                 xtype: 'checkbox',
-                fieldLabel: 'Toon legenda in TOC',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_115'),
                 name: 'showInlineLegend',
                 inputValue: true,
                 value: configObject.showInlineLegend || false,

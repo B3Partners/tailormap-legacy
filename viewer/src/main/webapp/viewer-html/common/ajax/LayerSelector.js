@@ -77,7 +77,7 @@ Ext.define ("viewer.components.LayerSelector",{
                 me.initLayers();
             },
             failure: function(a,b,c) {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                Ext.MessageBox.alert(i18next.t('viewer_components_layerselector_1'), i18next.t('viewer_components_layerselector_2'));
             }
         });
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
@@ -87,7 +87,7 @@ Ext.define ("viewer.components.LayerSelector",{
     createCombobox: function() {
         var comboboxConfig = {
             fieldLabel: this.config.label,
-            emptyText:'Maak uw keuze',
+            emptyText: i18next.t('viewer_components_layerselector_0'),
             store: this.layerstore,
             queryMode: 'local',
             displayField: 'title',

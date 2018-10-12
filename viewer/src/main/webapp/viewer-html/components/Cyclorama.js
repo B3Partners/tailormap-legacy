@@ -121,7 +121,7 @@ Ext.define ("viewer.components.Cyclorama",{
         var grid = Ext.create('Ext.grid.Panel', {
             store: store,
             columns: [
-                { header: 'Image id',  dataIndex: this.imageIdName,flex:1 }
+                { header: i18next.t('viewer_components_cyclorama_0'),  dataIndex: this.imageIdName,flex:1 }
             ],
             listeners:{
                 itemdblclick:{
@@ -137,7 +137,7 @@ Ext.define ("viewer.components.Cyclorama",{
             this.optionWindow.destroy();
         }
         this.optionWindow = Ext.create('Ext.window.Window', {
-            title: "Maak een keuze uit de verschillende foto's",
+            title: i18next.t('viewer_components_cyclorama_1'),
             height: 200,
             width: 400,
             layout: 'fit',
@@ -172,7 +172,7 @@ Ext.define ("viewer.components.Cyclorama",{
             this.window.destroy();
         }
         this.window = Ext.create('Ext.window.Window', {
-            title: "Cyclorama rondkijk foto's",
+            title: i18next.t('viewer_components_cyclorama_2'),
             height: height,
             resizable: false,
             width: width,

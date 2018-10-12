@@ -29,14 +29,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.form.add({ 
                 xtype: 'colorfield',
-                fieldLabel: 'Kleur',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_53'),
                 name: 'color',
                 value: this.configObject.color,
                 labelWidth:this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: 'Heractiveer de vorige tools',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_54'),
                 name: 'reactivateTools',
                 value: this.configObject.reactivateTools !== undefined ? this.configObject.reactivateTools : false,
                 labelWidth: this.labelWidth

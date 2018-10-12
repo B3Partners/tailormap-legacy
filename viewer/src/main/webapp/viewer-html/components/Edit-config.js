@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.form.add([
             {
                 xtype: 'numberfield',
-                fieldLabel: 'Klik nauwkeurigheid',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_55'),
                 name: 'clickRadius',
                 value: this.configObject.clickRadius !== undefined ? this.configObject.clickRadius : 4,
                 labelWidth: this.labelWidth,
@@ -41,42 +41,42 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: 'Bewerken toestaan',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_56'),
                 name: 'allowEdit',
                 value: this.configObject.allowEdit !== undefined ? this.configObject.allowEdit : true,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: 'Verwijderen toestaan',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_57'),
                 name: 'allowDelete',
                 value: this.configObject.allowDelete !== undefined ? this.configObject.allowDelete : false,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: 'Kopiëren toestaan',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_58'),
                 name: 'allowCopy',
                 value: this.configObject.allowCopy !== undefined ? this.configObject.allowCopy : false,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: 'Nieuw toestaan',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_59'),
                 name: 'allowNew',
                 value: this.configObject.allowNew !== undefined ? this.configObject.allowNew : true,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: 'Link toevoegen in Feature Info',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_60'),
                 name: 'showEditLinkInFeatureInfo',
                 value: this.configObject.showEditLinkInFeatureInfo !== undefined ? this.configObject.showEditLinkInFeatureInfo : false,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'textarea',
-                fieldLabel: 'Hulp tekst bij bewerken',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_61'),
                 name: 'editHelpText',
                 value: this.configObject.hasOwnProperty("editHelpText") ? this.configObject.editHelpText : "",
                 labelWidth: this.labelWidth,

@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [{
                 xtype: 'textfield',
                 id: 'componentTransparencyTitle',
-                fieldLabel: 'Titel',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_241'),
                 name: 'title',
                 value: title,
                 labelWidth: 275,
@@ -54,7 +54,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     id: 'sliderForUserAdded',
                     checked: this.configObject.sliderForUserAdded,
                     inputValue: true,
-                    boxLabel: 'Voeg slider toe voor door gebruiker toegevoegde kaarten',                    
+                    boxLabel: i18next.t('viewer_components_customconfiguration_242'),                    
                     listeners:{
                         change: {                    
                             fn: function(el,newValue,oldValue,eOpts){
@@ -81,7 +81,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         marginLeft: "100px"
                     },
                     disabled: this.configObject.sliderForUserAdded ? !this.configObject.sliderForUserAdded : true,
-                    fieldLabel: 'Slidernaam',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_243'),
                     name: 'sliderForUserAddedText',
                     labelWidth: 70,
                     value: this.configObject.sliderForUserAddedText ? this.configObject.sliderForUserAddedText: "Overige"
@@ -92,7 +92,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         marginLeft: "10px"
                     },
                     disabled: this.configObject.sliderForUserAdded ? !this.configObject.sliderForUserAdded : true,
-                    fieldLabel: 'Initiele transparantie (%)',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_244'),
                     name: 'sliderForUserAddedInitTransparency',
                     labelWidth: 150,
                     value: this.configObject.sliderForUserAddedInitTransparency ? this.configObject.sliderForUserAddedInitTransparency: 0

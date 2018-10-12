@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         Ext.tip.QuickTipManager.init();  // enable tooltips
         this.titleField = Ext.create('Ext.form.field.Text', {
-            fieldLabel: 'Titel',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_38'),
             name: 'title',
             value: title,
             labelWidth: 275,

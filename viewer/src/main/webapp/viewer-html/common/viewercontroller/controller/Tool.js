@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
      *Must set the visibility of the tool.
      */
     setToolVisible : function(){
-        Ext.Error.raise({msg: "Tool.setVisible() not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_tool_0')});
     },
 
     fire : function (event,options){
@@ -98,21 +98,21 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     },
 
     isActive : function(){
-        Ext.Error.raise({msg: "Tool.isActive() not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_tool_1')});
     },
     /**
      * Activate tool
      * must be implemented
      */
     activate: function(){
-        Ext.Error.raise({msg: "Tool.activate() not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_tool_2')});
     },
     /**
      * Deactivate tool
      * must be implemented
      */
     deactivate: function(){
-        Ext.Error.raise({msg: "Tool.deactivate() not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_tool_3')});
     },
     getVisible : function(){
         return this.config.visible;

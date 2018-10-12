@@ -33,11 +33,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     },
     
     toXML : function(){
-        Ext.Error.raise({msg: "FlamingoLayer.toXML(): .toXML() must be made!"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingo_flamingolayer_0')});
     },
 
     getTagName : function(){
-        Ext.Error.raise({msg: "FlamingoLayer.getTagName: .getTagName() must be made!"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingo_flamingolayer_1')});
     },
     setOption : function(optionKey,optionValue){
         this.options[optionKey]=optionValue;

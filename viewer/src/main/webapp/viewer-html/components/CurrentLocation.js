@@ -29,7 +29,7 @@ Ext.define ("viewer.components.CurrentLocation",{
     MARKER_PREFIX: "CurrentLocation_",
     config: {
         interval: null,
-        tooltip: 'Huidge locatie'
+        tooltip: i18next.t('viewer_components_currentlocation_0')
     },
     constructor: function(config){
         this.callParent(arguments);

@@ -30,7 +30,7 @@ Ext.define("viewer.components.Merge", {
     deActivatedTools: [],
     config: {
         name: "Samenvoegen",
-        tooltip: "Features samenvoegen",
+        tooltip: i18next.t('viewer_components_merge_0'),
         strategy: "replace",
         actionbeanUrl: "/viewer/action/feature/merge",
         layers: null,
@@ -222,7 +222,7 @@ Ext.define("viewer.components.Merge", {
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
-        Ext.Msg.alert('Gelukt', "De features zijn samengevoegd.");
+        Ext.MessageBox.alert(i18next.t('viewer_components_merge_9'), i18next.t('viewer_components_merge_10'));
         me.cancel();
     },
     mapClicked: function (toolMapClick, comp) {
@@ -282,8 +282,8 @@ Ext.define("viewer.components.Merge", {
                             xtype: 'button',
                             id: this.name + "selectAButton",
                             disabled: true,
-                            tooltip: "Kies geometrie " + this.labelA,
-                            text: "Selecteer " + this.labelA,
+                            tooltip: i18next.t('viewer_components_merge_1') + this.labelA,
+                            text: i18next.t('viewer_components_merge_2') + this.labelA,
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -295,8 +295,8 @@ Ext.define("viewer.components.Merge", {
                             xtype: 'button',
                             id: this.name + "selectBButton",
                             disabled: true,
-                            tooltip: "Kies geometrie " + this.labelB,
-                            text: "Selecteer " + this.labelB,
+                            tooltip: i18next.t('viewer_components_merge_3') + this.labelB,
+                            text: i18next.t('viewer_components_merge_4') + this.labelB,
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -325,8 +325,8 @@ Ext.define("viewer.components.Merge", {
                     items: [
                         {
                             id: this.name + "cancelButton",
-                            tooltip: "Annuleren",
-                            text: "Annuleren",
+                            tooltip: i18next.t('viewer_components_merge_5'),
+                            text: i18next.t('viewer_components_merge_6'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -336,8 +336,8 @@ Ext.define("viewer.components.Merge", {
                         },
                         {
                             id: this.name + "saveButton",
-                            tooltip: "Samenvoegen uitvoeren",
-                            text: "Samenvoegen",
+                            tooltip: i18next.t('viewer_components_merge_7'),
+                            text: i18next.t('viewer_components_merge_8'),
                             listeners: {
                                 click: {
                                     scope: me,

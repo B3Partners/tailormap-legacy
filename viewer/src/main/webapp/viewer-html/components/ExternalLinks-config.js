@@ -36,7 +36,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             xtype: "panel",
             height: 250,
             width: '100%',
-            title: "Links",
+            title: i18next.t('viewer_components_customconfiguration_62'),
             layout: {
                 type: 'vbox',
                 align: 'stretch'
@@ -47,7 +47,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 {
                     xtype: 'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: 'Link toevoegen',
+                    text: i18next.t('viewer_components_customconfiguration_63'),
                     listeners: {
                         click: function () {
                             this.createRow({label: '', url: ''});
@@ -78,21 +78,21 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             items: [{
                     name: "label",
-                    fieldLabel: "Label",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_64'),
                     value: urlconfig.label,
                     xtype: 'textfield',
                     labelWidth: 50,
                     flex: 1
                 }, {
                     name: "url",
-                    fieldLabel: "URL",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_65'),
                     value: urlconfig.url,
                     xtype: 'textfield',
                     labelWidth: 30,
                     flex: 1
                 }, {
                     xtype: "button",
-                    text: " X ",
+                    text: i18next.t('viewer_components_customconfiguration_66'),
                     listeners: {
                         click: function (btn) {
                             var container = btn.up('.panel');

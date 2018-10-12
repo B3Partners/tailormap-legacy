@@ -139,12 +139,12 @@ Ext.define ("viewer.components.DataSelection",{
                 items: [{
                     xtype: 'panel',
                     id: this.config.name + 'FilterTab',
-                    title: 'Filter',
+                    title: i18next.t('viewer_components_dataselection_0'),
                     hideMode: 'offsets'
                 },{
                     xtype: 'panel',
                     id: this.config.name + "DataTab",
-                    title: 'Dataselectie',
+                    title: i18next.t('viewer_components_dataselection_1'),
                     hideMode: 'offsets'
                 }],
                 activeTab : this.config.name + "DataTab"
@@ -160,7 +160,7 @@ Ext.define ("viewer.components.DataSelection",{
                     pack: 'end'
                 },
                 items: [{
-                    text: 'Toepassen',
+                    text: i18next.t('viewer_components_dataselection_2'),
                     listeners: {
                         click:{
                             scope: this,
@@ -173,7 +173,7 @@ Ext.define ("viewer.components.DataSelection",{
                         }
                     }
                 },{
-                    text: 'Annuleren',
+                    text: i18next.t('viewer_components_dataselection_3'),
                     listeners: {
                         click:{
                             scope: this,
@@ -181,7 +181,7 @@ Ext.define ("viewer.components.DataSelection",{
                         }
                     }
                 },{
-                    text: 'Reset',
+                    text: i18next.t('viewer_components_dataselection_4'),
                     listeners: {
                         click:{
                             scope: this,
@@ -235,7 +235,7 @@ Ext.define ("viewer.components.DataSelection",{
                     style: {
                         marginTop: '5px'
                     },
-                    emptyText:'Maak uw keuze',
+                    emptyText: i18next.t('viewer_components_dataselection_5'),
                     store: {
                         fields: [{
                             name: 'name'
@@ -322,14 +322,14 @@ Ext.define ("viewer.components.DataSelection",{
                     var value = res.value;
                     cb.setValue(value);
                 }else{
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + res.msg);
+                    Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_6'), i18next.t('viewer_components_dataselection_7') + res.msg);
                 }
                 
                 this.itemsLoaded--;
                 cb.setDisabled(false);
             }, 
             failure: function ( result, request) {
-                Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + result.responseText);
+                Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_8'), i18next.t('viewer_components_dataselection_9') + result.responseText);
                 cb.setDisabled(false);
                 this.itemsLoaded--;
             } 
@@ -358,11 +358,11 @@ Ext.define ("viewer.components.DataSelection",{
                         }
                         this.receiveUniqueValues(values);
                     }else{
-                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_10'), i18next.t('viewer_components_dataselection_11') + res.msg);
                     }
                 }, 
                 failure: function ( result, request) {
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
+                    Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_12'), i18next.t('viewer_components_dataselection_13') + result.responseText);
                     this.itemsLoaded--;
                 } 
             });

@@ -30,7 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.width,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: "Breedte popup"
+                fieldLabel: i18next.t('viewer_components_customconfiguration_23')
             },
             {
                 xtype: "textfield",
@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.height,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: "Hoogte popup"
+                fieldLabel: i18next.t('viewer_components_customconfiguration_24')
             },
             {
                 xtype: "textfield",
@@ -46,7 +46,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.url,
                 width: 700,
                 labelWidth:this.labelWidth,
-                fieldLabel: "URL *"
+                fieldLabel: i18next.t('viewer_components_customconfiguration_25')
             }         
         ]);
           var extraText = document.createElement('div');

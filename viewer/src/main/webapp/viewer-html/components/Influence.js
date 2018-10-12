@@ -108,12 +108,12 @@ Ext.define ("viewer.components.Influence",{
             itemList.push({
                 xtype: 'label',
                 margin: this.margin,
-                text: 'of'            
+                text: i18next.t('viewer_components_influence_0')            
             });
         }
         itemList.push({
             xtype: 'button',
-            text: 'Locatie aanwijzen op kaart',
+            text: i18next.t('viewer_components_influence_1'),
             margin: this.margin,
             listeners: {
                 click:{
@@ -125,7 +125,7 @@ Ext.define ("viewer.components.Influence",{
         
         itemList.push({
             xtype: 'button',
-            text: 'Verwijder invloedsgebied',
+            text: i18next.t('viewer_components_influence_2'),
             margin: this.margin,
             listeners: {
                 click:{
@@ -215,7 +215,7 @@ Ext.define ("viewer.components.Influence",{
             this.setFilter(extent);
             this.removeButton.setVisible(true);
         }else{
-            Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
+            Ext.MessageBox.alert(i18next.t('viewer_components_influence_3'), i18next.t('viewer_components_influence_4'));
         }        
     },
     /**

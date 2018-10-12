@@ -29,7 +29,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
-            title: 'Configureer dit component',
+            title: i18next.t('viewer_components_customconfiguration_221'),
             bodyPadding: me.formPadding,
             defaults: {
                 anchor: '100%'
@@ -37,13 +37,13 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             items: [{ 
                 xtype: 'textfield',
-                fieldLabel: 'Naam',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_222'),
                 name: 'title',
                 value: this.configObject.title,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_223'),
                 inputValue: true,
                 name: 'groupCheck',
                 checked: this.configObject.groupCheck !== undefined ? this.configObject.groupCheck : true,
@@ -51,7 +51,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Kaartlagen krijgen een vinkvak',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_224'),
                 inputValue: true,
                 name: 'layersChecked',
                 checked: this.configObject.layersChecked !== undefined ? this.configObject.layersChecked: true,
@@ -59,7 +59,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Achtergrondkaarten tonen',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_225'),
                 inputValue: true,
                 name: 'showBaselayers',
                 checked: this.configObject.showBaselayers !== undefined ? this.configObject.showBaselayers: true,
@@ -67,7 +67,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Algemeen icoon voor kaartlaag tonen',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_226'),
                 inputValue: true,
                 name: 'showLeafIcon',
                 checked: this.configObject.showLeafIcon !== undefined ? this.configObject.showLeafIcon : true,
@@ -75,7 +75,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Algemeen icoon voor kaart(groep) tonen',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_227'),
                 inputValue: true,
                 name: 'showNodeIcon',
                 checked: this.configObject.showNodeIcon !== undefined ? this.configObject.showNodeIcon : true,
@@ -83,13 +83,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
-                fieldLabel: 'Zoom naar schaal tekst',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_228'),
                 name: 'zoomToScaleText',
                 value: this.configObject.zoomToScaleText? this.configObject.zoomToScaleText:"Zoom to scale",
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Bij opstarten boom openklappen',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_229'),
                 inputValue: true,
                 name: 'expandOnStartup',
                 checked: this.configObject.expandOnStartup !== undefined ? this.configObject.expandOnStartup : true,
@@ -97,7 +97,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Aangezette kaarten openklappen',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_230'),
                 inputValue: false,
                 name: 'expandOnEnabledLayer',
                 checked: this.configObject.expandOnEnabledLayer !== undefined ? this.configObject.expandOnEnabledLayer : false,
@@ -111,20 +111,20 @@ Ext.define("viewer.components.CustomConfiguration",{
                 items: [
                     {
                         xtype: 'checkbox',
-                        fieldLabel: 'Toon knop voor aan/uit zetten van alle layers',
+                        fieldLabel: i18next.t('viewer_components_customconfiguration_231'),
                         name: 'showAllLayersOn',
                         inputValue: true,
                         checked: this.configObject.showAllLayersOn!==undefined? this.configObject.showAllLayersOn:false,
                         // value: true,
                         labelWidth: me.labelWidth,
-                        boxLabel: 'Toon \'alles aan\' knop'
+                        boxLabel: i18next.t('viewer_components_customconfiguration_232')
                     },{
                         xtype: 'checkbox',
                         name: 'showAllLayersOff',
                         inputValue: true,
                         checked: this.configObject.showAllLayersOff!==undefined? this.configObject.showAllLayersOff:false,
                         // value: true,
-                        boxLabel: 'Toon \'alles uit\' knop',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_233'),
                         style: {
                             marginLeft: "20px"
                         }
@@ -133,43 +133,43 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             { 
                 xtype: 'textfield',
-                fieldLabel: 'Tekst voor knop om alle layers aan te zetten',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_234'),
                 name: 'toggleAllLayersOnText',
                 value: this.configObject.toggleAllLayersOnText? this.configObject.toggleAllLayersOnText:"All layers on",
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
-                fieldLabel: 'Tekst voor knop om alle layers uit te zetten',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_235'),
                 name: 'toggleAllLayersOffText',
                 value: this.configObject.toggleAllLayersOffText? this.configObject.toggleAllLayersOffText:"All layers off",
                 labelWidth:me.labelWidth
             },{                           
                 xtype: 'radiogroup',
                 vertical: true,
-                fieldLabel: 'Na het opstarten moet de eerste keer klikken er voor zorgen dat de kaartlagen',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_236'),
                 name: "initToggleAllLayers",
                 labelWidth: me.labelWidth,
                 items: [{
-                    boxLabel: 'Aan gaan', 
+                    boxLabel: i18next.t('viewer_components_customconfiguration_237'), 
                     name: 'initToggleAllLayers', 
                     inputValue: true, 
                     checked: me.configObject.initToggleAllLayers
                 },{
-                    boxLabel: 'Uit gaan', 
+                    boxLabel: i18next.t('viewer_components_customconfiguration_238'), 
                     name: 'initToggleAllLayers', 
                     inputValue: false, 
                     checked: !me.configObject.initToggleAllLayers
                 }]
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Tabblad activeren na verandering boomstructuur (door bijv. Selectie module). Alleen geldig wanneer TOC in tabblad staat',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_239'),
                 inputValue: true,
                 name: 'showAfterSelectedContentChange',
                 checked: this.configObject.showAfterSelectedContentChange !== undefined ? this.configObject.showAfterSelectedContentChange : false,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Aangevinkte kaartlagen onthouden<br />(werkt alleen voor applicatie lagen)',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_240'),
                 inputValue: true,
                 name: 'persistCheckedLayers',
                 checked: this.configObject.persistCheckedLayers !== undefined ? this.configObject.persistCheckedLayers : false,

@@ -29,7 +29,7 @@ Ext.define("viewer.viewercontroller.controller.ImageLayer",{
      * @param extent The extent of type viewer.viewercontroller.controller.Extent
      */
     setExtent: function(extent){
-        Ext.Error.raise({msg: "ImageLayer.setExtent() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_imagelayer_0')});
         
     },
     /**

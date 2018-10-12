@@ -29,44 +29,44 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             defaultType: 'textfield',
             items: [{                  
-                fieldLabel: 'Titel',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_39'),
                 name: 'title',
                 value: this.configObject.title !== null && this.configObject.title !== undefined ? this.configObject.title : "Titel",
                 labelWidth: me.labelWidth,
                 width: 500
             },{                        
-                fieldLabel: 'Marge',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_40'),
                 name: 'margin',
                 value: this.configObject.margin || "3px 0 3px 0",
                 labelWidth: me.labelWidth,
                 width: 400                   
             },{
-                fieldLabel: 'Padding',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_41'),
                 name: 'padding',
                 value: this.configObject.padding || "5px",
                 labelWidth: me.labelWidth,
                 width: 400
             },{
                 xtype: 'colorfield',
-                fieldLabel: 'Kleur',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_42'),
                 name: 'backgroundColor',
                 value: this.configObject.backgroundColor || "transparent",
                 labelWidth: me.labelWidth
             },{
-                fieldLabel: 'Dikte van rand',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_43'),
                 name: 'border',
                 value: this.configObject.border || "1px 0 1px 0",
                 labelWidth: me.labelWidth,
                 width: 400
             },{
                 xtype: 'colorfield',
-                fieldLabel: 'Kleur van rand',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_44'),
                 name: 'borderColor',
                 value: this.configObject.borderColor || "D0D0D0",
                 labelWidth: me.labelWidth
             },{
                 xtype: 'colorfield',
-                fieldLabel: 'Tekstkleur',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_45'),
                 name: 'textColor',
                 value: this.configObject.textColor || "000000",
                 labelWidth: me.labelWidth
@@ -75,7 +75,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fields: ['value', 'text'],
                 value: this.configObject.fontWeight || "bold",
                 name: "fontWeight",
-                fieldLabel: "Tekst opmaak",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_46'),
                 labelWidth: me.labelWidth,
                 store: [
                     ["normal", "Normaal"],

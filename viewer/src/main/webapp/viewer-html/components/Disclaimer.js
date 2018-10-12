@@ -53,11 +53,11 @@ Ext.define ("viewer.components.Disclaimer",{
                     xtype: 'checkbox', 
                     name: "dontshow",
                     id: "dontshow",
-                    boxLabel: "Niet meer tonen"
+                    boxLabel: i18next.t('viewer_components_disclaimer_0')
                 },
                 {
                     xtype: "button",
-                    text: "Ok",
+                    text: i18next.t('viewer_components_disclaimer_1'),
                     listeners: {
                         click: {
                             fn: function () {

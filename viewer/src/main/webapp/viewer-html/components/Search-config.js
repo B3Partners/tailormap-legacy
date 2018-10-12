@@ -38,7 +38,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.form.add({
             xtype: 'checkbox',
-            boxLabel: 'Toon knop voor het verwijderen van marker',
+            boxLabel: i18next.t('viewer_components_searchconfiguration_0'),
             name: 'showRemovePin',
             value: true,
             inputValue: true,
@@ -50,10 +50,10 @@ Ext.define("viewer.components.SearchConfiguration",{
         this.form.add({
             xtype: "combobox",
             fields: ['value','text'],
-            fieldLabel: "Type marker",
+            fieldLabel: i18next.t('viewer_components_searchconfiguration_1'),
             value: this.configObject.marker ? this.configObject.marker : "default",
             name: "marker",
-            emptyText:'Maak uw keuze',
+            emptyText: i18next.t('viewer_components_searchconfiguration_2'),
             store: [
                 ["default","Standaard marker"],
                 ["circle","Cirkel"],
@@ -81,7 +81,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 {
                     xtype:'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: 'Zoekingang toevoegen',
+                    text: i18next.t('viewer_components_searchconfiguration_3'),
                     listeners: {
                         click:{
                             fn: function() {
@@ -161,42 +161,42 @@ Ext.define("viewer.components.SearchConfiguration",{
                         marginBottom: '0px'
                     },
                     items: [
-                        { fieldLabel: 'Naam', name: 'name', value: config.name, itemId: 'name'+config.id },
-                        { fieldLabel: 'Gebruik alleen via url', name: 'urlOnly'+config.id, itemId: 'urlOnly'+config.id, checked: config.urlOnly, xtype:'checkbox'},
-                        { fieldLabel: 'Id', itemId: 'idField'+config.id,name: 'idField'+config.id, value: config.id,readOnly:true, readOnlyCls:'disabledTextField'},
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_4'), name: 'name', value: config.name, itemId: 'name'+config.id },
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_5'), name: 'urlOnly'+config.id, itemId: 'urlOnly'+config.id, checked: config.urlOnly, xtype:'checkbox'},
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_6'), itemId: 'idField'+config.id,name: 'idField'+config.id, value: config.id,readOnly:true, readOnlyCls:'disabledTextField'},
                         {                           
                             xtype: 'radiogroup',
                             itemId: 'type' + config.id,
-                            fieldLabel: 'Type',
+                            fieldLabel: i18next.t('viewer_components_searchconfiguration_7'),
                             vertical: true,
                             name: "type" + config.id,
                             items: [{
-                                boxLabel: 'OpenLS', 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_8'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'openls',
                                 checked: config.type === "openls" || config.type === undefined
                             },{
-                                boxLabel: 'ArcGISRest', 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_9'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'arcgisrest',
                                 checked: config.type === "arcgisrest"
                             },{
-                                boxLabel: 'Solr', 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_10'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'solr',
                                 checked: config.type === "solr"
                             },{
-                                boxLabel: 'PDOK Adreszoeker', 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_11'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'pdok',
                                 checked: config.type === "pdok"
                             },{
-                                boxLabel: 'Attribuutbron', 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_12'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'attributesource',
                                 checked: config.type === "attributesource"
                             },{
-                                boxLabel: 'Eenvoudig', 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_13'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
                                 checked: config.type === "simplelist"
@@ -207,7 +207,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 }
                             }
                         },
-                        { fieldLabel: 'URL *', name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_14'), name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
                         { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
                         { xtype: 'container', itemId: 'asConfig' + config.id, hidden: true, height: 130, autoScroll: true },
                         {
@@ -221,12 +221,12 @@ Ext.define("viewer.components.SearchConfiguration",{
                                     value: config.filter,
                                     name: "filter" + config.id,
                                     itemId: "filter" + config.id,
-                                    fieldLabel: "Optioneel filter",
+                                    fieldLabel: i18next.t('viewer_components_searchconfiguration_15'),
                                     labelWidth: 120,
                                     width: 600
                                 },
                                 {   xtype: "container",
-                                    html: "Meer informatie over de configuratie van de PDOK Adreszoeker kunt u vinden via " +
+                                    html: i18next.t('viewer_components_searchconfiguration_16') +
                                     "<a href=\"https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine\" target='_help'>" +
                                     "https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine" +
                                     "</a>"
@@ -237,7 +237,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         {
                             xtype:'button',
                             iconCls: 'x-fa fa-floppy-o',
-                            text: 'Zoekingang opslaan',
+                            text: i18next.t('viewer_components_searchconfiguration_17'),
                             listeners: {
                                 click: function(button) {
                                     me.saveConfig();
@@ -250,7 +250,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             tbar: this.maxSearchConfigs === 1 ? null : ["->", {
                 xtype:'button',
                 iconCls: 'x-fa fa-minus-circle',
-                text: 'Zoekingang verwijderen',
+                text: i18next.t('viewer_components_searchconfiguration_18'),
                 listeners: {
                     click: function() {
                         me.removeConfig(config.id);
@@ -368,7 +368,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 flex: 1,
                 autoScroll: true
             });
-            container.add({ xtype: 'container', items: [{ xtype: 'button', text: 'Optie toevoegen', handler: function() {
+            container.add({ xtype: 'container', items: [{ xtype: 'button', text: i18next.t('viewer_components_searchconfiguration_19'), handler: function() {
                me.simpleListConfigs[configid].add(me.getSimpleListFields({}, configid));
             }}]});
             container.add(me.simpleListConfigs[configid]);
@@ -391,12 +391,12 @@ Ext.define("viewer.components.SearchConfiguration",{
                 margin: '0 5 0 0'
             },
             items: [
-                { fieldLabel: 'Label', name: 'label', value: config.label || '' },
-                { fieldLabel: 'Waarde', name: 'value', value: config.value || '' },
-                { fieldLabel: 'lo-x', name: 'minX', size: 8, value: config.bbox && config.bbox.minx || '' },
-                { fieldLabel: 'lo-y', name: 'minY', size: 8, value: config.bbox && config.bbox.miny || '' },
-                { fieldLabel: 'rb-x', name: 'maxX', size: 8, value: config.bbox && config.bbox.maxx || '' },
-                { fieldLabel: 'rb-y', name: 'maxY', size: 8, value: config.bbox && config.bbox.maxy || '' }
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_20'), name: 'label', value: config.label || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_21'), name: 'value', value: config.value || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_22'), name: 'minX', size: 8, value: config.bbox && config.bbox.minx || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_23'), name: 'minY', size: 8, value: config.bbox && config.bbox.miny || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_24'), name: 'maxX', size: 8, value: config.bbox && config.bbox.maxx || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_25'), name: 'maxY', size: 8, value: config.bbox && config.bbox.maxy || '' }
             ]
         };
     },
@@ -547,11 +547,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                 height: 400,
                 bodyPadding: 10,
                 resizable: false,
-                title: 'Configureer kaartlagen',
+                title: i18next.t('viewer_components_searchconfiguration_26'),
                 bodyStyle: 'background-color: White;',
                 bbar: [
                     { xtype: 'tbfill' },
-                    { xtype: 'button', text: 'Opslaan', itemId: 'configureLayersButton' }
+                    { xtype: 'button', text: i18next.t('viewer_components_searchconfiguration_27'), itemId: 'configureLayersButton' }
                 ],
                 items: [
                     {
@@ -562,8 +562,8 @@ Ext.define("viewer.components.SearchConfiguration",{
                         },
                         height: 20,
                         items: [
-                            { xtype: 'container', flex: 1, margin: '0 10px 0 0', html: '<b>Lagen die verplicht aan moeten staan</b>' },
-                            { xtype: 'container', flex: 1, html: '<b>Lagen die automatisch aangezet worden</b>' }
+                            { xtype: 'container', flex: 1, margin: '0 10px 0 0', html: { tag: "b", html: i18next.t('viewer_components_searchconfiguration_28') } },
+                            { xtype: 'container', flex: 1, html: { tag: "b", html: i18next.t('viewer_components_searchconfiguration_29') } }
                         ]
                     },
                     {

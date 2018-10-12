@@ -29,18 +29,18 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
         this.form.add([{
             xtype: "label",
-            text: "Zoekingang",
+            text: i18next.t('viewer_components_customconfiguration_104'),
             style: "font-weight: bold;"
         },{
             xtype: 'textfield',
-            fieldLabel: 'Naam',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_105'),
             name: 'searchName',
             value: (this.configObject != null && this.configObject.searchName != undefined) ? this.configObject.searchName : '',
             labelWidth:this.labelWidth
         },
         { 
             xtype: 'textfield',
-            fieldLabel: 'URL',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_106'),
             name: 'searchUrl',
             value: (this.configObject != null && this.configObject.searchUrl != undefined) ? this.configObject.searchUrl : '',
             columnWidth : 0.5,
