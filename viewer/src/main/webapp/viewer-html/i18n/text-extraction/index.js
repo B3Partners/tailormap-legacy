@@ -5,9 +5,11 @@ const path = require('path');
 class TextExtractor {
 
     constructor() {
+        this.combined_stores = [];
         const languageFiles = [
             {
                 outputFilename: "../locales/nl.json",
+                outputJS: "../locales/nl.js",
                 fileOptions: {
                     files: [
                         '../../common/**/*.js',
@@ -20,7 +22,9 @@ class TextExtractor {
             },
             {
                 outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.json",
+                outputJS: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.js",
                 prefix: "viewer_admin",
+                useCombined: true,
                 fileOptions: {
                     files: [
                         '../../../../../../../viewer-admin/src/main/webapp/resources/js/**/*.js'
@@ -60,13 +64,28 @@ class TextExtractor {
         return count_store;
     }
 
-    writeFile(store, outputFilename) {
+    writeFile(store, outputFilename, jsFilename) {
         const ordered_store = {};
         Object.keys(store).sort().forEach((key) => {
             ordered_store[key] = store[key];
         });
         const json_content = JSON.stringify(ordered_store, null, 4);
         fs.writeFile(outputFilename, json_content, (err) => {
+            if(err) {
+                return console.log(err);
+            }
+        });
+        const jsCode = `
+        i18next.init({
+            lng: 'nl',
+            fallbackLng: 'nl',
+            resources: {
+                nl: {
+                    translation: ${json_content}
+                }
+            }
+        });`;
+        fs.writeFile(jsFilename, jsCode, (err) => {
             if(err) {
                 return console.log(err);
             }
@@ -163,7 +182,17 @@ class TextExtractor {
             replace.sync(propReplacer);
             replace.sync(msgBoxReplacer);
             replace.sync(loadingReplacer);
-            this.writeFile(store, opts.outputFilename);
+            let output_store = store;
+            if (opts.useCombined) {
+                this.combined_stores.forEach(s => {
+                    output_store = {
+                        ...output_store,
+                        ...s
+                    };
+                });
+            }
+            this.writeFile(output_store, opts.outputFilename, opts.outputJS);
+            this.combined_stores.push(store);
             console.log(`Total replacements for ${path.resolve(opts.outputFilename)}: ${match_count}`);
         }
         catch(error) {
