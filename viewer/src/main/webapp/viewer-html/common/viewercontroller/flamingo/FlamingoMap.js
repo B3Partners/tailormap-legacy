@@ -223,7 +223,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *See @link Map.doIdentify
      */
     doIdentify : function(x,y){
-        Ext.Error.raise({msg: "Map.doIdentify() Not implemented!"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingo_flamingomap_0')});
     },
 
     /**

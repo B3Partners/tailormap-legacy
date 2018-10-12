@@ -30,13 +30,13 @@ Ext.define("viewer.components.CustomConfiguration",{
             itemId: 'defaultDownload',
             name: 'defaultDownload',
             labelWidth: this.labelWidth,
-            fieldLabel: 'Standaard download methode',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_0'),
             value: this.configObject.defaultDownload || "SHP"
         });
 
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: 'Automatisch downloaden',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_1'),
             inputValue: true,
             name: 'autoDownload',
             checked: this.configObject.autoDownload || false,
@@ -45,7 +45,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'textfield',
-            fieldLabel: 'Download formaat parameters',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_2'),
             name: 'downloadParams',
             value: this.configObject.downloadParams,
             labelWidth: this.labelWidth,
@@ -54,12 +54,12 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'container',
-            html: 'Indien automatisch downloaden wordt ingeschakeld wordt er automatisch een download gestart bij het openen van de Attributenlijst indien slechts 1 laag beschikbaar is en de Standaard download methode is ingesteld.'
+            html: i18next.t('viewer_components_customconfiguration_3')
         });
 
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: 'Zoom naar attribuut knop tonen',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_4'),
             inputValue: true,
             name: 'addZoomTo',
             checked: this.configObject.addZoomTo || false,
@@ -68,7 +68,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'numberfield',
-            fieldLabel: 'Buffer zoom gebied afstand (kaart eenheden / meter)',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_5'),
             name: 'zoomToBuffer',
             value: this.configObject.zoomToBuffer || 10,
             minValue: 0,
@@ -78,7 +78,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'numberfield',
-            fieldLabel: 'Wachttijd (in ms) voor ophalen features na maken filter (bijv. extent filter)',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_6'),
             name: 'requestThreshold',
             value: this.configObject.requestThreshold || 2000,
             minValue: 0,
@@ -88,7 +88,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: 'Lagen als tabbladen tonen',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_7'),
             inputValue: 'true',
             name: 'showLayerSelectorTabs',
             checked: this.configObject.showLayerSelectorTabs || false,
@@ -97,7 +97,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: 'Link toevoegen in Feature Info',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_8'),
             name: 'showAttributelistLinkInFeatureInfo',
             value: this.configObject.showAttributelistLinkInFeatureInfo !== undefined ? this.configObject.showAttributelistLinkInFeatureInfo : false,
             labelWidth: this.labelWidth

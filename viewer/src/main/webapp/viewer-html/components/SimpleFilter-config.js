@@ -76,7 +76,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             renderTo: Ext.get(parentId),
             items: [{
                 xtype: 'textfield',
-                fieldLabel: 'Titel',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_192'),
                 name: 'title',
                 itemId: 'title',
                 value: this.configObject.title ? this.configObject.title : "",
@@ -86,7 +86,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'panel',
                 padding: '5 5 15 0',
                 border: 0,
-                html: 'Met een simpel filter kunt u een gebruiker laten filteren op een voorgedefinieerde laag een attribuut. Kies eerst het soort filtergereedschap, stel de gegevens in en voeg het filtergereedschap toe aan de lijst met de plus-knop.'
+                html: i18next.t('viewer_components_customconfiguration_193')
             },{
                 xtype: 'panel',
                 border: 0,
@@ -106,7 +106,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [{
                         xtype: 'combo',
-                        fieldLabel: 'Soort filtergereedschap',
+                        fieldLabel: i18next.t('viewer_components_customconfiguration_194'),
                         store: this.filterTypes,
                         itemId: "filterType",
                         queryModes: "local",
@@ -123,14 +123,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },{
                         xtype: "fieldset",
                         id: "filterAttributeConfigFieldset",
-                        title: "Instellingen voor filter",
+                        title: i18next.t('viewer_components_customconfiguration_195'),
                         collapsible: false,
                         defaultType: "textfield",
                         layout: "anchor",
                         items: [{
                             xtype: "combo",
                             itemId: "layerCombo",
-                            fieldLabel: "Laag",
+                            fieldLabel: i18next.t('viewer_components_customconfiguration_196'),
                             store: layerStore,
                             queryMode: "local",
                             displayField: "alias",
@@ -167,7 +167,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         },{
                             xtype: "combo",
                             itemId: "attributeCombo",
-                            fieldLabel: "Attribuut",
+                            fieldLabel: i18next.t('viewer_components_customconfiguration_197'),
                             store: Ext.create("Ext.data.Store", {
                                 fields: ["name", "alias", "type"]
                             }),
@@ -183,13 +183,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                         },{
                             xtype: 'displayfield',
                             itemId: 'attributeInfo',
-                            fieldLabel: 'Attribuut info',
+                            fieldLabel: i18next.t('viewer_components_customconfiguration_198'),
                             value: ''
                         }]
                     },{
                         xtype: "fieldset",
                         itemId: "filterConfigFieldset",
-                        title: "Instellingen voor filtergereedschap",
+                        title: i18next.t('viewer_components_customconfiguration_199'),
                         collapsible: false,
                         defaultType: "textfield",
                         layout: "fit",
@@ -213,7 +213,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [{
                         xtype: 'button',
-                        text: '+',
+                        text: i18next.t('viewer_components_customconfiguration_200'),
                         margin: '0 0 5 0',
                         listeners: {
                             click: {
@@ -223,7 +223,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         }
                     },{
                         xtype: 'button',
-                        text: 'x',
+                        text: i18next.t('viewer_components_customconfiguration_201'),
                         margin: '0 0 15 0',
                         listeners:{
                             click :{
@@ -235,21 +235,21 @@ Ext.define("viewer.components.CustomConfiguration",{
                                     if(record.length > 0){
                                         var id = record[0].data.id;
                                         var me = this;
-                                        Ext.MessageBox.confirm('Weet u het zeker', 'Weet u zeker dat u de configuratie wilt verwijderen?', function(btn, text){
+                                        Ext.MessageBox.confirm(i18next.t('viewer_components_customconfiguration_255'), i18next.t('viewer_components_customconfiguration_256'), function(btn, text){
                                             if (btn === 'yes') {
                                                 me.removeConfig(id);
                                                 me.resetConfig(true);
                                             }
                                         });
                                     }else{
-                                        Ext.MessageBox.alert("Fout", "Selecteer filter");
+                                        Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_257'), i18next.t('viewer_components_customconfiguration_258'));
                                     }
                                 }
                             }
                         }
                     },{
                         xtype: 'button',
-                        text: 'u',
+                        text: i18next.t('viewer_components_customconfiguration_202'),
                         margin: '0 0 5 0',
                         listeners:{
                             click:{
@@ -261,7 +261,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         }
                     },{
                         xtype: 'button',
-                        text: 'd',
+                        text: i18next.t('viewer_components_customconfiguration_203'),
                         listeners:{
                             click:{
                                 scope:me,
@@ -274,13 +274,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }, {
                     xtype: 'gridpanel',
                     itemId: 'configuredFiltersGrid',
-                    title: 'Toegevoegde filters',
+                    title: i18next.t('viewer_components_customconfiguration_204'),
                     height: 430,
                     flex: 0.4,
                     store: this.filterStore,
                     columns: [
-                        {header: 'Soort', dataIndex: 'soort', sortable: false, hideable: false},
-                        {header: 'Laag en attribuut', dataIndex: 'description', sortable: false, hideable: false, flex: 1}
+                        {header: i18next.t('viewer_components_customconfiguration_205'), dataIndex: 'soort', sortable: false, hideable: false},
+                        {header: i18next.t('viewer_components_customconfiguration_206'), dataIndex: 'description', sortable: false, hideable: false, flex: 1}
                     ],
                     listeners: {
                         select: {

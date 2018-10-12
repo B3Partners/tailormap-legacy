@@ -54,40 +54,40 @@ Ext.define("viewer.components.CustomConfiguration",{
                 items: [
                 {
                     xtype: "label",
-                    text: "Instellingen knop voor overviewkaart",
+                    text: i18next.t('viewer_components_customconfiguration_134'),
                     style: "font-weight: bold;"
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'Plaatje normaal',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_135'),
                     name: 'picNormal',
                     value: config.picNormal,
                     labelWidth:me.labelWidth
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'Plaatje over',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_136'),
                     name: 'picOver',
                     value: config.picOver,
                     labelWidth:me.labelWidth
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'Plaatje geselecteerd',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_137'),
                     name: 'picSelected',
                     value: config.picSelected,
                     labelWidth:me.labelWidth
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'Positie links',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_138'),
                     name: 'picLeft',
                     value: config.picLeft,
                     labelWidth:me.labelWidth
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'Positie boven',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_139'),
                     name: 'picTop',
                     value: config.picTop,
                     labelWidth:me.labelWidth
@@ -97,25 +97,25 @@ Ext.define("viewer.components.CustomConfiguration",{
             */
             {
                 xtype: "label",
-                text: "Afmetingen",
+                text: i18next.t('viewer_components_customconfiguration_140'),
                 style: "font-weight: bold;"
             },
             { 
                 xtype: 'textfield',
-                fieldLabel: 'Breedte',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_141'),
                 name: 'width',
                 value: config.width,
                 labelWidth:me.labelWidth
             },
             { 
                 xtype: 'textfield',
-                fieldLabel: 'Hoogte',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_142'),
                 name: 'height',
                 value: config.height,
                 labelWidth:me.labelWidth
             },
             {
-                fieldLabel: 'Positie', 
+                fieldLabel: i18next.t('viewer_components_customconfiguration_143'), 
                 store: positionStore,
                 xtype: 'combobox',
                 name: 'position', 
@@ -123,19 +123,19 @@ Ext.define("viewer.components.CustomConfiguration",{
                 queryMode: 'local',
                 displayField: 'label',
                 valueField: 'type',
-                emptyText:'Maak uw keuze',
+                emptyText: i18next.t('viewer_components_customconfiguration_144'),
                 value: config.position,
                 labelWidth:me.labelWidth
             }
             ,{ 
                 xtype: 'textfield',
-                fieldLabel: 'URL naar achtergrondkaart (afbeelding of WMS-request)',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_145'),
                 name: 'url',
                 value: config.url,
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
-                fieldLabel: 'Layers (optioneel)',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_146'),
                 name: 'layers',
                 value: config.layers,
                 labelWidth:me.labelWidth
@@ -143,19 +143,19 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: "checkbox",
                 checked: config.hasOwnProperty('followZoom') ? config['followZoom'] : true,
                 name: "followZoom",
-                fieldLabel: "Volg zoomen",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_147'),
                 labelWidth:me.labelWidth
             },{ 
                 xtype:'container',
                 margin: 5,
-                title: 'Extentie van de afbeelding',
+                title: i18next.t('viewer_components_customconfiguration_148'),
                 collapsible: false,
                 defaultType: 'textfield',
                 layout: 'column', 
                 items:[
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'lo-x',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_149'),
                     name: 'lox',
                     value: config.lox,
                     labelWidth:50,
@@ -164,7 +164,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'lo-y',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_150'),
                     name: 'loy',
                     value: config.loy,
                     labelWidth:50,
@@ -173,7 +173,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'rb-x',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_151'),
                     name: 'rbx',
                     value: config.rbx,
                     labelWidth:50,
@@ -182,7 +182,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 },
                 { 
                     xtype: 'textfield',
-                    fieldLabel: 'rb-y',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_152'),
                     name: 'rby',
                     value: config.rby,
                     labelWidth:50,

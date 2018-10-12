@@ -74,7 +74,7 @@ Ext.define("viewer.components.DownloadWKT", {
             renderTo: this.getContentDiv(),
             items: [
                 {
-                    fieldLabel: 'Type download',
+                    fieldLabel: i18next.t('viewer_components_downloadwkt_0'),
                     store: states,
                     queryMode: 'local',
                     displayField: 'label',
@@ -84,7 +84,7 @@ Ext.define("viewer.components.DownloadWKT", {
                     margin: '0 0 2 0'
                 }, {
                     xtype: 'textfield',
-                    fieldLabel: 'bestandsnaam',
+                    fieldLabel: i18next.t('viewer_components_downloadwkt_1'),
                     allowBlank: false,
                     name: 'filename',
                     id: 'filename',
@@ -92,7 +92,7 @@ Ext.define("viewer.components.DownloadWKT", {
                 },
                 {
                     xtype: 'textfield',
-                    fieldLabel: 'E-Mailadres',
+                    fieldLabel: i18next.t('viewer_components_downloadwkt_2'),
                     allowBlank: false,
                     name: 'mailaddress',
                     id: 'mailaddress',
@@ -103,7 +103,7 @@ Ext.define("viewer.components.DownloadWKT", {
                     layout: "hbox",
                     items: [{
                             xtype: "button",
-                            text: "Teken vlak",
+                            text: i18next.t('viewer_components_downloadwkt_3'),
                             flex:1,
                             id: this.config.name + 'drawPolygon',
                             icon: this.iconPath+"shape_polygon_red.png",
@@ -120,7 +120,7 @@ Ext.define("viewer.components.DownloadWKT", {
                             xtype: 'button',
                             flex:1,
                             id: this.config.name + 'drawBox',
-                            text: "Teken vierkant",
+                            text: i18next.t('viewer_components_downloadwkt_4'),
                             icon: this.iconPath+"shape_square_red.png",
                             listeners: {
                                 click: {
@@ -134,7 +134,7 @@ Ext.define("viewer.components.DownloadWKT", {
                         }, {
                             xtype: 'button',
                             icon: this.iconPath + "delete.png",
-                            tooltip: "Verwijder alle objecten",
+                            tooltip: i18next.t('viewer_components_downloadwkt_5'),
                             flex:1,
                             listeners: {
                                 click: {
@@ -148,7 +148,7 @@ Ext.define("viewer.components.DownloadWKT", {
                 },
                 {
                     xtype: "button",
-                    text: "Sla op",
+                    text: i18next.t('viewer_components_downloadwkt_6'),
                     id: this.config.name + 'submit',
                     listeners: {
                         click: {
@@ -182,7 +182,7 @@ Ext.define("viewer.components.DownloadWKT", {
             success: function (result) {
                 var response = Ext.JSON.decode(result.responseText);
                 if (response.success) {
-                    Ext.MessageBox.alert('Info', "Uw aanvraag is in behandeling. U ontvangt zo spoedig mogelijk een e-mailbericht met het resultaat.");
+                    Ext.MessageBox.alert(i18next.t('viewer_components_downloadwkt_7'), i18next.t('viewer_components_downloadwkt_8'));
                 } else {
                     this.config.viewerController.logger.error(result);
                     Ext.MessageBox.alert('Fout', response.message);

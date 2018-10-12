@@ -171,7 +171,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.point,
             icon: this.iconPath+"bullet_red.png",
-            tooltip: "Teken een punt",
+            tooltip: i18next.t('viewer_components_drawing_0'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             listeners: {
@@ -185,7 +185,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.line,
             icon: this.iconPath+"line_red.png",
-            tooltip: "Teken een lijn",
+            tooltip: i18next.t('viewer_components_drawing_1'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             listeners: {
@@ -199,7 +199,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
             icon: this.iconPath+"shape_square_red.png",
-            tooltip: "Teken een polygoon",
+            tooltip: i18next.t('viewer_components_drawing_2'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             listeners: {
@@ -214,7 +214,7 @@ Ext.define ("viewer.components.Drawing",{
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
-                tooltip: "Teken een cirkel",
+                tooltip: i18next.t('viewer_components_drawing_3'),
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
                 listeners: {
@@ -229,7 +229,7 @@ Ext.define ("viewer.components.Drawing",{
         drawingItems.push({
             xtype: 'button',
             icon: this.iconPath+"delete.png",
-            tooltip: "Verwijder alle objecten",
+            tooltip: i18next.t('viewer_components_drawing_4'),
             listeners: {
                 click:{
                     scope: me,
@@ -250,7 +250,7 @@ Ext.define ("viewer.components.Drawing",{
                 items: [
                     {
                         xtype: 'label',
-                        text: 'Objecten op de kaart tekenen'
+                        text: i18next.t('viewer_components_drawing_5')
                     },
                     {
                         xtype: 'fieldset',
@@ -294,7 +294,7 @@ Ext.define ("viewer.components.Drawing",{
                 items: [
                     {
                         xtype: 'label',
-                        text: 'Label geselecteerd object'
+                        text: i18next.t('viewer_components_drawing_6')
                     },
                     {
                         xtype: 'container',
@@ -305,7 +305,7 @@ Ext.define ("viewer.components.Drawing",{
                             {
                                 xtype: 'button',
                                 icon: this.iconPath+"delete.png",
-                                tooltip: "Verwijder geselecteerd object",
+                                tooltip: i18next.t('viewer_components_drawing_7'),
                                 listeners: {
                                     click:{
                                         scope: me,
@@ -322,7 +322,7 @@ Ext.define ("viewer.components.Drawing",{
 
         // Convience accessor
         this.titleField = Ext.create("Ext.form.field.Text",{
-            fieldLabel: 'Titel',
+            fieldLabel: i18next.t('viewer_components_drawing_8'),
             name: 'title',
             allowBlank:false,
             id: 'title'+ this.name,
@@ -330,7 +330,7 @@ Ext.define ("viewer.components.Drawing",{
         });
         this.description = Ext.create("Ext.form.field.TextArea",
         {
-            fieldLabel: 'Opmerking',
+            fieldLabel: i18next.t('viewer_components_drawing_9'),
             allowBlank:false,
             name: 'description',
             id: 'description',
@@ -351,7 +351,7 @@ Ext.define ("viewer.components.Drawing",{
             items: [
                 {
                     xtype: 'label',
-                    text: 'Op de kaart getekende objecten opslaan',
+                    text: i18next.t('viewer_components_drawing_10'),
                     margin: '0 0 5 0'
                 },
                 this.titleField,
@@ -370,7 +370,7 @@ Ext.define ("viewer.components.Drawing",{
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Opslaan als bestand',
+                            text: i18next.t('viewer_components_drawing_11'),
                             listeners: {
                                 click:{
                                     scope: me,
@@ -400,7 +400,7 @@ Ext.define ("viewer.components.Drawing",{
             items: [
                 {
                     xtype: 'label',
-                    text: 'Bestand met getekende objecten openen',
+                    text: i18next.t('viewer_components_drawing_12'),
                     margin: '0 0 5 0'
                 },
                 this.file,
@@ -413,7 +413,7 @@ Ext.define ("viewer.components.Drawing",{
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Bestand openen',
+                            text: i18next.t('viewer_components_drawing_13'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -458,7 +458,7 @@ Ext.define ("viewer.components.Drawing",{
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Sluiten',
+                            text: i18next.t('viewer_components_drawing_14'),
                             handler: function() {
                                 me.popup.hide();
                             }
@@ -556,8 +556,8 @@ Ext.define ("viewer.components.Drawing",{
     },
     deleteAll: function() {
         Ext.Msg.show({
-            title: "Weet u het zeker?",
-            msg: "Weet u zeker dat u alle tekenobjecten wilt weggooien?",
+            title: i18next.t('viewer_components_drawing_15'),
+            msg: i18next.t('viewer_components_drawing_16'),
             fn: function(button) {
                 if (button === 'yes') {
                     this.vectorLayer.removeAllFeatures();
@@ -582,8 +582,8 @@ Ext.define ("viewer.components.Drawing",{
     },
     deleteObject: function() {
         Ext.Msg.show({
-            title: "Weet u het zeker?",
-            msg: "Weet u zeker dat u het geselecteerde object wil weggooien?",
+            title: i18next.t('viewer_components_drawing_17'),
+            msg: i18next.t('viewer_components_drawing_18'),
             fn: function(button) {
                 if (button === 'yes') {
                     delete this.features[this.activeFeature.id];
@@ -642,7 +642,7 @@ Ext.define ("viewer.components.Drawing",{
                     }
                 },
                 failure: function (){
-                    Ext.Msg.alert('Mislukt', 'Uw bestand kon niet gelezen worden.');
+                    Ext.MessageBox.alert(i18next.t('viewer_components_drawing_19'), i18next.t('viewer_components_drawing_20'));
                 }
             });
         }

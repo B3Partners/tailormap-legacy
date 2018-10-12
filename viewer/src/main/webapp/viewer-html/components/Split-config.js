@@ -37,8 +37,8 @@ Ext.define("viewer.components.CustomConfiguration", {
                 fields: ['value', 'text'],
                 value: me.configObject.strategy ? me.configObject.strategy : "replace",
                 name: "strategy",
-                fieldLabel: "Splits strategie",
-                emptyText: 'Maak uw keuze',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_213'),
+                emptyText: i18next.t('viewer_components_customconfiguration_214'),
                 store: [
                     ["replace", "replace"],
                     ["add", "add"]

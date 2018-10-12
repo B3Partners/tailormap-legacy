@@ -81,7 +81,7 @@ Ext.define("viewer.components.Snapping", {
                 me.initWindow();
             },
             failure: function (a, b, c) {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                Ext.MessageBox.alert(i18next.t('viewer_components_snapping_1'), i18next.t('viewer_components_snapping_2'));
             }
         });
 
@@ -146,7 +146,7 @@ Ext.define("viewer.components.Snapping", {
             items: [{
                     forId: 'snapLayers',
                     xtype: 'label',
-                    text: 'Kies snapping lagen:',
+                    text: i18next.t('viewer_components_snapping_0'),
                     margin: '10 0 5 10'
                 }
                 , this.layerSelector]

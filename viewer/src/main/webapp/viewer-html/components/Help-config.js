@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             margin: '10 0 0 0',
             value: defaultText,
             name: 'defaultText',
-            fieldLabel: 'Standaard tekst',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_101'),
             labelWidth: 100,
             plugins: [
                 new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {

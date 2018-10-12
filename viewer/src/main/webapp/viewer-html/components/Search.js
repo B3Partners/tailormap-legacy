@@ -162,7 +162,7 @@ Ext.define ("viewer.components.Search",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Sluiten', handler: function() {
+                    {xtype: 'button', text: i18next.t('viewer_components_search_0'), handler: function() {
                         me.popup.hide();
                     }}
                 ]
@@ -186,14 +186,14 @@ Ext.define ("viewer.components.Search",{
                 data: this.searchconfigs
             });
             this.searchName = Ext.create('Ext.form.ComboBox',{
-                fieldLabel: 'Zoek op',
+                fieldLabel: i18next.t('viewer_components_search_1'),
                 store: configs,
                 queryMode: 'local',
                 hidden: this.searchconfigs.length === 1,
                 displayField: 'name',
                 valueField: 'id',
                 anchor: '100%',
-                emptyText: 'Maak uw keuze',
+                emptyText: i18next.t('viewer_components_search_2'),
                 name: 'searchName' + this.name,
                 itemId: 'searchName' + this.name,
                 value: this.searchconfigs.length > 0 ? this.searchconfigs[0].id : null,
@@ -301,7 +301,7 @@ Ext.define ("viewer.components.Search",{
                         this.searchField,
                         {
                             xtype: 'button',
-                            text: 'Zoeken',
+                            text: i18next.t('viewer_components_search_3'),
                             hidden: !this.showSearchButtons,
                             listeners: {
                                 click: {
@@ -317,7 +317,7 @@ Ext.define ("viewer.components.Search",{
         }
         itemList.push({ 
             xtype: 'button',
-            text: 'Zoekactie afbreken',
+            text: i18next.t('viewer_components_search_4'),
             name: 'cancel',
             itemId: 'cancel'+ this.name,
             hidden: !this.showSearchButtons,
@@ -331,7 +331,7 @@ Ext.define ("viewer.components.Search",{
         //remove pin button
         itemList.push({
             xtype: 'button',
-            text: 'Verwijder marker',
+            text: i18next.t('viewer_components_search_5'),
             name: 'removePin',
             itemId: 'removePin'+ this.name,
             hidden: true,
@@ -377,7 +377,7 @@ Ext.define ("viewer.components.Search",{
             this.executeSearch(searchText, searchName);
             this.form.query("#cancel"+ this.name)[0].setVisible(true);
         } else {
-            Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevuld te worden.");
+            Ext.MessageBox.alert(i18next.t('viewer_components_search_8'), i18next.t('viewer_components_search_9'));
             // search request is not complete
         }        
     },
@@ -418,7 +418,7 @@ Ext.define ("viewer.components.Search",{
             this.getExtraRequestParams(requestParams,searchName);
             var me = this;
             me.loadingContainer.setLoading({
-                msg: 'Bezig met zoeken'
+                msg: i18next.t('viewer_components_search_6')
             });
             Ext.Ajax.request({
                 url: requestPath,
@@ -507,7 +507,7 @@ Ext.define ("viewer.components.Search",{
         }
         this.resultPanel.removeAll();
         var results = Ext.create('Ext.panel.Panel', {
-            title: 'Resultaten (' +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
+            title: i18next.t('viewer_components_search_7') +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
             html: html,
             componentCls: 'resultPanelPanel',
             layout:{

@@ -273,7 +273,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         var formButtons = [
         {
             xtype: 'container',
-            html: 'Teken: ',
+            html: i18next.t('viewer_components_spatialfilter_0'),
             padding: '3 0 0 0',
             width: 105
         },
@@ -282,7 +282,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             id: this.drawingButtonIds.polygon,
             icon: this.iconPath+"shape_polygon_red.png",
             componentCls: 'mobileLarge',
-            tooltip: "Teken een polygoon",
+            tooltip: i18next.t('viewer_components_spatialfilter_1'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             margin: '0 3 0 0',
@@ -300,7 +300,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             id: this.drawingButtonIds.box,
             icon: this.iconPath+"shape_square_red.png",
             componentCls: 'mobileLarge',
-            tooltip: "Teken een vierkant",
+            tooltip: i18next.t('viewer_components_spatialfilter_2'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             margin: '0 3 0 0',
@@ -318,7 +318,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             id: this.drawingButtonIds.freehand,
             icon: this.iconPath+"freehand.png",
             componentCls: 'mobileLarge',
-            tooltip: "Teken een vrije vorm",
+            tooltip: i18next.t('viewer_components_spatialfilter_3'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             margin: '0 3 0 0',
@@ -337,7 +337,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
                 componentCls: 'mobileLarge',
-                tooltip: "Teken een cirkel",
+                tooltip: i18next.t('viewer_components_spatialfilter_4'),
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
                 margin: '0 3 0 0',
@@ -375,14 +375,14 @@ Ext.define ("viewer.components.SpatialFilter",{
                     id: this.config.name + "BufferDistance",
                     name: this.config.name + "BufferDistance",
                     xtype: "numberfield",
-                    fieldLabel: "Bufferafstand",
+                    fieldLabel: i18next.t('viewer_components_spatialfilter_5'),
                     minValue: 0,
                     labelWidth: 100,
                     width: 200,
                     margin: '0 3 0 0'
                 },{
                     xtype: "button",
-                    text: "Buffer",
+                    text: i18next.t('viewer_components_spatialfilter_6'),
                     listeners:{
                         click:{
                             scope:this,
@@ -393,7 +393,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         },
         {
             xtype: "checkbox",
-            boxLabel: 'Meerdere geometriën als filter',
+            boxLabel: i18next.t('viewer_components_spatialfilter_7'),
             name: 'appendFilter',
             inputValue: this.config.multiGeometries,
             checked: this.config.multiGeometries,
@@ -401,7 +401,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         },
         {
             xtype: "checkbox",
-            boxLabel: 'Filter direct toepassen',
+            boxLabel: i18next.t('viewer_components_spatialfilter_8'),
             name: 'applyDirect',
             inputValue: this.config.applyDirect,
             checked: this.config.applyDirect,
@@ -429,7 +429,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 {
                     xtype: "button",
                     label: "Laat features zien",
-                    text: "Laat zien",
+                    text: i18next.t('viewer_components_spatialfilter_9'),
                    // disabled:true,
                     id: this.config.name + 'RetrieveFeaturesButton',
                     listeners: {
@@ -464,13 +464,13 @@ Ext.define ("viewer.components.SpatialFilter",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Reset', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
+                    {xtype: 'button', text: i18next.t('viewer_components_spatialfilter_10'), componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
                         me.resetForm();
                     }},
-                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
+                    {xtype: 'button', text: i18next.t('viewer_components_spatialfilter_11'), componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
                         me.applyFilter();
                     }},
-                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                    {xtype: 'button', text: i18next.t('viewer_components_spatialfilter_12'), componentCls: 'mobileLarge', handler: function() {
                         me.resetForm();
                         me.popup.hide();
                     }}

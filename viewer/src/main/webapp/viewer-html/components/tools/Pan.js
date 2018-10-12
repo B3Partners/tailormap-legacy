@@ -24,7 +24,7 @@ Ext.define ("viewer.components.tools.Pan",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "pan",
-        tooltip: "Pan"
+        tooltip: i18next.t('viewer_components_tools_pan_0')
     },
     constructor: function (conf){        
         this.initConfig(conf);

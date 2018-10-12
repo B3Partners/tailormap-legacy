@@ -33,7 +33,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     addForm: function() {
         this.form.add({ 
                 xtype: 'textfield',
-                fieldLabel: 'Basispad *',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_47'),
                 name: 'basePath',
                 value: this.configObject.basePath,
                 labelWidth:this.labelWidth,
@@ -42,7 +42,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype: "panel",
             height: 250,
             width: '100%',
-            title: "Downloadtypes",
+            title: i18next.t('viewer_components_customconfiguration_48'),
             layout: {
                 type: 'vbox',
                 align: 'stretch'
@@ -53,7 +53,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {
                     xtype:'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: 'Downloadtype toevoegen',
+                    text: i18next.t('viewer_components_customconfiguration_49'),
                     listeners: {
                         click: function(){
                             this.createRow({label:'', type:''});
@@ -78,21 +78,21 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             items: [{
                 name: "label",
-                fieldLabel: "Label",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_50'),
                 value: typeconfig.label,
                 xtype: 'textfield',
                 labelWidth: 50,
                 flex: 1
             }, {
                 name: "type",
-                fieldLabel: "Download type (map)",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_51'),
                 value: typeconfig.type,
                 xtype: 'textfield',
                 labelWidth: 100,
                 flex: 1
             }, {
                 xtype: "button",
-                text: " X ",
+                text: i18next.t('viewer_components_customconfiguration_52'),
                 listeners:{
                     click: function(btn) {
                         var container = btn.up('.panel');

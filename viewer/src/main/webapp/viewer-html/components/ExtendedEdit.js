@@ -57,7 +57,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         formItems.push({
             xtype: 'container',
             itemId: 'removeMessage',
-            html: 'Het feature is verwijderd.',
+            html: i18next.t('viewer_components_extendededit_0'),
             hidden: true,
             componentCls: 'alert-message success'
         });

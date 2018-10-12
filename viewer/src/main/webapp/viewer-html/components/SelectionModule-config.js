@@ -40,7 +40,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             store: [ ['never','Nooit'], ['nolayers','Indien er geen lagen zijn bij opstarten'], ['onlybackground','Indien er alleen achtergrond lagen zijn'], ['always','Altijd'] ],
             name: "autoShowSelectionModule",
             labelWidth: this.labelWidth,
-            fieldLabel: "Openen bij starten",
+            fieldLabel: i18next.t('viewer_components_customconfiguration_174'),
             width: 500
         });
 
@@ -49,7 +49,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             checked: configObject.showBackgroundLevels !== undefined ? configObject.showBackgroundLevels : false,
             name: "showBackgroundLevels",
             labelWidth: this.labelWidth,
-            fieldLabel: "Laat achtergrondlagen zien"
+            fieldLabel: i18next.t('viewer_components_customconfiguration_175')
         });
         
         this.form.add({
@@ -58,7 +58,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             store: [ ['never','Nooit'], ['always','Altijd'], ['onlybackground','Alleen achtergrondlagen'] ],
             name: 'autoOnLayers',
             labelWidth: this.labelWidth,
-            fieldLabel: 'Lagen automatisch aanzetten',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_176'),
             width: 400
         });
         
@@ -91,14 +91,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                     xtype: "checkbox",
                     checked: configObject.hasOwnProperty('showSearch' + field.name) ? configObject['showSearch' + field.name] : true,
                     name: "showSearch" + field.name,
-                    fieldLabel: "Toon zoekveld",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_177'),
                     margin: '0 10 0 0',
                     labelWidth: 95
                 },{
                     xtype: "textfield",
                     value: configObject.hasOwnProperty('label' + field.name) ? configObject['label' + field.name] : field.defaultLabel,
                     name: "label" + field.name,
-                    fieldLabel: "Label",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_178'),
                     labelWidth: 60,
                     width: 200
                 }]
@@ -111,7 +111,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: "defaultCswUrl",
             id: "defaultCswUrl",
             labelWidth: this.labelWidth,
-            fieldLabel: "Standaard CSW Url",
+            fieldLabel: i18next.t('viewer_components_customconfiguration_179'),
             width: 500
         });
         
@@ -121,7 +121,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: "showCswUrl",
             id: "showCswUrl",
             labelWidth: this.labelWidth,
-            fieldLabel: "Laat CSW url zien"
+            fieldLabel: i18next.t('viewer_components_customconfiguration_180')
         });
         
         this.form.add({
@@ -130,7 +130,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: "advancedFilter",
             id: "advancedFilter",
             labelWidth: this.labelWidth,
-            fieldLabel: "Gebruik een geavanceerd filter",
+            fieldLabel: i18next.t('viewer_components_customconfiguration_181'),
             width: 500,
             listeners:{
                 change: function(obj, val) {
@@ -154,7 +154,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             id: "advancedFilterFieldset",
             hidden: configObject.advancedFilter !== undefined ? !configObject.advancedFilter : true ,
             labelWidth: this.labelWidth,
-            fieldLabel: "Gebruik een geavanceerd filter",
+            fieldLabel: i18next.t('viewer_components_customconfiguration_182'),
             width: "100%",
             layout: {
                 type: 'vbox'
@@ -168,7 +168,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     name: "alwaysShow",
                     id: "alwaysShow",
                     labelWidth: this.labelWidth,
-                    fieldLabel: "Filter opengeklapt bij opstarten",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_183'),
                     width: 500
                 },
                 {
@@ -177,7 +177,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     name: "alwaysMatch",
                     id: "alwaysMatch",
                     labelWidth: this.labelWidth,
-                    fieldLabel: "Match altijd met gegevensregister",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_184'),
                     width: 500
                 },
                 {
@@ -193,14 +193,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                             name: "advancedLabel",
                             id: "advancedLabel",
                             labelWidth: this.labelWidth,
-                            fieldLabel: "Label voor het filterattribuut",
+                            fieldLabel: i18next.t('viewer_components_customconfiguration_185'),
                             value: configObject.advancedLabel !== null ? configObject.advancedLabel : ""
                         }, {
                             xtype: "textfield",
                             name: "advancedValue",
                             id: "advancedValue",
                             labelWidth: 180,
-                            fieldLabel: "Waarde voor het filterattribuut",
+                            fieldLabel: i18next.t('viewer_components_customconfiguration_186'),
                             value: configObject.advancedValue !== null ? configObject.advancedValue : ""
                         }
                     ]
@@ -209,12 +209,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                     xtype: "fieldset",
                     height: 110,
                     width: '100%',
-                    title: "Waardes",
+                    title: i18next.t('viewer_components_customconfiguration_187'),
                     layout: 'hbox',
                     items: [{
                         xtype:"button",
                         name: "addValue",
-                        text: "Voeg waarde toe",
+                        text: i18next.t('viewer_components_customconfiguration_188'),
                         margin: '0 10 0 0',
                         listeners:{
                             click:{
@@ -261,15 +261,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             items: [{
                     name: "label",
-                    fieldLabel: "Label",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_189'),
                     value: labelValue
                 }, {
                     name: "comboValue",
-                    fieldLabel: "Waarde",
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_190'),
                     value: comboValue
                 }, {
                     xtype: "button",
-                    text: " X ",
+                    text: i18next.t('viewer_components_customconfiguration_191'),
                     width: "auto",
                     listeners:{
                         click: function(btn) {

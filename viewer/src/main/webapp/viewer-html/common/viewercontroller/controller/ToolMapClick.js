@@ -45,9 +45,9 @@ Ext.define ("viewer.viewercontroller.controller.ToolMapClick",{
     },
    
     activateTool : function(){
-        Ext.Error.raise({msg: "ToolMapClick.activateTool() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_toolmapclick_0')});
     },
     deactivateTool : function(){
-        Ext.Error.raise({msg: "ToolMapClick.deactivateTool() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_toolmapclick_1')});
     }
 });

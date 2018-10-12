@@ -24,7 +24,7 @@ Ext.define('viewer.components.CustomConfiguration', {
     constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {
-                title: 'Zoek op locatie, adres of postcode...'
+                title: i18next.t('viewer_components_customconfiguration_34')
             };
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
@@ -47,21 +47,21 @@ Ext.define('viewer.components.CustomConfiguration', {
         });
         this.form.add([{
                 xtype: 'textfield',
-                fieldLabel: 'Top/bottom positie',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_35'),
                 name: 'top',
                 value: (configObject != null && configObject.top != undefined) ? configObject.top : '10',
                 labelWidth:this.labelWidth
             },
             {
                 xtype: 'textfield',
-                fieldLabel: 'Linker/rechter positie',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_36'),
                 name: 'left',
                 value: (configObject != null && configObject.left != undefined) ? configObject.left : '10',
                 labelWidth:this.labelWidth
             },
             { 
                 xtype: 'combobox',
-                fieldLabel: 'Uitlijning',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_37'),
                 name: 'alignposition',
                 value: (configObject != null && configObject.alignposition != undefined) ? configObject.alignposition : 'tl',
                 labelWidth: this.labelWidth,

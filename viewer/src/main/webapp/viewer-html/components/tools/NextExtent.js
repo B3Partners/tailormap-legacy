@@ -24,7 +24,7 @@ Ext.define ("viewer.components.tools.NextExtent",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "nextExtent",
-        tooltip: "Next Extent"
+        tooltip: i18next.t('viewer_components_tools_nextextent_0')
     },
     constructor: function (conf){        
         this.initConfig(conf);

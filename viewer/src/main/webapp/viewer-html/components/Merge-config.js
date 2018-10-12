@@ -40,8 +40,8 @@ Ext.define("viewer.components.CustomConfiguration", {
                 fields: ['value', 'text'],
                 value: me.configObject.strategy ? me.configObject.strategy : "replace",
                 name: "strategy",
-                fieldLabel: "Samenvoegen strategie",
-                emptyText: 'Maak uw keuze',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_127'),
+                emptyText: i18next.t('viewer_components_customconfiguration_128'),
                 store: [
                     ["replace", "replace"],
                     ["new", "new"]
@@ -49,7 +49,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: me.labelWidth
             }, {
                 xtype: "textfield",
-                fieldLabel: "Maximum afstand voor samenvoegen",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_129'),
                 name: "mergeGapDist",
                 value: me.configObject.mergeGapDist ? me.configObject.mergeGapDist : 0,
                 labelWidth: me.labelWidth

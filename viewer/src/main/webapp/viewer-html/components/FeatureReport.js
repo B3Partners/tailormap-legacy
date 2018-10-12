@@ -21,7 +21,7 @@
 Ext.define("viewer.components.FeatureReport", {
     extend: "viewer.components.Print",
     config: {
-        title: "FeatureReport",
+        title: i18next.t('viewer_components_featurereport_0'),
         legendLayers: null,
         reportLayers: null,
         template: "FeatureReport.xsl",
@@ -55,7 +55,7 @@ Ext.define("viewer.components.FeatureReport", {
                 me.legendLayerList = Ext.JSON.decode(result.responseText);
             },
             failure: function (a, b, c) {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden opgehaald");
+                Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_1'), i18next.t('viewer_components_featurereport_2'));
             }
         });
 
@@ -67,7 +67,7 @@ Ext.define("viewer.components.FeatureReport", {
             scope: this,
             success: this.reportLayersFetched,
             failure: function (a, b, c) {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden opgehaald");
+                Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_3'), i18next.t('viewer_components_featurereport_4'));
             }
         });
 
@@ -116,7 +116,7 @@ Ext.define("viewer.components.FeatureReport", {
                         legendsToPrint.push(b);
                     }),
                     function () {
-                        Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                        Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_5'), i18next.t('viewer_components_featurereport_6'));
                     };
         }
         return legendsToPrint;

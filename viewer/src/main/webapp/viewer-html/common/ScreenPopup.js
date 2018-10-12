@@ -138,7 +138,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false" && this.config.showHelpButton !== false) {
             config.tools = [{
                 type: 'help',
-                tooltip: 'Help',
+                tooltip: i18next.t('viewer_components_svgheader_0'),
                 margin: '0 28 0 0',
                 handler: function(event, toolEl, panel){
                     conf.viewerController.showHelp(conf);

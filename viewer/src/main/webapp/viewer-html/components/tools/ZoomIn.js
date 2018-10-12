@@ -24,7 +24,7 @@ Ext.define ("viewer.components.tools.ZoomIn",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "zoomIn",
-        tooltip: "Zoom In"
+        tooltip: i18next.t('viewer_components_tools_zoomin_0')
     },
     constructor: function (conf){        
         this.initConfig(conf);

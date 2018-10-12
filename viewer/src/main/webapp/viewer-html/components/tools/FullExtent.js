@@ -24,7 +24,7 @@ Ext.define ("viewer.components.tools.FullExtent",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "fullExtent",
-        tooltip: "Full extent",
+        tooltip: i18next.t('viewer_components_tools_fullextent_0'),
         preventActivationAsFirstTool: true
     },
     constructor: function (conf){        

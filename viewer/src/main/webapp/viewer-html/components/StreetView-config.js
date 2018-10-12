@@ -23,7 +23,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
-            title: 'Configureer dit component',
+            title: i18next.t('viewer_components_customconfiguration_215'),
             bodyPadding: me.formPadding,
             defaults: {
                 anchor: '100%'
@@ -31,14 +31,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             items: [{ 
                 xtype: 'textfield',
-                fieldLabel: 'Tooltip',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_216'),
                 name: 'tooltip',
                 value: this.configObject.tooltip || 'Streetview',
                 labelWidth:me.labelWidth
             
             },{
                 xtype: 'checkbox',
-                fieldLabel: "Zet een marker na klikken",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_217'),
                 inputValue: true,
                 name: 'useMarker',
                 checked: this.configObject.useMarker !== undefined ? this.configObject.useMarker : false,
@@ -52,7 +52,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth: me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: "Gebruik pop-up voor streetview",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_218'),
                 inputValue: true,
                 name: 'usePopup',
                 checked: this.configObject.usePopup !== undefined ? this.configObject.usePopup : false,
@@ -66,7 +66,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }, {
                 id: "popupHeight",
                 xtype: 'textfield',
-                fieldLabel: "Hoogte popup",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_219'),
                 name: 'height',
                 hidden:  this.configObject.usePopup !== undefined ? !this.configObject.usePopup : true,
                 value: this.configObject.height !== undefined? this.configObject.height:"400",
@@ -74,7 +74,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 id: "popupWidth",
                 xtype: 'textfield',
-                fieldLabel: "Breedte popup",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_220'),
                 name: 'width',
                 hidden:  this.configObject.usePopup !== undefined ? !this.configObject.usePopup : true,
                 value: this.configObject.width !== undefined? this.configObject.width:"400",

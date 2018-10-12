@@ -136,14 +136,14 @@ Ext.define ("viewer.components.Presentation",{
         var me = this;
         this.previousButton = Ext.create('Ext.Button',{
             id: this.name+"_previous",
-            text: "Previous",
+            text: i18next.t('viewer_components_presentation_0'),
             handler: function(){me.previous()},
             height: "100%",
             flex: 1
         });
         this.nextButton = Ext.create('Ext.Button',{
             id: this.name+"_next",
-            text: "Next",
+            text: i18next.t('viewer_components_presentation_1'),
             handler: function(){me.next()},
             height: "100%",
             flex: 1

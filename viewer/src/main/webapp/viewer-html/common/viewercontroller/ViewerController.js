@@ -1668,7 +1668,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     if (typeof cmps[i].cancel === "function") {
                         cmps[i].cancel();
                     } else {
-                        Ext.Error.raise({msg: "cancel() Not implemented for component: " + cmps[i].self.getName()});
+                        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_viewercontroller_0') + cmps[i].self.getName()});
                     }
                 }
             }

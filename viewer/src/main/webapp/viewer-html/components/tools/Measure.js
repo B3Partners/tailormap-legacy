@@ -89,7 +89,7 @@ Ext.define ("viewer.components.tools.Measure.Line",{
     extend: "viewer.components.tools.Measure",
     config:{
         name: "measureline",
-        tooltip: "Measure",
+        tooltip: i18next.t('viewer_components_tools_measure_0'),
         preventActivationAsFirstTool: true
     },
     constructor: function (conf){
@@ -105,7 +105,7 @@ Ext.define ("viewer.components.tools.Measure.Area",{
     extend: "viewer.components.tools.Measure",
     config:{
         name: "measurearea",
-        tooltip: "Measure area",
+        tooltip: i18next.t('viewer_components_tools_measure_1'),
         preventActivationAsFirstTool: true
     },
     constructor: function (conf){

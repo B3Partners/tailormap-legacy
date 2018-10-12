@@ -208,8 +208,8 @@ Ext.define("viewer.components.Split", {
                             xtype: 'button',
                             id: this.name + "selectButton",
                             disabled: true,
-                            tooltip: "Te Splitsen geometrie selecteren",
-                            text: "Selecteer",
+                            tooltip: i18next.t('viewer_components_split_0'),
+                            text: i18next.t('viewer_components_split_1'),
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -221,8 +221,8 @@ Ext.define("viewer.components.Split", {
                             xtype: 'button',
                             id: this.name + "drawButton",
                             disabled: true,
-                            tooltip: "Splitslijn tekenen",
-                            text: "Splitslijn",
+                            tooltip: i18next.t('viewer_components_split_2'),
+                            text: i18next.t('viewer_components_split_3'),
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -257,8 +257,8 @@ Ext.define("viewer.components.Split", {
                     items: [
                         {
                             id: this.name + "cancelButton",
-                            tooltip: "Annuleren",
-                            text: "Annuleren",
+                            tooltip: i18next.t('viewer_components_split_4'),
+                            text: i18next.t('viewer_components_split_5'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -268,8 +268,8 @@ Ext.define("viewer.components.Split", {
                         },
                         {
                             id: this.name + "saveButton",
-                            tooltip: "Splisen uitvoeren",
-                            text: "Splitsen",
+                            tooltip: i18next.t('viewer_components_split_6'),
+                            text: i18next.t('viewer_components_split_7'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -611,7 +611,7 @@ Ext.define("viewer.components.Split", {
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
-        Ext.Msg.alert('Gelukt', "De feature is gesplitst.");
+        Ext.MessageBox.alert(i18next.t('viewer_components_split_11'), i18next.t('viewer_components_split_12'));
         me.cancel();
     },
     saveFailed: function (msg, me) {
@@ -717,7 +717,7 @@ Ext.define("viewer.components.Split", {
                     items: [{
                             xtype: "button",
                             id: this.name + "SelectFeatureButtonFeaturesWindow",
-                            text: "Bewerk geselecteerd feature",
+                            text: i18next.t('viewer_components_split_8'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -728,7 +728,7 @@ Ext.define("viewer.components.Split", {
                         {
                             xtype: "button",
                             id: this.name + "CancelFeatureButtonFeaturesWindow",
-                            text: "Annuleren",
+                            text: i18next.t('viewer_components_split_9'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -744,7 +744,7 @@ Ext.define("viewer.components.Split", {
             width: 500,
             height: 300,
             layout: 'fit',
-            title: "Kies één feature",
+            title: i18next.t('viewer_components_split_10'),
             items: [container]
         });
         window.show();

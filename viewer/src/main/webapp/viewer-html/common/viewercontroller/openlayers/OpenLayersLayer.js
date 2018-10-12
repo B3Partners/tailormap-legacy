@@ -81,10 +81,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
      */
     /*
     getLegendGraphic : function () {
-        Ext.Error.raise({msg: "Layer.getLegendGraphic() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayers_openlayerslayer_0')});
     },
     setQuery : function (query){
-        Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayers_openlayerslayer_1')});
     },
     */
     

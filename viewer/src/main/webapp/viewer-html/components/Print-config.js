@@ -32,7 +32,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var me =this;        
         this.form.add([{
                 xtype: "label",
-                text: "Standaard Oriëntatie",
+                text: i18next.t('viewer_components_customconfiguration_153'),
                 style: "font-weight: bold;"                
             },{                           
                 xtype: 'radiogroup',
@@ -40,12 +40,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 vertical: true,
                 name: "orientation",
                 items: [{
-                    boxLabel: 'Liggend', 
+                    boxLabel: i18next.t('viewer_components_customconfiguration_154'), 
                     name: 'orientation', 
                     inputValue: 'landscape', 
                     checked: me.configObject.orientation=="landscape"
                 },{
-                    boxLabel: 'Staand', 
+                    boxLabel: i18next.t('viewer_components_customconfiguration_155'), 
                     name: 'orientation', 
                     inputValue: 'portrait', 
                     checked: !(me.configObject.orientation=="landscape")
@@ -53,7 +53,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             {
                 xtype: "label",
-                text: "Toon de volgende paginaformaten",
+                text: i18next.t('viewer_components_customconfiguration_156'),
                 style: "font-weight: bold;"
             },
             {
@@ -67,38 +67,38 @@ Ext.define("viewer.components.CustomConfiguration",{
                         xtype: "checkbox",
                         name: "useA5",
                         checked: me.configObject.useA5 || false,
-                        boxLabel: "A5"
+                        boxLabel: i18next.t('viewer_components_customconfiguration_157')
                     },
                     {
                         xtype: "checkbox",
                         name: "useA4",
                         checked: me.configObject.useA4 || true,
-                        boxLabel: "A4"
+                        boxLabel: i18next.t('viewer_components_customconfiguration_158')
                     },
                     {
                         xtype: "checkbox",
                         name: "useA3",
                         checked: me.configObject.useA3 || true,
-                        boxLabel: "A3"
+                        boxLabel: i18next.t('viewer_components_customconfiguration_159')
                     },
                     {
                         xtype: "checkbox",
                         name: "useA0",
                         checked: me.configObject.useA0 || false,
-                        boxLabel: "A0"
+                        boxLabel: i18next.t('viewer_components_customconfiguration_160')
                     }
                 ]
             },
             {
                 xtype: "label",
-                text: "Standaard paginaformaat",
+                text: i18next.t('viewer_components_customconfiguration_161'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "combo",
                 fields: ['value','text'],
                 value: me.configObject.default_format ? me.configObject.default_format : "a4",
                 name: "default_format",
-                emptyText:'Maak uw keuze',
+                emptyText: i18next.t('viewer_components_customconfiguration_162'),
                 store: [
                     ["a5","A5"],
                     ["a4","A4"],
@@ -108,16 +108,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 width : 75
             },{
                 xtype: "label",
-                text: "Standaard legenda",
+                text: i18next.t('viewer_components_customconfiguration_163'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "checkbox",
                 name: "legend",
                 checked: me.configObject.legend,
-                boxLabel: "Standaard de legenda toevoegen"
+                boxLabel: i18next.t('viewer_components_customconfiguration_164')
             },{
                 xtype: "label",
-                text: "Maximale grote plaatje",
+                text: i18next.t('viewer_components_customconfiguration_165'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "textfield",
@@ -125,33 +125,33 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: me.configObject.max_imagesize ? me.configObject.max_imagesize :"2048"
             },{
 //                xtype: "label",
-//                text: "RTF-Knop",
+//                text: i18next.t('viewer_components_customconfiguration_166'),
 //                style: "font-weight: bold;"
 //            },{
 //                xtype: "checkbox",
 //                name: "showPrintRtf",
 //                checked: me.configObject.showPrintRtf ? me.configObject.showPrintRtf : true,
-//                boxLabel: "Laat de print via RTF knop zien"
+//                boxLabel: i18next.t('viewer_components_customconfiguration_167')
 //            },{
                 xtype: "label",
-                text: "Overzichtskaart",
+                text: i18next.t('viewer_components_customconfiguration_168'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "checkbox",
                 name: "overview",
                 checked: me.configObject.overview ? me.configObject.overview : false,
-                boxLabel: "Neem de overzichtskaart op als de overzichtskaart aanwezig is"
+                boxLabel: i18next.t('viewer_components_customconfiguration_169')
             }
             ,{
                 xtype: "label",
-                text: "Mail",
+                text: i18next.t('viewer_components_customconfiguration_170'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "combo",
                 fields: ['value','text'],
                 value: me.configObject.mailPrint ? me.configObject.mailPrint : "cantMail",
                 name: "mailPrint",
-                emptyText:'Maak uw keuze',
+                emptyText: i18next.t('viewer_components_customconfiguration_171'),
                 store: [
                     ["canAlsoMail","Prints kunnen ook gemaild worden"],
                     ["cantMail","Prints kunnen niet gemaild worden"],
@@ -180,14 +180,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "fromAddress",
                 id: "fromAddress",
                 value: me.configObject.fromAddress ? me.configObject.fromAddress :"",
-                fieldLabel: "Van-adres",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_172'),
                 hidden: me.configObject.mailPrint === "cantMail"
             },{
                 xtype: "textfield",
                 name: "fromName",
                 id: "fromName",
                 value: me.configObject.fromName ? me.configObject.fromName :"Flamingo Printservice",
-                fieldLabel: "Van-naam",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_173'),
                 hidden: me.configObject.mailPrint === "cantMail"
             }
         ]);

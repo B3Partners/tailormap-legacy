@@ -97,6 +97,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:if>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/FileSaver.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/i18n/i18next.11.9.0.min.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/i18n/i18nextXHRBackend.1.5.1.min.js"></script>
 
         <c:choose>
             <c:when test="${!(param.debug == true)}">
