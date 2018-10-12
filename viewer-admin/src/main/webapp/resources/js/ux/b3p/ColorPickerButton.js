@@ -53,7 +53,7 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
     renderColorpicker: function() {
         var me = this;
         me.button = Ext.create('Ext.button.Button', {
-            text: ' ',
+            text: i18next.t('viewer_admin_colorpickerbutton_0'),
             width: 20,
             height: 20,
             style: {

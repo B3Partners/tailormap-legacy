@@ -38,7 +38,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         return [
             {
                 id: 'name',
-                text: "Naam",
+                text: i18next.t('viewer_admin_chooseapplication_0'),
                 dataIndex: 'name',
                 flex: 1,
                 minWidth: 130,
@@ -47,7 +47,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 }
             }, {
                 id: 'published',
-                text: "Gepubliceerd",
+                text: i18next.t('viewer_admin_chooseapplication_1'),
                 dataIndex: 'published',
                 width: 120,
                 filter: {
@@ -55,7 +55,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 }
             }, {
                 id: 'mashup',
-                text: "Mashup",
+                text: i18next.t('viewer_admin_chooseapplication_2'),
                 dataIndex: 'mashup',
                 width: 120,
                 filter: {
@@ -63,7 +63,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 }
             },{
                 id: 'motherapplication',
-                text: "Moederapplicatie",
+                text: i18next.t('viewer_admin_chooseapplication_3'),
                 dataIndex: 'motherapplication',
                 width: 200,
                 filter: {
@@ -71,7 +71,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 }
             },{
                 id: 'owner',
-                text: "Eigenaar",
+                text: i18next.t('viewer_admin_chooseapplication_4'),
                 dataIndex: 'owner',
                 width: 160,
                 filter: {
@@ -125,8 +125,8 @@ Ext.define('vieweradmin.components.ChooseApplication', {
 
     makeWorkVersion: function(record){
         Ext.MessageBox.show({
-            title: 'Werkversie applicatie',
-            msg: 'Versietoevoeging:',
+            title: i18next.t('viewer_admin_chooseapplication_5'),
+            msg: i18next.t('viewer_admin_chooseapplication_6'),
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             fn: function(btn, text){
@@ -163,10 +163,10 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             style: {
                 color: '#666666'
             },
-            html: 'Kies hieronder de standaard applicatie. Deze applicatie wordt geladen wanneer er bij de viewer geen applicatie wordt meegegeven.'
+            html: i18next.t('viewer_admin_chooseapplication_7')
         });
         Ext.create('Ext.form.ComboBox', {
-            fieldLabel: 'Standaard applicatie',
+            fieldLabel: i18next.t('viewer_admin_chooseapplication_8'),
             store: applications,
             queryMode: 'local',
             displayField: 'label',
@@ -206,14 +206,14 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 var response = Ext.JSON.decode(result.responseText);
                 combobox.setLoading(false);
                 if(!response.success) {
-                    Ext.Msg.alert('Fout bij opslaan', 'Er is iets fout gegaan bij het opslaan van de standaard applicatie. Probeer opnieuw.');
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_9'), i18next.t('viewer_admin_chooseapplication_10'));
                 } else {
-                    Ext.Msg.alert('Standaard applicatie opgeslagen', 'De standaard applicatie is opgeslagen. De standaard applicatie is nu' + appLabel);
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_11'), i18next.t('viewer_admin_chooseapplication_12') + appLabel);
                 }
             },
             failure: function(result) {
                 combobox.setLoading(false);
-                Ext.Msg.alert('Fout bij opslaan', 'Er is iets fout gegaan bij het opslaan van de standaard applicatie. Probeer opnieuw.');
+                Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_13'), i18next.t('viewer_admin_chooseapplication_14'));
             }
         });
     }

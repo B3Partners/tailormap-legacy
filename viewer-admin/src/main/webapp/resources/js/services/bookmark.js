@@ -38,7 +38,7 @@ Ext.define('vieweradmin.components.Bookmark', {
         return [
             {
                 id: 'applicationname',
-                text: "Applicatie",
+                text: i18next.t('viewer_admin_bookmark_0'),
                 dataIndex: 'application.name',
                 flex: 1,
                 filter: {
@@ -46,7 +46,7 @@ Ext.define('vieweradmin.components.Bookmark', {
                 }
             },{
                 id: 'code',
-                text: "Code",
+                text: i18next.t('viewer_admin_bookmark_1'),
                 dataIndex: 'code',
                 flex: 1,
                 filter: {
@@ -54,7 +54,7 @@ Ext.define('vieweradmin.components.Bookmark', {
                 }
             }, {
                 id: 'createdAt',
-                text: "Datum",
+                text: i18next.t('viewer_admin_bookmark_2'),
                 dataIndex: 'createdAt',
                 flex: 1,
                 filter: {

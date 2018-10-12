@@ -75,7 +75,7 @@ Ext.onReady(function() {
             clickedItem: null
         },
         items: [{
-            text: 'Subcategorie toevoegen',
+            text: i18next.t('viewer_admin_geoserviceregistry_0'),
             iconCls: 'x-fa fa-plus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
@@ -84,7 +84,7 @@ Ext.onReady(function() {
             }
         },
         {
-            text: 'Categorie verwijderen',
+            text: i18next.t('viewer_admin_geoserviceregistry_1'),
             iconCls: 'x-fa fa-minus-circle',
             listeners: {
                 click: function(item, e, eOpts) {
@@ -94,7 +94,7 @@ Ext.onReady(function() {
         },
         { xtype: "menuseparator"},
         {
-            text: 'Naam wijzigen',
+            text: i18next.t('viewer_admin_geoserviceregistry_2'),
             listeners: {
                 click: function(item, e, eOpts) {
                     changeCategoryName(item.ownerCt.config.data.clickedItem);
@@ -103,7 +103,7 @@ Ext.onReady(function() {
         },
         { xtype: "menuseparator"},
         {
-            text: 'Service toevoegen',
+            text: i18next.t('viewer_admin_geoserviceregistry_3'),
             iconCls: 'x-fa fa-cog',
             listeners: {
                 click: function(item, e, eOpts) {
@@ -113,7 +113,7 @@ Ext.onReady(function() {
             }
         },
         {
-            text: 'CSW service doorzoeken',
+            text: i18next.t('viewer_admin_geoserviceregistry_4'),
             iconCls: 'x-fa fa-cog',
             listeners: {
                 click: function(item, e, eOpts) {
@@ -131,7 +131,7 @@ Ext.onReady(function() {
             record: null
         },
         items: [{
-            text: 'Bewerken',
+            text: i18next.t('viewer_admin_geoserviceregistry_5'),
             iconCls: 'x-fa fa-wrench',
             listeners: {
                 click: function(item, e, eOpts) {
@@ -203,7 +203,7 @@ Ext.onReady(function() {
                 align: 'stretch'
             },
             items: [
-                { xtype: 'container', html: "Gebruik het contextmenu (rechtermuisknop) om de categoriën te bewerken" }
+                { xtype: 'container', html: i18next.t('viewer_admin_geoserviceregistry_6') }
             ]
         }]
     });
@@ -268,8 +268,8 @@ function removeTreeNode(nodeid) {
 // Add a category, shows a prompt dialog for the new name and adds the category
 function addSubcategory(record) {
     Ext.MessageBox.show({
-        title: 'Nieuwe categorie toevoegen',
-        msg: 'Naam van nieuwe categorie:',
+        title: i18next.t('viewer_admin_geoserviceregistry_7'),
+        msg: i18next.t('viewer_admin_geoserviceregistry_8'),
         buttons: Ext.MessageBox.OKCANCEL,
         prompt:true,
         fn: function(btn, text, cBoxes){
@@ -306,8 +306,8 @@ function addSubcategory(record) {
 function changeCategoryName(record) {
 
     Ext.MessageBox.show({
-        title:'Naam wijzigen',
-        msg: 'Naam van categorie:',
+        title: i18next.t('viewer_admin_geoserviceregistry_9'),
+        msg: i18next.t('viewer_admin_geoserviceregistry_10'),
         buttons: Ext.MessageBox.OKCANCEL,
         prompt:true,
         value: record.data.text,
@@ -342,8 +342,8 @@ function changeCategoryName(record) {
 
 function removeCategory(record) {
     Ext.MessageBox.show({
-        title: "Categorie verwijderen",
-        msg: "Weet u zeker dat u de categorie " + record.data.text + " wilt verwijderen?",
+        title: i18next.t('viewer_admin_geoserviceregistry_11'),
+        msg: i18next.t('viewer_admin_geoserviceregistry_12') + record.data.text + " wilt verwijderen?",
         buttons: Ext.MessageBox.OKCANCEL,
         fn: function(btn){
             if(btn=='ok'){

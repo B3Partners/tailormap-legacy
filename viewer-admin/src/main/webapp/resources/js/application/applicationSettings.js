@@ -52,15 +52,15 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
             items: [{
                 itemId: "config-tab",
                 contentEl:'config',
-                title: 'Configuratie'
+                title: i18next.t('viewer_admin_applicationsettings_0')
             },{
                 itemId: "security-tab",
                 contentEl:'security',
-                title: 'Beveiliging'
+                title: i18next.t('viewer_admin_applicationsettings_1')
             },{
                 itemId: "remarks-tab",
                 contentEl:'remarks',
-                title: 'Opmerkingen'
+                title: i18next.t('viewer_admin_applicationsettings_2')
             }],
             listeners: {
                 tabchange: {
@@ -75,7 +75,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
             bbar: [
                 {
                     xtype: 'button',
-                    text: 'Maak kopie',
+                    text: i18next.t('viewer_admin_applicationsettings_3'),
                     listeners: {
                         click: {
                             fn: this.confirmCopy,
@@ -85,7 +85,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
                 },
                 {
                     xtype: 'button',
-                    text: 'Maak mashup',
+                    text: i18next.t('viewer_admin_applicationsettings_4'),
                     listeners: {
                         click: {
                             fn: this.confirmMashup,
@@ -96,7 +96,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
                 "->",
                 {
                     xtype: 'button',
-                    text: 'Publiceren',
+                    text: i18next.t('viewer_admin_applicationsettings_5'),
                     listeners: {
                         click: {
                             fn: this.confirmPublish,
@@ -105,7 +105,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
                     }
                 }, {
                     xtype: 'button',
-                    text: 'Opslaan',
+                    text: i18next.t('viewer_admin_applicationsettings_6'),
                     listeners: {
                         click: {
                             fn: this.save,
@@ -114,7 +114,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
                     }
                 }, {
                     xtype: 'button',
-                    text: 'Annuleren',
+                    text: i18next.t('viewer_admin_applicationsettings_7'),
                     listeners: {
                         click: {
                             fn: this.cancel,
@@ -177,8 +177,8 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
 
     confirmCopy: function () {
         Ext.MessageBox.show({
-            title: 'Applicatie kopiëren',
-            msg: 'Naam van kopie:',
+            title: i18next.t('viewer_admin_applicationsettings_8'),
+            msg: i18next.t('viewer_admin_applicationsettings_9'),
             buttons: Ext.MessageBox.OKCANCEL,
             prompt:true,
             value: document.forms[0].name.value + " (kopie)",
@@ -195,9 +195,9 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
 
     confirmMashup: function () {
         Ext.MessageBox.show({
-            title: 'Maak een mashup',
+            title: i18next.t('viewer_admin_applicationsettings_10'),
             width: 300,
-            msg: 'Naam van mashup: <br/>'+
+            msg: i18next.t('viewer_admin_applicationsettings_11')+
             '<input type="text" id="mashupNameText" width="200px"><br/>' +
             '<label><input type="checkbox" id="mustUpdateComponents">Moeten wijzigingen aan de componenten in de moederapplicatie ook doorwerken in de mashup?</label><br/>'  ,
             buttons: Ext.MessageBox.OKCANCEL,
@@ -219,8 +219,8 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
 
     confirmPublish: function () {
         Ext.MessageBox.show({
-            title: 'Neem mashups over van huidige gepubliceerde',
-            msg: 'Als de huidige gepubliceerde versie mashups bevat, moeten de mashups dan wijzen naar de nieuwe gepubliceerde versie?',
+            title: i18next.t('viewer_admin_applicationsettings_12'),
+            msg: i18next.t('viewer_admin_applicationsettings_13'),
             buttons: Ext.MessageBox.YESNOCANCEL,
             fn: function(btn, text){
                 if(btn === 'yes' || btn === 'no'){

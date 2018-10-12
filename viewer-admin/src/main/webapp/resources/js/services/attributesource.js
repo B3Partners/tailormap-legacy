@@ -37,7 +37,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
         return [
             {
                 id: 'status',
-                text: "Status",
+                text: i18next.t('viewer_admin_attributesource_0'),
                 dataIndex: 'status',
                 flex: 1,
                 renderer: function(value) {
@@ -48,7 +48,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 }
             },{
                 id: 'name',
-                text: "Naam",
+                text: i18next.t('viewer_admin_attributesource_1'),
                 dataIndex: 'name',
                 flex: 1,
                 filter: {
@@ -56,7 +56,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 }
             },{
                 id: 'url',
-                text: "Bron URL",
+                text: i18next.t('viewer_admin_attributesource_2'),
                 dataIndex: 'url',
                 flex: 1,
                 filter: {
@@ -64,7 +64,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 }
             },{
                 id: 'protocol',
-                text: "Type",
+                text: i18next.t('viewer_admin_attributesource_3'),
                 dataIndex: 'protocol',
                 flex: 1,
                 filter: {

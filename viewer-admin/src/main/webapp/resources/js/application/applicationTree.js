@@ -59,7 +59,7 @@ Ext.onReady(function() {
             clickedItem: null
         },
         items: [{
-            text: 'Subniveau toevoegen',
+            text: i18next.t('viewer_admin_applicationtree_0'),
             // icon: imagesPath + "add.png",
             iconCls: 'x-fa fa-plus-circle',
             listeners: {
@@ -68,7 +68,7 @@ Ext.onReady(function() {
                 }
             }
         },{
-            text: 'Verwijderen',
+            text: i18next.t('viewer_admin_applicationtree_1'),
             // icon: imagesPath + "delete.png",
             iconCls: 'x-fa fa-minus-circle',
             listeners: {
@@ -77,14 +77,14 @@ Ext.onReady(function() {
                 }
             }
         },{
-            text: 'Naam wijzigen',
+            text: i18next.t('viewer_admin_applicationtree_2'),
             listeners: {
                 click: function(item, e, eOpts) {
                     changeLevelName(item.ownerCt.config.data.clickedItem);
                 }
             }
         },{
-            text: 'Bewerken',
+            text: i18next.t('viewer_admin_applicationtree_3'),
             // icon: imagesPath + "wrench.png",
             iconCls: 'x-fa fa-wrench',
             listeners: {
@@ -103,7 +103,7 @@ Ext.onReady(function() {
             clickedItem: null
         },
         items: [{
-            text: 'Bewerken',
+            text: i18next.t('viewer_admin_applicationtree_4'),
             // icon: imagesPath + "wrench.png",
             iconCls: 'x-fa fa-wrench',
             listeners: {
@@ -203,7 +203,7 @@ Ext.onReady(function() {
         },
         bbar: [{
             xtype: "label",
-            text: "Gebruik het contextmenu (rechtermuisknop) om de boomstructuur te bewerken"
+            text: i18next.t('viewer_admin_applicationtree_5')
         }]
     });
 });
@@ -271,8 +271,8 @@ function removeTreeNode(nodeid) {
 // Add a category, shows a prompt dialog for the new name and adds the category
 function addSublevel(record) {
     Ext.MessageBox.show({
-        title:'Nieuw niveau toevoegen',
-        msg: 'Naam van nieuw niveau:',
+        title: i18next.t('viewer_admin_applicationtree_6'),
+        msg: i18next.t('viewer_admin_applicationtree_7'),
         buttons: Ext.MessageBox.OKCANCEL,
         prompt: true,
         fn: function(btn, text, cBoxes){
@@ -306,8 +306,8 @@ function addSublevel(record) {
 function changeLevelName(record) {
 
     Ext.MessageBox.show({
-        title:'Naam wijzigen',
-        msg: 'Naam van niveau:',
+        title: i18next.t('viewer_admin_applicationtree_8'),
+        msg: i18next.t('viewer_admin_applicationtree_9'),
         buttons: Ext.MessageBox.OKCANCEL,
         prompt:true,
         value: record.data.text,
@@ -342,11 +342,11 @@ function changeLevelName(record) {
 
 function removeLevel(record) {
     if(record.data && record.data.name === "Achtergrond"){
-        Ext.MessageBox.alert("Foutmelding", 'Vast niveau "Achtergrond" niet toegestaan om te verwijderen.');
+        Ext.MessageBox.alert(i18next.t('viewer_admin_applicationtree_12'), i18next.t('viewer_admin_applicationtree_13'));
     }else{
         Ext.MessageBox.show({
-            title: "Niveau verwijderen",
-            msg: "Weet u zeker dat u het niveau " + record.data.text + " wilt verwijderen?",
+            title: i18next.t('viewer_admin_applicationtree_10'),
+            msg: i18next.t('viewer_admin_applicationtree_11', { niveau: record.data.text }),
             buttons: Ext.MessageBox.OKCANCEL,
             fn: function(btn){
                 if(btn==='ok'){

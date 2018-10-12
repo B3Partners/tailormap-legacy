@@ -39,7 +39,7 @@ Ext.define('vieweradmin.components.SolrConfig', {
         return [
             {
                 id: 'name',
-                text: "Naam",
+                text: i18next.t('viewer_admin_solrconfig_0'),
                 dataIndex: 'name',
                 flex: 1,
                 filter: {
@@ -47,12 +47,12 @@ Ext.define('vieweradmin.components.SolrConfig', {
                 }
             },{
                 id: 'featureSourceName',
-                text: "Bronnaam",
+                text: i18next.t('viewer_admin_solrconfig_1'),
                 dataIndex: 'featureSourceName',
                 flex: 1
             },{
                 id: 'lastUpdated',
-                text: "Laatst geüpdatet",
+                text: i18next.t('viewer_admin_solrconfig_2'),
                 dataIndex: 'lastUpdated',
                 flex: 1,
                 filter: {

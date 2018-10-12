@@ -101,7 +101,7 @@ function featureTypeChanged(featuretypeId){
                     } 
                     html += '</table>';
                     Ext.create('Ext.panel.Panel', {
-                        title: 'Attributen',
+                        title: i18next.t('viewer_admin_editsolrconfig_0'),
                         width: '100%',
                         height: '100%',
                         bodyPadding: '0 5 5 5',

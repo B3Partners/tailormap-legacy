@@ -116,22 +116,22 @@ Ext.onReady(function() {
     var tabconfig = [{
         itemId:'rights-tab',
         contentEl:'rights-tab',
-        title: 'Rechten'
+        title: i18next.t('viewer_admin_applicationtreelevel_0')
     },{
         itemId:'documents-tab',
         contentEl:'documents-tab',
-        title: 'Documenten'
+        title: i18next.t('viewer_admin_applicationtreelevel_1')
     },{
         itemId:'context-tab',
         contentEl:'context-tab',
-        title: 'Context'
+        title: i18next.t('viewer_admin_applicationtreelevel_2')
     }];
 
     if(layersAllowed) {
         tabconfig.unshift({
             itemId:'tree-tab',
             contentEl:'tree-tab',
-            title: 'Kaarten'
+            title: i18next.t('viewer_admin_applicationtreelevel_3')
         });
     }
 
@@ -184,7 +184,7 @@ Ext.onReady(function() {
             '->',
             {
                 xtype: 'button',
-                text: 'Opslaan',
+                text: i18next.t('viewer_admin_applicationtreelevel_4'),
                 listeners: {
                     click: {
                         fn: saveFunction
@@ -192,7 +192,7 @@ Ext.onReady(function() {
                 }
             }, {
                 xtype: 'button',
-                text: 'Annuleren',
+                text: i18next.t('viewer_admin_applicationtreelevel_5'),
                 listeners: {
                     click: {
                         fn: cancelFunction
@@ -200,7 +200,7 @@ Ext.onReady(function() {
                 }
             }, {
                 xtype: 'button',
-                text: 'Verwijderen',
+                text: i18next.t('viewer_admin_applicationtreelevel_6'),
                 listeners: {
                     click: {
                         fn: removeFunction

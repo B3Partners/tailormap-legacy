@@ -67,7 +67,7 @@ Ext.define('vieweradmin.components.Attributes', {
                     }, this);
                 },
                 failure: function() {
-                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_attribute_3'), i18next.t('viewer_admin_attribute_4'));
                 }
             });
             var gridStore = this.getStore();
@@ -116,7 +116,7 @@ Ext.define('vieweradmin.components.Attributes', {
         return [
             {
                 id: 'alias',
-                text: "Alias",
+                text: i18next.t('viewer_admin_attribute_0'),
                 dataIndex: 'alias',
                 flex: 1,
                 filter: {
@@ -124,7 +124,7 @@ Ext.define('vieweradmin.components.Attributes', {
                 }
             },{
                 id: 'attribute',
-                text: "Attribuut",
+                text: i18next.t('viewer_admin_attribute_1'),
                 dataIndex: 'attribute',
                 flex: 1,
                 filter: {
@@ -132,7 +132,7 @@ Ext.define('vieweradmin.components.Attributes', {
                 }
             },{
                 id: 'type',
-                text: "Type",
+                text: i18next.t('viewer_admin_attribute_2'),
                 dataIndex: 'type',
                 flex: 1,
                 filter: {

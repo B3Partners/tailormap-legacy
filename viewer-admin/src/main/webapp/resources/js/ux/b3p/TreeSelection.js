@@ -97,7 +97,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             store: me.treeStore,
             rootVisible: false,
             root: {
-                text: "Root node",
+                text: i18next.t('viewer_admin_treeselection_0'),
                 expanded: true
             },
             selModel: {
@@ -175,7 +175,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             store: me.selectedLayersStore,
             rootVisible: false,
             root: {
-                text: "Root node",
+                text: i18next.t('viewer_admin_treeselection_1'),
                 expanded: true
             },
             selModel: {
@@ -614,7 +614,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 }
             },
             failure: function() {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de laag niet kan worden toegevoegd");
+                Ext.MessageBox.alert(i18next.t('viewer_admin_treeselection_2'), i18next.t('viewer_admin_treeselection_3'));
             }
         });
     },

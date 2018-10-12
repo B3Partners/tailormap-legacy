@@ -65,7 +65,7 @@ Ext.onReady(function(){
         columns: [
             {
                 id: 'name',
-                text: "Naam",
+                text: i18next.t('viewer_admin_layarservice_0'),
                 dataIndex: 'name',
                 flex: 1,
                 filter: {
