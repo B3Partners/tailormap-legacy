@@ -25,7 +25,9 @@ class TextExtractor {
         for(const key in this.store) if(this.store.hasOwnProperty(key)) {
             const basename = key.substring(0, key.lastIndexOf("_"));
             const count = parseInt(key.substring(key.lastIndexOf("_") + 1));
-            this.count_store[basename] = count;
+            if (!this.count_store.hasOwnProperty(basename) || this.count_store[basename] < count) {
+                this.count_store[basename] = count + 1;
+            }
         }
     }
 
