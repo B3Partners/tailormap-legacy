@@ -20,6 +20,7 @@ class TextExtractor {
             },
             {
                 outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.json",
+                prefix: "viewer_admin",
                 fileOptions: {
                     files: [
                         '../../../../../../../viewer-admin/src/main/webapp/resources/js/**/*.js'
@@ -72,7 +73,7 @@ class TextExtractor {
         });
     }
 
-    getKey(count_store, filename, filecontents) {
+    getKey(count_store, filename, filecontents, prefix) {
         const classNameMatches = filecontents.match(/Ext\.define\s*\(["'](viewer\.[^'"]*)["']/);
         const className = (classNameMatches && classNameMatches.length > 1) ? classNameMatches[1] : "";
         let keyname = "";
@@ -80,6 +81,9 @@ class TextExtractor {
             keyname = className.replace(/[\.\-]/g, "_").toLowerCase();
         } else {
             keyname = filename.substring(filename.lastIndexOf("/") + 1).replace(/\-/g, "_").replace(".js", "").toLowerCase();
+        }
+        if (prefix) {
+            keyname = prefix + "_" + keyname;
         }
         if (!count_store.hasOwnProperty(keyname)) {
             count_store[keyname] = 0;
@@ -101,7 +105,7 @@ class TextExtractor {
                 if (!text) {
                     return match;
                 }
-                const key = this.getKey(count_store, filename, filecontents);
+                const key = this.getKey(count_store, filename, filecontents, opts.prefix);
                 store[key] = text;
                 match_count++;
                 return match.replace(/(text|title|tooltip|fieldLabel|emptyText|boxLabel|msg|header|html):\s?['"].*/, "$1: i18next.t('" + key + "')");
@@ -122,7 +126,7 @@ class TextExtractor {
                 }
                 let replaced = `Ext.MessageBox.${type}(`;
                 if (text1) {
-                    const key = this.getKey(count_store, filename, filecontents);
+                    const key = this.getKey(count_store, filename, filecontents, opts.prefix);
                     store[key] = text1;
                     replaced += "i18next.t('" + key + "')";
                 } else {
@@ -130,7 +134,7 @@ class TextExtractor {
                 }
                 replaced += ", ";
                 if (text2) {
-                    const key = this.getKey(count_store, filename, filecontents);
+                    const key = this.getKey(count_store, filename, filecontents, opts.prefix);
                     store[key] = text2;
                     replaced += "i18next.t('" + key + "')";
                 }
@@ -149,7 +153,7 @@ class TextExtractor {
                 if (!text) {
                     return match;
                 }
-                const key = this.getKey(count_store, filename, filecontents);
+                const key = this.getKey(count_store, filename, filecontents, opts.prefix);
                 store[key] = text;
                 match_count++;
                 return "setLoading(i18next.t('" + key + "'))";
