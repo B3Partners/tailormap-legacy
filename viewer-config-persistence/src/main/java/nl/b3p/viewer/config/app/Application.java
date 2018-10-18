@@ -719,7 +719,7 @@ public class Application implements Comparable<Application>{
      * @param old The Application to which the layerIds should be matched.
      * @param em the entity manager to use
      */
-    public void transferMashup(Application old, EntityManager em) {
+    public void transferMashupLevels(Application old, EntityManager em) {
         originalToCopy = new HashMap();
         loadTreeCache(em);
         visitLevelForMashuptransfer(old.getRoot(), originalToCopy);
@@ -738,8 +738,20 @@ public class Application implements Comparable<Application>{
         //zoek voor elke level (uit oude applicatie) de bijbehorende NIEUWE level
         // sla in originalToCopy de ids op van de level
         // Roep postPersist aan.
-        
     }
+    
+    public void transferMashupComponents(Application newApp, EntityManager em) {
+        for (ConfiguredComponent component : components) {
+            if(component.getMotherComponent() != null){
+                for (ConfiguredComponent newAppComp : newApp.getComponents()) {
+                    if(component.getName().equals(newAppComp.getName())){
+                        component.setMotherComponent(newAppComp);
+                    }
+                }
+            }
+        }
+    }
+    
     
     private void replaceLevel(Level l,  Map reverse, List<StartLayer> startlayersAdded, List<StartLevel> startlevelsAdded) {
         for (Level level : l.getChildren()) {

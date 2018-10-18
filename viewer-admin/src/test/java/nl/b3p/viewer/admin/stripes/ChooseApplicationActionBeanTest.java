@@ -13,7 +13,6 @@ import nl.b3p.viewer.util.TestActionBeanContext;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.AssertionFailure;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -130,6 +129,57 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
 
             long newRootStartLevelId = newMashup.getStartLevels().get(0).getLevel().getId();
             Assert.assertNotEquals(mashupStartLevelId, newRootStartLevelId);
+        } catch (Exception e) {
+            log.error("Fout", e);
+            fail(e.getLocalizedMessage());
+        }
+    }
+    
+    @Test
+    public void deleteOriginalMotherWhenComponentsMustFollowNewlyPublishedApplication() {
+        initData(true);
+        try {
+            ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
+            TestActionBeanContext context = new TestActionBeanContext();
+            caab.setContext(context);
+
+            app.setVersion(null);
+            entityManager.persist(app);
+            Application mashup = app.createMashup("mashup", entityManager, true);
+            entityManager.persist(mashup);
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            mashup.loadTreeCache(entityManager);
+
+            long mashupStartLevelId = mashup.getStartLevels().get(0).getLevel().getId();
+            
+            String version = "werkversie";
+            Application workVersion = caab.createWorkversion(app, entityManager, version);
+
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            Application prev = entityManager.merge(app);
+          
+            
+            ApplicationSettingsActionBean asab = new ApplicationSettingsActionBean();
+            asab.setContext(context);
+            asab.setApplication(workVersion);
+            asab.setMashupMustPointToPublishedVersion(true);
+            asab.setName(app.getName());
+            asab.publish(entityManager);
+            
+            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            
+            // delete old mother
+            caab = new ChooseApplicationActionBean();
+            context = new TestActionBeanContext();
+            caab.setContext(context);
+            Application oldmother = entityManager.find(Application.class, app.getId());
+            caab.setApplicationToDelete(oldmother);
+            caab.deleteApplication(entityManager);
         } catch (Exception e) {
             log.error("Fout", e);
             fail(e.getLocalizedMessage());
