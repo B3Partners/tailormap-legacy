@@ -56,6 +56,7 @@ Ext.define ("viewer.components.Search",{
     showSearchButtons: true,
     simpleSearchResults: false,
     searchFieldTriggers: null,
+    pickerAlignment: "tl-bl?", // Ext default
     config:{
         title: null,
         iconUrl: null,
@@ -70,7 +71,7 @@ Ext.define ("viewer.components.Search",{
             minWidth: 400,
             minHeight: 400
         }
-    },    
+    },
     constructor: function (conf){
         conf.details.useExtLayout = true;
         this.initConfig(conf);
@@ -245,7 +246,9 @@ Ext.define ("viewer.components.Search",{
                     queryMode: queryMode,
                     itemId: 'searchfield' + this.name,
                     minChars: 2,
-                    listConfig:{
+                    pickerAlign: this.pickerAlignment,
+                    listConfig: {
+                        maxHeight: this.getPickerMaxHeight(),
                         listeners:{
                             itemclick:function(list, node){
                                 this.searchHighlightedSuggestion(node);
@@ -344,6 +347,13 @@ Ext.define ("viewer.components.Search",{
             
         });
         return itemList;
+    },
+    getPickerMaxHeight: function() {
+        var viewportHeight = Ext.dom.Element.getViewportHeight();
+        if(viewportHeight < 600) {
+            return Math.floor(viewportHeight * 0.5);
+        }
+        return 300; // default
     },
     searchHighlightedSuggestion: function(node){
         var data = node.raw !== undefined ? node.raw : node.data;
