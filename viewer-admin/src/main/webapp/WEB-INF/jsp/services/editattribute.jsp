@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Bewerk Attribuutbron</title>
+        <title>___Bewerk Attribuutbron___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -32,17 +32,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <h1 id="headertext">Attribuut bewerken</h1>
                 <table class="formtable">
                     <tr>
-                        <td>Alias:</td>
+                        <td>___Alias___:</td>
                         <td><stripes:text name="attribute.alias" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
-                        <td>Attribuut *:</td>
+                        <td>___Attribuut___ *:</td>
                         <td><stripes:text name="attribute.name" maxlength="255" size="30" disabled="true"/></td>
                     </tr>
                 </table>
                 <div class="submitbuttons">
-                    <stripes:submit name="save" value="Opslaan"/>
-                    <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
+                    <stripes:submit name="save" value="___Opslaan___"/>
+                    <stripes:reset name="cancel" class="extlikebutton" value="___Annuleren___"/>
                 </div>
             </c:if>
             <c:if test="${actionBean.context.eventName == 'save'}">

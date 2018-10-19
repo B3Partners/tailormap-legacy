@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Edit layar source</title>
+        <title>___Edit layar source___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -30,13 +30,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="layarSource" value="${actionBean.layarSource.id}"/>
-                        <h1 id="headertext">Layar bron bewerken</h1>
+                        <h1 id="headertext">___Layar bron bewerken___</h1>
                         <script>var featureTypes={};</script>
                         <div style="float: left;width: 100%">
                             <div style="width: 70%; float: left;">
                             <table class="formtable">                      
                                 <tr>
-                                    <td>Attribuutbron*</td>
+                                    <td>___Attribuutbron___*</td>
                                     <td>
                                         <select id="featureSourceSelect">
                                             <c:forEach var="s" items="${actionBean.featureSources}">
@@ -66,10 +66,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                                 </tr>
                                 <tr>
-                                    <td>Layar service*</td>
+                                    <td>___Layar service___*</td>
                                     <td>
                                         <stripes:select name="layarSource.layarService">
-                                    <option value="1">Maak uw keuze..</option>                      
+                                    <option value="1">___Maak uw keuze..___</option>                      
                                     <c:forEach var="ls" items="${actionBean.layarServices}">  
                                         <c:set var="selected" value="" />                
                                         <c:if test="${actionBean.layarSource.layarService.id == ls.id}">
@@ -80,35 +80,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </stripes:select>                                            
                                 </td>
                                 </tr>  
-                                <tr><td colspan="2">Te publiceren velden, geef aan hoe deze gevuld moeten worden per Object. 
-                                        Gebruik '[attribuutnaam]' om een waarde van het object te gebruiken. 
-                                        Aan de rechterkant wordt een lijst getoond met mogelijke attribuutnamen.</td></tr>                                
+                                <tr><td colspan="2">___Te publiceren velden, geef aan hoe deze gevuld moeten worden per Object. Gebruik '[attribuutnaam]' om een waarde van het object te gebruiken. Aan de rechterkant wordt een lijst getoond met mogelijke attribuutnamen.___</td></tr>                                
                                 <tr>
-                                    <td>Titel</td>
+                                    <td>___Titel___:</td>
                                     <td>
                                         <stripes:text name="details['text.title']"></stripes:text>
                                     </td>
                                 </tr> 
                                 <tr>
-                                    <td>Omschrijving</td>
+                                    <td>___Omschrijving___:</td>
                                     <td>
                                         <stripes:text name="details['text.description']"></stripes:text>
                                     </td>
                                 </tr>  
                                 <tr>
-                                    <td>Footnote</td>
+                                    <td>___Footnote___:</td>
                                     <td>
                                         <stripes:text name="details['text.footnote']"></stripes:text>
                                     </td>
                                 </tr>                         
                                 <tr>
-                                    <td>Url naar afbeelding</td>
+                                    <td>___Url naar afbeelding___:</td>
                                     <td>
                                         <stripes:text name="details['imageURL']"></stripes:text>
                                     </td>
                                 </tr>             
                                 <tr>
-                                    <td colspan="2">* = verplicht</td>
+                                    <td colspan="2">* = ___verplicht___</td>
                                 </tr>
                             </table>
                         </div>
@@ -116,8 +114,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         </div>
                         <div class="submitbuttons">
-                            <stripes:submit name="save" value="Opslaan"/>
-                            <stripes:submit name="cancel" value="Annuleren"/>
+                            <stripes:submit name="save" value="___Opslaan___"/>
+                            <stripes:submit name="cancel" value="___Annuleren___"/>
                         </div>
                         <c:choose>
                             <c:when test="${not empty actionBean.layarSource.featureType.id}">
@@ -136,10 +134,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="Nieuwe layar bron"/>
+                        <stripes:submit name="edit" value="___Nieuwe layar bron___"/>
                     </c:when>
                     <c:otherwise>
-                        <stripes:submit name="edit" value="Nieuwe layar bron"/>
+                        <stripes:submit name="edit" value="___Nieuwe layar bron___"/>
                     </c:otherwise>
                 </c:choose>
             </stripes:form>

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Edit documenten</title>
+        <title>___Edit documenten___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -29,25 +29,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
-                    <h1 id="headertext">Document bewerken</h1>
+                    <h1 id="headertext">___Document bewerken___</h1>
                     <stripes:hidden name="document" value="${actionBean.document.id}"/>
                     <table class="formtable">
                         <tr>
-                            <td>Naam *:</td>
+                            <td>___Naam___ *:</td>
                             <td><stripes:text name="document.name" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
-                            <td>Rubriek:</td>
+                            <td>___Rubriek___:</td>
                             <td><stripes:text name="document.category" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
-                            <td>URL *:</td>
+                            <td>___URL___ *:</td>
                             <td><stripes:text name="document.url" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="Opslaan"/>
-                        <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
+                        <stripes:submit name="save" value="___Opslaan___"/>
+                        <stripes:reset name="cancel" class="extlikebutton" value="___Annuleren___"/>
                     </div>
                 </c:when>
                 <c:otherwise>
@@ -57,7 +57,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             frameParent.vieweradmin_components_Document.reloadGrid();
                         }
                     </script>        
-                    <stripes:submit name="edit" value="Nieuw document"/>
+                    <stripes:submit name="edit" value="___Nieuw document___"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

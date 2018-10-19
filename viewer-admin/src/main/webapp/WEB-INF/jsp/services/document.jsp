@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Documenten</title>
+        <title>___Documenten___</title>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <stripes:errors/>
             <stripes:messages/>
-            <h1>Documenten<a href="#Documenten_Beheren_help" title="Help" class="helplink"></a></h1>
+            <h1>___Documenten___<a href="#Documenten_Beheren_help" title="___Help___" class="helplink"></a></h1>
             <div id="grid-container" class="documenten"></div>
             <div id="form-container" class="documenten">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>

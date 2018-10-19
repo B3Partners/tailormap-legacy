@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Layar Source</title>
+        <title>___Layar Source___</title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -31,9 +31,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <h1>Layarbronnen</h1>
             <div style="margin-top: 35px; margin-bottom: -20px;">
-                <p>LayarBronnen beheren</p>
+                <p>___LayarBronnen beheren___</p>
                 <select name="layarServiceId" id="layarServiceId">
-                    <option value="-1">Maak uw keuze..</option>
+                    <option value="-1">___Maak uw keuze..___</option>
                     <c:forEach var="service" items="${actionBean.layarServices}">
                         <c:set var="selected" value="" />
                         <c:if test="${actionBean.layarServiceId == service.id}">

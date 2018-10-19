@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Beheer bookmarks</title>
+        <title>___Beheer bookmarks___</title>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <stripes:errors/>
             <stripes:messages/>
-            <h1>Bookmarks<a href="#Soorten_Applicaties_Help" title="Help" class="helplink"></a></h1>
+            <h1>___Bookmarks___<a href="#Soorten_Applicaties_Help" title="___Help___" class="helplink"></a></h1>
             <div id="grid-container" class="applicaties">
 
             </div>

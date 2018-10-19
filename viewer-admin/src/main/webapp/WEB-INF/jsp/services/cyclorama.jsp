@@ -9,7 +9,7 @@
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Cyclorama</title>
+        <title>___Cyclorama___</title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -24,27 +24,27 @@
                 <stripes:messages/>
             </p>
             <stripes:select name="account" onchange="changeSelection(this)">
-                <stripes:option value="-1" label=" -- Nieuwe key -- "/>
+                <stripes:option value="-1" label=" ___-- Nieuwe key --___ "/>
                 <stripes:options-collection collection="${actionBean.accounts}" label="filename" value="id"/>
             </stripes:select>
 
                 <table class="formtable">
                     <tr>
-                        <td>Gebruikersnaam</td>
+                        <td>___Gebruikersnaam___:</td>
                         <td><stripes-dynattr:text name="account.username">${account.username}</stripes-dynattr:text></td>
                 </tr>
                 <tr>
-                        <td>Wachtwoord</td>
+                        <td>___Wachtwoord___:</td>
                         <td><stripes-dynattr:password autocomplete="new-password" name="account.password"/></td>
                 </tr>
                 <tr>
-                        <td>PFX-bestand</td>
+                        <td>___PFX-bestand___:</td>
                         <td><stripes:file name="key"/></td>
                     </tr>
                     <tr>
-                        <td><stripes:submit name="save" value="Opslaan"/></td>
+                        <td><stripes:submit name="save" value="___Opslaan___"/></td>
                         <c:if test="${not empty actionBean.account}">
-                            <td><stripes:submit name="removeKey" value="Verwijder"/></td>
+                            <td><stripes:submit name="removeKey" value="___Verwijder___"/></td>
                         </c:if>
                     </tr>
                 </table>

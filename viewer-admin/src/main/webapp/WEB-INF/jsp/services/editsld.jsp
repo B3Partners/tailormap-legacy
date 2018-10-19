@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Geo service</title>
+        <title>___Geo service___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
@@ -35,8 +35,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <c:set var="edit" value="${!empty actionBean.sld.id}"/>
 
     <span id="headertext" style="display: none">
-    <c:if test="${!edit}">Nieuwe SLD toevoegen aan <c:out value="${actionBean.service.name}"/></c:if>
-    <c:if test="${edit}">SLD <c:out value="${actionBean.sld.title}"/> bewerken van <c:out value="${actionBean.service.name}"/></c:if>
+    <c:if test="${!edit}">___Nieuwe SLD toevoegen aan___ <c:out value="${actionBean.service.name}"/></c:if>
+    <c:if test="${edit}">___SLD___ <c:out value="${actionBean.sld.title}"/> ___bewerken van___ <c:out value="${actionBean.service.name}"/></c:if>
     </span>
 
     <p>
@@ -53,36 +53,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         });
     </script>
     
-    Naam *: <stripes:text name="sld.title" maxlength="255" size="30"/><br>
+    ___Naam___ *: <stripes:text name="sld.title" maxlength="255" size="30"/><br>
     <br>
-    <label><stripes:checkbox name="sld.defaultStyle"/> Standaard SLD voor lagen van deze service die in een applicatie worden gebruikt</label><br>
+    <label><stripes:checkbox name="sld.defaultStyle"/> ___Standaard SLD voor lagen van deze service die in een applicatie worden gebruikt___</label><br>
     <fieldset>
-        <legend>Soort</legend>
-        <label><stripes:radio name="sldType" value="external" onchange="checkType()"/>Externe SLD</label><br>
-        <label><stripes:radio name="sldType" value="body" onchange="checkType()"/>SLD body invoeren</label>
+        <legend>___Soort___</legend>
+        <label><stripes:radio name="sldType" value="external" onchange="checkType()"/>___Externe SLD___</label><br>
+        <label><stripes:radio name="sldType" value="body" onchange="checkType()"/>___SLD body invoeren___</label>
     </fieldset>
     <div id="external">
-       URL *: <stripes:text name="sld.externalUrl" maxlength="1000" size="80"/><br>
-        Let op: in de externe SLD moeten de lagen uit deze service met <code>&lt;NamedLayer&gt;</code> elementen worden genoemd<br> om effect te hebben.
+       ___URL___ *: <stripes:text name="sld.externalUrl" maxlength="1000" size="80"/><br>
+        ___Let op: in de externe SLD moeten de lagen uit deze service met <code>&lt;NamedLayer&gt;</code> elementen worden genoemd<br> om effect te hebben.___
     </div>
     <div style="margin: 5px 0px 5px 0px;">
-        Bij het opslaan van de SLD wordt uit de SLD bepaald per layer welke naam de eerste UserStyle
-        heeft. Deze wordt voor ArcGIS Server gebruikt voor WMS requests. Indien een externe SLD is
-        gewijzigd opnieuw op "Opslaan" drukken om deze gegevens te updaten.
-        <p>
-        Voor ArcGIS wilt u mogelijk extra URL parameters voor GetLegendGraphic (bijvoorbeeld WIDTH=200): <stripes:text name="sld.extraLegendParameters" maxlength="255" size="30"/><br/>
+        ___Bij het opslaan van de SLD wordt uit de SLD bepaald per layer welke naam de eerste UserStyle heeft. Deze wordt voor ArcGIS Server gebruikt voor WMS requests. Indien een externe SLD is gewijzigd opnieuw op "Opslaan" drukken om deze gegevens te updaten.<p>Voor ArcGIS wilt u mogelijk extra URL parameters voor GetLegendGraphic (bijvoorbeeld WIDTH=200)___: <stripes:text name="sld.extraLegendParameters" maxlength="255" size="30"/><br/>
     </div>
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
-                <stripes:submit name="saveSld" value="Opslaan"/>
+                <stripes:submit name="saveSld" value="___Opslaan___"/>
             </c:when>
             <c:otherwise>
-                <stripes:submit name="saveSld" value="Opslaan"/>
-                <stripes:submit name="deleteSld" onclick="return deleteConfirm();" value="Verwijder SLD"/>
+                <stripes:submit name="saveSld" value="___Opslaan___"/>
+                <stripes:submit name="deleteSld" onclick="return deleteConfirm();" value="___Verwijder SLD___"/>
                 <script type="text/javascript">
                     function deleteConfirm() {
-                        return confirm('Weet u zeker dat u deze SLD wilt verwijderen?');
+                        return confirm('___Weet u zeker dat u deze SLD wilt verwijderen?___');
                     }
                 </script>
             </c:otherwise>
@@ -90,18 +86,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
             <stripes:param name="service" value="${actionBean.service.id}"/>
         </stripes:url>
-        <stripes:button name="cancel" class="extlikebutton" value="Annuleren" onclick="window.location.href='${url}'" />
+        <stripes:button name="cancel" class="extlikebutton" value="___Annuleren___" onclick="window.location.href='${url}'" />
     </div>
     <div id="body">
-        SLD document:<br>
-        <stripes:submit name="generateSld" value="Maak SLD opzet"/>
-        <stripes:submit name="validateSldXml" value="Valideer XML" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
-        <stripes:submit name="cqlToFilter" value="CQL naar ogc:Filter XML" onclick="doCqlToFilter(); return false;"/>&nbsp;&nbsp; <a href="http://udig.github.com/docs/user/Constraint%20Query%20Language.html" target="_blank">CQL documentatie</a>
+        ___SLD document___:<br>
+        <stripes:submit name="generateSld" value="___Maak SLD opzet___"/>
+        <stripes:submit name="validateSldXml" value="___Valideer XML___" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
+        <stripes:submit name="cqlToFilter" value="___CQL naar ogc:Filter XML___" onclick="doCqlToFilter(); return false;"/>&nbsp;&nbsp; <a href="http://udig.github.com/docs/user/Constraint%20Query%20Language.html" target="_blank">___CQL documentatie___</a>
         <br>
         <script type="text/javascript">
             var cql = "";
             function doCqlToFilter() {
-                var res = prompt('Geef CQL expressie:', cql);
+                var res = prompt('___Geef CQL expressie___:', cql);
                 if(!res) { 
                     return;
                 }
@@ -122,16 +118,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         }
                     },
                     failure: function(result) {
-                        alert("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                        alert("___Ajax request failed with status___ " + result.status + " " + result.statusText + ": " + result.responseText);
                     }
                 });                
             }
         </script>
         <div id="filter" style="display: none">
             <br>
-            <a href="#" onclick="Ext.fly('filter').setVisibilityMode(Ext.Element.DISPLAY).setVisible(false);">Verberg filter</a>
+            <a href="#" onclick="Ext.fly('filter').setVisibilityMode(Ext.Element.DISPLAY).setVisible(false);">___Verberg filter___</a>
             <br>
-            <b>Filter voor expressie: </b><span style="font-family: monospace" id="cqlText"></span>
+            <b>___Filter voor expressie___: </b><span style="font-family: monospace" id="cqlText"></span>
             <div id="filterXml" style="font-family: monospace; white-space: pre">
                 
             </div>

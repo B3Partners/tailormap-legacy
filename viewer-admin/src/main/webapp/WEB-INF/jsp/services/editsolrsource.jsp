@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Bewerk zoekbron</title>
+        <title>___Bewerk zoekbron___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <c:set var="isNew">
@@ -41,10 +41,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:when test="${empty actionBean.context.validationErrors && actionBean.context.eventName == 'newSearchConfig' || actionBean.context.eventName == 'edit' }">
                     <c:choose>
                         <c:when test="${!isNew}">
-                            <h1 id="headertext">Zoekbron bewerken</h1>
+                            <h1 id="headertext">___Zoekbron bewerken___</h1>
                         </c:when>
                         <c:otherwise>
-                            <h1 id="headertext">Nieuwe zoekbron toevoegen</h1>           
+                            <h1 id="headertext">___Nieuwe zoekbron toevoegen___</h1>           
                         </c:otherwise>
                     </c:choose>
                     <stripes:hidden name="solrConfiguration" value="${actionBean.solrConfiguration.id}" />
@@ -52,26 +52,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table class="formtable">
                             <tr>
                                 <td>
-                                    Naam:
+                                    ___Naam___:
                                 </td>
                                 <td>
                                     <stripes:text name="solrConfiguration.name"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Attribuutbron:</td>
+                                <td>___Attribuutbron___:</td>
                                 <td>
                                     <stripes:select name="solrConfiguration.simpleFeatureType.featureSource" onchange="featureSourceChanged(this)">
-                                        <stripes:option value="-1">Kies een attribuutbron</stripes:option>
+                                        <stripes:option value="-1">___Kies een attribuutbron___</stripes:option>
                                         <stripes:options-collection collection="${actionBean.featureSources}" label="name"/>
                                     </stripes:select>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Featuretype:</td>
+                                <td>___Featuretype___:</td>
                                 <td>
                                     <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this.value)">
-                                        <stripes:option value="-1">Kies een featuretype</stripes:option>
+                                        <stripes:option value="-1">___Kies een featuretype___</stripes:option>
                                         <stripes:options-collection collection="${actionBean.featureTypes}" label="typeName"/>
                                     </stripes:select>
                                 </td>
@@ -81,8 +81,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div id="attributes" style="width: 300px; height: 250px; float: left; margin-left: 25px; margin-top: 5px;"></div>
                     <div style="clear: both;"></div>
                     <div class="submitbuttons">
-                        <stripes:submit name="cancel" value="Annuleren"/>
-                        <stripes:submit name="save" value="Opslaan"/>
+                        <stripes:submit name="cancel" value="___Annuleren___"/>
+                        <stripes:submit name="save" value="___Opslaan___"/>
                     </div>
                     <c:if test="${!isNew}">
                         <script>

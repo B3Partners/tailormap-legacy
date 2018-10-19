@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Edit join/relaties</title>
+        <title>___Edit join/relaties___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -31,13 +31,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="relation" value="${actionBean.relation.id}"/>
-                        <h1 id="headertext">Relatie bewerken</h1>
+                        <h1 id="headertext">___Relatie bewerken___</h1>
                         <table class="formtable">                            
                             <tr>
-                                <td>Attribuutbron: </td>
+                                <td>___Attribuutbron___: </td>
                                 <td>
                                     <select id="featureSourceSelect">
-                                        <option value="-1">Maak uw keuze..</option>
+                                        <option value="-1">___Maak uw keuze..___</option>
                                         <c:forEach var="s" items="${actionBean.featureSources}">
                                             <c:set var="selected" value="" />
                                             <c:if test="${actionBean.relation.featureType.featureSource.id == s.id}">
@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td></td>
                                 <td>
                                     <select id="foreignFeatureSourceSelect">
-                                       <option value="-1">Maak uw keuze..</option>
+                                       <option value="-1">___Maak uw keuze..___</option>
                                        <c:forEach var="s" items="${actionBean.featureSources}">
                                            <c:set var="selected" value="" />
                                            <c:if test="${actionBean.relation.foreignFeatureType.featureSource.id == s.id}">
@@ -64,16 +64,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <tr>
                                 <td></td> 
                                 <td></td>
-                                <td>Koppelen met</td>
+                                <td>___Koppelen met___</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>
-                                    Featuretype:
+                                    ___Featuretype___:
                                 </td>
                                 <td>
                                     <stripes:select name="relation.featureType" id="featuretypeSelect">
-                                        <option value="-1">Maak uw keuze..</option>
+                                        <option value="-1">___Maak uw keuze..___</option>
                                         <c:forEach var="f" items="${actionBean.featureTypes}">    
                                             <c:set var="selected" value="" />
                                             <c:if test="${actionBean.relation.featureType.id == f.id}">
@@ -86,7 +86,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td></td>
                                 <td>
                                     <stripes:select name="relation.foreignFeatureType" id="foreignFeaturetypeSelect">
-                                        <option value="-1">Maak uw keuze..</option>
+                                        <option value="-1">___Maak uw keuze..___</option>
                                         <c:forEach var="f" items="${actionBean.foreignFeatureTypes}">    
                                             <c:set var="selected" value="" />
                                             <c:if test="${actionBean.relation.foreignFeatureType.id == f.id}">
@@ -99,14 +99,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </tr>
                             <tr>
                                 <td>Type relatie:</td>
-                                <td><stripes:radio name="relation.type" value="join" checked="checked" class="joinrelateradio" />Join<br>
-                                    <stripes:radio name="relation.type" value="relate" class="joinrelateradio" />Relate
+                                <td><stripes:radio name="relation.type" value="join" checked="checked" class="joinrelateradio" />___Join___<br>
+                                    <stripes:radio name="relation.type" value="relate" class="joinrelateradio" />___Relate___
                                 </td>
                                 <td></td>
                                 <td></td>
                             </tr>
                         </table> 
-                        <div style="margin-top: 10px;">Relatie op basis van de volgende attributen:</div>
+                        <div style="margin-top: 10px;">___Relatie op basis van de volgende attributen___:</div>
                         <div id="attributeContainer"> </div> 
                         <%-- init attributes --%>                        
                         <script type="text/javascript">     
@@ -128,8 +128,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </c:choose>
                         </script>
                         <div class="submitbuttons">
-                            <stripes:submit name="save" value="Opslaan"/>
-                            <stripes:submit name="cancel" value="Annuleren"/>
+                            <stripes:submit name="save" value="___Opslaan___"/>
+                            <stripes:submit name="cancel" value="___Annuleren___"/>
                         </div>
                         
                     </c:when>
@@ -140,10 +140,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.vieweradmin_components_FeaturetypeRelation.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="Nieuwe relatie"/>
+                        <stripes:submit name="edit" value="___Nieuwe relatie___"/>
                     </c:when>
                     <c:otherwise>
-                        <stripes:submit name="edit" value="Nieuwe relatie"/>
+                        <stripes:submit name="edit" value="___Nieuwe relatie___"/>
                     </c:otherwise>
             </c:choose>
         </stripes:form>
