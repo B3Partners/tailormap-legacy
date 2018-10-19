@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:param name="unknown" value="true"/>
         </stripes:url>
         <meta http-equiv="Refresh" content="0;url=${url}">
-        <title>Geo viewer</title>
+        <title>___Geo viewer___</title>
     </head>
     <body>
     </body>

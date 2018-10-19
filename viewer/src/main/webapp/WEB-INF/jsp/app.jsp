@@ -56,11 +56,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <body>
 
         <div id="appLoader">
-            <div class="spinner">Loading...</div>
+            <div class="spinner">___Loading...___</div>
         </div>
 
         <div id="loadwrapper">
-            <div id="loader">Loading...</div>
+            <div id="loader">___Loading...___</div>
         </div>
 
         <div id="wrapper"></div>

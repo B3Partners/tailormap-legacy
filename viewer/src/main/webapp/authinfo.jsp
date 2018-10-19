@@ -23,18 +23,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%--meta http-equiv="refresh" content="2"--%>
-        <title>Autorisatie info</title>
+        <title>___Autorisatie info___</title>
     </head>
     <body>
-        <h2>Autorisatie info</h2>
+        <h2>___Autorisatie info___</h2>
 
         <table>
-            <tr><td>Remote user:</td><td><c:out value="${pageContext.request.remoteUser}"/></td></tr>
-            <tr><td>Principal:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:catch var="e"><%= request.getUserPrincipal().getClass().getName() %></c:catch>)</td></tr>
-            <tr><td>Realm:</td><td> <c:catch var="e"><c:out value="${pageContext.request.userPrincipal.realm.info}"/></c:catch></td></tr>
+            <tr><td>___Remote user___:</td><td><c:out value="${pageContext.request.remoteUser}"/></td></tr>
+            <tr><td>___Principal___:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:catch var="e"><%= request.getUserPrincipal().getClass().getName() %></c:catch>)</td></tr>
+            <tr><td>___Realm___:</td><td> <c:catch var="e"><c:out value="${pageContext.request.userPrincipal.realm.info}"/></c:catch></td></tr>
         </table>
         <p>
-        Lijst met roles:
+        ___Lijst met roles___:
         <ol>
             <c:if test="${pageContext.request.userPrincipal != null}" >
                 <c:catch>
@@ -50,10 +50,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:if>
         </ol>
         <p>
-        Test HttpServletRequest.isUserInRole():
+        ___Test HttpServletRequest.isUserInRole()___:
         <p>
         <c:if test="${!empty param.role}">
-            Rol <b><c:out value="${param.role}"/>: <%= request.isUserInRole(request.getParameter("role")) %></b>
+            ___Rol___ <b><c:out value="${param.role}"/>: <%= request.isUserInRole(request.getParameter("role")) %></b>
             <p>
         </c:if>
         <form action="${pageContext.request.pathInfo}" method="get">
@@ -67,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
         </script>
 
-        <p>Headers:</p>
+        <p>___Headers___:</p>
         <c:catch>
             <table style="font-family: monospace">
                 <c:forEach var="h" items="${header}">
@@ -76,14 +76,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </table>
         </c:catch>   
 
-        <p>Request attributes: </p>
+        <p>___Request attributes___: </p>
         <table style="font-family: monospace">
             <c:forEach var="a" items="${requestScope}">
                 <tr><td><c:out value="${a.key}"/></td><td><c:out value="${a.value}"/></td></tr>
             </c:forEach>
         </table>
 
-        <p>Page context: </p>
+        <p>___Page context___: </p>
         <table style="font-family: monospace">
             <c:forEach var="a" items="${pageScope}">
                 <tr><td><c:out value="${a.key}"/></td><td><c:out value="${a.value}"/></td></tr>
