@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Inloggen</title>
+        <title>___Inloggen___</title>
         <style type="text/css">
             .loginfield {
                 width: 130px;
@@ -31,15 +31,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </style>
     </head>
     <body>
-        <h2>Inloggen</h2>
-        <p style="color: red; font-weight: bold">Ongeldige logingegevens.</p>
+        <h2>___Inloggen___</h2>
+        <p style="color: red; font-weight: bold">___Ongeldige logingegevens.___</p>
         <form method="post" action="j_security_check">
             <table>
-                <tr><td>Gebruikersnaam:</td><td><input type="text" name="j_username" class="loginfield" /></td></tr>
-                <tr><td>Wachtwoord:</td><td><input type="password" name="j_password" class="loginfield" /></td></tr>
+                <tr><td>___Gebruikersnaam___:</td><td><input type="text" name="j_username" class="loginfield" /></td></tr>
+                <tr><td>___Wachtwoord___:</td><td><input type="password" name="j_password" class="loginfield" /></td></tr>
             </table>
             <br />
-            <input type="submit" name="submit" value="Login"/>
+            <input type="submit" name="submit" value="___Login___"/>
         </form>
         <script type="text/javascript">
             window.onload = function() {

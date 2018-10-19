@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
 
     <stripes:layout-component name="head">
-        <title>Layoutmanager</title>
+        <title>___Layoutmanager___</title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -31,28 +31,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
         <div id="content">
             <div id="layoutManagerApplicationSettings">
-                <button id="savebutton">Opslaan</button> &nbsp; 
-                <a href="#" id="global_layout_switch">Layout instellingen</a>
+                <button id="savebutton">___Opslaan___</button> &nbsp; 
+                <a href="#" id="global_layout_switch">___Layout instellingen___</a>
                 <div id="global_layout" class="globalconfig">
-                    <div class="configrow"><label for="app_max_width">Maximale breedte:</label><input id="app_max_width" type="text" name="app_max_width" value="" /> px</div>
-                    <div class="configrow"><label for="app_max_height">Maximale hoogte:</label><input id="app_max_height" type="text" name="app_max_height" value="" /> px</div>
-                    <div class="configrow"><label for="app_margin">Marge rondom:</label><input id="app_margin" type="text" name="app_margin" value="" /></div>
-                    <div class="configrow"><label for="app_background_color">Achtergrond kleur:</label><input id="app_background_color" type="text" name="app_background_color" value="" class="wide" /></div>
-                    <div class="configrow"><label for="app_background_image">Achtergrond afbeelding:</label><input id="app_background_image" type="text" name="app_background_image" value="" class="wide" /></div>
+                    <div class="configrow"><label for="app_max_width">___Maximale breedte___:</label><input id="app_max_width" type="text" name="app_max_width" value="" /> px</div>
+                    <div class="configrow"><label for="app_max_height">___Maximale hoogte___:</label><input id="app_max_height" type="text" name="app_max_height" value="" /> px</div>
+                    <div class="configrow"><label for="app_margin">___Marge rondom___:</label><input id="app_margin" type="text" name="app_margin" value="" /></div>
+                    <div class="configrow"><label for="app_background_color">___Achtergrond kleur___:</label><input id="app_background_color" type="text" name="app_background_color" value="" class="wide" /></div>
+                    <div class="configrow"><label for="app_background_image">___Achtergrond afbeelding___:</label><input id="app_background_image" type="text" name="app_background_image" value="" class="wide" /></div>
                     <div class="configrow">
-                        <label for="app_background_repeat">Achtergrond herhalen:</label>
+                        <label for="app_background_repeat">___Achtergrond herhalen___:</label>
                         <select id="app_background_repeat" name="app_background_repeat">
-                            <option value="no-repeat">Niet herhalen</option>
-                            <option value="repeat">Beide kanten op herhalen</option>
-                            <option value="repeat-x">Alleen horizontaal herhalen</option>
-                            <option value="repeat-y">Alleen verticaal herhalen</option>
+                            <option value="no-repeat">___Niet herhalen___</option>
+                            <option value="repeat">___Beide kanten op herhalen___</option>
+                            <option value="repeat-x">___Alleen horizontaal herhalen___</option>
+                            <option value="repeat-y">___Alleen verticaal herhalen___</option>
                         </select>
                     </div>
-                    <div class="configrow"><label for="app_background_position">Achtergrond positie:</label><input id="app_background_position" type="text" name="app_background_position" value="" /></div>
-                    <div class="configrow"><label for="app_extracss">Extra CSS code:</label><textarea id="app_extracss" name="app_extracss" class="extliketextarea"></textarea></div>
-                    <div class="configrow"><label for="app_singlepopup">Max. 1 popup tegelijk:</label><input id="app_singlepopup" type="checkbox" name="app_singlepopup" value="true" /></div>
+                    <div class="configrow"><label for="app_background_position">___Achtergrond positie___:</label><input id="app_background_position" type="text" name="app_background_position" value="" /></div>
+                    <div class="configrow"><label for="app_extracss">___Extra CSS code___:</label><textarea id="app_extracss" name="app_extracss" class="extliketextarea"></textarea></div>
+                    <div class="configrow"><label for="app_singlepopup">___Max. 1 popup tegelijk___:</label><input id="app_singlepopup" type="checkbox" name="app_singlepopup" value="true" /></div>
                 </div>
-                <a href="#Toevoegen_Componenten_Layout_Help" title="Help" class="helplink"></a>
+                <a href="#Toevoegen_Componenten_Layout_Help" title="___Help___" class="helplink"></a>
             </div>
             <div id="component-container">
 

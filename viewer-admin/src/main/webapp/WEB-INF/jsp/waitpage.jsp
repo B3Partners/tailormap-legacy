@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Wait page</title>
+        <title>___Wait page___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
 

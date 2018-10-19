@@ -21,16 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>About</title>
+        <title>___About___</title>
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
     </head>
     <body>
-        <h1>Flamingo viewer-admin</h1>
+        <h1>___Flamingo viewer-admin___</h1>
         <c:set var="version" value="${project.version}"/>
         <table>
             
             <tr>
-                <td><b>Version:</b></td>
+                <td><b>___Version___:</b></td>
                 <td>
                     <c:choose>
                         <c:when test="${fn:contains(version,'SNAPSHOT')}">
@@ -44,43 +44,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </td>
             </tr>
             <tr>
-                <td><b>Build time:</b></td>
+                <td><b>___Build time___:</b></td>
                 <td>${builddetails.build.time}</td>
             </tr>
             <tr>
-                <td><b>Build by:</b></td>
+                <td><b>___Build by___:</b></td>
                 <td>${builddetails.build.user.name}</td>
             </tr>
             <tr>
                 <td colspan="2">
-            <center><b>Git details</b></center>
+            <center><b>___Git details___</b></center>
                 </td>
             </tr>
             <tr>
-                <td><b>Git branch:</b></td>
+                <td><b>___Git branch___:</b></td>
                 <td>${builddetails.branch}</td>
             </tr>
             <tr>
-                <td><b>Git remote url</b></td>
+                <td><b>___Git remote url___</b></td>
                 <td>${builddetails.remote.origin.url}</td>
             </tr>
             <tr>
-                <td><b>Git commit abbrev id:</b></td>
+                <td><b>___Git commit abbrev id___:</b></td>
                 <td>${builddetails.commit.id.abbrev}</td>
             </tr>
             <tr>
-                <td><b>Git commit full id:</b></td>
+                <td><b>___Git commit full id___:</b></td>
                 <td>${builddetails.commit.id}</td>
             </tr>
             <tr>
-                <td><b>Git commit time:</b></td>
+                <td><b>___Git commit time___:</b></td>
                 <td>${builddetails.commit.time}</td>
             </tr>
 </table>
-<h2>Runtime information</h2>
+<h2>___Runtime information___</h2>
 <table>
     <tr>
-        <td><b>OS info:</b></td>
+        <td><b>___OS info___:</b></td>
         <td>
             <jsp:expression>System.getProperty("os.name")</jsp:expression>
             <jsp:expression>System.getProperty("os.version")</jsp:expression>
@@ -88,14 +88,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr>
-            <td><b>Java version:</b></td>
+            <td><b>___Java version___:</b></td>
             <td>
             <jsp:expression>System.getProperty("java.vendor")</jsp:expression>
             <jsp:expression>System.getProperty("java.version")</jsp:expression>
             </td>
         </tr>
         <tr>
-            <td><b>Servlet container info:</b></td>
+            <td><b>___Servlet container info___:</b></td>
             <td><jsp:expression>getServletContext().getServerInfo()</jsp:expression></td>
     </tr>
 </table>

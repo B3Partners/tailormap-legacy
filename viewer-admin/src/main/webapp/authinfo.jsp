@@ -22,18 +22,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Autorisatie info</title>
+        <title>___Autorisatie info___</title>
     </head>
     <body>
-        <h2>Autorisatie info</h2>
+        <h2>___Autorisatie info___</h2>
 
         <table>
-            <tr><td>Remote user:</td><td><c:out value="${pageContext.request.remoteUser}"/></td></tr>
-            <tr><td>Principal:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:catch var="e"><%= request.getUserPrincipal().getClass().getName() %></c:catch>)</td></tr>
-            <tr><td>Realm:</td><td> <c:catch var="e"><c:out value="${pageContext.request.userPrincipal.realm.info}"/></c:catch></td></tr>
+            <tr><td>___Remote user___:</td><td><c:out value="${pageContext.request.remoteUser}"/></td></tr>
+            <tr><td>___Principal___:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:catch var="e"><%= request.getUserPrincipal().getClass().getName() %></c:catch>)</td></tr>
+            <tr><td>___Realm___:</td><td> <c:catch var="e"><c:out value="${pageContext.request.userPrincipal.realm.info}"/></c:catch></td></tr>
         </table>
         <p>
-        Lijst met roles:
+        ___Lijst met roles___:
         <ol>
             <c:catch var="e">
                     <%
@@ -48,16 +48,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:catch>
         </ol>
         </p><p>
-        Test HttpServletRequest.isUserInRole():
+        ___Test HttpServletRequest.isUserInRole()___:
         </p><p>
         <c:if test="${!empty param.role}">
-            Rol <b><c:out value="${param.role}"/>: <b><%= request.isUserInRole(request.getParameter("role")) %></b>
+            ___Rol___ <b><c:out value="${param.role}"/>: <b><%= request.isUserInRole(request.getParameter("role")) %></b>
             
         </c:if>
                 </p>
         <form action="${pageContext.request.pathInfo}" method="get">
-            <input name="role"  placeholder="Voer rolnaam in"  type="text">
-            <input type="submit"value="Check">
+            <input name="role"  placeholder="___Voer rolnaam in___"  type="text">
+            <input type="submit"value="___Check___">
         </form>
 
         <script type="text/javascript">

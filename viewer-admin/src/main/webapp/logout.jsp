@@ -25,11 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Uitgelogd</title>
+        <title>___Uitgelogd___</title>
     </head>
     <body>
-        <h1>Uitgelogd</h1>
+        <h1>___Uitgelogd___</h1>
 
-        <b>U bent uitgelogd. <stripes:link beanclass="nl.b3p.viewer.admin.stripes.IndexActionBean">Opnieuw inloggen</stripes:link></b>
+        <b>___U bent uitgelogd.___ <stripes:link beanclass="nl.b3p.viewer.admin.stripes.IndexActionBean">___Opnieuw inloggen___</stripes:link></b>
     </body>
 </html>

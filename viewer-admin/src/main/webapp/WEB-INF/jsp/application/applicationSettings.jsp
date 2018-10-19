@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Applicatie instellingen</title>
+        <title>___Applicatie instellingen___</title>
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="header">
@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="content">
-            <h1 id="headertext">Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
+            <h1 id="headertext">___Applicatie instellingen___: <c:out value="${actionBean.applicationName}"/></h1>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm" class="maximize">
 
                 <stripes:hidden name="application" value="${actionBean.application}"/>
@@ -43,19 +43,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                         <table class="formtable">
                             <tr>
-                                <td>Naam:</td>
+                                <td>___Naam___:</td>
                                 <td><stripes:text name="name" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Versie:</td>
+                                <td>___Versie___:</td>
                                 <td><stripes:text name="version" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Titel (optioneel):</td>
+                                <td>___Titel (optioneel)___:</td>
                                 <td><stripes:text name="title" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Steunkleur 1 (achtergrond):</td>
+                                <td>___Steunkleur 1 (achtergrond)___:</td>
                                 <td>
                                     <stripes:text name="details['steunkleur1']" maxlength="255" size="15" style="float: left;" id="steunkleur1" />
                                     <div id="steunkleur_colorpicker1" style="float: left;"></div>
@@ -63,7 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                             </tr>
                             <tr>
-                                <td>Steunkleur 2 (tekstkleur):</td>
+                                <td>___Steunkleur 2 (tekstkleur)___:</td>
                                 <td>
                                     <stripes:text name="details['steunkleur2']" maxlength="255" size="15" style="float: left;" id="steunkleur2" />
                                     <div id="steunkleur_colorpicker2" style="float: left;"></div>
@@ -71,51 +71,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                             </tr>
                             <tr>
-                                <td>Tekst font:</td>
+                                <td>___Tekst font___:</td>
                                 <td><stripes:text name="details['font']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Spritebestand icoontjes:</td>
+                                <td>___Spritebestand icoontjes___:</td>
                                 <td><stripes:text name="details['iconSprite']" maxlength="255" size="60"/></td>
                             </tr>
                             <tr>
-                                <td>Metadata link:</td>
+                                <td>___Metadata link___:</td>
                                 <td><stripes:text name="details['stylesheetMetadata']" maxlength="255" size="60"/></td>
                             </tr>
                             <tr>
-                                <td>Locatie print stylesheets</td>
+                                <td>___Locatie print stylesheets___:</td>
                                 <td><stripes:text name="details['stylesheetPrint']" maxlength="255" size="60"/></td>
                             </tr>
                             <tr>
-                                <td>Eigenaar:</td>
+                                <td>___Eigenaar___:</td>
                                 <td><stripes:text name="owner" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Start extensie:</td>
+                                <td>___Start extensie___:</td>
                                 <td>
-                                    lo-x <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
-                                    lo-y <stripes:text name="startExtent.miny" maxlength="255" size="8"/>
+                                    ___lo-x___ <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
+                                    ___lo-y___ <stripes:text name="startExtent.miny" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>
-                                    rb-x <stripes:text name="startExtent.maxx" maxlength="255" size="8"/>
-                                    rb-y <stripes:text name="startExtent.maxy" maxlength="255" size="8"/>
+                                    ___rb-x___ <stripes:text name="startExtent.maxx" maxlength="255" size="8"/>
+                                    ___rb-y___ <stripes:text name="startExtent.maxy" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Maximale extensie:</td>
+                                <td>___Maximale extensie___:</td>
                                 <td>
-                                    lo-x <stripes:text name="maxExtent.minx" maxlength="255" size="8"/>
-                                    lo-y <stripes:text name="maxExtent.miny" maxlength="255" size="8"/>
+                                    ___lo-x___ <stripes:text name="maxExtent.minx" maxlength="255" size="8"/>
+                                    ___lo-y___ <stripes:text name="maxExtent.miny" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>
-                                    rb-x <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
-                                    rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
+                                    ___rb-x___ <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
+                                    ___rb-y___ <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                         </table>
@@ -125,17 +125,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table class="formtable">
                             <tr>
                                 <td colspan="2">
-                                    <label><stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht</label>
+                                    <label><stripes:checkbox name="authenticatedRequired"/> ___Inloggen verplicht___</label>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <label><stripes:checkbox name="details['returnAfterLogout']"/> Na uitloggen direct terugkeren naar de applicatie (niet loginscherm tonen)</label>
+                                    <label><stripes:checkbox name="details['returnAfterLogout']"/> ___Na uitloggen direct terugkeren naar de applicatie (niet loginscherm tonen)___</label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <h1>Toegang:</h1>
+                                    <h1>___Toegang___:</h1>
                                     <c:forEach var="group" items="${actionBean.allGroups}">
                                         <stripes:checkbox name="groupsRead" value="${group.name}"/> ${group.name}<br>
                                     </c:forEach>
@@ -145,8 +145,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                     <div id="remarks" class="tabdiv">
-                        <a href="#Instellingen_Per_Applicatie_Help" title="Help" class="helplink"></a>
-                        Opmerkingen
+                        <a href="#Instellingen_Per_Applicatie_Help" title="___Help___" class="helplink"></a>
+                        ___Opmerkingen___
                         <div id="details_opmerkingen_container" style="margin-top: 5px; width: 525px; height: 350px;">
                             <stripes:textarea id="details_opmerkingen" cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px; display: none;" />
                         </div>

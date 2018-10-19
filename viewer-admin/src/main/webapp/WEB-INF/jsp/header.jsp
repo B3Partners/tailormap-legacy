@@ -24,24 +24,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:useActionBean var="bean1" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean"/>
 <security:allowed bean="bean1">
             <li class="menu-level1">
-                <a href="#">Gegevensregister</a>
+                <a href="#">___Gegevensregister___</a>
                 <ul class="slideoutmenu">
-                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" id="menu_services">Services en Kaartlagen</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" id="menu_services">___Services en Kaartlagen___</stripes:link></li>
                     <li>
-                        <a href="#" class="dropdownmenulink">Bronnen</a>
+                        <a href="#" class="dropdownmenulink">___Bronnen___</a>
                         <ul class="dropdownmenu">
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" id="menu_attribuutbronnen">Attribuutbronnen</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" id="menu_attributen">Attributen</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" id="menu_solrconfig">Zoekbronnen</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" id="menu_relation">Join/Relate</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean" id="menu_cyclorama">Cyclorama</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean" id="menu_layarservices">Layar services</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" id="menu_layarsource">Layar bronnen</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" id="menu_attribuutbronnen">___Attribuutbronnen___</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" id="menu_attributen">___Attributen___</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" id="menu_solrconfig">___Zoekbronnen___</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" id="menu_relation">___Join/Relate___</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean" id="menu_cyclorama">___Cyclorama___</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean" id="menu_layarservices">___Layar services___</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" id="menu_layarsource">___Layar bronnen___</stripes:link></li>
                        </ul>
                     </li>
-                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" id="menu_documenten">Documenten</stripes:link></li>
-                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" id="menu_serviceusagematrix">Service Gebruiks Matrix</stripes:link></li>
-                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" id="menu_bookmarks">Beheer bookmarks</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" id="menu_documenten">___Documenten___</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" id="menu_serviceusagematrix">___Service Gebruiks Matrix___</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" id="menu_bookmarks">___Beheer bookmarks___</stripes:link></li>
                 </ul>
             </li>
 </security:allowed>
@@ -49,10 +49,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:useActionBean var="bean2" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean"/>
 <security:allowed bean="bean2">
             <li class="menu-level1">
-                <a href="#">Beheer toegang</a>
+                <a href="#">___Beheer toegang___</a>
                 <ul class="slideoutmenu">
-                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" id="menu_gebruikersgroepen">Gebruikersgroepen</stripes:link></li>
-                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" id="menu_gebruikers">Gebruikers</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" id="menu_gebruikersgroepen">___Gebruikersgroepen___</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" id="menu_gebruikers">___Gebruikers___</stripes:link></li>
                 </ul>
             </li>
 </security:allowed>
@@ -60,17 +60,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:useActionBean var="bean3" beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean"/>
 <security:allowed bean="bean3">
             <li class="menu-level1">
-                <a href="#">Applicatiebeheer</a>
+                <a href="#">___Applicatiebeheer___</a>
                 <ul class="slideoutmenu">
-                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" id="menu_kiesapplicatie">Kies een applicatie</stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" id="menu_kiesapplicatie">___Kies een applicatie___</stripes:link></li>
                     <c:if test="${!empty sessionScope['applicationId'] && sessionScope['applicationId'] != -1}">
                         <li id="activeAppMenu">
-                            <a href="#" class="dropdownmenulink">Applicatie: <span style="font-style: italic;"><c:out value="${sessionScope['applicationName']}"/></span></a>
+                            <a href="#" class="dropdownmenulink">___Applicatie___: <span style="font-style: italic;"><c:out value="${sessionScope['applicationName']}"/></span></a>
                             <ul class="dropdownmenu">
-                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">Instellingen</stripes:link></li>
-                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" id="menu_boomstructuur">Boomstructuur met kaarten</stripes:link></li>
-                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="menu_startkaartbeeld">Startkaartbeeld</stripes:link></li>
-                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="menu_layout">Layout met beschikbare componenten</stripes:link></li>
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">___Instellingen___</stripes:link></li>
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" id="menu_boomstructuur">___Boomstructuur met kaarten___</stripes:link></li>
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="menu_startkaartbeeld">___Startkaartbeeld___</stripes:link></li>
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="menu_layout">___Layout met beschikbare componenten___</stripes:link></li>
                             </ul>
                         </li>
                     </c:if>
@@ -80,8 +80,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </ul>
         <div id="userinfo">
             <fmt:message key="locale"/>: <%= request.getLocale().getLanguage() %> |
-            Ingelogd als: <b><c:out value="${pageContext.request.remoteUser}"/> | </b>
-            <stripes:link style="color: white" href="/logout.jsp">Uitloggen</stripes:link>
+            ___Ingelogd als___: <b><c:out value="${pageContext.request.remoteUser}"/> | </b>
+            <stripes:link style="color: white" href="/logout.jsp">___Uitloggen___</stripes:link>
         </div>
 
     </div>

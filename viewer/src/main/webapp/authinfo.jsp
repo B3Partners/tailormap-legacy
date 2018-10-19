@@ -57,8 +57,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <p>
         </c:if>
         <form action="${pageContext.request.pathInfo}" method="get">
-            <input name="role"  placeholder="Voer rolnaam in"  type="text">
-            <input type="submit"value="Check">
+            <input name="role"  placeholder="___Voer rolnaam in___"  type="text">
+            <input type="submit"value="___Check___">
         </form>
 
         <script type="text/javascript">

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Startkaartbeeld</title>
+        <title>___Startkaartbeeld___</title>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -30,8 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
             <h1>
-                Startkaartbeeld: <c:out value="${actionBean.application.name}"/> <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if>
-                <a href="#Startkaartbeeld_Help" title="Help" class="helplink"></a>
+                ___Startkaartbeeld___: <c:out value="${actionBean.application.name}"/> <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if>
+                <a href="#Startkaartbeeld_Help" title="___Help___" class="helplink"></a>
             </h1>
 
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="startmapform">
@@ -50,8 +50,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden id="checkedlayersinput" name="checkedLayersString" />
                     <stripes:hidden id="removedrecordsinput" name="removedRecordsString" />
 
-                    <stripes:submit name="save" value="Opslaan"/>
-                    <stripes:submit name="default" value="Annuleren"/>
+                    <stripes:submit name="save" value="___Opslaan___"/>
+                    <stripes:submit name="default" value="___Annuleren___"/>
 
                 </stripes:form>
             </div>
