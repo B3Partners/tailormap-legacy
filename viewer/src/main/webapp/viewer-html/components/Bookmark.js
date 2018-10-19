@@ -36,8 +36,8 @@ Ext.define ("viewer.components.Bookmark",{
         shareLinkedIn: false,
         shareGooglePlus: false,
         shareFacebook: false,
-        shareText: ___("I'd like to share this with #FlamingoMC: "),
-        shareTitle: ___("Sharing"),
+        shareText: i18next.t('viewer_components_bookmark_7'),
+        shareTitle: i18next.t('viewer_components_bookmark_8'),
         showShortUrl: true,
         showFullUrl: true,
         showLabels: true,
@@ -160,7 +160,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.config.showFullUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel: this.config.showLabels ? ___("Bookmark") : '',
+                fieldLabel: this.config.showLabels ? i18next.t('viewer_components_bookmark_9') : '',
                 name: 'bookmark',
                 height: 80,
                 id: 'bookmark',
@@ -171,7 +171,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.config.showShortUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel:this.config.showLabels ? ___("Compact link") : '',
+                fieldLabel:this.config.showLabels ? i18next.t('viewer_components_bookmark_10') : '',
                 name: 'compactlink',
                 height: 80,
                 readOnly:true,
@@ -314,7 +314,7 @@ Ext.define ("viewer.components.Bookmark",{
         if(Ext.browser.is.IE) {
             window.external.AddFavorite(this.compUrl, this.config.title);
         } else {
-            alert(___("This browser doesn't support this function."));
+            alert(i18next.t('viewer_components_bookmark_11'));
         }
     },
     share: function (shareUrl){

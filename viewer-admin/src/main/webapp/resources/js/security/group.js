@@ -61,11 +61,11 @@ Ext.define('vieweradmin.components.Group', {
                 menuDisabled: true,
                 renderer: function(value, obj, record) {
                     if(!record.get('editable')) {
-                        return ___("Deze groep mag niet worden bewerkt of verwijderd");
+                        return i18next.t('viewer_admin_group_2');
                     }
                     return [
-                        Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_group_3') + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_group_4') + '</a>')
                     ].join(" | ");
                 }
             }
@@ -81,7 +81,7 @@ Ext.define('vieweradmin.components.Group', {
     },
 
     removeConfirmMessage: function(record) {
-        return ___("Weet u zeker dat u de groep {{name}} wilt verwijderen?", {name: record.get("name")});
+        return i18next.t('viewer_admin_group_5', {name: record.get("name")});
     },
 
     getEditUrl: function(record) {

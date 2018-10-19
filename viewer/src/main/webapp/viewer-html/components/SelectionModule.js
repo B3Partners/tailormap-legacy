@@ -96,7 +96,7 @@ Ext.define ("viewer.components.SelectionModule",{
     mainContainer: null,
     userServices: [],
     config: {
-        name: ___("Selection Module"),
+        name: i18next.t('viewer_components_selectionmodule_14'),
         title: "",
         titlebarIcon : "",
         tooltip : "",
@@ -329,7 +329,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
     loadCustomService: function() {
         var me = this;
-        me.popup.popupWin.setLoading(___("Zoeken..."));
+        me.popup.popupWin.setLoading(i18next.t('viewer_components_selectionmodule_15'));
 
         var protocol = '', url = '', q = '';
         if(me.customServiceType === 'csw') {
@@ -371,7 +371,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.popup.popupWin.setLoading(false);
                     },
                     function(msg) {
-                        Ext.MessageBox.alert(___("Foutmelding"), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_16'), msg);
                         me.popup.popupWin.setLoading(false);
                     }
                 );
@@ -383,7 +383,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.popup.popupWin.setLoading(false);
                     },
                     function(msg) {
-                        Ext.MessageBox.alert(___("Foutmelding"), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_17'), msg);
                         me.popup.popupWin.setLoading(false);
                     }
                 );
@@ -402,7 +402,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     me.popup.popupWin.setLoading(false);
                 },
                 function(msg) {
-                    Ext.MessageBox.alert(___("Foutmelding"), msg);
+                    Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_18'), msg);
                     me.popup.popupWin.setLoading(false);
                 }
             );
@@ -417,7 +417,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'application',
                 checked: true,
                 name: 'layerSource',
-                boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : ___("Kaart"),
+                boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : i18next.t('viewer_components_selectionmodule_19'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -427,7 +427,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'registry',
                 checked: (radioControls.length === 0),
                 name: 'layerSource',
-                boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : ___("Kaartlaag"),
+                boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : i18next.t('viewer_components_selectionmodule_20'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -437,7 +437,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'custom',
                 name: 'layerSource',
                 checked: (radioControls.length === 0),
-                boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : ___("Eigen service"),
+                boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : i18next.t('viewer_components_selectionmodule_21'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -446,7 +446,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'csw',
                 name:'layerSource',
                 checked: (radioControls.length === 0),
-                boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : ___("CSW service"),
+                boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : i18next.t('viewer_components_selectionmodule_22'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -1275,7 +1275,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.populateCustomServiceTree(info, addedNode, true);
                     },
                     function(msg) {
-                        Ext.MessageBox.alert(___("Foutmelding"), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_23'), msg);
                     }
                 );
             }

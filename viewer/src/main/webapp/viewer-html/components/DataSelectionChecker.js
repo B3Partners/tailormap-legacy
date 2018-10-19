@@ -75,7 +75,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
             var layerName = appLayer.alias || appLayer.layerName;
             var dsArray = this.config.viewerController.getComponentsByClassName("viewer.components.DataSelection");
             if( dsArray.length == 0){
-                this.config.viewerController.logger.warning(___("Dataselectiemodule niet beschikbaar, kaartlaag \"{{layerName}}\" kan niet weergegeven worden.", {layerName: layerName}));
+                this.config.viewerController.logger.warning(i18next.t('viewer_components_dataselectionchecker_0', {layerName: layerName}));
                 return false;
             }else{
                 var appLayerConfigured = false;
@@ -101,7 +101,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                     }
                 }
                 if(!appLayerConfigured){
-                    this.config.viewerController.logger.warning(___("Kaartlaag \"{{layerName}}\" niet geconfigureerd bij een dataselectiecomponent."));
+                    this.config.viewerController.logger.warning(i18next.t('viewer_components_dataselectionchecker_1'));
                     return false;
                 }else{
                     return false;

@@ -25,7 +25,7 @@ Ext.define ("viewer.components.LayerContext",{
     htmlContainer: null,
     linksContainer: null,
     config:{
-        name: ___("Informatie kaartlaag"),
+        name: i18next.t('viewer_components_layercontext_2'),
         title: "",
         titlebarIcon : "",
         tooltip: null,

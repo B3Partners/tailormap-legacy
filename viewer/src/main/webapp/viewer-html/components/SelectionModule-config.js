@@ -37,7 +37,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add({
             xtype: "combobox",
             value: autoShowSelectionModule,
-            store: [ ['never',___("Nooit")], ['nolayers',___("Indien er geen lagen zijn bij opstarten")], ['onlybackground',___("Indien er alleen achtergrond lagen zijn")], ['always',___("Altijd")] ],
+            store: [ ['never',i18next.t('viewer_components_customconfiguration_329')], ['nolayers',i18next.t('viewer_components_customconfiguration_330')], ['onlybackground',i18next.t('viewer_components_customconfiguration_331')], ['always',i18next.t('viewer_components_customconfiguration_332')] ],
             name: "autoShowSelectionModule",
             labelWidth: this.labelWidth,
             fieldLabel: i18next.t('viewer_components_customconfiguration_174'),
@@ -55,7 +55,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add({
             xtype: "combobox",
             value: configObject.autoOnLayers !== undefined ? configObject.autoOnLayers : 'always',
-            store: [ ['never',___("Nooit")], ['always',___("Altijd")], ['onlybackground',___("Alleen achtergrondlagen")] ],
+            store: [ ['never',i18next.t('viewer_components_customconfiguration_333')], ['always',i18next.t('viewer_components_customconfiguration_334')], ['onlybackground',i18next.t('viewer_components_customconfiguration_335')] ],
             name: 'autoOnLayers',
             labelWidth: this.labelWidth,
             fieldLabel: i18next.t('viewer_components_customconfiguration_176'),
@@ -63,10 +63,10 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         
         var fieldNames = [
-            { name: 'Groups', description: ___("Kaarten selecteren"), defaultLabel: ___("Kaart")},
-            { name: 'Layers', description: ___("Kaartlagen selecteren"), defaultLabel: ___("Kaartlaag")},
-            { name: 'OwnServices', description: ___("Eigen services selecteren"), defaultLabel: ___("Eigen service")},
-            { name: 'Csw', description: ___("CSW service doorzoeken"), defaultLabel: ___("CSW service") }
+            { name: 'Groups', description: i18next.t('viewer_components_customconfiguration_336'), defaultLabel: i18next.t('viewer_components_customconfiguration_337')},
+            { name: 'Layers', description: i18next.t('viewer_components_customconfiguration_338'), defaultLabel: i18next.t('viewer_components_customconfiguration_339')},
+            { name: 'OwnServices', description: i18next.t('viewer_components_customconfiguration_340'), defaultLabel: i18next.t('viewer_components_customconfiguration_341')},
+            { name: 'Csw', description: i18next.t('viewer_components_customconfiguration_342'), defaultLabel: i18next.t('viewer_components_customconfiguration_343') }
         ];
         // Adding configuration options for all fieldNames
         Ext.Array.forEach(fieldNames, function(field) {

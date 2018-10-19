@@ -21,8 +21,8 @@ Ext.define('Ext.ux.ColorField', {
     alias: 'widget.colorfield',    
     requires: ['Ext.form.field.VTypes'],
 
-    lengthText: ___("Hexadecimale Kleurwaarde moet of 3 of 6 karakters bevatten."),
-    blankText: ___("Moet een hexacecimale waarden hebben in het format ABCDEF."),
+    lengthText: i18next.t('colorfield_0'),
+    blankText: i18next.t('colorfield_1'),
     
     regex: /^[0-9a-f]{3,6}$/i,
     

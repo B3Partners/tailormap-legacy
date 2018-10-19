@@ -68,13 +68,13 @@ Ext.define('vieweradmin.components.SolrConfig', {
                 menuDisabled: true,
                 renderer: (function(value) {
                     var links = [
-                        Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_solrconfig_3') + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_solrconfig_4') + '</a>')
                     ];
                     if(this.config.solrInitialized) {
                         links.push(
-                            Ext.String.format('<a href="#" class="addtoindex">' + ___("Voeg toe aan index") + '</a>', value),
-                            Ext.String.format('<a href="#" class="removefromindex">' + ___("Verwijder uit index") + '</a>', value)
+                            Ext.String.format('<a href="#" class="addtoindex">' + i18next.t('viewer_admin_solrconfig_5') + '</a>', value),
+                            Ext.String.format('<a href="#" class="removefromindex">' + i18next.t('viewer_admin_solrconfig_6') + '</a>', value)
                         );
                     }
                     return links.join(" | ");
@@ -107,7 +107,7 @@ Ext.define('vieweradmin.components.SolrConfig', {
     },
 
     removeConfirmMessage: function(record) {
-        return ___("Weet u zeker dat u de configuratie {{name}} wilt verwijderen?", {name:record.get("name")});
+        return i18next.t('viewer_admin_solrconfig_7', {name:record.get("name")});
     },
 
     getEditUrl: function(record) {

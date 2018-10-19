@@ -61,7 +61,7 @@ Ext.define("viewer.ServiceInfo", {
             },
             failure: function(result) {
                 if(failureFunction != undefined) {
-                    failureFunction(___("Ajax request failed with status ") + result.status + " " + result.statusText + ": " + result.responseText);
+                    failureFunction(i18next.t('viewer_serviceinfo_0') + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
         });

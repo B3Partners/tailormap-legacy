@@ -70,8 +70,8 @@ Ext.define('vieweradmin.components.User', {
                 menuDisabled: true,
                 renderer: function(value, obj, record) {
                     return [
-                        Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_user_3') + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_user_4') + '</a>')
                     ].join(" | ");
                 }
             }
@@ -88,7 +88,7 @@ Ext.define('vieweradmin.components.User', {
     },
 
     removeConfirmMessage: function(record) {
-        return ___("Weet u zeker dat u de gebruiker {{user}} wilt verwijderen?", {user:record.get("username")});
+        return i18next.t('viewer_admin_user_5', {user:record.get("username")});
     },
 
     getEditUrl: function(record) {

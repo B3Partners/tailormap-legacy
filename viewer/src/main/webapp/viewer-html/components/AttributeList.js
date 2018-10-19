@@ -332,7 +332,7 @@ Ext.define ("viewer.components.AttributeList",{
             clearTimeout(this.requestThresholdCounter);
         }
         if (this.grids.main) {
-            this.grids.main.getView().setLoading(___("Bezig met laden..."));
+            this.grids.main.getView().setLoading(i18next.t('viewer_components_attributelist_8'));
         }
         me.loadLayerOnPopupShow = "";
         this.requestThresholdCounter = setTimeout(function(){
@@ -622,17 +622,17 @@ Ext.define ("viewer.components.AttributeList",{
 
                         if(msg == null) {
                             if(response.timedout) {
-                                msg = ___("Request timed out");
+                                msg = i18next.t('viewer_components_attributelist_9');
                             } else if(response.statusText != null && response.statusText != "") {
                                 msg = response.statusText;
                             } else {
-                                msg = ___("Unknown error");
+                                msg = i18next.t('viewer_components_attributelist_10');
                             }
                         }
 
                         Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
 
-                        Ext.MessageBox.alert(___("Foutmelding"), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_attributelist_11'), msg);
 
                     }
                 }
@@ -753,9 +753,9 @@ Ext.define ("viewer.components.AttributeList",{
                 id: name + 'Pager',
                 store: store,
                 displayInfo: true,
-                displayMsg: ___("Feature {0} - {1} van {2}"),
-                afterPageText : ___("van {0}"),
-                emptyMsg: ___("Geen features om weer te geven")
+                displayMsg: i18next.t('viewer_components_attributelist_12'),
+                afterPageText : i18next.t('viewer_components_attributelist_13'),
+                emptyMsg: i18next.t('viewer_components_attributelist_14')
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;

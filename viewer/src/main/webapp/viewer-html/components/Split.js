@@ -160,7 +160,7 @@ Ext.define("viewer.components.Split", {
     toSplitFeatureAdded: function (vecLayer, feature) {
         Ext.getCmp(this.name + "drawButton").setDisabled(false);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
-        Ext.getCmp(this.name + "geomLabel").setText(___("Teken een lijn om mee te splitsen"));
+        Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_split_13'));
         this.showMobilePopup();
     },
     splitFeatureAdded: function (vecLayer, feature) {
@@ -310,7 +310,7 @@ Ext.define("viewer.components.Split", {
             if (appLayer.details && appLayer.details["editfunction.title"]) {
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
-            this.inputContainer.setLoading(___("Laadt attributen..."));
+            this.inputContainer.setLoading(i18next.t('viewer_components_split_14'));
             this.inputContainer.removeAll();
             this.loadAttributes(appLayer, previousAppLayer, scope);
             this.inputContainer.setLoading(false);
@@ -363,18 +363,18 @@ Ext.define("viewer.components.Split", {
             case "multipolygon":
                 this.showGeomType = "MultiPolygon";
                 this.newGeomType = "Polygon";
-                tekst = ___("vlak");
+                tekst = i18next.t('viewer_components_split_15');
                 break;
             case "polygon":
                 this.showGeomType = "Polygon";
                 this.newGeomType = "Polygon";
-                tekst = ___("vlak");
+                tekst = i18next.t('viewer_components_split_16');
                 break;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
                 this.newGeomType = "LineString";
-                tekst = ___("lijn");
+                tekst = i18next.t('viewer_components_split_17');
                 break;
             case "geometry":
                 possible = true;
@@ -390,13 +390,13 @@ Ext.define("viewer.components.Split", {
         if (possible) {
             if (this.geometryEditable) {
                 if (this.newGeomType == null) {
-                    tekst = ___("Geometrie mag alleen bewerkt worden");
+                    tekst = i18next.t('viewer_components_split_18');
                 } else {
                     Ext.getCmp(this.name + "selectButton").setDisabled(false);
-                    tekst = ___("Selecteer een {{type}} in de kaart.", {type: tekst});
+                    tekst = i18next.t('viewer_components_split_19', {type: tekst});
                 }
             } else {
-                tekst = ___("Geometrie mag niet bewerkt worden.");
+                tekst = i18next.t('viewer_components_split_20');
             }
             gl.setText(tekst);
             for (var i = 0; i < attributes.length; i++) {
@@ -473,13 +473,13 @@ Ext.define("viewer.components.Split", {
                 }
             }
         } else {
-            gl.setText(___("Geometrietype onbekend. Bewerken niet mogelijk."));
+            gl.setText(i18next.t('viewer_components_split_21'));
             Ext.getCmp(this.name + "selectButton").setDisabled(true);
         }
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
-        Ext.get(this.getContentDiv()).mask(___("Haalt features op..."))
+        Ext.get(this.getContentDiv()).mask(i18next.t('viewer_components_split_22'))
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -552,7 +552,7 @@ Ext.define("viewer.components.Split", {
             },
             failure: function (result) {
                 if (failureFunction != undefined) {
-                    failureFunction(___("Ajax request failed with status ") + result.status + " " + result.statusText + ": " + result.responseText, this);
+                    failureFunction(i18next.t('viewer_components_split_23') + result.status + " " + result.statusText + ": " + result.responseText, this);
                 }
             }});
     },
@@ -615,7 +615,7 @@ Ext.define("viewer.components.Split", {
         me.cancel();
     },
     saveFailed: function (msg, me) {
-        Ext.Msg.alert(___("Mislukt"), msg);
+        Ext.Msg.alert(i18next.t('viewer_components_split_24'), msg);
         me.cancel();
     },
     cancel: function () {

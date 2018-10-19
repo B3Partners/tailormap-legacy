@@ -55,9 +55,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             name: "marker",
             emptyText: i18next.t('viewer_components_searchconfiguration_2'),
             store: [
-                ["default", ___("Standaard marker")],
-                ["circle", ___("Cirkel")],
-                ["none", ___("Geen marker")]
+                ["default", i18next.t('viewer_components_searchconfiguration_30')],
+                ["circle", i18next.t('viewer_components_searchconfiguration_31')],
+                ["none", i18next.t('viewer_components_searchconfiguration_32')]
             ],
             labelWidth: this.labelWidth
         });
@@ -95,7 +95,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         });
         
         var extraText = document.createElement('div');
-        extraText.innerHTML=___("* De ingevulde zoekwaarden wordt achter deze url geplaatst. \nAls de ingevulde zoekwaarde ergens anders moet komen in de url dan kan op die plek '[ZOEKWOORD]' worden opgegeven.\nVoorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='");
+        extraText.innerHTML=i18next.t('viewer_components_searchconfiguration_33');
         document.getElementById("config").appendChild(extraText);
 
         if(config !== null) {
@@ -456,7 +456,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 checked: checked,
                 // Provide custom renderLabel function to add 'config layers' link to label
                 renderLabel: function(id, label) {
-                    return label + ' &nbsp;&nbsp;<a href="#" class="configureLayer" id="' + id + '_layers">' + ___("Configureer kaartlagen") + '</a>';
+                    return label + ' &nbsp;&nbsp;<a href="#" class="configureLayer" id="' + id + '_layers">' + i18next.t('viewer_components_searchconfiguration_34') + '</a>';
                 },
                 // Provide function to handle clicking the 'config layers' link
                 labelClick: function(evt, target) {

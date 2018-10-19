@@ -27,33 +27,33 @@ Ext.define("viewer.components.CustomConfiguration",{
         if (configObject === null){
             configObject = {};
         }
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[___("Grondvuurwerk")] = { distance: 15, fan: false };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[___("Luchtvuurwerk met kaliber tot en met 1 inch")] = { distance: 40, fan: false };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[___("Luchtvuurwerk met kaliber van 1 inch tot 2 inch")] = { distance: 60, fan: false };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[___("Luchtvuurwerk met kaliber tot en met 1 inch - fanshape")] = { distance: 40, fan: true };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[___("Luchtvuurwerk met kaliber van 1 inch tot 2 inch - fanshape")] = { distance: 60, fan: true };
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Vuurpijlen (schietrichting schuin van het publiek af)")] = {distance: 125, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Vuurpijlen (schietrichting overig)")] = {distance: 200, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Tekstborden")] = {distance: 15, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Grondvuurwerk")] = {distance: 30, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen met kaliber tot en met 2 inch")] = {distance: 75, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Mines tot en met een kaliber van 4 inch")] = {distance: 60, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Mines met een kaliber vanaf 4 inch tot en met 6 inch")] = {distance: 100, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Dagbommen kleiner dan 21 cm diameter")] = {distance: 75, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber <3 inch")] = {distance: 120, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >3 inch")] = {distance: 165, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >4 inch")] = {distance: 200, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >5 inch")] = {distance: 230, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >6 inch")] = {distance: 265, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >8 inch")] = {distance: 325, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >10 inch")] = {distance: 390, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >12 inch")] = {distance: 455, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >18 inch")] = {distance: 645, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[___("Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >24 inch")] = {distance: 845, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_293')] = { distance: 15, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_294')] = { distance: 40, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_295')] = { distance: 60, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_296')] = { distance: 40, fan: true };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_297')] = { distance: 60, fan: true };
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_298')] = {distance: 125, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_299')] = {distance: 200, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_300')] = {distance: 15, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_301')] = {distance: 30, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_302')] = {distance: 75, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_303')] = {distance: 60, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_304')] = {distance: 100, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_305')] = {distance: 75, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_306')] = {distance: 120, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_307')] = {distance: 165, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_308')] = {distance: 200, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_309')] = {distance: 230, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_310')] = {distance: 265, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_311')] = {distance: 325, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_312')] = {distance: 390, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_313')] = {distance: 455, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_314')] = {distance: 645, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_315')] = {distance: 845, fan: false};
 
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        this.addForm(configObject, "zonedistances_consumer", ___("Zoneafstanden consumenten vuurwerk"), ___("Zoneafstand consumenten vuurwerk"), this.DEFAULT_ZONE_DISTANCES_CONSUMER);
-        this.addForm(configObject, "zonedistances_professional", ___("Zoneafstanden professioneel vuurwerk"), ___("Zoneafstand professioneel vuurwerk"), this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
+        this.addForm(configObject, "zonedistances_consumer", i18next.t('viewer_components_customconfiguration_316'), i18next.t('viewer_components_customconfiguration_317'), this.DEFAULT_ZONE_DISTANCES_CONSUMER);
+        this.addForm(configObject, "zonedistances_professional", i18next.t('viewer_components_customconfiguration_318'), i18next.t('viewer_components_customconfiguration_319'), this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
     },
     addForm: function(configObject, paramkey, label, label_singular, defaults) {
         var distances = [];
@@ -85,7 +85,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {
                     xtype:'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: ___("{{label}} toevoegen", {label: label_singular}),
+                    text: i18next.t('viewer_components_customconfiguration_320', {label: label_singular}),
                     listeners: {
                         click: function(){
                             var distancesContainer = Ext.ComponentQuery.query("#" + containerKey)[0];

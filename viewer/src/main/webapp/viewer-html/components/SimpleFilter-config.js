@@ -34,16 +34,16 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.filterTypes = Ext.create("Ext.data.Store", {
             fields: ["type", "label"],
             data: [
-                {type: "slider", label: ___("Slider")},
-                {type: "number", label: ___("Getalfilter")},
-                {type: "text", label: ___("Tekstfilter")},
-                {type: "numberrange", label: ___("Getalrange")},
-                {type: "combo", label: ___("Selectielijst")},
-                {type: "checkbox", label: ___("Vinkvak")},
-                {type: "date", label: ___("Datum")},
-                {type: "radio", label: ___("Keuzerondje")},
-                {type: "reset", label: ___("Reset filter knop")},
-                {type: "textlabel", label: ___("Tekst label")}
+                {type: "slider", label: i18next.t('viewer_components_customconfiguration_344')},
+                {type: "number", label: i18next.t('viewer_components_customconfiguration_345')},
+                {type: "text", label: i18next.t('viewer_components_customconfiguration_346')},
+                {type: "numberrange", label: i18next.t('viewer_components_customconfiguration_347')},
+                {type: "combo", label: i18next.t('viewer_components_customconfiguration_348')},
+                {type: "checkbox", label: i18next.t('viewer_components_customconfiguration_349')},
+                {type: "date", label: i18next.t('viewer_components_customconfiguration_350')},
+                {type: "radio", label: i18next.t('viewer_components_customconfiguration_351')},
+                {type: "reset", label: i18next.t('viewer_components_customconfiguration_352')},
+                {type: "textlabel", label: i18next.t('viewer_components_customconfiguration_353')}
             ]
         });
 

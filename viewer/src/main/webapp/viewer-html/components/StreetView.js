@@ -23,7 +23,7 @@
 Ext.define ("viewer.components.tools.StreetView",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: ___("Street View"),
+        name: i18next.t('viewer_components_tools_streetview_1'),
         width: 600,
         height: 600,
         useMarker: false,
@@ -31,7 +31,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         title: i18next.t('viewer_components_tools_streetview_0'),
         nonSticky: false,
         titlebarIcon : "",
-        tooltip : ___("Streetview")
+        tooltip : i18next.t('viewer_components_tools_streetview_2')
     },
     toolMapClick: null,
     markerName:null,

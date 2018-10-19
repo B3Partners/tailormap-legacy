@@ -33,7 +33,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: i18next.t('viewer_components_customconfiguration_216'),
                 name: 'tooltip',
-                value: this.configObject.tooltip || ___("Streetview"),
+                value: this.configObject.tooltip || i18next.t('viewer_components_customconfiguration_354'),
                 labelWidth:me.labelWidth
             
             },{
@@ -45,7 +45,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth: me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel:  ___("Ga na gebruik naar de eerste tool"),
+                fieldLabel:  i18next.t('viewer_components_customconfiguration_355'),
                 inputValue: true,
                 name: 'nonSticky',
                 checked: this.configObject.nonSticky !== undefined ? this.configObject.nonSticky : false,

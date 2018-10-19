@@ -41,11 +41,11 @@ function searchCsw(){
                 }
                 resultDiv.dom.innerHTML += "</ul>";
             }else{
-                Ext.MessageBox.alert(___("Mislukt"), result.responseText);
+                Ext.MessageBox.alert(i18next.t('viewer_admin_cswservice_0'), result.responseText);
             }
         },
         failure: function ( result, request) {
-            Ext.MessageBox.alert(___("Mislukt"), result.responseText);
+            Ext.MessageBox.alert(i18next.t('viewer_admin_cswservice_1'), result.responseText);
             clearMask()
         }
     });

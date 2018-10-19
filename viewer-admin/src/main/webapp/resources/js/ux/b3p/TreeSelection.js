@@ -118,7 +118,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             tbar: [
                 {
                     xtype : 'textfield',
-                    emptyText : ___("Type to search..."),
+                    emptyText : i18next.t('viewer_admin_treeselection_4'),
                     enableKeyEvents : true,
                     listeners : {
                         keyup :  function(textfield, e) {
@@ -610,7 +610,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 if(result.result) {
                     me.addToSelection(record);
                 } else {
-                    Ext.MessageBox.alert(___("Foutmelding"), result.message);
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_treeselection_5'), result.message);
                 }
             },
             failure: function() {

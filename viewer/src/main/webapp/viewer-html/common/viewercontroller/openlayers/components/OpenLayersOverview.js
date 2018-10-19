@@ -42,7 +42,7 @@ Ext.define("viewer.viewercontroller.openlayers.components.OpenLayersOverview", {
         viewer.viewercontroller.openlayers.components.OpenLayersOverview.superclass.constructor.call(this, conf);
 
         if (Ext.isEmpty(this.config.url)) {
-            throw new Error(___("No URL set for Overview component, unable to load component"));
+            throw new Error(i18next.t('viewer_viewercontroller_openlayers_components_openlayersoverview_0'));
         }
         var maxBounds = this.config.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
         var bounds;

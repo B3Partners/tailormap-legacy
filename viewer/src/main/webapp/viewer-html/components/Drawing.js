@@ -574,8 +574,8 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: ___("Nee"),
-                yes: ___("Ja")
+                no: i18next.t('viewer_components_drawing_21'),
+                yes: i18next.t('viewer_components_drawing_22')
             },
             icon: Ext.Msg.WARNING
         });
@@ -598,8 +598,8 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: ___("Nee"),
-                yes: ___("Ja")
+                no: i18next.t('viewer_components_drawing_23'),
+                yes: i18next.t('viewer_components_drawing_24')
             },
             icon: Ext.Msg.WARNING
         });
@@ -628,8 +628,8 @@ Ext.define ("viewer.components.Drawing",{
             form.submit({
                 scope:this,
                 url: actionBeans["drawing"],
-                waitMsg: ___("Bezig met uploaden..."),
-                waitTitle: ___("Even wachten..."),
+                waitMsg: i18next.t('viewer_components_drawing_25'),
+                waitTitle: i18next.t('viewer_components_drawing_26'),
                 success: function(fp, o) {
                     var json = Ext.JSON.decode(o.result.content);
                     this.titleField.setValue( json.title);

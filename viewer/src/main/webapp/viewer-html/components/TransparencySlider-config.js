@@ -84,7 +84,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     fieldLabel: i18next.t('viewer_components_customconfiguration_243'),
                     name: 'sliderForUserAddedText',
                     labelWidth: 70,
-                    value: this.configObject.sliderForUserAddedText ? this.configObject.sliderForUserAddedText: ___("Overige")
+                    value: this.configObject.sliderForUserAddedText ? this.configObject.sliderForUserAddedText: i18next.t('viewer_components_customconfiguration_359')
                 },{
                     xtype: 'textfield',
                     id: 'sliderForUserAddedInitTransparency',

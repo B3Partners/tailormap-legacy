@@ -87,10 +87,10 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 menuDisabled: true,
                 renderer: (function (value, metadata, record) {
                     return [
-                        Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">' + ___("Open viewer") + '</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
-                        Ext.String.format('<a href="#" class="makeworkversion">' + ___("Maak werkversie") + '</a>', value),
-                        Ext.String.format('<a href="{0}&application={1}">' + ___("Activeren") + '</a>', this.config.editurl, value),
-                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>', value)
+                        Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">' + i18next.t('viewer_admin_chooseapplication_15') + '</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
+                        Ext.String.format('<a href="#" class="makeworkversion">' + i18next.t('viewer_admin_chooseapplication_16') + '</a>', value),
+                        Ext.String.format('<a href="{0}&application={1}">' + i18next.t('viewer_admin_chooseapplication_17') + '</a>', this.config.editurl, value),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_chooseapplication_18') + '</a>', value)
                     ].join(" | ");
                 }).bind(this)
             }
@@ -116,7 +116,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
     },
 
     removeConfirmMessage: function(record) {
-        return ___("Weet u zeker dat u de applicatie {{name}} wilt verwijderen?", {name: record.get("name")});
+        return i18next.t('viewer_admin_chooseapplication_19', {name: record.get("name")});
     },
 
     getRemoveUrl: function(record) {
@@ -178,7 +178,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             listeners: {
                 change: {
                     fn: function(combo, newvalue) {
-                        combo.setLoading(___("Standaard applicatie opslaan"));
+                        combo.setLoading(i18next.t('viewer_admin_chooseapplication_20'));
                         this.defaultApplicationChanged(combo, applications.findRecord("value", newvalue));
                     },
                     scope: this
@@ -191,7 +191,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         var defaultApp, appLabel;
         if (application === null) {
             defaultApp = null;
-            appLabel = ___("uitgezet")
+            appLabel = i18next.t('viewer_admin_chooseapplication_21')
         } else {
             defaultApp = application.get('value');
             appLabel = ': "' + application.get('label') + '"';

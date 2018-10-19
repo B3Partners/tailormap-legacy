@@ -55,10 +55,10 @@ Ext.define ("viewer.components.TOC",{
         title: i18next.t('viewer_components_toc_0'),
         showLeafIcon: true,
         showNodeIcon: true,
-        zoomToScaleText: ___("Zoom to scale"),
+        zoomToScaleText: i18next.t('viewer_components_toc_6'),
         expandOnStartup: true,
-        toggleAllLayersOnText: ___("All layers on"),
-        toggleAllLayersOffText: ___("All layers off"),
+        toggleAllLayersOnText: i18next.t('viewer_components_toc_7'),
+        toggleAllLayersOffText: i18next.t('viewer_components_toc_8'),
         initToggleAllLayers: true,
         showAllLayersOff: false,
         showAllLayersOn: false,
@@ -256,11 +256,11 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.checked=  false;
         }
         if(level.info != undefined){
-            this.addQtip(___("Informatie over de kaart"), 'span_'+levelId);
+            this.addQtip(i18next.t('viewer_components_toc_9'), 'span_'+levelId);
             treeNodeLayer.layerObj.info = level.info;
         }
         if(level.url!= undefined){
-            this.addQtip(___("Informatie over de kaart"), 'span_'+levelId);
+            this.addQtip(i18next.t('viewer_components_toc_10'), 'span_'+levelId);
             treeNodeLayer.layerObj.url = level.url;
         }
 
@@ -351,12 +351,12 @@ Ext.define ("viewer.components.TOC",{
         }
         if(serviceLayer.details != undefined){
             if(serviceLayer.details ["metadata.stylesheet"] !== undefined){
-                this.addQtip(___("Metadata voor de kaartlaag"), 'span_'+layerId);
+                this.addQtip(i18next.t('viewer_components_toc_11'), 'span_'+layerId);
                 treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
             }
 
             if(serviceLayer.details ["download.url"] != undefined){
-                this.addQtip(___("Metadata voor de kaartlaag"), 'span_'+layerId);
+                this.addQtip(i18next.t('viewer_components_toc_12'), 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
 

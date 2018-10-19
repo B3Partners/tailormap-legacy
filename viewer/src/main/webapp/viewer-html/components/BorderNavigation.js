@@ -24,10 +24,10 @@ Ext.define("viewer.components.BorderNavigation",{
     extend : "viewer.components.Component",
     bordernavigation : null,
     defaultTooltips: {
-        tooltip_pan_right: ___("Pan naar rechts"),
-        tooltip_pan_left: ___("Pan naar links"),
-        tooltip_pan_up: ___("Pan omhoog"),
-        tooltip_pan_down: ___("Pan omlaag")
+        tooltip_pan_right: i18next.t('viewer_components_bordernavigation_0'),
+        tooltip_pan_left: i18next.t('viewer_components_bordernavigation_1'),
+        tooltip_pan_up: i18next.t('viewer_components_bordernavigation_2'),
+        tooltip_pan_down: i18next.t('viewer_components_bordernavigation_3')
     },
     constructor : function (conf){
         this.initConfig(conf);

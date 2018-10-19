@@ -66,7 +66,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.initConfig(conf);
 
         var config = {
-            title: this.config.title || ___("Titel"),
+            title: this.config.title || i18next.t('viewer_components_svgheader_1'),
             closable: true,
             closeAction: 'hide',
             hideMode: 'offsets',

@@ -7,52 +7,52 @@ class TextExtractor {
     constructor() {
         this.combined_stores = [];
         const languageFiles = [
-            // {
-            //     outputFilename: "../locales/nl.json",
-            //     outputJS: "../locales/nl.js",
-            //     fileOptions: {
-            //         files: [
-            //             '../../common/**/*.js',
-            //             '../../components/**/*.js'
-            //         ],
-            //         ignore: [
-            //             '../../common/openlayers/**/*.js'
-            //         ],
-            //     }
-            // },
-            // {
-            //     outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.json",
-            //     outputJS: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.js",
-            //     prefix: "viewer_admin",
-            //     useCombined: true,
-            //     fileOptions: {
-            //         files: [
-            //             '../../../../../../../viewer-admin/src/main/webapp/resources/js/**/*.js'
-            //         ],
-            //     }
-            // },
             {
-                outputFilename: "../nl_jsp.json",
-                outputProperties: "../nl.properties",
-                prefix: "viewer",
-                seperator: ".",
+                outputFilename: "../locales/nl.json",
+                outputJS: "../locales/nl.js",
                 fileOptions: {
                     files: [
-                        '../../../../../../../viewer/src/main/webapp/**/*.jsp'
+                        '../../common/**/*.js',
+                        '../../components/**/*.js'
+                    ],
+                    ignore: [
+                        '../../common/openlayers/**/*.js'
                     ],
                 }
             },
             {
-                outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl_jsp.json",
-                outputProperties: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.properties",
+                outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.json",
+                outputJS: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.js",
                 prefix: "viewer_admin",
-                seperator: ".",
+                useCombined: true,
                 fileOptions: {
                     files: [
-                        '../../../../../../../viewer-admin/src/main/webapp/**/*.jsp'
+                        '../../../../../../../viewer-admin/src/main/webapp/resources/js/**/*.js'
                     ],
                 }
             },
+            // {
+            //     outputFilename: "../nl_jsp.json",
+            //     outputProperties: "../nl.properties",
+            //     prefix: "viewer",
+            //     seperator: ".",
+            //     fileOptions: {
+            //         files: [
+            //             '../../../../../../../viewer/src/main/webapp/**/*.jsp'
+            //         ],
+            //     }
+            // },
+            // {
+            //     outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl_jsp.json",
+            //     outputProperties: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.properties",
+            //     prefix: "viewer_admin",
+            //     seperator: ".",
+            //     fileOptions: {
+            //         files: [
+            //             '../../../../../../../viewer-admin/src/main/webapp/**/*.jsp'
+            //         ],
+            //     }
+            // },
         ];
         languageFiles.forEach(fileConf => {
             this.createLanguageFile(fileConf);
@@ -226,11 +226,11 @@ i18next.init({
         };
         const i18nReplacer = {
             ...opts.fileOptions,
-            from: /___\("(.*)([\),])/g,
+            from: /___\("(([^"\\]|\\.)*)"([\),]{1})/g,
             to: (...args) => {
                 const match = args[0];
                 const text = args[1];
-                const delim = args[2];
+                const delim = args[3];
                 const filecontents = args[args.length - 2];
                 const filename = args[args.length - 1];
                 if (!text) {

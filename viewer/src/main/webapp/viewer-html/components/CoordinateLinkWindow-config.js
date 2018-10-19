@@ -50,7 +50,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }         
         ]);
           var extraText = document.createElement('div');
-        extraText.innerHTML=___("* Vul hier de gewenste URL in, bijvoorbeeld naar panoramafoto's. Flamingo levert standaard een pagina voor cyclorama mee. Vul hiervoor het volgende in: <br/> \"/cyclomedia.html?username=[username]&password=[password]&x=[RDX]&y=[RDY]\". <br/> Username en wachtwoord moeten hier ingevuld worden door de beheerder, RDX en RDY is het coördinaat van het klikpunt, en wordt automatisch ingevuld.");
+        extraText.innerHTML=i18next.t('viewer_components_customconfiguration_274');
         document.getElementById("config").appendChild(extraText);
     }
 });

@@ -65,7 +65,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 me.record = record;
                                 Ext.Msg.show({
                                     title: i18next.t('viewer_components_selectionmodulemenu_2'),
-                                    message: ___("Weet u zeker dat u de geselecteerde map wilt verwijderen?"),
+                                    message: i18next.t('viewer_components_selectionmodulemenu_16'),
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
@@ -93,7 +93,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                     var level = me.config.selectionModule.levels[levelId];
                                     level.name = name;
                                 };
-                                this.editName(this.levelMenu.config.data.clickedItem.data.text,f, ___("map"));
+                                this.editName(this.levelMenu.config.data.clickedItem.data.text,f, i18next.t('viewer_components_selectionmodulemenu_17'));
                             },
                             scope: this
                         }
@@ -118,7 +118,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 me.record = record;
                                 Ext.Msg.show({
                                     title: i18next.t('viewer_components_selectionmodulemenu_5'),
-                                    message: ___("Weet u zeker dat u de geselecteerde kaartlaag wilt verwijderen?"),
+                                    message: i18next.t('viewer_components_selectionmodulemenu_18'),
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
@@ -146,7 +146,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                     var level = me.config.selectionModule.levels[levelId];
                                     level.name = name;
                                 };
-                                this.editName(this.layerMenu.config.data.clickedItem.data.text,f, ___("kaartlaag"));
+                                this.editName(this.layerMenu.config.data.clickedItem.data.text,f, i18next.t('viewer_components_selectionmodulemenu_19'));
                             },
                             scope: this
                         }
@@ -173,8 +173,8 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         var me = this;
         var newLevel = typeof type === "undefined";
         Ext.MessageBox.show({
-            title: newLevel ? ___("Nieuwe map aanmaken") : ___("Naam wijzigen"),
-            msg: i18next.t('viewer_components_selectionmodulemenu_7') + (newLevel ? ___("nieuwe map") : type) +':',
+            title: newLevel ? i18next.t('viewer_components_selectionmodulemenu_20') : i18next.t('viewer_components_selectionmodulemenu_21'),
+            msg: i18next.t('viewer_components_selectionmodulemenu_7') + (newLevel ? i18next.t('viewer_components_selectionmodulemenu_22') : type) +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,// record.data.text,

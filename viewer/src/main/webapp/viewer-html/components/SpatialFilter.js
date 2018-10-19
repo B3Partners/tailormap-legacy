@@ -163,7 +163,7 @@ Ext.define ("viewer.components.SpatialFilter",{
        
     },
     buffer : function(){
-        Ext.getCmp(this.config.name + "BufferContainer").setLoading(___("Buffer berekenen..."));
+        Ext.getCmp(this.config.name + "BufferContainer").setLoading(i18next.t('viewer_components_spatialfilter_15'));
         var features = this.features;
         var wkts = [];
         for (var key in features){
@@ -198,14 +198,14 @@ Ext.define ("viewer.components.SpatialFilter",{
                     this.vectorLayer.removeAllFeatures();
                     this.vectorLayer.addFeatures(featureObjs);
                 }else{
-                    Ext.MessageBox.alert(___("Foutmelding"), response.errorMessage);
+                    Ext.MessageBox.alert(i18next.t('viewer_components_spatialfilter_16'), response.errorMessage);
                 }
                 Ext.getCmp(this.config.name + "BufferContainer").setLoading(false);
             },
             failure: function(result, request) {
                 Ext.getCmp(this.config.name + "BufferContainer").setLoading(false);
                 var response = Ext.JSON.decode(result.responseText);
-                Ext.MessageBox.alert(___("Foutmelding"), response.error);
+                Ext.MessageBox.alert(i18next.t('viewer_components_spatialfilter_17'), response.error);
             }
         });
     },

@@ -26,7 +26,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'combobox',
-            store: [[ "CSV", ___("csv") ], [ "XLS", ___("Excel") ], [ "SHP", ___("Shape") ]],
+            store: [[ "CSV", i18next.t('viewer_components_customconfiguration_269') ], [ "XLS", i18next.t('viewer_components_customconfiguration_270') ], [ "SHP", i18next.t('viewer_components_customconfiguration_271') ]],
             itemId: 'defaultDownload',
             name: 'defaultDownload',
             labelWidth: this.labelWidth,

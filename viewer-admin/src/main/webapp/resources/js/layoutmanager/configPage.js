@@ -296,10 +296,10 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 type: 'string'
             }],
             data: [
-                [___("Links-boven"), 'tl'],
-                [___("Rechts-boven"), 'tr'],
-                [___("Links-onder"), 'bl'],
-                [___("Rechts-onder"), 'br']
+                [i18next.t('viewer_admin_configpage_28'), 'tl'],
+                [i18next.t('viewer_admin_configpage_29'), 'tr'],
+                [i18next.t('viewer_admin_configpage_30'), 'bl'],
+                [i18next.t('viewer_admin_configpage_31'), 'br']
             ]
         });
 
@@ -409,14 +409,14 @@ Ext.define("vieweradmin.components.ConfigPage", {
                                     return true;
                                 }
                                 if(parseInt(value) < defaults.minWidth) {
-                                    return ___("Minimale breedte is ") + defaults.minWidth;
+                                    return i18next.t('viewer_admin_configpage_32') + defaults.minWidth;
                                 }
                                 return true;
                             }
                         },
                         {
                             xtype: 'container',
-                            html: defaults.minWidth ? ___("Minimale breedte is ") + defaults.minWidth : '',
+                            html: defaults.minWidth ? i18next.t('viewer_admin_configpage_33') + defaults.minWidth : '',
                             padding: defaults.minWidth ? '2 0 5 0' : 0,
                             style: {
                                 color: '#666666'
@@ -434,14 +434,14 @@ Ext.define("vieweradmin.components.ConfigPage", {
                                     return true;
                                 }
                                 if(parseInt(value) < defaults.minHeight) {
-                                    return ___("Minimale hoogte is ") + defaults.minHeight;
+                                    return i18next.t('viewer_admin_configpage_34') + defaults.minHeight;
                                 }
                                 return true;
                             }
                         },
                         {
                             xtype: 'container',
-                            html: defaults.minHeight ? ___("Minimale hoogte is ") + defaults.minHeight : '',
+                            html: defaults.minHeight ? i18next.t('viewer_admin_configpage_35') + defaults.minHeight : '',
                             padding: defaults.minWidth ? '2 0 5 0' : 0,
                             style: {
                                 color: '#666666'
@@ -486,7 +486,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     labelWidth: 180
                 },{
                     xtype: 'container',
-                    html: ___("Indien deze waarde is ingesteld wordt dit gebruikt om bij het starten van de applicatie te bepalen of een component wel of niet getoond moet worden. Als de schermafmetingen op dat moment kleiner zijn dan bovenstaande waarde dan wordt het component niet getoond.<br /><br />Bij een lege waarde (of 0) wordt het component altijd getoond")
+                    html: i18next.t('viewer_admin_configpage_36')
                 }]
             }],
             renderTo: "layout"

@@ -41,8 +41,8 @@ Ext.define ("viewer.components.ExtendedEdit",{
 
         this.schema = new Ext.data.schema.Schema();
 
-        this.navigateBackButton = this.createPaginationButton('left', ___("Vorige"));
-        this.navigateForwardButton = this.createPaginationButton('right', ___("Volgende"));
+        this.navigateBackButton = this.createPaginationButton('left', i18next.t('viewer_components_extendededit_1'));
+        this.navigateForwardButton = this.createPaginationButton('right', i18next.t('viewer_components_extendededit_2'));
         this.buttons = Ext.create('Ext.toolbar.Toolbar', {
             xtype: 'toolbar',
             dock: 'bottom',
@@ -290,7 +290,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
 
         this.setFormVisible(false);
         this.buttonPanel.setVisible(true);
-        this.savebutton.setText(___("Opslaan"));
+        this.savebutton.setText(i18next.t('viewer_components_extendededit_3'));
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
         if(this.config.allowEdit) {

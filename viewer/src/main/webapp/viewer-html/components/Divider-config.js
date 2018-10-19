@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [{                  
                 fieldLabel: i18next.t('viewer_components_customconfiguration_39'),
                 name: 'title',
-                value: this.configObject.title !== null && this.configObject.title !== undefined ? this.configObject.title : ___("Titel"),
+                value: this.configObject.title !== null && this.configObject.title !== undefined ? this.configObject.title : i18next.t('viewer_components_customconfiguration_279'),
                 labelWidth: me.labelWidth,
                 width: 500
             },{                        
@@ -78,8 +78,8 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: i18next.t('viewer_components_customconfiguration_46'),
                 labelWidth: me.labelWidth,
                 store: [
-                    ["normal", ___("Normaal")],
-                    ["bold", ___("Vet gedrukt")]
+                    ["normal", i18next.t('viewer_components_customconfiguration_280')],
+                    ["bold", i18next.t('viewer_components_customconfiguration_281')]
                 ],
                 width : 400
             }],

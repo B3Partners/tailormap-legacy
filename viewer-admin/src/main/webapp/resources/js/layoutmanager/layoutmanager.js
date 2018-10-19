@@ -172,7 +172,7 @@ Ext.define('LayoutManager', {
             var regionId = layoutRegion.get('id');
             var layoutRegionElement = document.getElementById(layoutRegion.get('htmlId'));
             if(!layoutRegionElement) {
-                throw ___("There is a layout ({{regionId}}) region without an container in the JSP page", {regionId: regionId});
+                throw i18next.t('viewer_admin_layoutmanager_29', {regionId: regionId});
             }
             me.createLayoutConfiguration(layoutRegion, layoutRegionElement);
             var layout = {
@@ -338,7 +338,7 @@ Ext.define('LayoutManager', {
             '<div class="layout_title">',
                 '<strong class="layoutregion_title">', layoutRegionTitle, '</strong><br />',
                 '<div class="regionconfig" id="regionconfig_', regionId, '" style="display: none;">',
-                    '<u>' + ___("Visuele configuratie") + '</u><br />',
+                    '<u>' + i18next.t('viewer_admin_layoutmanager_30') + '</u><br />',
                     layoutHtml.join(''),
                 '</div>', 
                 '<div style="clear: both;"></div>',
@@ -386,7 +386,7 @@ Ext.define('LayoutManager', {
                 this.getSelectField(id, type + 'measure'),
                 '<br />',
                 '<input type="text" id="', id, '_max', type, '" value="', (this.getConfigOptionValue(id, 'max' + type) || ''), '" /> ',
-                'px, ' + ___("maximaal"),
+                'px, ' + i18next.t('viewer_admin_layoutmanager_31'),
             '</div>'
         ].join('');
     },
@@ -821,8 +821,8 @@ Ext.define('LayoutManager', {
         });
         droppedEl.child('.remove').on('click', function() {
             Ext.MessageBox.confirm(
-                ___("Component uit layout verwijderen?"),
-                ___("Weet u zeker dat dit component uit de layout wilt verwijderen?<br />Bij het opslaan van de layout gaat eventuele configuratie van<br />dit component verloren als u dit component verwijdert"),
+                i18next.t('viewer_admin_layoutmanager_32'),
+                i18next.t('viewer_admin_layoutmanager_33'),
                 function(btnClicked) {
                     if(btnClicked === 'yes') {
                         Ext.get(data.sourceEl).removeCls("component-added");
@@ -837,7 +837,7 @@ Ext.define('LayoutManager', {
                                 me.saveLayout(false);
                             }, 
                             failure: function ( result, request) { 
-                                Ext.MessageBox.alert(___("Foutmelding"), result.responseText);
+                                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_34'), result.responseText);
                             } 
                         }); 
                     }
@@ -984,7 +984,7 @@ Ext.define('LayoutManager', {
         }
         iframe.dom.src = url;
         iframe.setStyle('display', 'block');
-        this.popupWin.setTitle(___("Configuratie") + " " + componentData.componentPrettyName);
+        this.popupWin.setTitle(i18next.t('viewer_admin_layoutmanager_35') + " " + componentData.componentPrettyName);
         this.popupWin.show();
     },
     
@@ -1023,7 +1023,7 @@ Ext.define('LayoutManager', {
                 Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_19'), i18next.t('viewer_admin_layoutmanager_20'));
             }, 
             failure: function ( result, request) {
-                Ext.MessageBox.alert(___("Foutmelding"), result.responseText);
+                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_36'), result.responseText);
             } 
         });
     },

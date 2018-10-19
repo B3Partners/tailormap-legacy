@@ -120,7 +120,7 @@ Ext.define('vieweradmin.components.HelpController', {
         // IE fix, href in IE8 and lower is the complete URL + hash, not just the hash
         hash = hash.substring(hash.lastIndexOf('#'));
         var iframeurl = this.helppath + hash;
-        vieweradmin.components.iFramePopupController.loadPage(iframeurl, ___("Help"));
+        vieweradmin.components.iFramePopupController.loadPage(iframeurl, i18next.t('viewer_admin_defaultconfigs_0'));
     }
 });
 
@@ -149,49 +149,49 @@ Ext.define("vieweradmin.components.DefaultConfgurations", {
             disableServerSideEdit: true,
             iframeCss: csspath + 'iframe_styles.css',
             lang: {
-                'Display': ___("Weergave"),
-                'By Default': ___("Standaard"),
-                'Inline': ___("In regel"),
-                'Block': ___("Op aparte regel"),
-                'Insert/Edit Image': ___("Afbeelding invoegen/bewerken"),
-                'Upload Image...': ___("Uploaden..."),
-                'Uploading your photo...': ___("Afbeelding wordt geupload..."),
-                'Error': ___("Fout"),
-                'Width': ___("Breedte"),
-                'Height': ___("Hoogte"),
-                'Real Size': ___("Originele grootte"),
-                'Align': ___("Uitlijning"),
-                'Title': ___("Titel"),
+                'Display': i18next.t('viewer_admin_defaultconfigs_1'),
+                'By Default': i18next.t('viewer_admin_defaultconfigs_2'),
+                'Inline': i18next.t('viewer_admin_defaultconfigs_3'),
+                'Block': i18next.t('viewer_admin_defaultconfigs_4'),
+                'Insert/Edit Image': i18next.t('viewer_admin_defaultconfigs_5'),
+                'Upload Image...': i18next.t('viewer_admin_defaultconfigs_6'),
+                'Uploading your photo...': i18next.t('viewer_admin_defaultconfigs_7'),
+                'Error': i18next.t('viewer_admin_defaultconfigs_8'),
+                'Width': i18next.t('viewer_admin_defaultconfigs_9'),
+                'Height': i18next.t('viewer_admin_defaultconfigs_10'),
+                'Real Size': i18next.t('viewer_admin_defaultconfigs_11'),
+                'Align': i18next.t('viewer_admin_defaultconfigs_12'),
+                'Title': i18next.t('viewer_admin_defaultconfigs_13'),
                 'Class': '',
                 'Padding': '',
                 'Margin': '',
-                'Top': ___("Boven"),
-                'Bottom': ___("Onder"),
-                'Right': ___("Rechts"),
-                'Left': ___("Links"),
-                'None': ___("Geen"),
-                'Size & Details': ___("Grootte en details"),
-                'More Options': ___("Meer opties"),
-                'Style' : ___("Stijl"),
+                'Top': i18next.t('viewer_admin_defaultconfigs_14'),
+                'Bottom': i18next.t('viewer_admin_defaultconfigs_15'),
+                'Right': i18next.t('viewer_admin_defaultconfigs_16'),
+                'Left': i18next.t('viewer_admin_defaultconfigs_17'),
+                'None': i18next.t('viewer_admin_defaultconfigs_18'),
+                'Size & Details': i18next.t('viewer_admin_defaultconfigs_19'),
+                'More Options': i18next.t('viewer_admin_defaultconfigs_20'),
+                'Style' : i18next.t('viewer_admin_defaultconfigs_21'),
                 'OK' : '',
-                'Cancel': ___("Annuleren"),
+                'Cancel': i18next.t('viewer_admin_defaultconfigs_22'),
                 'Delete Image':'Afbeelding verwijderen',
                 'Confirmation':'Bevestiging',
-                'Are you sure you want to delete this image?': ___("Weet u zeker dat u deze afbeelding wilt verwijderen?"),
-                'Your photo has been uploaded.': ___("Uw afbeelding is geupload.")
+                'Are you sure you want to delete this image?': i18next.t('viewer_admin_defaultconfigs_23'),
+                'Your photo has been uploaded.': i18next.t('viewer_admin_defaultconfigs_24')
             }
         };
     },
 
     getDefaultHtmlEditorTableConfig: function() {
         return {
-            langTitle: ___("Tabel toevoegen"),
-            langInsert: ___("Invoegen"),
-            langCancel: ___("Annuleren"),
-            langRows: ___("Rijen"),
-            langColumns: ___("Kolommen"),
-            langBorder: ___("Rand"),
-            langCellLabel: ___("Label in cellen tonen")
+            langTitle: i18next.t('viewer_admin_defaultconfigs_25'),
+            langInsert: i18next.t('viewer_admin_defaultconfigs_26'),
+            langCancel: i18next.t('viewer_admin_defaultconfigs_27'),
+            langRows: i18next.t('viewer_admin_defaultconfigs_28'),
+            langColumns: i18next.t('viewer_admin_defaultconfigs_29'),
+            langBorder: i18next.t('viewer_admin_defaultconfigs_30'),
+            langCellLabel: i18next.t('viewer_admin_defaultconfigs_31')
         };
     }
 

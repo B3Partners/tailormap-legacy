@@ -351,7 +351,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                 checked: attribute.defaultValue == "filterList",
                                 xtype: 'checkbox'
                             },{
-                                text: ___("* Als \"Lijst\" is aangevinkt dan zal er voor het waarde veld van dit attribuut een lijst met alle mogelijke waarden worden gemaakt."),
+                                text: i18next.t('viewer_admin_applicationtreelayer_55'),
                                 xtype: 'label',
                                 hideMode: 'display'
                             }
@@ -503,7 +503,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             },
             items: [{
                 xtype: 'label',
-                text: ___("Kies een attribuut waarvan de ingelogde username het zelfde moet zijn als een gebruiker de betreffende feature mag wijzigen. Indien leeg wordt hier niet op gecontroleerd.")
+                text: i18next.t('viewer_admin_applicationtreelayer_56')
             },{
                 xtype: 'combobox',
                 store: attributeStore,
@@ -616,10 +616,10 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             var geomTypesStore = Ext.create('Ext.data.Store', {
                 fields: ['type', 'label'],
                 data : [
-                    {"type":"geometry", "label":___("Onbekend (alleen bewerken)")},
-                    {"type":"point", "label":___("Punt")},
-                    {"type":"linestring", "label":___("Lijn")},
-                    {"type":"polygon", "label":___("Vlak")}
+                    {"type":"geometry", "label":i18next.t('viewer_admin_applicationtreelayer_57')},
+                    {"type":"point", "label":i18next.t('viewer_admin_applicationtreelayer_58')},
+                    {"type":"linestring", "label":i18next.t('viewer_admin_applicationtreelayer_59')},
+                    {"type":"polygon", "label":i18next.t('viewer_admin_applicationtreelayer_60')}
                 ]
             });
             if(Ext.Array.contains(geomTypes, type)) {

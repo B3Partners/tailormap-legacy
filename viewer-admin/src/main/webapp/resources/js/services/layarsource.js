@@ -97,17 +97,17 @@ Ext.onReady(function(){
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">' + ___("Bewerken") + '</a>', value) +
+                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">' + i18next.t('viewer_admin_layarsource_3') + '</a>', value) +
                       ' | ' +
-                      Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">' + ___("Verwijderen") + '</a>', value);
+                      Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">' + i18next.t('viewer_admin_layarsource_4') + '</a>', value);
                 }
             }
         ],
         bbar: Ext.create('Ext.PagingToolbar', {
             store: store,
             displayInfo: true,
-            displayMsg: ___("Layarbronnen {0} - {1} van {2}"),
-            emptyMsg: ___("Geen layarbronnen weer te geven")
+            displayMsg: i18next.t('viewer_admin_layarsource_5'),
+            emptyMsg: i18next.t('viewer_admin_layarsource_6')
         }),
         plugins: [ 
             Ext.create('Ext.ux.grid.GridHeaderFilters', {

@@ -35,7 +35,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype: 'textfield',
             fieldLabel: i18next.t('viewer_components_customconfiguration_67'),
             name: 'moreLink',
-            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : ___("Meer"),
+            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : i18next.t('viewer_components_customconfiguration_283'),
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',

@@ -32,10 +32,10 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ['type', 'label'],
             data :
                 [
-                {"type":"upperleft", "label": ___("Linksboven")},
-                {"type":"upperright", "label": ___("Rechtsboven")},
-                {"type":"lowerleft", "label": ___("Linksonder")},
-                {"type":"lowerright", "label": ___("Rechtsonder")}
+                {"type":"upperleft", "label": i18next.t('viewer_components_customconfiguration_321')},
+                {"type":"upperright", "label": i18next.t('viewer_components_customconfiguration_322')},
+                {"type":"lowerleft", "label": i18next.t('viewer_components_customconfiguration_323')},
+                {"type":"lowerright", "label": i18next.t('viewer_components_customconfiguration_324')}
                 ]
         });
         this.form=new Ext.form.FormPanel({

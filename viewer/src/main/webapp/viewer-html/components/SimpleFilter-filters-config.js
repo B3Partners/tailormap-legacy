@@ -54,7 +54,7 @@ Ext.define("viewer.components.sf.Config", {
             fieldLabel: i18next.t('viewer_components_sf_config_1'),
             name: "start",
             value: Ext.isDefined(this.configObject.start) ? this.configObject.start : this.getDefaultStartValue(),
-            qtip: ___("Vul een vaste waarde in of 'min' of 'max'. Bij een slider voor een bereik geef twee waardes op gescheiden door een komma"),
+            qtip: i18next.t('viewer_components_sf_config_51'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -142,7 +142,7 @@ Ext.define("viewer.components.sf.ResetConfig", {
         return items;
     },
     getTitle : function(){
-        return ___("Reset filter knop");
+        return i18next.t('viewer_components_sf_config_52');
     }
 });
 
@@ -159,7 +159,7 @@ Ext.define("viewer.components.sf.TextlabelConfig", {
         }];
     },
     getTitle : function(){
-        return ___("Tekst label");
+        return i18next.t('viewer_components_sf_config_53');
     }
 });
 
@@ -257,7 +257,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
         return items;
     },
     getTitle : function (){
-        return ___("Vinkvak");
+        return i18next.t('viewer_components_sf_config_54');
     },
     getDefaultStartValue : function (){
         return "";
@@ -292,7 +292,7 @@ Ext.define("viewer.components.sf.RadioConfig", {
         viewer.components.sf.RadioConfig.superclass.constructor.call(this, config, /*setDefaultValue=*/false);
     },
     getTitle : function(){
-        return ___("Keuzerondje");
+        return i18next.t('viewer_components_sf_config_55');
     }
 });
 
@@ -310,7 +310,7 @@ Ext.define("viewer.components.sf.DateConfig", {
             fieldLabel: i18next.t('viewer_components_sf_config_11'),
             name: "start",
             value: Ext.isDefined(this.configObject.start) ? this.configObject.start : this.getDefaultStartValue(),
-            qtip: ___("Vul een vaste waarde in. Gebruik 'curweek' i.c.m. twee datumprikkers om in het begin te filteren op de huidige week."),
+            qtip: i18next.t('viewer_components_sf_config_56'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -342,7 +342,7 @@ Ext.define("viewer.components.sf.DateConfig", {
         return items;
     },
     getTitle : function(){
-        return ___("Datum");
+        return i18next.t('viewer_components_sf_config_57');
     }
 });
 
@@ -385,7 +385,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
             name: "min",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "range") || !this.configObject.comboType,
             id: "min",
-            qtip: ___("De minimale waarde voor de waardes in het bereik"),
+            qtip: i18next.t('viewer_components_sf_config_58'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -399,7 +399,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
             fieldLabel: i18next.t('viewer_components_sf_config_15'),
             name: "max",
             hidden: ( this.configObject.comboType && this.configObject.comboType !== "range" ) || !this.configObject.comboType,
-            qtip: ___("De maximale waarde voor de waardes in het bereik"),
+            qtip: i18next.t('viewer_components_sf_config_59'),
             id: "max",
             value: this.configObject.max ? this.configObject.max : "",
             listeners: {
@@ -415,7 +415,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
             name: "ownValues",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "own") || this.configObject.comboType,
             id: "ownValues",
-            qtip: ___("Vul hier een lijst met eigen waardes in. De waardes moeten komma gescheiden zijn, bijvoorbeeld: 1,2,3"),
+            qtip: i18next.t('viewer_components_sf_config_60'),
             value: this.configObject.ownValues ? this.configObject.ownValues : "",
             listeners: {
                 render: function (c) {
@@ -430,7 +430,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
             name: "maxFeatures",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "maxFeatures",
-            qtip: ___("Vul hier het aantal features in dat maximaal opgehaald wordt. Afhankelijk van service/database die erachter zit."),
+            qtip: i18next.t('viewer_components_sf_config_61'),
             value: this.configObject.maxFeatures ? this.configObject.maxFeatures : "",
             listeners: {
                 render: function (c) {
@@ -454,7 +454,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
             name: "linkedFilter",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilter",
-            qtip: ___("Kies hier het filter dat kan dienen als invoer voor dit filter. Gebruik dit om getrapte zoekers te maken."),
+            qtip: i18next.t('viewer_components_sf_config_62'),
             value: this.configObject.linkedFilter ? this.configObject.linkedFilter : "",
             listeners: {
                 render: function (c) {
@@ -480,7 +480,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
             name: "linkedFilterAttribute",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilterAttribute",
-            qtip: ___("Kies hier het attribuut waarop het filter hierboven effect op heeft"),
+            qtip: i18next.t('viewer_components_sf_config_63'),
             value: this.configObject.linkedFilterAttribute ? this.configObject.linkedFilterAttribute : "",
             listeners: {
                 render: function (c) {
@@ -529,7 +529,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
         return "max";
     },
     getTitle : function (){
-        return ___("Selectielijst");
+        return i18next.t('viewer_components_sf_config_64');
     }
 });
 
@@ -543,7 +543,7 @@ Ext.define("viewer.components.sf.NumberConfig", {
         items = items.concat([{
             fieldLabel: i18next.t('viewer_components_sf_config_20'),
             name: "fieldLabel",
-            qtip: ___("Label dat achter het nummer veld komt"),
+            qtip: i18next.t('viewer_components_sf_config_65'),
             value: this.configObject.fieldLabel ? this.configObject.fieldLabel : "",
             listeners: {
                 render: function (c) {
@@ -556,7 +556,7 @@ Ext.define("viewer.components.sf.NumberConfig", {
         },{
             fieldLabel: i18next.t('viewer_components_sf_config_21'),
             name: "min",
-            qtip: ___("Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt"),
+            qtip: i18next.t('viewer_components_sf_config_66'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -570,7 +570,7 @@ Ext.define("viewer.components.sf.NumberConfig", {
             fieldLabel: i18next.t('viewer_components_sf_config_22'),
             name: "max",
             value: this.configObject.max ? this.configObject.max : "",
-            qtip: ___("Indien geen waarde ingevuld wordt grootste attribuutwaarde uit de attribuutlijst gebruikt"),
+            qtip: i18next.t('viewer_components_sf_config_67'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -603,7 +603,7 @@ Ext.define("viewer.components.sf.NumberConfig", {
         return 0;
     },
     getTitle : function(){
-        return ___("Getalfilter");
+        return i18next.t('viewer_components_sf_config_68');
     }
 
 });
@@ -639,7 +639,7 @@ Ext.define("viewer.components.sf.TextConfig", {
         return "";
     },
     getTitle : function(){
-        return ___("Tekstfilter");
+        return i18next.t('viewer_components_sf_config_69');
     }
 
 });
@@ -654,7 +654,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
         items = items.concat([{
             fieldLabel: i18next.t('viewer_components_sf_config_25'),
             name: "min",
-            qtip: ___("Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt"),
+            qtip: i18next.t('viewer_components_sf_config_70'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -668,7 +668,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             fieldLabel: i18next.t('viewer_components_sf_config_26'),
             name: "max",
             value: this.configObject.max ? this.configObject.max : "",
-            qtip: ___("Indien geen waarde ingevuld wordt grootste attribuutwaarde uit de attribuutlijst gebruikt"),
+            qtip: i18next.t('viewer_components_sf_config_71'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -703,7 +703,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             fieldLabel: i18next.t('viewer_components_sf_config_29'),
             name: "valueFormatString",
             value: this.configObject.valueFormatString ? this.configObject.valueFormatString : "",
-            qtip: ___("Laat leeg om geen waarde van de schuifjes te tonen. Voorbeelden format strings: '0' (alleen hele getallen), '0 m²' (met eenheid), '0.00' (twee decimalen), '0,000' (met duizendtalscheidingsteken), '€ 0,000.00' (bedrag)"),
+            qtip: i18next.t('viewer_components_sf_config_72'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -727,7 +727,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             name: "linkedFilter",
             hidden: false,// (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilter",
-            qtip: ___("Kies hier het filter dat kan dienen als invoer voor dit filter. Gebruik dit om getrapte zoekers te maken."),
+            qtip: i18next.t('viewer_components_sf_config_73'),
             value: this.configObject.linkedFilter ? this.configObject.linkedFilter : "",
             listeners: {
                 render: function (c) {
@@ -753,7 +753,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             name: "linkedFilterAttribute",
             hidden: false,//(this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilterAttribute",
-            qtip: ___("Kies hier het attribuut waarop het filter hierboven effect op heeft"),
+            qtip: i18next.t('viewer_components_sf_config_74'),
             value: this.configObject.linkedFilterAttribute ? this.configObject.linkedFilterAttribute : "",
             listeners: {
                 render: function (c) {
@@ -771,7 +771,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
         return "min,max";
     },
     getTitle : function(){
-        return ___("Slider");
+        return i18next.t('viewer_components_sf_config_75');
     }
 
 });
@@ -786,7 +786,7 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
         items = items.concat([{
             fieldLabel: i18next.t('viewer_components_sf_config_32'),
             name: "min",
-            qtip: ___("Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt"),
+            qtip: i18next.t('viewer_components_sf_config_76'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -800,7 +800,7 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
             fieldLabel: i18next.t('viewer_components_sf_config_33'),
             name: "max",
             value: this.configObject.max ? this.configObject.max : "",
-            qtip: ___("Indien geen waarde ingevuld wordt grootste attribuutwaarde uit de attribuutlijst gebruikt"),
+            qtip: i18next.t('viewer_components_sf_config_77'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -812,7 +812,7 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
         },{
             fieldLabel: i18next.t('viewer_components_sf_config_34'),
             name: "fieldLabelMin",
-            qtip: ___("Label dat achter het minimale waarde veld komt"),
+            qtip: i18next.t('viewer_components_sf_config_78'),
             value: this.configObject.fieldLabelMin ? this.configObject.fieldLabelMin : "",
             listeners: {
                 render: function (c) {
@@ -825,7 +825,7 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
         },{
             fieldLabel: i18next.t('viewer_components_sf_config_35'),
             name: "fieldLabelMax",
-            qtip: ___("Label dat achter het maximale waarde veld komt"),
+            qtip: i18next.t('viewer_components_sf_config_79'),
             value: this.configObject.fieldLabelMax ? this.configObject.fieldLabelMax : "",
             listeners: {
                 render: function (c) {
@@ -842,7 +842,7 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
         return "";
     },
     getTitle : function(){
-        return ___("Getalrange");
+        return i18next.t('viewer_components_sf_config_80');
     }
 
 });
