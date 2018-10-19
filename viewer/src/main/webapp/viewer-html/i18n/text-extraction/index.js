@@ -7,48 +7,52 @@ class TextExtractor {
     constructor() {
         this.combined_stores = [];
         const languageFiles = [
+            // {
+            //     outputFilename: "../locales/nl.json",
+            //     outputJS: "../locales/nl.js",
+            //     fileOptions: {
+            //         files: [
+            //             '../../common/**/*.js',
+            //             '../../components/**/*.js'
+            //         ],
+            //         ignore: [
+            //             '../../common/openlayers/**/*.js'
+            //         ],
+            //     }
+            // },
+            // {
+            //     outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.json",
+            //     outputJS: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.js",
+            //     prefix: "viewer_admin",
+            //     useCombined: true,
+            //     fileOptions: {
+            //         files: [
+            //             '../../../../../../../viewer-admin/src/main/webapp/resources/js/**/*.js'
+            //         ],
+            //     }
+            // },
             {
-                outputFilename: "../locales/nl.json",
-                outputJS: "../locales/nl.js",
+                outputFilename: "../nl_jsp.json",
+                outputProperties: "../nl.properties",
+                prefix: "viewer",
+                seperator: ".",
                 fileOptions: {
                     files: [
-                        '../../common/**/*.js',
-                        '../../components/**/*.js'
-                    ],
-                    ignore: [
-                        '../../common/openlayers/**/*.js'
+                        '../../../../../../../viewer/src/main/webapp/**/*.jsp'
                     ],
                 }
             },
             {
-                outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.json",
-                outputJS: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.js",
+                outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl_jsp.json",
+                outputProperties: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.properties",
                 prefix: "viewer_admin",
-                useCombined: true,
+                seperator: ".",
                 fileOptions: {
                     files: [
-                        '../../../../../../../viewer-admin/src/main/webapp/resources/js/**/*.js'
+                        '../../../../../../../viewer-admin/src/main/webapp/**/*.jsp'
                     ],
                 }
             },
-            // {
-            //     outputFilename: "../nl_jsp.json",
-            //     outputProperties: "../nl.properties",
-            //     fileOptions: {
-            //         files: [
-            //             '../../../../../../../viewer/src/main/webapp/**/*.jsp'
-            //         ],
-            //     }
-            // },
-            // {
-            //     outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl_jsp.json",
-            //     outputProperties: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.properties",
-            //     fileOptions: {
-            //         files: [
-            //             '../../../../../../../viewer-admin/src/main/webapp/**/*.jsp'
-            //         ],
-            //     }
-            // },
         ];
         languageFiles.forEach(fileConf => {
             this.createLanguageFile(fileConf);
@@ -65,7 +69,7 @@ class TextExtractor {
                     console.error(e);
                 }
             }
-            const count_store = this.createCountStore(store);
+            const count_store = this.createCountStore(store, opts.seperator || "_");
             if (opts.outputProperties) {
                 this.extractTextFromJSP(store, count_store, opts);
                 return;
@@ -74,11 +78,11 @@ class TextExtractor {
         });
     }
 
-    createCountStore(store) {
+    createCountStore(store, seperator = "_") {
         const count_store = {};
         for(const key in store) if(store.hasOwnProperty(key)) {
-            const basename = key.substring(0, key.lastIndexOf("_"));
-            const count = parseInt(key.substring(key.lastIndexOf("_") + 1)) + 1;
+            const basename = key.substring(0, key.lastIndexOf(seperator));
+            const count = parseInt(key.substring(key.lastIndexOf(seperator) + 1)) + 1;
             if (!count_store.hasOwnProperty(basename) || count_store[basename] < count) {
                 count_store[basename] = count;
             }
@@ -134,22 +138,22 @@ i18next.init({
         });
     }
 
-    getKey(count_store, filename, filecontents, prefix) {
+    getKey(count_store, filename, filecontents, prefix, seperator = "_") {
         const classNameMatches = filecontents.match(/Ext\.define\s*\(["'](viewer\.[^'"]*)["']/);
         const className = (classNameMatches && classNameMatches.length > 1) ? classNameMatches[1] : "";
         let keyname = "";
         if (className) {
-            keyname = className.replace(/[\.\-]/g, "_").toLowerCase();
+            keyname = className.replace(/[\.\-]/g, seperator).toLowerCase();
         } else {
-            keyname = filename.substring(filename.lastIndexOf("/") + 1).replace(/\-/g, "_").replace(".jsp", "").replace(".js", "").toLowerCase();
+            keyname = filename.substring(filename.lastIndexOf("/") + 1).replace(/\-/g, seperator).replace(".jsp", "").replace(".js", "").toLowerCase();
         }
         if (prefix) {
-            keyname = prefix + "_" + keyname;
+            keyname = prefix + seperator + keyname;
         }
         if (!count_store.hasOwnProperty(keyname)) {
             count_store[keyname] = 0;
         }
-        return `${keyname}_${count_store[keyname]++}`;
+        return `${keyname}${seperator}${count_store[keyname]++}`;
     }
 
     extractTextFromJS(store, count_store, opts) {
@@ -265,7 +269,7 @@ i18next.init({
         let match_count = 0;
         const textReplacer = {
             ...opts.fileOptions,  
-            from: /___(.*)___/g,
+            from: /___([^_]*)___/g,
             to: (...args) => {
                 const match = args[0];
                 const text = args[1];
@@ -274,7 +278,7 @@ i18next.init({
                 if (!text) {
                     return match;
                 }
-                const key = this.getKey(count_store, filename, filecontents, opts.prefix);
+                const key = this.getKey(count_store, filename, filecontents, opts.prefix, ".");
                 store[key] = text;
                 match_count++;
                 return `<fmt:message key="${key}" />`;
