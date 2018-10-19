@@ -21,16 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>___About___</title>
+        <title><fmt:message key="viewer_admin.about.0" /></title>
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
     </head>
     <body>
-        <h1>___Flamingo viewer-admin___</h1>
+        <h1><fmt:message key="viewer_admin.about.1" /></h1>
         <c:set var="version" value="${project.version}"/>
         <table>
             
             <tr>
-                <td><b>___Version___:</b></td>
+                <td><b><fmt:message key="viewer_admin.about.2" />:</b></td>
                 <td>
                     <c:choose>
                         <c:when test="${fn:contains(version,'SNAPSHOT')}">
@@ -44,43 +44,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </td>
             </tr>
             <tr>
-                <td><b>___Build time___:</b></td>
+                <td><b><fmt:message key="viewer_admin.about.3" />:</b></td>
                 <td>${builddetails.build.time}</td>
             </tr>
             <tr>
-                <td><b>___Build by___:</b></td>
+                <td><b><fmt:message key="viewer_admin.about.4" />:</b></td>
                 <td>${builddetails.build.user.name}</td>
             </tr>
             <tr>
                 <td colspan="2">
-            <center><b>___Git details___</b></center>
+            <center><b><fmt:message key="viewer_admin.about.5" /></b></center>
                 </td>
             </tr>
             <tr>
-                <td><b>___Git branch___:</b></td>
+                <td><b><fmt:message key="viewer_admin.about.6" />:</b></td>
                 <td>${builddetails.branch}</td>
             </tr>
             <tr>
-                <td><b>___Git remote url___</b></td>
+                <td><b><fmt:message key="viewer_admin.about.7" /></b></td>
                 <td>${builddetails.remote.origin.url}</td>
             </tr>
             <tr>
-                <td><b>___Git commit abbrev id___:</b></td>
+                <td><b><fmt:message key="viewer_admin.about.8" />:</b></td>
                 <td>${builddetails.commit.id.abbrev}</td>
             </tr>
             <tr>
-                <td><b>___Git commit full id___:</b></td>
+                <td><b><fmt:message key="viewer_admin.about.9" />:</b></td>
                 <td>${builddetails.commit.id}</td>
             </tr>
             <tr>
-                <td><b>___Git commit time___:</b></td>
+                <td><b><fmt:message key="viewer_admin.about.10" />:</b></td>
                 <td>${builddetails.commit.time}</td>
             </tr>
 </table>
-<h2>___Runtime information___</h2>
+<h2><fmt:message key="viewer_admin.about.11" /></h2>
 <table>
     <tr>
-        <td><b>___OS info___:</b></td>
+        <td><b><fmt:message key="viewer_admin.about.12" />:</b></td>
         <td>
             <jsp:expression>System.getProperty("os.name")</jsp:expression>
             <jsp:expression>System.getProperty("os.version")</jsp:expression>
@@ -88,14 +88,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr>
-            <td><b>___Java version___:</b></td>
+            <td><b><fmt:message key="viewer_admin.about.13" />:</b></td>
             <td>
             <jsp:expression>System.getProperty("java.vendor")</jsp:expression>
             <jsp:expression>System.getProperty("java.version")</jsp:expression>
             </td>
         </tr>
         <tr>
-            <td><b>___Servlet container info___:</b></td>
+            <td><b><fmt:message key="viewer_admin.about.14" />:</b></td>
             <td><jsp:expression>getServletContext().getServerInfo()</jsp:expression></td>
     </tr>
 </table>

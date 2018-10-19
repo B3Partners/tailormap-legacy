@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Layar services___</title>
+        <title><fmt:message key="viewer_admin.layarservice.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -29,9 +29,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <stripes:errors/>
             <stripes:messages/>
-            <h1>Layar services<a href="#Layarservices_Beheren_Help" title="___Help___" class="helplink"></a></h1>  
+            <h1>Layar services<a href="#Layarservices_Beheren_Help" title="<fmt:message key="viewer_admin.layarservice.1" />" class="helplink"></a></h1>  
             <div style="margin-top: 35px; margin-bottom: -20px;">
-                ___Gebruik de volgende URL in Layar___: <code><c:out value="${actionBean.url}"/></code>
+                <fmt:message key="viewer_admin.layarservice.2" />: <code><c:out value="${actionBean.url}"/></code>
             </div>               
             <div id="grid-container" class="documenten">
 

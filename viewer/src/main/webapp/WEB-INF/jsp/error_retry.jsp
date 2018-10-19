@@ -30,6 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
         </p>
-        <stripes:link beanclass="nl.b3p.viewer.stripes.ApplicationActionBean"><stripes:param name="name" value="${actionBean.name}"/> <stripes:param name="version" value="${actionBean.version}"/>___Log opnieuw in___</stripes:link>
+        <stripes:link beanclass="nl.b3p.viewer.stripes.ApplicationActionBean"><stripes:param name="name" value="${actionBean.name}"/> <stripes:param name="version" value="${actionBean.version}"/><fmt:message key="viewer.error_retry.0" /></stripes:link>
     </body>
 </html>

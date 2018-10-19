@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Edit layar source___</title>
+        <title><fmt:message key="viewer_admin.editlayarsource.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -30,13 +30,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="layarSource" value="${actionBean.layarSource.id}"/>
-                        <h1 id="headertext">___Layar bron bewerken___</h1>
+                        <h1 id="headertext"><fmt:message key="viewer_admin.editlayarsource.1" /></h1>
                         <script>var featureTypes={};</script>
                         <div style="float: left;width: 100%">
                             <div style="width: 70%; float: left;">
                             <table class="formtable">                      
                                 <tr>
-                                    <td>___Attribuutbron___*</td>
+                                    <td><fmt:message key="viewer_admin.editlayarsource.2" />*</td>
                                     <td>
                                         <select id="featureSourceSelect">
                                             <c:forEach var="s" items="${actionBean.featureSources}">
@@ -66,10 +66,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                                 </tr>
                                 <tr>
-                                    <td>___Layar service___*</td>
+                                    <td><fmt:message key="viewer_admin.editlayarsource.3" />*</td>
                                     <td>
                                         <stripes:select name="layarSource.layarService">
-                                    <option value="1">___Maak uw keuze..___</option>                      
+                                    <option value="1"><fmt:message key="viewer_admin.editlayarsource.4" /></option>                      
                                     <c:forEach var="ls" items="${actionBean.layarServices}">  
                                         <c:set var="selected" value="" />                
                                         <c:if test="${actionBean.layarSource.layarService.id == ls.id}">
@@ -80,33 +80,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </stripes:select>                                            
                                 </td>
                                 </tr>  
-                                <tr><td colspan="2">___Te publiceren velden, geef aan hoe deze gevuld moeten worden per Object. Gebruik '[attribuutnaam]' om een waarde van het object te gebruiken. Aan de rechterkant wordt een lijst getoond met mogelijke attribuutnamen.___</td></tr>                                
+                                <tr><td colspan="2"><fmt:message key="viewer_admin.editlayarsource.5" /></td></tr>                                
                                 <tr>
-                                    <td>___Titel___:</td>
+                                    <td><fmt:message key="viewer_admin.editlayarsource.6" />:</td>
                                     <td>
                                         <stripes:text name="details['text.title']"></stripes:text>
                                     </td>
                                 </tr> 
                                 <tr>
-                                    <td>___Omschrijving___:</td>
+                                    <td><fmt:message key="viewer_admin.editlayarsource.7" />:</td>
                                     <td>
                                         <stripes:text name="details['text.description']"></stripes:text>
                                     </td>
                                 </tr>  
                                 <tr>
-                                    <td>___Footnote___:</td>
+                                    <td><fmt:message key="viewer_admin.editlayarsource.8" />:</td>
                                     <td>
                                         <stripes:text name="details['text.footnote']"></stripes:text>
                                     </td>
                                 </tr>                         
                                 <tr>
-                                    <td>___Url naar afbeelding___:</td>
+                                    <td><fmt:message key="viewer_admin.editlayarsource.9" />:</td>
                                     <td>
                                         <stripes:text name="details['imageURL']"></stripes:text>
                                     </td>
                                 </tr>             
                                 <tr>
-                                    <td colspan="2">* = ___verplicht___</td>
+                                    <td colspan="2">* = <fmt:message key="viewer_admin.editlayarsource.10" /></td>
                                 </tr>
                             </table>
                         </div>
@@ -114,8 +114,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         </div>
                         <div class="submitbuttons">
-                            <stripes:submit name="save" value="___Opslaan___"/>
-                            <stripes:submit name="cancel" value="___Annuleren___"/>
+                            <stripes:submit name="save" value="<fmt:message key="viewer_admin.editlayarsource.11" />"/>
+                            <stripes:submit name="cancel" value="<fmt:message key="viewer_admin.editlayarsource.12" />"/>
                         </div>
                         <c:choose>
                             <c:when test="${not empty actionBean.layarSource.featureType.id}">
@@ -134,10 +134,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="___Nieuwe layar bron___"/>
+                        <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarsource.13" />"/>
                     </c:when>
                     <c:otherwise>
-                        <stripes:submit name="edit" value="___Nieuwe layar bron___"/>
+                        <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarsource.14" />"/>
                     </c:otherwise>
                 </c:choose>
             </stripes:form>

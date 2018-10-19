@@ -9,7 +9,7 @@
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Cyclorama___</title>
+        <title><fmt:message key="viewer_admin.cyclorama.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -24,27 +24,27 @@
                 <stripes:messages/>
             </p>
             <stripes:select name="account" onchange="changeSelection(this)">
-                <stripes:option value="-1" label=" ___-- Nieuwe key --___ "/>
+                <stripes:option value="-1" label=" <fmt:message key="viewer_admin.cyclorama.1" /> "/>
                 <stripes:options-collection collection="${actionBean.accounts}" label="filename" value="id"/>
             </stripes:select>
 
                 <table class="formtable">
                     <tr>
-                        <td>___Gebruikersnaam___:</td>
+                        <td><fmt:message key="viewer_admin.cyclorama.2" />:</td>
                         <td><stripes-dynattr:text name="account.username">${account.username}</stripes-dynattr:text></td>
                 </tr>
                 <tr>
-                        <td>___Wachtwoord___:</td>
+                        <td><fmt:message key="viewer_admin.cyclorama.3" />:</td>
                         <td><stripes-dynattr:password autocomplete="new-password" name="account.password"/></td>
                 </tr>
                 <tr>
-                        <td>___PFX-bestand___:</td>
+                        <td><fmt:message key="viewer_admin.cyclorama.4" />:</td>
                         <td><stripes:file name="key"/></td>
                     </tr>
                     <tr>
-                        <td><stripes:submit name="save" value="___Opslaan___"/></td>
+                        <td><stripes:submit name="save" value="<fmt:message key="viewer_admin.cyclorama.5" />"/></td>
                         <c:if test="${not empty actionBean.account}">
-                            <td><stripes:submit name="removeKey" value="___Verwijder___"/></td>
+                            <td><stripes:submit name="removeKey" value="<fmt:message key="viewer_admin.cyclorama.6" />"/></td>
                         </c:if>
                     </tr>
                 </table>

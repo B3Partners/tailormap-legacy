@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Bewerk zoekbron___</title>
+        <title><fmt:message key="viewer_admin.editsolrsource.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <c:set var="isNew">
@@ -41,10 +41,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:when test="${empty actionBean.context.validationErrors && actionBean.context.eventName == 'newSearchConfig' || actionBean.context.eventName == 'edit' }">
                     <c:choose>
                         <c:when test="${!isNew}">
-                            <h1 id="headertext">___Zoekbron bewerken___</h1>
+                            <h1 id="headertext"><fmt:message key="viewer_admin.editsolrsource.1" /></h1>
                         </c:when>
                         <c:otherwise>
-                            <h1 id="headertext">___Nieuwe zoekbron toevoegen___</h1>           
+                            <h1 id="headertext"><fmt:message key="viewer_admin.editsolrsource.2" /></h1>           
                         </c:otherwise>
                     </c:choose>
                     <stripes:hidden name="solrConfiguration" value="${actionBean.solrConfiguration.id}" />
@@ -52,26 +52,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table class="formtable">
                             <tr>
                                 <td>
-                                    ___Naam___:
+                                    <fmt:message key="viewer_admin.editsolrsource.3" />:
                                 </td>
                                 <td>
                                     <stripes:text name="solrConfiguration.name"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td>___Attribuutbron___:</td>
+                                <td><fmt:message key="viewer_admin.editsolrsource.4" />:</td>
                                 <td>
                                     <stripes:select name="solrConfiguration.simpleFeatureType.featureSource" onchange="featureSourceChanged(this)">
-                                        <stripes:option value="-1">___Kies een attribuutbron___</stripes:option>
+                                        <stripes:option value="-1"><fmt:message key="viewer_admin.editsolrsource.5" /></stripes:option>
                                         <stripes:options-collection collection="${actionBean.featureSources}" label="name"/>
                                     </stripes:select>
                                 </td>
                             </tr>
                             <tr>
-                                <td>___Featuretype___:</td>
+                                <td><fmt:message key="viewer_admin.editsolrsource.6" />:</td>
                                 <td>
                                     <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this.value)">
-                                        <stripes:option value="-1">___Kies een featuretype___</stripes:option>
+                                        <stripes:option value="-1"><fmt:message key="viewer_admin.editsolrsource.7" /></stripes:option>
                                         <stripes:options-collection collection="${actionBean.featureTypes}" label="typeName"/>
                                     </stripes:select>
                                 </td>
@@ -81,8 +81,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div id="attributes" style="width: 300px; height: 250px; float: left; margin-left: 25px; margin-top: 5px;"></div>
                     <div style="clear: both;"></div>
                     <div class="submitbuttons">
-                        <stripes:submit name="cancel" value="___Annuleren___"/>
-                        <stripes:submit name="save" value="___Opslaan___"/>
+                        <stripes:submit name="cancel" value="<fmt:message key="viewer_admin.editsolrsource.8" />"/>
+                        <stripes:submit name="save" value="<fmt:message key="viewer_admin.editsolrsource.9" />"/>
                     </div>
                     <c:if test="${!isNew}">
                         <script>

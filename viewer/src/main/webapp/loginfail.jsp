@@ -22,22 +22,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>___Inloggen___</title>
+        <title><fmt:message key="viewer.loginfail.0" /></title>
     </head>
     <body>
-        <h2>___Inloggen___</h2>
+        <h2><fmt:message key="viewer.loginfail.1" /></h2>
 
-        <p style="color: red; font-weight: bold">___Ongeldige logingegevens.___</p>
+        <p style="color: red; font-weight: bold"><fmt:message key="viewer.loginfail.2" /></p>
 
         <form method="post" action="j_security_check">
 
             <table>
-                <tr><td>___Gebruikersnaam___:</td><td><input type="text" name="j_username" /></td></tr>
-                <tr><td>___Wachtwoord___:</td><td><input type="password" name="j_password"/></td></tr>
+                <tr><td><fmt:message key="viewer.loginfail.3" />:</td><td><input type="text" name="j_username" /></td></tr>
+                <tr><td><fmt:message key="viewer.loginfail.4" />:</td><td><input type="password" name="j_password"/></td></tr>
             </table>
 
             <p>
-            <input type="submit" name="submit" value="___Login___"/>
+            <input type="submit" name="submit" value="<fmt:message key="viewer.loginfail.5" />"/>
         </form>
         <script type="text/javascript">
             window.onload = function() {

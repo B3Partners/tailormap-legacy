@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Bewerk Attribuutbron___</title>
+        <title><fmt:message key="viewer_admin.editattribute.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -32,17 +32,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <h1 id="headertext">Attribuut bewerken</h1>
                 <table class="formtable">
                     <tr>
-                        <td>___Alias___:</td>
+                        <td><fmt:message key="viewer_admin.editattribute.1" />:</td>
                         <td><stripes:text name="attribute.alias" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
-                        <td>___Attribuut___ *:</td>
+                        <td><fmt:message key="viewer_admin.editattribute.2" /> *:</td>
                         <td><stripes:text name="attribute.name" maxlength="255" size="30" disabled="true"/></td>
                     </tr>
                 </table>
                 <div class="submitbuttons">
-                    <stripes:submit name="save" value="___Opslaan___"/>
-                    <stripes:reset name="cancel" class="extlikebutton" value="___Annuleren___"/>
+                    <stripes:submit name="save" value="<fmt:message key="viewer_admin.editattribute.3" />"/>
+                    <stripes:reset name="cancel" class="extlikebutton" value="<fmt:message key="viewer_admin.editattribute.4" />"/>
                 </div>
             </c:if>
             <c:if test="${actionBean.context.eventName == 'save'}">

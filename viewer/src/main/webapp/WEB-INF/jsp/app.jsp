@@ -56,11 +56,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <body>
 
         <div id="appLoader">
-            <div class="spinner">___Loading...___</div>
+            <div class="spinner"><fmt:message key="viewer.app.0" /></div>
         </div>
 
         <div id="loadwrapper">
-            <div id="loader">___Loading...___</div>
+            <div id="loader"><fmt:message key="viewer.app.1" /></div>
         </div>
 
         <div id="wrapper"></div>

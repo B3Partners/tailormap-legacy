@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Geo service___</title>
+        <title><fmt:message key="viewer_admin.editsld.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
@@ -35,8 +35,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <c:set var="edit" value="${!empty actionBean.sld.id}"/>
 
     <span id="headertext" style="display: none">
-    <c:if test="${!edit}">___Nieuwe SLD toevoegen aan___ <c:out value="${actionBean.service.name}"/></c:if>
-    <c:if test="${edit}">___SLD___ <c:out value="${actionBean.sld.title}"/> ___bewerken van___ <c:out value="${actionBean.service.name}"/></c:if>
+    <c:if test="${!edit}"><fmt:message key="viewer_admin.editsld.1" /> <c:out value="${actionBean.service.name}"/></c:if>
+    <c:if test="${edit}"><fmt:message key="viewer_admin.editsld.2" /> <c:out value="${actionBean.sld.title}"/> <fmt:message key="viewer_admin.editsld.3" /> <c:out value="${actionBean.service.name}"/></c:if>
     </span>
 
     <p>
@@ -53,32 +53,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         });
     </script>
     
-    ___Naam___ *: <stripes:text name="sld.title" maxlength="255" size="30"/><br>
+    <fmt:message key="viewer_admin.editsld.4" /> *: <stripes:text name="sld.title" maxlength="255" size="30"/><br>
     <br>
-    <label><stripes:checkbox name="sld.defaultStyle"/> ___Standaard SLD voor lagen van deze service die in een applicatie worden gebruikt___</label><br>
+    <label><stripes:checkbox name="sld.defaultStyle"/> <fmt:message key="viewer_admin.editsld.5" /></label><br>
     <fieldset>
-        <legend>___Soort___</legend>
-        <label><stripes:radio name="sldType" value="external" onchange="checkType()"/>___Externe SLD___</label><br>
-        <label><stripes:radio name="sldType" value="body" onchange="checkType()"/>___SLD body invoeren___</label>
+        <legend><fmt:message key="viewer_admin.editsld.6" /></legend>
+        <label><stripes:radio name="sldType" value="external" onchange="checkType()"/><fmt:message key="viewer_admin.editsld.7" /></label><br>
+        <label><stripes:radio name="sldType" value="body" onchange="checkType()"/><fmt:message key="viewer_admin.editsld.8" /></label>
     </fieldset>
     <div id="external">
-       ___URL___ *: <stripes:text name="sld.externalUrl" maxlength="1000" size="80"/><br>
-        ___Let op: in de externe SLD moeten de lagen uit deze service met <code>&lt;NamedLayer&gt;</code> elementen worden genoemd<br> om effect te hebben.___
+       <fmt:message key="viewer_admin.editsld.9" /> *: <stripes:text name="sld.externalUrl" maxlength="1000" size="80"/><br>
+        <fmt:message key="viewer_admin.editsld.10" />
     </div>
     <div style="margin: 5px 0px 5px 0px;">
-        ___Bij het opslaan van de SLD wordt uit de SLD bepaald per layer welke naam de eerste UserStyle heeft. Deze wordt voor ArcGIS Server gebruikt voor WMS requests. Indien een externe SLD is gewijzigd opnieuw op "Opslaan" drukken om deze gegevens te updaten.<p>Voor ArcGIS wilt u mogelijk extra URL parameters voor GetLegendGraphic (bijvoorbeeld WIDTH=200)___: <stripes:text name="sld.extraLegendParameters" maxlength="255" size="30"/><br/>
+        <fmt:message key="viewer_admin.editsld.11" />: <stripes:text name="sld.extraLegendParameters" maxlength="255" size="30"/><br/>
     </div>
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
-                <stripes:submit name="saveSld" value="___Opslaan___"/>
+                <stripes:submit name="saveSld" value="<fmt:message key="viewer_admin.editsld.12" />"/>
             </c:when>
             <c:otherwise>
-                <stripes:submit name="saveSld" value="___Opslaan___"/>
-                <stripes:submit name="deleteSld" onclick="return deleteConfirm();" value="___Verwijder SLD___"/>
+                <stripes:submit name="saveSld" value="<fmt:message key="viewer_admin.editsld.13" />"/>
+                <stripes:submit name="deleteSld" onclick="return deleteConfirm();" value="<fmt:message key="viewer_admin.editsld.14" />"/>
                 <script type="text/javascript">
                     function deleteConfirm() {
-                        return confirm('___Weet u zeker dat u deze SLD wilt verwijderen?___');
+                        return confirm('<fmt:message key="viewer_admin.editsld.15" />');
                     }
                 </script>
             </c:otherwise>
@@ -86,18 +86,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
             <stripes:param name="service" value="${actionBean.service.id}"/>
         </stripes:url>
-        <stripes:button name="cancel" class="extlikebutton" value="___Annuleren___" onclick="window.location.href='${url}'" />
+        <stripes:button name="cancel" class="extlikebutton" value="<fmt:message key="viewer_admin.editsld.16" />" onclick="window.location.href='${url}'" />
     </div>
     <div id="body">
-        ___SLD document___:<br>
-        <stripes:submit name="generateSld" value="___Maak SLD opzet___"/>
-        <stripes:submit name="validateSldXml" value="___Valideer XML___" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
-        <stripes:submit name="cqlToFilter" value="___CQL naar ogc:Filter XML___" onclick="doCqlToFilter(); return false;"/>&nbsp;&nbsp; <a href="http://udig.github.com/docs/user/Constraint%20Query%20Language.html" target="_blank">___CQL documentatie___</a>
+        <fmt:message key="viewer_admin.editsld.17" />:<br>
+        <stripes:submit name="generateSld" value="<fmt:message key="viewer_admin.editsld.18" />"/>
+        <stripes:submit name="validateSldXml" value="<fmt:message key="viewer_admin.editsld.19" />" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
+        <stripes:submit name="cqlToFilter" value="<fmt:message key="viewer_admin.editsld.20" />" onclick="doCqlToFilter(); return false;"/>&nbsp;&nbsp; <a href="http://udig.github.com/docs/user/Constraint%20Query%20Language.html" target="_blank"><fmt:message key="viewer_admin.editsld.21" /></a>
         <br>
         <script type="text/javascript">
             var cql = "";
             function doCqlToFilter() {
-                var res = prompt('___Geef CQL expressie___:', cql);
+                var res = prompt('<fmt:message key="viewer_admin.editsld.22" />:', cql);
                 if(!res) { 
                     return;
                 }
@@ -118,16 +118,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         }
                     },
                     failure: function(result) {
-                        alert("___Ajax request failed with status___ " + result.status + " " + result.statusText + ": " + result.responseText);
+                        alert("<fmt:message key="viewer_admin.editsld.23" /> " + result.status + " " + result.statusText + ": " + result.responseText);
                     }
                 });                
             }
         </script>
         <div id="filter" style="display: none">
             <br>
-            <a href="#" onclick="Ext.fly('filter').setVisibilityMode(Ext.Element.DISPLAY).setVisible(false);">___Verberg filter___</a>
+            <a href="#" onclick="Ext.fly('filter').setVisibilityMode(Ext.Element.DISPLAY).setVisible(false);"><fmt:message key="viewer_admin.editsld.24" /></a>
             <br>
-            <b>___Filter voor expressie___: </b><span style="font-family: monospace" id="cqlText"></span>
+            <b><fmt:message key="viewer_admin.editsld.25" />: </b><span style="font-family: monospace" id="cqlText"></span>
             <div id="filterXml" style="font-family: monospace; white-space: pre">
                 
             </div>

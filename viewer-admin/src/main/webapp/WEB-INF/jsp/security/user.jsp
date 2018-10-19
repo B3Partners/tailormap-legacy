@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Gebruikers___</title>
+        <title><fmt:message key="viewer_admin.user.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <stripes:errors/>
             <stripes:messages/>
-            <h1>___Gebruikers___ <a href="#Gebruikers_Help" title="___Help___" class="helplink"></a></h1>
+            <h1><fmt:message key="viewer_admin.user.1" /> <a href="#Gebruikers_Help" title="<fmt:message key="viewer_admin.user.2" />" class="helplink"></a></h1>
             <div id="grid-container" class="user">
 
             </div>

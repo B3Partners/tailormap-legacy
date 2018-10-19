@@ -20,14 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Boomstructuur met kaarten___</title>
+        <title><fmt:message key="viewer_admin.applicationtreelevel.0" /></title>
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform" class="maximize">
             <stripes:hidden name="level" value="${actionBean.level.id}"/>
             <c:if test="${actionBean.context.eventName!='delete'}">
-                <h1 id="headertext">___Bewerken___: <c:out value="${actionBean.level.name}"/></h1>
+                <h1 id="headertext"><fmt:message key="viewer_admin.applicationtreelevel.1" />: <c:out value="${actionBean.level.name}"/></h1>
                 <div id="tabs" class="maximize">
                     <div id="tree-tab" class="tabdiv">
                         <stripes:errors/>
@@ -45,15 +45,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                     <div id="rights-tab" class="tabdiv">
-                        <a href="#Rechten_Per_Niveau_Help" title="___Help___" class="helplink"></a>
-                        <h1>___Rechten___:</h1>
+                        <a href="#Rechten_Per_Niveau_Help" title="<fmt:message key="viewer_admin.applicationtreelevel.2" />" class="helplink"></a>
+                        <h1><fmt:message key="viewer_admin.applicationtreelevel.3" />:</h1>
                         <c:forEach var="group" items="${actionBean.allGroups}">
                             <stripes:checkbox name="groupsRead" value="${group.name}"/> ${group.name}<br>
                         </c:forEach>
                     </div>
 
                     <div id="documents-tab" class="tabdiv">
-                        <a href="#Documenten_Per_Niveau_Help" title="___Help___" class="helplink"></a>
+                        <a href="#Documenten_Per_Niveau_Help" title="<fmt:message key="viewer_admin.applicationtreelevel.4" />" class="helplink"></a>
                         <div id="doctree" class="tree-selection-tree">
                             <div id="documenttree-container"></div>
                         </div>
@@ -67,10 +67,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                     <div id="context-tab" class="tabdiv">
-                        <a href="#Context_Info_Per_Niveau_Help" title="___Help___" class="helplink"></a>
+                        <a href="#Context_Info_Per_Niveau_Help" title="<fmt:message key="viewer_admin.applicationtreelevel.5" />" class="helplink"></a>
                         <stripes:textarea cols="150" rows="5" name="level.info" id="context_textarea" style="display: none;" />
                         <div id="contextHtmlEditorContainer" style="width: 475px; height: 400px;"></div>
-                        ___(Metadata)url___: <stripes:text name="level.url"   style="width: 390px;"/>
+                        <fmt:message key="viewer_admin.applicationtreelevel.6" />: <stripes:text name="level.url"   style="width: 390px;"/>
                     </div>
 
                 </div>

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Gegevensregister___</title>
+        <title><fmt:message key="viewer_admin.attribute.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -29,12 +29,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>___Attributen___<a href="#Attribuutlijst_Help" title="___Help___" class="helplink"></a></h1>
+            <h1><fmt:message key="viewer_admin.attribute.1" /><a href="#Attribuutlijst_Help" title="<fmt:message key="viewer_admin.attribute.2" />" class="helplink"></a></h1>
 
             <div style="margin-top: 35px; margin-bottom: -20px;">
-                <p>___Attributen beheren voor___</p>
+                <p><fmt:message key="viewer_admin.attribute.3" /></p>
                 <select name="featureSourceId" id="featureSourceId">
-                    <option value="-1">___Maak uw keuze..___</option>
+                    <option value="-1"><fmt:message key="viewer_admin.attribute.4" /></option>
                     <c:forEach var="source" items="${actionBean.featureSources}">
                         <c:set var="selected" value="" />
                         <c:if test="${actionBean.featureSourceId == source.id}">
@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:forEach>
                 </select>
                 <select name="simpleFeatureTypeId" id="simpleFeatureTypeId">
-                    <option value="1">___Maak uw keuze..___</option>
+                    <option value="1"><fmt:message key="viewer_admin.attribute.5" /></option>
                 </select>
             </div>
 

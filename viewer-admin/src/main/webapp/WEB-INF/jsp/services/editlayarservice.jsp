@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>___Edit layar services___</title>
+        <title><fmt:message key="viewer_admin.editlayarservice.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -30,16 +30,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="layarservice" value="${actionBean.layarservice.id}"/>
-                    <h1 id="headertext">___Layar service bewerken___</h1>
+                    <h1 id="headertext"><fmt:message key="viewer_admin.editlayarservice.1" /></h1>
                     <table class="formtable">
                         <tr>
-                            <td>___Naam___ *:</td>
+                            <td><fmt:message key="viewer_admin.editlayarservice.2" /> *:</td>
                             <td><stripes:text name="name" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="___Opslaan___"/>
-                        <stripes:submit name="cancel" value="___Annuleren___"/>
+                        <stripes:submit name="save" value="<fmt:message key="viewer_admin.editlayarservice.3" />"/>
+                        <stripes:submit name="cancel" value="<fmt:message key="viewer_admin.editlayarservice.4" />"/>
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
@@ -49,10 +49,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             frameParent.reloadGrid();
                         }
                     </script>
-                    <stripes:submit name="edit" value="___Nieuwe layar service___"/>
+                    <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarservice.5" />"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="___Nieuwe layar service___"/>
+                    <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarservice.6" />"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

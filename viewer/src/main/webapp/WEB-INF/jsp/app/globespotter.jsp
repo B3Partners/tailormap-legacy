@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div style="margin-top: 5px; margin-left: 10px; margin-bottom: 5px; width: 800px; border: 1px solid #000; background-color: #eee;">
             <div style="padding: 5px; font-size: 1.2em;">
                 <!--img src="<html:rewrite page="/images/icons/information.png"/>" /-->
-               ___U kunt rondkijken door de linkermuisknop ingedrukt te houden boven de foto en de muis te bewegen. Met het scroll wheel op de muis kunt u in- en uitzoomen.___
+               <fmt:message key="viewer.globespotter.0" />
             </div>
         </div>
         <div style="margin-left: 10px;">

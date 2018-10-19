@@ -22,18 +22,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>___Autorisatie info___</title>
+        <title><fmt:message key="viewer_admin.authinfo.0" /></title>
     </head>
     <body>
-        <h2>___Autorisatie info___</h2>
+        <h2><fmt:message key="viewer_admin.authinfo.1" /></h2>
 
         <table>
-            <tr><td>___Remote user___:</td><td><c:out value="${pageContext.request.remoteUser}"/></td></tr>
-            <tr><td>___Principal___:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:catch var="e"><%= request.getUserPrincipal().getClass().getName() %></c:catch>)</td></tr>
-            <tr><td>___Realm___:</td><td> <c:catch var="e"><c:out value="${pageContext.request.userPrincipal.realm.info}"/></c:catch></td></tr>
+            <tr><td><fmt:message key="viewer_admin.authinfo.2" />:</td><td><c:out value="${pageContext.request.remoteUser}"/></td></tr>
+            <tr><td><fmt:message key="viewer_admin.authinfo.3" />:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:catch var="e"><%= request.getUserPrincipal().getClass().getName() %></c:catch>)</td></tr>
+            <tr><td><fmt:message key="viewer_admin.authinfo.4" />:</td><td> <c:catch var="e"><c:out value="${pageContext.request.userPrincipal.realm.info}"/></c:catch></td></tr>
         </table>
         <p>
-        ___Lijst met roles___:
+        <fmt:message key="viewer_admin.authinfo.5" />:
         <ol>
             <c:catch var="e">
                     <%
@@ -48,16 +48,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:catch>
         </ol>
         </p><p>
-        ___Test HttpServletRequest.isUserInRole()___:
+        <fmt:message key="viewer_admin.authinfo.6" />:
         </p><p>
         <c:if test="${!empty param.role}">
-            ___Rol___ <b><c:out value="${param.role}"/>: <b><%= request.isUserInRole(request.getParameter("role")) %></b>
+            <fmt:message key="viewer_admin.authinfo.7" /> <b><c:out value="${param.role}"/>: <b><%= request.isUserInRole(request.getParameter("role")) %></b>
             
         </c:if>
                 </p>
         <form action="${pageContext.request.pathInfo}" method="get">
-            <input name="role"  placeholder="___Voer rolnaam in___"  type="text">
-            <input type="submit"value="___Check___">
+            <input name="role"  placeholder="<fmt:message key="viewer_admin.authinfo.8" />"  type="text">
+            <input type="submit"value="<fmt:message key="viewer_admin.authinfo.9" />">
         </form>
 
         <script type="text/javascript">
