@@ -36,8 +36,8 @@ Ext.define ("viewer.components.Bookmark",{
         shareLinkedIn: false,
         shareGooglePlus: false,
         shareFacebook: false,
-        shareText: i18next.t('viewer_components_bookmark_7'),
-        shareTitle: i18next.t('viewer_components_bookmark_8'),
+        shareText: i18next.t('viewer_components_bookmark_0'),
+        shareTitle: i18next.t('viewer_components_bookmark_1'),
         showShortUrl: true,
         showFullUrl: true,
         showLabels: true,
@@ -83,7 +83,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: i18next.t('viewer_components_bookmark_0'),
+                //text: i18next.t('viewer_components_bookmark_2'),
                 icon: imagePath + 'email-16.png',
                 listeners: {
                     click:{
@@ -98,7 +98,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: i18next.t('viewer_components_bookmark_1'),
+                //text: i18next.t('viewer_components_bookmark_3'),
                 icon: imagePath + 'twitter-16.png',
                 listeners: {
                     click:{
@@ -113,7 +113,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: i18next.t('viewer_components_bookmark_2'),
+                //text: i18next.t('viewer_components_bookmark_4'),
                 icon: imagePath+"in-16.png",
                 listeners: {
                     click:{
@@ -128,7 +128,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: i18next.t('viewer_components_bookmark_3'),
+                //text: i18next.t('viewer_components_bookmark_5'),
                 icon: imagePath + 'gplus-16.png',
                 listeners: {
                     click:{
@@ -143,7 +143,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: i18next.t('viewer_components_bookmark_4'),        
+                //text: i18next.t('viewer_components_bookmark_6'),        
                 icon: imagePath + 'fb-16.png',
                 listeners: {
                     click:{
@@ -160,7 +160,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.config.showFullUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel: this.config.showLabels ? i18next.t('viewer_components_bookmark_9') : '',
+                fieldLabel: this.config.showLabels ? i18next.t('viewer_components_bookmark_7') : '',
                 name: 'bookmark',
                 height: 80,
                 id: 'bookmark',
@@ -171,7 +171,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.config.showShortUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel:this.config.showLabels ? i18next.t('viewer_components_bookmark_10') : '',
+                fieldLabel:this.config.showLabels ? i18next.t('viewer_components_bookmark_8') : '',
                 name: 'compactlink',
                 height: 80,
                 readOnly:true,
@@ -190,7 +190,7 @@ Ext.define ("viewer.components.Bookmark",{
             formItems.push({ 
                 xtype: 'button',
                 margin: '10px 0px 0px 0px',
-                text: i18next.t('viewer_components_bookmark_5'),
+                text: i18next.t('viewer_components_bookmark_9'),
                 listeners: {
                     click:{
                         scope: this,
@@ -202,7 +202,7 @@ Ext.define ("viewer.components.Bookmark",{
         formItems.push({ 
             xtype: 'button',
             margin: '10px 0px 0px 10px',
-            text: i18next.t('viewer_components_bookmark_6'),
+            text: i18next.t('viewer_components_bookmark_10'),
             listeners: {
                 click:{
                     scope: this,

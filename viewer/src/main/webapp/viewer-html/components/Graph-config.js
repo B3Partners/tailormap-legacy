@@ -37,9 +37,9 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.graphTypeStore = Ext.create('Ext.data.Store', {
             fields: ['naam',"type"],
             data: [
-                {"naam": i18next.t('viewer_components_customconfiguration_284'), type: "LINE"},
-                {"naam": i18next.t('viewer_components_customconfiguration_285'), type : "BAR"},
-                {"naam": i18next.t('viewer_components_customconfiguration_286'), type: "COLUMN"}
+                {"naam": i18next.t('graph_config_0'), type: "LINE"},
+                {"naam": i18next.t('graph_config_1'), type : "BAR"},
+                {"naam": i18next.t('graph_config_2'), type: "COLUMN"}
             ]
         });
         this.getLayerList();
@@ -52,7 +52,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             height: 350,
             layout: 'auto',
             autoScroll: true,
-            title: i18next.t('viewer_components_customconfiguration_86'),
+            title: i18next.t('graph_config_3'),
             id: "layerListContainer",
             style: {
                 marginTop: "10px"
@@ -63,7 +63,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 {
                     xtype: 'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: i18next.t('viewer_components_customconfiguration_87'),
+                    text: i18next.t('graph_config_4'),
                     listeners: {
                         click: function() {
                             me.addGraphConfig();
@@ -94,7 +94,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         var nextId = me.nextId;
         var newconfig = config || {
             id: 'graph' + nextId,
-            title: i18next.t('viewer_components_customconfiguration_88') + nextId
+            title: i18next.t('graph_config_5') + nextId
         };
         me.graphConfigs.push(newconfig);
         var collapsed = true;
@@ -136,17 +136,17 @@ Ext.define("viewer.components.CustomConfiguration", {
             defaultType: 'textfield',
             items: [
                    {
-                       fieldLabel: i18next.t('viewer_components_customconfiguration_89'),
+                       fieldLabel: i18next.t('graph_config_6'),
                        name: 'title',
                        value: config.title,
                        id: 'title'+config.id
                    },
                    {
-                       fieldLabel: i18next.t('viewer_components_customconfiguration_90'),
+                       fieldLabel: i18next.t('graph_config_7'),
                        name : "type" + config.id,
                        id: "type" + config.id,
                        xtype: "combo",
-                       emptyText: i18next.t('viewer_components_customconfiguration_91'),
+                       emptyText: i18next.t('graph_config_8'),
                        store: me.graphTypeStore,
                        queryMode: 'local',
                        displayField: 'naam',
@@ -154,11 +154,11 @@ Ext.define("viewer.components.CustomConfiguration", {
                        value: config.type || null
                    },
                    {
-                       fieldLabel: i18next.t('viewer_components_customconfiguration_92'),
+                       fieldLabel: i18next.t('graph_config_9'),
                        name : "layer" + config.id,
                        id: "layer" + config.id,
                        xtype: "combo",
-                       emptyText: i18next.t('viewer_components_customconfiguration_93'),
+                       emptyText: i18next.t('graph_config_10'),
                        store: me.layers,
                        queryMode: 'local',
                        displayField: 'alias',
@@ -171,12 +171,12 @@ Ext.define("viewer.components.CustomConfiguration", {
                        }
                    },
                    {
-                       fieldLabel: i18next.t('viewer_components_customconfiguration_94'),
+                       fieldLabel: i18next.t('graph_config_11'),
                        name : "categoryAttribute"+config.id,
                        id: "categoryAttribute"+config.id,
                        disabled:true,
                        xtype: "combo",
-                       emptyText: i18next.t('viewer_components_customconfiguration_95'),
+                       emptyText: i18next.t('graph_config_12'),
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
@@ -185,13 +185,13 @@ Ext.define("viewer.components.CustomConfiguration", {
                        width: 400
                    },
                    {
-                       fieldLabel: i18next.t('viewer_components_customconfiguration_96'),
+                       fieldLabel: i18next.t('graph_config_13'),
                        name : "serieAttribute"+config.id,
                        id: "serieAttribute"+config.id,
                        disabled:true,
                        xtype: "combo",
                        multiSelect: true,
-                       emptyText: i18next.t('viewer_components_customconfiguration_97'),
+                       emptyText: i18next.t('graph_config_14'),
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
@@ -200,14 +200,14 @@ Ext.define("viewer.components.CustomConfiguration", {
                        width: 400
                    },
                    {
-                       fieldLabel: i18next.t('viewer_components_customconfiguration_98'),
+                       fieldLabel: i18next.t('graph_config_15'),
                        name: 'xlabel',
                        disabled:true,
                        value: config.xlabel,
                        id: 'xlabel'+config.id
                    },
                    {
-                       fieldLabel: i18next.t('viewer_components_customconfiguration_99'),
+                       fieldLabel: i18next.t('graph_config_16'),
                        name: 'ylabel',
                        value: config.ylabel,
                        disabled:true,
@@ -217,7 +217,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             tbar: ["->", {
                 xtype:'button',
                 iconCls: 'x-fa fa-minus-circle',
-                text: i18next.t('viewer_components_customconfiguration_100'),
+                text: i18next.t('graph_config_17'),
                 listeners: {
                     click: function() {
                         me.removeGraphConfig(config.id);
@@ -243,7 +243,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 me.addInitialGraphConfig();
             },
             failure: function() {
-                Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_251'), i18next.t('viewer_components_customconfiguration_252'));
+                Ext.MessageBox.alert(i18next.t('graph_config_18'), i18next.t('graph_config_19'));
             }
         });
     },
@@ -253,8 +253,8 @@ Ext.define("viewer.components.CustomConfiguration", {
         var serie = Ext.getCmp("serieAttribute" + configId);
         var xLabel = Ext.getCmp("xlabel" + configId);
         var yLabel = Ext.getCmp("ylabel" + configId);
-        category.setLoading(i18next.t('viewer_components_customconfiguration_287'));
-        serie.setLoading(i18next.t('viewer_components_customconfiguration_288'));
+        category.setLoading(i18next.t('graph_config_20'));
+        serie.setLoading(i18next.t('graph_config_21'));
         category.getStore().removeAll();
         var currentCategoryValue = category.getValue();
         var currentSerieValue = serie.getValue();
@@ -286,7 +286,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             failure: function() {
                 serie.setLoading(false);
                 category.setLoading(false);
-                Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_253'), i18next.t('viewer_components_customconfiguration_254'));
+                Ext.MessageBox.alert(i18next.t('graph_config_22'), i18next.t('graph_config_23'));
             }
         });
     },

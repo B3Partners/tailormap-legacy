@@ -24,7 +24,7 @@ Ext.define('viewer.components.CustomConfiguration', {
     constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {
-                title: i18next.t('viewer_components_customconfiguration_34')
+                title: i18next.t('directsearch_config_0')
             };
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
@@ -47,21 +47,21 @@ Ext.define('viewer.components.CustomConfiguration', {
         });
         this.form.add([{
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_35'),
+                fieldLabel: i18next.t('directsearch_config_1'),
                 name: 'top',
                 value: (configObject != null && configObject.top != undefined) ? configObject.top : '10',
                 labelWidth:this.labelWidth
             },
             {
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_36'),
+                fieldLabel: i18next.t('directsearch_config_2'),
                 name: 'left',
                 value: (configObject != null && configObject.left != undefined) ? configObject.left : '10',
                 labelWidth:this.labelWidth
             },
             { 
                 xtype: 'combobox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_37'),
+                fieldLabel: i18next.t('directsearch_config_3'),
                 name: 'alignposition',
                 value: (configObject != null && configObject.alignposition != undefined) ? configObject.alignposition : 'tl',
                 labelWidth: this.labelWidth,

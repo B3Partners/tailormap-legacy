@@ -42,13 +42,13 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 flex: 1,
                 renderer: function(value) {
                     if(value === "ok") {
-                        return '<span class="status_ok">' + i18next.t('viewer_admin_attributesource_4') + '</span>';
+                        return '<span class="status_ok">' + i18next.t('viewer_admin_attributesource_1') + '</span>';
                     }
-                    return '<span class="status_error">' + i18next.t('viewer_admin_attributesource_5') + '</span>';
+                    return '<span class="status_error">' + i18next.t('viewer_admin_attributesource_2') + '</span>';
                 }
             },{
                 id: 'name',
-                text: i18next.t('viewer_admin_attributesource_1'),
+                text: i18next.t('viewer_admin_attributesource_3'),
                 dataIndex: 'name',
                 flex: 1,
                 filter: {
@@ -56,7 +56,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 }
             },{
                 id: 'url',
-                text: i18next.t('viewer_admin_attributesource_2'),
+                text: i18next.t('viewer_admin_attributesource_4'),
                 dataIndex: 'url',
                 flex: 1,
                 filter: {
@@ -64,7 +64,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 }
             },{
                 id: 'protocol',
-                text: i18next.t('viewer_admin_attributesource_3'),
+                text: i18next.t('viewer_admin_attributesource_5'),
                 dataIndex: 'protocol',
                 flex: 1,
                 filter: {

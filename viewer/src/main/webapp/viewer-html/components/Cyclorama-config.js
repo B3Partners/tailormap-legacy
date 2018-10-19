@@ -34,7 +34,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.width,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: i18next.t('viewer_components_customconfiguration_26')
+                fieldLabel: i18next.t('cyclorama_config_0')
             },
             {
                 xtype: "textfield",
@@ -42,12 +42,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.height,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: i18next.t('viewer_components_customconfiguration_27')
+                fieldLabel: i18next.t('cyclorama_config_1')
             },
             {
                 xtype: "combo",
                 id: "keyCombo",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_28'),
+                fieldLabel: i18next.t('cyclorama_config_2'),
                 labelWidth:this.labelWidth,
                 store: this.keyStore,
                 queryMode: "local",
@@ -62,7 +62,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: "combo",
                 width: 500,
                 id: "layerCombo",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_29'),
+                fieldLabel: i18next.t('cyclorama_config_3'),
                 labelWidth:this.labelWidth,
                 store: this.createLayerStore(),
                 queryMode: "local",
@@ -79,7 +79,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }, {
                 xtype: "combo",
                 id: "attributeCombo1",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_30'),
+                fieldLabel: i18next.t('cyclorama_config_4'),
                 store: Ext.create("Ext.data.Store", {
                     fields: ["id", "alias", "type"]
                 }),
@@ -92,13 +92,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:this.labelWidth,
                 listeners: {
                     select: function (combo, records, eOpts) {
-                        Ext.getCmp("attributeInfo").setValue(i18next.t('viewer_components_customconfiguration_275') + records[0].get("type"));
+                        Ext.getCmp("attributeInfo").setValue(i18next.t('cyclorama_config_5') + records[0].get("type"));
                     }
                 }
             }, {
                 xtype: "combo",
                 id: "attributeCombo2",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_31'),
+                fieldLabel: i18next.t('cyclorama_config_6'),
                 store: Ext.create("Ext.data.Store", {
                     fields: ["id", "alias", "type"]
                 }),
@@ -111,7 +111,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:this.labelWidth,
                 listeners: {
                     select: function (combo, records, eOpts) {
-                        Ext.getCmp("attributeInfo").setValue(i18next.t('viewer_components_customconfiguration_276') + records[0].get("type"));
+                        Ext.getCmp("attributeInfo").setValue(i18next.t('cyclorama_config_7') + records[0].get("type"));
                     }
                 }
             }
@@ -173,7 +173,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
         });
-        store.add({id: "-666", serviceId: "-666", layerName: i18next.t('viewer_components_customconfiguration_277'), alias: i18next.t('viewer_components_customconfiguration_278')});
+        store.add({id: "-666", serviceId: "-666", layerName: i18next.t('cyclorama_config_8'), alias: i18next.t('cyclorama_config_9')});
         return store;
     },
     loadKeys : function(value){
@@ -188,7 +188,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 Ext.getCmp("keyCombo").setValue(value);
             },
             failure: function() {
-                Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_249'), i18next.t('viewer_components_customconfiguration_250'));
+                Ext.MessageBox.alert(i18next.t('cyclorama_config_10'), i18next.t('cyclorama_config_11'));
             }
         });
     }

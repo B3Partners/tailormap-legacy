@@ -24,8 +24,8 @@ Ext.define ("viewer.components.Help",{
     container: null,
     showAsPopup: false,
     config:{
-        name: i18next.t('viewer_components_help_1'),
-        title: i18next.t('viewer_components_help_0'),
+        name: i18next.t('viewer_components_help_0'),
+        title: i18next.t('viewer_components_help_1'),
         titlebarIcon : "",
         defaultText: "",
         details: {

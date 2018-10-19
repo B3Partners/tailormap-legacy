@@ -256,7 +256,7 @@ Ext.define ("viewer.components.DataSelection",{
             this.dataTab.show();
             this.dataTab.tab.show();
         }
-        var defaultText = i18next.t('viewer_components_dataselection_14');
+        var defaultText = i18next.t('viewer_components_dataselection_6');
         if(this.uniqueValuesAttributes.length === 0){
             defaultText = '';
         }
@@ -286,7 +286,7 @@ Ext.define ("viewer.components.DataSelection",{
                 // Add the checkbox to active filter
                 xtype: 'checkbox',
                 id: this.name + 'FilterActive',
-                boxLabel  : i18next.t('viewer_components_dataselection_15'),
+                boxLabel  : i18next.t('viewer_components_dataselection_7'),
                 name      : 'filterActive',
                 inputValue: true,
                 checked   : false,
@@ -322,14 +322,14 @@ Ext.define ("viewer.components.DataSelection",{
                     var value = res.value;
                     cb.setValue(value);
                 }else{
-                    Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_6'), i18next.t('viewer_components_dataselection_7') + res.msg);
+                    Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_8'), i18next.t('viewer_components_dataselection_9') + res.msg);
                 }
                 
                 this.itemsLoaded--;
                 cb.setDisabled(false);
             }, 
             failure: function ( result, request) {
-                Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_8'), i18next.t('viewer_components_dataselection_9') + result.responseText);
+                Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_10'), i18next.t('viewer_components_dataselection_11') + result.responseText);
                 cb.setDisabled(false);
                 this.itemsLoaded--;
             } 
@@ -339,7 +339,7 @@ Ext.define ("viewer.components.DataSelection",{
         var appLayer = this.layerSelector.getValue();
         if(this.uniqueValuesAttributes.length > 0){
             this.itemsLoaded++;
-            this.dataTab.setLoading(i18next.t('viewer_components_dataselection_16'));
+            this.dataTab.setLoading(i18next.t('viewer_components_dataselection_12'));
             Ext.Ajax.request({ 
                 url: actionBeans.unique, 
                 timeout: 240000,
@@ -358,11 +358,11 @@ Ext.define ("viewer.components.DataSelection",{
                         }
                         this.receiveUniqueValues(values);
                     }else{
-                        Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_10'), i18next.t('viewer_components_dataselection_11') + res.msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_13'), i18next.t('viewer_components_dataselection_14') + res.msg);
                     }
                 }, 
                 failure: function ( result, request) {
-                    Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_12'), i18next.t('viewer_components_dataselection_13') + result.responseText);
+                    Ext.MessageBox.alert(i18next.t('viewer_components_dataselection_15'), i18next.t('viewer_components_dataselection_16') + result.responseText);
                     this.itemsLoaded--;
                 } 
             });

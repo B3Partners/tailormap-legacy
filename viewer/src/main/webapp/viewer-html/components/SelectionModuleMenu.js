@@ -65,7 +65,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 me.record = record;
                                 Ext.Msg.show({
                                     title: i18next.t('viewer_components_selectionmodulemenu_2'),
-                                    message: i18next.t('viewer_components_selectionmodulemenu_16'),
+                                    message: i18next.t('viewer_components_selectionmodulemenu_3'),
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
@@ -80,7 +80,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                     }
                 },
                 {
-                    text: i18next.t('viewer_components_selectionmodulemenu_3'),
+                    text: i18next.t('viewer_components_selectionmodulemenu_4'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/wrench.png",
                     listeners: {
                         click: {
@@ -93,7 +93,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                     var level = me.config.selectionModule.levels[levelId];
                                     level.name = name;
                                 };
-                                this.editName(this.levelMenu.config.data.clickedItem.data.text,f, i18next.t('viewer_components_selectionmodulemenu_17'));
+                                this.editName(this.levelMenu.config.data.clickedItem.data.text,f, i18next.t('viewer_components_selectionmodulemenu_5'));
                             },
                             scope: this
                         }
@@ -108,7 +108,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
             },
             items: [
                 {
-                    text: i18next.t('viewer_components_selectionmodulemenu_4'),
+                    text: i18next.t('viewer_components_selectionmodulemenu_6'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/delete.png",
                     listeners: {
                         click: {
@@ -117,8 +117,8 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 var me = this;
                                 me.record = record;
                                 Ext.Msg.show({
-                                    title: i18next.t('viewer_components_selectionmodulemenu_5'),
-                                    message: i18next.t('viewer_components_selectionmodulemenu_18'),
+                                    title: i18next.t('viewer_components_selectionmodulemenu_7'),
+                                    message: i18next.t('viewer_components_selectionmodulemenu_8'),
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
@@ -133,7 +133,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                     }
                 },
                 {
-                    text: i18next.t('viewer_components_selectionmodulemenu_6'),
+                    text: i18next.t('viewer_components_selectionmodulemenu_9'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/wrench.png",
                     listeners: {
                         click: {
@@ -146,7 +146,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                     var level = me.config.selectionModule.levels[levelId];
                                     level.name = name;
                                 };
-                                this.editName(this.layerMenu.config.data.clickedItem.data.text,f, i18next.t('viewer_components_selectionmodulemenu_19'));
+                                this.editName(this.layerMenu.config.data.clickedItem.data.text,f, i18next.t('viewer_components_selectionmodulemenu_10'));
                             },
                             scope: this
                         }
@@ -173,8 +173,8 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         var me = this;
         var newLevel = typeof type === "undefined";
         Ext.MessageBox.show({
-            title: newLevel ? i18next.t('viewer_components_selectionmodulemenu_20') : i18next.t('viewer_components_selectionmodulemenu_21'),
-            msg: i18next.t('viewer_components_selectionmodulemenu_7') + (newLevel ? i18next.t('viewer_components_selectionmodulemenu_22') : type) +':',
+            title: newLevel ? i18next.t('viewer_components_selectionmodulemenu_11') : i18next.t('viewer_components_selectionmodulemenu_12'),
+            msg: i18next.t('viewer_components_selectionmodulemenu_13') + (newLevel ? i18next.t('viewer_components_selectionmodulemenu_14') : type) +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,// record.data.text,

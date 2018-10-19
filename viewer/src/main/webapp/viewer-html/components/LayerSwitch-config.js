@@ -35,17 +35,17 @@ Ext.define("viewer.components.CustomConfiguration",{
                 type: 'string'
             }],
             data: [
-                [i18next.t('viewer_components_customconfiguration_289'), 'tl'],
-                [i18next.t('viewer_components_customconfiguration_290'), 'tr'],
-                [i18next.t('viewer_components_customconfiguration_291'), 'bl'],
-                [i18next.t('viewer_components_customconfiguration_292'), 'br']
+                [i18next.t('layerswitch_config_0'), 'tl'],
+                [i18next.t('layerswitch_config_1'), 'tr'],
+                [i18next.t('layerswitch_config_2'), 'bl'],
+                [i18next.t('layerswitch_config_3'), 'br']
             ]
         });
         
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
-            title: i18next.t('viewer_components_customconfiguration_107'),
+            title: i18next.t('layerswitch_config_4'),
             bodyPadding: me.formPadding,
             defaults: {
                 anchor: '100%'
@@ -53,21 +53,21 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             items: [{
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_108'),
+                fieldLabel: i18next.t('layerswitch_config_5'),
                 name: 'top',
                 value: this.configObject.top || '5',
                 labelWidth:me.labelWidth
             },
             {
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_109'),
+                fieldLabel: i18next.t('layerswitch_config_6'),
                 name: 'left',
                 value: this.configObject.left || '5',
                 labelWidth:me.labelWidth
             },
             { 
                 xtype: 'combobox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_110'),
+                fieldLabel: i18next.t('layerswitch_config_7'),
                 name: 'alignposition',
                 value: this.configObject.alignposition || 'tl',
                 labelWidth: me.labelWidth,

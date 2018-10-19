@@ -96,7 +96,7 @@ Ext.define ("viewer.components.SelectionModule",{
     mainContainer: null,
     userServices: [],
     config: {
-        name: i18next.t('viewer_components_selectionmodule_14'),
+        name: i18next.t('viewer_components_selectionmodule_0'),
         title: "",
         titlebarIcon : "",
         tooltip : "",
@@ -329,7 +329,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
     loadCustomService: function() {
         var me = this;
-        me.popup.popupWin.setLoading(i18next.t('viewer_components_selectionmodule_15'));
+        me.popup.popupWin.setLoading(i18next.t('viewer_components_selectionmodule_1'));
 
         var protocol = '', url = '', q = '';
         if(me.customServiceType === 'csw') {
@@ -371,7 +371,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.popup.popupWin.setLoading(false);
                     },
                     function(msg) {
-                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_16'), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_2'), msg);
                         me.popup.popupWin.setLoading(false);
                     }
                 );
@@ -383,7 +383,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.popup.popupWin.setLoading(false);
                     },
                     function(msg) {
-                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_17'), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_3'), msg);
                         me.popup.popupWin.setLoading(false);
                     }
                 );
@@ -402,7 +402,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     me.popup.popupWin.setLoading(false);
                 },
                 function(msg) {
-                    Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_18'), msg);
+                    Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_4'), msg);
                     me.popup.popupWin.setLoading(false);
                 }
             );
@@ -417,7 +417,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'application',
                 checked: true,
                 name: 'layerSource',
-                boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : i18next.t('viewer_components_selectionmodule_19'),
+                boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : i18next.t('viewer_components_selectionmodule_5'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -427,7 +427,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'registry',
                 checked: (radioControls.length === 0),
                 name: 'layerSource',
-                boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : i18next.t('viewer_components_selectionmodule_20'),
+                boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : i18next.t('viewer_components_selectionmodule_6'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -437,7 +437,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'custom',
                 name: 'layerSource',
                 checked: (radioControls.length === 0),
-                boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : i18next.t('viewer_components_selectionmodule_21'),
+                boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : i18next.t('viewer_components_selectionmodule_7'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -446,7 +446,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 itemId: 'csw',
                 name:'layerSource',
                 checked: (radioControls.length === 0),
-                boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : i18next.t('viewer_components_selectionmodule_22'),
+                boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : i18next.t('viewer_components_selectionmodule_8'),
                 listeners: {change: function(field, newval) {me.handleSourceChange(field.getItemId(), newval);}}
             });
         }
@@ -470,12 +470,12 @@ Ext.define ("viewer.components.SelectionModule",{
                 type:'hbox'
             },
             items: [
-                    {xtype:"label", text: i18next.t('viewer_components_selectionmodule_0'), margin: '3 0 0 0'},
+                    {xtype:"label", text: i18next.t('viewer_components_selectionmodule_9'), margin: '3 0 0 0'},
                     {xtype:'tbfill'},
-                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_1'), handler: function() {
+                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_10'), handler: function() {
                         me.cancelSelection();
                     }},
-                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_2'), style: {marginLeft: '10px'},handler: function() {
+                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_11'), style: {marginLeft: '10px'},handler: function() {
                         me.saveSelection();
                     }}
             ],
@@ -529,19 +529,19 @@ Ext.define ("viewer.components.SelectionModule",{
                                 },
                                 defaultType: 'textfield',
                                 items: [
-                                    {hidden: true, itemId: 'customServiceUrlTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_3')},
-                                    {xtype: "combobox", store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, itemId: 'customServiceUrlSelect', width: 100, emptyText: i18next.t('viewer_components_selectionmodule_4')},
-                                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_5'), hidden: true, itemId: 'customServiceUrlButton', handler: function() {
+                                    {hidden: true, itemId: 'customServiceUrlTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_12')},
+                                    {xtype: "combobox", store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, itemId: 'customServiceUrlSelect', width: 100, emptyText: i18next.t('viewer_components_selectionmodule_13')},
+                                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_14'), hidden: true, itemId: 'customServiceUrlButton', handler: function() {
                                             me.loadCustomService();
                                     }},
-                                    {hidden: true, itemId: 'cswServiceUrlTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_6'), value : this.config.defaultCswUrl !== undefined ? this.config.defaultCswUrl : "" },
-                                    {hidden: true, itemId: 'cswSearchTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_7'), listeners: {
+                                    {hidden: true, itemId: 'cswServiceUrlTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_15'), value : this.config.defaultCswUrl !== undefined ? this.config.defaultCswUrl : "" },
+                                    {hidden: true, itemId: 'cswSearchTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_16'), listeners: {
                                     specialkey: function(field, e){
                                         if (e.getKey() === e.ENTER) {
                                             me.loadCustomService();
                                         }
                                     }}},
-                                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_8'), hidden: true, itemId: 'cswServiceUrlButton', handler: function() {
+                                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_17'), hidden: true, itemId: 'cswServiceUrlButton', handler: function() {
                                             me.loadCustomService();
                                     }}
                                 ]
@@ -550,7 +550,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 xtype: 'panel',
                                 itemId: 'cswAdvancedSearchField',
                                 header: { 
-                                    title: i18next.t('viewer_components_selectionmodule_9')
+                                    title: i18next.t('viewer_components_selectionmodule_18')
                                 },
                                 collapsible: true,
                                 collapsed: !this.config.alwaysShow,
@@ -702,7 +702,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var defaultStoreConfig = {
             model: select.TreeNode,
             root: {
-                text: i18next.t('viewer_components_selectionmodule_12'),
+                text: i18next.t('viewer_components_selectionmodule_19'),
                 expanded: true,
                 checked: false,
                 children: []
@@ -837,7 +837,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 }},
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_selectionmodule_13'),
+                    text: i18next.t('viewer_components_selectionmodule_20'),
                     handler: function() {
                         searchFn(treePanels[treePanelType].treePanel, Ext.getCmp(searchFieldId).getValue());
                     }
@@ -1275,7 +1275,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.populateCustomServiceTree(info, addedNode, true);
                     },
                     function(msg) {
-                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_23'), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_selectionmodule_21'), msg);
                     }
                 );
             }

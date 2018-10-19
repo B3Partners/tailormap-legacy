@@ -296,10 +296,10 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 type: 'string'
             }],
             data: [
-                [i18next.t('viewer_admin_configpage_28'), 'tl'],
-                [i18next.t('viewer_admin_configpage_29'), 'tr'],
-                [i18next.t('viewer_admin_configpage_30'), 'bl'],
-                [i18next.t('viewer_admin_configpage_31'), 'br']
+                [i18next.t('viewer_admin_configpage_11'), 'tl'],
+                [i18next.t('viewer_admin_configpage_12'), 'tr'],
+                [i18next.t('viewer_admin_configpage_13'), 'bl'],
+                [i18next.t('viewer_admin_configpage_14'), 'br']
             ]
         });
 
@@ -315,7 +315,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
             items: [{
                 xtype:'fieldset',
                 columnWidth: 0.5,
-                title: i18next.t('viewer_admin_configpage_12'),
+                title: i18next.t('viewer_admin_configpage_15'),
                 collapsible: false,
                 defaultType: 'textfield',
                 layout: 'anchor',
@@ -329,13 +329,13 @@ Ext.define("vieweradmin.components.ConfigPage", {
                         labelWidth:350,
                         items: [
                             {
-                                boxLabel: i18next.t('viewer_admin_configpage_13'),
+                                boxLabel: i18next.t('viewer_admin_configpage_16'),
                                 name: 'position',
                                 inputValue: 'center' ,
                                 checked: this.config.details.position === "center"
                             },
                             {
-                                boxLabel: i18next.t('viewer_admin_configpage_14'),
+                                boxLabel: i18next.t('viewer_admin_configpage_17'),
                                 name: 'position',
                                 checked: this.config.details.position === "fixed",
                                 inputValue: 'fixed',
@@ -352,7 +352,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'textfield',
-                        fieldLabel: i18next.t('viewer_admin_configpage_15'),
+                        fieldLabel: i18next.t('viewer_admin_configpage_18'),
                         id: "x",
                         name: 'x',
                         value: this.config.details.x,
@@ -361,7 +361,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'textfield',
-                        fieldLabel: i18next.t('viewer_admin_configpage_16'),
+                        fieldLabel: i18next.t('viewer_admin_configpage_19'),
                         id: "y",
                         name: 'y',
                         value: this.config.details.y,
@@ -370,7 +370,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'combobox',
-                        fieldLabel: i18next.t('viewer_admin_configpage_17'),
+                        fieldLabel: i18next.t('viewer_admin_configpage_20'),
                         id: "alignposition",
                         name: 'alignposition',
                         value: this.config.details.alignposition,
@@ -383,7 +383,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'checkbox',
-                        fieldLabel: i18next.t('viewer_admin_configpage_18'),
+                        fieldLabel: i18next.t('viewer_admin_configpage_21'),
                         inputValue: true,
                         name: 'changeablePosition',
                         checked: this.parseBooleanValue(this.config.details.changeablePosition),
@@ -393,13 +393,13 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 {
                     xtype:'fieldset',
                     columnWidth: 0.5,
-                    title: i18next.t('viewer_admin_configpage_19'),
+                    title: i18next.t('viewer_admin_configpage_22'),
                     collapsible: false,
                     defaultType: 'textfield',
                     layout: 'anchor',
                     items:[{
                             xtype: 'textfield',
-                            fieldLabel: i18next.t('viewer_admin_configpage_20'),
+                            fieldLabel: i18next.t('viewer_admin_configpage_23'),
                             name: 'width',
                             value: this.config.details.width || defaults.minWidth || defaults.width,
                             labelWidth:100,
@@ -409,14 +409,14 @@ Ext.define("vieweradmin.components.ConfigPage", {
                                     return true;
                                 }
                                 if(parseInt(value) < defaults.minWidth) {
-                                    return i18next.t('viewer_admin_configpage_32') + defaults.minWidth;
+                                    return i18next.t('viewer_admin_configpage_24') + defaults.minWidth;
                                 }
                                 return true;
                             }
                         },
                         {
                             xtype: 'container',
-                            html: defaults.minWidth ? i18next.t('viewer_admin_configpage_33') + defaults.minWidth : '',
+                            html: defaults.minWidth ? i18next.t('viewer_admin_configpage_25') + defaults.minWidth : '',
                             padding: defaults.minWidth ? '2 0 5 0' : 0,
                             style: {
                                 color: '#666666'
@@ -424,7 +424,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                         },
                         {
                             xtype: 'textfield',
-                            fieldLabel: i18next.t('viewer_admin_configpage_21'),
+                            fieldLabel: i18next.t('viewer_admin_configpage_26'),
                             name: 'height',
                             value: this.config.details.height || defaults.minHeight || defaults.height,
                             labelWidth:100,
@@ -434,14 +434,14 @@ Ext.define("vieweradmin.components.ConfigPage", {
                                     return true;
                                 }
                                 if(parseInt(value) < defaults.minHeight) {
-                                    return i18next.t('viewer_admin_configpage_34') + defaults.minHeight;
+                                    return i18next.t('viewer_admin_configpage_27') + defaults.minHeight;
                                 }
                                 return true;
                             }
                         },
                         {
                             xtype: 'container',
-                            html: defaults.minHeight ? i18next.t('viewer_admin_configpage_35') + defaults.minHeight : '',
+                            html: defaults.minHeight ? i18next.t('viewer_admin_configpage_28') + defaults.minHeight : '',
                             padding: defaults.minWidth ? '2 0 5 0' : 0,
                             style: {
                                 color: '#666666'
@@ -449,7 +449,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: i18next.t('viewer_admin_configpage_22'),
+                            fieldLabel: i18next.t('viewer_admin_configpage_29'),
                             inputValue: true,
                             name: 'changeableSize',
                             checked: this.parseBooleanValue(this.config.details.changeableSize),
@@ -475,18 +475,18 @@ Ext.define("vieweradmin.components.ConfigPage", {
             border: 0,
             items: [{
                 xtype:'fieldset',
-                title: i18next.t('viewer_admin_configpage_23'),
+                title: i18next.t('viewer_admin_configpage_30'),
                 collapsible: false,
                 items:[{
                     xtype: 'numberfield',
-                    fieldLabel: i18next.t('viewer_admin_configpage_24'),
+                    fieldLabel: i18next.t('viewer_admin_configpage_31'),
                     id: "requiredScreenWidth",
                     name: 'requiredScreenWidth',
                     value: minWidth,
                     labelWidth: 180
                 },{
                     xtype: 'container',
-                    html: i18next.t('viewer_admin_configpage_36')
+                    html: i18next.t('viewer_admin_configpage_32')
                 }]
             }],
             renderTo: "layout"
@@ -505,13 +505,13 @@ Ext.define("vieweradmin.components.ConfigPage", {
             items: [{
                 xtype:'fieldset',
                 columnWidth: 0.5,
-                title: i18next.t('viewer_admin_configpage_26'),
+                title: i18next.t('viewer_admin_configpage_33'),
                 collapsible: false,
                 defaultType: 'textfield',
                 layout: 'anchor',
                 items:[{
                     xtype: 'numberfield',
-                    fieldLabel: i18next.t('viewer_admin_configpage_27'),
+                    fieldLabel: i18next.t('viewer_admin_configpage_34'),
                     id: "componentHeight",
                     name: 'componentHeight',
                     value: compHeight,

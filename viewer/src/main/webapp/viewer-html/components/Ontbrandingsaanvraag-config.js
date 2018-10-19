@@ -27,33 +27,33 @@ Ext.define("viewer.components.CustomConfiguration",{
         if (configObject === null){
             configObject = {};
         }
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_293')] = { distance: 15, fan: false };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_294')] = { distance: 40, fan: false };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_295')] = { distance: 60, fan: false };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_296')] = { distance: 40, fan: true };
-        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('viewer_components_customconfiguration_297')] = { distance: 60, fan: true };
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_298')] = {distance: 125, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_299')] = {distance: 200, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_300')] = {distance: 15, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_301')] = {distance: 30, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_302')] = {distance: 75, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_303')] = {distance: 60, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_304')] = {distance: 100, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_305')] = {distance: 75, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_306')] = {distance: 120, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_307')] = {distance: 165, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_308')] = {distance: 200, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_309')] = {distance: 230, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_310')] = {distance: 265, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_311')] = {distance: 325, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_312')] = {distance: 390, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_313')] = {distance: 455, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_314')] = {distance: 645, fan: false};
-        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('viewer_components_customconfiguration_315')] = {distance: 845, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_0')] = { distance: 15, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_1')] = { distance: 40, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_2')] = { distance: 60, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_3')] = { distance: 40, fan: true };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_4')] = { distance: 60, fan: true };
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_5')] = {distance: 125, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_6')] = {distance: 200, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_7')] = {distance: 15, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_8')] = {distance: 30, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_9')] = {distance: 75, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_10')] = {distance: 60, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_11')] = {distance: 100, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_12')] = {distance: 75, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_13')] = {distance: 120, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_14')] = {distance: 165, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_15')] = {distance: 200, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_16')] = {distance: 230, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_17')] = {distance: 265, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_18')] = {distance: 325, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_19')] = {distance: 390, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_20')] = {distance: 455, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_21')] = {distance: 645, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_22')] = {distance: 845, fan: false};
 
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        this.addForm(configObject, "zonedistances_consumer", i18next.t('viewer_components_customconfiguration_316'), i18next.t('viewer_components_customconfiguration_317'), this.DEFAULT_ZONE_DISTANCES_CONSUMER);
-        this.addForm(configObject, "zonedistances_professional", i18next.t('viewer_components_customconfiguration_318'), i18next.t('viewer_components_customconfiguration_319'), this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
+        this.addForm(configObject, "zonedistances_consumer", i18next.t('ontbrandingsaanvraag_config_23'), i18next.t('ontbrandingsaanvraag_config_24'), this.DEFAULT_ZONE_DISTANCES_CONSUMER);
+        this.addForm(configObject, "zonedistances_professional", i18next.t('ontbrandingsaanvraag_config_25'), i18next.t('ontbrandingsaanvraag_config_26'), this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
     },
     addForm: function(configObject, paramkey, label, label_singular, defaults) {
         var distances = [];
@@ -85,7 +85,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {
                     xtype:'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: i18next.t('viewer_components_customconfiguration_320', {label: label_singular}),
+                    text: i18next.t('ontbrandingsaanvraag_config_27', {label: label_singular}),
                     listeners: {
                         click: function(){
                             var distancesContainer = Ext.ComponentQuery.query("#" + containerKey)[0];
@@ -112,27 +112,27 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             items: [{
                 name: "label",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_130'),
+                fieldLabel: i18next.t('ontbrandingsaanvraag_config_28'),
                 value: labelValue,
                 xtype: 'textfield',
                 labelWidth: 50,
                 flex: 1
             }, {
                 name: "distance",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_131'),
+                fieldLabel: i18next.t('ontbrandingsaanvraag_config_29'),
                 value: distance,
                 xtype: 'textfield',
                 labelWidth: 50,
                 width: 150
             }, {
                 xtype: "checkbox",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_132'),
+                fieldLabel: i18next.t('ontbrandingsaanvraag_config_30'),
                 labelWidth: 50,
                 name: "fan",
                 value: fan_value
             }, {
                 xtype: "button",
-                text: i18next.t('viewer_components_customconfiguration_133'),
+                text: i18next.t('ontbrandingsaanvraag_config_31'),
                 listeners:{
                     click: function(btn) {
                         var container = btn.up('.panel');

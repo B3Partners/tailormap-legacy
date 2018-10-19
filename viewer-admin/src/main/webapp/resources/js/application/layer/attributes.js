@@ -214,7 +214,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                                 }
                                 Ext.Msg.show({
                                     title: i18next.t('viewer_admin_attributes_3'),
-                                    message: i18next.t('viewer_admin_attributes_14'),
+                                    message: i18next.t('viewer_admin_attributes_4'),
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
@@ -237,7 +237,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                 },
                 {
                     itemId: "changeName",
-                    text: i18next.t('viewer_admin_attributes_4'),
+                    text: i18next.t('viewer_admin_attributes_5'),
                     icon: this.config.imagePath + "wrench.png",
                     listeners: {
                         click: {
@@ -260,8 +260,8 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
 
     editAttributeFolderName: function(newLevel, okFunction, initialText, scope) {
         Ext.MessageBox.show({
-            title: newLevel ? i18next.t('viewer_admin_attributes_15') : i18next.t('viewer_admin_attributes_16'),
-            msg: i18next.t('viewer_admin_attributes_5') + (newLevel ? i18next.t('viewer_admin_attributes_17') : i18next.t('viewer_admin_attributes_18')) +':',
+            title: newLevel ? i18next.t('viewer_admin_attributes_6') : i18next.t('viewer_admin_attributes_7'),
+            msg: i18next.t('viewer_admin_attributes_8') + (newLevel ? i18next.t('viewer_admin_attributes_9') : i18next.t('viewer_admin_attributes_10')) +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,

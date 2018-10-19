@@ -33,7 +33,7 @@ Ext.define ("viewer.components.Print",{
     extraInfoCallbacks:null,
     extraLayerCallbacks:null,
     config:{
-        name: i18next.t('viewer_components_print_30'),
+        name: i18next.t('viewer_components_print_0'),
         title: "",
         titlebarIcon : "",
         tooltip : "",
@@ -256,7 +256,7 @@ Ext.define ("viewer.components.Print",{
                 width: '100%',
                 items: [/*{
                     xtype: "label",
-                    text: i18next.t('viewer_components_print_0')
+                    text: i18next.t('viewer_components_print_1')
                 }*/{
                     xtype: 'container',
                     id: 'legendContainer',
@@ -613,14 +613,14 @@ Ext.define ("viewer.components.Print",{
                                         },
                                         success: function(result) {
                                             var response = result.responseText;
-                                            Ext.MessageBox.alert(i18next.t('viewer_components_print_24'), i18next.t('viewer_components_print_25'));
+                                            Ext.MessageBox.alert(i18next.t('viewer_components_print_23'), i18next.t('viewer_components_print_24'));
                                         },
                                         failure: function(result) {
-                                           Ext.MessageBox.alert(i18next.t('viewer_components_print_26'), i18next.t('viewer_components_print_27'));
+                                           Ext.MessageBox.alert(i18next.t('viewer_components_print_25'), i18next.t('viewer_components_print_26'));
                                         }
                                     });
                                 }else{
-                                    Ext.MessageBox.alert(i18next.t('viewer_components_print_28'), i18next.t('viewer_components_print_29'));
+                                    Ext.MessageBox.alert(i18next.t('viewer_components_print_27'), i18next.t('viewer_components_print_28'));
                                 }
                             }
                         }
@@ -649,7 +649,7 @@ Ext.define ("viewer.components.Print",{
     * Call to redraw the preview
     */
     redrawPreview: function (){
-        document.getElementById('previewImg').innerHTML = i18next.t('viewer_components_print_31');
+        document.getElementById('previewImg').innerHTML = i18next.t('viewer_components_print_29');
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
     },
@@ -662,7 +662,7 @@ Ext.define ("viewer.components.Print",{
             var checkboxes= new Array();
             checkboxes.push({
                 xtype: "label",
-                text: i18next.t('viewer_components_print_23')
+                text: i18next.t('viewer_components_print_30')
             });
             for (var key  =0 ; key < this.legends.length ;key++){
                 if(this.legends.hasOwnProperty(key)){
@@ -852,7 +852,7 @@ Ext.define ("viewer.components.Print",{
      */
     imageSuccess: function(imageUrl){
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
-        if(imageUrl === null) document.getElementById('previewImg').innerHTML = i18next.t('viewer_components_print_32');
+        if(imageUrl === null) document.getElementById('previewImg').innerHTML = i18next.t('viewer_components_print_31');
         else {
             var image = new Image();
             image.onload = function() {

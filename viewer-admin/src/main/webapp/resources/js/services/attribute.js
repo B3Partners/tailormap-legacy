@@ -51,7 +51,7 @@ Ext.define('vieweradmin.components.Attributes', {
 
         var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
         this.removeChilds(simpleFeatureTypeId);
-        simpleFeatureTypeId.appendChild(this.getOption(-1, i18next.t('viewer_admin_attribute_5'), true));
+        simpleFeatureTypeId.appendChild(this.getOption(-1, i18next.t('viewer_admin_attribute_0'), true));
 
         if(selectedValue != -1) {
             Ext.Ajax.request({
@@ -67,7 +67,7 @@ Ext.define('vieweradmin.components.Attributes', {
                     }, this);
                 },
                 failure: function() {
-                    Ext.MessageBox.alert(i18next.t('viewer_admin_attribute_3'), i18next.t('viewer_admin_attribute_4'));
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_attribute_1'), i18next.t('viewer_admin_attribute_2'));
                 }
             });
             var gridStore = this.getStore();
@@ -116,7 +116,7 @@ Ext.define('vieweradmin.components.Attributes', {
         return [
             {
                 id: 'alias',
-                text: i18next.t('viewer_admin_attribute_0'),
+                text: i18next.t('viewer_admin_attribute_3'),
                 dataIndex: 'alias',
                 flex: 1,
                 filter: {
@@ -124,7 +124,7 @@ Ext.define('vieweradmin.components.Attributes', {
                 }
             },{
                 id: 'attribute',
-                text: i18next.t('viewer_admin_attribute_1'),
+                text: i18next.t('viewer_admin_attribute_4'),
                 dataIndex: 'attribute',
                 flex: 1,
                 filter: {
@@ -132,7 +132,7 @@ Ext.define('vieweradmin.components.Attributes', {
                 }
             },{
                 id: 'type',
-                text: i18next.t('viewer_admin_attribute_2'),
+                text: i18next.t('viewer_admin_attribute_5'),
                 dataIndex: 'type',
                 flex: 1,
                 filter: {

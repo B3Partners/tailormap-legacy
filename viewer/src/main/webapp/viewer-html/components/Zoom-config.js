@@ -35,17 +35,17 @@ Ext.define("viewer.components.CustomConfiguration",{
                 type: 'string'
             }],
             data: [
-                [i18next.t('viewer_components_customconfiguration_360'), 'tl'],
-                [i18next.t('viewer_components_customconfiguration_361'), 'tr'],
-                [i18next.t('viewer_components_customconfiguration_362'), 'bl'],
-                [i18next.t('viewer_components_customconfiguration_363'), 'br']
+                [i18next.t('zoom_config_0'), 'tl'],
+                [i18next.t('zoom_config_1'), 'tr'],
+                [i18next.t('zoom_config_2'), 'bl'],
+                [i18next.t('zoom_config_3'), 'br']
             ]
         });
         
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
-            title: i18next.t('viewer_components_customconfiguration_245'),
+            title: i18next.t('zoom_config_4'),
             bodyPadding: me.formPadding,
             defaults: {
                 anchor: '100%'
@@ -53,21 +53,21 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             items: [{
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_246'),
+                fieldLabel: i18next.t('zoom_config_5'),
                 name: 'top',
                 value: (this.configObject != null && this.configObject.top != undefined) ? this.configObject.top : '10',
                 labelWidth:me.labelWidth
             },
             {
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_247'),
+                fieldLabel: i18next.t('zoom_config_6'),
                 name: 'left',
                 value: (this.configObject != null && this.configObject.left != undefined) ? this.configObject.left : '10',
                 labelWidth:me.labelWidth
             },
             { 
                 xtype: 'combobox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_248'),
+                fieldLabel: i18next.t('zoom_config_7'),
                 name: 'alignposition',
                 value: (this.configObject != null && this.configObject.alignposition != undefined) ? this.configObject.alignposition : 'tl',
                 labelWidth: me.labelWidth,

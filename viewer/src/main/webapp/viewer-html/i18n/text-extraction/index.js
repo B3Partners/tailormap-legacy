@@ -142,7 +142,7 @@ i18next.init({
         const classNameMatches = filecontents.match(/Ext\.define\s*\(["'](viewer\.[^'"]*)["']/);
         const className = (classNameMatches && classNameMatches.length > 1) ? classNameMatches[1] : "";
         let keyname = "";
-        if (className) {
+        if (className && className !== "viewer.components.CustomConfiguration") {
             keyname = className.replace(/[\.\-]/g, seperator).toLowerCase();
         } else {
             keyname = filename.substring(filename.lastIndexOf("/") + 1).replace(/\-/g, seperator).replace(".jsp", "").replace(".js", "").toLowerCase();

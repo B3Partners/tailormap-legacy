@@ -40,8 +40,8 @@ Ext.define("viewer.components.CustomConfiguration", {
                 fields: ['value', 'text'],
                 value: me.configObject.strategy ? me.configObject.strategy : "replace",
                 name: "strategy",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_127'),
-                emptyText: i18next.t('viewer_components_customconfiguration_128'),
+                fieldLabel: i18next.t('merge_config_0'),
+                emptyText: i18next.t('merge_config_1'),
                 store: [
                     ["replace", "replace"],
                     ["new", "new"]
@@ -49,7 +49,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: me.labelWidth
             }, {
                 xtype: "textfield",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_129'),
+                fieldLabel: i18next.t('merge_config_2'),
                 name: "mergeGapDist",
                 value: me.configObject.mergeGapDist ? me.configObject.mergeGapDist : 0,
                 labelWidth: me.labelWidth

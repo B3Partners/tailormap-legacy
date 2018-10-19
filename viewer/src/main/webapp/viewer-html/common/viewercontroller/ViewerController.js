@@ -140,7 +140,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else{
-            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_1') + viewerType);
+            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_0') + viewerType);
         }
 
         this.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
@@ -168,7 +168,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
 
     showLoading: function(msg) {
-        var loadingMsg = i18next.t('viewer_viewercontroller_viewercontroller_2');
+        var loadingMsg = i18next.t('viewer_viewercontroller_viewercontroller_1');
         if(msg) loadingMsg += ' ' + msg;
         document.getElementById('loader').innerHTML = loadingMsg;
         document.getElementById('loader').style.display = 'block';
@@ -202,13 +202,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 success: function(result) {
                     var response = Ext.JSON.decode(result.responseText);
                     if(response.success) {
-                        me.logger.debug(i18next.t('viewer_viewercontroller_viewercontroller_3') + response.message);
+                        me.logger.debug(i18next.t('viewer_viewercontroller_viewercontroller_2') + response.message);
                     } else {
-                        me.logger.debug(i18next.t('viewer_viewercontroller_viewercontroller_4') + response.error);
+                        me.logger.debug(i18next.t('viewer_viewercontroller_viewercontroller_3') + response.error);
                     }
                 },
                 failure: function(result) {
-                    me.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_5') + result.status + " " + result.statusText + ": " + result.responseText);
+                    me.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_4') + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             });
         }
@@ -305,7 +305,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
     createComponent: function(name, className, config, details){
         if(this.components[name] != undefined) {
-            throw i18next.t('viewer_viewercontroller_viewercontroller_6', { name: name, className: className });
+            throw i18next.t('viewer_viewercontroller_viewercontroller_5', { name: name, className: className });
         }
 
         // XXX
@@ -329,7 +329,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             };
         } catch(e) {
 
-            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_7', { className: className, e: e, config: config }));
+            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_6', { className: className, e: e, config: config }));
 
             if(this.isDebug()){
                 if(e instanceof Error) {
@@ -755,14 +755,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //if deprecatedParam is given, the old (and wrong)way of calling this function is used.
         if (deprecatedParam){
             if(this.isDebug()){
-                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_8'));
+                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_7'));
             }
         }
         if(this.layers[appLayer.id] == undefined){
             if (!this.layersInitialized){
-                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_9'));
+                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_8'));
             }else{
-                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_10', { appLayerId: appLayer.id }));
+                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_9', { appLayerId: appLayer.id }));
             }
             return null;
         }
@@ -797,7 +797,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *Use viewer.viewerController.ViewerController#getAppLayerById
      */
     getAppLayer : function (serviceId, layerName){
-        this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_11'));
+        this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_10'));
         var count=0;
         var foundAppLayer=null;
         for ( var i in this.app.appLayers) {
@@ -813,7 +813,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         if (count>1){
-            this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_12', { count: count, serviceId: serviceId, layerName: layerName }));
+            this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_11', { count: count, serviceId: serviceId, layerName: layerName }));
         }
 
         return foundAppLayer;
@@ -931,7 +931,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         try {
                             layerConfig.extraLegendParameters = Ext.Object.fromQueryString(sld.extraLegendParameters);
                         } catch(e) {
-                            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_13', { sldTitle: sld.title, sldLegendParams: sld.extraLegendParameters, e: e }));
+                            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_12', { sldTitle: sld.title, sldLegendParams: sld.extraLegendParameters, e: e }));
                         }
                     }
                 } else if(/^wms:/.test(style)) {
@@ -1018,7 +1018,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
             }
         } catch(e) {
-            var msg = i18next.t('viewer_viewercontroller_viewercontroller_14', {
+            var msg = i18next.t('viewer_viewercontroller_viewercontroller_13', {
                 id: id,
                 serviceProtocol: service.protocol,
                 serviceUrl: service.url,
@@ -1068,7 +1068,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@return viewer.viewercontroller.controller.Layer object
      */
     getLayerByLayerId : function (id){
-        this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_15'));
+        this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_14'));
         for (var i in this.app.services) {
             if(!this.app.services.hasOwnProperty(i)) {
                 continue;
@@ -1461,12 +1461,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     }
                     );
             } else {
-                this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_16', {className:l.$className}));
+                this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_15', {className:l.$className}));
                 failure(appLayer);
             }
 
         } catch(e) {
-            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_17',  {appLayerId: appLayer.id, e: e}));
+            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_16',  {appLayerId: appLayer.id, e: e}));
             failure(appLayer);
         }
     },
@@ -1537,7 +1537,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED, appLayer.filter, appLayer);
             }, function (message) {
                 //failure
-                me.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_18',  {message: message}));
+                me.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_17',  {message: message}));
             }
         );
     },
@@ -1668,7 +1668,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     if (typeof cmps[i].cancel === "function") {
                         cmps[i].cancel();
                     } else {
-                        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_viewercontroller_0') + cmps[i].self.getName()});
+                        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_viewercontroller_18') + cmps[i].self.getName()});
                     }
                 }
             }

@@ -23,7 +23,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
-            title: i18next.t('viewer_components_customconfiguration_215'),
+            title: i18next.t('streetview_config_0'),
             bodyPadding: me.formPadding,
             defaults: {
                 anchor: '100%'
@@ -31,28 +31,28 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             items: [{ 
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_216'),
+                fieldLabel: i18next.t('streetview_config_1'),
                 name: 'tooltip',
-                value: this.configObject.tooltip || i18next.t('viewer_components_customconfiguration_354'),
+                value: this.configObject.tooltip || i18next.t('streetview_config_2'),
                 labelWidth:me.labelWidth
             
             },{
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_217'),
+                fieldLabel: i18next.t('streetview_config_3'),
                 inputValue: true,
                 name: 'useMarker',
                 checked: this.configObject.useMarker !== undefined ? this.configObject.useMarker : false,
                 labelWidth: me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel:  i18next.t('viewer_components_customconfiguration_355'),
+                fieldLabel:  i18next.t('streetview_config_4'),
                 inputValue: true,
                 name: 'nonSticky',
                 checked: this.configObject.nonSticky !== undefined ? this.configObject.nonSticky : false,
                 labelWidth: me.labelWidth
             },{
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_218'),
+                fieldLabel: i18next.t('streetview_config_5'),
                 inputValue: true,
                 name: 'usePopup',
                 checked: this.configObject.usePopup !== undefined ? this.configObject.usePopup : false,
@@ -66,7 +66,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }, {
                 id: "popupHeight",
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_219'),
+                fieldLabel: i18next.t('streetview_config_6'),
                 name: 'height',
                 hidden:  this.configObject.usePopup !== undefined ? !this.configObject.usePopup : true,
                 value: this.configObject.height !== undefined? this.configObject.height:"400",
@@ -74,7 +74,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 id: "popupWidth",
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_220'),
+                fieldLabel: i18next.t('streetview_config_7'),
                 name: 'width',
                 hidden:  this.configObject.usePopup !== undefined ? !this.configObject.usePopup : true,
                 value: this.configObject.width !== undefined? this.configObject.width:"400",

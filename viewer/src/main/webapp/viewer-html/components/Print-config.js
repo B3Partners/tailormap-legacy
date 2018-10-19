@@ -32,7 +32,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var me =this;        
         this.form.add([{
                 xtype: "label",
-                text: i18next.t('viewer_components_customconfiguration_153'),
+                text: i18next.t('print_config_0'),
                 style: "font-weight: bold;"                
             },{                           
                 xtype: 'radiogroup',
@@ -40,12 +40,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 vertical: true,
                 name: "orientation",
                 items: [{
-                    boxLabel: i18next.t('viewer_components_customconfiguration_154'), 
+                    boxLabel: i18next.t('print_config_1'), 
                     name: 'orientation', 
                     inputValue: 'landscape', 
                     checked: me.configObject.orientation=="landscape"
                 },{
-                    boxLabel: i18next.t('viewer_components_customconfiguration_155'), 
+                    boxLabel: i18next.t('print_config_2'), 
                     name: 'orientation', 
                     inputValue: 'portrait', 
                     checked: !(me.configObject.orientation=="landscape")
@@ -53,7 +53,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             {
                 xtype: "label",
-                text: i18next.t('viewer_components_customconfiguration_156'),
+                text: i18next.t('print_config_3'),
                 style: "font-weight: bold;"
             },
             {
@@ -67,38 +67,38 @@ Ext.define("viewer.components.CustomConfiguration",{
                         xtype: "checkbox",
                         name: "useA5",
                         checked: me.configObject.useA5 || false,
-                        boxLabel: i18next.t('viewer_components_customconfiguration_157')
+                        boxLabel: i18next.t('print_config_4')
                     },
                     {
                         xtype: "checkbox",
                         name: "useA4",
                         checked: me.configObject.useA4 || true,
-                        boxLabel: i18next.t('viewer_components_customconfiguration_158')
+                        boxLabel: i18next.t('print_config_5')
                     },
                     {
                         xtype: "checkbox",
                         name: "useA3",
                         checked: me.configObject.useA3 || true,
-                        boxLabel: i18next.t('viewer_components_customconfiguration_159')
+                        boxLabel: i18next.t('print_config_6')
                     },
                     {
                         xtype: "checkbox",
                         name: "useA0",
                         checked: me.configObject.useA0 || false,
-                        boxLabel: i18next.t('viewer_components_customconfiguration_160')
+                        boxLabel: i18next.t('print_config_7')
                     }
                 ]
             },
             {
                 xtype: "label",
-                text: i18next.t('viewer_components_customconfiguration_161'),
+                text: i18next.t('print_config_8'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "combo",
                 fields: ['value','text'],
                 value: me.configObject.default_format ? me.configObject.default_format : "a4",
                 name: "default_format",
-                emptyText: i18next.t('viewer_components_customconfiguration_162'),
+                emptyText: i18next.t('print_config_9'),
                 store: [
                     ["a5","A5"],
                     ["a4","A4"],
@@ -108,16 +108,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 width : 75
             },{
                 xtype: "label",
-                text: i18next.t('viewer_components_customconfiguration_163'),
+                text: i18next.t('print_config_10'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "checkbox",
                 name: "legend",
                 checked: me.configObject.legend,
-                boxLabel: i18next.t('viewer_components_customconfiguration_164')
+                boxLabel: i18next.t('print_config_11')
             },{
                 xtype: "label",
-                text: i18next.t('viewer_components_customconfiguration_165'),
+                text: i18next.t('print_config_12'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "textfield",
@@ -125,37 +125,37 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: me.configObject.max_imagesize ? me.configObject.max_imagesize :"2048"
             },{
 //                xtype: "label",
-//                text: i18next.t('viewer_components_customconfiguration_166'),
+//                text: i18next.t('print_config_13'),
 //                style: "font-weight: bold;"
 //            },{
 //                xtype: "checkbox",
 //                name: "showPrintRtf",
 //                checked: me.configObject.showPrintRtf ? me.configObject.showPrintRtf : true,
-//                boxLabel: i18next.t('viewer_components_customconfiguration_167')
+//                boxLabel: i18next.t('print_config_14')
 //            },{
                 xtype: "label",
-                text: i18next.t('viewer_components_customconfiguration_168'),
+                text: i18next.t('print_config_15'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "checkbox",
                 name: "overview",
                 checked: me.configObject.overview ? me.configObject.overview : false,
-                boxLabel: i18next.t('viewer_components_customconfiguration_169')
+                boxLabel: i18next.t('print_config_16')
             }
             ,{
                 xtype: "label",
-                text: i18next.t('viewer_components_customconfiguration_170'),
+                text: i18next.t('print_config_17'),
                 style: "font-weight: bold;"                
             },{
                 xtype: "combo",
                 fields: ['value','text'],
                 value: me.configObject.mailPrint ? me.configObject.mailPrint : "cantMail",
                 name: "mailPrint",
-                emptyText: i18next.t('viewer_components_customconfiguration_171'),
+                emptyText: i18next.t('print_config_18'),
                 store: [
-                    ["canAlsoMail",i18next.t('viewer_components_customconfiguration_325')],
-                    ["cantMail",i18next.t('viewer_components_customconfiguration_326')],
-                    ["canOnlyMail",i18next.t('viewer_components_customconfiguration_327')]
+                    ["canAlsoMail",i18next.t('print_config_19')],
+                    ["cantMail",i18next.t('print_config_20')],
+                    ["canOnlyMail",i18next.t('print_config_21')]
                 ],
                 listeners:{
                     change:{
@@ -180,14 +180,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "fromAddress",
                 id: "fromAddress",
                 value: me.configObject.fromAddress ? me.configObject.fromAddress :"",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_172'),
+                fieldLabel: i18next.t('print_config_22'),
                 hidden: me.configObject.mailPrint === "cantMail"
             },{
                 xtype: "textfield",
                 name: "fromName",
                 id: "fromName",
-                value: me.configObject.fromName ? me.configObject.fromName : i18next.t('viewer_components_customconfiguration_328'),
-                fieldLabel: i18next.t('viewer_components_customconfiguration_173'),
+                value: me.configObject.fromName ? me.configObject.fromName : i18next.t('print_config_23'),
+                fieldLabel: i18next.t('print_config_24'),
                 hidden: me.configObject.mailPrint === "cantMail"
             }
         ]);

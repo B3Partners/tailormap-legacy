@@ -82,7 +82,7 @@ Ext.define ("viewer.components.Buffer",{
         this.colorPicker = Ext.create("Ext.ux.ColorField",{ 
             showText: true,
             name: 'color',
-            fieldLabel: i18next.t('viewer_components_buffer_3'),
+            fieldLabel: i18next.t('viewer_components_buffer_1'),
             id:'color' + this.name,            
             value: "FF0000",
             listeners :{
@@ -96,7 +96,7 @@ Ext.define ("viewer.components.Buffer",{
         this.buffer = Ext.create("Ext.button.Button",{
             name: "buffer" ,
             id: this.name + "BufferButton",
-            text: i18next.t('viewer_components_buffer_1'),
+            text: i18next.t('viewer_components_buffer_2'),
             margin: '10px 0px 0px 0px',
             listeners: {
                 click:{
@@ -109,7 +109,7 @@ Ext.define ("viewer.components.Buffer",{
         this.remove = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
-            text: i18next.t('viewer_components_buffer_2'), 
+            text: i18next.t('viewer_components_buffer_3'), 
             margin: '10px 0px 0px 10px',           
             listeners: {
                 click:{

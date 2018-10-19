@@ -40,7 +40,7 @@ Ext.define ("viewer.components.LayerSelector",{
     }, 
     constructor: function (conf){
         if(!conf.label){
-            conf.label = i18next.t('viewer_components_layerselector_4');
+            conf.label = i18next.t('viewer_components_layerselector_0');
         }
         this.initConfig(conf);
         viewer.components.LayerSelector.superclass.constructor.call(this, this.config);
@@ -87,7 +87,7 @@ Ext.define ("viewer.components.LayerSelector",{
     createCombobox: function() {
         var comboboxConfig = {
             fieldLabel: this.config.label,
-            emptyText: i18next.t('viewer_components_layerselector_0'),
+            emptyText: i18next.t('viewer_components_layerselector_3'),
             store: this.layerstore,
             queryMode: 'local',
             displayField: 'title',

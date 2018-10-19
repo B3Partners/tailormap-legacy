@@ -60,7 +60,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     COMPONENT_NAME: 'Vuurwerkevenementen',
     ZONE_DISTANCES_CONSUMER: {},
     ZONE_DISTANCES_PROFESSIONAL: {},
-    OTHER_LABEL: i18next.t('viewer_components_ontbrandingsaanvraag_44'),
+    OTHER_LABEL: i18next.t('viewer_components_ontbrandingsaanvraag_0'),
     
     printComponent:null,
 
@@ -199,17 +199,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      */
     loadWindow : function() {
         this.wizardPages = [
-            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_45'), [
-                i18next.t('viewer_components_ontbrandingsaanvraag_46'),
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_1'), [
+                i18next.t('viewer_components_ontbrandingsaanvraag_2'),
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_0'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_3'),
                     margin: this.defaultMargin,
                     listeners: { click: this.newRequest, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_1'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_4'),
                     margin: this.defaultMargin,
                     listeners: { click: this.loadRequest, scope: this }
                 },
@@ -223,7 +223,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     items: [
                         {
                             xtype: 'label',
-                            text: i18next.t('viewer_components_ontbrandingsaanvraag_2'),
+                            text: i18next.t('viewer_components_ontbrandingsaanvraag_5'),
                             forId: 'featureFile'
                         },
                         {
@@ -236,7 +236,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                                     name: 'featureFile',
                                     allowBlank: false,
                                     msgTarget: 'side',
-                                    buttonText: i18next.t('viewer_components_ontbrandingsaanvraag_47'),
+                                    buttonText: i18next.t('viewer_components_ontbrandingsaanvraag_6'),
                                     itemId: 'featureFile',
                                     flex: 1
                                 }
@@ -244,7 +244,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                         },
                         {
                             xtype: 'button',
-                            text: i18next.t('viewer_components_ontbrandingsaanvraag_3'),
+                            text: i18next.t('viewer_components_ontbrandingsaanvraag_7'),
                             listeners: {
                                 click: this.loadFile,
                                 scope: this
@@ -259,10 +259,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     ]
                 }
             ]),
-            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_48'), [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_8'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_4'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_9'),
                     margin: this.defaultMargin,
                     listeners: { click: this.createIgnitionLocation, scope: this }
                 },
@@ -275,10 +275,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createIgnitionLocationForm()
             ]),
-            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_49'), [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_10'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_5'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_11'),
                     margin: this.defaultMargin,
                     listeners: { click: this.createAudienceLocation, scope: this }
                 },
@@ -291,16 +291,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createAudienceLocationForm()
             ]),
-            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_50'), [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_12'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_6'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_13'),
                     margin: this.defaultMargin,
                     listeners: { click: this.calculateSafetyZone, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_7'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_14'),
                     margin: this.defaultMargin,
                     listeners: { click: this.removeSafetyZones, scope: this }
                 },
@@ -310,7 +310,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     html: ''
                 }
             ]),
-            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_51'), [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_15'), [
                 {
                     xtype: 'container',
                     layout: {
@@ -324,11 +324,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     },
                     items: [
                         {
-                            html: i18next.t('viewer_components_ontbrandingsaanvraag_8'),
+                            html: i18next.t('viewer_components_ontbrandingsaanvraag_16'),
                             listeners: { click: this.createExtraObject, scope: this }
                         },
                         {
-                            html: i18next.t('viewer_components_ontbrandingsaanvraag_9'),
+                            html: i18next.t('viewer_components_ontbrandingsaanvraag_17'),
                             listeners: { click: this.createMeasureLine, scope: this }
                         }
                     ]
@@ -342,28 +342,28 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createExtraObjectsForm()
             ]),
-            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_52'), [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_18'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_10'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_19'),
                     margin: this.defaultMargin,
                     listeners: { click: this.saveFile, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_11'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_20'),
                     margin: this.defaultMargin,
                     listeners: { click: this.makeImage, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_12'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_21'),
                     margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_13'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_22'),
                     margin: this.defaultMargin,
                     listeners: { click: this.movePage.bind(this, 0, 0), scope: this }
                 }
@@ -380,8 +380,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { xtype: 'container', flex: 1, items: this.wizardPages, layout: 'fit', defaults: { bodyStyle: 'padding: 10px' } }
             ],
             fbar: [
-                { type: 'button', itemId: 'prev_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_14'), handler: function() { this.previousPage(); }.bind(this) },
-                { type: 'button', itemId: 'next_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_15'), handler: function() { this.nextPage(); }.bind(this) }
+                { type: 'button', itemId: 'prev_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_23'), handler: function() { this.previousPage(); }.bind(this) },
+                { type: 'button', itemId: 'next_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_24'), handler: function() { this.nextPage(); }.bind(this) }
             ]
         });
         this.getContentContainer().add(this.mainContainer);
@@ -444,12 +444,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 display: 'none'
             },
             items: [
-                { itemId: "page-0", title: i18next.t('viewer_components_ontbrandingsaanvraag_16') },
-                { itemId: "page-1", title: i18next.t('viewer_components_ontbrandingsaanvraag_17') },
-                { itemId: "page-2", title: i18next.t('viewer_components_ontbrandingsaanvraag_18') },
-                { itemId: "page-3", title: i18next.t('viewer_components_ontbrandingsaanvraag_19') },
-                { itemId: "page-4", title: i18next.t('viewer_components_ontbrandingsaanvraag_20') },
-                { itemId: "page-5", title: i18next.t('viewer_components_ontbrandingsaanvraag_21') }
+                { itemId: "page-0", title: i18next.t('viewer_components_ontbrandingsaanvraag_25') },
+                { itemId: "page-1", title: i18next.t('viewer_components_ontbrandingsaanvraag_26') },
+                { itemId: "page-2", title: i18next.t('viewer_components_ontbrandingsaanvraag_27') },
+                { itemId: "page-3", title: i18next.t('viewer_components_ontbrandingsaanvraag_28') },
+                { itemId: "page-4", title: i18next.t('viewer_components_ontbrandingsaanvraag_29') },
+                { itemId: "page-5", title: i18next.t('viewer_components_ontbrandingsaanvraag_30') }
             ],
             listeners :{
                 tabchange: {
@@ -491,7 +491,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ],
             data: []
         });
-        this.ignitionLocationsGrid = this._createGrid('ignitionLocations', i18next.t('viewer_components_ontbrandingsaanvraag_53'), [
+        this.ignitionLocationsGrid = this._createGrid('ignitionLocations', i18next.t('viewer_components_ontbrandingsaanvraag_31'), [
             { dataIndex: 'label', flex: 1 }
         ]);
         this.getContentContainer().query('#ignitionLocationsContainer')[0].add(this.ignitionLocationsGrid);
@@ -510,7 +510,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ],
             data: []
         });
-        this.audienceLocationsGrid = this._createGrid('audienceLocations', i18next.t('viewer_components_ontbrandingsaanvraag_54'), [
+        this.audienceLocationsGrid = this._createGrid('audienceLocations', i18next.t('viewer_components_ontbrandingsaanvraag_32'), [
             { dataIndex: 'label', flex: 1, renderer: function(value, cell, record) {
                 return record.get('mainLocation') ? '<strong>' + value + '</strong>' : value;
             }}
@@ -536,7 +536,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             model: 'OntbrandingsaanvraagExtraObject',
             data: []
         });
-        this.extraObjectsGrid = this._createGrid('extraObject', i18next.t('viewer_components_ontbrandingsaanvraag_55'), [
+        this.extraObjectsGrid = this._createGrid('extraObject', i18next.t('viewer_components_ontbrandingsaanvraag_33'), [
             { dataIndex: 'label', flex: 1 }
         ], /*skipSize=*/true);
         this.getContentContainer().query('#extraObjectsContainer')[0].add(this.extraObjectsGrid);
@@ -551,10 +551,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         columns.push(
             { xtype: 'actioncolumn', width: 30, sortable:false, hidable:false, items: [
-                { iconCls: 'x-fa fa-pencil', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_22'), handler: this._editLocation.bind(this) }
+                { iconCls: 'x-fa fa-pencil', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_34'), handler: this._editLocation.bind(this) }
             ]},
             { xtype: 'actioncolumn', width: 30, sortable:false, hidable:false, items: [
-                { iconCls: 'x-fa fa-trash', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_23'), handler: this._removeLocation.bind(this) }
+                { iconCls: 'x-fa fa-trash', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_35'), handler: this._removeLocation.bind(this) }
             ]}
         );
         var grid = Ext.create('Ext.grid.Panel', {
@@ -592,13 +592,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_24'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_36'),
                     name: 'label',
                     itemId: 'ignition_label'
                 },
                 {
                     xtype: 'fieldcontainer',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_25'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_37'),
                     height: 65,
                     defaultType: 'radiofield',
                     defaults: {
@@ -612,13 +612,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     layout: 'hbox',
                     items: [
                         {
-                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_26'),
+                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_38'),
                             name: 'fireworks_type',
                             inputValue: 'consumer',
                             itemId: 'fireworks_type_choice_consumer'
 
                         }, {
-                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_27'),
+                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_39'),
                             name: 'fireworks_type',
                             inputValue: 'professional',
                             itemId: 'fireworks_type_choice_professional'
@@ -627,12 +627,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'container',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_28')
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_40')
                 },
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_29'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_41'),
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('consumerZoneDistanceStore'),
                     displayField: 'label',
@@ -650,14 +650,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_30'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_42'),
                     hidden: true,
                     name: 'custom_fireworktype_consumer',
                     itemId: 'custom_fireworktype_consumer'
                 },
                 {
                     xtype: 'numberfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_31'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_43'),
                     hidden: true,
                     name: 'custom_zonedistance_consumer',
                     itemId: 'custom_zonedistance_consumer'
@@ -665,7 +665,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_32'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_44'),
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('professionalZoneDistanceStore'),
                     displayField: 'label',
@@ -684,21 +684,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_33'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_45'),
                     hidden: true,
                     name: 'custom_fireworktype_professional',
                     itemId: 'custom_fireworktype_professional'
                 },
                 {
                     xtype: 'numberfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_34'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_46'),
                     hidden: true,
                     name: 'custom_zonedistance_professional',
                     itemId: 'custom_zonedistance_professional'
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_35'),
+                    text: i18next.t('viewer_components_ontbrandingsaanvraag_47'),
                     listeners: { click: this.saveIgnitionLocation, scope: this }
                 }*/
             ]
@@ -766,19 +766,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_36'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_48'),
                     name: 'label',
                     itemId: 'audience_label'
                 },
                 {
                     xtype: 'checkboxfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_37'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_49'),
                     name: 'mainLocation',
                     itemId: 'mainLocation'
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_38'),
+                    text: i18next.t('viewer_components_ontbrandingsaanvraag_50'),
                     listeners: { click: this.saveAudienceLocation, scope: this }
                 }*/
             ]
@@ -803,13 +803,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_39'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_51'),
                     name: 'label',
                     itemId: 'extra_object_label'
                 },
                 {
                     xtype: 'colorfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_40'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_52'),
                     showText: false,
                     itemId: 'lineColor',
                     listeners: {
@@ -822,7 +822,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_41'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_53'),
                     queryMode: 'local',
                     store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
                     name: 'dashStyle',
@@ -831,7 +831,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_42'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_54'),
                     queryMode: 'local',
                     store: [['none', 'Geen'], ['begin', 'Begin van de lijn'], ['end', 'Eind van de lijn'], ['both', 'Beide kanten van de lijn']],
                     name: 'arrow',
@@ -839,7 +839,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_43'),
+                    text: i18next.t('viewer_components_ontbrandingsaanvraag_55'),
                     listeners: { click: this.saveExtraObject, scope: this }
                 }*/
             ]

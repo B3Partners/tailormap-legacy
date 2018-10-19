@@ -55,9 +55,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             name: "marker",
             emptyText: i18next.t('viewer_components_searchconfiguration_2'),
             store: [
-                ["default", i18next.t('viewer_components_searchconfiguration_30')],
-                ["circle", i18next.t('viewer_components_searchconfiguration_31')],
-                ["none", i18next.t('viewer_components_searchconfiguration_32')]
+                ["default", i18next.t('viewer_components_searchconfiguration_3')],
+                ["circle", i18next.t('viewer_components_searchconfiguration_4')],
+                ["none", i18next.t('viewer_components_searchconfiguration_5')]
             ],
             labelWidth: this.labelWidth
         });
@@ -81,7 +81,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 {
                     xtype:'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: i18next.t('viewer_components_searchconfiguration_3'),
+                    text: i18next.t('viewer_components_searchconfiguration_6'),
                     listeners: {
                         click:{
                             fn: function() {
@@ -95,7 +95,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         });
         
         var extraText = document.createElement('div');
-        extraText.innerHTML=i18next.t('viewer_components_searchconfiguration_33');
+        extraText.innerHTML=i18next.t('viewer_components_searchconfiguration_7');
         document.getElementById("config").appendChild(extraText);
 
         if(config !== null) {
@@ -159,42 +159,42 @@ Ext.define("viewer.components.SearchConfiguration",{
                         marginBottom: '0px'
                     },
                     items: [
-                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_4'), name: 'name', value: config.name, itemId: 'name'+config.id },
-                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_5'), name: 'urlOnly'+config.id, itemId: 'urlOnly'+config.id, checked: config.urlOnly, xtype:'checkbox'},
-                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_6'), itemId: 'idField'+config.id,name: 'idField'+config.id, value: config.id,readOnly:true, readOnlyCls:'disabledTextField'},
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_8'), name: 'name', value: config.name, itemId: 'name'+config.id },
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_9'), name: 'urlOnly'+config.id, itemId: 'urlOnly'+config.id, checked: config.urlOnly, xtype:'checkbox'},
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_10'), itemId: 'idField'+config.id,name: 'idField'+config.id, value: config.id,readOnly:true, readOnlyCls:'disabledTextField'},
                         {                           
                             xtype: 'radiogroup',
                             itemId: 'type' + config.id,
-                            fieldLabel: i18next.t('viewer_components_searchconfiguration_7'),
+                            fieldLabel: i18next.t('viewer_components_searchconfiguration_11'),
                             vertical: true,
                             name: "type" + config.id,
                             items: [{
-                                boxLabel: i18next.t('viewer_components_searchconfiguration_8'), 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_12'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'openls',
                                 checked: config.type === "openls" || config.type === undefined
                             },{
-                                boxLabel: i18next.t('viewer_components_searchconfiguration_9'), 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_13'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'arcgisrest',
                                 checked: config.type === "arcgisrest"
                             },{
-                                boxLabel: i18next.t('viewer_components_searchconfiguration_10'), 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_14'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'solr',
                                 checked: config.type === "solr"
                             },{
-                                boxLabel: i18next.t('viewer_components_searchconfiguration_11'), 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_15'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'pdok',
                                 checked: config.type === "pdok"
                             },{
-                                boxLabel: i18next.t('viewer_components_searchconfiguration_12'), 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_16'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'attributesource',
                                 checked: config.type === "attributesource"
                             },{
-                                boxLabel: i18next.t('viewer_components_searchconfiguration_13'), 
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_17'), 
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
                                 checked: config.type === "simplelist"
@@ -205,7 +205,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 }
                             }
                         },
-                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_14'), name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
+                        { fieldLabel: i18next.t('viewer_components_searchconfiguration_18'), name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
                         { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
                         { xtype: 'container', itemId: 'asConfig' + config.id, hidden: true, height: 130, autoScroll: true },
                         {
@@ -219,12 +219,12 @@ Ext.define("viewer.components.SearchConfiguration",{
                                     value: config.filter,
                                     name: "filter" + config.id,
                                     itemId: "filter" + config.id,
-                                    fieldLabel: i18next.t('viewer_components_searchconfiguration_15'),
+                                    fieldLabel: i18next.t('viewer_components_searchconfiguration_19'),
                                     labelWidth: 120,
                                     width: 600
                                 },
                                 {   xtype: "container",
-                                    html: i18next.t('viewer_components_searchconfiguration_16') +
+                                    html: i18next.t('viewer_components_searchconfiguration_20') +
                                     "<a href=\"https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine\" target='_help'>" +
                                     "https://github.com/flamingo-geocms/flamingo/wiki/Searchconfiguration#pdok-search-engine" +
                                     "</a>"
@@ -235,7 +235,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                         {
                             xtype:'button',
                             iconCls: 'x-fa fa-floppy-o',
-                            text: i18next.t('viewer_components_searchconfiguration_17'),
+                            text: i18next.t('viewer_components_searchconfiguration_21'),
                             listeners: {
                                 click: function(button) {
                                     me.saveConfig();
@@ -248,7 +248,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             tbar: this.maxSearchConfigs === 1 ? null : ["->", {
                 xtype:'button',
                 iconCls: 'x-fa fa-minus-circle',
-                text: i18next.t('viewer_components_searchconfiguration_18'),
+                text: i18next.t('viewer_components_searchconfiguration_22'),
                 listeners: {
                     click: function() {
                         me.removeConfig(config.id);
@@ -366,7 +366,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 flex: 1,
                 autoScroll: true
             });
-            container.add({ xtype: 'container', items: [{ xtype: 'button', text: i18next.t('viewer_components_searchconfiguration_19'), handler: function() {
+            container.add({ xtype: 'container', items: [{ xtype: 'button', text: i18next.t('viewer_components_searchconfiguration_23'), handler: function() {
                me.simpleListConfigs[configid].add(me.getSimpleListFields({}, configid));
             }}]});
             container.add(me.simpleListConfigs[configid]);
@@ -389,12 +389,12 @@ Ext.define("viewer.components.SearchConfiguration",{
                 margin: '0 5 0 0'
             },
             items: [
-                { fieldLabel: i18next.t('viewer_components_searchconfiguration_20'), name: 'label', value: config.label || '' },
-                { fieldLabel: i18next.t('viewer_components_searchconfiguration_21'), name: 'value', value: config.value || '' },
-                { fieldLabel: i18next.t('viewer_components_searchconfiguration_22'), name: 'minX', size: 8, value: config.bbox && config.bbox.minx || '' },
-                { fieldLabel: i18next.t('viewer_components_searchconfiguration_23'), name: 'minY', size: 8, value: config.bbox && config.bbox.miny || '' },
-                { fieldLabel: i18next.t('viewer_components_searchconfiguration_24'), name: 'maxX', size: 8, value: config.bbox && config.bbox.maxx || '' },
-                { fieldLabel: i18next.t('viewer_components_searchconfiguration_25'), name: 'maxY', size: 8, value: config.bbox && config.bbox.maxy || '' }
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_24'), name: 'label', value: config.label || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_25'), name: 'value', value: config.value || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_26'), name: 'minX', size: 8, value: config.bbox && config.bbox.minx || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_27'), name: 'minY', size: 8, value: config.bbox && config.bbox.miny || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_28'), name: 'maxX', size: 8, value: config.bbox && config.bbox.maxx || '' },
+                { fieldLabel: i18next.t('viewer_components_searchconfiguration_29'), name: 'maxY', size: 8, value: config.bbox && config.bbox.maxy || '' }
             ]
         };
     },
@@ -456,7 +456,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 checked: checked,
                 // Provide custom renderLabel function to add 'config layers' link to label
                 renderLabel: function(id, label) {
-                    return label + ' &nbsp;&nbsp;<a href="#" class="configureLayer" id="' + id + '_layers">' + i18next.t('viewer_components_searchconfiguration_34') + '</a>';
+                    return label + ' &nbsp;&nbsp;<a href="#" class="configureLayer" id="' + id + '_layers">' + i18next.t('viewer_components_searchconfiguration_30') + '</a>';
                 },
                 // Provide function to handle clicking the 'config layers' link
                 labelClick: function(evt, target) {
@@ -545,11 +545,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                 height: 400,
                 bodyPadding: 10,
                 resizable: false,
-                title: i18next.t('viewer_components_searchconfiguration_26'),
+                title: i18next.t('viewer_components_searchconfiguration_31'),
                 bodyStyle: 'background-color: White;',
                 bbar: [
                     { xtype: 'tbfill' },
-                    { xtype: 'button', text: i18next.t('viewer_components_searchconfiguration_27'), itemId: 'configureLayersButton' }
+                    { xtype: 'button', text: i18next.t('viewer_components_searchconfiguration_32'), itemId: 'configureLayersButton' }
                 ],
                 items: [
                     {
@@ -560,8 +560,8 @@ Ext.define("viewer.components.SearchConfiguration",{
                         },
                         height: 20,
                         items: [
-                            { xtype: 'container', flex: 1, margin: '0 10px 0 0', html: { tag: "b", html: i18next.t('viewer_components_searchconfiguration_28') } },
-                            { xtype: 'container', flex: 1, html: { tag: "b", html: i18next.t('viewer_components_searchconfiguration_29') } }
+                            { xtype: 'container', flex: 1, margin: '0 10px 0 0', html: { tag: "b", html: i18next.t('viewer_components_searchconfiguration_33') } },
+                            { xtype: 'container', flex: 1, html: { tag: "b", html: i18next.t('viewer_components_searchconfiguration_34') } }
                         ]
                     },
                     {

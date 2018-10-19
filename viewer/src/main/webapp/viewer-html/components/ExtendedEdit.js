@@ -41,8 +41,8 @@ Ext.define ("viewer.components.ExtendedEdit",{
 
         this.schema = new Ext.data.schema.Schema();
 
-        this.navigateBackButton = this.createPaginationButton('left', i18next.t('viewer_components_extendededit_1'));
-        this.navigateForwardButton = this.createPaginationButton('right', i18next.t('viewer_components_extendededit_2'));
+        this.navigateBackButton = this.createPaginationButton('left', i18next.t('viewer_components_extendededit_0'));
+        this.navigateForwardButton = this.createPaginationButton('right', i18next.t('viewer_components_extendededit_1'));
         this.buttons = Ext.create('Ext.toolbar.Toolbar', {
             xtype: 'toolbar',
             dock: 'bottom',
@@ -57,7 +57,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         formItems.push({
             xtype: 'container',
             itemId: 'removeMessage',
-            html: i18next.t('viewer_components_extendededit_0'),
+            html: i18next.t('viewer_components_extendededit_2'),
             hidden: true,
             componentCls: 'alert-message success'
         });

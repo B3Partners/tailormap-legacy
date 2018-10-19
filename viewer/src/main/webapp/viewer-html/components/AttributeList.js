@@ -155,7 +155,7 @@ Ext.define ("viewer.components.AttributeList",{
                     valueField: 'type',
                     style: { marginRight: '5px' },
                     store:  Ext.create('Ext.data.Store', {
-                        fields: ['type','label'], data : [{type:"CSV", label: i18next.t('viewer_components_attributelist_4') },{type:"GEOJSON", label: i18next.t('viewer_components_attributelist_5') },{type:"XLS", label: i18next.t('viewer_components_attributelist_6') },{type:"SHP", label: i18next.t('viewer_components_attributelist_7') }]
+                        fields: ['type','label'], data : [{type:"CSV", label: i18next.t('viewer_components_attributelist_2') },{type:"GEOJSON", label: i18next.t('viewer_components_attributelist_3') },{type:"XLS", label: i18next.t('viewer_components_attributelist_4') },{type:"SHP", label: i18next.t('viewer_components_attributelist_5') }]
                     })
                 }
             ]
@@ -207,7 +207,7 @@ Ext.define ("viewer.components.AttributeList",{
             // topContainerOptions.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 0 10 0';
         } else {
             closingPanelOptions.items.push({
-                xtype: 'button', text: i18next.t('viewer_components_attributelist_2'), handler: function() {
+                xtype: 'button', text: i18next.t('viewer_components_attributelist_6'), handler: function() {
                     me.popup.hide();
                 }
             });
@@ -332,7 +332,7 @@ Ext.define ("viewer.components.AttributeList",{
             clearTimeout(this.requestThresholdCounter);
         }
         if (this.grids.main) {
-            this.grids.main.getView().setLoading(i18next.t('viewer_components_attributelist_8'));
+            this.grids.main.getView().setLoading(i18next.t('viewer_components_attributelist_7'));
         }
         me.loadLayerOnPopupShow = "";
         this.requestThresholdCounter = setTimeout(function(){
@@ -622,17 +622,17 @@ Ext.define ("viewer.components.AttributeList",{
 
                         if(msg == null) {
                             if(response.timedout) {
-                                msg = i18next.t('viewer_components_attributelist_9');
+                                msg = i18next.t('viewer_components_attributelist_8');
                             } else if(response.statusText != null && response.statusText != "") {
                                 msg = response.statusText;
                             } else {
-                                msg = i18next.t('viewer_components_attributelist_10');
+                                msg = i18next.t('viewer_components_attributelist_9');
                             }
                         }
 
                         Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
 
-                        Ext.MessageBox.alert(i18next.t('viewer_components_attributelist_11'), msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_attributelist_10'), msg);
 
                     }
                 }
@@ -753,9 +753,9 @@ Ext.define ("viewer.components.AttributeList",{
                 id: name + 'Pager',
                 store: store,
                 displayInfo: true,
-                displayMsg: i18next.t('viewer_components_attributelist_12'),
-                afterPageText : i18next.t('viewer_components_attributelist_13'),
-                emptyMsg: i18next.t('viewer_components_attributelist_14')
+                displayMsg: i18next.t('viewer_components_attributelist_11'),
+                afterPageText : i18next.t('viewer_components_attributelist_12'),
+                emptyMsg: i18next.t('viewer_components_attributelist_13')
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
@@ -824,7 +824,7 @@ Ext.define ("viewer.components.AttributeList",{
         url += '&params=' + this.config.downloadParams;
 
         var w =new Ext.Window({
-            title: i18next.t('viewer_components_attributelist_3'),
+            title: i18next.t('viewer_components_attributelist_14'),
             width: 400,
             height: 150,
             layout: 'fit',

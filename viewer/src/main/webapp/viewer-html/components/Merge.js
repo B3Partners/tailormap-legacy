@@ -29,8 +29,8 @@ Ext.define("viewer.components.Merge", {
     geometryEditable: null,
     deActivatedTools: [],
     config: {
-        name: i18next.t('viewer_components_merge_11'),
-        tooltip: i18next.t('viewer_components_merge_0'),
+        name: i18next.t('viewer_components_merge_0'),
+        tooltip: i18next.t('viewer_components_merge_1'),
         strategy: "replace",
         actionbeanUrl: "/viewer/action/feature/merge",
         layers: null,
@@ -101,7 +101,7 @@ Ext.define("viewer.components.Merge", {
                 fillopacity: 50,
                 strokecolor: "FF0000",
                 strokeopacity: 50,
-                label: i18next.t('viewer_components_merge_11'),
+                label: i18next.t('viewer_components_merge_2'),
                 fontSize: "x-large"
             }
         });
@@ -125,10 +125,10 @@ Ext.define("viewer.components.Merge", {
         if (this.mode == "selectA") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(false);
             Ext.getCmp(this.name + "selectAButton").setDisabled(true);
-            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_12', {labelB: this.labelB}));
+            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_3', {labelB: this.labelB}));
         } else if (this.mode == "selectB") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(true);
-            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_13', { labelA: this.labelA, labelB: this.labelB }));
+            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_4', { labelA: this.labelA, labelB: this.labelB }));
         }
     },
     selectB: function () {
@@ -210,24 +210,24 @@ Ext.define("viewer.components.Merge", {
             },
             failure: function (result) {
                 if (failureFunction != undefined) {
-                    failureFunction(i18next.t('viewer_components_merge_14') + result.status + " "
+                    failureFunction(i18next.t('viewer_components_merge_5') + result.status + " "
                             + result.statusText + ": " + result.responseText, this);
                 }
             }});
     },
     failed: function (msg, me) {
-        Ext.Msg.alert(i18next.t('viewer_components_merge_15'), msg);
+        Ext.Msg.alert(i18next.t('viewer_components_merge_6'), msg);
         Ext.get(me.getContentDiv()).unmask();
         me.cancel();
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
-        Ext.MessageBox.alert(i18next.t('viewer_components_merge_9'), i18next.t('viewer_components_merge_10'));
+        Ext.MessageBox.alert(i18next.t('viewer_components_merge_7'), i18next.t('viewer_components_merge_8'));
         me.cancel();
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
-        Ext.get(this.getContentDiv()).mask(i18next.t('viewer_components_merge_16'))
+        Ext.get(this.getContentDiv()).mask(i18next.t('viewer_components_merge_9'))
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -282,8 +282,8 @@ Ext.define("viewer.components.Merge", {
                             xtype: 'button',
                             id: this.name + "selectAButton",
                             disabled: true,
-                            tooltip: i18next.t('viewer_components_merge_1') + this.labelA,
-                            text: i18next.t('viewer_components_merge_2') + this.labelA,
+                            tooltip: i18next.t('viewer_components_merge_10') + this.labelA,
+                            text: i18next.t('viewer_components_merge_11') + this.labelA,
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -295,8 +295,8 @@ Ext.define("viewer.components.Merge", {
                             xtype: 'button',
                             id: this.name + "selectBButton",
                             disabled: true,
-                            tooltip: i18next.t('viewer_components_merge_3') + this.labelB,
-                            text: i18next.t('viewer_components_merge_4') + this.labelB,
+                            tooltip: i18next.t('viewer_components_merge_12') + this.labelB,
+                            text: i18next.t('viewer_components_merge_13') + this.labelB,
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -325,8 +325,8 @@ Ext.define("viewer.components.Merge", {
                     items: [
                         {
                             id: this.name + "cancelButton",
-                            tooltip: i18next.t('viewer_components_merge_5'),
-                            text: i18next.t('viewer_components_merge_6'),
+                            tooltip: i18next.t('viewer_components_merge_14'),
+                            text: i18next.t('viewer_components_merge_15'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -336,8 +336,8 @@ Ext.define("viewer.components.Merge", {
                         },
                         {
                             id: this.name + "saveButton",
-                            tooltip: i18next.t('viewer_components_merge_7'),
-                            text: i18next.t('viewer_components_merge_8'),
+                            tooltip: i18next.t('viewer_components_merge_16'),
+                            text: i18next.t('viewer_components_merge_17'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -379,7 +379,7 @@ Ext.define("viewer.components.Merge", {
         this.geometryEditable = false;
 
         if (appLayer != null) {
-            this.maincontainer.setLoading(i18next.t('viewer_components_merge_17'));
+            this.maincontainer.setLoading(i18next.t('viewer_components_merge_18'));
             this.loadAttributes(appLayer);
         } else {
             this.cancel();
@@ -420,9 +420,9 @@ Ext.define("viewer.components.Merge", {
             Ext.getCmp(this.name + "selectAButton").setDisabled(false);
             Ext.getCmp(this.name + "selectBButton").setDisabled(true);
 
-            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_18', {labelA: this.labelA, labelB: this.labelB}));
+            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_19', {labelA: this.labelA, labelB: this.labelB}));
         } else {
-            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_19'));
+            Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_merge_20'));
         }
     },
     featuresReceived: function (features) {

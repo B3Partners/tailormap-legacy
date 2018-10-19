@@ -30,7 +30,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.form.add([
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_9'),
+                fieldLabel: i18next.t('bookmark_config_0'),
                 name: 'copyBookmarkForWorkversion',
                 labelWidth:this.labelWidth,
                 inputValue: false,
@@ -41,7 +41,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'label',
-                text: i18next.t('viewer_components_customconfiguration_10'),
+                text: i18next.t('bookmark_config_1'),
                 style: { 
                     fontWeight: 'bold'
                 }
@@ -53,7 +53,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 },
                 items: [{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_11'),
+                        boxLabel: i18next.t('bookmark_config_2'),
                         name: 'showFullUrl',
                         //value: true,
                         inputValue: true,
@@ -63,7 +63,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                 },{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_12'),
+                        boxLabel: i18next.t('bookmark_config_3'),
                         name: 'showShortUrl',
                         value: true,
                         //inputValue: true,
@@ -74,7 +74,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 }]
             },{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_13'),
+                        boxLabel: i18next.t('bookmark_config_4'),
                         name: 'showLabels',
                         //value: true,
                         inputValue: true,
@@ -84,7 +84,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                 },{
                 xtype: 'label',
-                text: i18next.t('viewer_components_customconfiguration_14'),
+                text: i18next.t('bookmark_config_5'),
                 style: {
                     fontWeight: 'bold'
                 }
@@ -97,7 +97,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 items: [
                     {
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_15'),
+                        boxLabel: i18next.t('bookmark_config_6'),
                         name: 'shareEmail',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -108,7 +108,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_16'),
+                        boxLabel: i18next.t('bookmark_config_7'),
                         name: 'shareTwitter',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -120,7 +120,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_17'),
+                        boxLabel: i18next.t('bookmark_config_8'),
                         name: 'shareLinkedIn',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -131,7 +131,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_18'),
+                        boxLabel: i18next.t('bookmark_config_9'),
                         name: 'shareGooglePlus',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -142,7 +142,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('viewer_components_customconfiguration_19'),
+                        boxLabel: i18next.t('bookmark_config_10'),
                         name: 'shareFacebook',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -155,17 +155,17 @@ Ext.define("viewer.components.CustomConfiguration", {
                 ]
             },{
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_20'),
+                fieldLabel: i18next.t('bookmark_config_11'),
                 name: 'shareTitle',
-                value: this.configObject.shareTitle != undefined ? this.configObject.shareTitle : i18next.t('viewer_components_customconfiguration_272'),
+                value: this.configObject.shareTitle != undefined ? this.configObject.shareTitle : i18next.t('bookmark_config_12'),
                 labelWidth:this.labelWidth,
                 width: 700
             },{
                 xtype: 'textareafield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_21'),
+                fieldLabel: i18next.t('bookmark_config_13'),
                 name: 'shareText',
                 grow: true,
-                value: this.configObject.shareText != undefined ? this.configObject.shareText : i18next.t('viewer_components_customconfiguration_273'),
+                value: this.configObject.shareText != undefined ? this.configObject.shareText : i18next.t('bookmark_config_14'),
                 labelWidth:this.labelWidth,
                 width: 700
             }

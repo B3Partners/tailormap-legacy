@@ -81,7 +81,7 @@ Ext.define("viewer.components.Snapping", {
                 me.initWindow();
             },
             failure: function (a, b, c) {
-                Ext.MessageBox.alert(i18next.t('viewer_components_snapping_1'), i18next.t('viewer_components_snapping_2'));
+                Ext.MessageBox.alert(i18next.t('viewer_components_snapping_0'), i18next.t('viewer_components_snapping_1'));
             }
         });
 
@@ -146,7 +146,7 @@ Ext.define("viewer.components.Snapping", {
             items: [{
                     forId: 'snapLayers',
                     xtype: 'label',
-                    text: i18next.t('viewer_components_snapping_0'),
+                    text: i18next.t('viewer_components_snapping_2'),
                     margin: '10 0 5 10'
                 }
                 , this.layerSelector]

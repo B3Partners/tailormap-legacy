@@ -54,7 +54,7 @@ Ext.define("viewer.components.sf.Config", {
             fieldLabel: i18next.t('viewer_components_sf_config_1'),
             name: "start",
             value: Ext.isDefined(this.configObject.start) ? this.configObject.start : this.getDefaultStartValue(),
-            qtip: i18next.t('viewer_components_sf_config_51'),
+            qtip: i18next.t('viewer_components_sf_config_2'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -134,7 +134,7 @@ Ext.define("viewer.components.sf.ResetConfig", {
 
     getFormItems : function(){
         var items = [{
-            fieldLabel: i18next.t('viewer_components_sf_config_2'),
+            fieldLabel: i18next.t('viewer_components_sf_config_3'),
             name: 'label',
             value: this.configObject.label ? this.configObject.label : ""
         }];
@@ -142,7 +142,7 @@ Ext.define("viewer.components.sf.ResetConfig", {
         return items;
     },
     getTitle : function(){
-        return i18next.t('viewer_components_sf_config_52');
+        return i18next.t('viewer_components_sf_config_4');
     }
 });
 
@@ -153,13 +153,13 @@ Ext.define("viewer.components.sf.TextlabelConfig", {
     },
     getFormItems : function(){
         return [{
-            fieldLabel: i18next.t('viewer_components_sf_config_3'),
+            fieldLabel: i18next.t('viewer_components_sf_config_5'),
             name: 'textlabel',
             value: this.configObject.textlabel ? this.configObject.textlabel : ""
         }];
     },
     getTitle : function(){
-        return i18next.t('viewer_components_sf_config_53');
+        return i18next.t('viewer_components_sf_config_6');
     }
 });
 
@@ -207,19 +207,19 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
     getFormItems : function(){
         var items = this.callParent();
         var columns = [
-            { text: i18next.t('viewer_components_sf_config_4'), dataIndex: 'label', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
-            { text: i18next.t('viewer_components_sf_config_5'), dataIndex: 'value', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
+            { text: i18next.t('viewer_components_sf_config_7'), dataIndex: 'label', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
+            { text: i18next.t('viewer_components_sf_config_8'), dataIndex: 'value', flex: 1, menuDisabled: true, sortable: false, editor: { xtype: 'textfield', allowBlank: false } },
             { xtype: 'actioncolumn', menuDisabled: true, sortable: false, width: 30, items: [{
                 icon: false,
                 iconCls: 'x-fa fa-minus-circle',
-                tooltip: i18next.t('viewer_components_sf_config_6'),
+                tooltip: i18next.t('viewer_components_sf_config_9'),
                 handler: function (grid, rowIndex, colIndex) {
                     grid.getStore().removeAt(rowIndex);
                 }
             }]}
         ];
         if(this.setDefaultValue) {
-            columns.splice(2, 0, { text: i18next.t('viewer_components_sf_config_7'), dataIndex: 'defaultVal', xtype: 'checkcolumn', tooltip: i18next.t('viewer_components_sf_config_8'), width: 80, menuDisabled: true, sortable: false });
+            columns.splice(2, 0, { text: i18next.t('viewer_components_sf_config_10'), dataIndex: 'defaultVal', xtype: 'checkcolumn', tooltip: i18next.t('viewer_components_sf_config_11'), width: 80, menuDisabled: true, sortable: false });
         }
         var grid = Ext.create("Ext.grid.Panel", {
             store: this.store,
@@ -238,7 +238,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
                 name: "addOption",
                 xtype: "button",
                 id: "addOption",
-                text: i18next.t('viewer_components_sf_config_9'),
+                text: i18next.t('viewer_components_sf_config_12'),
                 listeners: {
                     click: {
                         fn: function () {
@@ -257,7 +257,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
         return items;
     },
     getTitle : function (){
-        return i18next.t('viewer_components_sf_config_54');
+        return i18next.t('viewer_components_sf_config_13');
     },
     getDefaultStartValue : function (){
         return "";
@@ -292,7 +292,7 @@ Ext.define("viewer.components.sf.RadioConfig", {
         viewer.components.sf.RadioConfig.superclass.constructor.call(this, config, /*setDefaultValue=*/false);
     },
     getTitle : function(){
-        return i18next.t('viewer_components_sf_config_55');
+        return i18next.t('viewer_components_sf_config_14');
     }
 });
 
@@ -303,14 +303,14 @@ Ext.define("viewer.components.sf.DateConfig", {
     },
     getFormItems : function(){
         var items =  [{
-            fieldLabel: i18next.t('viewer_components_sf_config_10'),
+            fieldLabel: i18next.t('viewer_components_sf_config_15'),
             name: 'label',
             value: this.configObject.label ? this.configObject.label : ""
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_11'),
+            fieldLabel: i18next.t('viewer_components_sf_config_16'),
             name: "start",
             value: Ext.isDefined(this.configObject.start) ? this.configObject.start : this.getDefaultStartValue(),
-            qtip: i18next.t('viewer_components_sf_config_56'),
+            qtip: i18next.t('viewer_components_sf_config_17'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -322,14 +322,14 @@ Ext.define("viewer.components.sf.DateConfig", {
         }];
         items = items.concat([{
             xtype: 'combo',
-            fieldLabel: i18next.t('viewer_components_sf_config_12'),
+            fieldLabel: i18next.t('viewer_components_sf_config_18'),
             name: "datepickerType",
             store: Ext.create("Ext.data.Store", {
                 fields: ["type", "label"],
                 data: [
-                    {type: "bt", label: i18next.t('viewer_components_sf_config_36')},
-                    {type: "gt", label: i18next.t('viewer_components_sf_config_37')},
-                    {type: "lt", label: i18next.t('viewer_components_sf_config_38')}
+                    {type: "bt", label: i18next.t('viewer_components_sf_config_19')},
+                    {type: "gt", label: i18next.t('viewer_components_sf_config_20')},
+                    {type: "lt", label: i18next.t('viewer_components_sf_config_21')}
                 ]
             }),
             queryModes: "local",
@@ -342,7 +342,7 @@ Ext.define("viewer.components.sf.DateConfig", {
         return items;
     },
     getTitle : function(){
-        return i18next.t('viewer_components_sf_config_57');
+        return i18next.t('viewer_components_sf_config_22');
     }
 });
 
@@ -355,14 +355,14 @@ Ext.define("viewer.components.sf.ComboConfig", {
         var items = this.callParent();
         items = items.concat([ {
             xtype: 'combo',
-            fieldLabel: i18next.t('viewer_components_sf_config_13'),
+            fieldLabel: i18next.t('viewer_components_sf_config_23'),
             name: "comboType",
             store: Ext.create("Ext.data.Store", {
                 fields: ["type", "label"],
                 data: [
-                    {type: "unique", label: i18next.t('viewer_components_sf_config_39')},
-                    {type: "own", label: i18next.t('viewer_components_sf_config_40')},
-                    {type: "range", label: i18next.t('viewer_components_sf_config_41')}
+                    {type: "unique", label: i18next.t('viewer_components_sf_config_24')},
+                    {type: "own", label: i18next.t('viewer_components_sf_config_25')},
+                    {type: "range", label: i18next.t('viewer_components_sf_config_26')}
                 ]
             }),
             queryModes: "local",
@@ -381,11 +381,11 @@ Ext.define("viewer.components.sf.ComboConfig", {
             }
         },
         {
-            fieldLabel: i18next.t('viewer_components_sf_config_14'),
+            fieldLabel: i18next.t('viewer_components_sf_config_27'),
             name: "min",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "range") || !this.configObject.comboType,
             id: "min",
-            qtip: i18next.t('viewer_components_sf_config_58'),
+            qtip: i18next.t('viewer_components_sf_config_28'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -396,10 +396,10 @@ Ext.define("viewer.components.sf.ComboConfig", {
                 }
             }
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_15'),
+            fieldLabel: i18next.t('viewer_components_sf_config_29'),
             name: "max",
             hidden: ( this.configObject.comboType && this.configObject.comboType !== "range" ) || !this.configObject.comboType,
-            qtip: i18next.t('viewer_components_sf_config_59'),
+            qtip: i18next.t('viewer_components_sf_config_30'),
             id: "max",
             value: this.configObject.max ? this.configObject.max : "",
             listeners: {
@@ -411,11 +411,11 @@ Ext.define("viewer.components.sf.ComboConfig", {
                 }
             }
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_16'),
+            fieldLabel: i18next.t('viewer_components_sf_config_31'),
             name: "ownValues",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "own") || this.configObject.comboType,
             id: "ownValues",
-            qtip: i18next.t('viewer_components_sf_config_60'),
+            qtip: i18next.t('viewer_components_sf_config_32'),
             value: this.configObject.ownValues ? this.configObject.ownValues : "",
             listeners: {
                 render: function (c) {
@@ -426,11 +426,11 @@ Ext.define("viewer.components.sf.ComboConfig", {
                 }
             }
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_17'),
+            fieldLabel: i18next.t('viewer_components_sf_config_33'),
             name: "maxFeatures",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "maxFeatures",
-            qtip: i18next.t('viewer_components_sf_config_61'),
+            qtip: i18next.t('viewer_components_sf_config_34'),
             value: this.configObject.maxFeatures ? this.configObject.maxFeatures : "",
             listeners: {
                 render: function (c) {
@@ -450,11 +450,11 @@ Ext.define("viewer.components.sf.ComboConfig", {
             displayField: "label",
             editable: false,
             valueField: "id",
-            fieldLabel: i18next.t('viewer_components_sf_config_18'),
+            fieldLabel: i18next.t('viewer_components_sf_config_35'),
             name: "linkedFilter",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilter",
-            qtip: i18next.t('viewer_components_sf_config_62'),
+            qtip: i18next.t('viewer_components_sf_config_36'),
             value: this.configObject.linkedFilter ? this.configObject.linkedFilter : "",
             listeners: {
                 render: function (c) {
@@ -476,11 +476,11 @@ Ext.define("viewer.components.sf.ComboConfig", {
             displayField: "label",
             editable: false,
             valueField: "name",
-            fieldLabel: i18next.t('viewer_components_sf_config_19'),
+            fieldLabel: i18next.t('viewer_components_sf_config_37'),
             name: "linkedFilterAttribute",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilterAttribute",
-            qtip: i18next.t('viewer_components_sf_config_63'),
+            qtip: i18next.t('viewer_components_sf_config_38'),
             value: this.configObject.linkedFilterAttribute ? this.configObject.linkedFilterAttribute : "",
             listeners: {
                 render: function (c) {
@@ -529,7 +529,7 @@ Ext.define("viewer.components.sf.ComboConfig", {
         return "max";
     },
     getTitle : function (){
-        return i18next.t('viewer_components_sf_config_64');
+        return i18next.t('viewer_components_sf_config_39');
     }
 });
 
@@ -541,9 +541,9 @@ Ext.define("viewer.components.sf.NumberConfig", {
     getFormItems : function(){
         var items = this.callParent();
         items = items.concat([{
-            fieldLabel: i18next.t('viewer_components_sf_config_20'),
+            fieldLabel: i18next.t('viewer_components_sf_config_40'),
             name: "fieldLabel",
-            qtip: i18next.t('viewer_components_sf_config_65'),
+            qtip: i18next.t('viewer_components_sf_config_41'),
             value: this.configObject.fieldLabel ? this.configObject.fieldLabel : "",
             listeners: {
                 render: function (c) {
@@ -554,9 +554,9 @@ Ext.define("viewer.components.sf.NumberConfig", {
                 }
             }
         },{
-            fieldLabel: i18next.t('viewer_components_sf_config_21'),
+            fieldLabel: i18next.t('viewer_components_sf_config_42'),
             name: "min",
-            qtip: i18next.t('viewer_components_sf_config_66'),
+            qtip: i18next.t('viewer_components_sf_config_43'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -567,10 +567,10 @@ Ext.define("viewer.components.sf.NumberConfig", {
                 }
             }
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_22'),
+            fieldLabel: i18next.t('viewer_components_sf_config_44'),
             name: "max",
             value: this.configObject.max ? this.configObject.max : "",
-            qtip: i18next.t('viewer_components_sf_config_67'),
+            qtip: i18next.t('viewer_components_sf_config_45'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -581,14 +581,14 @@ Ext.define("viewer.components.sf.NumberConfig", {
             }
         },{
             xtype: 'combo',
-            fieldLabel: i18next.t('viewer_components_sf_config_23'),
+            fieldLabel: i18next.t('viewer_components_sf_config_46'),
             name: "numberType",
             store: Ext.create("Ext.data.Store", {
                 fields: ["type", "label"],
                 data: [
-                    {type: "eq", label: i18next.t('viewer_components_sf_config_42')},
-                    {type: "gt", label: i18next.t('viewer_components_sf_config_43')},
-                    {type: "lt", label: i18next.t('viewer_components_sf_config_44')}
+                    {type: "eq", label: i18next.t('viewer_components_sf_config_47')},
+                    {type: "gt", label: i18next.t('viewer_components_sf_config_48')},
+                    {type: "lt", label: i18next.t('viewer_components_sf_config_49')}
                 ]
             }),
             queryModes: "local",
@@ -603,7 +603,7 @@ Ext.define("viewer.components.sf.NumberConfig", {
         return 0;
     },
     getTitle : function(){
-        return i18next.t('viewer_components_sf_config_68');
+        return i18next.t('viewer_components_sf_config_50');
     }
 
 });
@@ -618,13 +618,13 @@ Ext.define("viewer.components.sf.TextConfig", {
         var items = this.callParent();
         items = items.concat([{
             xtype: 'combo',
-            fieldLabel: i18next.t('viewer_components_sf_config_24'),
+            fieldLabel: i18next.t('viewer_components_sf_config_51'),
             name: "filterType",
             store: Ext.create("Ext.data.Store", {
                 fields: ["type", "label"],
                 data: [
-                    {type: "eq", label: i18next.t('viewer_components_sf_config_45')},
-                    {type: "ilike", label: i18next.t('viewer_components_sf_config_46')}
+                    {type: "eq", label: i18next.t('viewer_components_sf_config_52')},
+                    {type: "ilike", label: i18next.t('viewer_components_sf_config_53')}
                 ]
             }),
             queryModes: "local",
@@ -639,7 +639,7 @@ Ext.define("viewer.components.sf.TextConfig", {
         return "";
     },
     getTitle : function(){
-        return i18next.t('viewer_components_sf_config_69');
+        return i18next.t('viewer_components_sf_config_54');
     }
 
 });
@@ -652,9 +652,9 @@ Ext.define("viewer.components.sf.SliderConfig", {
     getFormItems : function(){
         var items = this.callParent();
         items = items.concat([{
-            fieldLabel: i18next.t('viewer_components_sf_config_25'),
+            fieldLabel: i18next.t('viewer_components_sf_config_55'),
             name: "min",
-            qtip: i18next.t('viewer_components_sf_config_70'),
+            qtip: i18next.t('viewer_components_sf_config_56'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -665,10 +665,10 @@ Ext.define("viewer.components.sf.SliderConfig", {
                 }
             }
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_26'),
+            fieldLabel: i18next.t('viewer_components_sf_config_57'),
             name: "max",
             value: this.configObject.max ? this.configObject.max : "",
-            qtip: i18next.t('viewer_components_sf_config_71'),
+            qtip: i18next.t('viewer_components_sf_config_58'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -678,20 +678,20 @@ Ext.define("viewer.components.sf.SliderConfig", {
                 }
             }
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_27'),
+            fieldLabel: i18next.t('viewer_components_sf_config_59'),
             name: "step",
             value: this.configObject.step ? this.configObject.step : "1"
         }, {
             xtype: 'combo',
-            fieldLabel: i18next.t('viewer_components_sf_config_28'),
+            fieldLabel: i18next.t('viewer_components_sf_config_60'),
             name: "sliderType",
             store: Ext.create("Ext.data.Store", {
                 fields: ["type", "label"],
                 data: [
-                    {type: "eq", label: i18next.t('viewer_components_sf_config_47')},
-                    {type: "gt", label: i18next.t('viewer_components_sf_config_48')},
-                    {type: "lt", label: i18next.t('viewer_components_sf_config_49')},
-                    {type: "range", label: i18next.t('viewer_components_sf_config_50')}
+                    {type: "eq", label: i18next.t('viewer_components_sf_config_61')},
+                    {type: "gt", label: i18next.t('viewer_components_sf_config_62')},
+                    {type: "lt", label: i18next.t('viewer_components_sf_config_63')},
+                    {type: "range", label: i18next.t('viewer_components_sf_config_64')}
                 ]
             }),
             queryModes: "local",
@@ -700,10 +700,10 @@ Ext.define("viewer.components.sf.SliderConfig", {
             valueField: "type",
             value: this.configObject.sliderType ? this.configObject.sliderType : "eq"
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_29'),
+            fieldLabel: i18next.t('viewer_components_sf_config_65'),
             name: "valueFormatString",
             value: this.configObject.valueFormatString ? this.configObject.valueFormatString : "",
-            qtip: i18next.t('viewer_components_sf_config_72'),
+            qtip: i18next.t('viewer_components_sf_config_66'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -723,11 +723,11 @@ Ext.define("viewer.components.sf.SliderConfig", {
             displayField: "label",
             editable: false,
             valueField: "id",
-            fieldLabel: i18next.t('viewer_components_sf_config_30'),
+            fieldLabel: i18next.t('viewer_components_sf_config_67'),
             name: "linkedFilter",
             hidden: false,// (this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilter",
-            qtip: i18next.t('viewer_components_sf_config_73'),
+            qtip: i18next.t('viewer_components_sf_config_68'),
             value: this.configObject.linkedFilter ? this.configObject.linkedFilter : "",
             listeners: {
                 render: function (c) {
@@ -749,11 +749,11 @@ Ext.define("viewer.components.sf.SliderConfig", {
             displayField: "label",
             editable: false,
             valueField: "name",
-            fieldLabel: i18next.t('viewer_components_sf_config_31'),
+            fieldLabel: i18next.t('viewer_components_sf_config_69'),
             name: "linkedFilterAttribute",
             hidden: false,//(this.configObject.comboType && this.configObject.comboType !== "unique") || !this.configObject.comboType,
             id: "linkedFilterAttribute",
-            qtip: i18next.t('viewer_components_sf_config_74'),
+            qtip: i18next.t('viewer_components_sf_config_70'),
             value: this.configObject.linkedFilterAttribute ? this.configObject.linkedFilterAttribute : "",
             listeners: {
                 render: function (c) {
@@ -771,7 +771,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
         return "min,max";
     },
     getTitle : function(){
-        return i18next.t('viewer_components_sf_config_75');
+        return i18next.t('viewer_components_sf_config_71');
     }
 
 });
@@ -784,9 +784,9 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
     getFormItems : function(){
         var items = this.callParent();
         items = items.concat([{
-            fieldLabel: i18next.t('viewer_components_sf_config_32'),
+            fieldLabel: i18next.t('viewer_components_sf_config_72'),
             name: "min",
-            qtip: i18next.t('viewer_components_sf_config_76'),
+            qtip: i18next.t('viewer_components_sf_config_73'),
             value: this.configObject.min ? this.configObject.min : "",
             listeners: {
                 render: function (c) {
@@ -797,10 +797,10 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
                 }
             }
         }, {
-            fieldLabel: i18next.t('viewer_components_sf_config_33'),
+            fieldLabel: i18next.t('viewer_components_sf_config_74'),
             name: "max",
             value: this.configObject.max ? this.configObject.max : "",
-            qtip: i18next.t('viewer_components_sf_config_77'),
+            qtip: i18next.t('viewer_components_sf_config_75'),
             listeners: {
                 render: function (c) {
                     Ext.QuickTips.register({
@@ -810,9 +810,9 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
                 }
             }
         },{
-            fieldLabel: i18next.t('viewer_components_sf_config_34'),
+            fieldLabel: i18next.t('viewer_components_sf_config_76'),
             name: "fieldLabelMin",
-            qtip: i18next.t('viewer_components_sf_config_78'),
+            qtip: i18next.t('viewer_components_sf_config_77'),
             value: this.configObject.fieldLabelMin ? this.configObject.fieldLabelMin : "",
             listeners: {
                 render: function (c) {
@@ -823,7 +823,7 @@ Ext.define("viewer.components.sf.NumberrangeConfig", {
                 }
             }
         },{
-            fieldLabel: i18next.t('viewer_components_sf_config_35'),
+            fieldLabel: i18next.t('viewer_components_sf_config_78'),
             name: "fieldLabelMax",
             qtip: i18next.t('viewer_components_sf_config_79'),
             value: this.configObject.fieldLabelMax ? this.configObject.fieldLabelMax : "",

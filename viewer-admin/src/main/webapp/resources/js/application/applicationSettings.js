@@ -199,7 +199,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
             width: 300,
             msg: i18next.t('viewer_admin_applicationsettings_11')+
             '<input type="text" id="mashupNameText" width="200px"><br/>' +
-            '<label><input type="checkbox" id="mustUpdateComponents">' + i18next.t('viewer_admin_applicationsettings_14') + '</label><br/>'  ,
+            '<label><input type="checkbox" id="mustUpdateComponents">' + i18next.t('viewer_admin_applicationsettings_12') + '</label><br/>'  ,
             buttons: Ext.MessageBox.OKCANCEL,
             fn: function(btn, text){
                 if(btn=='ok'){
@@ -219,8 +219,8 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
 
     confirmPublish: function () {
         Ext.MessageBox.show({
-            title: i18next.t('viewer_admin_applicationsettings_12'),
-            msg: i18next.t('viewer_admin_applicationsettings_13'),
+            title: i18next.t('viewer_admin_applicationsettings_13'),
+            msg: i18next.t('viewer_admin_applicationsettings_14'),
             buttons: Ext.MessageBox.YESNOCANCEL,
             fn: function(btn, text){
                 if(btn === 'yes' || btn === 'no'){

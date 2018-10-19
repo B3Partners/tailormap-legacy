@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [{
                 xtype: 'textfield',
                 id: 'componentTransparencyTitle',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_241'),
+                fieldLabel: i18next.t('transparencyslider_config_0'),
                 name: 'title',
                 value: title,
                 labelWidth: 275,
@@ -54,7 +54,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     id: 'sliderForUserAdded',
                     checked: this.configObject.sliderForUserAdded,
                     inputValue: true,
-                    boxLabel: i18next.t('viewer_components_customconfiguration_242'),                    
+                    boxLabel: i18next.t('transparencyslider_config_1'),                    
                     listeners:{
                         change: {                    
                             fn: function(el,newValue,oldValue,eOpts){
@@ -81,10 +81,10 @@ Ext.define("viewer.components.CustomConfiguration",{
                         marginLeft: "100px"
                     },
                     disabled: this.configObject.sliderForUserAdded ? !this.configObject.sliderForUserAdded : true,
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_243'),
+                    fieldLabel: i18next.t('transparencyslider_config_2'),
                     name: 'sliderForUserAddedText',
                     labelWidth: 70,
-                    value: this.configObject.sliderForUserAddedText ? this.configObject.sliderForUserAddedText: i18next.t('viewer_components_customconfiguration_359')
+                    value: this.configObject.sliderForUserAddedText ? this.configObject.sliderForUserAddedText: i18next.t('transparencyslider_config_3')
                 },{
                     xtype: 'textfield',
                     id: 'sliderForUserAddedInitTransparency',
@@ -92,7 +92,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         marginLeft: "10px"
                     },
                     disabled: this.configObject.sliderForUserAdded ? !this.configObject.sliderForUserAdded : true,
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_244'),
+                    fieldLabel: i18next.t('transparencyslider_config_4'),
                     name: 'sliderForUserAddedInitTransparency',
                     labelWidth: 150,
                     value: this.configObject.sliderForUserAddedInitTransparency ? this.configObject.sliderForUserAddedInitTransparency: 0

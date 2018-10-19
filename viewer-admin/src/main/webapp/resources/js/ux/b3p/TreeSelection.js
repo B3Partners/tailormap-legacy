@@ -118,7 +118,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             tbar: [
                 {
                     xtype : 'textfield',
-                    emptyText : i18next.t('viewer_admin_treeselection_4'),
+                    emptyText : i18next.t('viewer_admin_treeselection_1'),
                     enableKeyEvents : true,
                     listeners : {
                         keyup :  function(textfield, e) {
@@ -175,7 +175,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             store: me.selectedLayersStore,
             rootVisible: false,
             root: {
-                text: i18next.t('viewer_admin_treeselection_1'),
+                text: i18next.t('viewer_admin_treeselection_2'),
                 expanded: true
             },
             selModel: {
@@ -610,11 +610,11 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 if(result.result) {
                     me.addToSelection(record);
                 } else {
-                    Ext.MessageBox.alert(i18next.t('viewer_admin_treeselection_5'), result.message);
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_treeselection_3'), result.message);
                 }
             },
             failure: function() {
-                Ext.MessageBox.alert(i18next.t('viewer_admin_treeselection_2'), i18next.t('viewer_admin_treeselection_3'));
+                Ext.MessageBox.alert(i18next.t('viewer_admin_treeselection_4'), i18next.t('viewer_admin_treeselection_5'));
             }
         });
     },
