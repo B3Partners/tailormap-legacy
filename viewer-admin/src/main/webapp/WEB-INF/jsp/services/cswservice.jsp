@@ -36,7 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </tr>
                     <tr>
                         <td><fmt:message key="viewer_admin.cswservice.3" />:</td>
-                        <td><stripes:text id="searchTerm" name="searchTerm" value="<fmt:message key="viewer_admin.cswservice.4" />" maxlength="255" size="80"/></td>
+                        <fmt:message key="viewer_admin.cswservice.4" var="searchTermLabel" />
+                        <td><stripes:text id="searchTerm" name="searchTerm" value="${searchTermLabel}" maxlength="255" size="80"/></td>
                     </tr>
                     <tr>
                         <td>

@@ -41,8 +41,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </tr>
                 </table>
                 <div class="submitbuttons">
-                    <stripes:submit name="save" value="<fmt:message key="viewer_admin.editattribute.3" />"/>
-                    <stripes:reset name="cancel" class="extlikebutton" value="<fmt:message key="viewer_admin.editattribute.4" />"/>
+                    <fmt:message key="viewer_admin.editattribute.3" var="editattribute3" />
+                    <fmt:message key="viewer_admin.editattribute.4" var="editattribute4" />
+                    <stripes:submit name="save" value="${editattribute3}"/>
+                    <stripes:reset name="cancel" class="extlikebutton" value="${editattribute4}"/>
                 </div>
             </c:if>
             <c:if test="${actionBean.context.eventName == 'save'}">

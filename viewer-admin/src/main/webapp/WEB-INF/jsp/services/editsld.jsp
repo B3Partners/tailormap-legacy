@@ -71,11 +71,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
-                <stripes:submit name="saveSld" value="<fmt:message key="viewer_admin.editsld.12" />"/>
+                <fmt:message key="viewer_admin.editsld.12" var="editsld12" />
+                <stripes:submit name="saveSld" value="${editsld12}"/>
             </c:when>
             <c:otherwise>
-                <stripes:submit name="saveSld" value="<fmt:message key="viewer_admin.editsld.13" />"/>
-                <stripes:submit name="deleteSld" onclick="return deleteConfirm();" value="<fmt:message key="viewer_admin.editsld.14" />"/>
+                <fmt:message key="viewer_admin.editsld.13" var="editsld13" />
+                <stripes:submit name="saveSld" value="${editsld13}"/>
+                <fmt:message key="viewer_admin.editsld.14" var="editsld14" />
+                <stripes:submit name="deleteSld" onclick="return deleteConfirm();" value="${editsld14}"/>
                 <script type="text/javascript">
                     function deleteConfirm() {
                         return confirm('<fmt:message key="viewer_admin.editsld.15" />');
@@ -86,13 +89,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
             <stripes:param name="service" value="${actionBean.service.id}"/>
         </stripes:url>
-        <stripes:button name="cancel" class="extlikebutton" value="<fmt:message key="viewer_admin.editsld.16" />" onclick="window.location.href='${url}'" />
+        <fmt:message key="viewer_admin.editsld.16" var="editsld16" />
+        <stripes:button name="cancel" class="extlikebutton" value="${editsld16}" />" onclick="window.location.href='${url}'" />
     </div>
     <div id="body">
         <fmt:message key="viewer_admin.editsld.17" />:<br>
-        <stripes:submit name="generateSld" value="<fmt:message key="viewer_admin.editsld.18" />"/>
-        <stripes:submit name="validateSldXml" value="<fmt:message key="viewer_admin.editsld.19" />" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
-        <stripes:submit name="cqlToFilter" value="<fmt:message key="viewer_admin.editsld.20" />" onclick="doCqlToFilter(); return false;"/>&nbsp;&nbsp; <a href="http://udig.github.com/docs/user/Constraint%20Query%20Language.html" target="_blank"><fmt:message key="viewer_admin.editsld.21" /></a>
+        <fmt:message key="viewer_admin.editsld.18" var="editsld18" />
+        <stripes:submit name="generateSld" value="${editsld18}"/>
+        <fmt:message key="viewer_admin.editsld.19" var="editsld19" />
+        <stripes:submit name="validateSldXml" value="${editsld19}" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
+        <fmt:message key="viewer_admin.editsld.20" var="editsld20" />
+        <stripes:submit name="cqlToFilter" value="${editsld20}" onclick="doCqlToFilter(); return false;"/>&nbsp;&nbsp; <a href="http://udig.github.com/docs/user/Constraint%20Query%20Language.html" target="_blank"><fmt:message key="viewer_admin.editsld.21" /></a>
         <br>
         <script type="text/javascript">
             var cql = "";

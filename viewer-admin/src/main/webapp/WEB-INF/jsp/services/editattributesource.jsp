@@ -64,12 +64,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="saveEdit" value="<fmt:message key="viewer_admin.editattributesource.7" />"/>
+                        <fmt:message key="viewer_admin.editattributesource.7" var="editattributesource7" />
+                        <fmt:message key="viewer_admin.editattributesource.8" var="editattributesource8" />
+                        <fmt:message key="viewer_admin.editattributesource.9" var="editattributesource9" />
+                        <fmt:message key="viewer_admin.editattributesource.10" var="editattributesource10" />
+                        <stripes:submit name="saveEdit" value="${editattributesource7}"/>
                         <c:if test="${actionBean.updatable}">
-                            <stripes:submit name="update" onclick="return updateConfirm();" value="<fmt:message key="viewer_admin.editattributesource.8" />"/>
+                            <stripes:submit name="update" onclick="return updateConfirm();" value="${editattributesource8}"/>
                         </c:if>
-                        <stripes:submit name="newAttributeSource" value="<fmt:message key="viewer_admin.editattributesource.9" />"/>
-                        <stripes:reset class="extlikebutton" name="cancel" value="<fmt:message key="viewer_admin.editattributesource.10" />"/>
+                        <stripes:submit name="newAttributeSource" value="${editattributesource9}"/>
+                        <stripes:reset class="extlikebutton" name="cancel" value="${editattributesource10}"/>
                     </div>
                     <c:if test="${!actionBean.updatable}">
                         * <fmt:message key="viewer_admin.editattributesource.11" />

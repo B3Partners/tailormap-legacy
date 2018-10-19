@@ -81,8 +81,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div id="attributes" style="width: 300px; height: 250px; float: left; margin-left: 25px; margin-top: 5px;"></div>
                     <div style="clear: both;"></div>
                     <div class="submitbuttons">
-                        <stripes:submit name="cancel" value="<fmt:message key="viewer_admin.editsolrsource.8" />"/>
-                        <stripes:submit name="save" value="<fmt:message key="viewer_admin.editsolrsource.9" />"/>
+                        <fmt:message key="viewer_admin.editsolrsource.8" var="editsolrsource8" />
+                        <stripes:submit name="cancel" value="${editsolrsource8}"/>
+                        <fmt:message key="viewer_admin.editsolrsource.9" var="editsolrsource9" />
+                        <stripes:submit name="save" value="${editsolrsource9}"/>
                     </div>
                     <c:if test="${!isNew}">
                         <script>

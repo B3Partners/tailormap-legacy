@@ -24,7 +24,8 @@
                 <stripes:messages/>
             </p>
             <stripes:select name="account" onchange="changeSelection(this)">
-                <stripes:option value="-1" label=" <fmt:message key="viewer_admin.cyclorama.1" /> "/>
+                <fmt:message key="viewer_admin.cyclorama.1" var="cyclorama1" />
+                <stripes:option value="-1" label=" ${cyclorama1}"/>
                 <stripes:options-collection collection="${actionBean.accounts}" label="filename" value="id"/>
             </stripes:select>
 
@@ -42,9 +43,11 @@
                         <td><stripes:file name="key"/></td>
                     </tr>
                     <tr>
-                        <td><stripes:submit name="save" value="<fmt:message key="viewer_admin.cyclorama.5" />"/></td>
+                        <fmt:message key="viewer_admin.cyclorama.5" var="cyclorama5" />
+                        <fmt:message key="viewer_admin.cyclorama.6" var="cyclorama6" />
+                        <td><stripes:submit name="save" value="${cyclorama5}"/></td>
                         <c:if test="${not empty actionBean.account}">
-                            <td><stripes:submit name="removeKey" value="<fmt:message key="viewer_admin.cyclorama.6" />"/></td>
+                            <td><stripes:submit name="removeKey" value="${cyclorama6}"/></td>
                         </c:if>
                     </tr>
                 </table>

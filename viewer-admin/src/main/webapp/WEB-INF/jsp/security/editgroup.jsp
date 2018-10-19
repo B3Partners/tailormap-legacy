@@ -42,8 +42,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="<fmt:message key="viewer_admin.editgroup.4" />"/>
-                        <stripes:reset class="extlikebutton" name="cancel" value="<fmt:message key="viewer_admin.editgroup.5" />"/>
+                        <fmt:message key="viewer_admin.editgroup.4" var="editgroup4" />
+                        <stripes:submit name="save" value="${editgroup4}"/>
+                        <fmt:message key="viewer_admin.editgroup.5" var="editgroup5" />
+                        <stripes:reset class="extlikebutton" name="cancel" value="${editgroup5}"/>
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
@@ -53,10 +55,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.vieweradmin_components_Group.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editgroup.6" />"/>
+                    <fmt:message key="viewer_admin.editgroup.6" var="editgroup6" />
+                    <stripes:submit name="edit" value="${editgroup6}"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editgroup.7" />"/>
+                    <fmt:message key="viewer_admin.editgroup.7" var="editgroup7" />
+                    <stripes:submit name="edit" value="${editgroup7}"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

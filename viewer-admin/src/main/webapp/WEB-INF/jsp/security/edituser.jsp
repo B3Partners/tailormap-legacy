@@ -95,8 +95,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="<fmt:message key="viewer_admin.edituser.13" />"/>
-                        <stripes:reset name="cancel" class="extlikebutton" value="<fmt:message key="viewer_admin.edituser.14" />"/>
+                        <fmt:message key="viewer_admin.edituser.13" var="edituser13" />
+                        <stripes:submit name="save" value="${edituser13}"/>
+                        <fmt:message key="viewer_admin.edituser.14" var="edituser14" />
+                        <stripes:reset name="cancel" class="extlikebutton" value="${edituser14}"/>
 
                         <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="authorizations">
                             <stripes:param name="user" value="${actionBean.user}"/>
@@ -124,17 +126,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.vieweradmin_components_User.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="<fmt:message key="viewer_admin.edituser.15" />"/>
+                    <fmt:message key="viewer_admin.edituser.15" var="edituser15" />
+                    <stripes:submit name="edit" value="${edituser15}"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="<fmt:message key="viewer_admin.edituser.16" />"/>
+                    <fmt:message key="viewer_admin.edituser.16" var="edituser16" />
+                    <stripes:submit name="edit" value="${edituser16}"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>
         <c:if test="${actionBean.context.eventName == 'edit'}">
             <br />
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
-                <stripes:submit name="edit" value="<fmt:message key="viewer_admin.edituser.17" />"/>
+                <fmt:message key="viewer_admin.edituser.17" var="edituser17" />
+                <stripes:submit name="edit" value="${edituser17}"/>
             </stripes:form>
         </c:if>
         </div>

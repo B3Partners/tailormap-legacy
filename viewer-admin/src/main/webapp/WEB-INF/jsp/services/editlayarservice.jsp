@@ -38,8 +38,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="<fmt:message key="viewer_admin.editlayarservice.3" />"/>
-                        <stripes:submit name="cancel" value="<fmt:message key="viewer_admin.editlayarservice.4" />"/>
+                        <fmt:message key="viewer_admin.editlayarservice.3" var="editlayarservice3" />
+                        <fmt:message key="viewer_admin.editlayarservice.4" var="editlayarservice4" />
+                        <stripes:submit name="save" value="${editlayarservice3}" />"/>
+                        <stripes:submit name="cancel" value="${editlayarservice4}" />"/>
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
@@ -49,10 +51,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             frameParent.reloadGrid();
                         }
                     </script>
-                    <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarservice.5" />"/>
+                    <fmt:message key="viewer_admin.editlayarservice.5" var="editlayarservice5" />
+                    <stripes:submit name="edit" value="${editlayarservice5}" />"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarservice.6" />"/>
+                    <fmt:message key="viewer_admin.editlayarservice.6" var="editlayarservice6" />
+                    <stripes:submit name="edit" value="${editlayarservice6}" />"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

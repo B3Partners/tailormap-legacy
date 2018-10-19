@@ -114,8 +114,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         </div>
                         <div class="submitbuttons">
-                            <stripes:submit name="save" value="<fmt:message key="viewer_admin.editlayarsource.11" />"/>
-                            <stripes:submit name="cancel" value="<fmt:message key="viewer_admin.editlayarsource.12" />"/>
+                            <fmt:message key="viewer_admin.editlayarsource.11" var="editlayarsource11" />
+                            <fmt:message key="viewer_admin.editlayarsource.12" var="editlayarsource12" />
+                            <stripes:submit name="save" value="${editlayarsource11}"/>
+                            <stripes:submit name="cancel" value="${editlayarsource12}"/>
                         </div>
                         <c:choose>
                             <c:when test="${not empty actionBean.layarSource.featureType.id}">
@@ -134,10 +136,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarsource.13" />"/>
+                        <fmt:message key="viewer_admin.editlayarsource.13" var="editlayarsource13" />
+                        <stripes:submit name="edit" value="${editlayarsource13}"/>
                     </c:when>
                     <c:otherwise>
-                        <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editlayarsource.14" />"/>
+                        <fmt:message key="viewer_admin.editlayarsource.14" var="editlayarsource14" />
+                        <stripes:submit name="edit" value="${editlayarsource14}"/>
                     </c:otherwise>
                 </c:choose>
             </stripes:form>

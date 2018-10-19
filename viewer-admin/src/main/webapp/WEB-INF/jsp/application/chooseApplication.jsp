@@ -43,7 +43,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div class="applicaties">
                     <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean">
                         <stripes:select id="defaultAppSelector" name="defaultAppId" value="${actionBean.defaultAppId}" style="display: none;">
-                            <stripes:option label="<fmt:message key="viewer_admin.chooseapplication.2" /> " value="" />
+                            <fmt:message key="viewer_admin.chooseapplication.2" var="OptLabel1" />
+                            <stripes:option label="${OptLabel1}" value="" />
                             <stripes:options-collection collection="${actionBean.apps}" label="nameWithVersion"></stripes:options-collection>
                         </stripes:select>
                     </stripes:form>

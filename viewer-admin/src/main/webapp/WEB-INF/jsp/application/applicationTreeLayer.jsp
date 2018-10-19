@@ -111,7 +111,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                                 <div id="details_summary_description_container" style="width: 475px; height: 150px;"></div>
                                                 <stripes:textarea name="details['summary.description']" rows="5" cols="27" style="display: none; width: 475px; height: 150px;" id="details_summary_description" />
                                                 <a href="#" class="inlinehelp-toggle" data-target="related-features-help"><fmt:message key="viewer_admin.applicationtreelayer.23" /></a>
-                                                <div class="inline-help related-features-help" style="display: none;"><fmt:message key="viewer_admin.applcationtreelayer.24" /></div>
+                                                <div class="inline-help related-features-help" style="display: none;"><fmt:message key="viewer_admin.applicationtreelayer.24" /></div>
                                             </td>
                                         </tr>
                                         <tr>

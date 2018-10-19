@@ -275,15 +275,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
-                <stripes:submit name="add" value="<fmt:message key="viewer_admin.geoservice.30" />"/>
-                <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="<fmt:message key="viewer_admin.geoservice.31" />"/>
+                <fmt:message key="viewer_admin.geoservice.30" var="geoservice30" />
+                <stripes:submit name="add" value="${geoservice30}"/>
+                <fmt:message key="viewer_admin.geoservice.31" var="geoservice31" />
+                <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="${geoservice31}"/>
                 <script>function urlChanged(){}</script>
             </c:when>
             <c:otherwise>
-                <stripes:submit name="save" value="<fmt:message key="viewer_admin.geoservice.32" />" onclick="return saveConfirm();"/>
-                <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="<fmt:message key="viewer_admin.geoservice.33" />"/>
-                <stripes:submit name="update" onclick="return updateConfirm();" value="<fmt:message key="viewer_admin.geoservice.34" />"/>
-                <stripes:reset name="cancel" class="extlikebutton" value="<fmt:message key="viewer_admin.geoservice.35" />"/>
+                <fmt:message key="viewer_admin.geoservice.32" var="geoservice32" />";
+                <stripes:submit name="save" value="${geoservice32}" onclick="return saveConfirm()" />
+                <fmt:message key="viewer_admin.geoservice.33" var="geoservice33" />
+                <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="${geoservice33}"/>
+                <fmt:message key="viewer_admin.geoservice.34" var="geoservice34" />
+                <stripes:submit name="update" onclick="return updateConfirm();" value="${geoservice34}"/>
+                <fmt:message key="viewer_admin.geoservice.35" var="geoservice35" />
+                <stripes:reset name="cancel" class="extlikebutton" value="${geoservice35}"/>
                 <script type="text/javascript">
                     function deleteServiceConfirm() {
                         return confirm('<fmt:message key="viewer_admin.geoservice.36" />');
@@ -367,7 +373,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     <stripes:param name="sld" value="${sld.id}"/>
                                     <fmt:message key="viewer_admin.geoservice.47" />
                                 </stripes:link>
-                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="deleteSld" onclick="return confirm('<fmt:message key="viewer_admin.geoservice.48" />')">
+                                <fmt:message key="viewer_admin.geoservice.48" var="geoservice48" />
+                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="deleteSld" onclick="return confirm('${geoservice48}')">
                                     <stripes:param name="service" value="${actionBean.service.id}"/>
                                     <stripes:param name="sld" value="${sld.id}"/>
                                     <fmt:message key="viewer_admin.geoservice.49" />
@@ -381,7 +388,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <br>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
             <stripes:hidden name="service"/>
-            <stripes:submit name="addSld" value="<fmt:message key="viewer_admin.geoservice.50" />"/>
+            <fmt:message key="viewer_admin.geoservice.50" var="geoservice50" />
+            <stripes:submit name="addSld" value="${geoservice50}"/>
         </stripes:form>            
     </div>
 </c:if>

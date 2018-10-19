@@ -144,8 +144,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </table>
 
                 <div class="submitbuttons">
-                    <stripes:submit name="save" value="<fmt:message key="viewer_admin.layer.28" />"/>
-                    <stripes:reset name="cancel" class="extlikebutton" onclick="setTimeout(changeFeatureSource,10)" value="<fmt:message key="viewer_admin.layer.29" />"/>
+                    <fmt:message key="viewer_admin.layer.28" var="layer28" />
+                    <stripes:submit name="save" value="${layer28}"/>
+                    <fmt:message key="viewer_admin.layer.29" var="layer29" />
+                    <stripes:reset name="cancel" class="extlikebutton" onclick="setTimeout(changeFeatureSource,10)" value="${layer29}"/>
                 </div>
                 <script type="text/javascript">
                     

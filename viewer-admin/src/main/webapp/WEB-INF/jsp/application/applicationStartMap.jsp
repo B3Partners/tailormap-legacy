@@ -50,8 +50,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden id="checkedlayersinput" name="checkedLayersString" />
                     <stripes:hidden id="removedrecordsinput" name="removedRecordsString" />
 
-                    <stripes:submit name="save" value="<fmt:message key="viewer_admin.applicationstartmap.3" />"/>
-                    <stripes:submit name="default" value="<fmt:message key="viewer_admin.applicationstartmap.4" />"/>
+                    <fmt:message key="viewer_admin.applicationstartmap.3" var="applicationstartmap3" />
+                    <stripes:submit name="save" value="${applicationstartmap3}"/>
+                    <fmt:message key="viewer_admin.applicationstartmap.4" var="applicationstartmap4" />
+                    <stripes:submit name="default" value="${applicationstartmap4}"/>
 
                 </stripes:form>
             </div>

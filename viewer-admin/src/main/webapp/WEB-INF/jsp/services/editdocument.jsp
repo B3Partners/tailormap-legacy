@@ -46,8 +46,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="<fmt:message key="viewer_admin.editdocument.5" />"/>
-                        <stripes:reset name="cancel" class="extlikebutton" value="<fmt:message key="viewer_admin.editdocument.6" />"/>
+                        <fmt:message key="viewer_admin.editdocument.5" var="editdocument5" />
+                        <fmt:message key="viewer_admin.editdocument.6" var="editdocument6" />
+                        <stripes:submit name="save" value="${editdocument5}"/>
+                        <stripes:reset name="cancel" class="extlikebutton" value="${editdocument6}"/>
                     </div>
                 </c:when>
                 <c:otherwise>
@@ -56,8 +58,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         if(frameParent && frameParent.vieweradmin_components_Document) {
                             frameParent.vieweradmin_components_Document.reloadGrid();
                         }
-                    </script>        
-                    <stripes:submit name="edit" value="<fmt:message key="viewer_admin.editdocument.7" />"/>
+                    </script>
+                    <fmt:message key="viewer_admin.editdocument.7" var="editdocument7" />
+                    <stripes:submit name="edit" value="${editdocument7}"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>
