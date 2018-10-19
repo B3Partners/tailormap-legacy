@@ -144,40 +144,43 @@ public class HeaderAuthenticationFilter implements Filter {
      * authPath init-param: path after the contextPath for which Apache is
      * configured to send the authentication/authorization headers which we
      * trust - must override any headers sent by the client, default
-     * "/auth/saml". If the application directly redirects to this path without
-     * redirecting to authInitPath first, redirects to the contextPath after
-     * succesful authentication.
+     * &quot;/auth/saml&quot;. If the application directly redirects to this
+     * path without redirecting to authInitPath first, redirects to the
+     * contextPath after succesful authentication.
      */
     public static final String PARAM_AUTH_PATH = "authPath";
 
     /**
      * authInitPath init-param: path which will save a returnTo parameter or
-     * Referer before redirecting to the authPath, default "/auth/init". The
-     * returnTo parameter is saved in the session and redirected to after
-     * successful login. Only relative URL's supported, otherwise
-     * redirects to the contextPath. When no returnTo parameter is present the
-     * Referer header is saved and redirected to after successful login.
+     * Referer before redirecting to the authPath, default
+     * &quot;/auth/init&quot;. The returnTo parameter is saved in the session
+     * and redirected to after successful login. Only relative URL's supported,
+     * otherwise redirects to the contextPath. When no returnTo parameter is
+     * present the Referer header is saved and redirected to after successful
+     * login.
      */
     public static final String PARAM_AUTH_INIT_PATH = "authInitPath";
 
     /**
-     * rolesHeader init-param: header which contains the roles.
+     * rolesHeader init-param: header which contains the roles, defaults to
+     * &quot;_roles&quot;.
      */
     public static final String PARAM_ROLES_HEADER = "rolesHeader";
 
     /**
-     * rolesSeparator init-param: if configured, the separator to split the
-     * roles with. If useRolesNSuffix is set to false, this defaults to ';'. Use
-     * with MellonMergeEnvVars.
+     * rolesSeparator init-param: the separator to split the roles header with,
+     * defaults to &quot;;&quot;. Use with MellonMergeEnvVars.
      */
     public static final String PARAM_ROLES_SEPARATOR = "rolesSeparator";
 
     /**
-     * useRolesNSuffix init-param: set to &quot;true&quot; to use a suffix for
-     * the roles header instead of splitting on a separator, defaults to true if
-     * rolesSeparator is not set. When rolesHeader is "groups", searches for
-     * roles_0, roles_1, roles_2, etc. Will stop when header contains "(null)"
-     * as sent by Apache when variable is null or next _N header is not found.
+     * useRolesNSuffix init-param: set to &quot;true&quot; to use an index
+     * suffix for unmerged role headers instead of splitting on a separator,
+     * defaults to false. Use with older Mellon version not supporting
+     * MellonMergeEnvVars. When rolesHeader is &quot;roles&quot;, searches for
+     * roles_0, roles_1, roles_2, etc. Will stop when header contains
+     * &quot;(null)&quot; as sent by Apache when variable is null or next _N
+     * header is not found.
      */
     public static final String PARAM_USE_ROLES_NSUFFIX = "useRolesNSuffix";
 
@@ -189,7 +192,8 @@ public class HeaderAuthenticationFilter implements Filter {
 
     /**
      * saveExtraHeaders init-param: extra headers to save sent to authPath, such
-     * as [prefix]_SESSION, separated by ','. Retrieve using getExtraAuthHeaders().
+     * as [prefix]_SESSION, separated by &quot;,&quot;. Retrieve using
+     * getExtraAuthHeaders().
      */
     public static final String PARAM_SAVE_EXTRA_HEADERS = "saveExtraHeaders";
 
@@ -220,9 +224,9 @@ public class HeaderAuthenticationFilter implements Filter {
         String value = filterConfig.getServletContext().getInitParameter(contextParamName);
         if(value == null) {
             value = filterConfig.getInitParameter(paramName);
-            log.debug("Using filter init parameter " + paramName + ": " + value);
+            log.debug("Using filter init parameter " + paramName + ": " + (PARAM_HEADER_PREFIX.equals(paramName) ? "<hidden for security reasons>" : value));
         } else {
-            log.debug("Using context parameter " + contextParamName + ": " + value);
+            log.debug("Using context parameter " + contextParamName + ": " + (PARAM_HEADER_PREFIX.equals(paramName) ? "<hidden for security reasons>" : value));
         }
         return value;
     }
@@ -237,11 +241,8 @@ public class HeaderAuthenticationFilter implements Filter {
         this.authPath = ObjectUtils.firstNonNull(getInitParameter(PARAM_AUTH_PATH), "auth/saml");
         this.authInitPath = ObjectUtils.firstNonNull(getInitParameter(PARAM_AUTH_PATH), "auth/init");
         this.rolesHeader = this.headerPrefix + ObjectUtils.firstNonNull(getInitParameter(PARAM_ROLES_HEADER), "_roles");
-        this.rolesSeparator = getInitParameter(PARAM_ROLES_SEPARATOR);
-        if(this.rolesSeparator != null) {
-            this.useRolesNSuffix = false;
-        }
-        this.useRolesNSuffix = "true".equals(getInitParameter(PARAM_USE_ROLES_NSUFFIX)) || this.rolesSeparator == null;
+        this.rolesSeparator = ObjectUtils.firstNonNull(getInitParameter(PARAM_ROLES_SEPARATOR), ";");
+        this.useRolesNSuffix = "true".equals(getInitParameter(PARAM_USE_ROLES_NSUFFIX));
         this.commonRole = getInitParameter(PARAM_COMMON_ROLE);
         this.saveExtraHeaders = getInitParameter(PARAM_SAVE_EXTRA_HEADERS);
         log.info("Initialized - " + toString());
@@ -414,6 +415,10 @@ public class HeaderAuthenticationFilter implements Filter {
 
         public Set<String> getRoles() {
             return roles;
+        }
+
+        public void setRoles(Set<String> roles) {
+            throw new UnsupportedOperationException();
         }
     }
 }
