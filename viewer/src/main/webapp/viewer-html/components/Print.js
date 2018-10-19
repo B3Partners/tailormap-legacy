@@ -33,7 +33,7 @@ Ext.define ("viewer.components.Print",{
     extraInfoCallbacks:null,
     extraLayerCallbacks:null,
     config:{
-        name: "Print",
+        name: ___("Print"),
         title: "",
         titlebarIcon : "",
         tooltip : "",
@@ -649,7 +649,7 @@ Ext.define ("viewer.components.Print",{
     * Call to redraw the preview
     */
     redrawPreview: function (){
-        document.getElementById('previewImg').innerHTML = 'Loading...';
+        document.getElementById('previewImg').innerHTML = ___("Loading...");
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
     },
@@ -852,7 +852,7 @@ Ext.define ("viewer.components.Print",{
      */
     imageSuccess: function(imageUrl){
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
-        if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
+        if(imageUrl === null) document.getElementById('previewImg').innerHTML = ___("Afbeelding laden mislukt");
         else {
             var image = new Image();
             image.onload = function() {

@@ -29,7 +29,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
     iconPath: null,
     contentId: '',
     config:{
-        name: "Related Documents",
+        name: ___("Related Documents"),
         title: "",
         titlebarIcon : "",
         tooltip : "",

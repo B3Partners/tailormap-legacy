@@ -68,13 +68,13 @@ Ext.define('vieweradmin.components.SolrConfig', {
                 menuDisabled: true,
                 renderer: (function(value) {
                     var links = [
-                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
                     ];
                     if(this.config.solrInitialized) {
                         links.push(
-                            Ext.String.format('<a href="#" class="addtoindex">Voeg toe aan index</a>', value),
-                            Ext.String.format('<a href="#" class="removefromindex">Verwijder uit index</a>', value)
+                            Ext.String.format('<a href="#" class="addtoindex">' + ___("Voeg toe aan index") + '</a>', value),
+                            Ext.String.format('<a href="#" class="removefromindex">' + ___("Verwijder uit index") + '</a>', value)
                         );
                     }
                     return links.join(" | ");
@@ -107,7 +107,7 @@ Ext.define('vieweradmin.components.SolrConfig', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de configuratie ", record.get("name"), " wilt verwijderen?"].join("");
+        return ___("Weet u zeker dat u de configuratie {{name}} wilt verwijderen?", {name:record.get("name")});
     },
 
     getEditUrl: function(record) {

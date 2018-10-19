@@ -92,7 +92,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:this.labelWidth,
                 listeners: {
                     select: function (combo, records, eOpts) {
-                        Ext.getCmp("attributeInfo").setValue("Type: " + records[0].get("type"));
+                        Ext.getCmp("attributeInfo").setValue(___("Type: ") + records[0].get("type"));
                     }
                 }
             }, {
@@ -111,7 +111,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:this.labelWidth,
                 listeners: {
                     select: function (combo, records, eOpts) {
-                        Ext.getCmp("attributeInfo").setValue("Type: " + records[0].get("type"));
+                        Ext.getCmp("attributeInfo").setValue(___("Type: ") + records[0].get("type"));
                     }
                 }
             }
@@ -173,7 +173,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
         });
-        store.add({id: "-666", serviceId: "-666", layerName: "Cyclomedia direct", alias: "Cyclomedia direct"});
+        store.add({id: "-666", serviceId: "-666", layerName: ___("Cyclomedia direct"), alias: ___("Cyclomedia direct")});
         return store;
     },
     loadKeys : function(value){

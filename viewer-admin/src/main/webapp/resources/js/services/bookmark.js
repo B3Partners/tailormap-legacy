@@ -70,7 +70,7 @@ Ext.define('vieweradmin.components.Bookmark', {
                 menuDisabled: true,
                 renderer: function(value) {
                     return [
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
                     ].join(" | ");
                 }
             }
@@ -87,7 +87,7 @@ Ext.define('vieweradmin.components.Bookmark', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de bookmark voor applicatie ", record.get("application.name"), " wilt verwijderen?"].join("");
+        return ___("Weet u zeker dat u de bookmark voor applicatie {{name}} wilt verwijderen?", {name:record.get("application.name")});
     },
 
     getRemoveUrl: function(record) {

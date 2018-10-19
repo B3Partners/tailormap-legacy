@@ -35,10 +35,10 @@ Ext.define("viewer.components.CustomConfiguration",{
                 type: 'string'
             }],
             data: [
-                ['Links-boven', 'tl'],
-                ['Rechts-boven', 'tr'],
-                ['Links-onder', 'bl'],
-                ['Rechts-onder', 'br']
+                [___("Links-boven"), 'tl'],
+                [___("Rechts-boven"), 'tr'],
+                [___("Links-onder"), 'bl'],
+                [___("Rechts-onder"), 'br']
             ]
         });
         

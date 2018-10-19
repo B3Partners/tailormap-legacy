@@ -71,7 +71,7 @@ Ext.define("viewer.SLD", {
             },
             failure: function(result) {
                 if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    failureFunction(___("Ajax request failed with status ") + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
         });
@@ -155,7 +155,7 @@ Ext.define("viewer.SLD", {
             },
             failure: function(result) {
                 if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    failureFunction(___("Ajax request failed with status ") + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
         });

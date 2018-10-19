@@ -155,7 +155,7 @@ Ext.define ("viewer.components.AttributeList",{
                     valueField: 'type',
                     style: { marginRight: '5px' },
                     store:  Ext.create('Ext.data.Store', {
-                        fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"GEOJSON", label:"GeoJSON" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
+                        fields: ['type','label'], data : [{type:"CSV", label: i18next.t('viewer_components_attributelist_4') },{type:"GEOJSON", label: i18next.t('viewer_components_attributelist_5') },{type:"XLS", label: i18next.t('viewer_components_attributelist_6') },{type:"SHP", label: i18next.t('viewer_components_attributelist_7') }]
                     })
                 }
             ]
@@ -332,7 +332,7 @@ Ext.define ("viewer.components.AttributeList",{
             clearTimeout(this.requestThresholdCounter);
         }
         if (this.grids.main) {
-            this.grids.main.getView().setLoading("Bezig met laden...");
+            this.grids.main.getView().setLoading(___("Bezig met laden..."));
         }
         me.loadLayerOnPopupShow = "";
         this.requestThresholdCounter = setTimeout(function(){
@@ -622,17 +622,17 @@ Ext.define ("viewer.components.AttributeList",{
 
                         if(msg == null) {
                             if(response.timedout) {
-                                msg = "Request timed out";
+                                msg = ___("Request timed out");
                             } else if(response.statusText != null && response.statusText != "") {
                                 msg = response.statusText;
                             } else {
-                                msg = "Unknown error";
+                                msg = ___("Unknown error");
                             }
                         }
 
                         Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
 
-                        Ext.MessageBox.alert("Foutmelding", msg);
+                        Ext.MessageBox.alert(___("Foutmelding"), msg);
 
                     }
                 }
@@ -753,9 +753,9 @@ Ext.define ("viewer.components.AttributeList",{
                 id: name + 'Pager',
                 store: store,
                 displayInfo: true,
-                displayMsg: 'Feature {0} - {1} van {2}',
-                afterPageText : 'van {0}',
-                emptyMsg: "Geen features om weer te geven"
+                displayMsg: ___("Feature {0} - {1} van {2}"),
+                afterPageText : ___("van {0}"),
+                emptyMsg: ___("Geen features om weer te geven")
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;

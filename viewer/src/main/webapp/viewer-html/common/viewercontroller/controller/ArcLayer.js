@@ -73,7 +73,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             /* ArcXML legends not yet supported, needs server side support for a
              * cross-domain POST
              */
-            this.getViewerController().logger.warn("appLayer " + this.getAppLayerId() + ": legend for ArcXML layers not supported");
+            this.getViewerController().logger.warn(___("appLayer {{appLayerId}}: legend for ArcXML layers not supported", {appLayerId: this.getAppLayerId()}));
 
             failure();
         }
@@ -88,7 +88,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     getLayerLegendInfoArcGIS: function(success, failure) {
         var me = this;
         
-        var errorMsg = "appLayer " + this.getAppLayerId() + ": legend for ArcGIS not available: ";
+        var errorMsg = ___("appLayer {{appLayerId}}: legend for ArcGIS not available: ", {appLayerId: this.getAppLayerId()});
         
         var appLayerId = this.appLayerId;
         var appLayer = this.getViewerController().getAppLayerById(appLayerId);
@@ -99,12 +99,12 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
          */
         if(!service.arcGISVersion) {
             // Only available since version 4.2
-            this.getViewerController().logger.warn(errorMsg + "no server version info, please update service registry");
+            this.getViewerController().logger.warn(errorMsg + ___("no server version info, please update service registry"));
             failure();
             return;
         }
         if(service.arcGISVersion.major < 10) {
-            this.getViewerController().logger.warn(errorMsg + "needs at least ArcGIS Server version 10 but version is " + service.arcGISVersion.s);
+            this.getViewerController().logger.warn(errorMsg + ___("needs at least ArcGIS Server version 10 but version is ") + service.arcGISVersion.s);
             failure();
             return;            
         }
@@ -189,7 +189,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     serviceCache.failedPreviously = true;
                     serviceCache.inProgress = false;
 
-                    me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS: " + msg);
+                    me.getViewerController().logger.error(errorMsg + ___("error retrieving legend JSON from ArcGIS: ") + msg);
                     failure();
                     
                     for(var i = 0; i < serviceCache.joiners.length; i++) {

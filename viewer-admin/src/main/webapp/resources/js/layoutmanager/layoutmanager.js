@@ -90,10 +90,10 @@ Ext.define('LayoutManager', {
         collapse_default: { title: i18next.t('viewer_admin_layoutmanager_4'), key: 'defaultCollapsed', type: 'checkbox' },
         floating: { title: i18next.t('viewer_admin_layoutmanager_5'), key: 'enableFloating', type: 'checkbox' },
         floatingposition: { title: i18next.t('viewer_admin_layoutmanager_6'), key: 'floatingPosition', type: 'select', options: [
-            { value: 'tl', label: 'Links-boven' },
-            { value: 'bl', label: 'Links-onder' },
-            { value: 'tr', label: 'Rechts-boven' },
-            { value: 'br', label: 'Rechts-onder' }
+            { value: 'tl', label: i18next.t('viewer_admin_layoutmanager_25') },
+            { value: 'bl', label: i18next.t('viewer_admin_layoutmanager_26') },
+            { value: 'tr', label: i18next.t('viewer_admin_layoutmanager_27') },
+            { value: 'br', label: i18next.t('viewer_admin_layoutmanager_28') }
         ]},
         paneltitle: { title: i18next.t('viewer_admin_layoutmanager_7'), key: 'panelTitle', type: 'text' },
         position: { title: i18next.t('viewer_admin_layoutmanager_8') },
@@ -172,7 +172,7 @@ Ext.define('LayoutManager', {
             var regionId = layoutRegion.get('id');
             var layoutRegionElement = document.getElementById(layoutRegion.get('htmlId'));
             if(!layoutRegionElement) {
-                throw ['There is a layout (', regionId, ') region without an container in the JSP page'].join('');
+                throw ___("There is a layout ({{regionId}}) region without an container in the JSP page", {regionId: regionId});
             }
             me.createLayoutConfiguration(layoutRegion, layoutRegionElement);
             var layout = {
@@ -338,7 +338,7 @@ Ext.define('LayoutManager', {
             '<div class="layout_title">',
                 '<strong class="layoutregion_title">', layoutRegionTitle, '</strong><br />',
                 '<div class="regionconfig" id="regionconfig_', regionId, '" style="display: none;">',
-                    '<u>Visuele configuratie</u><br />',
+                    '<u>' + ___("Visuele configuratie") + '</u><br />',
                     layoutHtml.join(''),
                 '</div>', 
                 '<div style="clear: both;"></div>',
@@ -386,7 +386,7 @@ Ext.define('LayoutManager', {
                 this.getSelectField(id, type + 'measure'),
                 '<br />',
                 '<input type="text" id="', id, '_max', type, '" value="', (this.getConfigOptionValue(id, 'max' + type) || ''), '" /> ',
-                'px, maximaal',
+                'px, ' + ___("maximaal"),
             '</div>'
         ].join('');
     },
@@ -821,10 +821,8 @@ Ext.define('LayoutManager', {
         });
         droppedEl.child('.remove').on('click', function() {
             Ext.MessageBox.confirm(
-                "Component uit layout verwijderen?",
-                "Weet u zeker dat dit component uit de layout wilt verwijderen?<br />" +
-                "Bij het opslaan van de layout gaat eventuele configuratie van<br />" +
-                "dit component verloren als u dit component verwijdert",
+                ___("Component uit layout verwijderen?"),
+                ___("Weet u zeker dat dit component uit de layout wilt verwijderen?<br />Bij het opslaan van de layout gaat eventuele configuratie van<br />dit component verloren als u dit component verwijdert"),
                 function(btnClicked) {
                     if(btnClicked === 'yes') {
                         Ext.get(data.sourceEl).removeCls("component-added");
@@ -839,7 +837,7 @@ Ext.define('LayoutManager', {
                                 me.saveLayout(false);
                             }, 
                             failure: function ( result, request) { 
-                                Ext.MessageBox.alert('Foutmelding', result.responseText); 
+                                Ext.MessageBox.alert(___("Foutmelding"), result.responseText);
                             } 
                         }); 
                     }
@@ -986,7 +984,7 @@ Ext.define('LayoutManager', {
         }
         iframe.dom.src = url;
         iframe.setStyle('display', 'block');
-        this.popupWin.setTitle('Configuratie ' + componentData.componentPrettyName);
+        this.popupWin.setTitle(___("Configuratie") + " " + componentData.componentPrettyName);
         this.popupWin.show();
     },
     
@@ -1024,8 +1022,8 @@ Ext.define('LayoutManager', {
                 }
                 Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_19'), i18next.t('viewer_admin_layoutmanager_20'));
             }, 
-            failure: function ( result, request) { 
-                Ext.MessageBox.alert('Foutmelding', result.responseText); 
+            failure: function ( result, request) {
+                Ext.MessageBox.alert(___("Foutmelding"), result.responseText);
             } 
         });
     },

@@ -60,8 +60,8 @@ Ext.define('vieweradmin.components.FeaturetypeRelation', {
                 menuDisabled: true,
                 renderer: (function(value) {
                     return [
-                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
                     ].join(" | ");
                 }).bind(this)
             }

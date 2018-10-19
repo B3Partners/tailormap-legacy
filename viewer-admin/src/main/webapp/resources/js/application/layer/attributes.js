@@ -214,7 +214,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                                 }
                                 Ext.Msg.show({
                                     title: i18next.t('viewer_admin_attributes_3'),
-                                    message: 'Weet u zeker dat u de geselecteerde map wilt verwijderen?',
+                                    message: ___("Weet u zeker dat u de geselecteerde map wilt verwijderen?"),
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
                                     fn: function (btn) {
@@ -260,8 +260,8 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
 
     editAttributeFolderName: function(newLevel, okFunction, initialText, scope) {
         Ext.MessageBox.show({
-            title: newLevel ? 'Nieuwe map aanmaken' : 'Naam wijzigen',
-            msg: i18next.t('viewer_admin_attributes_5') + (newLevel ? "nieuwe map" : "map") +':',
+            title: newLevel ? ___("Nieuwe map aanmaken") : ___("Naam wijzigen"),
+            msg: i18next.t('viewer_admin_attributes_5') + (newLevel ? ___("nieuwe map") : ___("map")) +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,

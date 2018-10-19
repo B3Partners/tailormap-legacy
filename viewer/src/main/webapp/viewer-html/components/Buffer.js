@@ -82,7 +82,7 @@ Ext.define ("viewer.components.Buffer",{
         this.colorPicker = Ext.create("Ext.ux.ColorField",{ 
             showText: true,
             name: 'color',
-            fieldLabel : "Kleur buffer",
+            fieldLabel: ___("Kleur buffer"),
             id:'color' + this.name,            
             value: "FF0000",
             listeners :{
@@ -165,7 +165,7 @@ Ext.define ("viewer.components.Buffer",{
                 var filterUrl = url + filterParams;
                 url = filterUrl;
                 if(filterUrl.length > 1024){
-                    this.config.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
+                    this.config.viewerController.logger.warning(___("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers"));
                 }
             }
             var imageLayer = this.config.viewerController.mapComponent.createImageLayer(this.name + "_" + layer.id, url, bbox);

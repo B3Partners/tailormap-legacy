@@ -120,7 +120,7 @@ Ext.define('vieweradmin.components.HelpController', {
         // IE fix, href in IE8 and lower is the complete URL + hash, not just the hash
         hash = hash.substring(hash.lastIndexOf('#'));
         var iframeurl = this.helppath + hash;
-        vieweradmin.components.iFramePopupController.loadPage(iframeurl, 'Help');
+        vieweradmin.components.iFramePopupController.loadPage(iframeurl, ___("Help"));
     }
 });
 
@@ -149,49 +149,49 @@ Ext.define("vieweradmin.components.DefaultConfgurations", {
             disableServerSideEdit: true,
             iframeCss: csspath + 'iframe_styles.css',
             lang: {
-                'Display': 'Weergave',
-                'By Default': 'Standaard',
-                'Inline': 'In regel',
-                'Block': 'Op aparte regel',
-                'Insert/Edit Image': 'Afbeelding invoegen/bewerken',
-                'Upload Image...': 'Uploaden...',
-                'Uploading your photo...': 'Afbeelding wordt geupload...',
-                'Error': 'Fout',
-                'Width': 'Breedte',
-                'Height': 'Hoogte',
-                'Real Size': 'Originele grootte',
-                'Align': 'Uitlijning',
-                'Title': 'Titel',
+                'Display': ___("Weergave"),
+                'By Default': ___("Standaard"),
+                'Inline': ___("In regel"),
+                'Block': ___("Op aparte regel"),
+                'Insert/Edit Image': ___("Afbeelding invoegen/bewerken"),
+                'Upload Image...': ___("Uploaden..."),
+                'Uploading your photo...': ___("Afbeelding wordt geupload..."),
+                'Error': ___("Fout"),
+                'Width': ___("Breedte"),
+                'Height': ___("Hoogte"),
+                'Real Size': ___("Originele grootte"),
+                'Align': ___("Uitlijning"),
+                'Title': ___("Titel"),
                 'Class': '',
                 'Padding': '',
                 'Margin': '',
-                'Top': 'Boven',
-                'Bottom': 'Onder',
-                'Right': 'Rechts',
-                'Left': 'Links',
-                'None': 'Geen',
-                'Size & Details': 'Grootte en details',
-                'More Options': 'Meer opties',
-                'Style' : 'Stijl',
+                'Top': ___("Boven"),
+                'Bottom': ___("Onder"),
+                'Right': ___("Rechts"),
+                'Left': ___("Links"),
+                'None': ___("Geen"),
+                'Size & Details': ___("Grootte en details"),
+                'More Options': ___("Meer opties"),
+                'Style' : ___("Stijl"),
                 'OK' : '',
-                'Cancel': 'Annuleren',
+                'Cancel': ___("Annuleren"),
                 'Delete Image':'Afbeelding verwijderen',
                 'Confirmation':'Bevestiging',
-                'Are you sure you want to delete this image?': 'Weet u zeker dat u deze afbeelding wilt verwijderen?',
-                'Your photo has been uploaded.':'Uw afbeelding is geupload.'
+                'Are you sure you want to delete this image?': ___("Weet u zeker dat u deze afbeelding wilt verwijderen?"),
+                'Your photo has been uploaded.': ___("Uw afbeelding is geupload.")
             }
         };
     },
 
     getDefaultHtmlEditorTableConfig: function() {
         return {
-            langTitle: 'Tabel toevoegen',
-            langInsert: 'Invoegen',
-            langCancel: 'Annuleren',
-            langRows: 'Rijen',
-            langColumns: 'Kolommen',
-            langBorder: 'Rand',
-            langCellLabel: 'Label in cellen tonen'
+            langTitle: ___("Tabel toevoegen"),
+            langInsert: ___("Invoegen"),
+            langCancel: ___("Annuleren"),
+            langRows: ___("Rijen"),
+            langColumns: ___("Kolommen"),
+            langBorder: ___("Rand"),
+            langCellLabel: ___("Label in cellen tonen")
         };
     }
 

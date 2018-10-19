@@ -87,10 +87,10 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 menuDisabled: true,
                 renderer: (function (value, metadata, record) {
                     return [
-                        Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">Open viewer</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
-                        Ext.String.format('<a href="#" class="makeworkversion">Maak werkversie</a>', value),
-                        Ext.String.format('<a href="{0}&application={1}">Activeren</a>', this.config.editurl, value),
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>', value)
+                        Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">' + ___("Open viewer") + '</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
+                        Ext.String.format('<a href="#" class="makeworkversion">' + ___("Maak werkversie") + '</a>', value),
+                        Ext.String.format('<a href="{0}&application={1}">' + ___("Activeren") + '</a>', this.config.editurl, value),
+                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>', value)
                     ].join(" | ");
                 }).bind(this)
             }
@@ -116,7 +116,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de applicatie ", record.get("name"), " wilt verwijderen?"].join("");
+        return ___("Weet u zeker dat u de applicatie {{name}} wilt verwijderen?", {name: record.get("name")});
     },
 
     getRemoveUrl: function(record) {
@@ -178,7 +178,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             listeners: {
                 change: {
                     fn: function(combo, newvalue) {
-                        combo.setLoading("Standaard applicatie opslaan");
+                        combo.setLoading(___("Standaard applicatie opslaan"));
                         this.defaultApplicationChanged(combo, applications.findRecord("value", newvalue));
                     },
                     scope: this
@@ -191,7 +191,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         var defaultApp, appLabel;
         if (application === null) {
             defaultApp = null;
-            appLabel = 'uitgezet'
+            appLabel = ___("uitgezet")
         } else {
             defaultApp = application.get('value');
             appLabel = ': "' + application.get('label') + '"';

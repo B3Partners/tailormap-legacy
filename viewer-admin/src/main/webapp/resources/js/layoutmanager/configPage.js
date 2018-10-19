@@ -296,10 +296,10 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 type: 'string'
             }],
             data: [
-                ['Links-boven', 'tl'],
-                ['Rechts-boven', 'tr'],
-                ['Links-onder', 'bl'],
-                ['Rechts-onder', 'br']
+                [___("Links-boven"), 'tl'],
+                [___("Rechts-boven"), 'tr'],
+                [___("Links-onder"), 'bl'],
+                [___("Rechts-onder"), 'br']
             ]
         });
 
@@ -409,14 +409,14 @@ Ext.define("vieweradmin.components.ConfigPage", {
                                     return true;
                                 }
                                 if(parseInt(value) < defaults.minWidth) {
-                                    return "Minimale breedte is " + defaults.minWidth;
+                                    return ___("Minimale breedte is ") + defaults.minWidth;
                                 }
                                 return true;
                             }
                         },
                         {
                             xtype: 'container',
-                            html: defaults.minWidth ? 'Minimale breedte is ' + defaults.minWidth : '',
+                            html: defaults.minWidth ? ___("Minimale breedte is ") + defaults.minWidth : '',
                             padding: defaults.minWidth ? '2 0 5 0' : 0,
                             style: {
                                 color: '#666666'
@@ -434,14 +434,14 @@ Ext.define("vieweradmin.components.ConfigPage", {
                                     return true;
                                 }
                                 if(parseInt(value) < defaults.minHeight) {
-                                    return "Minimale hoogte is " + defaults.minHeight;
+                                    return ___("Minimale hoogte is ") + defaults.minHeight;
                                 }
                                 return true;
                             }
                         },
                         {
                             xtype: 'container',
-                            html: defaults.minHeight ? 'Minimale hoogte is ' + defaults.minHeight : '',
+                            html: defaults.minHeight ? ___("Minimale hoogte is ") + defaults.minHeight : '',
                             padding: defaults.minWidth ? '2 0 5 0' : 0,
                             style: {
                                 color: '#666666'
@@ -486,10 +486,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     labelWidth: 180
                 },{
                     xtype: 'container',
-                    html: i18next.t('viewer_admin_configpage_25') +
-                    'te bepalen of een component wel of niet getoond moet worden. Als de schermafmetingen op dat' +
-                    'moment kleiner zijn dan bovenstaande waarde dan wordt het component niet getoond.<br /><br />' +
-                    'Bij een lege waarde (of 0) wordt het component altijd getoond'
+                    html: ___("Indien deze waarde is ingesteld wordt dit gebruikt om bij het starten van de applicatie te bepalen of een component wel of niet getoond moet worden. Als de schermafmetingen op dat moment kleiner zijn dan bovenstaande waarde dan wordt het component niet getoond.<br /><br />Bij een lege waarde (of 0) wordt het component altijd getoond")
                 }]
             }],
             renderTo: "layout"

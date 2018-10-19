@@ -256,7 +256,7 @@ Ext.define ("viewer.components.DataSelection",{
             this.dataTab.show();
             this.dataTab.tab.show();
         }
-        var defaultText = 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie';
+        var defaultText = ___("Kaart wordt pas zichtbaar na het toepassen van een dataselectie");
         if(this.uniqueValuesAttributes.length === 0){
             defaultText = '';
         }
@@ -286,7 +286,7 @@ Ext.define ("viewer.components.DataSelection",{
                 // Add the checkbox to active filter
                 xtype: 'checkbox',
                 id: this.name + 'FilterActive',
-                boxLabel  : 'Filter is actief',
+                boxLabel  : ___("Filter is actief"),
                 name      : 'filterActive',
                 inputValue: true,
                 checked   : false,
@@ -339,7 +339,7 @@ Ext.define ("viewer.components.DataSelection",{
         var appLayer = this.layerSelector.getValue();
         if(this.uniqueValuesAttributes.length > 0){
             this.itemsLoaded++;
-            this.dataTab.setLoading("Laad unieke waardes...");
+            this.dataTab.setLoading(___("Laad unieke waardes..."));
             Ext.Ajax.request({ 
                 url: actionBeans.unique, 
                 timeout: 240000,
@@ -413,7 +413,7 @@ Ext.define ("viewer.components.DataSelection",{
         var logicOperator = null;
         if(this.filters.length !== 0) {
             logicOperator = Ext.create('Ext.form.ComboBox', {
-                store: [ ['OR', 'of'], ['AND', 'en'] ],
+                store: [ ['OR', ___("of")], ['AND', ___("en")] ],
                 width: 75,
                 value: 'OR'
             });
@@ -422,7 +422,7 @@ Ext.define ("viewer.components.DataSelection",{
             leftContainer.add({
                 // Add the add-button to the filtertab
                 xtype: 'button',
-                text : 'Voeg filter toe',
+                text : ___("Voeg filter toe"),
                 listeners: {
                     click:{
                         scope: this,

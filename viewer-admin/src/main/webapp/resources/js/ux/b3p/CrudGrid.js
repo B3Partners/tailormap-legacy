@@ -189,8 +189,8 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
             bbar: Ext.create('Ext.PagingToolbar', {
                 store: this.getStore(),
                 displayInfo: true,
-                displayMsg: [ this.capitalize(this.config.itemname), " {0} - {1} of {2}"].join(""),
-                emptyMsg: ["Geen ", this.config.itemname, " weer te geven"].join("")
+                displayMsg: ___("{{itemname}} {0} - {1} van {2}", {itemname: this.capitalize(this.config.itemname)}),
+                emptyMsg: ___("Geen {{itemname}} weer te geven", {itemname: this.config.itemname})
             }),
             plugins: [
                 Ext.create('Ext.ux.grid.GridHeaderFilters', {
@@ -224,7 +224,7 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
     },
 
     removeConfirmMessage: function(record) {
-        return "Weet u zeker dat u dit item wilt verwijderen?";
+        return ___("Weet u zeker dat u dit item wilt verwijderen?");
     },
 
     reloadGrid: function(){

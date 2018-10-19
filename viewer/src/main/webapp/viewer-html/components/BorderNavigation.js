@@ -24,10 +24,10 @@ Ext.define("viewer.components.BorderNavigation",{
     extend : "viewer.components.Component",
     bordernavigation : null,
     defaultTooltips: {
-        tooltip_pan_right: "Pan naar rechts",
-        tooltip_pan_left: "Pan naar links",
-        tooltip_pan_up: "Pan omhoog",
-        tooltip_pan_down: "Pan omlaag"
+        tooltip_pan_right: ___("Pan naar rechts"),
+        tooltip_pan_left: ___("Pan naar links"),
+        tooltip_pan_up: ___("Pan omhoog"),
+        tooltip_pan_down: ___("Pan omlaag")
     },
     constructor : function (conf){
         this.initConfig(conf);

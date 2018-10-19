@@ -36,8 +36,8 @@ Ext.define ("viewer.components.Bookmark",{
         shareLinkedIn: false,
         shareGooglePlus: false,
         shareFacebook: false,
-        shareText: "I'd like to share this with #FlamingoMC: ",
-        shareTitle: "Sharing",
+        shareText: ___("I'd like to share this with #FlamingoMC: "),
+        shareTitle: ___("Sharing"),
         showShortUrl: true,
         showFullUrl: true,
         showLabels: true,
@@ -160,7 +160,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.config.showFullUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel: this.config.showLabels ? 'Bookmark' : '',
+                fieldLabel: this.config.showLabels ? ___("Bookmark") : '',
                 name: 'bookmark',
                 height: 80,
                 id: 'bookmark',
@@ -171,7 +171,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.config.showShortUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel:this.config.showLabels ? 'Compact link' : '',
+                fieldLabel:this.config.showLabels ? ___("Compact link") : '',
                 name: 'compactlink',
                 height: 80,
                 readOnly:true,
@@ -314,7 +314,7 @@ Ext.define ("viewer.components.Bookmark",{
         if(Ext.browser.is.IE) {
             window.external.AddFavorite(this.compUrl, this.config.title);
         } else {
-            alert("This browser doesn't support this function.");
+            alert(___("This browser doesn't support this function."));
         }
     },
     share: function (shareUrl){

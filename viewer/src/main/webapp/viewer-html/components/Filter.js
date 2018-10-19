@@ -139,7 +139,7 @@ Ext.define ("viewer.components.Filter",{
     getAttributeUniques : function (attributeName,ft){
         var appLayer = this.config.parentComponent.layerSelector.getValue();
         if(attributeName){
-            this.config.parentMainContainer.setLoading("Laad unieke waardes...");
+            this.config.parentMainContainer.setLoading(___("Laad unieke waardes..."));
             Ext.Ajax.request({ 
                 url: actionBeans.unique, 
                 timeout: 240000,

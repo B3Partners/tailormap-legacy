@@ -160,7 +160,7 @@ Ext.define("viewer.components.Split", {
     toSplitFeatureAdded: function (vecLayer, feature) {
         Ext.getCmp(this.name + "drawButton").setDisabled(false);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
-        Ext.getCmp(this.name + "geomLabel").setText("Teken een lijn om mee te splitsen");
+        Ext.getCmp(this.name + "geomLabel").setText(___("Teken een lijn om mee te splitsen"));
         this.showMobilePopup();
     },
     splitFeatureAdded: function (vecLayer, feature) {
@@ -310,7 +310,7 @@ Ext.define("viewer.components.Split", {
             if (appLayer.details && appLayer.details["editfunction.title"]) {
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
-            this.inputContainer.setLoading("Laadt attributen...");
+            this.inputContainer.setLoading(___("Laadt attributen..."));
             this.inputContainer.removeAll();
             this.loadAttributes(appLayer, previousAppLayer, scope);
             this.inputContainer.setLoading(false);
@@ -363,18 +363,18 @@ Ext.define("viewer.components.Split", {
             case "multipolygon":
                 this.showGeomType = "MultiPolygon";
                 this.newGeomType = "Polygon";
-                tekst = "vlak";
+                tekst = ___("vlak");
                 break;
             case "polygon":
                 this.showGeomType = "Polygon";
                 this.newGeomType = "Polygon";
-                tekst = "vlak";
+                tekst = ___("vlak");
                 break;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
                 this.newGeomType = "LineString";
-                tekst = "lijn";
+                tekst = ___("lijn");
                 break;
             case "geometry":
                 possible = true;
@@ -390,13 +390,13 @@ Ext.define("viewer.components.Split", {
         if (possible) {
             if (this.geometryEditable) {
                 if (this.newGeomType == null) {
-                    tekst = "Geometrie mag alleen bewerkt worden";
+                    tekst = ___("Geometrie mag alleen bewerkt worden");
                 } else {
                     Ext.getCmp(this.name + "selectButton").setDisabled(false);
-                    tekst = 'Selecteer een ' + tekst + " in de kaart.";
+                    tekst = ___("Selecteer een {{type}} in de kaart.", {type: tekst});
                 }
             } else {
-                tekst = 'Geometrie mag niet bewerkt worden.';
+                tekst = ___("Geometrie mag niet bewerkt worden.");
             }
             gl.setText(tekst);
             for (var i = 0; i < attributes.length; i++) {
@@ -473,13 +473,13 @@ Ext.define("viewer.components.Split", {
                 }
             }
         } else {
-            gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
+            gl.setText(___("Geometrietype onbekend. Bewerken niet mogelijk."));
             Ext.getCmp(this.name + "selectButton").setDisabled(true);
         }
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
-        Ext.get(this.getContentDiv()).mask("Haalt features op...")
+        Ext.get(this.getContentDiv()).mask(___("Haalt features op..."))
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -552,7 +552,7 @@ Ext.define("viewer.components.Split", {
             },
             failure: function (result) {
                 if (failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText, this);
+                    failureFunction(___("Ajax request failed with status ") + result.status + " " + result.statusText + ": " + result.responseText, this);
                 }
             }});
     },
@@ -615,7 +615,7 @@ Ext.define("viewer.components.Split", {
         me.cancel();
     },
     saveFailed: function (msg, me) {
-        Ext.Msg.alert('Mislukt', msg);
+        Ext.Msg.alert(___("Mislukt"), msg);
         me.cancel();
     },
     cancel: function () {

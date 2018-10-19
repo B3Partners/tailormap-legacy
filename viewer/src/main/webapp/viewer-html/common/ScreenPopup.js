@@ -66,7 +66,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.initConfig(conf);
 
         var config = {
-            title: this.config.title || 'Titel',
+            title: this.config.title || ___("Titel"),
             closable: true,
             closeAction: 'hide',
             hideMode: 'offsets',

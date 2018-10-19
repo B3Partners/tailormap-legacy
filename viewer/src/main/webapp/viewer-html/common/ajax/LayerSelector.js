@@ -40,7 +40,7 @@ Ext.define ("viewer.components.LayerSelector",{
     }, 
     constructor: function (conf){
         if(!conf.label){
-            conf.label = 'Kies kaartlaag';
+            conf.label = ___("Kies kaartlaag");
         }
         this.initConfig(conf);
         viewer.components.LayerSelector.superclass.constructor.call(this, this.config);

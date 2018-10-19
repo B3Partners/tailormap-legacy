@@ -37,9 +37,9 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.graphTypeStore = Ext.create('Ext.data.Store', {
             fields: ['naam',"type"],
             data: [
-                {"naam": "Lijn", type: "LINE"},
-                {"naam": "Staaf (horizontaal)", type : "BAR"},
-                {"naam": "Staaf (verticaal)",type: "COLUMN"}
+                {"naam": ___("Lijn"), type: "LINE"},
+                {"naam": ___("Staaf (horizontaal)"), type : "BAR"},
+                {"naam": ___("Staaf (verticaal)"), type: "COLUMN"}
             ]
         });
         this.getLayerList();
@@ -253,8 +253,8 @@ Ext.define("viewer.components.CustomConfiguration", {
         var serie = Ext.getCmp("serieAttribute" + configId);
         var xLabel = Ext.getCmp("xlabel" + configId);
         var yLabel = Ext.getCmp("ylabel" + configId);
-        category.setLoading("Attributen ophalen");
-        serie.setLoading("Attributen ophalen");
+        category.setLoading(___("Attributen ophalen"));
+        serie.setLoading(___("Attributen ophalen"));
         category.getStore().removeAll();
         var currentCategoryValue = category.getValue();
         var currentSerieValue = serie.getValue();

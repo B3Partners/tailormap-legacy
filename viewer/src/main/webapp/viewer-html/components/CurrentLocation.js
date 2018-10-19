@@ -131,18 +131,17 @@ Ext.define ("viewer.components.CurrentLocation",{
     errorHandler: function(error){
         var message="";
         if (error.code == error.PERMISSION_DENIED){
-            message="PERMISSION_DENIED! You did not allowed this site to get your position.";
+            message=___("PERMISSION_DENIED! You did not allowed this site to get your position.");
         }if (error.code == error.POSITION_UNAVAILABLE){
-            message="POSITION_UNAVAILABLE! Can't get your position, are you on planet earth?";
+            message=___("POSITION_UNAVAILABLE! Can't get your position, are you on planet earth?");
         }if (error.code == error.TIMEOUT){
-            message="TIMEOUT! Did you allowed this site to ALWAYS get your position? If not, "+
-                "we can't follow your position and can only update your position one time.";
+            message=___("TIMEOUT! Did you allowed this site to ALWAYS get your position? If not, we can't follow your position and can only update your position one time.");
         }
         this.button.deactivate();
         if (this.lastPoint!=null){
             this.config.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
         }
-        this.config.viewerController.logger.error("Error while recieving location: "+message);
+        this.config.viewerController.logger.error(___("Error while recieving location: ")+message);
     },
     transformLatLon: function(x,y){
         var point = new Proj4js.Point(x,y);

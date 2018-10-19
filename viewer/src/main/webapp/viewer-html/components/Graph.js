@@ -85,7 +85,7 @@ Ext.define("viewer.components.Graph", {
                 this.layers.push(graph.layer);
             }
         }else{
-            this.viewerController.logger.warning("Geen grafieken geconfigureerd.");
+            this.viewerController.logger.warning(___("Geen grafieken geconfigureerd."));
         }
         this.loadWindow();
     },

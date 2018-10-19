@@ -351,8 +351,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                 checked: attribute.defaultValue == "filterList",
                                 xtype: 'checkbox'
                             },{
-                                text: "* Als 'Lijst' is aangevinkt dan zal er voor \n\
-                                    het waarde veld van dit attribuut een lijst met alle mogelijke waarden worden gemaakt.",
+                                text: ___("* Als \"Lijst\" is aangevinkt dan zal er voor het waarde veld van dit attribuut een lijst met alle mogelijke waarden worden gemaakt."),
                                 xtype: 'label',
                                 hideMode: 'display'
                             }
@@ -504,9 +503,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             },
             items: [{
                 xtype: 'label',
-                text: 'Kies een attribuut waarvan de ingelogde username het \n\
-zelfde moet zijn als een gebruiker de betreffende feature mag wijzigen. Indien leeg wordt\n\
-hier niet op gecontroleerd.'
+                text: ___("Kies een attribuut waarvan de ingelogde username het zelfde moet zijn als een gebruiker de betreffende feature mag wijzigen. Indien leeg wordt hier niet op gecontroleerd.")
             },{
                 xtype: 'combobox',
                 store: attributeStore,
@@ -619,10 +616,10 @@ hier niet op gecontroleerd.'
             var geomTypesStore = Ext.create('Ext.data.Store', {
                 fields: ['type', 'label'],
                 data : [
-                    {"type":"geometry", "label":"Onbekend (alleen bewerken)"},
-                    {"type":"point", "label":"Punt"},
-                    {"type":"linestring", "label":"Lijn"},
-                    {"type":"polygon", "label":"Vlak"}
+                    {"type":"geometry", "label":___("Onbekend (alleen bewerken)")},
+                    {"type":"point", "label":___("Punt")},
+                    {"type":"linestring", "label":___("Lijn")},
+                    {"type":"polygon", "label":___("Vlak")}
                 ]
             });
             if(Ext.Array.contains(geomTypes, type)) {

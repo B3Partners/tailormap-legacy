@@ -34,16 +34,16 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.filterTypes = Ext.create("Ext.data.Store", {
             fields: ["type", "label"],
             data: [
-                {type: "slider", label: "Slider"},
-                {type: "number", label: "Getalfilter"},
-                {type: "text", label: "Tekstfilter"},
-                {type: "numberrange", label: "Getalrange"},
-                {type: "combo", label: "Selectielijst"},
-                {type: "checkbox", label: "Vinkvak"},
-                {type: "date", label: "Datum"},
-                {type: "radio", label: "Keuzerondje"},
-                {type: "reset", label: "Reset filter knop"},
-                {type: "textlabel", label: "Tekst label"}
+                {type: "slider", label: ___("Slider")},
+                {type: "number", label: ___("Getalfilter")},
+                {type: "text", label: ___("Tekstfilter")},
+                {type: "numberrange", label: ___("Getalrange")},
+                {type: "combo", label: ___("Selectielijst")},
+                {type: "checkbox", label: ___("Vinkvak")},
+                {type: "date", label: ___("Datum")},
+                {type: "radio", label: ___("Keuzerondje")},
+                {type: "reset", label: ___("Reset filter knop")},
+                {type: "textlabel", label: ___("Tekst label")}
             ]
         });
 

@@ -47,7 +47,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }else if (maxBounds){
             config.center = maxBounds.getCenterLonLat();
         }else{
-            this.config.viewerController.logger.error("No bounds found, can't center viewport");
+            this.config.viewerController.logger.error(___("No bounds found, can't center viewport"));
         }
         
         config.restrictedExtent = maxBounds;
@@ -197,7 +197,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     */
     setGetFeatureInfoControl : function (control){
         if( control.type != Tool.GET_FEATURE_INFO){
-            throw ("Type of given control not of type GET_FEATURE_INFO, but: " + control.type);
+            throw (___("Type of given control not of type GET_FEATURE_INFO, but: ") + control.type);
         }
         this.getFeatureInfoControl = control;
     },
@@ -368,7 +368,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             }            
             viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeListener.call(this,event,handler,scope);
         }else{
-            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
+            this.viewerController.logger.warning(___("Event not listed in OpenLayersMapComponent >{{event}}<. The application  might not work correctly.", {event: event}));
         }
     },
     
@@ -404,7 +404,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                   genericEvent==viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT){
             options.extent=this.getExtent();
         }else{
-            this.config.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
+            this.config.viewerController.logger.error(___("The event {{genericEvent}} is not implemented in the OpenLayersMap.handleEvent()", {genericEvent:genericEvent}));
         }
         this.fireEvent(genericEvent,this,options);
     },

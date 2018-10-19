@@ -583,7 +583,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
-            this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
+            this.viewerController.logger.warning(___("Tool Type >type < not recognized. Please use existing type.", {type:type}));
         }
     },
     activateGetFeatureControls : function(){
@@ -735,7 +735,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     },
     addComponent: function(component){
         if(Ext.isEmpty(component)){
-            this.viewerController.logger.warning("Empty component added to OpenLayersMapComponent. \nProbably not yet implemented");
+            this.viewerController.logger.warning(___("Empty component added to OpenLayersMapComponent. \nProbably not yet implemented"));
         }else{
             //add the component to the map
             this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());

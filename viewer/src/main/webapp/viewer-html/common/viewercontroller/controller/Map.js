@@ -127,7 +127,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         
         var index=this.getLayerIndex(layer);
         if (index==-1){
-            this.config.viewerController.logger.warning("Map.removeLayer(): Layer not available in map!");
+            this.config.viewerController.logger.warning(___("Map.removeLayer(): Layer not available in map!"));
         }else{            
             this.layers.splice(index,1);
         }

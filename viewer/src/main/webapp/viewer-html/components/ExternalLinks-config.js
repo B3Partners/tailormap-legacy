@@ -61,8 +61,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         },
         {
             xtype: "container",
-            html: "In het veld veld 'URL' kunnen verschillende variabelen gebruikt worden om parameters mee te geven. \n\
-                Dit zijn [MINX], [MINY], [MAXX], [MAXY], [X], [Y], [BBOX], [X_WGS84], [Y_WGS84]."
+            html: ___("In het veld veld \"URL\" kunnen verschillende variabelen gebruikt worden om parameters mee te geven. Dit zijn [MINX], [MINY], [MAXX], [MAXY], [X], [Y], [BBOX], [X_WGS84], [Y_WGS84].")
         }
         );
     },

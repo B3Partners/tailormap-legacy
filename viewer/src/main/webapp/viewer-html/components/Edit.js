@@ -271,20 +271,20 @@ Ext.define("viewer.components.Edit", {
     createEditButtons: function () {
         var buttons = [];
         if (this.config.allowNew) {
-            buttons.push(this.createButton("newButton", "Nieuw", this.createNew, true));
+            buttons.push(this.createButton("newButton", ___("Nieuw"), this.createNew, true));
         }
         if (this.config.allowEdit) {
-            buttons.push(this.createButton("editButton", "Bewerken", this.edit, true));
+            buttons.push(this.createButton("editButton", ___("Bewerken"), this.edit, true));
         }
         return buttons;
     },
     copyDeleteButtons: function() {
         var buttons = [];
         if (this.config.allowCopy) {
-            buttons.push(this.createButton("copyButton", "Kopie", this.copy));
+            buttons.push(this.createButton("copyButton", ___("Kopie"), this.copy));
         }
         if (this.config.allowDelete) {
-            buttons.push(this.createButton("deleteButton", "Verwijder", this.deleteFeature));
+            buttons.push(this.createButton("deleteButton", ___("Verwijder"), this.deleteFeature));
         }
         return buttons;
     },
@@ -389,7 +389,7 @@ Ext.define("viewer.components.Edit", {
                     function (feature, appLayer, coords) {
                         this.handleFeatureInfoLink(feature, appLayer, coords);
                     }.bind(this),
-                    this.config.title || 'Edit',
+                    this.config.title || ___("Edit"),
                     appLayers
                     );
         }
@@ -433,7 +433,7 @@ Ext.define("viewer.components.Edit", {
             if (appLayer.details && appLayer.details["editfunction.title"] && this.config.isPopup) {
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
-            this.inputContainer.setLoading("Laadt attributen...");
+            this.inputContainer.setLoading(___("Laadt attributen..."));
             this.inputContainer.removeAll();
             this.loadAttributes(appLayer);
             this.inputContainer.setLoading(false);
@@ -486,24 +486,24 @@ Ext.define("viewer.components.Edit", {
             case "multipolygon":
                 this.showGeomType = "MultiPolygon";
                 this.newGeomType = "Polygon";
-                this.tekstGeom = "vlak";
+                this.tekstGeom = ___("vlak");
                 break;
             case "polygon":
                 this.showGeomType = "Polygon";
                 this.newGeomType = "Polygon";
-                this.tekstGeom = "vlak";
+                this.tekstGeom = ___("vlak");
                 break;
             case "multipoint":
             case "point":
                 this.showGeomType = "Point";
                 this.newGeomType = "Point";
-                this.tekstGeom = "punt";
+                this.tekstGeom = ___("punt");
                 break;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
                 this.newGeomType = "LineString";
-                this.tekstGeom = "lijn";
+                this.tekstGeom = ___("lijn");
                 break;
             case "geometry":
                 possible = true;
@@ -521,7 +521,7 @@ Ext.define("viewer.components.Edit", {
                 this.setButtonDisabled("deleteButton", false);
                 this.setButtonDisabled("copyButton", false);
                 if (this.newGeomType === null) {
-                    tekst = "Geometrie mag alleen bewerkt worden";
+                    tekst = ___("Geometrie mag alleen bewerkt worden");
                 } else {
                     this.setButtonDisabled("newButton", false);
                     tekst = "";
@@ -530,7 +530,7 @@ Ext.define("viewer.components.Edit", {
                     }
                 }
             } else {
-                tekst = 'Geometrie mag niet bewerkt worden.';
+                tekst = ___("Geometrie mag niet bewerkt worden.");
             }
             this.geomlabel.setHtml(tekst);
 
@@ -581,7 +581,7 @@ Ext.define("viewer.components.Edit", {
                 this.inputContainer.add(groupedInputs[label]);
             }
         } else {
-            this.geomlabel.setHtml("Geometrietype onbekend. Bewerken niet mogelijk.");
+            this.geomlabel.setHtml(___("Geometrietype onbekend. Bewerken niet mogelijk."));
             this.setButtonDisabled("editButton", true);
             this.setButtonDisabled("newButton", true);
             this.setButtonDisabled("deleteButton", true);
@@ -606,7 +606,7 @@ Ext.define("viewer.components.Edit", {
     createUploadBox: function(t, index){
         var me = this;
         var file = Ext.create('Ext.form.field.File', {
-            label: "Upload een document",
+            label: i18next.t('viewer_components_edit_18'),
             name: 'files[' + index + "]",
             width: "70%",
             id: "uploadedFile" + t + index,
@@ -787,7 +787,7 @@ Ext.define("viewer.components.Edit", {
         if (this.mode === "new") {
             return;
         }
-        Ext.get(this.getContentDiv()).mask("Haalt features op...");
+        Ext.get(this.getContentDiv()).mask(___("Haalt features op..."));
         var coords = comp.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
         this.getFeaturesForCoords(coords);
@@ -896,7 +896,7 @@ Ext.define("viewer.components.Edit", {
                                                             },
                                                             failure: function(result) {
                                                                 if(failureFunction != undefined) {
-                                                                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                                                                    failureFunction(___("Ajax request failed with status ") + result.status + " " + result.statusText + ": " + result.responseText);
                                                                 }
                                                             }
                                                         });
@@ -906,8 +906,8 @@ Ext.define("viewer.components.Edit", {
                                                 scope: this,
                                                 buttons: Ext.Msg.YESNO,
                                                 buttonText: {
-                                                    no: "Nee",
-                                                    yes: "Ja"
+                                                    no: ___("Nee"),
+                                                    yes: ___("Ja")
                                                 },
                                                 icon: Ext.Msg.WARNING
                                             });
@@ -935,7 +935,7 @@ Ext.define("viewer.components.Edit", {
         Ext.get(this.getContentDiv()).unmask();
     },
     failed: function (msg) {
-        Ext.Msg.alert('Mislukt', msg);
+        Ext.Msg.alert(___("Mislukt"), msg);
         Ext.get(this.getContentDiv()).unmask();
     },
     /**
@@ -950,23 +950,23 @@ Ext.define("viewer.components.Edit", {
     createNew: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
-        this.geomlabel.setHtml("Voeg een nieuw " + this.tekstGeom + " toe op de kaart");
+        this.geomlabel.setHtml(___("Voeg een nieuw {{tekstGeom}} toe op de kaart", {tekstGeom: this.tekstGeom}));
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if (this.newGeomType != null && this.geometryEditable) {
             this.vectorLayer.drawFeature(this.newGeomType);
         }
-        this.savebutton.setText("Opslaan");
+        this.savebutton.setText(___("Opslaan"));
         this.untoggleButtons("newButton");
 
     },
     edit: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
-        this.geomlabel.setHtml("Selecteer een te bewerken " + this.tekstGeom + " in de kaart");
+        this.geomlabel.setHtml(___("Selecteer een te bewerken {{tekstGeom}} in de kaart", {tekstGeom: this.tekstGeom}));
         this.mode = "edit";
         this.activateMapClick();
-        this.savebutton.setText("Opslaan");
+        this.savebutton.setText(___("Opslaan"));
         this.untoggleButtons("editButton");
     },
     copy: function () {
@@ -1128,12 +1128,12 @@ Ext.define("viewer.components.Edit", {
     saveSucces: function (fid, skipSuccessMessage) {
         var me = this;
         var messageFunction = function(extratext) {
-            var msg = "Het feature is aangepast.";
+            var msg = ___("Het feature is aangepast.");
             if(extratext) {
                 msg += " " + extratext;
             }
             if(!skipSuccessMessage) {
-                Ext.Msg.alert('Gelukt', msg);
+                Ext.Msg.alert("Gelukt", msg);
             }
             me.cancel();
         };
@@ -1164,8 +1164,8 @@ Ext.define("viewer.components.Edit", {
                     form.submit({
                         scope: this,
                         url: actionBeans["file"],
-                        waitMsg: 'Bezig met uploaden...',
-                        waitTitle: "Even wachten...",
+                        waitMsg: ___("Bezig met uploaden..."),
+                        waitTitle: ___("Even wachten..."),
                         params: {
                             uploadFile: true,
                             fid: fid,
@@ -1175,7 +1175,7 @@ Ext.define("viewer.components.Edit", {
                         },
                         success: function (response) {
                             var resp = Ext.decode(response.responseText, true);
-                            me.messageFunction("Bestanden opgeslagen");
+                            me.messageFunction(___("Bestanden opgeslagen"));
                         },
                         failure: function () {
                             Ext.MessageBox.alert(i18next.t('viewer_components_edit_14'), i18next.t('viewer_components_edit_15'));
@@ -1199,7 +1199,7 @@ Ext.define("viewer.components.Edit", {
         this.cancel();
     },
     saveFailed: function (msg) {
-        Ext.Msg.alert('Mislukt', msg);
+        Ext.Msg.alert("Mislukt", msg);
     },
     cancel: function () {
         if(this.mobileHide) {
@@ -1211,7 +1211,7 @@ Ext.define("viewer.components.Edit", {
         }
     },
     resetForm: function () {
-        this.savebutton.setText("Opslaan");
+        this.savebutton.setText(___("Opslaan"));
         this.mode = null;
         this.geomlabel.setHtml("");
         this.setFormVisible(false);

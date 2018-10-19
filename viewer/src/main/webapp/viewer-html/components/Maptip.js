@@ -442,7 +442,7 @@ Ext.define ("viewer.components.Maptip",{
                 if(layer.moreFeaturesAvailable && this.showMaxFeaturesText){
                     var moreFeatures = new Ext.Element(document.createElement("div"));
                     moreFeatures.addCls("feature_summary_feature");
-                    moreFeatures.insertHtml("beforeEnd","Maximum aantal resultaten bereikt. Alleen de eerste 10 worden getoond.");
+                    moreFeatures.insertHtml("beforeEnd",___("Maximum aantal resultaten bereikt. Alleen de eerste 10 worden getoond."));
                     components.push(moreFeatures);
                 }
             }
@@ -705,10 +705,10 @@ Ext.define ("viewer.components.Maptip",{
             messageContainer.style.display = 'none';
             if(!featureinfo.success) {
                 messageContainer.style.display = 'block';
-                messageContainer.innerHTML = "Er is iets mis gegaan met het ophalen van object informatie. Probeer het opnieuw";
+                messageContainer.innerHTML = ___("Er is iets mis gegaan met het ophalen van object informatie. Probeer het opnieuw");
             } else if(featureinfo.total === 0) {
                 messageContainer.style.display = 'block';
-                messageContainer.innerHTML = "Voor dit object is deze informatie niet beschikbaar.";
+                messageContainer.innerHTML = ___("Voor dit object is deze informatie niet beschikbaar.");
                 placeholder.style.display = 'none';
             } else if(featureinfo.total > 0) {
                 this.replaceRelatedFeature(featureinfo, relatedFeatureBlock, placeholder);

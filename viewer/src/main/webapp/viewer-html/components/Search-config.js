@@ -55,9 +55,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             name: "marker",
             emptyText: i18next.t('viewer_components_searchconfiguration_2'),
             store: [
-                ["default","Standaard marker"],
-                ["circle","Cirkel"],
-                ["none","Geen marker"]
+                ["default", ___("Standaard marker")],
+                ["circle", ___("Cirkel")],
+                ["none", ___("Geen marker")]
             ],
             labelWidth: this.labelWidth
         });
@@ -95,9 +95,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         });
         
         var extraText = document.createElement('div');
-        extraText.innerHTML="* De ingevulde zoekwaarden wordt achter deze url geplaatst. \n\
-            Als de ingevulde zoekwaarde ergens anders moet komen in de url dan kan op die plek '[ZOEKWOORD]' worden opgegeven.\n\
-            Voorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='";
+        extraText.innerHTML=___("* De ingevulde zoekwaarden wordt achter deze url geplaatst. \nAls de ingevulde zoekwaarde ergens anders moet komen in de url dan kan op die plek '[ZOEKWOORD]' worden opgegeven.\nVoorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='");
         document.getElementById("config").appendChild(extraText);
 
         if(config !== null) {
@@ -458,7 +456,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 checked: checked,
                 // Provide custom renderLabel function to add 'config layers' link to label
                 renderLabel: function(id, label) {
-                    return label + ' &nbsp;&nbsp;<a href="#" class="configureLayer" id="' + id + '_layers">Configureer kaartlagen</a>';
+                    return label + ' &nbsp;&nbsp;<a href="#" class="configureLayer" id="' + id + '_layers">' + ___("Configureer kaartlagen") + '</a>';
                 },
                 // Provide function to handle clicking the 'config layers' link
                 labelClick: function(evt, target) {

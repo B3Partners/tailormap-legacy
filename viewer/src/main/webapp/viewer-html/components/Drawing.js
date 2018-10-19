@@ -574,8 +574,8 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: "Nee",
-                yes: "Ja"
+                no: ___("Nee"),
+                yes: ___("Ja")
             },
             icon: Ext.Msg.WARNING
         });
@@ -598,8 +598,8 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: "Nee",
-                yes: "Ja"
+                no: ___("Nee"),
+                yes: ___("Ja")
             },
             icon: Ext.Msg.WARNING
         });
@@ -628,8 +628,8 @@ Ext.define ("viewer.components.Drawing",{
             form.submit({
                 scope:this,
                 url: actionBeans["drawing"],
-                waitMsg: 'Bezig met uploaden...',
-                waitTitle: "Even wachten...",
+                waitMsg: ___("Bezig met uploaden..."),
+                waitTitle: ___("Even wachten..."),
                 success: function(fp, o) {
                     var json = Ext.JSON.decode(o.result.content);
                     this.titleField.setValue( json.title);

@@ -60,7 +60,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     COMPONENT_NAME: 'Vuurwerkevenementen',
     ZONE_DISTANCES_CONSUMER: {},
     ZONE_DISTANCES_PROFESSIONAL: {},
-    OTHER_LABEL: "Anders, namelijk...",
+    OTHER_LABEL: ___("Anders, namelijk..."),
     
     printComponent:null,
 
@@ -199,8 +199,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      */
     loadWindow : function() {
         this.wizardPages = [
-            this.createWizardPage("Nieuwe of bestaande situatietekening", [
-                "Via dit formulier kunt u een situatietekening maken om vervolgens in te dienen.",
+            this.createWizardPage(___("Nieuwe of bestaande situatietekening"), [
+                ___("Via dit formulier kunt u een situatietekening maken om vervolgens in te dienen."),
                 {
                     xtype: 'button',
                     html: i18next.t('viewer_components_ontbrandingsaanvraag_0'),
@@ -236,7 +236,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                                     name: 'featureFile',
                                     allowBlank: false,
                                     msgTarget: 'side',
-                                    buttonText: 'Bladeren',
+                                    buttonText: ___("Bladeren"),
                                     itemId: 'featureFile',
                                     flex: 1
                                 }
@@ -259,7 +259,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     ]
                 }
             ]),
-            this.createWizardPage("Afsteeklocaties", [
+            this.createWizardPage(___("Afsteeklocaties"), [
                 {
                     xtype: 'button',
                     html: i18next.t('viewer_components_ontbrandingsaanvraag_4'),
@@ -275,7 +275,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createIgnitionLocationForm()
             ]),
-            this.createWizardPage("Publieklocaties", [
+            this.createWizardPage(___("Publieklocaties"), [
                 {
                     xtype: 'button',
                     html: i18next.t('viewer_components_ontbrandingsaanvraag_5'),
@@ -291,7 +291,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createAudienceLocationForm()
             ]),
-            this.createWizardPage("Berekening van de veiligheidszone", [
+            this.createWizardPage(___("Berekening van de veiligheidszone"), [
                 {
                     xtype: 'button',
                     html: i18next.t('viewer_components_ontbrandingsaanvraag_6'),
@@ -310,7 +310,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     html: ''
                 }
             ]),
-            this.createWizardPage("Toevoegen hulplijnen", [
+            this.createWizardPage(___("Toevoegen hulplijnen"), [
                 {
                     xtype: 'container',
                     layout: {
@@ -342,7 +342,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createExtraObjectsForm()
             ]),
-            this.createWizardPage("Opslaan en printen", [
+            this.createWizardPage(___("Opslaan en printen"), [
                 {
                     xtype: 'button',
                     html: i18next.t('viewer_components_ontbrandingsaanvraag_10'),
@@ -491,7 +491,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ],
             data: []
         });
-        this.ignitionLocationsGrid = this._createGrid('ignitionLocations', "Afsteeklocaties", [
+        this.ignitionLocationsGrid = this._createGrid('ignitionLocations', ___("Afsteeklocaties"), [
             { dataIndex: 'label', flex: 1 }
         ]);
         this.getContentContainer().query('#ignitionLocationsContainer')[0].add(this.ignitionLocationsGrid);
@@ -510,7 +510,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ],
             data: []
         });
-        this.audienceLocationsGrid = this._createGrid('audienceLocations', "Publieklocaties", [
+        this.audienceLocationsGrid = this._createGrid('audienceLocations', ___("Publieklocaties"), [
             { dataIndex: 'label', flex: 1, renderer: function(value, cell, record) {
                 return record.get('mainLocation') ? '<strong>' + value + '</strong>' : value;
             }}
@@ -536,7 +536,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             model: 'OntbrandingsaanvraagExtraObject',
             data: []
         });
-        this.extraObjectsGrid = this._createGrid('extraObject', "Extra objecten", [
+        this.extraObjectsGrid = this._createGrid('extraObject', ___("Extra objecten"), [
             { dataIndex: 'label', flex: 1 }
         ], /*skipSize=*/true);
         this.getContentContainer().query('#extraObjectsContainer')[0].add(this.extraObjectsGrid);
@@ -864,7 +864,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     addIgnitionLocation: function(id) {
-        this._addLocation(this.ignitionLocationsGrid, id, null, "Afsteeklocatie ");
+        this._addLocation(this.ignitionLocationsGrid, id, null, ___("Afsteeklocatie "));
     },
 
     saveIgnitionLocation: function() {
@@ -877,7 +877,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     addAudienceLocation: function(id) {
-        var added_index = this._addLocation(this.audienceLocationsGrid, id, null, "Publiekslocatie ");
+        var added_index = this._addLocation(this.audienceLocationsGrid, id, null, ___("Publiekslocatie "));
         if(!this.isImporting && added_index === 0) {
             var location = this.audienceLocationsGrid.getStore().getAt(added_index);
             location.set('mainLocation', true);
@@ -911,7 +911,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     addExtraObject: function(feature, type) {
-        var default_label = type === this.MEASURE_LINE_TYPE ? 'Afstandslijn ' : "Hulplijn ";
+        var default_label = (type === this.MEASURE_LINE_TYPE ? ___("Afstandslijn") : ___("Hulplijn")) + " ";
         var override_type = type === this.MEASURE_LINE_TYPE ? this.MEASURE_LINE_TYPE : null;
         var added_index = this._addLocation(this.extraObjectsGrid, feature.getId(), null, default_label, override_type);
         var extraObject = this.extraObjectsGrid.getStore().getAt(added_index);
@@ -1067,17 +1067,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     _createLocation: function(drawType, formQuery) {
         this.isDrawing = drawType;
         this.getVectorLayer().defaultFeatureStyle = this.ingnitionLocationStyle;
-        var drawingName = "afsteeklocatie";
+        var drawingName = ___("afsteeklocatie");
         if(drawType === this.AUDIENCE_LOCATION_TYPE) {
             this.getVectorLayer().defaultFeatureStyle = this.defaultAudienceLocation;
-            drawingName = "publiekslocatie";
+            drawingName = ___("publiekslocatie");
         }
         if(drawType === this.MEASURE_LINE_TYPE) {
             this.getVectorLayer().defaultFeatureStyle = this.measureLineStyle;
-            drawingName = "afstandslijn";
+            drawingName = ___("afstandslijn");
         }
         if(drawType === this.EXTRA_OJBECT_TYPE) {
-            drawingName = "hulplijn";
+            drawingName = ___("hulplijn");
         }
         if(drawType === this.EXTRA_OJBECT_TYPE || drawType === this.MEASURE_LINE_TYPE) {
             this.getVectorLayer().drawFeature("LineString");
@@ -1086,7 +1086,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var grid = this.getGridForType(drawType);
         if(grid) {
-            grid.mask("Teken een " + drawingName + " op de kaart");
+            grid.mask(___("Teken een {{type}} op de kaart", {type:drawingName}));
         }
         var form = this.getContentContainer().query(this.toId(formQuery))[0];
         form.setVisible(false);
@@ -1287,7 +1287,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         // Loop through the FileList and render image files as thumbnails.
         for (var i = 0, file; file = files[i]; i++) {
             if(file.size > 1000000) { // approx 1MB
-                this.showMessageInContainer("#fileLoadMessages", "Bestand is te groot om in te laden");
+                this.showMessageInContainer("#fileLoadMessages", ___("Bestand is te groot om in te laden"));
                 continue;
             }
             var reader = new FileReader();
@@ -1306,11 +1306,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             if(json.hasOwnProperty('type') && json.hasOwnProperty('features') && json.type === this.COMPONENT_NAME) {
                 this.importFeatures(json);
             } else {
-                this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
+                this.showMessageInContainer("#fileLoadMessages", ___("Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd"));
             }
         } catch(e) {
             console.error(e);
-            this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
+            this.showMessageInContainer("#fileLoadMessages", ___("Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd"));
         }
     },
 
@@ -1387,12 +1387,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     saveFile: function() {
         Ext.Msg.prompt(
-            'Aanvraag opslaan',
-            [
-                'U kunt de aanvraag opslaan om op een later moment verder te gaan,<br />of de aanvraag later opnieuw te gebruiken.',
-                '<br /><br />Vul hieronder de bestandsnaam in en klik op "Ok" in het bestand te downloaden',
-                '<br /><br />'
-            ].join(''),
+            ___('Aanvraag opslaan'),
+            ___("U kunt de aanvraag opslaan om op een later moment verder te gaan,<br />of de aanvraag later opnieuw te gebruiken.<br /><br />Vul hieronder de bestandsnaam in en klik op \"Ok\" in het bestand te downloaden<br /><br />"),
             function(btn, text){
                 if (btn === 'ok') {
                     this._saveFile(text);
@@ -1552,7 +1548,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.removeSafetyZones();
             this.isAddingSafetyZone = true;
             var features = this.getAllFeatures();
-            this.wizardPages[3].mask("Bezig met berekenen van veiligheidszone");
+            this.wizardPages[3].mask(___("Bezig met berekenen van veiligheidszone"));
             var showError = this.showSafetyZoneError.bind(this);
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
@@ -1576,10 +1572,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     showSafetyZoneError: function() {
         this.wizardPages[3].unmask();
-        this.addMessageInContainer('#calculation_messages',
-            'Er is iets mis gegaan met het berekenen van de veiligheidszone. ' +
-            'Sla uw tekening op en probeer het opnieuw. ' +
-            'U kunt uw tekening opslaan door naar het tabblad \'Opslaan en printen\' te gaan of onderin tweemaal op \'Volgende\' te klikken.');
+        this.addMessageInContainer('#calculation_messages', ___("Er is iets mis gegaan met het berekenen van de veiligheidszone. Sla uw tekening op en probeer het opnieuw. U kunt uw tekening opslaan door naar het tabblad \"Opslaan en printen\" te gaan of onderin tweemaal op \"Volgende\" te klikken."));
         this.isAddingSafetyZone = false;
     },
 
@@ -1611,11 +1604,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     checkAudienceLocations: function() {
         var store = this.audienceLocationsGrid.getStore();
         if(store.count() === 0) {
-            this.addMessageInContainer('#calculation_messages', 'U dient minimaal één publiekslocatie toe te voegen');
+            this.addMessageInContainer('#calculation_messages', ___("U dient minimaal één publiekslocatie toe te voegen"));
             return false;
         }
         if(store.find('mainLocation', true).length === 0) {
-            this.addMessageInContainer('#calculation_messages', 'U dient één publiekslocatie toe te voegen en als hoofdlocatie aan te merken');
+            this.addMessageInContainer('#calculation_messages', ___("U dient één publiekslocatie toe te voegen en als hoofdlocatie aan te merken"));
             return false;
         }
         return true;
@@ -1624,7 +1617,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     checkIgnitionLocations: function() {
         var store = this.ignitionLocationsGrid.getStore();
         if(store.count() === 0) {
-            this.addMessageInContainer('#calculation_messages', 'U dient minimaal één afsteeklocatie toe te voegen');
+            this.addMessageInContainer('#calculation_messages', ___("U dient minimaal één afsteeklocatie toe te voegen"));
             return false;
         }
         var complete = true;
@@ -1639,23 +1632,23 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     checkZoneDistance: function(location) {
         var fireworks_type = location.get('fireworks_type');
         if(fireworks_type !== 'consumer' && fireworks_type !== 'professional') {
-            this.addMessageInContainer('#calculation_messages', 'U heeft geen geldige keuze gemaakt bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', ___("U heeft geen geldige keuze gemaakt bij \"Type vuurwerk\" voor afsteeklocatie {{locatie}}", {locatie:location.get('label')}));
             return false;
         }
         var zone_distances = fireworks_type === 'consumer' ? this.ZONE_DISTANCES_CONSUMER : this.ZONE_DISTANCES_PROFESSIONAL;
         var zone_distance = fireworks_type === 'consumer' ? location.get('zonedistance_consumer') : location.get('zonedistance_professional');
         if(!zone_distances.hasOwnProperty(zone_distance) && zone_distance !== this.OTHER_LABEL) {
-            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd bij "Vuurwerkcategorie" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', ___("U heeft een ongeldige waarde geselecteerd bij \"Vuurwerkcategorie\" voor afsteeklocatie {{locatie}}", {locatie:location.get('label')}));
             return false;
         }
         var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');
         var firework_type_custom = fireworks_type === 'consumer' ? location.get('custom_fireworktype_consumer') : location.get('custom_fireworktype_professional');
         if(zone_distance === this.OTHER_LABEL && !zone_distance_custom) {
-            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige zoneafstand" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', ___("U dient een waarde in te vullen bij \"Handmatige zoneafstand\" voor afsteeklocatie {{locatie}}", {locatie:location.get('label')}));
             return false;
         }
         if(zone_distance === this.OTHER_LABEL && !firework_type_custom) {
-            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', ___("U dient een waarde in te vullen bij \"Type vuurwerk\" voor afsteeklocatie {{locatie}}", {locatie:location.get('label')}));
             return false;
         }
         return true;

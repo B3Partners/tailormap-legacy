@@ -185,13 +185,13 @@ Ext.define("viewer.components.DownloadWKT", {
                     Ext.MessageBox.alert(i18next.t('viewer_components_downloadwkt_7'), i18next.t('viewer_components_downloadwkt_8'));
                 } else {
                     this.config.viewerController.logger.error(result);
-                    Ext.MessageBox.alert('Fout', response.message);
+                    Ext.MessageBox.alert(___("Fout"), response.message);
                 }
             },
             failure: function (result) {
                 this.config.viewerController.logger.error(result);
                 var response = Ext.JSON.decode(result.responseText);
-                Ext.MessageBox.alert('Fout', response.message);
+                Ext.MessageBox.alert(___("Fout"), response.message);
             }
         });
     },

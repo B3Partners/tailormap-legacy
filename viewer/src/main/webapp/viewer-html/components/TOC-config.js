@@ -85,7 +85,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: i18next.t('viewer_components_customconfiguration_228'),
                 name: 'zoomToScaleText',
-                value: this.configObject.zoomToScaleText? this.configObject.zoomToScaleText:"Zoom to scale",
+                value: this.configObject.zoomToScaleText? this.configObject.zoomToScaleText:___("Zoom to scale"),
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
@@ -135,13 +135,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: i18next.t('viewer_components_customconfiguration_234'),
                 name: 'toggleAllLayersOnText',
-                value: this.configObject.toggleAllLayersOnText? this.configObject.toggleAllLayersOnText:"All layers on",
+                value: this.configObject.toggleAllLayersOnText? this.configObject.toggleAllLayersOnText:___("All layers on"),
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
                 fieldLabel: i18next.t('viewer_components_customconfiguration_235'),
                 name: 'toggleAllLayersOffText',
-                value: this.configObject.toggleAllLayersOffText? this.configObject.toggleAllLayersOffText:"All layers off",
+                value: this.configObject.toggleAllLayersOffText? this.configObject.toggleAllLayersOffText:___("All layers off"),
                 labelWidth:me.labelWidth
             },{                           
                 xtype: 'radiogroup',

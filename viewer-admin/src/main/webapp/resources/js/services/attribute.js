@@ -51,7 +51,7 @@ Ext.define('vieweradmin.components.Attributes', {
 
         var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
         this.removeChilds(simpleFeatureTypeId);
-        simpleFeatureTypeId.appendChild(this.getOption(-1, 'Kies...', true));
+        simpleFeatureTypeId.appendChild(this.getOption(-1, ___("Kies..."), true));
 
         if(selectedValue != -1) {
             Ext.Ajax.request({
@@ -147,7 +147,7 @@ Ext.define('vieweradmin.components.Attributes', {
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" class="editobject">Bewerken</a>');
+                    return Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>');
                 }
             }
         ];

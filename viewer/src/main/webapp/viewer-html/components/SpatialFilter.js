@@ -163,7 +163,7 @@ Ext.define ("viewer.components.SpatialFilter",{
        
     },
     buffer : function(){
-        Ext.getCmp(this.config.name + "BufferContainer").setLoading("Buffer berekenen...");
+        Ext.getCmp(this.config.name + "BufferContainer").setLoading(___("Buffer berekenen..."));
         var features = this.features;
         var wkts = [];
         for (var key in features){
@@ -198,14 +198,14 @@ Ext.define ("viewer.components.SpatialFilter",{
                     this.vectorLayer.removeAllFeatures();
                     this.vectorLayer.addFeatures(featureObjs);
                 }else{
-                    Ext.MessageBox.alert("Foutmelding", response.errorMessage);
+                    Ext.MessageBox.alert(___("Foutmelding"), response.errorMessage);
                 }
                 Ext.getCmp(this.config.name + "BufferContainer").setLoading(false);
             },
             failure: function(result, request) {
                 Ext.getCmp(this.config.name + "BufferContainer").setLoading(false);
                 var response = Ext.JSON.decode(result.responseText);
-                Ext.MessageBox.alert("Foutmelding", response.error);
+                Ext.MessageBox.alert(___("Foutmelding"), response.error);
             }
         });
     },
@@ -428,7 +428,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 this.sourceLayerSelector.getLayerSelector(),
                 {
                     xtype: "button",
-                    label: "Laat features zien",
+                    label: i18next.t('viewer_components_spatialfilter_13'),
                     text: i18next.t('viewer_components_spatialfilter_9'),
                    // disabled:true,
                     id: this.config.name + 'RetrieveFeaturesButton',
@@ -496,7 +496,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             viewerController: this.config.viewerController,
             restriction: "attribute",
             layers: this.config.layers,
-            label: "Bron kaartlaag"
+            label: i18next.t('viewer_components_spatialfilter_14')
         };
 
         this.sourceLayerSelector = Ext.create("viewer.components.LayerSelector", config);

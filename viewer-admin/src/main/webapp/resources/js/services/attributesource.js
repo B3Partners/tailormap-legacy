@@ -42,9 +42,9 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 flex: 1,
                 renderer: function(value) {
                     if(value === "ok") {
-                        return '<span class="status_ok">GOED</span>';
+                        return '<span class="status_ok">' + ___("GOED") + '</span>';
                     }
-                    return '<span class="status_error">FOUT</span>';
+                    return '<span class="status_error">' + ___("FOUT") + '</span>';
                 }
             },{
                 id: 'name',
@@ -80,9 +80,9 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 menuDisabled: true,
                 renderer: (function(value) {
                      return [
-                         Ext.String.format('<a href="{0}?featureSourceId={1}">Attributen bewerken</a>', this.config.editattributesurl, value),
-                         Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
-                         Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                         Ext.String.format('<a href="{0}?featureSourceId={1}">' + ___("Attributen Bewerken") + '</a>', this.config.editattributesurl, value),
+                         Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>'),
+                         Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
                      ].join(" | ");
                 }).bind(this)
             }
@@ -104,7 +104,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de attribuutbron ", record.get("name"), " wilt verwijderen?"].join("");
+        return ___("Weet u zeker dat u de attribuutbron {{name}} wilt verwijderen?", {name:record.get("name")});
     },
 
     getEditUrl: function(record) {

@@ -80,9 +80,9 @@ Ext.onReady(function(){
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
+                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">' + ___("Bewerken") + '</a>', value) +
                            ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">' + ___("Verwijderen") + '</a>', value);
                 },
                 sortable: false
             }
@@ -90,8 +90,8 @@ Ext.onReady(function(){
         bbar: Ext.create('Ext.PagingToolbar', {
             store: store,
             displayInfo: true,
-            displayMsg: 'Layar service {0} - {1} of {2}',
-            emptyMsg: "Geen layar services weer te geven"
+            displayMsg: ___("Layar service {0} - {1} van {2}"),
+            emptyMsg: ___("Geen layar services weer te geven")
         }),
         plugins: [ 
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
@@ -121,7 +121,7 @@ function removeObject(objId) {
 }
 
 function deleteConfirm() {
-    return confirm('Weet u zeker dat u deze layarservice wilt verwijderen?');
+    return confirm(___("Weet u zeker dat u deze layarservice wilt verwijderen?"));
 }
 
 function reloadGrid(){

@@ -41,11 +41,11 @@ function searchCsw(){
                 }
                 resultDiv.dom.innerHTML += "</ul>";
             }else{
-                Ext.MessageBox.alert('Mislukt', result.responseText);
+                Ext.MessageBox.alert(___("Mislukt"), result.responseText);
             }
         },
         failure: function ( result, request) {
-            Ext.MessageBox.alert('Mislukt', result.responseText);
+            Ext.MessageBox.alert(___("Mislukt"), result.responseText);
             clearMask()
         }
     });

@@ -199,7 +199,7 @@ Ext.define('vieweradmin.components.ApplicationSettings', {
             width: 300,
             msg: i18next.t('viewer_admin_applicationsettings_11')+
             '<input type="text" id="mashupNameText" width="200px"><br/>' +
-            '<label><input type="checkbox" id="mustUpdateComponents">Moeten wijzigingen aan de componenten in de moederapplicatie ook doorwerken in de mashup?</label><br/>'  ,
+            '<label><input type="checkbox" id="mustUpdateComponents">' + ___("Moeten wijzigingen aan de componenten in de moederapplicatie ook doorwerken in de mashup?") + '</label><br/>'  ,
             buttons: Ext.MessageBox.OKCANCEL,
             fn: function(btn, text){
                 if(btn=='ok'){

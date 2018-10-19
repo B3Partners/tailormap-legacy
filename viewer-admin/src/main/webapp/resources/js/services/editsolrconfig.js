@@ -42,7 +42,7 @@ function featureSourceChanged(select){
                 // process server response here
                 var data = Ext.JSON.decode(text);
                 if(data) {
-                    var html="<option value=\"-1\">Maak uw keuze.</option>";
+                    var html="<option value=\"-1\">" + ___("Maak uw keuze.") + "</option>";
                     for (var id in data){
                         var ft=data[id];       
                         html+="<option value=\""+ft.id+"\"";                    
@@ -52,11 +52,11 @@ function featureSourceChanged(select){
                 }
             },
             failure : function (response){
-                alert("Attribuutbronnen ophalen mislukt");
+                alert(___("Attribuutbronnen ophalen mislukt"));
             }
         });
     }else{
-        var html = "<option value=\"-1\">Maak uw keuze.</option>";
+        var html = "<option value=\"-1\">" + ___("Maak uw keuze.") + "</option>";
         resultEl.update(html);
     }
 }
@@ -81,7 +81,7 @@ function featureTypeChanged(featuretypeId){
                     }
                     var rows = data.gridrows;
                     html  = '<table class=\'formtable striped-table checkbox-table\'>';
-                    html += '<tr><td>Doorzoekbaar</td><td>Resultaat</td><td>Attribuutnaam</td></tr>';
+                    html += '<tr><td>' + ___("Doorzoekbaar") + '</td><td>' + ___("Resultaat") + '</td><td>' + ___("Attribuutnaam") + '</td></tr>';
                     for (var id in rows){
                         var ft=rows[id];
                         html += '<tr><td>';
@@ -112,11 +112,11 @@ function featureTypeChanged(featuretypeId){
                 }
             },
             failure : function (response){
-                alert("Attribuutbronnen ophalen mislukt");
+                alert(___("Attribuutbronnen ophalen mislukt"));
             }
         });
     }else{
-        var html = "<option value=\"-1\">Maak uw keuze.</option>";
+        var html = "<option value=\"-1\">" + ___("Maak uw keuze.") + "</option>";
         resultEl.update(html);
     }
 }

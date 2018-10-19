@@ -84,13 +84,13 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         Ext.Msg.show({
             title: i18next.t('viewer_components_tools_downloadmap_0'),
             message: [
-                'De afbeelding van de kaart is beschikbaar via',
+                ___("De afbeelding van de kaart is beschikbaar via"),
                 '<br /><br />',
                 '<input type="text" value="', imageUrl, '" style="width: 100%;" class="ext-style" />',
                 '<br /><br />',
-                'Klik op "Openen" om de afbeelding in een nieuw venster te openen'
+                ___("Klik op \"Openen\" om de afbeelding in een nieuw venster te openen")
             ].join(''),
-            buttonText: { ok: "Openen", cancel: "Sluiten" },
+            buttonText: { ok: ___("Openen"), cancel: ___("Sluiten") },
             icon: Ext.Msg.INFO,
             fn: function(btn) {
                 if (btn === 'ok') {

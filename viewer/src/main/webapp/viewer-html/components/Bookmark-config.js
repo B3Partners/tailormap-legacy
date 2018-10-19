@@ -157,7 +157,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 xtype: 'textfield',
                 fieldLabel: i18next.t('viewer_components_customconfiguration_20'),
                 name: 'shareTitle',
-                value: this.configObject.shareTitle != undefined ? this.configObject.shareTitle : "Sharing",
+                value: this.configObject.shareTitle != undefined ? this.configObject.shareTitle : ___("Sharing"),
                 labelWidth:this.labelWidth,
                 width: 700
             },{
@@ -165,7 +165,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 fieldLabel: i18next.t('viewer_components_customconfiguration_21'),
                 name: 'shareText',
                 grow: true,
-                value: this.configObject.shareText != undefined ? this.configObject.shareText : "I'd like to share this with #FlamingoMC: ",
+                value: this.configObject.shareText != undefined ? this.configObject.shareText : ___("I'd like to share this with #FlamingoMC: "),
                 labelWidth:this.labelWidth,
                 width: 700
             }

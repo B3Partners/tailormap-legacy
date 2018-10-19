@@ -55,10 +55,10 @@ Ext.define ("viewer.components.TOC",{
         title: i18next.t('viewer_components_toc_0'),
         showLeafIcon: true,
         showNodeIcon: true,
-        zoomToScaleText: "Zoom to scale",
+        zoomToScaleText: ___("Zoom to scale"),
         expandOnStartup: true,
-        toggleAllLayersOnText: 'All layers on',
-        toggleAllLayersOffText: 'All layers off',
+        toggleAllLayersOnText: ___("All layers on"),
+        toggleAllLayersOffText: ___("All layers off"),
         initToggleAllLayers: true,
         showAllLayersOff: false,
         showAllLayersOn: false,
@@ -256,11 +256,11 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.checked=  false;
         }
         if(level.info != undefined){
-            this.addQtip("Informatie over de kaart", 'span_'+levelId);
+            this.addQtip(___("Informatie over de kaart"), 'span_'+levelId);
             treeNodeLayer.layerObj.info = level.info;
         }
         if(level.url!= undefined){
-            this.addQtip("Informatie over de kaart", 'span_'+levelId);
+            this.addQtip(___("Informatie over de kaart"), 'span_'+levelId);
             treeNodeLayer.layerObj.url = level.url;
         }
 
@@ -351,12 +351,12 @@ Ext.define ("viewer.components.TOC",{
         }
         if(serviceLayer.details != undefined){
             if(serviceLayer.details ["metadata.stylesheet"] !== undefined){
-                this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
+                this.addQtip(___("Metadata voor de kaartlaag"), 'span_'+layerId);
                 treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
             }
 
             if(serviceLayer.details ["download.url"] != undefined){
-                this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
+                this.addQtip(___("Metadata voor de kaartlaag"), 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
 

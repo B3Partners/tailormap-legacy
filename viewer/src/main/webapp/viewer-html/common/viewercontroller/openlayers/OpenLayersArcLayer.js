@@ -66,10 +66,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
         return null;
     },
     setBuffer : function (radius,layer){
-        console.log("OpenLayersArcLayer.setBuffer: .setBuffer() must be made!");
+        console.log(___("OpenLayersArcLayer.setBuffer: .setBuffer() must be made!"));
     },
     removeBuffer: function(layer){        
-        console.log("OpenLayersArcLayer.removeBuffer: .removeBuffer() must be made!");
+        console.log(___("OpenLayersArcLayer.removeBuffer: .removeBuffer() must be made!"));
     },
     getType : function (){
         return this.mixins.openLayersLayer.getType.call(this);

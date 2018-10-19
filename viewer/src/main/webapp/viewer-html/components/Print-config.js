@@ -153,9 +153,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "mailPrint",
                 emptyText: i18next.t('viewer_components_customconfiguration_171'),
                 store: [
-                    ["canAlsoMail","Prints kunnen ook gemaild worden"],
-                    ["cantMail","Prints kunnen niet gemaild worden"],
-                    ["canOnlyMail","Prints kunnen alleen gemaild worden"]
+                    ["canAlsoMail",___("Prints kunnen ook gemaild worden")],
+                    ["cantMail",___("Prints kunnen niet gemaild worden")],
+                    ["canOnlyMail",___("Prints kunnen alleen gemaild worden")]
                 ],
                 listeners:{
                     change:{
@@ -186,7 +186,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: "textfield",
                 name: "fromName",
                 id: "fromName",
-                value: me.configObject.fromName ? me.configObject.fromName :"Flamingo Printservice",
+                value: me.configObject.fromName ? me.configObject.fromName : ___("Flamingo Printservice"),
                 fieldLabel: i18next.t('viewer_components_customconfiguration_173'),
                 hidden: me.configObject.mailPrint === "cantMail"
             }

@@ -63,7 +63,7 @@ Ext.define ("viewer.components.TransparencySlider",{
             var c = {
                 selectedLayers:[],
                 initSelectedContent: JSON.parse(JSON.stringify( this.config.viewerController.app.selectedContent)),
-                name: this.config.sliderForUserAddedText ? this.config.sliderForUserAddedText :"Overige",
+                name: this.config.sliderForUserAddedText ? this.config.sliderForUserAddedText :___("Overige"),
                 initialTransparency: this.config.sliderForUserAddedInitTransparency,
                 layersInExistingSliders : usedLayers
             }

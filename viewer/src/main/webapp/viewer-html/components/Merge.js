@@ -29,7 +29,7 @@ Ext.define("viewer.components.Merge", {
     geometryEditable: null,
     deActivatedTools: [],
     config: {
-        name: "Samenvoegen",
+        name: ___("Samenvoegen"),
         tooltip: i18next.t('viewer_components_merge_0'),
         strategy: "replace",
         actionbeanUrl: "/viewer/action/feature/merge",
@@ -101,7 +101,7 @@ Ext.define("viewer.components.Merge", {
                 fillopacity: 50,
                 strokecolor: "FF0000",
                 strokeopacity: 50,
-                label: "${label}",
+                label: i18next.t('viewer_components_merge_11'),
                 fontSize: "x-large"
             }
         });
@@ -125,10 +125,10 @@ Ext.define("viewer.components.Merge", {
         if (this.mode == "selectA") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(false);
             Ext.getCmp(this.name + "selectAButton").setDisabled(true);
-            Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelB + " geometrie");
+            Ext.getCmp(this.name + "geomLabel").setText(___("Selecteer {{labelB}} geometrie", {labelB: this.labelB}));
         } else if (this.mode == "selectB") {
             Ext.getCmp(this.name + "selectBButton").setDisabled(true);
-            Ext.getCmp(this.name + "geomLabel").setText(this.labelA + " en " + this.labelB + " geometrie geselecteerd");
+            Ext.getCmp(this.name + "geomLabel").setText(___("{{labelA}} en {{labelB}} geometrie geselecteerd", { labelA: this.labelA, labelB: this.labelB }));
         }
     },
     selectB: function () {
@@ -210,13 +210,13 @@ Ext.define("viewer.components.Merge", {
             },
             failure: function (result) {
                 if (failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " "
+                    failureFunction(___("Ajax request failed with status ") + result.status + " "
                             + result.statusText + ": " + result.responseText, this);
                 }
             }});
     },
     failed: function (msg, me) {
-        Ext.Msg.alert('Mislukt', msg);
+        Ext.Msg.alert(___("Mislukt"), msg);
         Ext.get(me.getContentDiv()).unmask();
         me.cancel();
     },
@@ -227,7 +227,7 @@ Ext.define("viewer.components.Merge", {
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
-        Ext.get(this.getContentDiv()).mask("Haalt features op...")
+        Ext.get(this.getContentDiv()).mask(___("Haalt features op..."))
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -379,7 +379,7 @@ Ext.define("viewer.components.Merge", {
         this.geometryEditable = false;
 
         if (appLayer != null) {
-            this.maincontainer.setLoading("Laadt attributen...");
+            this.maincontainer.setLoading(___("Laadt attributen..."));
             this.loadAttributes(appLayer);
         } else {
             this.cancel();
@@ -420,9 +420,9 @@ Ext.define("viewer.components.Merge", {
             Ext.getCmp(this.name + "selectAButton").setDisabled(false);
             Ext.getCmp(this.name + "selectBButton").setDisabled(true);
 
-            Ext.getCmp(this.name + "geomLabel").setText("Selecteer " + this.labelA + " en " + this.labelB + " geometrie");
+            Ext.getCmp(this.name + "geomLabel").setText(___("Selecteer {{labelA}} en {{labelA}} geometrie", {labelA: this.labelA, labelB: this.labelB}));
         } else {
-            Ext.getCmp(this.name + "geomLabel").setText('Geometrie mag niet bewerkt worden.');
+            Ext.getCmp(this.name + "geomLabel").setText(___("Geometrie mag niet bewerkt worden."));
         }
     },
     featuresReceived: function (features) {

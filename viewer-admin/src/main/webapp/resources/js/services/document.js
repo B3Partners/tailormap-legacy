@@ -68,8 +68,8 @@ Ext.define('vieweradmin.components.Document', {
                 menuDisabled: true,
                 renderer: function(value) {
                     return [
-                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + ___("Bewerken") + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + ___("Verwijderen") + '</a>')
                     ].join(" | ");
                 }
             }
@@ -86,7 +86,7 @@ Ext.define('vieweradmin.components.Document', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u het document ", record.get("name"), " wilt verwijderen?"].join("");
+        return ___("Weet u zeker dat u het document {{name}} wilt verwijderen?", {name: record.get("name")});
     },
 
     getEditUrl: function(record) {

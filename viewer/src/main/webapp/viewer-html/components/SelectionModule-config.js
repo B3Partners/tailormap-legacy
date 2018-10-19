@@ -37,7 +37,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add({
             xtype: "combobox",
             value: autoShowSelectionModule,
-            store: [ ['never','Nooit'], ['nolayers','Indien er geen lagen zijn bij opstarten'], ['onlybackground','Indien er alleen achtergrond lagen zijn'], ['always','Altijd'] ],
+            store: [ ['never',___("Nooit")], ['nolayers',___("Indien er geen lagen zijn bij opstarten")], ['onlybackground',___("Indien er alleen achtergrond lagen zijn")], ['always',___("Altijd")] ],
             name: "autoShowSelectionModule",
             labelWidth: this.labelWidth,
             fieldLabel: i18next.t('viewer_components_customconfiguration_174'),
@@ -55,7 +55,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add({
             xtype: "combobox",
             value: configObject.autoOnLayers !== undefined ? configObject.autoOnLayers : 'always',
-            store: [ ['never','Nooit'], ['always','Altijd'], ['onlybackground','Alleen achtergrondlagen'] ],
+            store: [ ['never',___("Nooit")], ['always',___("Altijd")], ['onlybackground',___("Alleen achtergrondlagen")] ],
             name: 'autoOnLayers',
             labelWidth: this.labelWidth,
             fieldLabel: i18next.t('viewer_components_customconfiguration_176'),
@@ -63,10 +63,10 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         
         var fieldNames = [
-            { name: 'Groups', description: 'Kaarten selecteren', defaultLabel: 'Kaart' },
-            { name: 'Layers', description: 'Kaartlagen selecteren', defaultLabel: 'Kaartlaag' },
-            { name: 'OwnServices', description: 'Eigen services selecteren', defaultLabel: 'Eigen service' },
-            { name: 'Csw', description: 'CSW service doorzoeken', defaultLabel: 'CSW service' }
+            { name: 'Groups', description: ___("Kaarten selecteren"), defaultLabel: ___("Kaart")},
+            { name: 'Layers', description: ___("Kaartlagen selecteren"), defaultLabel: ___("Kaartlaag")},
+            { name: 'OwnServices', description: ___("Eigen services selecteren"), defaultLabel: ___("Eigen service")},
+            { name: 'Csw', description: ___("CSW service doorzoeken"), defaultLabel: ___("CSW service") }
         ];
         // Adding configuration options for all fieldNames
         Ext.Array.forEach(fieldNames, function(field) {
