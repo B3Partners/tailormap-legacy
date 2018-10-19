@@ -112,11 +112,6 @@
         <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
         <param-value>ViewerResources</param-value>
     </context-param>
-    <!-- Hardcoded NL locale for formatting numbers: 1.234.567,89 -->
-    <context-param>
-        <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
-        <param-value>nl</param-value>
-    </context-param>
     <filter>
         <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
         <filter-name>SetCharacterEncodingFilter</filter-name>
@@ -161,7 +156,10 @@
         </init-param>
         <init-param>
             <param-name>LocalePicker.Locales</param-name>
-            <param-value>nl_NL</param-value>
+            <!-- Note that the option to specify the encoding using nl_NL:UTF-8
+                 is not required because we have a separate filter for that:
+                 SetCharacterEncodingFilter -->
+            <param-value>nl_NL,en_US</param-value>
         </init-param>
         <init-param>
             <param-name>LocalizationBundleFactory.ErrorMessageBundle</param-name>

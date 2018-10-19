@@ -33,7 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:otherwise>
                 <img class="flamingoLogo" src="${contextPath}/resources/images/FlamingoLogo.png"/>
             </c:otherwise>
-
         </c:choose>
     </stripes:layout-component>
 </stripes:layout-render>

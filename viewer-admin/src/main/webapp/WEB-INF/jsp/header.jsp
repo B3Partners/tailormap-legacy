@@ -79,6 +79,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </li>
         </ul>
         <div id="userinfo">
+            <fmt:message key="locale"/>: <%= request.getLocale().getLanguage() %> |
             Ingelogd als: <b><c:out value="${pageContext.request.remoteUser}"/> | </b>
             <stripes:link style="color: white" href="/logout.jsp">Uitloggen</stripes:link>
         </div>
