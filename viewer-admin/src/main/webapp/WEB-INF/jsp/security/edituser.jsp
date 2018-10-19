@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Edit gebruiker</title>
+        <title>___Edit gebruiker___</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit' ||(not empty actionBean.context.validationErrors)}">
-                    <h1 id="headertext">Gebruiker bewerken</h1>
+                    <h1 id="headertext">___Gebruiker bewerken___</h1>
                     <stripes:hidden name="user" value="${actionBean.user.username}"/>
 
                     <table class="formtable">
@@ -37,39 +37,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td>
                                 <table>
                                     <tr>
-                                        <td>Naam:</td>
+                                        <td>___Naam___:</td>
                                         <td><stripes:text name="details['name']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Organisatie:</td>
+                                        <td>___Organisatie___:</td>
                                         <td><stripes:text name="details['organization']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Functie:</td>
+                                        <td>___Functie___:</td>
                                         <td><stripes:text name="details['position']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Adres:</td>
+                                        <td>___Adres___:</td>
                                         <td><stripes:text name="details['address']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Plaats:</td>
+                                        <td>___Plaats___:</td>
                                         <td><stripes:text name="details['city']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>E-mailadres:</td>
+                                        <td>___E-mailadres___:</td>
                                         <td><stripes:text name="details['email']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Telefoon:</td>
+                                        <td>___Telefoon___:</td>
                                         <td><stripes:text name="details['phone']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Gebruikersnaam *:</td>
+                                        <td>___Gebruikersnaam___ *:</td>
                                         <td><stripes-dynattr:text name="username" required="" disabled="${!empty actionBean.user.username}" maxlength="255" size="30">${user.username}</stripes-dynattr:text></td>
                                     </tr>
                                     <tr>
-                                        <td>Wachtwoord ${empty actionBean.user.username ? '*' : '(laat leeg om niet te wijzigen)'}:</td>
+                                        <td>___Wachtwoord___ ${empty actionBean.user.username ? '*' : '___(laat leeg om niet te wijzigen)___'}:</td>
                                         <td>
                                           <c:choose>
                                             <c:when test="${empty actionBean.user.username}">
@@ -84,7 +84,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </table>
                             </td>
                             <td valign="top">
-                                <h1>Groepen:</h1>
+                                <h1>___Groepen___:</h1>
                                 <c:forEach var="group" items="${actionBean.allGroups}">
                                     <stripes:checkbox name="groups" value="${group.name}"/> ${group.name}<br />
                                 </c:forEach>
@@ -95,8 +95,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="Opslaan"/>
-                        <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
+                        <stripes:submit name="save" value="___Opslaan___"/>
+                        <stripes:reset name="cancel" class="extlikebutton" value="___Annuleren___"/>
 
                         <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="authorizations">
                             <stripes:param name="user" value="${actionBean.user}"/>
@@ -124,17 +124,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.vieweradmin_components_User.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="Nieuwe gebruiker"/>
+                        <stripes:submit name="edit" value="___Nieuwe gebruiker___"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="Nieuwe gebruiker"/>
+                    <stripes:submit name="edit" value="___Nieuwe gebruiker___"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>
         <c:if test="${actionBean.context.eventName == 'edit'}">
             <br />
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
-                <stripes:submit name="edit" value="Nieuwe gebruiker"/>
+                <stripes:submit name="edit" value="___Nieuwe gebruiker___"/>
             </stripes:form>
         </c:if>
         </div>
