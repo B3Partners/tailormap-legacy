@@ -197,8 +197,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </tr>
                             </table>
                             <div class="submitbuttons">
-                                <stripes:submit name="save" value="<fmt:message key="viewer_admin.editattributesource.25" />"/>
-                                <stripes:reset class="extlikebutton" onclick="setTimeout(checkProtocol,10)" name="cancel" value="<fmt:message key="viewer_admin.editattributesource.26" />"/>
+                                <fmt:message key="viewer_admin.editattributesource.25" var="editattributesource25" />
+                                <stripes:submit name="save" value="${editattributesource25}"/>
+                                <fmt:message key="viewer_admin.editattributesource.26" var="editattributesource26" />
+                                <stripes:reset class="extlikebutton" onclick="setTimeout(checkProtocol,10)" name="cancel" value="${editattributesource26}"/>
                             </div>
                 </c:when>
                 <c:otherwise>
