@@ -9,7 +9,7 @@
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Cyclorama</title>
+        <title><fmt:message key="viewer_admin.cyclorama.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -24,27 +24,30 @@
                 <stripes:messages/>
             </p>
             <stripes:select name="account" onchange="changeSelection(this)">
-                <stripes:option value="-1" label=" -- Nieuwe key -- "/>
+                <fmt:message key="viewer_admin.cyclorama.1" var="cyclorama1" />
+                <stripes:option value="-1" label=" ${cyclorama1}"/>
                 <stripes:options-collection collection="${actionBean.accounts}" label="filename" value="id"/>
             </stripes:select>
 
                 <table class="formtable">
                     <tr>
-                        <td>Gebruikersnaam</td>
+                        <td><fmt:message key="viewer_admin.cyclorama.2" />:</td>
                         <td><stripes-dynattr:text name="account.username">${account.username}</stripes-dynattr:text></td>
                 </tr>
                 <tr>
-                        <td>Wachtwoord</td>
+                        <td><fmt:message key="viewer_admin.cyclorama.3" />:</td>
                         <td><stripes-dynattr:password autocomplete="new-password" name="account.password"/></td>
                 </tr>
                 <tr>
-                        <td>PFX-bestand</td>
+                        <td><fmt:message key="viewer_admin.cyclorama.4" />:</td>
                         <td><stripes:file name="key"/></td>
                     </tr>
                     <tr>
-                        <td><stripes:submit name="save" value="Opslaan"/></td>
+                        <fmt:message key="viewer_admin.cyclorama.5" var="cyclorama5" />
+                        <fmt:message key="viewer_admin.cyclorama.6" var="cyclorama6" />
+                        <td><stripes:submit name="save" value="${cyclorama5}"/></td>
                         <c:if test="${not empty actionBean.account}">
-                            <td><stripes:submit name="removeKey" value="Verwijder"/></td>
+                            <td><stripes:submit name="removeKey" value="${cyclorama6}"/></td>
                         </c:if>
                     </tr>
                 </table>

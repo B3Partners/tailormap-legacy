@@ -25,11 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Uitgelogd</title>
+        <title><fmt:message key="viewer.logout.0" /></title>
     </head>
     <body>
-        <h1>Uitgelogd</h1>
+        <h1><fmt:message key="viewer.logout.1" /></h1>
 
-        <b>U bent uitgelogd.</b>
+        <b><fmt:message key="viewer.logout.2" /></b>
     </body>
 </html>

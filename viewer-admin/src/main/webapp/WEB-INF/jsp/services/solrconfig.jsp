@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
   
     <stripes:layout-component name="head">
-        <title>Solr configureren</title>
+        <title><fmt:message key="viewer_admin.solrconfig.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <stripes:errors/>
             <stripes:messages/>
-            <h1>Zoekbronnen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1>
+            <h1><fmt:message key="viewer_admin.solrconfig.1" /> <a href="#Attribuutbronnen_Help" title="<fmt:message key="viewer_admin.solrconfig.2" />" class="helplink"></a></h1>
 
             <div id="grid-container" class="attributesources">
 

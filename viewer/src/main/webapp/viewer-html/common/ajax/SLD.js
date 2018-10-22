@@ -71,7 +71,7 @@ Ext.define("viewer.SLD", {
             },
             failure: function(result) {
                 if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    failureFunction(i18next.t('viewer_sld_0') + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
         });
@@ -155,7 +155,7 @@ Ext.define("viewer.SLD", {
             },
             failure: function(result) {
                 if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    failureFunction(i18next.t('viewer_sld_1') + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
         });

@@ -16,7 +16,7 @@ class TextExtractor {
                         '../../components/**/*.js'
                     ],
                     ignore: [
-                        '../../common/openlayers/OpenLayers.js'
+                        '../../common/openlayers/**/*.js'
                     ],
                 }
             },
@@ -30,7 +30,29 @@ class TextExtractor {
                         '../../../../../../../viewer-admin/src/main/webapp/resources/js/**/*.js'
                     ],
                 }
-            }
+            },
+            // {
+            //     outputFilename: "../nl_jsp.json",
+            //     outputProperties: "../nl.properties",
+            //     prefix: "viewer",
+            //     seperator: ".",
+            //     fileOptions: {
+            //         files: [
+            //             '../../../../../../../viewer/src/main/webapp/**/*.jsp'
+            //         ],
+            //     }
+            // },
+            // {
+            //     outputFilename: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl_jsp.json",
+            //     outputProperties: "../../../../../../../viewer-admin/src/main/webapp/resources/i18n/locales/nl.properties",
+            //     prefix: "viewer_admin",
+            //     seperator: ".",
+            //     fileOptions: {
+            //         files: [
+            //             '../../../../../../../viewer-admin/src/main/webapp/**/*.jsp'
+            //         ],
+            //     }
+            // },
         ];
         languageFiles.forEach(fileConf => {
             this.createLanguageFile(fileConf);
@@ -47,24 +69,28 @@ class TextExtractor {
                     console.error(e);
                 }
             }
-            const count_store = this.createCountStore(store);
-            this.extractText(store, count_store, opts);
+            const count_store = this.createCountStore(store, opts.seperator || "_");
+            if (opts.outputProperties) {
+                this.extractTextFromJSP(store, count_store, opts);
+                return;
+            }
+            this.extractTextFromJS(store, count_store, opts);
         });
     }
 
-    createCountStore(store) {
+    createCountStore(store, seperator = "_") {
         const count_store = {};
         for(const key in store) if(store.hasOwnProperty(key)) {
-            const basename = key.substring(0, key.lastIndexOf("_"));
-            const count = parseInt(key.substring(key.lastIndexOf("_") + 1));
+            const basename = key.substring(0, key.lastIndexOf(seperator));
+            const count = parseInt(key.substring(key.lastIndexOf(seperator) + 1)) + 1;
             if (!count_store.hasOwnProperty(basename) || count_store[basename] < count) {
-                count_store[basename] = count + 1;
+                count_store[basename] = count;
             }
         }
         return count_store;
     }
 
-    writeFile(store, outputFilename, jsFilename) {
+    writeFile(store, outputFilename, filename) {
         const ordered_store = {};
         Object.keys(store).sort().forEach((key) => {
             ordered_store[key] = store[key];
@@ -75,16 +101,24 @@ class TextExtractor {
                 return console.log(err);
             }
         });
+        if (filename.indexOf(".properties") !== -1) {
+            this.writePropertiesFile(ordered_store, filename);
+            return;
+        }
+        this.writeJsFile(json_content, filename);
+    }
+
+    writeJsFile(json_content, jsFilename) {
         const jsCode = `
-        i18next.init({
-            lng: 'nl',
-            fallbackLng: 'nl',
-            resources: {
-                nl: {
-                    translation: ${json_content}
-                }
-            }
-        });`;
+i18next.init({
+    lng: 'nl',
+    fallbackLng: 'nl',
+    resources: {
+        nl: {
+            translation: ${json_content}
+        }
+    }
+});`;
         fs.writeFile(jsFilename, jsCode, (err) => {
             if(err) {
                 return console.log(err);
@@ -92,34 +126,46 @@ class TextExtractor {
         });
     }
 
-    getKey(count_store, filename, filecontents, prefix) {
+    writePropertiesFile(store, propertiesFilename) {
+        const props = [];
+        for(const key in store) if(store.hasOwnProperty(key)) {
+            props.push(`${key}=${store[key]}`);
+        }
+        fs.writeFile(propertiesFilename, props.join("\n"), (err) => {
+            if(err) {
+                return console.log(err);
+            }
+        });
+    }
+
+    getKey(count_store, filename, filecontents, prefix, seperator = "_") {
         const classNameMatches = filecontents.match(/Ext\.define\s*\(["'](viewer\.[^'"]*)["']/);
         const className = (classNameMatches && classNameMatches.length > 1) ? classNameMatches[1] : "";
         let keyname = "";
-        if (className) {
-            keyname = className.replace(/[\.\-]/g, "_").toLowerCase();
+        if (className && className !== "viewer.components.CustomConfiguration") {
+            keyname = className.replace(/[\.\-]/g, seperator).toLowerCase();
         } else {
-            keyname = filename.substring(filename.lastIndexOf("/") + 1).replace(/\-/g, "_").replace(".js", "").toLowerCase();
+            keyname = filename.substring(filename.lastIndexOf("/") + 1).replace(/\-/g, seperator).replace(".jsp", "").replace(".js", "").toLowerCase();
         }
         if (prefix) {
-            keyname = prefix + "_" + keyname;
+            keyname = prefix + seperator + keyname;
         }
         if (!count_store.hasOwnProperty(keyname)) {
             count_store[keyname] = 0;
         }
-        return `${keyname}_${count_store[keyname]++}`;
+        return `${keyname}${seperator}${count_store[keyname]++}`;
     }
 
-    extractText(store, count_store, opts) {
+    extractTextFromJS(store, count_store, opts) {
         let match_count = 0;
         const propReplacer = {
             ...opts.fileOptions,  
-            from: /(text|title|tooltip|fieldLabel|emptyText|boxLabel|msg|header|html):\s?(["'])(?:(?=(\\?))\3.)*?\2/g,
+            from: /(text|title|tooltip|fieldLabel|label|message|emptyText|boxLabel|msg|header|html):\s?(["'])(?:(?=(\\?))\3.)*?\2/g,
             to: (...args) => {
                 const match = args[0];
                 const filecontents = args[args.length - 2];
                 const filename = args[args.length - 1];
-                let text = match.replace(/(text|title|tooltip|fieldLabel|emptyText|boxLabel|msg|header|html)\s*:\s*['"]/, "");
+                let text = match.replace(/(text|title|tooltip|fieldLabel|label|message|emptyText|boxLabel|msg|header|html)\s*:\s*['"]/, "");
                 text = text.substring(0, text.length - 1);
                 if (!text) {
                     return match;
@@ -127,7 +173,7 @@ class TextExtractor {
                 const key = this.getKey(count_store, filename, filecontents, opts.prefix);
                 store[key] = text;
                 match_count++;
-                return match.replace(/(text|title|tooltip|fieldLabel|emptyText|boxLabel|msg|header|html):\s?['"].*/, "$1: i18next.t('" + key + "')");
+                return match.replace(/(text|title|tooltip|fieldLabel|label|message|emptyText|boxLabel|msg|header|html):\s?['"].*/, "$1: i18next.t('" + key + "')");
             },
         };
         const msgBoxReplacer = {
@@ -178,10 +224,29 @@ class TextExtractor {
                 return "setLoading(i18next.t('" + key + "'))";
             },
         };
+        const i18nReplacer = {
+            ...opts.fileOptions,
+            from: /___\("(([^"\\]|\\.)*)"([\),]{1})/g,
+            to: (...args) => {
+                const match = args[0];
+                const text = args[1];
+                const delim = args[3];
+                const filecontents = args[args.length - 2];
+                const filename = args[args.length - 1];
+                if (!text) {
+                    return match;
+                }
+                const key = this.getKey(count_store, filename, filecontents, opts.prefix);
+                store[key] = text;
+                match_count++;
+                return "i18next.t('" + key + "'" + delim;
+            },
+        };
         try {
             replace.sync(propReplacer);
             replace.sync(msgBoxReplacer);
             replace.sync(loadingReplacer);
+            replace.sync(i18nReplacer);
             let output_store = store;
             if (opts.useCombined) {
                 this.combined_stores.forEach(s => {
@@ -193,6 +258,35 @@ class TextExtractor {
             }
             this.writeFile(output_store, opts.outputFilename, opts.outputJS);
             this.combined_stores.push(store);
+            console.log(`Total replacements for ${path.resolve(opts.outputFilename)}: ${match_count}`);
+        }
+        catch(error) {
+            console.error("An error occurred: ", error);
+        }
+    }
+
+    extractTextFromJSP(store, count_store, opts) {
+        let match_count = 0;
+        const textReplacer = {
+            ...opts.fileOptions,  
+            from: /___([^_]*)___/g,
+            to: (...args) => {
+                const match = args[0];
+                const text = args[1];
+                const filecontents = args[args.length - 2];
+                const filename = args[args.length - 1];
+                if (!text) {
+                    return match;
+                }
+                const key = this.getKey(count_store, filename, filecontents, opts.prefix, ".");
+                store[key] = text;
+                match_count++;
+                return `<fmt:message key="${key}" />`;
+            },
+        }
+        try {
+            replace.sync(textReplacer);
+            this.writeFile(store, opts.outputFilename, opts.outputProperties);
             console.log(`Total replacements for ${path.resolve(opts.outputFilename)}: ${match_count}`);
         }
         catch(error) {

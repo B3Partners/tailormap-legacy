@@ -37,8 +37,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
         this.config.moreLink = null;
 
-        this.navigateBackButton = this.createButton('left', 'Vorige');
-        this.navigateForwardButton = this.createButton('right', 'Volgende');
+        this.navigateBackButton = this.createButton('left', i18next.t('viewer_components_extendedfeatureinfo_0'));
+        this.navigateForwardButton = this.createButton('right', i18next.t('viewer_components_extendedfeatureinfo_1'));
         this.buttons = Ext.create('Ext.toolbar.Toolbar', {
             xtype: 'toolbar',
             dock: 'bottom',
@@ -145,7 +145,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             this.currentFeatureId = pages[this.currentIndex] ? pages[this.currentIndex].config.featureId : null;
             this.panel.removeAll(true);
             this.totalPages = 0;
-            this.panel.setLoading("Bezig met verversen");
+            this.panel.setLoading(i18next.t('viewer_components_extendedfeatureinfo_2'));
         } else {
             this.panel.setLoading(false);
         }

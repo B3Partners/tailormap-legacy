@@ -387,7 +387,7 @@ Ext.define ("viewer.components.Search",{
             this.executeSearch(searchText, searchName);
             this.form.query("#cancel"+ this.name)[0].setVisible(true);
         } else {
-            Ext.MessageBox.alert(i18next.t('viewer_components_search_8'), i18next.t('viewer_components_search_9'));
+            Ext.MessageBox.alert(i18next.t('viewer_components_search_6'), i18next.t('viewer_components_search_7'));
             // search request is not complete
         }        
     },
@@ -428,7 +428,7 @@ Ext.define ("viewer.components.Search",{
             this.getExtraRequestParams(requestParams,searchName);
             var me = this;
             me.loadingContainer.setLoading({
-                msg: i18next.t('viewer_components_search_6')
+                msg: i18next.t('viewer_components_search_8')
             });
             Ext.Ajax.request({
                 url: requestPath,
@@ -517,7 +517,7 @@ Ext.define ("viewer.components.Search",{
         }
         this.resultPanel.removeAll();
         var results = Ext.create('Ext.panel.Panel', {
-            title: i18next.t('viewer_components_search_7') +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
+            title: i18next.t('viewer_components_search_9') +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
             html: html,
             componentCls: 'resultPanelPanel',
             layout:{

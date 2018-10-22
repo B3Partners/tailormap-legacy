@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>CSW service</title>
+        <title><fmt:message key="viewer_admin.cswservice.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -28,19 +28,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:messages/>
             <stripes:form id="searchForm" beanclass="nl.b3p.viewer.admin.stripes.CatalogServiceActionBean">
                 <stripes:hidden id="category" name="category"/>
-                <h1 id="headertext">CSW Service doorzoeken</h1>
+                <h1 id="headertext"><fmt:message key="viewer_admin.cswservice.1" /></h1>
                 <table class="formtable">
                     <tr>
-                        <td>URL van de service:</td>
+                        <td><fmt:message key="viewer_admin.cswservice.2" />:</td>
                         <td><stripes:text id="url" name="url" value="http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw" maxlength="255" size="80"/></td>
                     </tr>
                     <tr>
-                        <td>Zoekterm:</td>
-                        <td><stripes:text id="searchTerm" name="searchTerm" value="natuur" maxlength="255" size="80"/></td>
+                        <td><fmt:message key="viewer_admin.cswservice.3" />:</td>
+                        <fmt:message key="viewer_admin.cswservice.4" var="searchTermLabel" />
+                        <td><stripes:text id="searchTerm" name="searchTerm" value="${searchTermLabel}" maxlength="255" size="80"/></td>
                     </tr>
                     <tr>
                         <td>
-                            <input type="button" class="extlikebutton" onclick="return searchCsw();" name="search" value="Zoeken"/>
+                            <input type="button" class="extlikebutton" onclick="return searchCsw();" name="search" value="<fmt:message key="viewer_admin.cswservice.5" />"/>
                         </td>
                         <td><span id="numresults"></span></td>
                     </tr>

@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
 
     <stripes:layout-component name="head">
-        <title>Configureer component</title>
+        <title><fmt:message key="viewer_admin.configpage.0" /></title>
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
 
@@ -41,21 +41,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             <div id="tabs" style="width: 100%; height: 100%;">
                 <div id ="config" style="width: 100%; height: 100%;" class="tabdiv">
-                    <a href="" title="Help" class="helplink" id="compHelpLink"></a>
+                    <a href="" title="<fmt:message key="viewer_admin.configpage.1" />" class="helplink" id="compHelpLink"></a>
                 </div>
                 <div id="rights" class="tabdiv"> 
-                    <h1>Groepen:</h1>
-                    De volgende gebruikersgroepen hebben recht op dit component:<br/>
+                    <h1><fmt:message key="viewer_admin.configpage.2" />:</h1>
+                    <fmt:message key="viewer_admin.configpage.3" />:<br/>
 
                     <c:forEach var="group" items="${actionBean.allGroups}">
                         <stripes:checkbox name="groups" value="${group.name}"/>${group.name}<br>
                     </c:forEach>
                 </div>
                 <div id="layout" class="tabdiv">
-                    <a href="#Component_Layout_Tab_Help" title="Help" class="helplink"></a>
+                    <a href="#Component_Layout_Tab_Help" title="<fmt:message key="viewer_admin.configpage.4" />" class="helplink"></a>
                 </div>
                 <div id="help" class="tabdiv">
-                    <a href="#Component_Help_Tab_Help" title="Help" class="helplink"></a>
+                    <a href="#Component_Help_Tab_Help" title="<fmt:message key="viewer_admin.configpage.5" />" class="helplink"></a>
                 </div>
             </div>
         </stripes:form>
