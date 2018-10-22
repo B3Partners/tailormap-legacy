@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Bewerk Attribuutbron</title>
+        <title><fmt:message key="viewer_admin.editattributesource.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -29,22 +29,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
                     <c:when test="${empty actionBean.context.validationErrors && (actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save')}">
-                    <h1 id="headertext">Attribuutbron bewerken</h1>
+                    <h1 id="headertext"><fmt:message key="viewer_admin.editattributesource.1" /></h1>
 
                     <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
                     <table class="formtable">
                         <tr>
-                            <td>Naam *:</td>
+                            <td><fmt:message key="viewer_admin.editattributesource.2" /> *:</td>
                             <td><stripes:text name="name" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
-                            <td>Bron URL *:</td>
+                            <td><fmt:message key="viewer_admin.editattributesource.3" /> *:</td>
                             <td>
                                 ${actionBean.featureSource.url}
                             </td>
                         </tr>
                         <tr>
-                            <td>Type *:</td>
+                            <td><fmt:message key="viewer_admin.editattributesource.4" /> *:</td>
                             <td>
                                 <stripes:select name="protocol" disabled="true">
                                     <stripes:option value="wfs">WFS</stripes:option>
@@ -55,36 +55,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </td>
                         </tr>
                         <tr>
-                            <td>Gebruikersnaam:</td>
+                            <td><fmt:message key="viewer_admin.editattributesource.5" />:</td>
                             <td><stripes-dynattr:text name="username" maxlength="255" size="30">${username}</stripes-dynattr:text></td>
                         </tr>
                         <tr>
-                            <td>Wachtwoord:</td>
+                            <td><fmt:message key="viewer_admin.editattributesource.6" />:</td>
                             <td><stripes-dynattr:password name="password" autocomplete="new-password" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="saveEdit" value="Opslaan"/>
+                        <fmt:message key="viewer_admin.editattributesource.7" var="editattributesource7" />
+                        <fmt:message key="viewer_admin.editattributesource.8" var="editattributesource8" />
+                        <fmt:message key="viewer_admin.editattributesource.9" var="editattributesource9" />
+                        <fmt:message key="viewer_admin.editattributesource.10" var="editattributesource10" />
+                        <stripes:submit name="saveEdit" value="${editattributesource7}"/>
                         <c:if test="${actionBean.updatable}">
-                            <stripes:submit name="update" onclick="return updateConfirm();" value="Update"/>
+                            <stripes:submit name="update" onclick="return updateConfirm();" value="${editattributesource8}"/>
                         </c:if>
-                        <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
-                        <stripes:reset class="extlikebutton" name="cancel" value="Annuleren"/>
+                        <stripes:submit name="newAttributeSource" value="${editattributesource9}"/>
+                        <stripes:reset class="extlikebutton" name="cancel" value="${editattributesource10}"/>
                     </div>
                     <c:if test="${!actionBean.updatable}">
-                        * Attribuutbron kan hier niet worden geupdate. Wegens de directe link tussen service en attribuutbron, dient u voor de ArcGIS en ArcIMS protocollen de bijhorende service te updaten.
+                        * <fmt:message key="viewer_admin.editattributesource.11" />
                     </c:if>
                     <c:if test="${actionBean.featureSource.id != null}">
-                        <br> <a href="javascript: void(0)" onclick='openServiceUsageMatrix(<c:out value="${actionBean.featureSource.id}"/>)'>Bekijk in welke applicaties deze service wordt gebruikt</a>
+                        <br> <a href="javascript: void(0)" onclick='openServiceUsageMatrix(<c:out value="${actionBean.featureSource.id}"/>)'><fmt:message key="viewer_admin.editattributesource.12" /></a>
                     </c:if>
                     <script type="text/javascript">
                         function updateConfirm() {
                             <c:if test="${!actionBean.updatable}">
-                                alert('Deze Attribuutbron kan niet worden geupdate! Update de bijhorende service.');
+                                alert('<fmt:message key="viewer_admin.editattributesource.13" />');
                                 return false;
                             </c:if>
                             <c:if test="${actionBean.updatable}">
-                                return confirm('Weet u zeker dat u deze Attribuutbron wilt updaten? Attributen die de server niet meer aanbiedt worden verwijderd.');
+                                return confirm('<fmt:message key="viewer_admin.editattributesource.14" />');
                             </c:if>
                         }
                     </script>
@@ -99,7 +103,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'newAttributeSource' || (not empty actionBean.context.validationErrors) }">
 
-                            <h1 id="headertext">Nieuwe attribuutbron toevoegen</h1>
+                            <h1 id="headertext"><fmt:message key="viewer_admin.editattributesource.15" /></h1>
                             <p>
                             <script type="text/javascript">
                                 function checkProtocol() {
@@ -143,15 +147,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Naam *:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.16" /> *:</td>
                                     <td><stripes:text name="name" maxlength="255" size="30"/></td>
                                 </tr>
                                 <tr class="wfsTr">
-                                    <td>URL *:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.17" /> *:</td>
                                     <td><stripes:text name="url" maxlength="255" size="30"/></td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Database type *:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.18" /> *:</td>
                                     <td>
                                         <stripes:select name="dbtype" onchange="checkDefaults()" onkeyup="checkDefaults()">
                                             <stripes:option value="oracle">Oracle</stripes:option>
@@ -160,41 +164,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Adres database server *:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.19" /> *:</td>
                                     <td>
                                         <stripes:text name="host" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Poort database server *:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.20" /> *:</td>
                                     <td>
                                         <stripes:text name="port" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Database *:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.21" /> *:</td>
                                     <td>
                                         <stripes:text name="database" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Schema *:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.22" /> *:</td>
                                     <td>
                                         <stripes:text name="schema" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Gebruikersnaam:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.23" />:</td>
                                     <td><stripes-dynattr:text name="username" maxlength="255" size="30">${username}</stripes-dynattr:text></td>
                                 </tr>
                                 <tr>
-                                    <td>Wachtwoord:</td>
+                                    <td><fmt:message key="viewer_admin.editattributesource.24" />:</td>
                                     <td><stripes-dynattr:password name="password" autocomplete="new-password" maxlength="255" size="30"/></td>
                                 </tr>
                             </table>
                             <div class="submitbuttons">
-                                <stripes:submit name="save" value="Opslaan"/>
-                                <stripes:reset class="extlikebutton" onclick="setTimeout(checkProtocol,10)" name="cancel" value="Annuleren"/>
+                                <fmt:message key="viewer_admin.editattributesource.25" var="editattributesource25" />
+                                <stripes:submit name="save" value="${editattributesource25}"/>
+                                <fmt:message key="viewer_admin.editattributesource.26" var="editattributesource26" />
+                                <stripes:reset class="extlikebutton" onclick="setTimeout(checkProtocol,10)" name="cancel" value="${editattributesource26}"/>
                             </div>
                 </c:when>
                 <c:otherwise>
@@ -206,7 +212,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </script>
                     <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                     <c:if test="${not empty actionBean.changedFeatureTypes}">
-                        <a href="javascript: void(0)" onclick='openServiceUsageMatrix(<c:out value="${actionBean.changedFeatureSourceId}"/>)'>Open wijzigingen in Service Gebruiks Matrix</a>
+                        <a href="javascript: void(0)" onclick='openServiceUsageMatrix(<c:out value="${actionBean.changedFeatureSourceId}"/>)'><fmt:message key="viewer_admin.editattributesource.27" /></a>
                     </c:if>
                 </c:otherwise>
             </c:choose>

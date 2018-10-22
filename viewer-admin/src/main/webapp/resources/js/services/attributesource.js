@@ -42,13 +42,13 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 flex: 1,
                 renderer: function(value) {
                     if(value === "ok") {
-                        return '<span class="status_ok">GOED</span>';
+                        return '<span class="status_ok">' + i18next.t('viewer_admin_attributesource_1') + '</span>';
                     }
-                    return '<span class="status_error">FOUT</span>';
+                    return '<span class="status_error">' + i18next.t('viewer_admin_attributesource_2') + '</span>';
                 }
             },{
                 id: 'name',
-                text: i18next.t('viewer_admin_attributesource_1'),
+                text: i18next.t('viewer_admin_attributesource_3'),
                 dataIndex: 'name',
                 flex: 1,
                 filter: {
@@ -56,7 +56,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 }
             },{
                 id: 'url',
-                text: i18next.t('viewer_admin_attributesource_2'),
+                text: i18next.t('viewer_admin_attributesource_4'),
                 dataIndex: 'url',
                 flex: 1,
                 filter: {
@@ -64,7 +64,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 }
             },{
                 id: 'protocol',
-                text: i18next.t('viewer_admin_attributesource_3'),
+                text: i18next.t('viewer_admin_attributesource_5'),
                 dataIndex: 'protocol',
                 flex: 1,
                 filter: {
@@ -80,9 +80,9 @@ Ext.define('vieweradmin.components.AttributeSource', {
                 menuDisabled: true,
                 renderer: (function(value) {
                      return [
-                         Ext.String.format('<a href="{0}?featureSourceId={1}">Attributen bewerken</a>', this.config.editattributesurl, value),
-                         Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
-                         Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                         Ext.String.format('<a href="{0}?featureSourceId={1}">' + i18next.t('viewer_admin_attributesource_6') + '</a>', this.config.editattributesurl, value),
+                         Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_attributesource_7') + '</a>'),
+                         Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_attributesource_8') + '</a>')
                      ].join(" | ");
                 }).bind(this)
             }
@@ -104,7 +104,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de attribuutbron ", record.get("name"), " wilt verwijderen?"].join("");
+        return i18next.t('viewer_admin_attributesource_9', {name:record.get("name")});
     },
 
     getEditUrl: function(record) {

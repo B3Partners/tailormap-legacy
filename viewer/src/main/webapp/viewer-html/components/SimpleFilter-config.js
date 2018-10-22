@@ -34,16 +34,16 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.filterTypes = Ext.create("Ext.data.Store", {
             fields: ["type", "label"],
             data: [
-                {type: "slider", label: "Slider"},
-                {type: "number", label: "Getalfilter"},
-                {type: "text", label: "Tekstfilter"},
-                {type: "numberrange", label: "Getalrange"},
-                {type: "combo", label: "Selectielijst"},
-                {type: "checkbox", label: "Vinkvak"},
-                {type: "date", label: "Datum"},
-                {type: "radio", label: "Keuzerondje"},
-                {type: "reset", label: "Reset filter knop"},
-                {type: "textlabel", label: "Tekst label"}
+                {type: "slider", label: i18next.t('simplefilter_config_0')},
+                {type: "number", label: i18next.t('simplefilter_config_1')},
+                {type: "text", label: i18next.t('simplefilter_config_2')},
+                {type: "numberrange", label: i18next.t('simplefilter_config_3')},
+                {type: "combo", label: i18next.t('simplefilter_config_4')},
+                {type: "checkbox", label: i18next.t('simplefilter_config_5')},
+                {type: "date", label: i18next.t('simplefilter_config_6')},
+                {type: "radio", label: i18next.t('simplefilter_config_7')},
+                {type: "reset", label: i18next.t('simplefilter_config_8')},
+                {type: "textlabel", label: i18next.t('simplefilter_config_9')}
             ]
         });
 
@@ -76,7 +76,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             renderTo: Ext.get(parentId),
             items: [{
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_192'),
+                fieldLabel: i18next.t('simplefilter_config_10'),
                 name: 'title',
                 itemId: 'title',
                 value: this.configObject.title ? this.configObject.title : "",
@@ -86,7 +86,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'panel',
                 padding: '5 5 15 0',
                 border: 0,
-                html: i18next.t('viewer_components_customconfiguration_193')
+                html: i18next.t('simplefilter_config_11')
             },{
                 xtype: 'panel',
                 border: 0,
@@ -106,7 +106,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [{
                         xtype: 'combo',
-                        fieldLabel: i18next.t('viewer_components_customconfiguration_194'),
+                        fieldLabel: i18next.t('simplefilter_config_12'),
                         store: this.filterTypes,
                         itemId: "filterType",
                         queryModes: "local",
@@ -123,14 +123,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },{
                         xtype: "fieldset",
                         id: "filterAttributeConfigFieldset",
-                        title: i18next.t('viewer_components_customconfiguration_195'),
+                        title: i18next.t('simplefilter_config_13'),
                         collapsible: false,
                         defaultType: "textfield",
                         layout: "anchor",
                         items: [{
                             xtype: "combo",
                             itemId: "layerCombo",
-                            fieldLabel: i18next.t('viewer_components_customconfiguration_196'),
+                            fieldLabel: i18next.t('simplefilter_config_14'),
                             store: layerStore,
                             queryMode: "local",
                             displayField: "alias",
@@ -167,7 +167,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         },{
                             xtype: "combo",
                             itemId: "attributeCombo",
-                            fieldLabel: i18next.t('viewer_components_customconfiguration_197'),
+                            fieldLabel: i18next.t('simplefilter_config_15'),
                             store: Ext.create("Ext.data.Store", {
                                 fields: ["name", "alias", "type"]
                             }),
@@ -183,13 +183,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                         },{
                             xtype: 'displayfield',
                             itemId: 'attributeInfo',
-                            fieldLabel: i18next.t('viewer_components_customconfiguration_198'),
+                            fieldLabel: i18next.t('simplefilter_config_16'),
                             value: ''
                         }]
                     },{
                         xtype: "fieldset",
                         itemId: "filterConfigFieldset",
-                        title: i18next.t('viewer_components_customconfiguration_199'),
+                        title: i18next.t('simplefilter_config_17'),
                         collapsible: false,
                         defaultType: "textfield",
                         layout: "fit",
@@ -213,7 +213,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [{
                         xtype: 'button',
-                        text: i18next.t('viewer_components_customconfiguration_200'),
+                        text: i18next.t('simplefilter_config_18'),
                         margin: '0 0 5 0',
                         listeners: {
                             click: {
@@ -223,7 +223,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         }
                     },{
                         xtype: 'button',
-                        text: i18next.t('viewer_components_customconfiguration_201'),
+                        text: i18next.t('simplefilter_config_19'),
                         margin: '0 0 15 0',
                         listeners:{
                             click :{
@@ -235,21 +235,21 @@ Ext.define("viewer.components.CustomConfiguration",{
                                     if(record.length > 0){
                                         var id = record[0].data.id;
                                         var me = this;
-                                        Ext.MessageBox.confirm(i18next.t('viewer_components_customconfiguration_255'), i18next.t('viewer_components_customconfiguration_256'), function(btn, text){
+                                        Ext.MessageBox.confirm(i18next.t('simplefilter_config_20'), i18next.t('simplefilter_config_21'), function(btn, text){
                                             if (btn === 'yes') {
                                                 me.removeConfig(id);
                                                 me.resetConfig(true);
                                             }
                                         });
                                     }else{
-                                        Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_257'), i18next.t('viewer_components_customconfiguration_258'));
+                                        Ext.MessageBox.alert(i18next.t('simplefilter_config_22'), i18next.t('simplefilter_config_23'));
                                     }
                                 }
                             }
                         }
                     },{
                         xtype: 'button',
-                        text: i18next.t('viewer_components_customconfiguration_202'),
+                        text: i18next.t('simplefilter_config_24'),
                         margin: '0 0 5 0',
                         listeners:{
                             click:{
@@ -261,7 +261,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         }
                     },{
                         xtype: 'button',
-                        text: i18next.t('viewer_components_customconfiguration_203'),
+                        text: i18next.t('simplefilter_config_25'),
                         listeners:{
                             click:{
                                 scope:me,
@@ -274,13 +274,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }, {
                     xtype: 'gridpanel',
                     itemId: 'configuredFiltersGrid',
-                    title: i18next.t('viewer_components_customconfiguration_204'),
+                    title: i18next.t('simplefilter_config_26'),
                     height: 430,
                     flex: 0.4,
                     store: this.filterStore,
                     columns: [
-                        {header: i18next.t('viewer_components_customconfiguration_205'), dataIndex: 'soort', sortable: false, hideable: false},
-                        {header: i18next.t('viewer_components_customconfiguration_206'), dataIndex: 'description', sortable: false, hideable: false, flex: 1}
+                        {header: i18next.t('simplefilter_config_27'), dataIndex: 'soort', sortable: false, hideable: false},
+                        {header: i18next.t('simplefilter_config_28'), dataIndex: 'description', sortable: false, hideable: false, flex: 1}
                     ],
                     listeners: {
                         select: {

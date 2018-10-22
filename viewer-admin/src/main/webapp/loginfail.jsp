@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Inloggen</title>
+        <title><fmt:message key="viewer_admin.loginfail.0" /></title>
         <style type="text/css">
             .loginfield {
                 width: 130px;
@@ -31,15 +31,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </style>
     </head>
     <body>
-        <h2>Inloggen</h2>
-        <p style="color: red; font-weight: bold">Ongeldige logingegevens.</p>
+        <h2><fmt:message key="viewer_admin.loginfail.1" /></h2>
+        <p style="color: red; font-weight: bold"><fmt:message key="viewer_admin.loginfail.2" /></p>
         <form method="post" action="j_security_check">
             <table>
-                <tr><td>Gebruikersnaam:</td><td><input type="text" name="j_username" class="loginfield" /></td></tr>
-                <tr><td>Wachtwoord:</td><td><input type="password" name="j_password" class="loginfield" /></td></tr>
+                <tr><td><fmt:message key="viewer_admin.loginfail.3" />:</td><td><input type="text" name="j_username" class="loginfield" /></td></tr>
+                <tr><td><fmt:message key="viewer_admin.loginfail.4" />:</td><td><input type="password" name="j_password" class="loginfield" /></td></tr>
             </table>
             <br />
-            <input type="submit" name="submit" value="Login"/>
+            <input type="submit" name="submit" value="<fmt:message key="viewer_admin.loginfail.5" />"/>
         </form>
         <script type="text/javascript">
             window.onload = function() {

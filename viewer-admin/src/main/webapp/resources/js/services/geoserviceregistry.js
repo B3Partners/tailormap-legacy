@@ -343,7 +343,7 @@ function changeCategoryName(record) {
 function removeCategory(record) {
     Ext.MessageBox.show({
         title: i18next.t('viewer_admin_geoserviceregistry_11'),
-        msg: i18next.t('viewer_admin_geoserviceregistry_12') + record.data.text + " wilt verwijderen?",
+        msg: i18next.t('viewer_admin_geoserviceregistry_12', { category: record.data.text }),
         buttons: Ext.MessageBox.OKCANCEL,
         fn: function(btn){
             if(btn=='ok'){

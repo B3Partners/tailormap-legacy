@@ -60,7 +60,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     COMPONENT_NAME: 'Vuurwerkevenementen',
     ZONE_DISTANCES_CONSUMER: {},
     ZONE_DISTANCES_PROFESSIONAL: {},
-    OTHER_LABEL: "Anders, namelijk...",
+    OTHER_LABEL: i18next.t('viewer_components_ontbrandingsaanvraag_0'),
     
     printComponent:null,
 
@@ -199,17 +199,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
      */
     loadWindow : function() {
         this.wizardPages = [
-            this.createWizardPage("Nieuwe of bestaande situatietekening", [
-                "Via dit formulier kunt u een situatietekening maken om vervolgens in te dienen.",
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_1'), [
+                i18next.t('viewer_components_ontbrandingsaanvraag_2'),
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_0'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_3'),
                     margin: this.defaultMargin,
                     listeners: { click: this.newRequest, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_1'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_4'),
                     margin: this.defaultMargin,
                     listeners: { click: this.loadRequest, scope: this }
                 },
@@ -223,7 +223,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     items: [
                         {
                             xtype: 'label',
-                            text: i18next.t('viewer_components_ontbrandingsaanvraag_2'),
+                            text: i18next.t('viewer_components_ontbrandingsaanvraag_5'),
                             forId: 'featureFile'
                         },
                         {
@@ -236,7 +236,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                                     name: 'featureFile',
                                     allowBlank: false,
                                     msgTarget: 'side',
-                                    buttonText: 'Bladeren',
+                                    buttonText: i18next.t('viewer_components_ontbrandingsaanvraag_6'),
                                     itemId: 'featureFile',
                                     flex: 1
                                 }
@@ -244,7 +244,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                         },
                         {
                             xtype: 'button',
-                            text: i18next.t('viewer_components_ontbrandingsaanvraag_3'),
+                            text: i18next.t('viewer_components_ontbrandingsaanvraag_7'),
                             listeners: {
                                 click: this.loadFile,
                                 scope: this
@@ -259,10 +259,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     ]
                 }
             ]),
-            this.createWizardPage("Afsteeklocaties", [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_8'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_4'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_9'),
                     margin: this.defaultMargin,
                     listeners: { click: this.createIgnitionLocation, scope: this }
                 },
@@ -275,10 +275,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createIgnitionLocationForm()
             ]),
-            this.createWizardPage("Publieklocaties", [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_10'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_5'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_11'),
                     margin: this.defaultMargin,
                     listeners: { click: this.createAudienceLocation, scope: this }
                 },
@@ -291,16 +291,16 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createAudienceLocationForm()
             ]),
-            this.createWizardPage("Berekening van de veiligheidszone", [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_12'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_6'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_13'),
                     margin: this.defaultMargin,
                     listeners: { click: this.calculateSafetyZone, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_7'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_14'),
                     margin: this.defaultMargin,
                     listeners: { click: this.removeSafetyZones, scope: this }
                 },
@@ -310,7 +310,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     html: ''
                 }
             ]),
-            this.createWizardPage("Toevoegen hulplijnen", [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_15'), [
                 {
                     xtype: 'container',
                     layout: {
@@ -324,11 +324,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     },
                     items: [
                         {
-                            html: i18next.t('viewer_components_ontbrandingsaanvraag_8'),
+                            html: i18next.t('viewer_components_ontbrandingsaanvraag_16'),
                             listeners: { click: this.createExtraObject, scope: this }
                         },
                         {
-                            html: i18next.t('viewer_components_ontbrandingsaanvraag_9'),
+                            html: i18next.t('viewer_components_ontbrandingsaanvraag_17'),
                             listeners: { click: this.createMeasureLine, scope: this }
                         }
                     ]
@@ -342,28 +342,28 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 this.createExtraObjectsForm()
             ]),
-            this.createWizardPage("Opslaan en printen", [
+            this.createWizardPage(i18next.t('viewer_components_ontbrandingsaanvraag_18'), [
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_10'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_19'),
                     margin: this.defaultMargin,
                     listeners: { click: this.saveFile, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_11'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_20'),
                     margin: this.defaultMargin,
                     listeners: { click: this.makeImage, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_12'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_21'),
                     margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_13'),
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_22'),
                     margin: this.defaultMargin,
                     listeners: { click: this.movePage.bind(this, 0, 0), scope: this }
                 }
@@ -380,8 +380,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { xtype: 'container', flex: 1, items: this.wizardPages, layout: 'fit', defaults: { bodyStyle: 'padding: 10px' } }
             ],
             fbar: [
-                { type: 'button', itemId: 'prev_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_14'), handler: function() { this.previousPage(); }.bind(this) },
-                { type: 'button', itemId: 'next_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_15'), handler: function() { this.nextPage(); }.bind(this) }
+                { type: 'button', itemId: 'prev_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_23'), handler: function() { this.previousPage(); }.bind(this) },
+                { type: 'button', itemId: 'next_button', text: i18next.t('viewer_components_ontbrandingsaanvraag_24'), handler: function() { this.nextPage(); }.bind(this) }
             ]
         });
         this.getContentContainer().add(this.mainContainer);
@@ -444,12 +444,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 display: 'none'
             },
             items: [
-                { itemId: "page-0", title: i18next.t('viewer_components_ontbrandingsaanvraag_16') },
-                { itemId: "page-1", title: i18next.t('viewer_components_ontbrandingsaanvraag_17') },
-                { itemId: "page-2", title: i18next.t('viewer_components_ontbrandingsaanvraag_18') },
-                { itemId: "page-3", title: i18next.t('viewer_components_ontbrandingsaanvraag_19') },
-                { itemId: "page-4", title: i18next.t('viewer_components_ontbrandingsaanvraag_20') },
-                { itemId: "page-5", title: i18next.t('viewer_components_ontbrandingsaanvraag_21') }
+                { itemId: "page-0", title: i18next.t('viewer_components_ontbrandingsaanvraag_25') },
+                { itemId: "page-1", title: i18next.t('viewer_components_ontbrandingsaanvraag_26') },
+                { itemId: "page-2", title: i18next.t('viewer_components_ontbrandingsaanvraag_27') },
+                { itemId: "page-3", title: i18next.t('viewer_components_ontbrandingsaanvraag_28') },
+                { itemId: "page-4", title: i18next.t('viewer_components_ontbrandingsaanvraag_29') },
+                { itemId: "page-5", title: i18next.t('viewer_components_ontbrandingsaanvraag_30') }
             ],
             listeners :{
                 tabchange: {
@@ -491,7 +491,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ],
             data: []
         });
-        this.ignitionLocationsGrid = this._createGrid('ignitionLocations', "Afsteeklocaties", [
+        this.ignitionLocationsGrid = this._createGrid('ignitionLocations', i18next.t('viewer_components_ontbrandingsaanvraag_31'), [
             { dataIndex: 'label', flex: 1 }
         ]);
         this.getContentContainer().query('#ignitionLocationsContainer')[0].add(this.ignitionLocationsGrid);
@@ -510,7 +510,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             ],
             data: []
         });
-        this.audienceLocationsGrid = this._createGrid('audienceLocations', "Publieklocaties", [
+        this.audienceLocationsGrid = this._createGrid('audienceLocations', i18next.t('viewer_components_ontbrandingsaanvraag_32'), [
             { dataIndex: 'label', flex: 1, renderer: function(value, cell, record) {
                 return record.get('mainLocation') ? '<strong>' + value + '</strong>' : value;
             }}
@@ -536,7 +536,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             model: 'OntbrandingsaanvraagExtraObject',
             data: []
         });
-        this.extraObjectsGrid = this._createGrid('extraObject', "Extra objecten", [
+        this.extraObjectsGrid = this._createGrid('extraObject', i18next.t('viewer_components_ontbrandingsaanvraag_33'), [
             { dataIndex: 'label', flex: 1 }
         ], /*skipSize=*/true);
         this.getContentContainer().query('#extraObjectsContainer')[0].add(this.extraObjectsGrid);
@@ -551,10 +551,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         columns.push(
             { xtype: 'actioncolumn', width: 30, sortable:false, hidable:false, items: [
-                { iconCls: 'x-fa fa-pencil', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_22'), handler: this._editLocation.bind(this) }
+                { iconCls: 'x-fa fa-pencil', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_34'), handler: this._editLocation.bind(this) }
             ]},
             { xtype: 'actioncolumn', width: 30, sortable:false, hidable:false, items: [
-                { iconCls: 'x-fa fa-trash', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_23'), handler: this._removeLocation.bind(this) }
+                { iconCls: 'x-fa fa-trash', tooltip: i18next.t('viewer_components_ontbrandingsaanvraag_35'), handler: this._removeLocation.bind(this) }
             ]}
         );
         var grid = Ext.create('Ext.grid.Panel', {
@@ -592,13 +592,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_24'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_36'),
                     name: 'label',
                     itemId: 'ignition_label'
                 },
                 {
                     xtype: 'fieldcontainer',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_25'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_37'),
                     height: 65,
                     defaultType: 'radiofield',
                     defaults: {
@@ -612,13 +612,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     layout: 'hbox',
                     items: [
                         {
-                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_26'),
+                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_38'),
                             name: 'fireworks_type',
                             inputValue: 'consumer',
                             itemId: 'fireworks_type_choice_consumer'
 
                         }, {
-                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_27'),
+                            boxLabel: i18next.t('viewer_components_ontbrandingsaanvraag_39'),
                             name: 'fireworks_type',
                             inputValue: 'professional',
                             itemId: 'fireworks_type_choice_professional'
@@ -627,12 +627,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'container',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_28')
+                    html: i18next.t('viewer_components_ontbrandingsaanvraag_40')
                 },
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_29'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_41'),
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('consumerZoneDistanceStore'),
                     displayField: 'label',
@@ -650,14 +650,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_30'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_42'),
                     hidden: true,
                     name: 'custom_fireworktype_consumer',
                     itemId: 'custom_fireworktype_consumer'
                 },
                 {
                     xtype: 'numberfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_31'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_43'),
                     hidden: true,
                     name: 'custom_zonedistance_consumer',
                     itemId: 'custom_zonedistance_consumer'
@@ -665,7 +665,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_32'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_44'),
                     queryMode: 'local',
                     store: Ext.StoreManager.lookup('professionalZoneDistanceStore'),
                     displayField: 'label',
@@ -684,21 +684,21 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_33'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_45'),
                     hidden: true,
                     name: 'custom_fireworktype_professional',
                     itemId: 'custom_fireworktype_professional'
                 },
                 {
                     xtype: 'numberfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_34'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_46'),
                     hidden: true,
                     name: 'custom_zonedistance_professional',
                     itemId: 'custom_zonedistance_professional'
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_35'),
+                    text: i18next.t('viewer_components_ontbrandingsaanvraag_47'),
                     listeners: { click: this.saveIgnitionLocation, scope: this }
                 }*/
             ]
@@ -766,19 +766,19 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_36'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_48'),
                     name: 'label',
                     itemId: 'audience_label'
                 },
                 {
                     xtype: 'checkboxfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_37'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_49'),
                     name: 'mainLocation',
                     itemId: 'mainLocation'
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_38'),
+                    text: i18next.t('viewer_components_ontbrandingsaanvraag_50'),
                     listeners: { click: this.saveAudienceLocation, scope: this }
                 }*/
             ]
@@ -803,13 +803,13 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             items: [
                 {
                     xtype: 'textfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_39'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_51'),
                     name: 'label',
                     itemId: 'extra_object_label'
                 },
                 {
                     xtype: 'colorfield',
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_40'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_52'),
                     showText: false,
                     itemId: 'lineColor',
                     listeners: {
@@ -822,7 +822,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_41'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_53'),
                     queryMode: 'local',
                     store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
                     name: 'dashStyle',
@@ -831,7 +831,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_42'),
+                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_54'),
                     queryMode: 'local',
                     store: [['none', 'Geen'], ['begin', 'Begin van de lijn'], ['end', 'Eind van de lijn'], ['both', 'Beide kanten van de lijn']],
                     name: 'arrow',
@@ -839,7 +839,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_43'),
+                    text: i18next.t('viewer_components_ontbrandingsaanvraag_55'),
                     listeners: { click: this.saveExtraObject, scope: this }
                 }*/
             ]
@@ -864,7 +864,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     addIgnitionLocation: function(id) {
-        this._addLocation(this.ignitionLocationsGrid, id, null, "Afsteeklocatie ");
+        this._addLocation(this.ignitionLocationsGrid, id, null, i18next.t('viewer_components_ontbrandingsaanvraag_56'));
     },
 
     saveIgnitionLocation: function() {
@@ -877,7 +877,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     addAudienceLocation: function(id) {
-        var added_index = this._addLocation(this.audienceLocationsGrid, id, null, "Publiekslocatie ");
+        var added_index = this._addLocation(this.audienceLocationsGrid, id, null, i18next.t('viewer_components_ontbrandingsaanvraag_57'));
         if(!this.isImporting && added_index === 0) {
             var location = this.audienceLocationsGrid.getStore().getAt(added_index);
             location.set('mainLocation', true);
@@ -911,7 +911,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     },
 
     addExtraObject: function(feature, type) {
-        var default_label = type === this.MEASURE_LINE_TYPE ? 'Afstandslijn ' : "Hulplijn ";
+        var default_label = (type === this.MEASURE_LINE_TYPE ? i18next.t('viewer_components_ontbrandingsaanvraag_58') : i18next.t('viewer_components_ontbrandingsaanvraag_59')) + " ";
         var override_type = type === this.MEASURE_LINE_TYPE ? this.MEASURE_LINE_TYPE : null;
         var added_index = this._addLocation(this.extraObjectsGrid, feature.getId(), null, default_label, override_type);
         var extraObject = this.extraObjectsGrid.getStore().getAt(added_index);
@@ -1067,17 +1067,17 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     _createLocation: function(drawType, formQuery) {
         this.isDrawing = drawType;
         this.getVectorLayer().defaultFeatureStyle = this.ingnitionLocationStyle;
-        var drawingName = "afsteeklocatie";
+        var drawingName = i18next.t('viewer_components_ontbrandingsaanvraag_60');
         if(drawType === this.AUDIENCE_LOCATION_TYPE) {
             this.getVectorLayer().defaultFeatureStyle = this.defaultAudienceLocation;
-            drawingName = "publiekslocatie";
+            drawingName = i18next.t('viewer_components_ontbrandingsaanvraag_61');
         }
         if(drawType === this.MEASURE_LINE_TYPE) {
             this.getVectorLayer().defaultFeatureStyle = this.measureLineStyle;
-            drawingName = "afstandslijn";
+            drawingName = i18next.t('viewer_components_ontbrandingsaanvraag_62');
         }
         if(drawType === this.EXTRA_OJBECT_TYPE) {
-            drawingName = "hulplijn";
+            drawingName = i18next.t('viewer_components_ontbrandingsaanvraag_63');
         }
         if(drawType === this.EXTRA_OJBECT_TYPE || drawType === this.MEASURE_LINE_TYPE) {
             this.getVectorLayer().drawFeature("LineString");
@@ -1086,7 +1086,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var grid = this.getGridForType(drawType);
         if(grid) {
-            grid.mask("Teken een " + drawingName + " op de kaart");
+            grid.mask(i18next.t('viewer_components_ontbrandingsaanvraag_64', {type:drawingName}));
         }
         var form = this.getContentContainer().query(this.toId(formQuery))[0];
         form.setVisible(false);
@@ -1287,7 +1287,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         // Loop through the FileList and render image files as thumbnails.
         for (var i = 0, file; file = files[i]; i++) {
             if(file.size > 1000000) { // approx 1MB
-                this.showMessageInContainer("#fileLoadMessages", "Bestand is te groot om in te laden");
+                this.showMessageInContainer("#fileLoadMessages", i18next.t('viewer_components_ontbrandingsaanvraag_65'));
                 continue;
             }
             var reader = new FileReader();
@@ -1306,11 +1306,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             if(json.hasOwnProperty('type') && json.hasOwnProperty('features') && json.type === this.COMPONENT_NAME) {
                 this.importFeatures(json);
             } else {
-                this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
+                this.showMessageInContainer("#fileLoadMessages", i18next.t('viewer_components_ontbrandingsaanvraag_66'));
             }
         } catch(e) {
             console.error(e);
-            this.showMessageInContainer("#fileLoadMessages", "Dit bestand wordt niet herkend, controleer of u het juiste bestand heeft geselecteerd");
+            this.showMessageInContainer("#fileLoadMessages", i18next.t('viewer_components_ontbrandingsaanvraag_67'));
         }
     },
 
@@ -1387,12 +1387,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     saveFile: function() {
         Ext.Msg.prompt(
-            'Aanvraag opslaan',
-            [
-                'U kunt de aanvraag opslaan om op een later moment verder te gaan,<br />of de aanvraag later opnieuw te gebruiken.',
-                '<br /><br />Vul hieronder de bestandsnaam in en klik op "Ok" in het bestand te downloaden',
-                '<br /><br />'
-            ].join(''),
+            ___('Aanvraag opslaan'),
+            i18next.t('viewer_components_ontbrandingsaanvraag_68'),
             function(btn, text){
                 if (btn === 'ok') {
                     this._saveFile(text);
@@ -1552,7 +1548,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.removeSafetyZones();
             this.isAddingSafetyZone = true;
             var features = this.getAllFeatures();
-            this.wizardPages[3].mask("Bezig met berekenen van veiligheidszone");
+            this.wizardPages[3].mask(i18next.t('viewer_components_ontbrandingsaanvraag_69'));
             var showError = this.showSafetyZoneError.bind(this);
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
@@ -1576,10 +1572,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     showSafetyZoneError: function() {
         this.wizardPages[3].unmask();
-        this.addMessageInContainer('#calculation_messages',
-            'Er is iets mis gegaan met het berekenen van de veiligheidszone. ' +
-            'Sla uw tekening op en probeer het opnieuw. ' +
-            'U kunt uw tekening opslaan door naar het tabblad \'Opslaan en printen\' te gaan of onderin tweemaal op \'Volgende\' te klikken.');
+        this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_70'));
         this.isAddingSafetyZone = false;
     },
 
@@ -1611,11 +1604,11 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     checkAudienceLocations: function() {
         var store = this.audienceLocationsGrid.getStore();
         if(store.count() === 0) {
-            this.addMessageInContainer('#calculation_messages', 'U dient minimaal één publiekslocatie toe te voegen');
+            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_71'));
             return false;
         }
         if(store.find('mainLocation', true).length === 0) {
-            this.addMessageInContainer('#calculation_messages', 'U dient één publiekslocatie toe te voegen en als hoofdlocatie aan te merken');
+            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_72'));
             return false;
         }
         return true;
@@ -1624,7 +1617,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     checkIgnitionLocations: function() {
         var store = this.ignitionLocationsGrid.getStore();
         if(store.count() === 0) {
-            this.addMessageInContainer('#calculation_messages', 'U dient minimaal één afsteeklocatie toe te voegen');
+            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_73'));
             return false;
         }
         var complete = true;
@@ -1639,23 +1632,23 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
     checkZoneDistance: function(location) {
         var fireworks_type = location.get('fireworks_type');
         if(fireworks_type !== 'consumer' && fireworks_type !== 'professional') {
-            this.addMessageInContainer('#calculation_messages', 'U heeft geen geldige keuze gemaakt bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_74', {locatie:location.get('label')}));
             return false;
         }
         var zone_distances = fireworks_type === 'consumer' ? this.ZONE_DISTANCES_CONSUMER : this.ZONE_DISTANCES_PROFESSIONAL;
         var zone_distance = fireworks_type === 'consumer' ? location.get('zonedistance_consumer') : location.get('zonedistance_professional');
         if(!zone_distances.hasOwnProperty(zone_distance) && zone_distance !== this.OTHER_LABEL) {
-            this.addMessageInContainer('#calculation_messages', 'U heeft een ongeldige waarde geselecteerd bij "Vuurwerkcategorie" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_75', {locatie:location.get('label')}));
             return false;
         }
         var zone_distance_custom = fireworks_type === 'consumer' ? location.get('custom_zonedistance_consumer') : location.get('custom_zonedistance_professional');
         var firework_type_custom = fireworks_type === 'consumer' ? location.get('custom_fireworktype_consumer') : location.get('custom_fireworktype_professional');
         if(zone_distance === this.OTHER_LABEL && !zone_distance_custom) {
-            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Handmatige zoneafstand" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_76', {locatie:location.get('label')}));
             return false;
         }
         if(zone_distance === this.OTHER_LABEL && !firework_type_custom) {
-            this.addMessageInContainer('#calculation_messages', 'U dient een waarde in te vullen bij "Type vuurwerk" voor afsteeklocatie ' + location.get('label'));
+            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_77', {locatie:location.get('label')}));
             return false;
         }
         return true;

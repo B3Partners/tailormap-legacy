@@ -73,7 +73,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             /* ArcXML legends not yet supported, needs server side support for a
              * cross-domain POST
              */
-            this.getViewerController().logger.warn("appLayer " + this.getAppLayerId() + ": legend for ArcXML layers not supported");
+            this.getViewerController().logger.warn(i18next.t('viewer_viewercontroller_controller_arclayer_0', {appLayerId: this.getAppLayerId()}));
 
             failure();
         }
@@ -88,7 +88,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     getLayerLegendInfoArcGIS: function(success, failure) {
         var me = this;
         
-        var errorMsg = "appLayer " + this.getAppLayerId() + ": legend for ArcGIS not available: ";
+        var errorMsg = i18next.t('viewer_viewercontroller_controller_arclayer_1', {appLayerId: this.getAppLayerId()});
         
         var appLayerId = this.appLayerId;
         var appLayer = this.getViewerController().getAppLayerById(appLayerId);
@@ -99,12 +99,12 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
          */
         if(!service.arcGISVersion) {
             // Only available since version 4.2
-            this.getViewerController().logger.warn(errorMsg + "no server version info, please update service registry");
+            this.getViewerController().logger.warn(errorMsg + i18next.t('viewer_viewercontroller_controller_arclayer_2'));
             failure();
             return;
         }
         if(service.arcGISVersion.major < 10) {
-            this.getViewerController().logger.warn(errorMsg + "needs at least ArcGIS Server version 10 but version is " + service.arcGISVersion.s);
+            this.getViewerController().logger.warn(errorMsg + i18next.t('viewer_viewercontroller_controller_arclayer_3') + service.arcGISVersion.s);
             failure();
             return;            
         }
@@ -189,7 +189,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     serviceCache.failedPreviously = true;
                     serviceCache.inProgress = false;
 
-                    me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS: " + msg);
+                    me.getViewerController().logger.error(errorMsg + i18next.t('viewer_viewercontroller_controller_arclayer_4') + msg);
                     failure();
                     
                     for(var i = 0; i < serviceCache.joiners.length; i++) {
@@ -205,50 +205,50 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
 
     /* Abstract functions below: */
     getId :function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_0')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_5')});
     },
     reload : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_1')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_6')});
     },
     getName : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_2')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_7')});
     },
     //TODO: remove Not for all arclayers!
     getServer :function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_3')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_8')});
     },
     //TODO: remove Not for all arclayers!
     getService : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_4')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_9')});
     },
     //TODO: remove Not for all arclayers!
     getServlet : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_5')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_10')});
     },
     //TODO: remove Not for all arclayers!
     getMapservice : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_6')});
-    },
-    getLayers : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_7')});
-    },
-    setMaptips: function(maptips){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_8')});
-    },
-    passMaptips: function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_9')});
-    },    
-    setVisible : function (visible){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_10')});
-    },
-    getLegendGraphic: function (){
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_11')});
     },
-    setBuffer : function (radius,layer){
+    getLayers : function(){
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_12')});
     },
-    removeBuffer: function(layer){        
+    setMaptips: function(maptips){
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_13')});
+    },
+    passMaptips: function(){
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_14')});
+    },    
+    setVisible : function (visible){
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_15')});
+    },
+    getLegendGraphic: function (){
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_16')});
+    },
+    setBuffer : function (radius,layer){
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_17')});
+    },
+    removeBuffer: function(layer){        
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_18')});
     }
 });
 

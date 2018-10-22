@@ -90,17 +90,17 @@ Ext.define('LayoutManager', {
         collapse_default: { title: i18next.t('viewer_admin_layoutmanager_4'), key: 'defaultCollapsed', type: 'checkbox' },
         floating: { title: i18next.t('viewer_admin_layoutmanager_5'), key: 'enableFloating', type: 'checkbox' },
         floatingposition: { title: i18next.t('viewer_admin_layoutmanager_6'), key: 'floatingPosition', type: 'select', options: [
-            { value: 'tl', label: 'Links-boven' },
-            { value: 'bl', label: 'Links-onder' },
-            { value: 'tr', label: 'Rechts-boven' },
-            { value: 'br', label: 'Rechts-onder' }
+            { value: 'tl', label: i18next.t('viewer_admin_layoutmanager_7') },
+            { value: 'bl', label: i18next.t('viewer_admin_layoutmanager_8') },
+            { value: 'tr', label: i18next.t('viewer_admin_layoutmanager_9') },
+            { value: 'br', label: i18next.t('viewer_admin_layoutmanager_10') }
         ]},
-        paneltitle: { title: i18next.t('viewer_admin_layoutmanager_7'), key: 'panelTitle', type: 'text' },
-        position: { title: i18next.t('viewer_admin_layoutmanager_8') },
-        posx: { title: i18next.t('viewer_admin_layoutmanager_9'), key: 'posx', type: 'text' },
-        posy: { title: i18next.t('viewer_admin_layoutmanager_10'), key: 'posy', type: 'text' },
-        title: { title: i18next.t('viewer_admin_layoutmanager_11'), key: 'title', type: 'text' },
-        backgroundcolor: { title: i18next.t('viewer_admin_layoutmanager_12'), key: 'bgcolor', type: 'text' }
+        paneltitle: { title: i18next.t('viewer_admin_layoutmanager_11'), key: 'panelTitle', type: 'text' },
+        position: { title: i18next.t('viewer_admin_layoutmanager_12') },
+        posx: { title: i18next.t('viewer_admin_layoutmanager_13'), key: 'posx', type: 'text' },
+        posy: { title: i18next.t('viewer_admin_layoutmanager_14'), key: 'posy', type: 'text' },
+        title: { title: i18next.t('viewer_admin_layoutmanager_15'), key: 'title', type: 'text' },
+        backgroundcolor: { title: i18next.t('viewer_admin_layoutmanager_16'), key: 'bgcolor', type: 'text' }
     },
     layoutRegionsStore: null,
     configuredComponents: [],
@@ -141,7 +141,7 @@ Ext.define('LayoutManager', {
         });
         
         this.popupWin = Ext.create('Ext.window.Window', {
-            title: i18next.t('viewer_admin_layoutmanager_13'),
+            title: i18next.t('viewer_admin_layoutmanager_17'),
             closable: true,
             closeAction: 'hide',
             width: 800,
@@ -172,7 +172,7 @@ Ext.define('LayoutManager', {
             var regionId = layoutRegion.get('id');
             var layoutRegionElement = document.getElementById(layoutRegion.get('htmlId'));
             if(!layoutRegionElement) {
-                throw ['There is a layout (', regionId, ') region without an container in the JSP page'].join('');
+                throw i18next.t('viewer_admin_layoutmanager_18', {regionId: regionId});
             }
             me.createLayoutConfiguration(layoutRegion, layoutRegionElement);
             var layout = {
@@ -338,7 +338,7 @@ Ext.define('LayoutManager', {
             '<div class="layout_title">',
                 '<strong class="layoutregion_title">', layoutRegionTitle, '</strong><br />',
                 '<div class="regionconfig" id="regionconfig_', regionId, '" style="display: none;">',
-                    '<u>Visuele configuratie</u><br />',
+                    '<u>' + i18next.t('viewer_admin_layoutmanager_19') + '</u><br />',
                     layoutHtml.join(''),
                 '</div>', 
                 '<div style="clear: both;"></div>',
@@ -347,7 +347,7 @@ Ext.define('LayoutManager', {
 
         if(layoutHtml.length !== 0) {
             var window = Ext.create('Ext.window.Window', {
-                title: i18next.t('viewer_admin_layoutmanager_14') + layoutRegionTitle,
+                title: i18next.t('viewer_admin_layoutmanager_20') + layoutRegionTitle,
                 closable: true,
                 closeAction: 'hide',
                 width: 400,
@@ -359,7 +359,7 @@ Ext.define('LayoutManager', {
                 resizable: false,
                 bodyPadding: 10,
                 fbar: [
-                    { type: 'button', text: i18next.t('viewer_admin_layoutmanager_15'), handler: function() { this.saveLayout(false); window.hide(); }.bind(this) }
+                    { type: 'button', text: i18next.t('viewer_admin_layoutmanager_21'), handler: function() { this.saveLayout(false); window.hide(); }.bind(this) }
                 ]
             });
             layoutRegionElement.querySelector('.layoutregion_title').addEventListener('click', function() {
@@ -386,7 +386,7 @@ Ext.define('LayoutManager', {
                 this.getSelectField(id, type + 'measure'),
                 '<br />',
                 '<input type="text" id="', id, '_max', type, '" value="', (this.getConfigOptionValue(id, 'max' + type) || ''), '" /> ',
-                'px, maximaal',
+                'px, ' + i18next.t('viewer_admin_layoutmanager_22'),
             '</div>'
         ].join('');
     },
@@ -515,7 +515,7 @@ Ext.define('LayoutManager', {
         
         Ext.create("Ext.panel.Panel",{
             name:"toolbox",
-            title: i18next.t('viewer_admin_layoutmanager_16'),
+            title: i18next.t('viewer_admin_layoutmanager_23'),
             animCollapse: true,
             autoScroll:true,
             height: "100%",
@@ -821,10 +821,8 @@ Ext.define('LayoutManager', {
         });
         droppedEl.child('.remove').on('click', function() {
             Ext.MessageBox.confirm(
-                "Component uit layout verwijderen?",
-                "Weet u zeker dat dit component uit de layout wilt verwijderen?<br />" +
-                "Bij het opslaan van de layout gaat eventuele configuratie van<br />" +
-                "dit component verloren als u dit component verwijdert",
+                i18next.t('viewer_admin_layoutmanager_24'),
+                i18next.t('viewer_admin_layoutmanager_25'),
                 function(btnClicked) {
                     if(btnClicked === 'yes') {
                         Ext.get(data.sourceEl).removeCls("component-added");
@@ -835,11 +833,11 @@ Ext.define('LayoutManager', {
                                 name: componentName
                             }, 
                             success: function ( result, request ) { 
-                                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_17'), i18next.t('viewer_admin_layoutmanager_18'));
+                                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_26'), i18next.t('viewer_admin_layoutmanager_27'));
                                 me.saveLayout(false);
                             }, 
                             failure: function ( result, request) { 
-                                Ext.MessageBox.alert('Foutmelding', result.responseText); 
+                                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_28'), result.responseText);
                             } 
                         }); 
                     }
@@ -986,7 +984,7 @@ Ext.define('LayoutManager', {
         }
         iframe.dom.src = url;
         iframe.setStyle('display', 'block');
-        this.popupWin.setTitle('Configuratie ' + componentData.componentPrettyName);
+        this.popupWin.setTitle(i18next.t('viewer_admin_layoutmanager_29') + " " + componentData.componentPrettyName);
         this.popupWin.show();
     },
     
@@ -1022,10 +1020,10 @@ Ext.define('LayoutManager', {
                 if(!displaySuccessMessage){
                     return;
                 }
-                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_19'), i18next.t('viewer_admin_layoutmanager_20'));
+                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_30'), i18next.t('viewer_admin_layoutmanager_31'));
             }, 
-            failure: function ( result, request) { 
-                Ext.MessageBox.alert('Foutmelding', result.responseText); 
+            failure: function ( result, request) {
+                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_32'), result.responseText);
             } 
         });
     },

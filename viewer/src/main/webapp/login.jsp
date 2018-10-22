@@ -22,21 +22,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Inloggen</title>
+        <title><fmt:message key="viewer.login.0" /></title>
     </head>
     <body>
-        <h2>Inloggen</h2>
+        <h2><fmt:message key="viewer.login.1" /></h2>
 
 
         <form method="post" action="j_security_check">
 
             <table>
-                <tr><td>Gebruikersnaam:</td><td><input type="text" name="j_username" /></td></tr>
-                <tr><td>Wachtwoord:</td><td><input type="password" name="j_password"/></td></tr>
+                <tr><td><fmt:message key="viewer.login.2" />:</td><td><input type="text" name="j_username" /></td></tr>
+                <tr><td><fmt:message key="viewer.login.3" />:</td><td><input type="password" name="j_password"/></td></tr>
             </table>
 
             <p>
-            <input type="submit" name="submit" value="Login"/>
+            <input type="submit" name="submit" value="<fmt:message key="viewer.login.4" />"/>
         </form>
         <script type="text/javascript">
             window.onload = function() {
