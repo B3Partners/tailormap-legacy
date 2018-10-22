@@ -547,7 +547,7 @@ public class AttributesActionBean implements ActionBean {
 
             json.put("success", false);
 
-            String message = "Fout bij ophalen features: " + e.toString();
+            String message = "Error fetching features: " + e.toString();
             Throwable cause = e.getCause();
             while(cause != null) {
                 message += "; " + cause.toString();

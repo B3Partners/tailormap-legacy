@@ -168,7 +168,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             json.put("success", false);
 
-            String message = "Fout bij maken spatial query: " + e.toString();
+            String message = "Error creating spatial query: " + e.toString();
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();
@@ -212,7 +212,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             log.error("Error loading feature ids", e);
             json.put("success", false);
-            String message = "Fout bij ophalen features: " + e.toString();
+            String message = "Error fetching features: " + e.toString();
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();

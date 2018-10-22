@@ -448,10 +448,10 @@ public class PrintActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                                info.putOnce("moreMessage", "There are more than " + this.maxrelatedfeatures + " related items.");
                             }
                         } else {
-                            info.putOnce("errorMessage", "Kolom met naam '" + leftSide + "' moet beschikbaar zijn voor het ophalen van gerelateerde items.");
+                            info.putOnce("errorMessage", "Column with name '" + leftSide + "' must be available to enable fetching related items.");
                         }
 
                         JSONObject related = new JSONObject();

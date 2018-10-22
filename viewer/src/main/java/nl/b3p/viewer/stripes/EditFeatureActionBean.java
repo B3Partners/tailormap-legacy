@@ -151,7 +151,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
                 if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-                    error = "U heeft geen rechten om deze kaartlaag te bewerken";
+                    error = "Insufficient rights to edit this layer";
                     break;
                 }
 
@@ -177,7 +177,7 @@ public class EditFeatureActionBean  implements ActionBean {
                 addAuditTrailLog();
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
-                     error = "U heeft geen rechten om deze feature toe te voegen, te verwijderen en/of te wijzigen";
+                     error = "Insufficient rights to edit, delete or add this feature";
                      break;
                 }
                 String fid = jsonFeature.optString(FID, null);
@@ -224,7 +224,7 @@ public class EditFeatureActionBean  implements ActionBean {
 
         }
         if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-            error = "U heeft geen rechten om deze kaartlaag te bewerken";
+            error = "Insufficient rights to edit this layer";
 
         }
 
@@ -320,7 +320,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
                 if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-                    error = "U heeft geen rechten om deze kaartlaag te bewerken";
+                    error = "Insufficient rights to edit this layer";
                     break;
                 }
 
@@ -331,7 +331,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
                 if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), em)) {
-                    error = "U heeft geen rechten om de geometrie van deze kaartlaag te bewerken";
+                    error = "Insufficient rights to edit the geometries of the layer";
                     break;
                 }
 
@@ -350,7 +350,7 @@ public class EditFeatureActionBean  implements ActionBean {
 
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
-                     error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                     error = "Insufficient rights to edit or add this feature";
                      break;
                 }
                 String fid = jsonFeature.optString(FID, null);
@@ -396,7 +396,7 @@ public class EditFeatureActionBean  implements ActionBean {
             error = "App layer or service not found";
         }
         if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-            error = "U heeft geen rechten om deze kaartlaag te bewerken";
+            error = "Insufficient rights to edit this layer";
         }
 
         layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);

@@ -192,7 +192,7 @@ public class CombineImageActionBean implements ActionBean {
      */
     public Resolution getImage() throws Exception {
         if (imageId==null || imageSettings.get(imageId)==null){
-            throw new Exception("No imageId given");
+            throw new Exception("No imageId provided");
         }
         //final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
         final CombineImageSettings settings = imageSettings.get(imageId);

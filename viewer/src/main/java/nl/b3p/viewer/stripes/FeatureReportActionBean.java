@@ -156,7 +156,7 @@ public class FeatureReportActionBean implements ActionBean {
                     // each iteration multiply with 10, max 4 steps, so [1,10, 100, 1000]
                     // if geom still too large bail out and use bbox
                     LOG.debug("Simplify selected feature geometry with distance of: " + simplify);
-                    geomModified = " (vereenvoudigde geometrie)";
+                    geomModified = " (simplyfied geometry)";
                     geom = TopologyPreservingSimplifier.simplify(geom, simplify);
                     geomTxt = geom.toText();
                     simplify = 10 * simplify;
@@ -167,7 +167,7 @@ public class FeatureReportActionBean implements ActionBean {
                     wktGeom.put("_wktgeom", geomTxt);
                 }
                 wktGeom.put("color", "FF00FF");
-                wktGeom.put("label", "Geselecteerd object: " + this.fid.replace(layer.getFeatureType().getTypeName() + ".", "") + geomModified);
+                wktGeom.put("label", "Selected object: " + this.fid.replace(layer.getFeatureType().getTypeName() + ".", "") + geomModified);
                 wktGeom.put("strokeWidth", 8);
                 params.getJSONArray("geometries").put(wktGeom);
             }
@@ -251,10 +251,10 @@ public class FeatureReportActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                                info.putOnce("moreMessage", "There are more than " + this.maxrelatedfeatures + " related items.");
                             }
                         } else {
-                            info.putOnce("errorMessage", "Kolom met naam '" + leftSide + "' moet beschikbaar zijn voor het ophalen van gerelateerde items.");
+                            info.putOnce("errorMessage", "Column with name '" + leftSide + "' must be available to enable fetching related items.");
                         }
                         
                         extra = new JSONObject()

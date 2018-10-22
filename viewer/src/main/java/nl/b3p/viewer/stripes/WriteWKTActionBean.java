@@ -86,7 +86,7 @@ public class WriteWKTActionBean implements ActionBean{
                     File base = new File(basepath, type + File.separator);
                     if(!base.exists()){
                         if(!base.mkdir()){
-                            log.error("Kan folder " + base.getAbsolutePath() + " niet maken.");
+                            log.error("Can not create folder " + base.getAbsolutePath() + ".");
                         }
                     }
                     if (base.exists() && base.canWrite()) {
@@ -105,15 +105,15 @@ public class WriteWKTActionBean implements ActionBean{
 
                             obj.put("success", true);
                         } catch (IOException ex) {
-                            obj.put("message", "Fout met wegschrijven bestand. Neem contact op met de systeembeheerder.");
+                            obj.put("message", "Error writing file. Contact your administrator.");
                             log.error("Error writing wkt file: ", ex);
                         }
                     } else {
-                        obj.put("message", "Fout met wegschrijven bestand. Neem contact op met de systeembeheerder (pad bestaat niet of geen rechten om te schrijven).");
+                        obj.put("message", "Error writing file (path does not exist or insufficient rights to write). Contact your administrator.");
                     }
                 } else {
-                    obj.put("message", "Base path niet geconfigureerd. Neem contact op met de systeembeheerder.");
-                    log.error("Error writing wkt file: Base path niet geconfigureerd. Neem contact op met de systeembeheerder." );
+                    obj.put("message", "Base path not configured. Contact your administrator.");
+                    log.error("Error writing wkt file: Base path not configured. Contact your administrator." );
                 }
                 break;
             }
