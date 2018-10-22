@@ -152,7 +152,7 @@ i18next.init({
                 "legend_config_2": "Marge rond legenda (bijv. \"3px\")",
                 "legend_config_3": "Toon achtergrond kaarten",
                 "legend_config_4": "Toon legenda in TOC",
-                "maptip_config_0": "Maptip Delay",
+                "maptip_config_0": "Maptip vertraging",
                 "maptip_config_1": "Link naar meer",
                 "maptip_config_10": "Toon lijst met attributen",
                 "maptip_config_2": "Hoogte ballon",
