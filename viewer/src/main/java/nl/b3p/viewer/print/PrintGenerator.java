@@ -78,7 +78,11 @@ public class PrintGenerator  implements Runnable{
         } catch (Exception ex) {
             log.error("Cannot create print.", ex);
             try {
-                Mailer.sendMail(fromName, fromMail,toMail, "Fout bij printen", "De print kon niet worden gemaakt. De foutmelding is: " + ex.getLocalizedMessage());
+//            String subject_fail_text= "Fout bij printen";
+//            String mailContent_fail_text = "De print kon niet worden gemaakt. De foutmelding is: ";
+            String subject_fail_text= "Printing failed";
+            String mailContent_fail_text = "Printing failed. error message: ";
+                Mailer.sendMail(fromName, fromMail,toMail, subject_fail_text, mailContent_fail_text + ex.getLocalizedMessage());
             } catch (Exception ex1) {
                 log.error("Cannot send mail for reporting exception");
             }
@@ -93,7 +97,11 @@ public class PrintGenerator  implements Runnable{
             String path = new File(xsl.getParent()).toURI().toString();
             //        PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream ou
             createOutput(info, mimeType, new FileInputStream(xsl), path, fos, filename);
-            Mailer.sendMail(fromName, fromMail,toMail,"Print is klaar", "De print is klaar en staat in de bijlage", temp, filename);
+//            String subject_success_text= "Print is klaar";
+//            String mailContent_success_text = "De print is klaar en staat in de bijlage";
+            String subject_success_text= "Print is ready";
+            String mailContent_success_text = "The print is ready and may by found as an attachment";
+            Mailer.sendMail(fromName, fromMail, toMail, subject_success_text, mailContent_success_text, temp, filename);
         } finally {
             temp.delete();
         }
@@ -160,8 +168,9 @@ public class PrintGenerator  implements Runnable{
         try {
             /* Construct fop */
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            foUserAgent.setCreator("Flamingo");
-            foUserAgent.setProducer("Flamingo");
+            String fop_creator_text = "Flamingo";
+            foUserAgent.setCreator(fop_creator_text);
+            foUserAgent.setProducer(fop_creator_text);
 
             Date now = new Date();
             foUserAgent.setCreationDate(now);
@@ -188,7 +197,7 @@ public class PrintGenerator  implements Runnable{
             transformer.transform(src, res);
           
          } catch (FOPException | JAXBException | TransformerException ex) {
-            log.error("Fout tijdens print output: ", ex);
+            log.error("Error during print output: ", ex);
         } finally {
             out.close();
         }

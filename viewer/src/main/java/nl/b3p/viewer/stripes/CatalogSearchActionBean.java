@@ -180,10 +180,10 @@ public class CatalogSearchActionBean implements ActionBean {
                 json.put("success", Boolean.TRUE);
             } catch (Exception e) {
 
-                error = "Fout bij zoeken in CSW: " + e.toString();
-                log.error("Fout bij zoeken in csw:", e);
+                error = "Error searching CSW: " + e.toString();
+                log.error("Error searching:", e);
                 if (e.getCause() != null) {
-                    error += "; oorzaak: " + e.getCause().toString();
+                    error += "; cause: " + e.getCause().toString();
                 }
             }
         }

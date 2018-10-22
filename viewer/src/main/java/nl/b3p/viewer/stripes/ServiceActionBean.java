@@ -115,9 +115,9 @@ public class ServiceActionBean implements ActionBean {
                 }            
             } catch(Exception e) {
                 
-                error = "Fout bij laden service " + e.toString();
+                error = "Error loading service " + e.toString();
                 if(e.getCause() != null) {
-                    error += "; oorzaak: " + e.getCause().toString();
+                    error += "; cause: " + e.getCause().toString();
                 }
             }
         }

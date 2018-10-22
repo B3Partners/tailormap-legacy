@@ -144,7 +144,7 @@ public class UniqueValuesActionBean implements ActionBean {
 
         } catch (Exception e) {
             log.error("getUniqueValues() failed", e);
-            json.put("msg", "Unieke waardes ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
+            json.put("msg", "Fetching unique values failed for layer " + applicationLayer.getLayerName() + ": " + e.toString());
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
@@ -160,7 +160,7 @@ public class UniqueValuesActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
         try {
             if (attributes.length != 2) {
-                throw new IllegalArgumentException("Aantal attributen moet 2 zijn voor deze functie, een sleutel en een label veld.");
+                throw new IllegalArgumentException("This function needs 2 attributes: a key and a label.");
             }
 
             if (this.featureType == null) {
@@ -177,7 +177,7 @@ public class UniqueValuesActionBean implements ActionBean {
             json.put("msg", e.toString());
         } catch (Exception e) {
             log.error("getKeyValuePairs() failed", e);
-            json.put("msg", "Waarde paren ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
+            json.put("msg", "Fetching key value pairs failed for layer " + applicationLayer.getLayerName() + ": " + e.toString());
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
@@ -203,7 +203,7 @@ public class UniqueValuesActionBean implements ActionBean {
             }
         } catch (Exception e) {
             log.error("getMinMaxValue() failed", e);
-            json.put("msg", "Minmax waardes bepalen mislukt voor attribuut " + attribute + ": " + e.toString());
+            json.put("msg", "Min/max value determination failed for attribute " + attribute + ": " + e.toString());
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }

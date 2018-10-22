@@ -73,7 +73,7 @@ public class ViewerIntegrationTest {
      */
     @BeforeClass
     public static void loadDBprop() throws IOException, ClassNotFoundException {
-        assumeNotNull("Verwacht database omgeving te zijn aangegeven.", System.getProperty("database.properties.file"));
+        assumeNotNull("Database environment must be defined.", System.getProperty("database.properties.file"));
         databaseprop.load(ViewerIntegrationTest.class.getClassLoader().getResourceAsStream(System.getProperty("database.properties.file")));
         LOG.debug("database props: " + databaseprop);
         Class.forName(databaseprop.getProperty("testdb.driverClassName"));

@@ -129,7 +129,7 @@ public class FileUploadActionBean implements ActionBean {
             String datadir = context.getServletContext().getInitParameter(DATA_DIR);
             if (datadir.isEmpty()) {
                 json.put("success", false);
-                json.put("message", "Upload directory niet geconfigureerd. Neem contact op met de systeembeheerder.");
+                json.put("message", "Upload directory not configured. Contact your administrator.");
             } else {
                 File dir = new File(datadir);
                 if (dir.exists() && dir.canWrite()) {
@@ -165,7 +165,7 @@ public class FileUploadActionBean implements ActionBean {
                     json.put("success", true);
                 } else {
                     json.put("success", false);
-                    json.put("message", "Upload directory niet goed geconfigureerd: bestaat niet of kan niet schrijven. Neem contact op met de systeembeheerder.");
+                    json.put("message", "Upload directory not correctly configured: does not exist or is not writable. Contact your administrator.");
                 }
             }
         }
@@ -270,10 +270,10 @@ public class FileUploadActionBean implements ActionBean {
                 if (deleted) {
                     json.put("success", true);
                 } else {
-                    log.error("Kan bestand niet verwijderen: " + upload.getFilename());
+                    log.error("Can not delete file: " + upload.getFilename());
                 }
             } else {
-                json.put("message", "Bestand bestaat niet");
+                json.put("message", "File does not exist");
             }
             em.remove(upload);
             em.getTransaction().commit();
