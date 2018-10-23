@@ -650,79 +650,85 @@ public class WMSService extends GeoService implements Updatable {
      * @return A map keyed with the WFS URL containing LayerDescriptions for that WFS
      *   or null if something went wrong (non-fatal - warning logged)
      */
-    private static Map<String,List<LayerDescription>> getDescribeLayerPerWFS(WebMapServer wms) {
-        StringBuffer layers = new StringBuffer();
+    private static Map<String, List<LayerDescription>> getDescribeLayerPerWFS(WebMapServer wms) {
+        List<String> layers = new ArrayList<>();
+        Map<String, List<LayerDescription>> layerDescByWfs = new HashMap<>();
+
+        getAllNonVirtualLayers(layers, wms.getCapabilities().getLayer());
+        int batchsize = 10;
+        for (int i = 0; i < layers.size(); i += batchsize) {
+            int to = (i + batchsize) > layers.size() ? layers.size() : (i + batchsize);
+            List<String> tempLayers = layers.subList(i, to);
+            getDescribeFeature(tempLayers, layerDescByWfs, wms);
+        }
+
+        return layerDescByWfs;
+    }
+
+    private static void getDescribeFeature(List<String> ls, Map<String, List<LayerDescription>> layerDescByWfs, WebMapServer wms) {
         DescribeLayerResponse dlr = null;
+        String layers = String.join(",", ls);
         try {
-            getAllNonVirtualLayers(layers, wms.getCapabilities().getLayer());
-            
+
             DescribeLayerRequest dlreq = null;
-            if(wms.getCapabilities().getRequest().getDescribeLayer() != null) {
+            if (wms.getCapabilities().getRequest().getDescribeLayer() != null) {
                 dlreq = wms.createDescribeLayerRequest();
             } else {
                 dlreq = new WMS1_1_0().createDescribeLayerRequest(wms.getInfo().getSource().toURL());
             }
-            dlreq.setProperty("VERSION", wms.getCapabilities().getVersion());            
-            dlreq.setLayers(layers.toString());
-            
+            dlreq.setProperty("VERSION", wms.getCapabilities().getVersion());
+            dlreq.setLayers(layers);
+
             log.debug("Issuing DescribeLayer request for WMS " + wms.getInfo().getSource().toString() + " with layers=" + layers);
             dlr = wms.issueRequest(dlreq);
-        } catch(Exception e) {
+
+        } catch (IOException | UnsupportedOperationException | ServiceException e) {
             log.warn("DescribeLayer request failed for layers " + layers + " on service " + wms.getInfo().getSource().toString(), e);
         }
-        
-        if(dlr == null) {
-            return null;
-        }
-        
-        Map<String,List<LayerDescription>> layerDescByWfs = new HashMap<String,List<LayerDescription>>();
-        
-        for(LayerDescription ld: dlr.getLayerDescs()) {
-            log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, owsType=%s, owsURL=%s, typeNames=%s",
-                    ld.getName(),
-                    ld.getWfs(),
-                    ld.getOwsType(),
-                    ld.getOwsURL(),
-                    Arrays.toString(ld.getQueries())
-                    ));
-            String wfsUrl = ld.getWfs() != null ? ld.getWfs().toString() : null;
-            if(wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
-                wfsUrl = ld.getOwsURL().toString();
-            }
-            // OGC 02-070 Annex B says the wfs/owsURL attributed are not required but 
-            // implied. Some Deegree instance encountered has all attributes empty,
-            // and apparently the meaning is that the WFS URL is the same as the 
-            // WMS URL (not explicitly defined in the spec).
-            if(wfsUrl == null) {
-                wfsUrl = wms.getInfo().getSource().toString();
-            }
-            if(wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-                List<LayerDescription> lds = layerDescByWfs.get(wfsUrl);
-                if(lds == null) {
-                    lds = new ArrayList<LayerDescription>();
-                    layerDescByWfs.put(wfsUrl, lds);
+        if (dlr != null) {
+            for (LayerDescription ld : dlr.getLayerDescs()) {
+                log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, owsType=%s, owsURL=%s, typeNames=%s",
+                        ld.getName(),
+                        ld.getWfs(),
+                        ld.getOwsType(),
+                        ld.getOwsURL(),
+                        Arrays.toString(ld.getQueries())
+                ));
+                String wfsUrl = ld.getWfs() != null ? ld.getWfs().toString() : null;
+                if (wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
+                    wfsUrl = ld.getOwsURL().toString();
                 }
-                lds.add(ld);
+                // OGC 02-070 Annex B says the wfs/owsURL attributed are not required but 
+                // implied. Some Deegree instance encountered has all attributes empty,
+                // and apparently the meaning is that the WFS URL is the same as the 
+                // WMS URL (not explicitly defined in the spec).
+                if (wfsUrl == null) {
+                    wfsUrl = wms.getInfo().getSource().toString();
+                }
+                if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
+                    List<LayerDescription> lds = layerDescByWfs.get(wfsUrl);
+                    if (lds == null) {
+                        lds = new ArrayList<>();
+                        layerDescByWfs.put(wfsUrl, lds);
+                    }
+                    lds.add(ld);
+                }
             }
         }
-        return layerDescByWfs;
     }
-    
+
     /**
      * Get all non-virtual layers for the DescribeLayer request (layer with a
      * name is non-virtual).
      * @param sb StringBuffer building the LAYERS parameter for DescribeLayer
      * @param l the top layer
      */
-    private static void getAllNonVirtualLayers(StringBuffer sb, org.geotools.data.ows.Layer l) {
+    private static void getAllNonVirtualLayers(List<String> layers , org.geotools.data.ows.Layer l) {
         if(l.getName() != null) {
-            if(sb.length() > 0) {
-                sb.append(",");
-            }
-            sb.append(l.getName());
+            layers.add(l.getName());
         }
         for(org.geotools.data.ows.Layer child: l.getChildren()) {
-            getAllNonVirtualLayers(sb, child);
+            getAllNonVirtualLayers(layers, child);
         }
     }
     
