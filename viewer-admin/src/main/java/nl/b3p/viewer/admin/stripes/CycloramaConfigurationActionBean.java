@@ -30,10 +30,12 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
@@ -70,6 +72,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
     private final String KEY_FORMAT = "PKCS#8";
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     private final String JSP = "/WEB-INF/jsp/services/cyclorama.jsp";
 
     @Validate
@@ -92,6 +95,20 @@ public class CycloramaConfigurationActionBean implements ActionBean {
     @Override
     public ActionBeanContext getContext() {
         return context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public FileBean getKey() {
@@ -120,6 +137,11 @@ public class CycloramaConfigurationActionBean implements ActionBean {
 
     // </editor-fold>
 
+   @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     public Resolution view() {
         accounts = getAccountList();
@@ -135,7 +157,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
                 key.delete();
             }else{
                 if(account.getPrivateBase64Key() == null){
-                    context.getValidationErrors().add("Key", new SimpleError("Geef een PFX bestand op."));
+                    context.getValidationErrors().add("Key", new SimpleError(getBundle().getString("viewer_admin.cycloramaconfigurationactionbean.pfx")));
                 }
             }
             EntityManager em = Stripersist.getEntityManager();
@@ -143,7 +165,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
             em.getTransaction().commit();
 
         } catch (Exception ex) {
-            context.getValidationErrors().add("Key", new SimpleError("Something is wrong with the key"));
+            context.getValidationErrors().add("Key", new SimpleError(getBundle().getString("viewer_admin.cycloramaconfigurationactionbean.keywrong")));
             log.error("Something went wrong with reading the key",ex);
         }
         return view();
@@ -154,7 +176,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
         em.remove(account);
         em.getTransaction().commit();
         account = new CycloramaAccount();
-        this.context.getMessages().add(new SimpleMessage("Key verwijderd."));
+        this.context.getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.cycloramaconfigurationactionbean.keyrem")));
         return view();
     }
 

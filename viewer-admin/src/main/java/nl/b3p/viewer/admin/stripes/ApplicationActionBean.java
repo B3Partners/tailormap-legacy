@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
@@ -40,7 +41,9 @@ import org.stripesstuff.stripersist.Stripersist;
 public abstract class ApplicationActionBean implements ActionBean {
 
     protected ActionBeanContext context;
-    
+
+    private ResourceBundle bundle;
+            
     @Validate
     protected Application application;
     
@@ -63,6 +66,20 @@ public abstract class ApplicationActionBean implements ActionBean {
         return context;
     }
 
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
     public Application getApplication() {
         return application;
     }
@@ -83,6 +100,11 @@ public abstract class ApplicationActionBean implements ActionBean {
         this.allGroups = allGroups;
     }
     // </editor-fold>
+
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     
     public void setApplication(Application application) {
         this.application = application;

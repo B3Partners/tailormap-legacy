@@ -17,9 +17,11 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +51,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     
     private static final String JSP = "/WEB-INF/jsp/services/geoserviceregistry.jsp";
     private ActionBeanContext context;
+    private ResourceBundle bundle;
 
     @Validate
     private String nodeId;
@@ -65,6 +68,20 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     
     public ActionBeanContext getContext() {
         return context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public String getName() {
@@ -92,6 +109,11 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     }
     //</editor-fold>
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     public Resolution view() {
         category = Category.getRootCategory();
@@ -118,9 +140,9 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     
     private String checkCategoryAndNameError() {
         if(category == null) {
-            return "Categorie niet gevonden";
+            return getBundle().getString("viewer_admin.geoserviceregistryactionbean.nocat");
         } else if(name == null) {
-            return "Naam is niet ingevuld";
+            return getBundle().getString("viewer_admin.geoserviceregistryactionbean.noname");
         } else {        
             return null;
         }
@@ -138,7 +160,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         if(error == null) {
             for(Category child: category.getChildren()) {
                 if(name.equals(child.getName())) {
-                    error = "Categorie met dezelfde naam bestaat al";
+                    error = getBundle().getString("viewer_admin.geoserviceregistryactionbean.dupname");
                 }
             }            
         }
@@ -163,8 +185,8 @@ public class GeoServiceRegistryActionBean implements ActionBean {
 
                 json.put("success", Boolean.TRUE);
             } catch(Exception e) {
-                log.error("Fout bij toevoegen categorie", e);
-                error = "Kan categorie niet toevoegen: " + e;
+                log.error("Error adding category:", e);
+                error =  MessageFormat.format(getBundle().getString("viewer_admin.geoserviceregistryactionbean.noadd"), e);
                 Throwable t = e;
                 while(t.getCause() != null) {
                     t = t.getCause();
@@ -191,7 +213,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             if(category.getParent() != null) {	
                 for(Category sibling: category.getParent().getChildren()) {
                      if(sibling != category && name.equals(sibling.getName())) {
-                         error = "Categorie met dezelfde naam bestaat al";
+                         error = getBundle().getString("viewer_admin.geoserviceregistryactionbean.dupname");
                      }
                  }            
             }
@@ -204,8 +226,8 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 json.put("success", Boolean.TRUE);
                 json.put("name", category.getName());
             } catch(Exception e) {
-                log.error("Fout bij wijzigen naam categorie", e);
-                error = "Kan naam niet wijzigen: " + e;
+                log.error("Error changing name category", e);
+                error =  MessageFormat.format(getBundle().getString("viewer_admin.geoserviceregistryactionbean.nonamechg"), e);
                 Throwable t = e;
                 while(t.getCause() != null) {
                     t = t.getCause();
@@ -227,13 +249,13 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         String error = null;
 
         if(category == null) {
-            error = "Categorie niet gevonden";
+            error = getBundle().getString("viewer_admin.geoserviceregistryactionbean.nocat");
         } else if(category.getParent() == null) {
-            error = "Bovenste categorie kan niet worden verwijderd";
+            error = getBundle().getString("viewer_admin.geoserviceregistryactionbean.noupcatrem");
         } else if(category.getChildren().size() > 0) {
-            error = "De categorie bevat nog andere categorieën en kan niet verwijderd worden";
+            error = getBundle().getString("viewer_admin.geoserviceregistryactionbean.catnotempty");
         } else if(category.getServices().size() > 0) {
-            error = "De categorie bevat services en kan niet verwijderd worden";
+            error = getBundle().getString("viewer_admin.geoserviceregistryactionbean.cathassrv");
         }
 
         if(error == null) {
@@ -244,8 +266,8 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 Stripersist.getEntityManager().getTransaction().commit();
                 json.put("success", Boolean.TRUE);
             } catch(Exception e) {
-                log.error("Fout verwijderen categorie", e);
-                error = "Kan categorie niet verwijderen: " + e;
+                log.error("Error deleting category: ", e);
+                error =  MessageFormat.format(getBundle().getString("viewer_admin.geoserviceregistryactionbean.catremerr"), e);
                 Throwable t = e;
                 while(t.getCause() != null) {
                     t = t.getCause();

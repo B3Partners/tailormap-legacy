@@ -74,7 +74,8 @@ public class ArcQueryUtilActionBean implements ActionBean {
     private boolean unauthorized;
     private Layer layer = null;
     private ActionBeanContext context;
-
+    private ResourceBundle bundle;
+            
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
         return context;
@@ -82,6 +83,20 @@ public class ArcQueryUtilActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public String getCql() {
@@ -117,6 +132,11 @@ public class ArcQueryUtilActionBean implements ActionBean {
     }
     // </editor-fold>
    
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     @After(stages = LifecycleStage.BindingAndValidation, on="!arcXML")
     public void loadLayer() {
         layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
@@ -170,7 +190,6 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             json.put("success", false);
 
-            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
             String message = MessageFormat.format(bundle.getString("viewer.arcqueryutilactionbean.sq"), e.toString());
             Throwable cause = e.getCause();
             while (cause != null) {
@@ -215,7 +234,6 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             log.error("Error loading feature ids", e);
             json.put("success", false);
-            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
             String message = MessageFormat.format(bundle.getString("viewer.arcqueryutilactionbean.ff"), e.toString());
             Throwable cause = e.getCause();
             while (cause != null) {

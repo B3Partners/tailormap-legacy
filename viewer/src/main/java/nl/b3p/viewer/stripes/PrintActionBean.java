@@ -99,6 +99,12 @@ public class PrintActionBean implements ActionBean {
     private String params;
     
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+            
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     
     @DefaultHandler
     public Resolution print() throws JSONException, Exception {
@@ -392,8 +398,6 @@ public class PrintActionBean implements ActionBean {
 
         fs.getDataStore().dispose();
         
-        ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", request.getLocale());
-
         for (int i = 0; i < features.length(); i++) {
             JSONArray jFeat = features.getJSONArray(i);
             FeaturePropertiesArrayHelper.removeKey(jFeat, FID);
@@ -484,6 +488,20 @@ public class PrintActionBean implements ActionBean {
         this.context = context;
     }
     
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
     public String getParams() {
         return params;
     }

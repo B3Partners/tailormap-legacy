@@ -20,10 +20,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -66,6 +68,7 @@ public class LayarSourceActionBean implements ActionBean {
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarsource.jsp";
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     
     private List<LayarService> layarServices;
     
@@ -103,7 +106,12 @@ public class LayarSourceActionBean implements ActionBean {
     @Validate
     private Long featureTypeId;
     
-    @DefaultHandler
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
+   @DefaultHandler
     public Resolution view() {
         layarServices = Stripersist.getEntityManager().createQuery("from LayarService").getResultList();
         return new ForwardResolution(JSP);
@@ -116,7 +124,7 @@ public class LayarSourceActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(layarSource);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Layarsource is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layarsourceactionbean.lssaved")));
         return new ForwardResolution(EDITJSP);
     }
     
@@ -138,7 +146,7 @@ public class LayarSourceActionBean implements ActionBean {
     public Resolution delete() {
         Stripersist.getEntityManager().remove(layarSource);
         Stripersist.getEntityManager().getTransaction().commit();
-        getContext().getMessages().add(new SimpleMessage("Layar bron is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layarsourceactionbean.lsrem")));
         return new ForwardResolution(EDITJSP);
     }
     
@@ -276,6 +284,20 @@ public class LayarSourceActionBean implements ActionBean {
         return this.context;
     }
     
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
     public List<LayarService> getLayarServices() {
         return layarServices;
     }

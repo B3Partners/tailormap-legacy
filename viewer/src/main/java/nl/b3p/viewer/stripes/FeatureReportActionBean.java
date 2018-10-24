@@ -144,8 +144,6 @@ public class FeatureReportActionBean implements ActionBean {
             BoundingBox b = this.getExtent(fs, fidFilter);
             params.put("bbox", b.getMinX() + "," + b.getMinY() + "," + b.getMaxX() + "," + b.getMaxY());
 
-            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
-
             // add highlighted feature geometry
             Geometry geom = this.getGeometry(fs, fidFilter);
             if (geom != null) {

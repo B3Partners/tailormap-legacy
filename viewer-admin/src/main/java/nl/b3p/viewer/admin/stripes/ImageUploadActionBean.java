@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -130,11 +131,11 @@ public class ImageUploadActionBean extends ApplicationActionBean {
         j.put("message", "Fout");
         
         if(upload == null) {
-            j.put("errors", "Upload is null");
+            j.put("errors", getBundle().getString("viewer_admin.imageuploadactionbean.noupload"));
         } else {
             
             if(Stripersist.getEntityManager().find(Resource.class, upload.getFileName()) != null) {
-                j.put("errors", "Afbeelding met dezelfde naam bestaat al. Kies een andere naam of verwijder eerst de oude afbeelding.");
+                j.put("errors", getBundle().getString("viewer_admin.imageuploadactionbean.namedup"));
             } else {
                 try {
                     Resource r = new Resource();
@@ -148,7 +149,7 @@ public class ImageUploadActionBean extends ApplicationActionBean {
                     Stripersist.getEntityManager().persist(r);
                     Stripersist.getEntityManager().getTransaction().commit();
 
-                    j.put("message", "Afbeelding \"" + r.getName() + "\" is geupload");
+                    j.put("message",  MessageFormat.format(getBundle().getString("viewer_admin.imageuploadactionbean.imguploaded"), r.getName()));
                     JSONObject data = new JSONObject();
                     data.put("src", url(r));
                     j.put("data", data);
@@ -181,7 +182,7 @@ public class ImageUploadActionBean extends ApplicationActionBean {
             JSONObject j = new JSONObject();
             j.put("success", false);
             j.put("message", "Fout");
-            j.put("errors", "Actie niet ondersteund: " + action);
+            j.put("errors",  MessageFormat.format(getBundle().getString("viewer_admin.imageuploadactionbean.unkaction"), action));
                     
             return new StreamingResolution("application/json", j.toString(4));
         }
@@ -226,7 +227,7 @@ public class ImageUploadActionBean extends ApplicationActionBean {
             Resource r = Stripersist.getEntityManager().find(Resource.class, image);
             
             if(r == null) {
-                j.put("errors", "Kan afbeelding \"" + image + "\" niet vinden");
+                j.put("errors",  MessageFormat.format(getBundle().getString("viewer_admin.imageuploadactionbean.notfound"), image ));
             } else {
                 Stripersist.getEntityManager().remove(r);
                 Stripersist.getEntityManager().getTransaction().commit();
