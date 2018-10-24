@@ -76,6 +76,7 @@ public class GeoServiceActionBean implements ActionBean {
     private static final String JSP_EDIT_SLD = "/WEB-INF/jsp/services/editsld.jsp";
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     @Validate(on = {"add"}, required = true)
     private Category category;
     @Validate(on = {"edit"}, required = true)
@@ -164,6 +165,20 @@ public class GeoServiceActionBean implements ActionBean {
 
     public String getServiceName() {
         return serviceName;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public void setServiceName(String serviceName) {
@@ -422,6 +437,11 @@ public class GeoServiceActionBean implements ActionBean {
 
     private JSONArray layersInApplications = new JSONArray();
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     public Resolution edit() {
         if (service != null) {
@@ -618,7 +638,7 @@ public class GeoServiceActionBean implements ActionBean {
         em.persist(service);
         em.getTransaction().commit();
 
-        getContext().getMessages().add(new SimpleMessage("De service is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.srvsaved")));
 
         return edit();
     }
@@ -654,7 +674,7 @@ public class GeoServiceActionBean implements ActionBean {
         if (applicationLayers.size() > 0) {
             serviceDeleted = false;
 
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het verwijderen van de service. De service heeft {2} kaartlagen geconfigureerd in één of meer applicaties.", applicationLayers.size()));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.geoserviceactionbean.srvinuse"), applicationLayers.size()));
 
             return edit();
         } else {
@@ -666,7 +686,7 @@ public class GeoServiceActionBean implements ActionBean {
             for (FeatureSource fs : linkedSources) {
                 fs.setLinkedService(null);
                 getContext().getMessages().add(
-                        new SimpleMessage("De bij deze service automatisch aangemaakte attribuutbron \"{0}\" moet apart worden verwijderd", fs.getName()));
+                        new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.sepdel"), fs.getName()));
 
             }
             if (TileService.PROTOCOL.equals(service.getProtocol())) {
@@ -681,7 +701,7 @@ public class GeoServiceActionBean implements ActionBean {
 
             serviceDeleted = true;
 
-            getContext().getMessages().add(new SimpleMessage("De service is verwijderd"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.srvrem")));
             return new ForwardResolution(JSP);
         }
     }
@@ -703,7 +723,7 @@ public class GeoServiceActionBean implements ActionBean {
 
     public Resolution update() throws JSONException {
         if(!isUpdatable()) {
-            getContext().getMessages().add(new SimpleMessage("Services van protocol {0} kunnen niet worden geupdate",
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.srvnotupd"),
                     service.getProtocol()));
             return new ForwardResolution(JSP);
         }
@@ -743,7 +763,7 @@ public class GeoServiceActionBean implements ActionBean {
         updatedService.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
         updatedService.put("parentid", "c" + category.getId());
 
-        getContext().getMessages().add(new SimpleMessage("De service is geupdate"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.srvupd")));
 
         return new ForwardResolution(JSP);
     }
@@ -789,11 +809,11 @@ public class GeoServiceActionBean implements ActionBean {
             if (e.getCause() != null) {
                 s += "; cause: " + e.getCause().toString();
             }
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het laden van de service: {2}", s));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.geoserviceactionbean.srvnotloaded"), s));
             return new ForwardResolution(JSP);
         }
 
-        getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.srvloaded")));
         return edit();
     }
 
@@ -885,7 +905,7 @@ public class GeoServiceActionBean implements ActionBean {
             service.getStyleLibraries().remove(sld);
             Stripersist.getEntityManager().remove(sld);
             Stripersist.getEntityManager().getTransaction().commit();
-            getContext().getMessages().add(new SimpleMessage("SLD verwijderd"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.sldrem")));
         }
         return edit();
     }
@@ -1052,7 +1072,7 @@ public class GeoServiceActionBean implements ActionBean {
     public Resolution validateSldXml() {
         Resolution jsp = new ForwardResolution(JSP_EDIT_SLD);
         Document sldXmlDoc = null;
-        String stage = "Fout bij parsen XML document";
+        String stage = getBundle().getString("viewer_admin.geoserviceactionbean.noparsexml");
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
@@ -1060,15 +1080,15 @@ public class GeoServiceActionBean implements ActionBean {
 
             sldXmlDoc = db.parse(new ByteArrayInputStream(sld.getSldBody().getBytes("UTF-8")));
 
-            stage = "Fout bij controleren SLD";
+            stage = getBundle().getString("viewer_admin.geoserviceactionbean.slderror");
 
             Element root = sldXmlDoc.getDocumentElement();
             if(!"StyledLayerDescriptor".equals(root.getLocalName())) {
-                throw new Exception("Root element moet StyledLayerDescriptor zijn");
+                throw new Exception(getBundle().getString("viewer_admin.geoserviceactionbean.wrongroot"));
             }
             String version = root.getAttribute("version");
             if(version == null || !("1.0.0".equals(version) || "1.1.0".equals(version))) {
-                throw new Exception("Geen of ongeldige SLD versie!");
+                throw new Exception(getBundle().getString("viewer_admin.geoserviceactionbean.invalidsld"));
             }
 
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -1095,7 +1115,7 @@ public class GeoServiceActionBean implements ActionBean {
             return jsp;
         }
 
-        getContext().getMessages().add(new SimpleMessage("SLD is valide!"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.validsld")));
 
         return jsp;
     }
@@ -1127,11 +1147,11 @@ public class GeoServiceActionBean implements ActionBean {
             sld.setNamedLayerUserStylesJson(StyleLibrary.parseSLDNamedLayerUserStyles(sldBody).toString(4));
         } catch(Exception e) {
             log.error("Fout bij bepalen UserStyle namen van NamedLayers", e);
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Kan geen namen van styles per layer bepalen: " + e.getClass().getName() + ": " + e.getLocalizedMessage()));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.geoserviceactionbean.nostyles"), e.getClass().getName(), e.getLocalizedMessage()));
         }
 
         Stripersist.getEntityManager().getTransaction().commit();
-        getContext().getMessages().add(new SimpleMessage("SLD opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.sldsaved")));
         return edit();
     }
 

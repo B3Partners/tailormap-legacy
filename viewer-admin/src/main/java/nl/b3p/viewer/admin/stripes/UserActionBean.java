@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.text.MessageFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
@@ -49,6 +50,7 @@ public class UserActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/security/user.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/edituser.jsp";
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     @Validate
     private int page;
     @Validate
@@ -85,6 +87,20 @@ public class UserActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public User getUser() {
@@ -200,6 +216,11 @@ public class UserActionBean implements ActionBean {
     }
     //</editor-fold>
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
@@ -242,14 +263,14 @@ public class UserActionBean implements ActionBean {
         if (user == null) {
 
             if (username == null) {
-                errors.add("username", new SimpleError("Gebruikersnaam is verplicht"));
+                errors.add("username", new SimpleError(getBundle().getString("viewer_admin.useractionbean.nameobl")));
                 return;
             }
 
             try {
                 Object o = Stripersist.getEntityManager().createQuery("select 1 from User where username = :username").setMaxResults(1).setParameter("username", username).getSingleResult();
 
-                errors.add("username", new SimpleError("Gebruikersnaam bestaat al"));
+                errors.add("username", new SimpleError(getBundle().getString("viewer_admin.useractionbean.namedup")));
                 return;
 
             } catch (NoResultException nre) {
@@ -259,14 +280,14 @@ public class UserActionBean implements ActionBean {
 
         if (user == null) {
             if (password == null) {
-                errors.add("password", new SimpleError("Wachtwoord is verplicht"));
+                errors.add("password", new SimpleError(getBundle().getString("viewer_admin.useractionbean.pwobl")));
                 return;
             }
         }
 
         if (password != null) {
             if (password.length() < User.MIN_PASSWORD_LENGTH) {
-                errors.add("password", new SimpleError("Wachtwoord is te kort, minimale lengte: " + User.MIN_PASSWORD_LENGTH));
+                errors.add("password", new SimpleError( MessageFormat.format(getBundle().getString("viewer_admin.useractionbean.pwshort"), User.MIN_PASSWORD_LENGTH)));
                 return;
             }
         }
@@ -298,7 +319,7 @@ public class UserActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(user);
         Stripersist.getEntityManager().getTransaction().commit();
 
-        getContext().getMessages().add(new SimpleMessage("Gebruiker is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.useractionbean.usaved")));
         return new ForwardResolution(EDITJSP);
     }
 
@@ -308,18 +329,18 @@ public class UserActionBean implements ActionBean {
         String currentUser = context.getRequest().getUserPrincipal().getName();
         if (currentUser.equals(user.getUsername())) {
             inUse = true;
-            getContext().getMessages().add(new SimpleError("Het is niet mogelijk om de gebruiker waar u mee bent ingelogt te verwijderen."));
+            getContext().getMessages().add(new SimpleError(getBundle().getString("viewer_admin.useractionbean.unorem")));
         }
         List applications = Stripersist.getEntityManager().createQuery("from Application where owner = :owner").setParameter("owner", user).getResultList();
         if (applications != null && applications.size() > 0) {
             inUse = true;
-            getContext().getMessages().add(new SimpleError("Het is niet mogelijk om de gebruiker te verwijderen, omdat deze eigenaar is van een of meerdere applicaties."));
+            getContext().getMessages().add(new SimpleError(getBundle().getString("viewer_admin.useractionbean.uinuse")));
         }
 
         if (!inUse) {
             Stripersist.getEntityManager().remove(user);
             Stripersist.getEntityManager().getTransaction().commit();
-            getContext().getMessages().add(new SimpleMessage("Gebruiker is verwijderd"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.useractionbean.urem")));
         }
 
         return new ForwardResolution(EDITJSP);

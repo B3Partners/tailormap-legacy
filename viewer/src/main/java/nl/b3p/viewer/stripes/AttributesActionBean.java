@@ -67,7 +67,8 @@ public class AttributesActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(AttributesActionBean.class);
 
     private ActionBeanContext context;
-
+    private ResourceBundle bundle;
+            
     @Validate
     private Application application;
 
@@ -156,6 +157,20 @@ public class AttributesActionBean implements ActionBean {
     @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public Application getApplication() {
@@ -304,6 +319,11 @@ public class AttributesActionBean implements ActionBean {
 
     //</editor-fold>
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
@@ -549,7 +569,6 @@ public class AttributesActionBean implements ActionBean {
 
             json.put("success", false);
 
-            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
             String message = MessageFormat.format(bundle.getString("viewer.attributesactionbean.ff"), e.toString());
             Throwable cause = e.getCause();
             while(cause != null) {

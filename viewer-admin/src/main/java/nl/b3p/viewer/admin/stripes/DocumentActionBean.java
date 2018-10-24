@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.text.MessageFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
@@ -43,6 +44,7 @@ public class DocumentActionBean implements ActionBean {
     private static final String EDITJSP = "/WEB-INF/jsp/services/editdocument.jsp";
     
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     
     @Validate
     private int page;
@@ -72,6 +74,20 @@ public class DocumentActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public String getDir() {
@@ -131,6 +147,11 @@ public class DocumentActionBean implements ActionBean {
     }
     //</editor-fold>
     
+   @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
@@ -152,8 +173,7 @@ public class DocumentActionBean implements ActionBean {
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
         if(documentInUse()){
-            String message="Het document kan niet worden verwijderd omdat deze nog in gebruik is.<br> "
-                    + "Dit document is nog geconfigureerd in:<ul> ";
+            String message="<ul> ";
             List<Level> levels = em.createQuery(
                 "from Level l where :doc member of l.documents")
                 .setParameter("doc", document)
@@ -161,17 +181,19 @@ public class DocumentActionBean implements ActionBean {
         
             for (Level level: levels){
                 for(Application app: level.findApplications(em)) {
-                    message+="<li>Level: \""+ level.getPath() +"\" in de Applicatie \""+app.getNameWithVersion()+"\".</li>";
+                    message+="<li>"
+                            + MessageFormat.format(getBundle().getString("viewer_admin.documentactionbean.inuseapp"), level.getPath(), app.getNameWithVersion())
+                            + "</li>";
                 }
             }
             message+="</ul>";
-            getContext().getValidationErrors().add("document", new SimpleError(message));
+            getContext().getValidationErrors().add("document", new SimpleError(getBundle().getString("viewer_admin.documentactionbean.inuse"), message));
             return new ForwardResolution(EDITJSP);
         }        
         em.remove(document);
         em.getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Document is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.documentactionbean.docrem")));
         
         return new ForwardResolution(EDITJSP);
     }
@@ -189,7 +211,7 @@ public class DocumentActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(document);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Document is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.documentactionbean.docsaved")));
         
         return new ForwardResolution(EDITJSP);
     }

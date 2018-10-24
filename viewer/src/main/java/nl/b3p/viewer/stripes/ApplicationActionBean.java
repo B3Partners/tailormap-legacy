@@ -54,7 +54,8 @@ import org.json.JSONObject;
 public class ApplicationActionBean implements ActionBean {
 
     private ActionBeanContext context;
-
+    private ResourceBundle bundle;
+            
     @Validate
     private String name;
 
@@ -136,6 +137,20 @@ public class ApplicationActionBean implements ActionBean {
 
     public ActionBeanContext getContext() {
         return context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public String getComponentSourceHTML() {
@@ -235,6 +250,11 @@ public class ApplicationActionBean implements ActionBean {
     }
     //</editor-fold>
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     static Application findApplication(String name, String version) {
         EntityManager em = Stripersist.getEntityManager();
         if(name != null) {
