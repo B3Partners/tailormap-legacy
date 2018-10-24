@@ -25,7 +25,10 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -59,9 +62,10 @@ public class PrintGenerator  implements Runnable{
     private final String filename;
     private final String fromName;
     private final String fromMail;
-    private final  String toMail;
+    private final String toMail;
+    private final Locale locale;
 
-    public PrintGenerator(PrintInfo info, String mimeType, File xsl, String filename, String fromName, String fromMail, String toMail) {
+    public PrintGenerator(PrintInfo info, String mimeType, File xsl, String filename, String fromName, String fromMail, String toMail, Locale locale) {
         this.info = info;
         this.mimeType = mimeType;
         this.xsl = xsl;
@@ -69,6 +73,7 @@ public class PrintGenerator  implements Runnable{
         this.fromName = fromName;
         this.fromMail = fromMail;
         this.toMail = toMail;
+        this.locale = locale;
     }
 
     @Override
@@ -78,11 +83,10 @@ public class PrintGenerator  implements Runnable{
         } catch (Exception ex) {
             log.error("Cannot create print.", ex);
             try {
-//            String subject_fail_text= "Fout bij printen";
-//            String mailContent_fail_text = "De print kon niet worden gemaakt. De foutmelding is: ";
-            String subject_fail_text= "Printing failed";
-            String mailContent_fail_text = "Printing failed. error message: ";
-                Mailer.sendMail(fromName, fromMail,toMail, subject_fail_text, mailContent_fail_text + ex.getLocalizedMessage());
+                ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", locale);
+                String subject = bundle.getString("viewer.printgenerator.subject_fail");
+                String mailContent = MessageFormat.format(bundle.getString("viewer.printgenerator.mailContent_fail"), ex.getLocalizedMessage());
+                Mailer.sendMail(fromName, fromMail,toMail, subject, mailContent);
             } catch (Exception ex1) {
                 log.error("Cannot send mail for reporting exception");
             }
@@ -97,11 +101,10 @@ public class PrintGenerator  implements Runnable{
             String path = new File(xsl.getParent()).toURI().toString();
             //        PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream ou
             createOutput(info, mimeType, new FileInputStream(xsl), path, fos, filename);
-//            String subject_success_text= "Print is klaar";
-//            String mailContent_success_text = "De print is klaar en staat in de bijlage";
-            String subject_success_text= "Print is ready";
-            String mailContent_success_text = "The print is ready and may by found as an attachment";
-            Mailer.sendMail(fromName, fromMail, toMail, subject_success_text, mailContent_success_text, temp, filename);
+            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", locale);
+            String subject = bundle.getString("viewer.printgenerator.subject_success");
+            String mailContent = bundle.getString("viewer.printgenerator.mailContent_success");
+            Mailer.sendMail(fromName, fromMail, toMail, subject, mailContent, temp, filename);
         } finally {
             temp.delete();
         }
@@ -168,13 +171,13 @@ public class PrintGenerator  implements Runnable{
         try {
             /* Construct fop */
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            String fop_creator_text = "Flamingo";
+            String fop_creator_text = "Webgis";
             foUserAgent.setCreator(fop_creator_text);
             foUserAgent.setProducer(fop_creator_text);
 
             Date now = new Date();
             foUserAgent.setCreationDate(now);
-            foUserAgent.setTitle("Kaart");
+            foUserAgent.setTitle("Map");
 
             Fop fop = fopFactory.newFop(mimeType, foUserAgent, out);
 

@@ -391,7 +391,9 @@ public class ApplicationActionBean implements ActionBean {
             context.getRequest().getSession().invalidate();
             return login;
         } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
-            context.getValidationErrors().addGlobalError(new SimpleError("Insufficient rights"));
+            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
+            String msg = bundle.getString("viewer.applicationactionbean.norights");
+            context.getValidationErrors().addGlobalError(new SimpleError(msg));
             context.getRequest().getSession().invalidate();
             return new ForwardResolution("/WEB-INF/jsp/error_retry.jsp");
         }

@@ -53,8 +53,10 @@ import org.stripesstuff.stripersist.Stripersist;
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Mark Prins
@@ -142,6 +144,8 @@ public class FeatureReportActionBean implements ActionBean {
             BoundingBox b = this.getExtent(fs, fidFilter);
             params.put("bbox", b.getMinX() + "," + b.getMinY() + "," + b.getMaxX() + "," + b.getMaxY());
 
+            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
+
             // add highlighted feature geometry
             Geometry geom = this.getGeometry(fs, fidFilter);
             if (geom != null) {
@@ -156,6 +160,7 @@ public class FeatureReportActionBean implements ActionBean {
                     // each iteration multiply with 10, max 4 steps, so [1,10, 100, 1000]
                     // if geom still too large bail out and use bbox
                     LOG.debug("Simplify selected feature geometry with distance of: " + simplify);
+                    geomModified = bundle.getString("viewer.featurereportactionbean.modified");
                     geomModified = " (simplyfied geometry)";
                     geom = TopologyPreservingSimplifier.simplify(geom, simplify);
                     geomTxt = geom.toText();
@@ -167,7 +172,10 @@ public class FeatureReportActionBean implements ActionBean {
                     wktGeom.put("_wktgeom", geomTxt);
                 }
                 wktGeom.put("color", "FF00FF");
-                wktGeom.put("label", "Selected object: " + this.fid.replace(layer.getFeatureType().getTypeName() + ".", "") + geomModified);
+                wktGeom.put("label", 
+                        MessageFormat.format(bundle.getString("viewer.featurereportactionbean.mm"), 
+                        this.fid.replace(layer.getFeatureType().getTypeName() + ".", ""), 
+                        geomModified));
                 wktGeom.put("strokeWidth", 8);
                 params.getJSONArray("geometries").put(wktGeom);
             }
@@ -251,10 +259,12 @@ public class FeatureReportActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                info.putOnce("moreMessage", "There are more than " + this.maxrelatedfeatures + " related items.");
+                                String msg = MessageFormat.format(bundle.getString("viewer.featurereportactionbean.moreitems"), this.maxrelatedfeatures);
+                                info.putOnce("moreMessage", msg);
                             }
                         } else {
-                            info.putOnce("errorMessage", "Column with name '" + leftSide + "' must be available to enable fetching related items.");
+                            String msg = MessageFormat.format(bundle.getString("viewer.featurereportactionbean.columnmissing"), leftSide);
+                            info.putOnce("errorMessage", msg);
                         }
                         
                         extra = new JSONObject()
