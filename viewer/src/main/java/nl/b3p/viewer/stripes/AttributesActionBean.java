@@ -17,10 +17,12 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
@@ -547,7 +549,8 @@ public class AttributesActionBean implements ActionBean {
 
             json.put("success", false);
 
-            String message = "Error fetching features: " + e.toString();
+            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
+            String message = MessageFormat.format(bundle.getString("viewer.attributesactionbean.ff"), e.toString());
             Throwable cause = e.getCause();
             while(cause != null) {
                 message += "; " + cause.toString();

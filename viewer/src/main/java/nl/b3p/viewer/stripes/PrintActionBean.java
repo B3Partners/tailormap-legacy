@@ -50,11 +50,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -294,7 +296,7 @@ public class PrintActionBean implements ActionBean {
                         if(useMailer){
                             this.setAttachment(false);
                             response.setContentType("plain/text");
-                            Thread t = new Thread(new PrintGenerator(info, mimeType, f, filename,fromName, fromMail, toMail));
+                            Thread t = new Thread(new PrintGenerator(info, mimeType, f, filename,fromName, fromMail, toMail, context.getRequest().getLocale()));
                             t.start();
                             response.getWriter().println("success");
                             response.getWriter().close();
@@ -389,6 +391,8 @@ public class PrintActionBean implements ActionBean {
         JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em, application, request);
 
         fs.getDataStore().dispose();
+        
+        ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", request.getLocale());
 
         for (int i = 0; i < features.length(); i++) {
             JSONArray jFeat = features.getJSONArray(i);
@@ -448,10 +452,12 @@ public class PrintActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                info.putOnce("moreMessage", "There are more than " + this.maxrelatedfeatures + " related items.");
+                                String msg = MessageFormat.format(bundle.getString("viewer.printactionbean.moreitems"), this.maxrelatedfeatures);
+                                info.putOnce("moreMessage", msg);
                             }
                         } else {
-                            info.putOnce("errorMessage", "Column with name '" + leftSide + "' must be available to enable fetching related items.");
+                            String msg = MessageFormat.format(bundle.getString("viewer.printactionbean.columnmissing"), leftSide);
+                            info.putOnce("errorMessage", msg);
                         }
 
                         JSONObject related = new JSONObject();

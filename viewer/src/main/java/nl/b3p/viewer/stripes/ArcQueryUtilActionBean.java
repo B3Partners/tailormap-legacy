@@ -18,7 +18,9 @@ package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.xml.bind.JAXBElement;
@@ -168,7 +170,8 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             json.put("success", false);
 
-            String message = "Error creating spatial query: " + e.toString();
+            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
+            String message = MessageFormat.format(bundle.getString("viewer.arcqueryutilactionbean.sq"), e.toString());
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();
@@ -212,7 +215,8 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             log.error("Error loading feature ids", e);
             json.put("success", false);
-            String message = "Error fetching features: " + e.toString();
+            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
+            String message = MessageFormat.format(bundle.getString("viewer.arcqueryutilactionbean.ff"), e.toString());
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();
