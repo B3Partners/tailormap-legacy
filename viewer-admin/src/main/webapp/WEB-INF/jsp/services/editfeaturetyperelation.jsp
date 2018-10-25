@@ -130,8 +130,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <div class="submitbuttons">
                             <fmt:message key="viewer_admin.editfeaturetyperelation.12" var="editfeaturetyperelation12" />
                             <fmt:message key="viewer_admin.editfeaturetyperelation.13" var="editfeaturetyperelation13" />
-                            <stripes:submit name="save" value="${editfeaturetyperelation12}" />"/>
-                            <stripes:submit name="cancel" value="${editfeaturetyperelation13}" />"/>
+                            <stripes:submit name="save" value="${editfeaturetyperelation12}" />
+                            <stripes:submit name="cancel" value="${editfeaturetyperelation13}" />
                         </div>
                         
                     </c:when>
@@ -143,11 +143,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             }
                         </script>
                         <fmt:message key="viewer_admin.editfeaturetyperelation.14" var="editfeaturetyperelation14" />
-                        <stripes:submit name="edit" value="${editfeaturetyperelation14}" />"/>
+                        <stripes:submit name="edit" value="${editfeaturetyperelation14}" />
                     </c:when>
                     <c:otherwise>
                         <fmt:message key="viewer_admin.editfeaturetyperelation.15" var="editfeaturetyperelation15" />
-                        <stripes:submit name="edit" value="${editfeaturetyperelation15}" />"/>
+                        <stripes:submit name="edit" value="${editfeaturetyperelation15}" />
                     </c:otherwise>
             </c:choose>
         </stripes:form>

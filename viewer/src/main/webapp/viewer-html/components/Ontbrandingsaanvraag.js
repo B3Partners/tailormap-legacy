@@ -1387,7 +1387,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     saveFile: function() {
         Ext.Msg.prompt(
-            ___('Aanvraag opslaan'),
+            i18next.t('viewer_components_ontbrandingsaanvraag_78'),
             i18next.t('viewer_components_ontbrandingsaanvraag_68'),
             function(btn, text){
                 if (btn === 'ok') {

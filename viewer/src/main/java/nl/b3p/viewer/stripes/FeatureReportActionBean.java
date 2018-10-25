@@ -76,6 +76,7 @@ public class FeatureReportActionBean implements ActionBean {
     private Layer layer = null;
     private boolean unauthorized;
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     /**
      * feature id to report.
      */
@@ -98,6 +99,11 @@ public class FeatureReportActionBean implements ActionBean {
     @Validate
     private String printparams;
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (appLayer == null
@@ -158,7 +164,7 @@ public class FeatureReportActionBean implements ActionBean {
                     // each iteration multiply with 10, max 4 steps, so [1,10, 100, 1000]
                     // if geom still too large bail out and use bbox
                     LOG.debug("Simplify selected feature geometry with distance of: " + simplify);
-                    geomModified = bundle.getString("viewer.featurereportactionbean.modified");
+                    geomModified = getBundle().getString("viewer.featurereportactionbean.modified");
                     geomModified = " (simplyfied geometry)";
                     geom = TopologyPreservingSimplifier.simplify(geom, simplify);
                     geomTxt = geom.toText();
@@ -171,7 +177,7 @@ public class FeatureReportActionBean implements ActionBean {
                 }
                 wktGeom.put("color", "FF00FF");
                 wktGeom.put("label", 
-                        MessageFormat.format(bundle.getString("viewer.featurereportactionbean.mm"), 
+                        MessageFormat.format(getBundle().getString("viewer.featurereportactionbean.mm"), 
                         this.fid.replace(layer.getFeatureType().getTypeName() + ".", ""), 
                         geomModified));
                 wktGeom.put("strokeWidth", 8);
@@ -257,11 +263,11 @@ public class FeatureReportActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                String msg = MessageFormat.format(bundle.getString("viewer.featurereportactionbean.moreitems"), this.maxrelatedfeatures);
+                                String msg = MessageFormat.format(getBundle().getString("viewer.featurereportactionbean.moreitems"), this.maxrelatedfeatures);
                                 info.putOnce("moreMessage", msg);
                             }
                         } else {
-                            String msg = MessageFormat.format(bundle.getString("viewer.featurereportactionbean.columnmissing"), leftSide);
+                            String msg = MessageFormat.format(getBundle().getString("viewer.featurereportactionbean.columnmissing"), leftSide);
                             info.putOnce("errorMessage", msg);
                         }
                         
@@ -355,6 +361,20 @@ public class FeatureReportActionBean implements ActionBean {
     @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public ApplicationLayer getAppLayer() {

@@ -101,7 +101,7 @@ public abstract class ApplicationActionBean implements ActionBean {
     }
     // </editor-fold>
 
-    @Before
+    @After(stages = LifecycleStage.ActionBeanResolution)
     protected void initBundle() {
         setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
     }

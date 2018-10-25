@@ -99,7 +99,7 @@ Ext.define("viewer.AppLoader", {
             },
             failure: function(result) {
                 if(failureFunction !== undefined) {
-                    failureFunction(___(i18next.t('viewer_apploader_0')) + result.status + " " + result.statusText + ": " + result.responseText);
+                    failureFunction(i18next.t('viewer_apploader_0') + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
         });

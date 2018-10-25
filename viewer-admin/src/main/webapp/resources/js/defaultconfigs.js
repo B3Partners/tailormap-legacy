@@ -175,8 +175,8 @@ Ext.define("vieweradmin.components.DefaultConfgurations", {
                 'Style' : i18next.t('viewer_admin_defaultconfigs_21'),
                 'OK' : '',
                 'Cancel': i18next.t('viewer_admin_defaultconfigs_22'),
-                'Delete Image':'Afbeelding verwijderen',
-                'Confirmation':'Bevestiging',
+                'Delete Image': i18next.t('viewer_admin_defaultconfigs_32'),
+                'Confirmation': i18next.t('viewer_admin_defaultconfigs_33'),
                 'Are you sure you want to delete this image?': i18next.t('viewer_admin_defaultconfigs_23'),
                 'Your photo has been uploaded.': i18next.t('viewer_admin_defaultconfigs_24')
             }
