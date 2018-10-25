@@ -19,10 +19,12 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +43,7 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFactoryConfigurationException;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -83,6 +86,7 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/serviceusagematrix.jsp";
     private static final String xslPath="/WEB-INF/classes/xsl/ServiceUsageMatrix.xsl";
     private ActionBeanContext context;
+    private ResourceBundle bundle;
 
     @Validate
     private String xml;
@@ -99,6 +103,11 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
 
     private JSONObject data;
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     private void createData() throws Exception {
         List<Application> applications = Stripersist.getEntityManager().createQuery("FROM Application order by name,version").getResultList();
         JSONArray jsonApps = new JSONArray();
@@ -202,8 +211,8 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
 
                 Level parent=this.application.getRoot().getParentInSubtree(applicationLayer);
                 if (parent==null){
-                    json.put("message", "No parent Level for given application layer: "+this.applicationLayer.getId()+
-                            " in application: "+this.getApplication().getId());
+                    json.put("message", MessageFormat.format(getBundle().getString("viewer.serviceusagematrixactionbean.noparent"), 
+                            this.applicationLayer.getId(), this.getApplication().getId()));
                 }else{
                     parent.getLayers().remove(this.applicationLayer);
                     Stripersist.getEntityManager().remove(this.applicationLayer);
@@ -211,7 +220,7 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
                     json.put("success",true);
                 }
             }else{
-                json.put("message","No applicationlayer found");
+                json.put("message",getBundle().getString("viewer.serviceusagematrixactionbean.noappl"));
             }
         }catch (Exception e){
             log.error("Error while deleting applicationlayer",e);
@@ -246,6 +255,20 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return this.context;
     }
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
     public String getXml() {
         return xml;
     }

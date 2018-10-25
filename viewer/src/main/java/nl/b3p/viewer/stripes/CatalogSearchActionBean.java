@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
@@ -80,6 +81,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class CatalogSearchActionBean implements ActionBean {
     
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     private static final Log log = LogFactory.getLog(CatalogSearchActionBean.class);
     private static final String defaultWildCard = "*";
     
@@ -108,6 +110,20 @@ public class CatalogSearchActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public String getUrl() {
@@ -151,6 +167,11 @@ public class CatalogSearchActionBean implements ActionBean {
     }
     
     //</editor-fold>        
+    
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     
     @DefaultHandler
     public Resolution search() throws JSONException {    
@@ -202,7 +223,7 @@ public class CatalogSearchActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
          Resolution r = ApplicationActionBean.checkRestriction(context, application, Stripersist.getEntityManager());
         if (r != null) {
-            json.put("message","Unauthorized");
+            json.put("message",getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
         CswServable server = new GeoNetworkCswServer(null, url, null, null);

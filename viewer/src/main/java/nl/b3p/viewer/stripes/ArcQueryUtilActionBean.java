@@ -156,7 +156,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
         JSONObject json = new JSONObject();
         if (unauthorized) {
             json.put("success", false);
-            json.put("message", "Not authorized");
+            json.put("message", getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
         try {
@@ -190,7 +190,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             json.put("success", false);
 
-            String message = MessageFormat.format(bundle.getString("viewer.arcqueryutilactionbean.sq"), e.toString());
+            String message = MessageFormat.format(getBundle().getString("viewer.arcqueryutilactionbean.sq"), e.toString());
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();
@@ -207,7 +207,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
 
         if (unauthorized) {
             json.put("success", false);
-            json.put("message", "Not authorized");
+            json.put("message", getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
 
@@ -228,7 +228,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
                     json.put("success",true);
                 }else{
                     json.put("success",false);
-                    json.put("message","Featuresource not of correct type. Must be nl.b3p.viewer.config.services.ArcGisFeatureSource, but is " + layer.getFeatureType().getFeatureSource().getClass());
+                    json.put("message", MessageFormat.format(getBundle().getString("viewer.arcqueryutilactionbean.incortype"), layer.getFeatureType().getFeatureSource().getClass()));
                 }
             }
         } catch (Exception e) {

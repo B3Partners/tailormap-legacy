@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.activation.MimetypesFileTypeMap;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -93,7 +94,8 @@ public class DownloadFeaturesActionBean implements ActionBean {
     private ActionBeanContext context;
 
     private boolean unauthorized;
-
+    private ResourceBundle bundle;
+ 
     @Validate
     private Application application;
 
@@ -126,6 +128,20 @@ public class DownloadFeaturesActionBean implements ActionBean {
     @Override
     public ActionBeanContext getContext() {
         return context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public boolean isUnauthorized() {
@@ -214,11 +230,16 @@ public class DownloadFeaturesActionBean implements ActionBean {
         }
     }
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     public Resolution download() throws JSONException, FileNotFoundException {
         JSONObject json = new JSONObject();
         if (unauthorized) {
             json.put("success", false);
-            json.put("message", "Not authorized");
+            json.put("message", getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
         String sId = context.getRequest().getSession().getId();
