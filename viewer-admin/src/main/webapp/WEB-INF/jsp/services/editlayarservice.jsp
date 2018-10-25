@@ -40,8 +40,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div class="submitbuttons">
                         <fmt:message key="viewer_admin.editlayarservice.3" var="editlayarservice3" />
                         <fmt:message key="viewer_admin.editlayarservice.4" var="editlayarservice4" />
-                        <stripes:submit name="save" value="${editlayarservice3}" />"/>
-                        <stripes:submit name="cancel" value="${editlayarservice4}" />"/>
+                        <stripes:submit name="save" value="${editlayarservice3}" />
+                        <stripes:submit name="cancel" value="${editlayarservice4}" />
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
@@ -52,11 +52,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         }
                     </script>
                     <fmt:message key="viewer_admin.editlayarservice.5" var="editlayarservice5" />
-                    <stripes:submit name="edit" value="${editlayarservice5}" />"/>
+                    <stripes:submit name="edit" value="${editlayarservice5}" />
                 </c:when>
                 <c:otherwise>
                     <fmt:message key="viewer_admin.editlayarservice.6" var="editlayarservice6" />
-                    <stripes:submit name="edit" value="${editlayarservice6}" />"/>
+                    <stripes:submit name="edit" value="${editlayarservice6}" />
                 </c:otherwise>
             </c:choose>
         </stripes:form>

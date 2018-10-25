@@ -100,7 +100,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     })
     private FeatureTypeRelation relation;
     
-   @Before
+    @Before
     protected void initBundle() {
         setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
     }
