@@ -23,12 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @UrlBinding("/action/upload")
 @StrictBinding
 public class FileUploadActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(FileUploadActionBean.class);
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     public static final String DATA_DIR = "flamingo.data.dir";
 
     private List<FileBean> files;
@@ -48,6 +50,11 @@ public class FileUploadActionBean implements ActionBean {
     @Validate
     private FileUpload upload;
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     // <editor-fold default-state="collapsed" desc="Getters and setters">
     @Override
     public ActionBeanContext getContext() {
@@ -56,6 +63,20 @@ public class FileUploadActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public ApplicationLayer getAppLayer() {
@@ -114,12 +135,12 @@ public class FileUploadActionBean implements ActionBean {
         String error = null;
 
         if(appLayer == null ) {
-            error = "App layer or service not found";
+            error = getBundle().getString("viewer.fileuploadactionbean.noaps");
         }
 
         if (error == null) {
             if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
-                error = "Not authorized";
+                error = getBundle().getString("viewer.general.noauth");
             }
         }
         if(error != null){
@@ -129,7 +150,7 @@ public class FileUploadActionBean implements ActionBean {
             String datadir = context.getServletContext().getInitParameter(DATA_DIR);
             if (datadir.isEmpty()) {
                 json.put("success", false);
-                json.put("message", "Upload directory not configured. Contact your administrator.");
+                json.put("message", getBundle().getString("viewer.fileuploadactionbean.badconfig"));
             } else {
                 File dir = new File(datadir);
                 if (dir.exists() && dir.canWrite()) {
@@ -165,7 +186,7 @@ public class FileUploadActionBean implements ActionBean {
                     json.put("success", true);
                 } else {
                     json.put("success", false);
-                    json.put("message", "Upload directory not correctly configured: does not exist or is not writable. Contact your administrator.");
+                    json.put("message", getBundle().getString("viewer.fileuploadactionbean.badconfig"));
                 }
             }
         }
@@ -207,12 +228,12 @@ public class FileUploadActionBean implements ActionBean {
         final FileUpload up = upload;
         String error = null;
         if(appLayer == null ) {
-            error = "App layer or service not found";
+            error = getBundle().getString("viewer.fileuploadactionbean.noaps");
         }
 
         if (error == null) {
             if (!Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
-                error = "Not authorized";
+                error = getBundle().getString("viewer.general.noauth");
             }
         }
         if(error == null) {
@@ -252,12 +273,12 @@ public class FileUploadActionBean implements ActionBean {
         json.put("uploadid", upload.getId());
         json.put("success", false);
         if(appLayer == null ) {
-            error = "App layer or service not found";
+            error = getBundle().getString("viewer.fileuploadactionbean.noaps");
         }
 
         if (error == null) {
             if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
-                error = "Not authorized";
+                error = getBundle().getString("viewer.general.noauth");
             }
         }
         if(error == null) {
@@ -273,7 +294,7 @@ public class FileUploadActionBean implements ActionBean {
                     log.error("Can not delete file: " + upload.getFilename());
                 }
             } else {
-                json.put("message", "File does not exist");
+                json.put("message", getBundle().getString("viewer.fileuploadactionbean.nofile"));
             }
             em.remove(upload);
             em.getTransaction().commit();

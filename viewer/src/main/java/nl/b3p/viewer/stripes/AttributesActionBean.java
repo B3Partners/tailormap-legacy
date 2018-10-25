@@ -491,7 +491,7 @@ public class AttributesActionBean implements ActionBean {
         JSONObject json = new JSONObject();
         if (unauthorized) {
             json.put("success", false);
-            json.put("message", "Not authorized");
+            json.put("message", getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
         json = executeStore(Stripersist.getEntityManager());
