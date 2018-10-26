@@ -19,9 +19,11 @@ package nl.b3p.viewer.stripes;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
@@ -45,6 +47,20 @@ import org.stripesstuff.stripersist.Stripersist;
 public class ServiceActionBean implements ActionBean {
     
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
     
     @Validate
     private String protocol;
@@ -87,6 +103,10 @@ public class ServiceActionBean implements ActionBean {
     }
     //</editor-fold>
     
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     public Resolution info() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -96,7 +116,7 @@ public class ServiceActionBean implements ActionBean {
         EntityManager em = Stripersist.getEntityManager();
         
         if(protocol == null || url == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.serviceactionbean.1");
         } else {
             
             Map params = new HashMap();
@@ -111,7 +131,7 @@ public class ServiceActionBean implements ActionBean {
                     params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
                     service = new ArcIMSService().loadFromUrl(url, params, em);
                 } else {
-                    error = "Invalid protocol";
+                    error = getBundle().getString("viewer.serviceactionbean.2");
                 }            
             } catch(Exception e) {
                 

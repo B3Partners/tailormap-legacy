@@ -735,7 +735,8 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             }
             },
             {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_43'), value: disableUserEdit, name: 'disableUserEdit', store: [[false, 'Ja'], [true, 'Nee (alleen lezen)']], xtype: 'combobox'
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_43'), value: disableUserEdit, name: 'disableUserEdit', 
+                store: [[false, i18next.t('viewer_admin.general.yes')], [true, i18next.t('viewer_admin.general.no')]], xtype: 'combobox'
             },
             {
                 fieldLabel: i18next.t('viewer_admin_applicationtreelayer_44'), name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'

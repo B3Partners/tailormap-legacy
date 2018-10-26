@@ -22,7 +22,7 @@ Ext.define('vieweradmin.components.Attributes', {
     config: {
         gridurl: "",
         editurl: "",
-        itemname: "attributen",
+        itemname: i18next.t('viewer_admin_attribute_gtitle'),
         getfeaturetypesurl: ""
     },
 

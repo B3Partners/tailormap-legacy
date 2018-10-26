@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.Document', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "documenten"
+        itemname: i18next.t('viewer_admin_document_gtitle')
     },
 
     constructor: function(config) {

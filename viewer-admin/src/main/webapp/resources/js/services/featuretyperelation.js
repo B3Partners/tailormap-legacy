@@ -22,7 +22,7 @@ Ext.define('vieweradmin.components.FeaturetypeRelation', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "relaties",
+        itemname: i18next.t('viewer_admin_featuretyperelation_gtitle'),
         editattributesurl: ""
     },
 

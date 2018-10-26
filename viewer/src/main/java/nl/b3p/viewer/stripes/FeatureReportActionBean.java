@@ -165,7 +165,6 @@ public class FeatureReportActionBean implements ActionBean {
                     // if geom still too large bail out and use bbox
                     LOG.debug("Simplify selected feature geometry with distance of: " + simplify);
                     geomModified = getBundle().getString("viewer.featurereportactionbean.modified");
-                    geomModified = " (simplyfied geometry)";
                     geom = TopologyPreservingSimplifier.simplify(geom, simplify);
                     geomTxt = geom.toText();
                     simplify = 10 * simplify;

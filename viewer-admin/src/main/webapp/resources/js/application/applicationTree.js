@@ -328,11 +328,11 @@ function changeLevelName(record) {
                         if(response.success) {
                             record.set("text", response.name);
                         } else {
-                            Ext.MessageBox.alert("Fout", response.error);
+                            Ext.MessageBox.alert("Error", response.error);
                         }
                     },
                     failure: function (result) {
-                        Ext.MessageBox.alert("Fout", result.responseText);
+                        Ext.MessageBox.alert("Error", result.responseText);
                     }
                 });
             }
@@ -366,11 +366,11 @@ function removeLevel(record) {
                                 record.remove();
                                 Ext.get('editFrame').dom.src = "about:blank";
                             } else {
-                                Ext.MessageBox.alert("Fout", response.error);
+                                Ext.MessageBox.alert("Error", response.error);
                             }
                         },
                         failure: function (result) {
-                            Ext.MessageBox.alert("Fout", result.responseText);
+                            Ext.MessageBox.alert("Error", result.responseText);
                         }
                     });
                 }

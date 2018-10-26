@@ -347,9 +347,9 @@ public class AttributesActionBean implements ActionBean {
         String error = null;
 
         if(appLayer == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.attributesactionbean.1");
         } else if(unauthorized) {
-            error = "Not authorized";
+            error = getBundle().getString("viewer.attributesactionbean.2");
         } else {
 
             appLayer.addAttributesJSON(json, true, Stripersist.getEntityManager());

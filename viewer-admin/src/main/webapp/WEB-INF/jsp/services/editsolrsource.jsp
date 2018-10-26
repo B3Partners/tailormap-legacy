@@ -104,7 +104,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         }
                     });
                     </script>
-                    <stripes:submit name="newSearchConfig" value="Nieuwe zoekbron"/>
+                    <stripes:submit name="newSearchConfig" value="Nieuwe zoekbron"><fmt:message key="viewer_admin.editsolrsource.10" /></stripes:submit>
 
                 </c:otherwise>
             </c:choose>

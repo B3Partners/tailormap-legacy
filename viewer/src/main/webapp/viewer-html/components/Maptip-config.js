@@ -40,7 +40,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fieldLabel: i18next.t('maptip_config_1'),
             name: 'moreLink',
             /*columnWidth : 0.5,*/
-            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : 'Meer',
+            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : i18next.t('featureinfo_config_1'),
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',

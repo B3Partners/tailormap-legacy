@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -68,6 +69,20 @@ public class FeatureInfoActionBean implements ActionBean {
     public static final String FID = "__fid";
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
 
     private static final int TIMEOUT = 5000;
 
@@ -218,6 +233,12 @@ public class FeatureInfoActionBean implements ActionBean {
         return this.layer;
     }
     //</editor-fold>
+
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+
     @DefaultHandler
     public Resolution info() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
@@ -250,11 +271,11 @@ public class FeatureInfoActionBean implements ActionBean {
                 }
                 do {
                     if(al == null && gs == null) {
-                        error = "App layer or service not found";
+                        error = getBundle().getString("viewer.featureinfoactionbean.1");
                         break;
                     }
                     if(!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
-                        error = "Not authorized";
+                        error = getBundle().getString("viewer.featureinfoactionbean.2");
                         break;
                     }
                     // Edit component does not handle this very gracefully
@@ -270,7 +291,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         layer = gs.getLayer(query.getString("layer"), em);
                     }
                     if(layer == null) {
-                        error = "Layer not found";
+                        error = getBundle().getString("viewer.featureinfoactionbean.3");
                         break;
                     }
                     if(layer.getFeatureType() == null) {
@@ -389,11 +410,11 @@ public class FeatureInfoActionBean implements ActionBean {
                 }
                 do {
                     if (al == null && gs == null) {
-                        error = "App layer or service not found";
+                        error = getBundle().getString("viewer.featureinfoactionbean.4");
                         break;
                     }
                     if (!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
-                        error = "Not authorized";
+                        error = getBundle().getString("viewer.featureinfoactionbean.5");
                         break;
                     }
                     if (al != null) {
@@ -402,7 +423,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         layer = gs.getLayer(query.getString("layer"), em);
                     }
                     if (layer == null) {
-                        error = "Layer not found";
+                        error = getBundle().getString("viewer.featureinfoactionbean.6");
                         break;
                     }
                     if (layer.getFeatureType() == null) {

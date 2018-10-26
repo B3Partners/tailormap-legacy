@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.SolrConfig', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "zoekbronnen",
+        itemname: i18next.t('viewer_admin_solrconfig_gtitle'),
         solrInitialized: false,
         addtoindexurl: "",
         removefromindexurl: ""

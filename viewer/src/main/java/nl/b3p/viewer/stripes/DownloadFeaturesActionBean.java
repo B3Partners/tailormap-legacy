@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +93,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(DownloadFeaturesActionBean.class);
 
     private ActionBeanContext context;
-
     private boolean unauthorized;
     private ResourceBundle bundle;
  
@@ -281,7 +281,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
             json.put("success", false);
 
-            String message = "Fout bij ophalen features: " + e.toString();
+            String message = MessageFormat.format(getBundle().getString("viewer.downloadfeaturesactionbean.1"), e.toString() );
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();

@@ -210,7 +210,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             frameParent.vieweradmin_components_AttributeSource.reloadGrid();
                         }
                     </script>
-                    <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
+                    <stripes:submit name="newAttributeSource"><fmt:message key="viewer_admin.editattributesource.28" /></stripes:submit>
                     <c:if test="${not empty actionBean.changedFeatureTypes}">
                         <a href="javascript: void(0)" onclick='openServiceUsageMatrix(<c:out value="${actionBean.changedFeatureSourceId}"/>)'><fmt:message key="viewer_admin.editattributesource.27" /></a>
                     </c:if>

@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.Group', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "groepen"
+        itemname: i18next.t('viewer_admin_group_gtitle')
     },
 
     constructor: function(config) {

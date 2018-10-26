@@ -17,10 +17,13 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
@@ -45,6 +48,20 @@ public class UniqueValuesActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(UniqueValuesActionBean.class);
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
     @Validate
     private ApplicationLayer applicationLayer;
     @Validate
@@ -118,6 +135,10 @@ public class UniqueValuesActionBean implements ActionBean {
     }
     // </editor-fold>
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     @DefaultHandler
     public Resolution getUniqueValues() throws JSONException {
         JSONObject json = new JSONObject();
@@ -144,7 +165,7 @@ public class UniqueValuesActionBean implements ActionBean {
 
         } catch (Exception e) {
             log.error("getUniqueValues() failed", e);
-            json.put("msg", "Fetching unique values failed for layer " + applicationLayer.getLayerName() + ": " + e.toString());
+            json.put("msg", MessageFormat.format(getBundle().getString("viewer.uniquevaluesactionbean.1"), applicationLayer.getLayerName(), e.toString() ));
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
@@ -160,7 +181,7 @@ public class UniqueValuesActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
         try {
             if (attributes.length != 2) {
-                throw new IllegalArgumentException("This function needs 2 attributes: a key and a label.");
+                throw new IllegalArgumentException(getBundle().getString("viewer.uniquevaluesactionbean.2"));
             }
 
             if (this.featureType == null) {
@@ -177,7 +198,7 @@ public class UniqueValuesActionBean implements ActionBean {
             json.put("msg", e.toString());
         } catch (Exception e) {
             log.error("getKeyValuePairs() failed", e);
-            json.put("msg", "Fetching key value pairs failed for layer " + applicationLayer.getLayerName() + ": " + e.toString());
+            json.put("msg", MessageFormat.format(getBundle().getString("viewer.uniquevaluesactionbean.3"), applicationLayer.getLayerName(), e.toString() ));
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
@@ -203,7 +224,7 @@ public class UniqueValuesActionBean implements ActionBean {
             }
         } catch (Exception e) {
             log.error("getMinMaxValue() failed", e);
-            json.put("msg", "Min/max value determination failed for attribute " + attribute + ": " + e.toString());
+            json.put("msg", MessageFormat.format(getBundle().getString("viewer.uniquevaluesactionbean.4"), attribute,  e.toString() ));
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }

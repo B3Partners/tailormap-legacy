@@ -120,7 +120,7 @@ public class SolrConf {
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("name", name);
-        String last = "Niet ingelezen";
+        String last = "Not read";
         if (lastUpdated != null) {
             SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
             sdf.applyPattern("HH-mm_dd-MM-yyyy");

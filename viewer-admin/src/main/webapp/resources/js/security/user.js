@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.User', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "gebruikers"
+        itemname: i18next.t('viewer_admin_user_gtitle')
     },
 
     constructor: function(config) {
