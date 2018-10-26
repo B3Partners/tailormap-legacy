@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -180,7 +181,7 @@ public class CatalogSearchActionBean implements ActionBean {
         String error = null;
         Resolution r = ApplicationActionBean.checkRestriction(context, application, Stripersist.getEntityManager());
         if (r != null) {
-            error = "Unauthorized";
+            error = getBundle().getString("viewer.catalogsearchactionbean.1");
         } else {
             try {
                 CswServable server = new GeoNetworkCswServer(null,
@@ -201,7 +202,7 @@ public class CatalogSearchActionBean implements ActionBean {
                 json.put("success", Boolean.TRUE);
             } catch (Exception e) {
 
-                error = "Error searching CSW: " + e.toString();
+                error = MessageFormat.format(getBundle().getString("viewer.catalogsearchactionbean.2"), e.toString() );
                 log.error("Error searching:", e);
                 if (e.getCause() != null) {
                     error += "; cause: " + e.getCause().toString();

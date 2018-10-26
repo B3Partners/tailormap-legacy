@@ -21,10 +21,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
@@ -53,7 +55,20 @@ public class WriteWKTActionBean implements ActionBean{
     private static final String BASE_PATH = "basePath";
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
 
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
     @Validate
     private Application application;
 
@@ -68,6 +83,11 @@ public class WriteWKTActionBean implements ActionBean{
 
     @Validate
     private String filename;
+
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
 
     @DefaultHandler
     public Resolution write()  {
@@ -105,14 +125,14 @@ public class WriteWKTActionBean implements ActionBean{
 
                             obj.put("success", true);
                         } catch (IOException ex) {
-                            obj.put("message", "Error writing file. Contact your administrator.");
+                            obj.put("message", getBundle().getString("viewer.writewktactionbean.1"));
                             log.error("Error writing wkt file: ", ex);
                         }
                     } else {
-                        obj.put("message", "Error writing file (path does not exist or insufficient rights to write). Contact your administrator.");
+                        obj.put("message", getBundle().getString("viewer.writewktactionbean.2"));
                     }
                 } else {
-                    obj.put("message", "Base path not configured. Contact your administrator.");
+                    obj.put("message", getBundle().getString("viewer.writewktactionbean.3"));
                     log.error("Error writing wkt file: Base path not configured. Contact your administrator." );
                 }
                 break;

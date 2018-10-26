@@ -43,15 +43,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     success: function ( result  ) {
                         result = Ext.JSON.decode(result.responseText);
                         if (result.success){
-                            Ext.MessageBox.alert("Verwijderd", "<fmt:message key="viewer_admin.serviceusagematrix.1" />: "+result.name+"("+result.id+")");
+                            Ext.MessageBox.alert("Deleted", "<fmt:message key="viewer_admin.serviceusagematrix.1" />: "+result.name+"("+result.id+")");
                             var rec=store.getById(appLayerId);
                             store.remove(rec);
                         }else{
-                            Ext.MessageBox.alert("Foutmelding", "<fmt:message key="viewer_admin.serviceusagematrix.2" />: "+result.message);
+                            Ext.MessageBox.alert("Error", "<fmt:message key="viewer_admin.serviceusagematrix.2" />: "+result.message);
                         }
                     },
                     failure: function() {
-                        Ext.MessageBox.alert("Foutmelding", "<fmt:message key="viewer_admin.serviceusagematrix.3" />: "+result.message);
+                        Ext.MessageBox.alert("Error", "<fmt:message key="viewer_admin.serviceusagematrix.3" />: "+result.message);
                     }
                 });
             }
@@ -151,13 +151,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     Ext.create('Ext.grid.Panel',{
                                         store :  store<x:out select="$featureSource/id"/>,
                                         columns : [
-                                            {text: 'Featuretype', dataIndex: 'featureType',flex: 1},
-                                            {text: 'Applicatie', dataIndex: 'application',flex: 1},
-                                            {text: 'Layernaam van service', dataIndex: 'layer',flex: 1},
-                                            {text: 'Applicatie layer (kaart)', dataIndex: 'appLayer',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.14" />', dataIndex: 'featureType',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.15" />', dataIndex: 'application',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.16" />', dataIndex: 'layer',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.17" />', dataIndex: 'appLayer',flex: 1},
                                             {text: '', dataIndex: 'remove', flex: 1, menuDisabled: true,
                                                 renderer: function(value) {
-                                                    return Ext.String.format('<a href="javascript: void(0)" onclick="return deleteApplicationLayer({0});">Verwijder</a>', value);
+                                                    return Ext.String.format('<a href="javascript: void(0)" onclick="return deleteApplicationLayer({0});"><fmt:message key="viewer_admin.serviceusagematrix.18" /></a>', value);
                                                 },
                                                 sortable: false
                                             }

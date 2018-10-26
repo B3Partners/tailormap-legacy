@@ -184,7 +184,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
                         // We are now emptying dom and adding options manully, don't know if this is optimal
                         removeChilds(simpleFeatureTypeId);
-                        simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', false));
+                        simpleFeatureTypeId.appendChild(getOption(-1, <fmt:message key="viewer_admin.layer.15" />, false));
 
                             if(selectedValue != -1) {
                             Ext.Ajax.request({ 
@@ -201,7 +201,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     });                              
                                 },
                                 failure: function() {
-                                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                                    Ext.MessageBox.alert("Error", "Unknown error");
                                 }
                             });
                         }

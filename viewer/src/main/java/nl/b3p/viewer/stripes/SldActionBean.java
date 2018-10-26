@@ -19,7 +19,9 @@ package nl.b3p.viewer.stripes;
 import java.awt.Color;
 import java.io.*;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -68,6 +70,20 @@ public class SldActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(SldActionBean.class);
     
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
     
     public static final String FORMAT_JSON = "json";
     public static final String FORMAT_XML = "xml";
@@ -223,13 +239,17 @@ public class SldActionBean implements ActionBean {
     }
     //</editor-fold>
     
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     private void getSldXmlOrCreateNewSld() throws Exception {
         
         EntityManager em = Stripersist.getEntityManager();
         if (id != null) {
             StyleLibrary sld = em.find(StyleLibrary.class, id);
             if(sld == null) {
-                throw new IllegalArgumentException("Can't find SLD in Flamingo service registry with id " + id);
+                throw new IllegalArgumentException(MessageFormat.format(getBundle().getString("viewer.sldactionbean.1"), id)  );
             }
             if(sld.getExternalUrl() == null) {
                 sldXml = sld.getSldBody().getBytes("UTF8");
@@ -244,7 +264,7 @@ public class SldActionBean implements ActionBean {
                     bos.close();
                     sldXml = bos.toByteArray();
                 } catch(IOException e) {
-                    throw new IOException("Error retrieving external SLD from URL " + sld.getExternalUrl(), e);
+                    throw new IOException(MessageFormat.format(getBundle().getString("viewer.sldactionbean.2"), sld.getExternalUrl(), e ));
                 }
             }
         } else {
@@ -535,7 +555,7 @@ public class SldActionBean implements ActionBean {
             if (filter!=null && applicationLayer!=null){
                 Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName(), em);
                 if (layer==null){
-                    error = "Layer not found";
+                    error = getBundle().getString("viewer.sldactionbean.3");
                 }else{
                     SimpleFeatureType sft=layer.getFeatureType();
                     Filter f =FlamingoCQL.toFilter(filter, em);
@@ -550,8 +570,7 @@ public class SldActionBean implements ActionBean {
                     // per kaartlaag is er 1 flt in de sessie, dus iedere keer overschrijven
                     String sId = context.getRequest().getSession().getId();
                     Map<String, String> sharedData = SharedSessionData.find(sId);
-                    log.debug(String.format("Adding filter (%s) for layer %s to shared session store %s.",
-                            cqlFilter, applicationLayer.getId().toString(), sId));
+                    log.debug(MessageFormat.format(getBundle().getString("viewer.sldactionbean.4"), cqlFilter, applicationLayer.getId().toString(), sId ));
                     sharedData.put(applicationLayer.getId().toString(), cqlFilter);
                     json.put("sessId", sId);
                     json.put("sldId", applicationLayer.getId().toString());

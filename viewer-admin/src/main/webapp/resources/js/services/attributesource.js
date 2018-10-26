@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.AttributeSource', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "attribuutbronnen",
+        itemname: i18next.t('viewer_admin_attributesource_gtitle'),
         editattributesurl: ""
     },
 

@@ -346,9 +346,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             if (app.getOwner() != null) {
                 ownername = app.getOwner().getUsername();
             }
-            String published = "Nee";
+            String published = getBundle().getString("viewer_admin.general.no");
             if (app.getVersion() == null) {
-                published = "Ja";
+                published = getBundle().getString("viewer_admin.general.yes");
             }
             JSONObject j = new JSONObject();
             j.put("id", app.getId().intValue());
@@ -372,7 +372,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                         }
                     }
                 }
-            j.put("mashup", (isMashup ? "Ja" : "Nee"));
+            j.put("mashup", (isMashup ? 
+                    getBundle().getString("viewer_admin.general.yes") : 
+                    getBundle().getString("viewer_admin.general.no")));
             jsonData.put(j);
         }
 

@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -34,6 +35,20 @@ import org.stripesstuff.stripersist.Stripersist;
 public class FeatureActionBean implements ActionBean {
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
     
     @Validate
     private GeoService service;
@@ -67,6 +82,10 @@ public class FeatureActionBean implements ActionBean {
     }
     //</editor-fold>
     
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     public Resolution getLayerFeatureType() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -74,7 +93,7 @@ public class FeatureActionBean implements ActionBean {
         String error = null;
         
         if(service == null || layer == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.featureactionbean.1");
         } else {
             EntityManager em = Stripersist.getEntityManager();
             service.loadLayerTree(em);

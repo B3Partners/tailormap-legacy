@@ -33,7 +33,7 @@
     },
     {
         "className": "viewer.components.Ontbrandingsaanvraag",
-        "name": "Vuurwerkevenementen",
+        "name": "Fireworks Permit",
         "group": "Component",
         "shortName": "VE",
         "sources": ["../common/ColorField.js", "Print.js", "DownloadMap.js", "Ontbrandingsaanvraag.js"],
@@ -85,7 +85,7 @@
     },
     {
         "className": "viewer.components.tools.ZoomIn",
-        "name": "ZoomIn",
+        "name": "Zoom In",
         "group": "Tools",
         "shortName": "ZI",
         "sources": ["tools/Tool.js","tools/ZoomIn.js"],
@@ -99,7 +99,7 @@
     },
     {
         "className": "viewer.components.tools.ZoomOut",
-        "name": "ZoomOut",
+        "name": "Zoom Out",
         "group": "Tools",
         "shortName": "ZO",
         "sources": ["tools/Tool.js","tools/ZoomOut.js"],
@@ -124,7 +124,7 @@
     },
     {
         "className": "viewer.components.FeatureInfo",
-        "name": "Feature info",
+        "name": "Feature Info",
         "shortName": "Fi",
         "sources": ["Maptip.js","FeatureInfo.js"],
         "closureCompilerSafe": true,
@@ -136,7 +136,7 @@
     },
     {
         "className": "viewer.components.ExtendedFeatureInfo",
-        "name": "Extended feature info",
+        "name": "Extended Feature Info",
         "shortName": "Efi",
         "sources": ["Maptip.js","FeatureInfo.js","ExtendedFeatureInfo.js"],
         "closureCompilerSafe": true,
@@ -152,7 +152,7 @@
         "notInCombinationWith": [
             "viewer.mapcomponents.FlamingoMap"
         ],
-        "name": "FeatureReport",
+        "name": "Feature Report",
         "group": "Map",
         "shortName": "FR",
         "sources": [
@@ -206,7 +206,7 @@
     },
     {
         "className": "viewer.components.tools.SuperPan",
-        "name": "SuperPan",
+        "name": "Super Pan",
         "shortName": "Sp",
         "group": "Tools",
         "sources": ["tools/Tool.js","tools/SuperPan.js"],
@@ -222,7 +222,7 @@
     },
     {
         "className": "viewer.components.tools.Measure.Line",
-        "name": "Measure line",
+        "name": "Measure Distance",
         "shortName": "ML",
         "group": "Tools",
         "sources": ["tools/Tool.js","tools/Measure.js"],
@@ -255,7 +255,7 @@
     },
     {
         "className": "viewer.components.tools.Measure.Area",
-        "name": "Measure area",
+        "name": "Measure Area",
         "shortName": "MA",
         "group": "Tools",
         "sources": ["tools/Tool.js","tools/Measure.js"],
@@ -362,7 +362,7 @@
     },
     {
         "className": "viewer.components.ScaleBar",
-        "name": "ScaleBar",
+        "name": "Scale Bar",
         "shortName": "sb",
         "sources": ["ScaleBar.js"],
         "group": "Map",
@@ -414,7 +414,7 @@
     },
     {
         "className": "viewer.components.TOC",
-        "name": "TOC",
+        "name": "Table of Contents",
         "shortName": "TOC",
         "group": "Component",
         "sources": ["TOC.js"],
@@ -487,7 +487,7 @@
     },
     {
         "className": "viewer.components.RelatedDocuments",
-        "name": "Gerelateerde documenten",
+        "name": "Related documents",
         "shortName": "Rd",
         "group": "Component",
         "sources": ["RelatedDocuments.js"],
@@ -499,7 +499,7 @@
     },
     {
         "className": "viewer.components.SelectionModule",
-        "name": "Selectie Module",
+        "name": "Layer Selection Module",
         "shortName": "Sm",
         "group": "Component",
         "sources": ["SelectionModule.js", "SelectionModuleMenu.js"],
@@ -533,7 +533,7 @@
 
     {
         "className": "viewer.components.TransparencySlider",
-        "name": "Transparantie",
+        "name": "Transparancy",
         "group": "Component",
         "singleton": true,
         "sources": ["Slider.js","NonInitLayerSlider.js","TransparencySlider.js","TransparencySliderLayerIds.js"],
@@ -599,7 +599,7 @@
     },
     {
         "className": "viewer.components.AttributeList",
-        "name": "Attributen Lijst",
+        "name": "Attribute List",
         "group": "Component",
         "shortName": "AL",
         "sources": ["AttributeList.js"],
@@ -635,7 +635,7 @@
     },
     {
         "className": "viewer.components.Split",
-        "name": "Splitsen",
+        "name": "Split",
         "shortName": "Sp",
         "group": "Component",
         "sources": ["Split.js"],
@@ -648,7 +648,7 @@
     },
     {
         "className": "viewer.components.Merge",
-        "name": "Samenvoegen",
+        "name": "Merge",
         "shortName": "Sa",
         "group": "Component",
         "sources": ["Merge.js"],
@@ -661,7 +661,7 @@
     },
     {
         "className": "viewer.components.Drawing",
-        "name": "Tekenen",
+        "name": "Redlining",
         "group": "Component",
         "shortName": "Te",
         "sources": ["../common/ColorField.js","Drawing.js"],
@@ -686,7 +686,7 @@
     },
     {
         "className": "viewer.components.DataSelection",
-        "name": "Data Selectie",
+        "name": "Data Query",
         "shortName": "DS",
         "group": "Component",
         "singleton": true,
@@ -710,7 +710,7 @@
      },
      {
         "className": "viewer.components.DirectSearch",
-        "name": "DirectSearch",
+        "name": "Direct Search",
         "singleton": true,
         "shortName": "Dse",
         "group": "Component",
@@ -721,7 +721,7 @@
      },
     {
         "className": "viewer.components.InfluenceImage",
-        "name": "Invloedsgebied plaatje",
+        "name": "Influence Area",
         "group": "Component",
         "singleton": true,
         "shortName": "Igi",
@@ -733,7 +733,7 @@
     },
     {
         "className": "viewer.components.Overview",
-        "name": "Overzichtskaart",
+        "name": "Overview Map",
         "shortName": "Oz",
         "sources": ["Overview.js"],
         "group": "Component",
@@ -756,7 +756,7 @@
     },
     {
         "className": "viewer.components.LayerContext",
-        "name": "LayerContext",
+        "name": "Layer Context",
         "shortName": "LC",
         "singleton": true,
         "group": "Component",
@@ -779,7 +779,7 @@
     },
     {
         "className": "viewer.components.LayerSwitch",
-        "name": "LayerSwitch",
+        "name": "Layer Switch",
         "shortName": "LS",
         "group": "Component",
         "sources": ["LayerSwitch.js"],
@@ -893,7 +893,7 @@
     },
     {
         "className": "viewer.components.Keyboard",
-        "name": "Keyboard navigation",
+        "name": "Keyboard Navigation",
         "shortName": "Kn",
         "group": "Map",
         "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
@@ -924,7 +924,7 @@
     },
     {
         "className": "viewer.components.Cyclorama",
-        "name": "Cyclorama foto's",
+        "name": "Cyclorama Images",
         "shortName": "Cr",
         "group": "Component",
         "sources": ["tools/Tool.js","Cyclorama.js"],
@@ -944,7 +944,7 @@
     },
     {
         "className": "viewer.components.CoordinateLinkWindow",
-        "name": "Coordinatelink Window",
+        "name": "Coordinate Link Window",
         "group": "Tools",
         "shortName": "CLW",
         "sources": ["tools/Tool.js","CoordinateLinkWindow.js"],
@@ -953,7 +953,7 @@
     },
     {
         "className": "viewer.components.ExternalLinks",
-        "name": "Externe links",
+        "name": "External link",
         "shortName": "EL",
         "group": "Component",
         "sources": ["ExternalLinks.js"],
@@ -963,7 +963,7 @@
     },
     {
         "className": "viewer.components.DownloadWKT",
-        "name": "DownloadWKT",
+        "name": "Download WKT",
         "shortName": "DW",
         "group": "Component",
         "sources": ["DownloadWKT.js"],

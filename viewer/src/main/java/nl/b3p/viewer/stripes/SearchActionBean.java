@@ -43,7 +43,21 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class SearchActionBean implements ActionBean {
     private ActionBeanContext context;
-    
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+     
     @Validate
     private String searchText;
     @Validate
@@ -116,6 +130,10 @@ public class SearchActionBean implements ActionBean {
 
     //</editor-fold>
     
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     @DefaultHandler
     public Resolution source() throws Exception {
         JSONObject result = new JSONObject();        
@@ -129,7 +147,7 @@ public class SearchActionBean implements ActionBean {
         String error="";
         JSONObject search =  getSearchConfig();
         if(search == null){
-            error += "No searchconfig found";
+            error += getBundle().getString("viewer.searchactionbean.1");
         }else{
             JSONArray resultsArray = new JSONArray();
             SearchClient client = getSearchClient(search);
@@ -157,7 +175,7 @@ public class SearchActionBean implements ActionBean {
         String error="";
         JSONObject search =  getSearchConfig();
         if(search == null){
-            error += "No suggestions found";
+            error += getBundle().getString("viewer.searchactionbean.2");
         }else{
             JSONArray results = new JSONArray();
             SearchClient client = getSearchClient(search);

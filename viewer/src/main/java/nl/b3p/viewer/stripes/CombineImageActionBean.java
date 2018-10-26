@@ -54,6 +54,20 @@ public class CombineImageActionBean implements ActionBean {
     private static int minStoredSettings=400;
 
     private ActionBeanContext context;
+    private ResourceBundle bundle;
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
     private int maxResponseTime = 10000;
 
     @Validate
@@ -138,6 +152,10 @@ public class CombineImageActionBean implements ActionBean {
     }
     //</editor-fold>
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
     @DefaultHandler
     public Resolution create() throws JSONException, Exception {
         JSONObject jRequest = new JSONObject(params);
@@ -147,7 +165,7 @@ public class CombineImageActionBean implements ActionBean {
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PrintActionBean.PORTRAIT;
 
         if (orientation==null || pageFormat ==null){
-            error = "invalid parameters";
+            error = getBundle().getString("viewer.combineimageactionbean.1");
         }else{
             try{
 

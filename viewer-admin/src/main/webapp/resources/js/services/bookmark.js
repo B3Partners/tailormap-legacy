@@ -25,7 +25,7 @@ Ext.define('vieweradmin.components.Bookmark', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "bookmarks"
+        itemname: i18next.t('viewer_admin_bookmark_gtitle')
     },
 
     constructor: function(config) {

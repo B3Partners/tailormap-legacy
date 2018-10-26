@@ -291,11 +291,11 @@ function addSubcategory(record) {
                             var newNode = Ext.create('GeoServiceTreeModel', node);
                             addNode(newNode, node.parentid);
                         } else {
-                            Ext.MessageBox.alert("Fout", response.error);
+                            Ext.MessageBox.alert("Error", response.error);
                         }
                     },
                     failure: function ( result, request) {
-                        Ext.MessageBox.alert("Fout", result.responseText);
+                        Ext.MessageBox.alert("Error", result.responseText);
                     }
                 });
             }
@@ -328,11 +328,11 @@ function changeCategoryName(record) {
                         if(response.success) {
                             record.set("text", response.name);
                         } else {
-                            Ext.MessageBox.alert("Fout", response.error);
+                            Ext.MessageBox.alert("Error", response.error);
                         }
                     },
                     failure: function (result) {
-                        Ext.MessageBox.alert("Fout", result.responseText);
+                        Ext.MessageBox.alert("Error", result.responseText);
                     }
                 });
             }

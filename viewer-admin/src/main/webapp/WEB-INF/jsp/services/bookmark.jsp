@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="version"/>
                     <stripes:hidden name="name"/>
                     <stripes:hidden name="applicationWorkversion"/>
-                    <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
+                    <stripes:submit name="newApplication" value='<fmt:message key="viewer_admin.bookmark.3" />'/>
                 </stripes:form>
                 -->
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>

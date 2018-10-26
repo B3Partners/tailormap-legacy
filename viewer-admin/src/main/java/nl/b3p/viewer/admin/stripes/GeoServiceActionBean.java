@@ -1100,9 +1100,9 @@ public class GeoServiceActionBean implements ActionBean {
             if(e instanceof SAXParseException) {
                 SAXParseException spe = (SAXParseException)e;
                 if(spe.getLineNumber() != -1) {
-                    extra = " (regel " + spe.getLineNumber();
+                    extra = " (line " + spe.getLineNumber();
                     if(spe.getColumnNumber() != -1) {
-                        extra += ", kolom " + spe.getColumnNumber();
+                        extra += ", column " + spe.getColumnNumber();
                     }
                     extra += ")";
                 }

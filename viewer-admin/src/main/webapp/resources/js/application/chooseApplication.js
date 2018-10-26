@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "applicaties",
+        itemname: i18next.t('viewer_admin_chooseapplication_gtitle'),
         setDefaultApplication: ""
     },
 

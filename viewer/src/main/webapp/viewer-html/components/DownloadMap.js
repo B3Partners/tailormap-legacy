@@ -69,7 +69,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     },
     imageSuccess: function(imageUrl){        
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
-        if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
+        if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt'; //___(
         else {
             this.lastImageUrl = imageUrl;
             var result = window.open(imageUrl, '_blank');

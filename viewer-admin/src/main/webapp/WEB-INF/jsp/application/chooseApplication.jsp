@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <stripes:errors/>
             <stripes:messages/>
-            <h1>Applicaties<a href="#Soorten_Applicaties_Help" title="<fmt:message key="viewer_admin.chooseapplication.1" />" class="helplink"></a></h1>
+            <h1><fmt:message key="viewer_admin.chooseapplication.4" /><a href="#Soorten_Applicaties_Help" title="<fmt:message key="viewer_admin.chooseapplication.1" />" class="helplink"></a></h1>
             <div id="grid-container" class="applicaties">
 
             </div>
@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="version"/>
                     <stripes:hidden name="name"/>
                     <stripes:hidden name="applicationWorkversion"/>
-                    <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
+                    <stripes:submit name="newApplication"><fmt:message key="viewer_admin.chooseapplication.3" /></stripes:submit>
                 </stripes:form>
                 <div class="applicaties">
                     <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean">

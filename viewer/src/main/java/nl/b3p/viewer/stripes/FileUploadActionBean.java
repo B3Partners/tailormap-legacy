@@ -197,13 +197,14 @@ public class FileUploadActionBean implements ActionBean {
         JSONObject uploads = new JSONObject();
         String error = null;
 
+        ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", request.getLocale());
         if(appLayer == null ) {
-            error = "App layer or service not found";
+            error = bundle.getString("viewer.fileuploadactionbean.1");
         }
 
         if (error == null) {
             if (!Authorizations.isAppLayerReadAuthorized(application, appLayer, request, Stripersist.getEntityManager())) {
-                error = "Not authorized";
+                error = bundle.getString("viewer.fileuploadactionbean.2");
             }
         }
         if(error == null) {
