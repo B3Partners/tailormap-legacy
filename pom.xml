@@ -7,9 +7,6 @@
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
-    <prerequisites>
-        <maven>3.2.5</maven>
-    </prerequisites>
     <scm>
         <connection>scm:git:git@github.com:flamingo-mc/flamingo.git</connection>
         <developerConnection>scm:git:git@github.com:flamingo-mc/flamingo.git</developerConnection>
@@ -20,12 +17,12 @@
         <repository>
             <id>repo.b3p.nl</id>
             <name>B3Partners releases repository</name>
-            <url>http://repo.b3p.nl/nexus/content/repositories/releases/</url>
+            <url>https://repo.b3p.nl/nexus/repository/releases/</url>
         </repository>
         <snapshotRepository>
             <id>repo.b3p.nl</id>
             <name>B3Partners snapshots repository</name>
-            <url>http://repo.b3p.nl/nexus/content/repositories/snapshots/</url>
+            <url>https://repo.b3p.nl/nexus/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <licenses>
@@ -515,7 +512,7 @@
         <repository>
             <id>B3Partners</id>
             <name>Releases hosted by B3Partners</name>
-            <url>http://repo.b3p.nl/nexus/content/groups/public/</url>
+            <url>https://repo.b3p.nl/nexus/repository/public/</url>
         </repository>
     </repositories>
     <build>
@@ -825,25 +822,25 @@
             <name>Matthijs Laan</name>
             <email>matthijslaan@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
             <name>Meine Toonen</name>
             <email>meinetoonen@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
             <name>Roy Braam</name>
             <email>roybraam@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
             <name>Mark Prins</name>
             <email>markprins@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
     </developers>
 </project>
