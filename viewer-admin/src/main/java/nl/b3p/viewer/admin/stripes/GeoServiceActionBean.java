@@ -794,7 +794,12 @@ public class GeoServiceActionBean implements ActionBean {
         }
 
         getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
-        return edit();
+        status.setCurrentAction("Initialiseren pagina.");
+        Resolution editResolution = edit();
+        
+        status.setProgress(100);
+        status.setFinished(true);
+        return editResolution;
     }
 
     protected void addService(EntityManager em) throws Exception{
@@ -846,7 +851,7 @@ public class GeoServiceActionBean implements ActionBean {
         category = em.find(Category.class, category.getId());
         service.setCategory(category);
         category.getServices().add(service);
-
+        status.setCurrentAction("Service opslaan.");
         em.persist(service);
         em.getTransaction().commit();
 
