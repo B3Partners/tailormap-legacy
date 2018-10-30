@@ -80,10 +80,7 @@ public class Layer implements Cloneable, Serializable {
     }));
     
     private static Set<String> allowedSrsList = new HashSet<>(Arrays.asList(new String[] {
-        "EPSG:28992", // RD
-        "EPSG:4326", // WGS84
-        "EPSG:4937", //ETRS89
-        "EPSG:900913" //google
+        "EPSG:28992" // RD
     }));
 
     @Id
