@@ -78,6 +78,10 @@ public class Layer implements Cloneable, Serializable {
         DETAIL_ALL_CHILDREN,
         DETAIL_WMS_STYLES
     }));
+    
+    private static Set<String> allowedSrsList = new HashSet<>(Arrays.asList(new String[] {
+        "EPSG:28992" // RD
+    }));
 
     @Id
     private Long id;
@@ -230,7 +234,8 @@ public class Layer implements Cloneable, Serializable {
             BoundingBox b = new BoundingBox(e);
             boundingBoxes.put(b.getCrs(), b);
         }
-
+        
+        l.getSrs().retainAll(allowedSrsList);
         for(String s: l.getSrs()) {
             crsList.add(new CoordinateReferenceSystem(s));
         }

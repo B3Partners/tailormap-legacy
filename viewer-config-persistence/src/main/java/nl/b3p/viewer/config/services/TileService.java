@@ -147,9 +147,8 @@ public class TileService extends GeoService {
             }
             return s;
         }finally {
-            status.setProgress(100);
+            status.setProgress(90);
             status.setCurrentAction("Service ingeladen");
-            status.setFinished(true);
         }
     }
     

@@ -1498,7 +1498,8 @@ i18next.init({
                 "zoom_config_4": "Configure this component",
                 "zoom_config_5": "Top/bottom position",
                 "zoom_config_6": "Left/right position",
-                "zoom_config_7": "Alignment"            
+                "zoom_config_7": "Alignment",
+                "viewer_admin_applicationsettingsbean_background": "Background"
             }
         }
     }

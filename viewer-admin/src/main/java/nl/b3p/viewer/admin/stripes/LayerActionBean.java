@@ -81,6 +81,9 @@ public class LayerActionBean implements ActionBean {
      * @return the bundle
      */
     public ResourceBundle getBundle() {
+        if (bundle==null) {
+            bundle = ResourceBundle.getBundle("ViewerResources");
+        }
         return bundle;
     }
 

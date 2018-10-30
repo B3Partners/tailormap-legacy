@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="teststring" content="<h1>Uitgelogd</h1>">
         <title><fmt:message key="viewer.logout.0" /></title>
     </head>
     <body>
