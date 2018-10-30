@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:param name="unknown" value="true"/>
         </stripes:url>
         <meta http-equiv="Refresh" content="0;url=${url}">
-        <!-- keep for testing: <title>Beheeromgeving geo-viewers</title> -->
+        <meta name="teststring" content="<title>Beheeromgeving geo-viewers</title>">
         <title><fmt:message key="viewer.index.0" /></title>
     </head>
     <body>

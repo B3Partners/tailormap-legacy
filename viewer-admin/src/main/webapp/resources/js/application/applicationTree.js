@@ -341,8 +341,7 @@ function changeLevelName(record) {
 }
 
 function removeLevel(record) {
-    //TODO CvL generiek maken
-    if(record.data && (record.data.name === "Achtergrond" || record.data.name === "Background")){
+    if(record.data && record.data.name === i18next.t('viewer_admin_applicationsettingsbean_background') ){
         Ext.MessageBox.alert(i18next.t('viewer_admin_applicationtree_10'), i18next.t('viewer_admin_applicationtree_11'));
     }else{
         Ext.MessageBox.show({
