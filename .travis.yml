@@ -66,15 +66,12 @@ after_success:
 jdk:
   - oraclejdk8
   - openjdk8
-  - oraclejdk9
 
 os:
   - linux
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - jdk: oraclejdk9
 
 cache:
   directories:

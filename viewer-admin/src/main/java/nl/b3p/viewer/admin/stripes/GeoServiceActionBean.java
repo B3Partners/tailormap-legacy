@@ -869,7 +869,7 @@ public class GeoServiceActionBean implements ActionBean {
         category = em.find(Category.class, category.getId());
         service.setCategory(category);
         category.getServices().add(service);
-
+        status.setCurrentAction("Service opslaan.");
         em.persist(service);
         em.getTransaction().commit();
 
