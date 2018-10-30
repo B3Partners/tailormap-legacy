@@ -171,7 +171,16 @@ public class CombineImageActionBean implements ActionBean {
                 imageSettings.put(imageId, cis);
                 String url=this.context.getRequest().getRequestURL().toString();
                 url+="?getImage=t&imageId="+imageId;
-                url += "&JSESSIONID=" + context.getRequest().getSession().getId();
+                String jsessionId = null;
+                String j = "jsessionid";
+                int index = url.toLowerCase().indexOf(j);
+                if( index != -1){
+                    index += j.length() +1;
+                    jsessionId = url.substring(index, index + 32);
+                }else{
+                    jsessionId = context.getRequest().getSession().getId();
+                }
+                url += "&JSESSIONID=" + jsessionId;
                 jResponse.put("imageUrl", url );
                 jResponse.put("success", Boolean.TRUE);
             }catch(Exception e){
