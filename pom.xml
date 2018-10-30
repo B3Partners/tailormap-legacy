@@ -42,6 +42,10 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!--
+            when upgrading geotools also check b3p-commons-csw which has some
+            geotools transitive dependencies
+        -->
         <geotools.version>19.3</geotools.version>
         <powermock.version>1.7.4</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
@@ -86,6 +90,7 @@
                 <artifactId>gt-render</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
@@ -150,7 +155,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.0.5</version>
+                <version>5.0.6</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
@@ -595,7 +600,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.3.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
