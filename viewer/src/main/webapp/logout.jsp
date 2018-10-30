@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title><fmt:message key="viewer.logout.0" /></title>
     </head>
     <body>
+        <!-- keep for testing: <h1>Uitgelogd</h1> -->
         <h1><fmt:message key="viewer.logout.1" /></h1>
 
         <b><fmt:message key="viewer.logout.2" /></b>

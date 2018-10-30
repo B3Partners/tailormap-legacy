@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <body>
         <h2><fmt:message key="viewer.loginfail.1" /></h2>
 
+        <!-- keep for testing: Ongeldige logingegevens. -->
         <p style="color: red; font-weight: bold"><fmt:message key="viewer.loginfail.2" /></p>
 
         <form method="post" action="j_security_check">
