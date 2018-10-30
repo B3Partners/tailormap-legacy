@@ -22,7 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><fmt:message key="viewer_admin.loginfail.0" /></title>
+        <meta name="teststring" content="Ongeldige logingegevens.">
+       <title><fmt:message key="viewer_admin.loginfail.0" /></title>
         <style type="text/css">
             .loginfield {
                 width: 130px;

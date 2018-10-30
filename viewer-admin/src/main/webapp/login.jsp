@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="teststring" content="<title>Beheeromgeving geo-viewers</title>">
         <title><fmt:message key="viewer_admin.login.0" /></title>
         <style type="text/css">
             .loginfield {
