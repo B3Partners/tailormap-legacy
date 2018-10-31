@@ -140,6 +140,8 @@ public class Application implements Comparable<Application>{
     @ElementCollection
     @Column(name = "role_name")
     private Set<String> readers = new HashSet<String>();
+    
+    private String projectionCode;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -276,6 +278,14 @@ public class Application implements Comparable<Application>{
 
     public void setReaders(Set<String> readers) {
         this.readers = readers;
+    }
+
+    public String getProjectionCode() {
+        return projectionCode;
+    }
+
+    public void setProjectionCode(String projectionCode) {
+        this.projectionCode = projectionCode;
     }
     //</editor-fold>
 

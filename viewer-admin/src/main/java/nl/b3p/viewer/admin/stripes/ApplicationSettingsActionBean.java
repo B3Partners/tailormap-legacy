@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.CRS;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
@@ -46,6 +47,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
 
     private static final String DEFAULT_SPRITE = "/viewer/viewer-html/sprite.svg";
+    public static final String PROJECTION_NAMES_KEY = "flamingo.projections.epsgnames";
+    public static final String PROJECTION_CODES_KEY = "flamingo.projections.epsgcodes";
 
     @Validate
     private String name;
@@ -69,7 +72,12 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     @Validate
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
-
+    
+    private List<CRS> crses;
+    
+    @Validate
+    private String projection;
+    
     @ValidateNestedProperties({
                 @Validate(field="minx", maxlength=255),
                 @Validate(field="miny", maxlength=255),
@@ -183,6 +191,22 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setGroupsRead(List<String> groupsRead) {
         this.groupsRead = groupsRead;
     }
+
+    public List<CRS> getCrses() {
+        return crses;
+    }
+
+    public void setCrses(List<CRS> crses) {
+        this.crses = crses;
+    }
+
+    public String getProjection() {
+        return projection;
+    }
+
+    public void setProjection(String projection) {
+        this.projection = projection;
+    }
     //</editor-fold>
 
     @DefaultHandler
@@ -200,6 +224,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
             groupsRead.addAll (application.getReaders());
+            projection = application.getProjectionCode();
         }
         // DEFAULT VALUES
         if(!details.containsKey("iconSprite")) {
@@ -212,6 +237,16 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         if(!details.containsKey("stylesheetPrint")) {
             // TODO: Default value stylesheet printen
             details.put("stylesheetPrint", new ClobElement(""));
+        }
+        
+        String codesString = context.getServletContext().getInitParameter(PROJECTION_CODES_KEY);
+        String namesString = context.getServletContext().getInitParameter(PROJECTION_NAMES_KEY);
+        String[] codes = codesString.split(",");
+        String[] names = namesString.split(",");
+        crses = new ArrayList<>();
+        for (int i = 0; i < names.length; i++) {
+            CRS c = new CRS(names[i], codes[i]);
+            crses.add(c);
         }
         return new ForwardResolution(JSP);
     }
@@ -264,7 +299,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
         setApplication(application);
 
-        return new ForwardResolution(JSP);
+        return view();
     }
 
     /* XXX */
@@ -290,6 +325,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         application.authorizationsModified();
 
+        application.setProjectionCode(projection);
         Map<String, ClobElement> backupDetails = new HashMap();
         for (Map.Entry<String, ClobElement> e : application.getDetails().entrySet()) {
             if (Application.preventClearDetails.contains(e.getKey())) {

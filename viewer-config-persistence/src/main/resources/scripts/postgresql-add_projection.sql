@@ -1,0 +1,1 @@
+alter table application add column projection_code varchar(255);

@@ -91,6 +91,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td><stripes:text name="owner" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
+                                <td>Projectie:</td>
+                                <td><stripes:select name="projection">
+                                        <stripes:option label="-- Kies een projectie --"/>
+                                        <stripes:options-collection collection="${actionBean.crses}" label="name" value="code"/>
+                                    </stripes:select></td>
+                            </tr>
+                            <tr>
                                 <td>Start extensie:</td>
                                 <td>
                                     lo-x <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
