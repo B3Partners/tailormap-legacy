@@ -19,6 +19,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     viewerController: null,
     config:{
         resolutions : null,
+        projection:null,
         id: null
     },
     /**

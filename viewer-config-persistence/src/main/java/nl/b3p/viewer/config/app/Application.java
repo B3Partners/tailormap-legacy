@@ -442,6 +442,7 @@ public class Application implements Comparable<Application>{
         }
         o.put("version", version);
         o.put("title", title);
+        o.put("projectionCode", projectionCode != null ? projectionCode : "EPSG:28992");
 
         if (!onlyServicesAndLayers) {
             JSONObject d = new JSONObject();
