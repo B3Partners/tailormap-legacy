@@ -26,6 +26,7 @@ public class I18nActionBean implements ActionBean {
     public Resolution i18nextJs() {
         Locale locale = LocaleUtils.toLocale(language);
         ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", locale);
+        context.getResponse().addDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
         return new StreamingResolution("application/js", new StringReader(ResourceBundleToJsProvider.toJs(bundle)));
     }
 
