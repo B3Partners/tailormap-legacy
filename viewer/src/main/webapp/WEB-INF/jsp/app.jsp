@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             window.onerror = FlamingoErrorLogger;
         </script>
         <script type="text/javascript" src="${contextPath}/viewer-html/i18n/i18next.11.9.0.min.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/i18n/locales/en.js"></script>
+        <script type="text/javascript" src="<stripes:url beanclass="nl.b3p.viewer.stripes.I18nActionBean" event="i18nextJs" />"></script>
 
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
