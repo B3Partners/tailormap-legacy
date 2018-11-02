@@ -54,6 +54,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     @Validate
     private String title;
     @Validate
+    private String language;
+    @Validate
     private String owner;
     @Validate
     private boolean authenticatedRequired;
@@ -136,6 +138,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     public void setTitle(String title) { this.title = title; }
 
+    public String getLanguage() { return language; }
+
+    public void setLanguage(String language) { this.language = language; }
+
     public BoundingBox getStartExtent() {
         return startExtent;
     }
@@ -197,6 +203,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             maxExtent = application.getMaxExtent();
             name = application.getName();
             title = application.getTitle();
+            language = application.getLang();
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
             groupsRead.addAll (application.getReaders());
@@ -273,6 +280,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application.setName(name);
         application.setVersion(version);
         application.setTitle(title);
+        application.setLang(language);
 
         if (owner != null) {
             User appOwner = Stripersist.getEntityManager().find(User.class, owner);

@@ -93,6 +93,8 @@ public class ApplicationActionBean implements ActionBean {
 
     private String title;
 
+    private String language;
+
     private JSONObject user;
 
     private String loginUrl;
@@ -186,6 +188,14 @@ public class ApplicationActionBean implements ActionBean {
 
     public void setTitle(String title){
         this.title = title;
+    }
+
+    public String getLanguage(){
+        return language;
+    }
+
+    public void setLanguage(String language){
+        this.language = language;
     }
 
     public JSONObject getUser() {
@@ -380,6 +390,10 @@ public class ApplicationActionBean implements ActionBean {
         this.title = application.getTitle();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();
+        }
+        this.language = application.getLang();
+        if(StringUtils.isBlank(language)) {
+            this.language = "nl_NL";
         }
 
         //make hashmap for jsonobject.

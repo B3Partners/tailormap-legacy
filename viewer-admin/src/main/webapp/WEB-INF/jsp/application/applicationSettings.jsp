@@ -55,6 +55,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td><stripes:text name="title" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
+                                <td><fmt:message key="viewer_admin.applicationsettings.27" />:</td>
+                                <td>
+                                    <stripes:select name="language">
+                                        <stripes:option value="nl_NL"><fmt:message key="viewer_admin.applicationsettings.28" /></stripes:option>
+                                        <stripes:option value="en_US"><fmt:message key="viewer_admin.applicationsettings.29" /></stripes:option>
+                                    </stripes:select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td><fmt:message key="viewer_admin.applicationsettings.5" />:</td>
                                 <td>
                                     <stripes:text name="details['steunkleur1']" maxlength="255" size="15" style="float: left;" id="steunkleur1" />
