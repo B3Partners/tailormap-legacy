@@ -734,7 +734,6 @@ public class GeoServiceActionBean implements ActionBean {
             SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
         }
 
-        removeLayersFromApplication(service, byStatus.get(UpdateResult.Status.MISSING), em);
         em.getTransaction().commit();
 
         updatedService = new JSONObject();
@@ -749,23 +748,6 @@ public class GeoServiceActionBean implements ActionBean {
 
         return new ForwardResolution(JSP);
     }
-    
-    private void removeLayersFromApplication(GeoService service, List<String> layers, EntityManager em){
-        for (String layer : layers) {
-            List<ApplicationLayer> appLayers = em.createQuery("FROM ApplicationLayer where layer_name = :layername and service = :service").setParameter("layername", layer).setParameter("service", service).getResultList();
-            for (ApplicationLayer appLayer : appLayers) {
-                Map<Application, StartLayer> sls = appLayer.getStartLayers();
-                for (Application application : sls.keySet()) {
-                    StartLayer sl = sls.get(application);
-                    em.remove(sl);
-                    Level l = application.getRoot().getParentInSubtree(appLayer);
-                    l.getLayers().remove(appLayer);
-                }
-                em.remove(appLayer);
-            }
-        }
-    }
-
     @ValidationMethod(on = "add")
     public void validateParams(ValidationErrors errors) {
         if (protocol.equals(ArcIMSService.PROTOCOL) || protocol.equals(TileService.PROTOCOL)) {
