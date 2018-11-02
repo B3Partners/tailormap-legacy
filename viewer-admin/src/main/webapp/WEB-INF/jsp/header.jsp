@@ -79,7 +79,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </li>
         </ul>
         <div id="userinfo">
-            <fmt:message key="locale"/>: <%= request.getLocale().getLanguage() %> |
+            <fmt:message key="locale"/>: <c:out value="${requestLocale}" /> |
             <fmt:message key="viewer_admin.header.23" />: <b><c:out value="${pageContext.request.remoteUser}"/> | </b>
             <stripes:link style="color: white" href="/logout.jsp"><fmt:message key="viewer_admin.header.24" /></stripes:link>
         </div>

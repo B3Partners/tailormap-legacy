@@ -43,3 +43,4 @@ if(needPort) {
 
 out.print(u.toString());
 %></c:set>
+<c:set var="requestLocale"><%= request.getLocale().getLanguage() %></c:set>
