@@ -29,26 +29,40 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.lineButton = null;
         this.polygonButton = null;
         var resolutions;
+        var startResolution;
         if(config && config.resolutions){
-            var rString = (config.resolutions).split(",");
-            resolutions=[];
-            for (var i = 0; i < rString.length; i++){
-                var res=Number(rString[i]);
-                if (!isNaN(res)){
-                    resolutions.push(res);
+            if (config.resolutions === "false") {
+                resolutions = "";
+                startResolution = "";
+            } else {
+                var rString = (config.resolutions).split(",");
+                resolutions = [];
+                for (var i = 0; i < rString.length; i++) {
+                    var res = Number(rString[i]);
+                    if (!isNaN(res)) {
+                        resolutions.push(res);
+                    }
                 }
             }
         }else{
             resolutions = [3440.64,1720.32,860.16,430.08,215.04,107.52,53.76,26.88,13.44,6.72,3.36,1.68,0.84,0.42,0.21,0.105];
+            startResolution = 512;
+        }
+        var maxExtentBounds;
+        if(this.viewerController.app.maxExtent != undefined){
+            maxExtentBounds = new OpenLayers.Bounds(this.viewerController.app.maxExtent.minx,this.viewerController.app.maxExtent.miny,this.viewerController.app.maxExtent.maxx,this.viewerController.app.maxExtent.maxy);
+        }else{
+            maxExtentBounds = new OpenLayers.Bounds(7700,304000,280000,620000);
         }
          //set some default options.
+         var proj = new OpenLayers.Projection(this.projection);
         this.mapOptions =  {
-            projection:new OpenLayers.Projection(this.projection),
-            maxExtent: new OpenLayers.Bounds(7700,304000,280000,620000),
+            projection:proj,
+            maxExtent: maxExtentBounds,
             allOverlays: true,
-            units :'m',
+            units :proj.getUnits(),
             resolutions: resolutions,
-            resolution: 512
+            resolution: startResolution
         };
         /*listen to ON_COMPONENTS_FINISHED_LOADING to check if there is a tool configured
          *Otherwise add default tool. Small delay to step out of the thread.
