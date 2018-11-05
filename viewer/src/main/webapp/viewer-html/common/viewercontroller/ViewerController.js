@@ -55,6 +55,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     // List of elements that are "anchored" to a container. After resizing the element is re-aligned
     anchors: [],
     projection:null,
+    projectionString:null,
     
     /**
      * Creates a ViewerController and initializes the map container.
@@ -76,7 +77,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker", { viewerController: this });
         this.app = app;
-        this.projection = this.app.projectionCode;
+        this.projection = this.app.projectionCode.substring(0,this.app.projectionCode.lastIndexOf('['));
+        this.projectionString = this.app.projectionCode.substring(this.app.projectionCode.lastIndexOf('[')+1,this.app.projectionCode.lastIndexOf(']'));
 
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));
 
@@ -138,6 +140,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         config.projection = this.projection;
+        config.projectionString = this.projectionString;
         this.initialiseProjectionSupport();
         
         Ext.apply(config, mapConfig || {});
@@ -192,7 +195,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
     initialiseProjectionSupport:function(){
         //TODO: remove the hardcoded projection....
-        Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
+        if(this.projectionString === ""){
+            return;
+        }
+        Proj4js.defs[this.projection] = this.projectionString;
+        
     },
     
     spinupDataStores: function() {
