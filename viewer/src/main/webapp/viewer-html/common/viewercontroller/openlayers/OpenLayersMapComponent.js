@@ -32,8 +32,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var startResolution;
         if(config && config.resolutions){
             if (config.resolutions === "false") {
-                resolutions = "";
-                startResolution = "";
+                resolutions = null;
+                startResolution = null;
             } else {
                 var rString = (config.resolutions).split(",");
                 resolutions = [];
@@ -61,8 +61,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             maxExtent: maxExtentBounds,
             allOverlays: true,
             units :proj.getUnits(),
-            resolutions: resolutions,
-            resolution: startResolution
+            resolutions: resolutions
+            //resolution: startResolution
         };
         /*listen to ON_COMPONENTS_FINISHED_LOADING to check if there is a tool configured
          *Otherwise add default tool. Small delay to step out of the thread.
