@@ -241,7 +241,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         
         String codesString = context.getServletContext().getInitParameter(PROJECTION_CODES_KEY);
         String namesString = context.getServletContext().getInitParameter(PROJECTION_NAMES_KEY);
-        String[] codes = codesString.split(",");
+        String[] codes = codesString.split(";");
         String[] names = namesString.split(",");
         crses = new ArrayList<>();
         for (int i = 0; i < names.length; i++) {
