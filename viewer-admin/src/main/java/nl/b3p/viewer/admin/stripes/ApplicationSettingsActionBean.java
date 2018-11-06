@@ -29,6 +29,7 @@ import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
@@ -46,6 +47,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
 
     private static final String DEFAULT_SPRITE = "/viewer/viewer-html/sprite.svg";
+    private static final String LANGUAGE_CODES_KEY = "flamingo.i18n.languagecodes";
 
     @Validate
     private String name;
@@ -71,6 +73,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     @Validate
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
+
+    private String[] languageCodes;
 
     @ValidateNestedProperties({
                 @Validate(field="minx", maxlength=255),
@@ -189,6 +193,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setGroupsRead(List<String> groupsRead) {
         this.groupsRead = groupsRead;
     }
+
+    public String[] getLanguageCodes() { return languageCodes; }
+
+    public void setLanguageCodes(String[] languageCodes) { this.languageCodes = languageCodes; }
     //</editor-fold>
 
     @DefaultHandler
@@ -220,6 +228,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             // TODO: Default value stylesheet printen
             details.put("stylesheetPrint", new ClobElement(""));
         }
+
+        String languageCodesString = context.getServletContext().getInitParameter(LANGUAGE_CODES_KEY);
+        languageCodes = StringUtils.stripAll(languageCodesString.split(","));
+
         return new ForwardResolution(JSP);
     }
 
@@ -271,7 +283,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
         setApplication(application);
 
-        return new ForwardResolution(JSP);
+        return view();
     }
 
     /* XXX */

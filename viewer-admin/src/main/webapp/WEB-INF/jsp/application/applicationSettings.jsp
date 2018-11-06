@@ -54,15 +54,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td><fmt:message key="viewer_admin.applicationsettings.4" />:</td>
                                 <td><stripes:text name="title" maxlength="255" size="30"/></td>
                             </tr>
+                            <c:if test="${fn:length(actionBean.languageCodes) > 1}">
                             <tr>
                                 <td><fmt:message key="viewer_admin.applicationsettings.27" />:</td>
                                 <td>
                                     <stripes:select name="language">
-                                        <stripes:option value="nl_NL"><fmt:message key="viewer_admin.applicationsettings.28" /></stripes:option>
-                                        <stripes:option value="en_US"><fmt:message key="viewer_admin.applicationsettings.29" /></stripes:option>
+                                        <c:forEach items="${actionBean.languageCodes}" var="langCode">
+                                            <stripes:option value="${langCode}"><fmt:message key="viewer_admin.applicationsettings.${langCode}" /></stripes:option>
+                                        </c:forEach>
                                     </stripes:select>
                                 </td>
                             </tr>
+                            </c:if>
                             <tr>
                                 <td><fmt:message key="viewer_admin.applicationsettings.5" />:</td>
                                 <td>
