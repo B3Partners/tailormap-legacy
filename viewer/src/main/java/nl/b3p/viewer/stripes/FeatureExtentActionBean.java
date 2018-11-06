@@ -63,28 +63,11 @@ import javax.persistence.EntityManager;
  */
 @UrlBinding("/action/extent")
 @StrictBinding
-public class FeatureExtentActionBean implements ActionBean {
+public class FeatureExtentActionBean extends LocalizableActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(FeatureExtentActionBean.class);
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
 
     /**
      * An ECQL filter to retrieve the features.
@@ -106,11 +89,6 @@ public class FeatureExtentActionBean implements ActionBean {
 
     private Layer layer;
     private boolean unauthorized;
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
 
     @After(stages = LifecycleStage.BindingAndValidation)
     public void loadLayer() {

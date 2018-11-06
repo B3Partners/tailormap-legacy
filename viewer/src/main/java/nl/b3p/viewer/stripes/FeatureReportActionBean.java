@@ -63,7 +63,7 @@ import java.util.ResourceBundle;
  */
 @UrlBinding("/action/featurereport")
 @StrictBinding
-public class FeatureReportActionBean implements ActionBean {
+public class FeatureReportActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log LOG = LogFactory.getLog(FeatureReportActionBean.class);
 
@@ -76,7 +76,7 @@ public class FeatureReportActionBean implements ActionBean {
     private Layer layer = null;
     private boolean unauthorized;
     private ActionBeanContext context;
-    private ResourceBundle bundle;
+
     /**
      * feature id to report.
      */
@@ -99,11 +99,6 @@ public class FeatureReportActionBean implements ActionBean {
     @Validate
     private String printparams;
 
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
-        
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (appLayer == null
@@ -360,23 +355,6 @@ public class FeatureReportActionBean implements ActionBean {
     @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public ApplicationLayer getAppLayer() {

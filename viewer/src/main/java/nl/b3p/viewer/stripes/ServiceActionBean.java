@@ -44,27 +44,10 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/service/info")
 @StrictBinding
-public class ServiceActionBean implements ActionBean {
+public class ServiceActionBean extends LocalizableActionBean implements ActionBean {
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
 
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
-    
     @Validate
     private String protocol;
     @Validate
@@ -105,11 +88,7 @@ public class ServiceActionBean implements ActionBean {
         this.url = url;
     }
     //</editor-fold>
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
+
     public Resolution info() throws JSONException {
         JSONObject json = new JSONObject();
 

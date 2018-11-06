@@ -44,27 +44,11 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-public class UniqueValuesActionBean implements ActionBean {
+public class UniqueValuesActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(UniqueValuesActionBean.class);
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
 
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
     @Validate
     private ApplicationLayer applicationLayer;
     @Validate
@@ -138,10 +122,6 @@ public class UniqueValuesActionBean implements ActionBean {
     }
     // </editor-fold>
 
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     @DefaultHandler
     public Resolution getUniqueValues() throws JSONException {
         JSONObject json = new JSONObject();

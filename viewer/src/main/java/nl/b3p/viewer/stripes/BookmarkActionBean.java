@@ -40,27 +40,10 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/bookmark")
 @StrictBinding
-public class BookmarkActionBean implements ActionBean {
+public class BookmarkActionBean extends LocalizableApplicationActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(BookmarkActionBean.class);
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
 
     @Validate
     private Application application;
@@ -97,11 +80,7 @@ public class BookmarkActionBean implements ActionBean {
         this.application = application;
     }
     //</editor-fold>
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
+
     public Resolution create() throws JSONException {
         JSONObject json = new JSONObject();
 

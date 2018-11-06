@@ -66,27 +66,10 @@ import org.w3c.dom.NodeList;
  */
 @UrlBinding("/action/sld")
 @StrictBinding
-public class SldActionBean implements ActionBean {
+public class SldActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(SldActionBean.class);
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
     
     public static final String FORMAT_JSON = "json";
     public static final String FORMAT_XML = "xml";
@@ -241,11 +224,7 @@ public class SldActionBean implements ActionBean {
         this.sessId = sessId;
     }
     //</editor-fold>
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
+
     private void getSldXmlOrCreateNewSld() throws Exception {
         
         EntityManager em = Stripersist.getEntityManager();

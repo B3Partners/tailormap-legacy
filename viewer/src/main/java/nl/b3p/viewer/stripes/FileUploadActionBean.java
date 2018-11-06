@@ -7,6 +7,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.FileUpload;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.util.ResourceBundleProvider;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -27,10 +28,9 @@ import java.util.ResourceBundle;
 
 @UrlBinding("/action/upload")
 @StrictBinding
-public class FileUploadActionBean implements ActionBean {
+public class FileUploadActionBean extends LocalizableApplicationActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(FileUploadActionBean.class);
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     public static final String DATA_DIR = "flamingo.data.dir";
 
     private List<FileBean> files;
@@ -50,11 +50,6 @@ public class FileUploadActionBean implements ActionBean {
     @Validate
     private FileUpload upload;
 
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
-    
     // <editor-fold default-state="collapsed" desc="Getters and setters">
     @Override
     public ActionBeanContext getContext() {
@@ -63,23 +58,6 @@ public class FileUploadActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public ApplicationLayer getAppLayer() {
@@ -200,7 +178,7 @@ public class FileUploadActionBean implements ActionBean {
         JSONObject uploads = new JSONObject();
         String error = null;
 
-        ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", request.getLocale());
+        ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(request.getLocale());
         if(appLayer == null ) {
             error = bundle.getString("viewer.fileuploadactionbean.1");
         }

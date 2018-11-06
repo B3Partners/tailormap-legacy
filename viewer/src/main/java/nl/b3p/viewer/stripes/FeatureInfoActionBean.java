@@ -63,29 +63,12 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/featureinfo")
 @StrictBinding
-public class FeatureInfoActionBean implements ActionBean {
+public class FeatureInfoActionBean extends LocalizableApplicationActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(FeatureInfoActionBean.class);
 
     public static final String FID = "__fid";
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
 
     private static final int TIMEOUT = 5000;
 
@@ -236,11 +219,6 @@ public class FeatureInfoActionBean implements ActionBean {
         return this.layer;
     }
     //</editor-fold>
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
 
     @DefaultHandler
     public Resolution info() throws JSONException {

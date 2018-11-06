@@ -77,30 +77,14 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/feature/split")
 @StrictBinding
-public class SplitFeatureActionBean implements ActionBean {
+public class SplitFeatureActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(SplitFeatureActionBean.class);
 
     private static final String FID = FeatureInfoActionBean.FID;
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
 
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
     @Validate
     private Application application;
 
@@ -129,11 +113,6 @@ public class SplitFeatureActionBean implements ActionBean {
     private Layer layer = null;
 
     private boolean unauthorized;
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
 
     @After(stages = LifecycleStage.BindingAndValidation)
     public void loadLayer() {

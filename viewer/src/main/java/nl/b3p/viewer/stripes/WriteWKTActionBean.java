@@ -47,7 +47,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/wkt")
 @StrictBinding
-public class WriteWKTActionBean implements ActionBean{
+public class WriteWKTActionBean extends LocalizableApplicationActionBean implements ActionBean{
 
     private static final Log log = LogFactory.getLog(SplitFeatureActionBean.class);
 
@@ -55,23 +55,7 @@ public class WriteWKTActionBean implements ActionBean{
     private static final String BASE_PATH = "basePath";
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
 
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
     @Validate
     private Application application;
 
@@ -86,11 +70,6 @@ public class WriteWKTActionBean implements ActionBean{
 
     @Validate
     private String filename;
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
 
     @DefaultHandler
     public Resolution write()  {

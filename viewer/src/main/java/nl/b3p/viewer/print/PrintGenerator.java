@@ -41,6 +41,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import nl.b3p.mail.Mailer;
+import nl.b3p.viewer.util.ResourceBundleProvider;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,7 +84,7 @@ public class PrintGenerator  implements Runnable{
         } catch (Exception ex) {
             log.error("Cannot create print.", ex);
             try {
-                ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", locale);
+                ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(locale);
                 String subject = bundle.getString("viewer.printgenerator.subject_fail");
                 String mailContent = MessageFormat.format(bundle.getString("viewer.printgenerator.mailContent_fail"), ex.getLocalizedMessage());
                 Mailer.sendMail(fromName, fromMail,toMail, subject, mailContent);
@@ -101,7 +102,7 @@ public class PrintGenerator  implements Runnable{
             String path = new File(xsl.getParent()).toURI().toString();
             //        PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream ou
             createOutput(info, mimeType, new FileInputStream(xsl), path, fos, filename);
-            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", locale);
+            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(locale);
             String subject = bundle.getString("viewer.printgenerator.subject_success");
             String mailContent = bundle.getString("viewer.printgenerator.mailContent_success");
             Mailer.sendMail(fromName, fromMail, toMail, subject, mailContent, temp, filename);

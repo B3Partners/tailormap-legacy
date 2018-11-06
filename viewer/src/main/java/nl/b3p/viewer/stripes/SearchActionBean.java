@@ -41,26 +41,9 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/search")
 @StrictBinding
-public class SearchActionBean implements ActionBean {
+public class SearchActionBean extends LocalizableActionBean implements ActionBean {
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
 
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
-     
     @Validate
     private String searchText;
     @Validate
@@ -132,11 +115,7 @@ public class SearchActionBean implements ActionBean {
     }
 
     //</editor-fold>
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
+
     @DefaultHandler
     public Resolution source() throws Exception {
         JSONObject result = new JSONObject();        

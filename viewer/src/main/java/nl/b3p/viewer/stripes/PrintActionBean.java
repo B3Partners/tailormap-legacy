@@ -67,7 +67,7 @@ import java.util.ResourceBundle;
  */
 @UrlBinding("/action/print")
 @StrictBinding
-public class PrintActionBean implements ActionBean {
+public class PrintActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
     public static final String A5_Landscape = "A5_Landscape.xsl";
@@ -99,12 +99,6 @@ public class PrintActionBean implements ActionBean {
     private String params;
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-            
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     
     @DefaultHandler
     public Resolution print() throws JSONException, Exception {
@@ -456,11 +450,11 @@ public class PrintActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                String msg = MessageFormat.format(bundle.getString("viewer.printactionbean.moreitems"), this.maxrelatedfeatures);
+                                String msg = MessageFormat.format(getBundle().getString("viewer.printactionbean.moreitems"), this.maxrelatedfeatures);
                                 info.putOnce("moreMessage", msg);
                             }
                         } else {
-                            String msg = MessageFormat.format(bundle.getString("viewer.printactionbean.columnmissing"), leftSide);
+                            String msg = MessageFormat.format(getBundle().getString("viewer.printactionbean.columnmissing"), leftSide);
                             info.putOnce("errorMessage", msg);
                         }
 
@@ -486,23 +480,6 @@ public class PrintActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-    
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getParams() {

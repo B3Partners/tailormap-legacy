@@ -4,6 +4,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.i18n.ResourceBundleToJsProvider;
+import nl.b3p.viewer.util.ResourceBundleProvider;
 import org.apache.commons.lang.LocaleUtils;
 
 import java.io.StringReader;
@@ -25,7 +26,7 @@ public class I18nActionBean implements ActionBean {
      */
     public Resolution i18nextJs() {
         Locale locale = LocaleUtils.toLocale(language);
-        ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", locale);
+        ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(locale);
         context.getResponse().addDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
         return new StreamingResolution("application/js", new StringReader(ResourceBundleToJsProvider.toJs(bundle)));
     }

@@ -34,6 +34,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ComponentRegistryInitializer;
 import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.util.ResourceBundleProvider;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
@@ -51,10 +52,9 @@ import org.json.JSONObject;
  */
 @UrlBinding("/app/{name}/v{version}")
 @StrictBinding
-public class ApplicationActionBean implements ActionBean {
+public class ApplicationActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
             
     @Validate
     private String name;
@@ -139,23 +139,6 @@ public class ApplicationActionBean implements ActionBean {
 
     public ActionBeanContext getContext() {
         return context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getComponentSourceHTML() {
@@ -262,11 +245,6 @@ public class ApplicationActionBean implements ActionBean {
         this.levelOrder = levelOrder;
     }
     //</editor-fold>
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     
     static Application findApplication(String name, String version) {
         EntityManager em = Stripersist.getEntityManager();
@@ -387,7 +365,6 @@ public class ApplicationActionBean implements ActionBean {
 
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
-        this.title = application.getTitle();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();
         }
@@ -428,7 +405,7 @@ public class ApplicationActionBean implements ActionBean {
             context.getRequest().getSession().invalidate();
             return login;
         } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
-            ResourceBundle bundle = ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale());
+            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(context.getRequest().getLocale(), application);
             String msg = bundle.getString("viewer.applicationactionbean.norights");
             context.getValidationErrors().addGlobalError(new SimpleError(msg));
             context.getRequest().getSession().invalidate();

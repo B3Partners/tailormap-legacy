@@ -40,7 +40,7 @@ import org.json.JSONObject;
  */
 @UrlBinding("/action/combineimage")
 @StrictBinding
-public class CombineImageActionBean implements ActionBean {
+public class CombineImageActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
     private static LinkedHashMap<String,CombineImageSettings> imageSettings = new LinkedHashMap<String,CombineImageSettings>();
 
@@ -54,23 +54,7 @@ public class CombineImageActionBean implements ActionBean {
     private static int minStoredSettings=400;
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
 
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
     private int maxResponseTime = 10000;
 
     @Validate
@@ -155,10 +139,6 @@ public class CombineImageActionBean implements ActionBean {
     }
     //</editor-fold>
 
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     @DefaultHandler
     public Resolution create() throws JSONException, Exception {
         JSONObject jRequest = new JSONObject(params);

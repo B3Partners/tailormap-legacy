@@ -79,10 +79,9 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/csw/search")
 @StrictBinding
-public class CatalogSearchActionBean implements ActionBean {
+public class CatalogSearchActionBean extends LocalizableApplicationActionBean implements ActionBean {
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     private static final Log log = LogFactory.getLog(CatalogSearchActionBean.class);
     private static final String defaultWildCard = "*";
     
@@ -111,23 +110,6 @@ public class CatalogSearchActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getUrl() {
@@ -171,12 +153,7 @@ public class CatalogSearchActionBean implements ActionBean {
     }
     
     //</editor-fold>        
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
-    
+
     @DefaultHandler
     public Resolution search() throws JSONException {    
         JSONObject json = new JSONObject();

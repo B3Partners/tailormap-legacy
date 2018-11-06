@@ -59,7 +59,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/arcquery")
 @StrictBinding
-public class ArcQueryUtilActionBean implements ActionBean {
+public class ArcQueryUtilActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(ArcQueryUtilActionBean.class);
     @Validate
@@ -74,8 +74,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
     private boolean unauthorized;
     private Layer layer = null;
     private ActionBeanContext context;
-    private ResourceBundle bundle;
-            
+
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
         return context;
@@ -83,23 +82,6 @@ public class ArcQueryUtilActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getCql() {
@@ -134,12 +116,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
         this.application = application;
     }
     // </editor-fold>
-   
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
-    
+
     @After(stages = LifecycleStage.BindingAndValidation, on="!arcXML")
     public void loadLayer() {
         layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
@@ -237,7 +214,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
         } catch (Exception e) {
             log.error("Error loading feature ids", e);
             json.put("success", false);
-            String message = MessageFormat.format(bundle.getString("viewer.arcqueryutilactionbean.ff"), e.toString());
+            String message = MessageFormat.format(getBundle().getString("viewer.arcqueryutilactionbean.ff"), e.toString());
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();

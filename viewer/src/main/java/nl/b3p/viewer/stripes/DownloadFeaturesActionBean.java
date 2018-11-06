@@ -72,7 +72,6 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -88,14 +87,13 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/downloadfeatures")
 @StrictBinding
-public class DownloadFeaturesActionBean implements ActionBean {
+public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(DownloadFeaturesActionBean.class);
 
     private ActionBeanContext context;
     private boolean unauthorized;
-    private ResourceBundle bundle;
- 
+
     @Validate
     private Application application;
 
@@ -128,23 +126,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
     @Override
     public ActionBeanContext getContext() {
         return context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public boolean isUnauthorized() {
@@ -233,11 +214,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
         }
     }
 
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
-    
     public Resolution download() throws JSONException, FileNotFoundException {
         JSONObject json = new JSONObject();
         if (unauthorized) {
