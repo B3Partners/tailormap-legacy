@@ -139,7 +139,7 @@ Ext.define ("viewer.components.Filter",{
     getAttributeUniques : function (attributeName,ft){
         var appLayer = this.config.parentComponent.layerSelector.getValue();
         if(attributeName){
-            this.config.parentMainContainer.setLoading("Laad unieke waardes...");
+            this.config.parentMainContainer.setLoading(i18next.t('viewer_components_filter_0'));
             Ext.Ajax.request({ 
                 url: actionBeans.unique, 
                 timeout: 240000,
@@ -159,12 +159,12 @@ Ext.define ("viewer.components.Filter",{
                         }
                         this.handleUniqueValues(values);
                     }else{
-                        Ext.MessageBox.alert(i18next.t('viewer_components_filter_0'), i18next.t('viewer_components_filter_1') + res.msg);   
+                        Ext.MessageBox.alert(i18next.t('viewer_components_filter_1'), i18next.t('viewer_components_filter_2') + res.msg);   
                         this.config.parentMainContainer.setLoading(false);
                     }
                 }, 
                 failure: function ( result, request) {
-                    Ext.MessageBox.alert(i18next.t('viewer_components_filter_2'), i18next.t('viewer_components_filter_3') + result.responseText);   
+                    Ext.MessageBox.alert(i18next.t('viewer_components_filter_3'), i18next.t('viewer_components_filter_4') + result.responseText);   
                     this.config.parentMainContainer.setLoading(false);
                 } 
             });

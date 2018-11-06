@@ -70,7 +70,7 @@ public class CombineImagesHandler {
                 returnImage = combinedImages;
             }
         } catch (Exception e) {
-            log.error("Kan geometrien niet tekenen. Return image zonder alle geometrien: ", e);
+            log.error("Can not draw geometry. Return image without geometries: ", e);
             returnImage = combinedImages;
         }
         //rotate the image back and cut the original bbox.

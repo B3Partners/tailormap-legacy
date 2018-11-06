@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         Ext.tip.QuickTipManager.init();  // enable tooltips
         this.titleField = Ext.create('Ext.form.field.Text', {
-            fieldLabel: i18next.t('viewer_components_customconfiguration_102'),
+            fieldLabel: i18next.t('html_config_0'),
             name: 'title',
             value: title,
             labelWidth: 275,
@@ -39,7 +39,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             renderTo: Ext.get(parentId)
         });
         this.loadScriptsField = Ext.create('Ext.form.field.Checkbox', {
-            fieldLabel: i18next.t('viewer_components_customconfiguration_103'),
+            fieldLabel: i18next.t('html_config_1'),
             name: 'loadScripts',
             checked: this.configObject && this.configObject.loadScripts != undefined ? this.configObject.loadScripts : false,
             inputValue: true,

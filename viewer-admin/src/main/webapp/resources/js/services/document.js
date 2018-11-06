@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.Document', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "documenten"
+        itemname: i18next.t('viewer_admin_document_gtitle')
     },
 
     constructor: function(config) {
@@ -68,8 +68,8 @@ Ext.define('vieweradmin.components.Document', {
                 menuDisabled: true,
                 renderer: function(value) {
                     return [
-                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_document_3') + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_document_4') + '</a>')
                     ].join(" | ");
                 }
             }
@@ -86,7 +86,7 @@ Ext.define('vieweradmin.components.Document', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u het document ", record.get("name"), " wilt verwijderen?"].join("");
+        return i18next.t('viewer_admin_document_5', {name: record.get("name")});
     },
 
     getEditUrl: function(record) {

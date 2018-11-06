@@ -595,7 +595,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
-            this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
+            this.viewerController.logger.warning(i18next.t('viewer_viewercontroller_openlayersmapcomponent_0', {type:type}));
         }
     },
     activateGetFeatureControls : function(){
@@ -621,10 +621,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addTool : function(tool){
         /* if (!(tool instanceof OpenLayersTool)){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_0')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_1')});
     }*/
         if (this.maps.length==0){
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_1')});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_2')});
         }
         if( tool instanceof Array){
             for(var i = 0 ; i < tool.length; i++){
@@ -727,7 +727,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     removeTool : function (tool){
         if (!(tool instanceof OpenLayersTool)){
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_2')});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_3')});
         }
         if (tool.type==Tool.NAVIGATION_HISTORY){
             OpenLayers.Util.removeItem(this.getPanel().controls, tool.getFrameworkTool().next);
@@ -747,7 +747,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     },
     addComponent: function(component){
         if(Ext.isEmpty(component)){
-            this.viewerController.logger.warning("Empty component added to OpenLayersMapComponent. \nProbably not yet implemented");
+            this.viewerController.logger.warning(i18next.t('viewer_viewercontroller_openlayersmapcomponent_4'));
         }else{
             //add the component to the map
             this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());
@@ -760,10 +760,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addMap : function (map){
         if (!(map instanceof viewer.viewercontroller.openlayers.OpenLayersMap)){
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_3')});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_5')});
         }
         if (this.maps.length>=1)
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_4')});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_6')});
         this.maps.push(map);
 
         this.createMenus(this.mapOptions.options.top,this.mapOptions.options.bottom);

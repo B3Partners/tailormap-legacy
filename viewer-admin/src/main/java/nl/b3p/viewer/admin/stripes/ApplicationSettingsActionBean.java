@@ -57,6 +57,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     @Validate
     private String title;
     @Validate
+    private String language;
+    @Validate
     private String owner;
     @Validate
     private boolean authenticatedRequired;
@@ -144,6 +146,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     public void setTitle(String title) { this.title = title; }
 
+    public String getLanguage() { return language; }
+
+    public void setLanguage(String language) { this.language = language; }
+
     public BoundingBox getStartExtent() {
         return startExtent;
     }
@@ -221,6 +227,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             maxExtent = application.getMaxExtent();
             name = application.getName();
             title = application.getTitle();
+            language = application.getLang();
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
             groupsRead.addAll (application.getReaders());
@@ -280,10 +287,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
              * A new application always has a root and a background level.
              */
             Level root = new Level();
-            root.setName("Applicatie");
+            root.setName(getBundle().getString("viewer_admin.applicationsettingsbean.applabel"));
 
             Level background = new Level();
-            background.setName("Achtergrond");
+            background.setName(getBundle().getString("viewer_admin.applicationsettingsbean.background"));
             background.setBackground(true);
             root.getChildren().add(background);
             background.setParent(root);
@@ -298,7 +305,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         Stripersist.getEntityManager().persist(application);
         Stripersist.getEntityManager().getTransaction().commit();
 
-        getContext().getMessages().add(new SimpleMessage("Applicatie is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationsettingsbean.appsaved")));
 
         setApplication(application);
 
@@ -311,6 +318,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application.setName(name);
         application.setVersion(version);
         application.setTitle(title);
+        application.setLang(language);
 
         if (owner != null) {
             User appOwner = Stripersist.getEntityManager().find(User.class, owner);
@@ -343,7 +351,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     @ValidationMethod(on="save")
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
-            errors.add("name", new SimpleError("Naam is verplicht"));
+            errors.add("name", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.noname")));
             return;
         }
 
@@ -364,10 +372,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
             if(application != null && application.getId() != null){
                 if( !foundId.equals(application.getId()) ){
-                    errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen."));
+                    errors.add("name", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.appnotfound")));
                 }
             }else{
-                errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen."));
+                errors.add("name", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.appnotfound")));
             }
         } catch(NoResultException nre) {
             // name version combination is unique
@@ -380,20 +388,20 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             try {
                 User appOwner = Stripersist.getEntityManager().find(User.class, owner);
                 if(appOwner == null){
-                    errors.add("owner", new SimpleError("Gebruiker met deze naam bestaat niet."));
+                    errors.add("owner", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.nouser")));
                 }
             } catch(NoResultException nre) {
-                errors.add("owner", new SimpleError("Gebruiker met deze naam bestaat niet."));
+                errors.add("owner", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.nouser")));
             }
         }
         if(startExtent != null){
             if(startExtent.getMinx() == null || startExtent.getMiny() == null || startExtent.getMaxx() == null || startExtent.getMaxy() == null ){
-                errors.add("startExtent", new SimpleError("Alle velden van de start extentie moeten ingevuld worden."));
+                errors.add("startExtent", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.nostartext")));
             }
         }
         if(maxExtent != null){
             if(maxExtent.getMinx() == null || maxExtent.getMiny() == null || maxExtent.getMaxx() == null || maxExtent.getMaxy() == null ){
-                errors.add("maxExtent", new SimpleError("Alle velden van de max extentie moeten ingevuld worden."));
+                errors.add("maxExtent", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.nomaxext")));
             }
         }
     }
@@ -406,7 +414,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 .setParameter("name", name)
                 .getSingleResult();
 
-            getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" bestaat al", name));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationsettingsbean.copyexists"), name));
             return new RedirectResolution(this.getClass());
         } catch(NoResultException nre) {
             // name is unique
@@ -414,7 +422,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
         try {
             copyApplication(em);
-            getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationsettingsbean.appcopied")));
             return new RedirectResolution(this.getClass());
         } catch(Exception e) {
             log.error(String.format("Error copying application #%d named %s %swith new name %s",
@@ -428,7 +436,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 ex += ";\n<br>" + cause.toString();
                 cause = cause.getCause();
             }
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij kopieren applicatie: " + ex));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.copyerror"), ex));
             return new ForwardResolution(JSP);
         }
     }
@@ -467,7 +475,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             setApplication(mashup);
         } catch (Exception ex) {
             log.error("Error creating mashup",ex);
-            errors.add("Fout", new SimpleError("De mashup kan niet worden gemaakt."));
+            errors.add("Fout", new SimpleError(getBundle().getString("viewer_admin.applicationsettingsbean.nomashup")));
         }
         return new RedirectResolution(ApplicationSettingsActionBean.class);
     }

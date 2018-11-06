@@ -69,7 +69,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     },
     imageSuccess: function(imageUrl){        
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
-        if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
+        if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt'; //___(
         else {
             this.lastImageUrl = imageUrl;
             var result = window.open(imageUrl, '_blank');
@@ -84,13 +84,13 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         Ext.Msg.show({
             title: i18next.t('viewer_components_tools_downloadmap_0'),
             message: [
-                'De afbeelding van de kaart is beschikbaar via',
+                i18next.t('viewer_components_tools_downloadmap_1'),
                 '<br /><br />',
                 '<input type="text" value="', imageUrl, '" style="width: 100%;" class="ext-style" />',
                 '<br /><br />',
-                'Klik op "Openen" om de afbeelding in een nieuw venster te openen'
+                i18next.t('viewer_components_tools_downloadmap_2')
             ].join(''),
-            buttonText: { ok: "Openen", cancel: "Sluiten" },
+            buttonText: { ok: i18next.t('viewer_components_tools_downloadmap_3'), cancel: i18next.t('viewer_components_tools_downloadmap_4') },
             icon: Ext.Msg.INFO,
             fn: function(btn) {
                 if (btn === 'ok') {

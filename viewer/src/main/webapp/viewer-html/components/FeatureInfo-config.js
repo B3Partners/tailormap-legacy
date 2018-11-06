@@ -33,32 +33,32 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         this.form.add([{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_67'),
+            fieldLabel: i18next.t('featureinfo_config_0'),
             name: 'moreLink',
-            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : 'Meer',
+            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : i18next.t('featureinfo_config_1'),
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_68'),
+            fieldLabel: i18next.t('featureinfo_config_2'),
             name: 'height',
             value: this.configObject.height !== undefined ? this.configObject.height : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_69'),
+            fieldLabel: i18next.t('featureinfo_config_3'),
             name: 'width',
             value: this.configObject.width !== undefined ? this.configObject.width : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_70'),
+            fieldLabel: i18next.t('featureinfo_config_4'),
             name: 'heightDescription',
             value: this.configObject.heightDescription !== undefined ? this.configObject.heightDescription : "",
             labelWidth: this.labelWidth
         },
          {
             xtype: 'numberfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_71'),
+            fieldLabel: i18next.t('featureinfo_config_5'),
             name: 'clickRadius',
             value: this.configObject.clickRadius !== undefined ? this.configObject.clickRadius : 4,
             labelWidth:this.labelWidth,
@@ -67,7 +67,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         },{
             xtype: 'checkbox',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_72'),
+            fieldLabel: i18next.t('featureinfo_config_6'),
             name: 'spinnerWhileIdentify',
             inputValue: true,
             checked: this.configObject.spinnerWhileIdentify !== undefined ? this.configObject.spinnerWhileIdentify : false,
@@ -75,7 +75,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         },
         {
             xtype: 'checkbox',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_73'),
+            fieldLabel: i18next.t('featureinfo_config_7'),
             name: 'detailHideNullValues',
             id: 'detailHideNullValues',
             inputValue: true,
@@ -86,7 +86,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype : 'fieldset',
             collapsible: true,
             collapsed: true,
-            title: i18next.t('viewer_components_customconfiguration_74'),
+            title: i18next.t('featureinfo_config_8'),
             layout : {
                 type: 'table',
                 columns: 2,
@@ -95,7 +95,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [
                 {
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_75'),
+                    fieldLabel: i18next.t('featureinfo_config_9'),
                     name: 'detailShowTitle',
                     id: 'detailShowTitle',
                     inputValue: true,
@@ -106,7 +106,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_76'),
+                    fieldLabel: i18next.t('featureinfo_config_10'),
                     name: 'detailShowImage',
                     id: 'detailShowImage',
                     inputValue: true,
@@ -114,7 +114,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     labelWidth:this.labelWidth
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_77'),
+                    fieldLabel: i18next.t('featureinfo_config_11'),
                     name: 'detailShowDesc',
                     id: 'detailShowDesc',
                     inputValue: true,
@@ -125,7 +125,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_78'),
+                    fieldLabel: i18next.t('featureinfo_config_12'),
                     name: 'detailShowAttr',
                     id: 'detailShowAttr',
                     inputValue: true,
@@ -133,7 +133,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     labelWidth:this.labelWidth
                 }, {
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_79'),
+                    fieldLabel: i18next.t('featureinfo_config_13'),
                     name: 'detailHideGeomAttr',
                     id: 'detailHideGeomAttr',
                     inputValue: true,

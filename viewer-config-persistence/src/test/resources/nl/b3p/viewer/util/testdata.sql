@@ -1,7 +1,7 @@
 SET DATABASE REFERENTIAL INTEGRITY FALSE;
 SET WRITE_DELAY 0
 
-INSERT INTO application (id, authenticated_required, authorizations_modified, layout, max_crs, max_maxx, max_maxy, max_minx, max_miny, name, title, start_crs, start_maxx, start_maxy, start_minx, start_miny, version, owner, root) VALUES (1, false, '2015-09-15 16:35:27.956', NULL, NULL, NULL, NULL, NULL, NULL, 'test', 'test title', NULL, NULL, NULL, NULL, NULL, '1', NULL, 2);
+INSERT INTO application (id, authenticated_required, authorizations_modified, layout, max_crs, max_maxx, max_maxy, max_minx, max_miny, name, title, lang, start_crs, start_maxx, start_maxy, start_minx, start_miny, version, owner, root) VALUES (1, false, '2015-09-15 16:35:27.956', NULL, NULL, NULL, NULL, NULL, NULL, 'test', 'test title', 'nl_NL', NULL, NULL, NULL, NULL, NULL, '1', NULL, 2);
 
 INSERT INTO application_details (application, value, details_key) VALUES (1, '#000000', 'steunkleur2');
 INSERT INTO application_details (application, value, details_key) VALUES (1, '/resources/images/default_sprite.png', 'iconSprite');

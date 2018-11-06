@@ -18,8 +18,10 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -52,6 +54,7 @@ public class CatalogServiceActionBean implements ActionBean{
     private static final String SELECT_SERVICE = "/WEB-INF/jsp/services/selectCswServices.jsp";
     
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     
     @Validate
     private String searchTerm;
@@ -68,6 +71,23 @@ public class CatalogServiceActionBean implements ActionBean{
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        if (bundle==null) {
+            bundle = ResourceBundle.getBundle("ViewerResources");
+        }
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public String getSearchTerm() {
@@ -89,6 +109,11 @@ public class CatalogServiceActionBean implements ActionBean{
     
     // </editor-fold>
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     public Resolution addForm (){
         return new ForwardResolution(JSP);
     }
@@ -139,9 +164,9 @@ public class CatalogServiceActionBean implements ActionBean{
         } catch(Exception e) {
 
 
-            error = "Fout bij zoeken in CSW: " + e.toString();
+            error = MessageFormat.format(getBundle().getString("viewer_admin.catalogserviceactionbean.cswerr"), e.toString());
             if(e.getCause() != null) {
-                error += "; oorzaak: " + e.getCause().toString();
+                error += MessageFormat.format(getBundle().getString("viewer_admin.catalogserviceactionbean.cdwerrc"), e.getCause().toString());
             }
         }
                 

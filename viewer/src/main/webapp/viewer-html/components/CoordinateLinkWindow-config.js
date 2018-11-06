@@ -30,7 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.width,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: i18next.t('viewer_components_customconfiguration_23')
+                fieldLabel: i18next.t('coordinatelinkwindow_config_0')
             },
             {
                 xtype: "textfield",
@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.height,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: i18next.t('viewer_components_customconfiguration_24')
+                fieldLabel: i18next.t('coordinatelinkwindow_config_1')
             },
             {
                 xtype: "textfield",
@@ -46,14 +46,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.url,
                 width: 700,
                 labelWidth:this.labelWidth,
-                fieldLabel: i18next.t('viewer_components_customconfiguration_25')
+                fieldLabel: i18next.t('coordinatelinkwindow_config_2')
             }         
         ]);
           var extraText = document.createElement('div');
-        extraText.innerHTML="* Vul hier de gewenste URL in, bijvoorbeeld naar panoramafoto's. Flamingo levert standaard een pagina voor cyclorama mee.\n\
- Vul hiervoor het volgende in: <br/> \
-                '/cyclomedia.html?username=[username]&password=[password]&x=[RDX]&y=[RDY]'. <br/> \
-            Username en wachtwoord moeten hier ingevuld worden door de beheerder, RDX en RDY is het coördinaat van het klikpunt, en wordt automatisch ingevuld.";
+        extraText.innerHTML=i18next.t('coordinatelinkwindow_config_3');
         document.getElementById("config").appendChild(extraText);
     }
 });

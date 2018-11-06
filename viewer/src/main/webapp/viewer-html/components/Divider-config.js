@@ -29,44 +29,44 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             defaultType: 'textfield',
             items: [{                  
-                fieldLabel: i18next.t('viewer_components_customconfiguration_39'),
+                fieldLabel: i18next.t('divider_config_0'),
                 name: 'title',
-                value: this.configObject.title !== null && this.configObject.title !== undefined ? this.configObject.title : "Titel",
+                value: this.configObject.title !== null && this.configObject.title !== undefined ? this.configObject.title : i18next.t('divider_config_1'),
                 labelWidth: me.labelWidth,
                 width: 500
             },{                        
-                fieldLabel: i18next.t('viewer_components_customconfiguration_40'),
+                fieldLabel: i18next.t('divider_config_2'),
                 name: 'margin',
                 value: this.configObject.margin || "3px 0 3px 0",
                 labelWidth: me.labelWidth,
                 width: 400                   
             },{
-                fieldLabel: i18next.t('viewer_components_customconfiguration_41'),
+                fieldLabel: i18next.t('divider_config_3'),
                 name: 'padding',
                 value: this.configObject.padding || "5px",
                 labelWidth: me.labelWidth,
                 width: 400
             },{
                 xtype: 'colorfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_42'),
+                fieldLabel: i18next.t('divider_config_4'),
                 name: 'backgroundColor',
                 value: this.configObject.backgroundColor || "transparent",
                 labelWidth: me.labelWidth
             },{
-                fieldLabel: i18next.t('viewer_components_customconfiguration_43'),
+                fieldLabel: i18next.t('divider_config_5'),
                 name: 'border',
                 value: this.configObject.border || "1px 0 1px 0",
                 labelWidth: me.labelWidth,
                 width: 400
             },{
                 xtype: 'colorfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_44'),
+                fieldLabel: i18next.t('divider_config_6'),
                 name: 'borderColor',
                 value: this.configObject.borderColor || "D0D0D0",
                 labelWidth: me.labelWidth
             },{
                 xtype: 'colorfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_45'),
+                fieldLabel: i18next.t('divider_config_7'),
                 name: 'textColor',
                 value: this.configObject.textColor || "000000",
                 labelWidth: me.labelWidth
@@ -75,11 +75,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fields: ['value', 'text'],
                 value: this.configObject.fontWeight || "bold",
                 name: "fontWeight",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_46'),
+                fieldLabel: i18next.t('divider_config_8'),
                 labelWidth: me.labelWidth,
                 store: [
-                    ["normal", "Normaal"],
-                    ["bold", "Vet gedrukt"]
+                    ["normal", i18next.t('divider_config_9')],
+                    ["bold", i18next.t('divider_config_10')]
                 ],
                 width : 400
             }],

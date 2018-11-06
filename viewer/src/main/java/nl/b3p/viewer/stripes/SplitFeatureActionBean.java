@@ -24,11 +24,13 @@ import com.vividsolutions.jts.geom.util.LineStringExtracter;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.operation.polygonize.Polygonizer;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
@@ -75,7 +77,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/feature/split")
 @StrictBinding
-public class SplitFeatureActionBean implements ActionBean {
+public class SplitFeatureActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(SplitFeatureActionBean.class);
 
@@ -139,22 +141,22 @@ public class SplitFeatureActionBean implements ActionBean {
             FeatureSource fs = null;
             try {
                 if (this.splitFeatureFID == null) {
-                    throw new IllegalArgumentException("Split feature ID is null");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.splitfeatureactionbean.1"));
                 }
                 if (this.toSplitWithFeature == null) {
-                    throw new IllegalArgumentException("Split line is null");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.splitfeatureactionbean.2"));
                 }
 
                 fs = this.layer.getFeatureType().openGeoToolsFeatureSource();
                 if (!(fs instanceof SimpleFeatureStore)) {
-                    throw new IllegalArgumentException("Feature source does not support editing");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.splitfeatureactionbean.3"));
                 }
                 this.store = (SimpleFeatureStore) fs;
 
                 List<FeatureId> ids = this.splitFeature();
 
                 if (ids.size() < 2) {
-                    throw new IllegalArgumentException("Split failed, check that geometries overlap");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.splitfeatureactionbean.4"));
                 }
 
                 json.put("fids", ids);
@@ -230,7 +232,7 @@ public class SplitFeatureActionBean implements ActionBean {
                 f = (SimpleFeature) fc.features().next();
             } else {
                 throw new IllegalArgumentException(
-                        String.format("Feature to split having ID: (%s) not found in datastore.", this.splitFeatureFID));
+                        MessageFormat.format(getBundle().getString("viewer.splitfeatureactionbean.5"), this.splitFeatureFID ));
             }
             String geomAttribute = store.getSchema().getGeometryDescriptor().getLocalName();
             Geometry toSplit = (Geometry) f.getProperty(geomAttribute).getValue();
@@ -247,8 +249,8 @@ public class SplitFeatureActionBean implements ActionBean {
                     geoms = splitPolygon(toSplit, splitWith);
                     break;
                 default:
-                    throw new IllegalArgumentException("Unsupported dimension ("
-                            + toSplit.getDimension() + ") for splitting, must be 1 or 2");
+                    throw new IllegalArgumentException(
+                            MessageFormat.format(getBundle().getString("viewer.splitfeatureactionbean.6"),toSplit.getDimension()));
             }
 
             ids = handleStrategy(f, geoms, filter, this.store, this.strategy);
@@ -318,7 +320,7 @@ public class SplitFeatureActionBean implements ActionBean {
                     localStore.removeFeatures(filter);
                     firstFeature = false;
                 } else {
-                    throw new IllegalArgumentException("Unknown strategy '" + localStrategy + "', cannot split");
+                    throw new IllegalArgumentException(MessageFormat.format(getBundle().getString("viewer.splitfeatureactionbean.7"), localStrategy ));
                 }
             }
             // create + add new features

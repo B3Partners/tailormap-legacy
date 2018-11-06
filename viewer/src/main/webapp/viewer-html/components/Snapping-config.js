@@ -40,7 +40,7 @@ Ext.define("viewer.components.CustomConfiguration", {
     addFormItems: function (configObject) {
         this.form.add([{
                 xtype: 'colorfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_207'),
+                fieldLabel: i18next.t('snapping_config_0'),
                 name: 'snapColour',
                 value: configObject.snapColour ? configObject.snapColour : this.defaultSnapColour,
                 labelWidth: this.labelWidth
@@ -49,7 +49,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 xtype: 'numberfield',
                 anchor: '100%',
                 name: 'snapColourOpacity',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_208'),
+                fieldLabel: i18next.t('snapping_config_1'),
                 value: configObject.snapColourOpacity ? configObject.snapColourOpacity : this.defaultSnapColourOpacity,
                 maxValue: 100,
                 step: 5,
@@ -58,7 +58,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'colorfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_209'),
+                fieldLabel: i18next.t('snapping_config_2'),
                 name: 'snapFillColour',
                 value: configObject.snapFillColour ? configObject.snapFillColour : this.defaultSnapColour,
                 labelWidth: this.labelWidth
@@ -67,7 +67,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 xtype: 'numberfield',
                 anchor: '100%',
                 name: 'snapFillColourOpacity',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_210'),
+                fieldLabel: i18next.t('snapping_config_3'),
                 value: configObject.snapFillColourOpacity ? configObject.snapFillColourOpacity : this.defaultSnapColourOpacity,
                 maxValue: 100,
                 step: 5,

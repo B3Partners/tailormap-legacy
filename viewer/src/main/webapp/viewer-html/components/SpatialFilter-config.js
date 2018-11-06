@@ -27,7 +27,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var me = this;
         this.form.add([{
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_211'),
+                fieldLabel: i18next.t('spatialfilter_config_0'),
                 inputValue: true,
                 name: 'applyDirect',
                 checked: this.configObject.applyDirect!==undefined? this.configObject.applyDirect : true,
@@ -36,7 +36,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_212'),
+                fieldLabel: i18next.t('spatialfilter_config_1'),
                 inputValue: true,
                 name: 'multiGeometries',
                 checked: this.configObject.multiGeometries!==undefined? this.configObject.multiGeometries : false,

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Bewerk layer</title>
+        <title><fmt:message key="viewer_admin.layer.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -28,64 +28,64 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:messages/>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean">
 
-                <h1 id="headertext">Layer bewerken</h1>
+                <h1 id="headertext"><fmt:message key="viewer_admin.layer.1" /></h1>
                 <stripes:hidden name="layer" value="${actionBean.layer.id}"/>
 
                 <table class="formtable">
                     <tr>
-                        <td>Naam van layer bij service:</td>
+                        <td><fmt:message key="viewer_admin.layer.2" />:</td>
                         <td><stripes:text name="layer.name" disabled="true" size="30"/></td>
                     </tr>
                     <tr>     
-                        <td>Titel:</td> 
+                        <td><fmt:message key="viewer_admin.layer.3" />:</td> 
                         <td><stripes:text name="layer.title" disabled="true" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
-                        <td>Alternatieve titel: 
+                        <td><fmt:message key="viewer_admin.layer.4" />: 
                         <td><stripes:text name="layer.titleAlias" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>     
-                        <td valign="top">Alternatieve legenda afbeelding:</td> 
+                        <td valign="top"><fmt:message key="viewer_admin.layer.5" />:</td> 
                         <td>
                             <stripes:text name="details[alternateLegendImageUrl]" maxlength="255" size="70"/><br>
                             <c:choose>
                                 <c:when test="${!empty actionBean.layer.legendImageUrl}">
-                                    Legenda afbeelding van server:<br>
+                                    <fmt:message key="viewer_admin.layer.6" />:<br>
                                     <a href="${actionBean.layer.legendImageUrl}" target="_blank"><img src="${actionBean.layer.legendImageUrl}"/></a>
                                 </c:when>
                                 <c:when test="${actionBean.layer.service.protocol == 'wms'}">
-                                    De service heeft geen legenda URL beschikbaar. 
+                                    <fmt:message key="viewer_admin.layer.7" /> 
                                 </c:when>
                             </c:choose>
                         </td>
                     </tr>
                     <tr>     
-                        <td>Metadata stylesheet:</td> <%-- XXX wordt in TOC niet zo gebruikt, moet metadata.url zijn? --%>
+                        <td><fmt:message key="viewer_admin.layer.8" />:</td> <%-- XXX wordt in TOC niet zo gebruikt, moet metadata.url zijn? --%>
                         <td><stripes:text name="details['metadata.stylesheet']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>     
-                        <td>Downloadlink:</td> 
+                        <td><fmt:message key="viewer_admin.layer.9" />:</td> 
                         <td><stripes:text name="details['download.url']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
-                        <td valign="top">Naamsvermelding:</td>
+                        <td valign="top"><fmt:message key="viewer_admin.layer.10" />:</td>
                         <td><stripes:text name="details['attribution']" maxlength="255" size="60"/><br/>
-                            <a href="#" onclick="document.getElementById('voorbeelden').style.display = 'table-row'">Toon voorbeelden</a>
+                            <a href="#" onclick="document.getElementById('voorbeelden').style.display = 'table-row'"><fmt:message key="viewer_admin.layer.11" /></a>
                         </td>
                     </tr>
                     <tr id="voorbeelden" style="display: none;">
                         <td colspan="2" style="border: 1px solid #43a4b1">
-                            <i>Voorbeeld OpenStreetMap of Openbasiskaart:</i><br/>
+                            <i><fmt:message key="viewer_admin.layer.12" />:</i><br/>
                             <span style="font-family: monospace">&amp;copy; &lt;a href="http://www.openstreetmap.nl" target="_blank"&gt;OpenStreetMap contributors&lt;/a&gt;</span><br/>
-                            <i>Voorbeeld BGT, PDOK, etc:</i></br>
+                            <i><fmt:message key="viewer_admin.layer.13" />:</i></br>
                             <span style="font-family: monospace">&amp;copy; &lt;a href="http://www.kadaster.nl" target="_blank"&gt;Kadaster&lt;/a&gt;</span><br/>
                         </td>
                     </tr>
                     <tr>
-                        <td>Attribuutbron:</td>
+                        <td><fmt:message key="viewer_admin.layer.14" />:</td>
                         <td>
                             <stripes:select name="featureSourceId" id="featureSourceId">
-                                <stripes:option value="-1">Kies..</stripes:option>
+                                <stripes:option value="-1"><fmt:message key="viewer_admin.layer.15" /></stripes:option>
                                 <c:forEach var="source" items="${actionBean.featureSources}">
                                     <stripes:option value="${source.id}">${source.protocol} #${source.id} <c:out value="${source.name}"/></stripes:option>
                                 </c:forEach>
@@ -93,29 +93,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </td>
                     </tr>
                     <tr>
-                        <td>Attribuutlijst:</td>
+                        <td><fmt:message key="viewer_admin.layer.16" />:</td>
                         <td>
                             <select name="simpleFeatureType" id="simpleFeatureTypeId">
-                                <option value="-1">Maak uw keuze..</option>
+                                <option value="-1"><fmt:message key="viewer_admin.layer.17" /></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <td style="width:300px">Kan de kaartlaag gefilterd worden met OGC SLD filtering (indien aangevinkt en het wordt niet ondersteund, wordt de kaart wit):</td>
+                        <td style="width:300px"><fmt:message key="viewer_admin.layer.18" />:</td>
                         <td>
                             <stripes:checkbox name="details['filterable']"/>
                         </td>
                     </tr>
                     <tr>
                         <td valign="top">
-                            <h1>Groepen:</h1>                           
+                            <h1><fmt:message key="viewer_admin.layer.19" />:</h1>                           
                             <table summary="Groepen">
                                 <thead>
                                     <tr>
-                                        <th scope="col" title="Lezen">L</th>
-                                        <th scope="col" title="Bewerken">B</th>
-                                        <th scope="col" title="Geometrie NIET Bewerken">G!B</th>
-                                        <th scope="col" style="text-align:left">groep</th>
+                                        <th scope="col" title="<fmt:message key="viewer_admin.layer.20" />"><fmt:message key="viewer_admin.layer.21" /></th>
+                                        <th scope="col" title="<fmt:message key="viewer_admin.layer.22" />"><fmt:message key="viewer_admin.layer.23" /></th>
+                                        <th scope="col" title="<fmt:message key="viewer_admin.layer.24" />"><fmt:message key="viewer_admin.layer.25" /></th>
+                                        <th scope="col" style="text-align:left"><fmt:message key="viewer_admin.layer.26" /></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -134,7 +134,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <c:if test="${not empty actionBean.applicationsUsedIn}">
                     <tr>
                         <td>
-                            <h1>Kaartlaag wordt gebruikt in de volgende applicaties:</h1>
+                            <h1><fmt:message key="viewer_admin.layer.27" />:</h1>
                             <c:forEach var="name" items="${actionBean.applicationsUsedIn}">
                                 <c:out value="${name}"/><br />
                             </c:forEach>
@@ -144,8 +144,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </table>
 
                 <div class="submitbuttons">
-                    <stripes:submit name="save" value="Kaartlaag opslaan"/>
-                    <stripes:reset name="cancel" class="extlikebutton" onclick="setTimeout(changeFeatureSource,10)" value="Annuleren"/>
+                    <fmt:message key="viewer_admin.layer.28" var="layer28" />
+                    <stripes:submit name="save" value="${layer28}"/>
+                    <fmt:message key="viewer_admin.layer.29" var="layer29" />
+                    <stripes:reset name="cancel" class="extlikebutton" onclick="setTimeout(changeFeatureSource,10)" value="${layer29}"/>
                 </div>
                 <script type="text/javascript">
                     
@@ -182,7 +184,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
                         // We are now emptying dom and adding options manully, don't know if this is optimal
                         removeChilds(simpleFeatureTypeId);
-                        simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', false));
+                        simpleFeatureTypeId.appendChild(getOption(-1, <fmt:message key="viewer_admin.layer.15" />, false));
 
                             if(selectedValue != -1) {
                             Ext.Ajax.request({ 
@@ -199,7 +201,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     });                              
                                 },
                                 failure: function() {
-                                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                                    Ext.MessageBox.alert("Error", "Unknown error");
                                 }
                             });
                         }

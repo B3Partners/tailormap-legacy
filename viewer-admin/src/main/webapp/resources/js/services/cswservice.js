@@ -33,7 +33,7 @@ function searchCsw(){
             clearMask()
             if(objData.success){
                 var results = objData.results;
-                Ext.fly("numresults").dom.innerHTML = "Er zijn " + results.length + " resultaten gevonden.";
+                Ext.fly("numresults").dom.innerHTML = "" + results.length + " results found."; //___(
                 resultDiv.dom.innerHTML = "<ul id='resultList'>";
                 for(var i = 0 ; i < results.length ; i++){
                     var cswResult = results[i];
@@ -41,11 +41,11 @@ function searchCsw(){
                 }
                 resultDiv.dom.innerHTML += "</ul>";
             }else{
-                Ext.MessageBox.alert('Mislukt', result.responseText);
+                Ext.MessageBox.alert(i18next.t('viewer_admin_cswservice_0'), result.responseText);
             }
         },
         failure: function ( result, request) {
-            Ext.MessageBox.alert('Mislukt', result.responseText);
+            Ext.MessageBox.alert(i18next.t('viewer_admin_cswservice_1'), result.responseText);
             clearMask()
         }
     });

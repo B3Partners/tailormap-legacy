@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
 
     <stripes:layout-component name="head">
-        <title>Layoutmanager</title>
+        <title><fmt:message key="viewer_admin.layoutmanager.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -31,28 +31,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
         <div id="content">
             <div id="layoutManagerApplicationSettings">
-                <button id="savebutton">Opslaan</button> &nbsp; 
-                <a href="#" id="global_layout_switch">Layout instellingen</a>
+                <button id="savebutton"><fmt:message key="viewer_admin.layoutmanager.1" /></button> &nbsp; 
+                <a href="#" id="global_layout_switch"><fmt:message key="viewer_admin.layoutmanager.2" /></a>
                 <div id="global_layout" class="globalconfig">
-                    <div class="configrow"><label for="app_max_width">Maximale breedte:</label><input id="app_max_width" type="text" name="app_max_width" value="" /> px</div>
-                    <div class="configrow"><label for="app_max_height">Maximale hoogte:</label><input id="app_max_height" type="text" name="app_max_height" value="" /> px</div>
-                    <div class="configrow"><label for="app_margin">Marge rondom:</label><input id="app_margin" type="text" name="app_margin" value="" /></div>
-                    <div class="configrow"><label for="app_background_color">Achtergrond kleur:</label><input id="app_background_color" type="text" name="app_background_color" value="" class="wide" /></div>
-                    <div class="configrow"><label for="app_background_image">Achtergrond afbeelding:</label><input id="app_background_image" type="text" name="app_background_image" value="" class="wide" /></div>
+                    <div class="configrow"><label for="app_max_width"><fmt:message key="viewer_admin.layoutmanager.3" />:</label><input id="app_max_width" type="text" name="app_max_width" value="" /> px</div>
+                    <div class="configrow"><label for="app_max_height"><fmt:message key="viewer_admin.layoutmanager.4" />:</label><input id="app_max_height" type="text" name="app_max_height" value="" /> px</div>
+                    <div class="configrow"><label for="app_margin"><fmt:message key="viewer_admin.layoutmanager.5" />:</label><input id="app_margin" type="text" name="app_margin" value="" /></div>
+                    <div class="configrow"><label for="app_background_color"><fmt:message key="viewer_admin.layoutmanager.6" />:</label><input id="app_background_color" type="text" name="app_background_color" value="" class="wide" /></div>
+                    <div class="configrow"><label for="app_background_image"><fmt:message key="viewer_admin.layoutmanager.7" />:</label><input id="app_background_image" type="text" name="app_background_image" value="" class="wide" /></div>
                     <div class="configrow">
-                        <label for="app_background_repeat">Achtergrond herhalen:</label>
+                        <label for="app_background_repeat"><fmt:message key="viewer_admin.layoutmanager.8" />:</label>
                         <select id="app_background_repeat" name="app_background_repeat">
-                            <option value="no-repeat">Niet herhalen</option>
-                            <option value="repeat">Beide kanten op herhalen</option>
-                            <option value="repeat-x">Alleen horizontaal herhalen</option>
-                            <option value="repeat-y">Alleen verticaal herhalen</option>
+                            <option value="no-repeat"><fmt:message key="viewer_admin.layoutmanager.9" /></option>
+                            <option value="repeat"><fmt:message key="viewer_admin.layoutmanager.10" /></option>
+                            <option value="repeat-x"><fmt:message key="viewer_admin.layoutmanager.11" /></option>
+                            <option value="repeat-y"><fmt:message key="viewer_admin.layoutmanager.12" /></option>
                         </select>
                     </div>
-                    <div class="configrow"><label for="app_background_position">Achtergrond positie:</label><input id="app_background_position" type="text" name="app_background_position" value="" /></div>
-                    <div class="configrow"><label for="app_extracss">Extra CSS code:</label><textarea id="app_extracss" name="app_extracss" class="extliketextarea"></textarea></div>
-                    <div class="configrow"><label for="app_singlepopup">Max. 1 popup tegelijk:</label><input id="app_singlepopup" type="checkbox" name="app_singlepopup" value="true" /></div>
+                    <div class="configrow"><label for="app_background_position"><fmt:message key="viewer_admin.layoutmanager.13" />:</label><input id="app_background_position" type="text" name="app_background_position" value="" /></div>
+                    <div class="configrow"><label for="app_extracss"><fmt:message key="viewer_admin.layoutmanager.14" />:</label><textarea id="app_extracss" name="app_extracss" class="extliketextarea"></textarea></div>
+                    <div class="configrow"><label for="app_singlepopup"><fmt:message key="viewer_admin.layoutmanager.15" />:</label><input id="app_singlepopup" type="checkbox" name="app_singlepopup" value="true" /></div>
                 </div>
-                <a href="#Toevoegen_Componenten_Layout_Help" title="Help" class="helplink"></a>
+                <a href="#Toevoegen_Componenten_Layout_Help" title="<fmt:message key="viewer_admin.layoutmanager.16" />" class="helplink"></a>
             </div>
             <div id="component-container">
 
