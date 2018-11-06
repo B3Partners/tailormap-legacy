@@ -76,6 +76,10 @@ public class Application implements Comparable<Application>{
     @Column()
     private String title;
 
+    @Column()
+    // lang instead of language because language can be a reserved word in some SQL versions
+    private String lang;
+
     @Lob
     @org.hibernate.annotations.Type(type = "org.hibernate.type.StringClobType")
     private String layout;
@@ -141,6 +145,8 @@ public class Application implements Comparable<Application>{
     @Column(name = "role_name")
     private Set<String> readers = new HashSet<String>();
 
+    private String projectionCode;
+
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
@@ -172,6 +178,14 @@ public class Application implements Comparable<Application>{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     public String getLayout() {
@@ -276,6 +290,14 @@ public class Application implements Comparable<Application>{
 
     public void setReaders(Set<String> readers) {
         this.readers = readers;
+    }
+
+    public String getProjectionCode() {
+        return projectionCode;
+    }
+
+    public void setProjectionCode(String projectionCode) {
+        this.projectionCode = projectionCode;
     }
     //</editor-fold>
 
