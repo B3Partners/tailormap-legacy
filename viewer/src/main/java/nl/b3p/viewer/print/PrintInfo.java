@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 import org.opengis.geometry.BoundingBox;
 
 @XmlRootElement(name="info")
-@XmlType(propOrder = {"title", "subtitle", "username", "date", "imageUrl", "legendUrls", "bbox", "remark", "quality", "angle", "overviewUrl", "extra", "scale", "uploadURL"})
+@XmlType(propOrder = {"title", "subtitle", "username", "date", "imageUrl", "legendUrls", "bbox", "remark", "quality", "angle", "overviewUrl", "extra", "scale", "uploadURL", "units"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
     
@@ -60,6 +60,7 @@ public class PrintInfo {
     private int quality;
     private int angle;
     private String scale;
+    private String units;
     private List<PrintExtraInfo> extra = new ArrayList();
     private List<Legend> legendUrls = new ArrayList();
     
@@ -203,6 +204,14 @@ public class PrintInfo {
 
     public void setUploadURL(String uploadURL) {
         this.uploadURL = uploadURL;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
     }
 
     public void cacheLegendImagesAndReadDimensions() {

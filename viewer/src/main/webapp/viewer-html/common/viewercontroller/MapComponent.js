@@ -1,5 +1,7 @@
 /*JavaScript interface class file*/
 
+/* global Ext, viewer, i18next */
+
 /**
  * MapComponent
  * @class 
