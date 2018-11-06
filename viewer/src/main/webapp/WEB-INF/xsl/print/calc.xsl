@@ -8,19 +8,23 @@
     <!-- berekent de bepaalt van de kaart indien opgegeven bij kaart, globaal opgegeven bij template
 		of raadt de schaal op basis van quality (werkt alleen indien niet aangepast -->
     <xsl:template name="calc-local-scale">
-         <xsl:param name="bbox"/>
+        <xsl:param name="bbox"/>
         <xsl:param name="scale"/>
         <xsl:param name="quality"/>
-			<xsl:choose>
-				<xsl:when test="$scale"><xsl:value-of select="$scale"/></xsl:when>
-				<xsl:when test="$global-scale"><xsl:value-of select="$global-scale"/></xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="guess-scale">
-						<xsl:with-param name="bbox" select="$bbox" />
-						<xsl:with-param name="quality" select="$quality" />
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
+            <xsl:choose>
+                <xsl:when test="$scale">
+                    <xsl:value-of select="$scale"/>
+                </xsl:when>
+                <xsl:when test="$global-scale">
+                    <xsl:value-of select="$global-scale"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:call-template name="guess-scale">
+                        <xsl:with-param name="bbox" select="$bbox" />
+                        <xsl:with-param name="quality" select="$quality" />
+                    </xsl:call-template>
+                </xsl:otherwise>
+            </xsl:choose>
     </xsl:template>
 
     <xsl:template name="guess-scale">
@@ -33,8 +37,8 @@
         <xsl:variable name="bbox-width-m" select="$xmax -$xmin"/>
         <!-- omrekening van pixels naar mm -->
         <xsl:variable name="screen-width-mm" select="$quality div $ppm"/>
-		 		<xsl:value-of select="$bbox-width-m * 1000 div $screen-width-mm"/>
-	</xsl:template>
+        <xsl:value-of select="$bbox-width-m * 1000 div $screen-width-mm"/>
+    </xsl:template>
 
     <!-- berekent nieuwe bbox indien verhouding hoogte/breedte van kaart op scherm
     anders is dan verhouding van kaart in template, probeert schaal gelijk te houden -->

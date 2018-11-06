@@ -1,5 +1,7 @@
 /*JavaScript interface class file*/
 
+/* global Ext, viewer, i18next */
+
 /**
  * MapComponent
  * @class 
@@ -19,6 +21,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     viewerController: null,
     config:{
         resolutions : null,
+        projection:null,
         id: null
     },
     /**

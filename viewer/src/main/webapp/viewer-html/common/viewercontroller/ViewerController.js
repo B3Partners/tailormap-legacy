@@ -1,4 +1,4 @@
-/* global Ext, actionBeans */
+/* global Ext, actionBeans, viewer, Proj4js */
 
 /**
  * ViewerController
@@ -54,6 +54,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     filterDebounce: {},
     // List of elements that are "anchored" to a container. After resizing the element is re-aligned
     anchors: [],
+    projection:null,
+    projectionString:null,
+    
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -74,6 +77,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker", { viewerController: this });
         this.app = app;
+        this.projection = this.app.projectionCode.substring(0,this.app.projectionCode.lastIndexOf('['));
+        this.projectionString = this.app.projectionCode.substring(this.app.projectionCode.lastIndexOf('[')+1,this.app.projectionCode.lastIndexOf(']'));
 
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));
 
@@ -128,16 +133,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 continue;
             }
             var component = comps[c];
-            if(component.className == "viewer.mapcomponents.FlamingoMap" ||
-                component.className == "viewer.mapcomponents.OpenLayersMap"){
+            if(component.className === "viewer.mapcomponents.FlamingoMap" ||
+                component.className === "viewer.mapcomponents.OpenLayersMap"){
                 config = component.config;
                 break;
             }
         }
+        config.projection = this.projection;
+        config.projectionString = this.projectionString;
+        this.initialiseProjectionSupport();
+        
         Ext.apply(config, mapConfig || {});
-        if(viewerType == "flamingo") {
+        if(viewerType === "flamingo") {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
-        }else if(viewerType == "openlayers") {
+        }else if(viewerType === "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
@@ -149,7 +158,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType == "openlayers") {
+        if(viewerType === "openlayers") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
 
@@ -181,9 +190,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
 
     isDebug: function() {
-        return this.queryParams.hasOwnProperty("debug") && this.queryParams.debug == "true";
+        return this.queryParams.hasOwnProperty("debug") && this.queryParams.debug === "true";
     },
 
+    initialiseProjectionSupport:function(){
+        //TODO: remove the hardcoded projection....
+        if(this.projectionString === ""){
+            return;
+        }
+        Proj4js.defs[this.projection] = this.projectionString;
+        
+    },
+    
     spinupDataStores: function() {
         if(this.app.details["dataStoreSpinupDisabled"]){
             return;
@@ -873,7 +891,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
                 var ogcOptions={
                     exceptions: service.exception_type ? service.exception_type : "application/vnd.ogc.se_inimage",
-                    srs: "EPSG:28992",
+                    srs: this.projectionCode,
                     version: "1.1.1",
                     layers:layer.name,
                     styles: "",
