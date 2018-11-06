@@ -261,7 +261,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         details.put("stylesheetMetadata", new ClobElement(""));
         // TODO: Default value stylesheet printen
         details.put("stylesheetPrint", new ClobElement(""));
-        return new ForwardResolution(JSP);
+        return view();
     }
 
     @DontBind
