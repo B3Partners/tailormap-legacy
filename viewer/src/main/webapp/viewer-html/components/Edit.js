@@ -787,7 +787,7 @@ Ext.define("viewer.components.Edit", {
         if (this.mode === "new") {
             return;
         }
-        Ext.get(this.getContentDiv()).mask("Haalt features op...");
+        this.getContentContainer().mask("Haalt features op...");
         var coords = comp.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
         this.getFeaturesForCoords(coords);
@@ -932,11 +932,11 @@ Ext.define("viewer.components.Edit", {
                 this.showAndFocusForm();
             }
         }
-        Ext.get(this.getContentDiv()).unmask();
+        this.getContentContainer().unmask();
     },
     failed: function (msg) {
         Ext.Msg.alert('Mislukt', msg);
-        Ext.get(this.getContentDiv()).unmask();
+        this.getContentContainer().unmask();
     },
     /**
      * clear any loaded feature from the form and the map.
@@ -1355,7 +1355,7 @@ Ext.define("viewer.components.Edit", {
     },
     cancelSelectFeature: function () {
         this.resetForm();
-        Ext.get(this.getContentDiv()).unmask();
+        this.getContentContainer().unmask();
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
     },
     indexFeatureToNamedFeature: function (feature) {
