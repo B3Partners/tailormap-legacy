@@ -18,9 +18,6 @@ package nl.b3p.viewer.stripes;
 
 import nl.b3p.viewer.image.CombineImageSettings;
 import nl.b3p.viewer.image.CombineImageWkt;
-import nl.b3p.viewer.image.CombineArcIMSUrl;
-import nl.b3p.viewer.image.CombineImageUrl;
-import nl.b3p.viewer.image.CombineArcServerUrl;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.*;
@@ -30,7 +27,6 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.image.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +38,7 @@ import org.json.JSONObject;
 @StrictBinding
 public class CombineImageActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
-    private static LinkedHashMap<String,CombineImageSettings> imageSettings = new LinkedHashMap<String,CombineImageSettings>();
+    private static final LinkedHashMap<String,CombineImageSettings> imageSettings = new LinkedHashMap<String,CombineImageSettings>();
 
     public static final String WMS = "WMS";
     public static final String ARCIMS = "ARCIMS";
@@ -203,8 +199,8 @@ public class CombineImageActionBean implements ActionBean {
         if (this.getHeight() != null && this.getHeight() > 0) {
             settings.setHeight(getHeight());
         }
-        if (this.getBbox() != null) {
-            settings.setBbox(getBbox());
+        if (bbox != null) {
+            settings.setBbox(bbox);
         }
         if (this.getGeom() != null) {
             String firstChar = geom.substring(0, 1);
