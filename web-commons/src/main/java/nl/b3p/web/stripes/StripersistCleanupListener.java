@@ -19,6 +19,8 @@ package nl.b3p.web.stripes;
 import java.lang.reflect.Method;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.geotools.factory.GeoTools;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -45,7 +47,8 @@ import org.stripesstuff.stripersist.Stripersist;
 public class StripersistCleanupListener implements ServletContextListener {
 
     @Override
-    public void contextInitialized(ServletContextEvent sce) {        
+    public void contextInitialized(ServletContextEvent sce) {
+        GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER
     }
 
     @Override
