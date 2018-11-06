@@ -30,6 +30,7 @@ import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
@@ -49,6 +50,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private static final String DEFAULT_SPRITE = "/viewer/viewer-html/sprite.svg";
     public static final String PROJECTION_NAMES_KEY = "flamingo.projections.epsgnames";
     public static final String PROJECTION_CODES_KEY = "flamingo.projections.epsgcodes";
+    private static final String LANGUAGE_CODES_KEY = "flamingo.i18n.languagecodes";
 
     @Validate
     private String name;
@@ -79,6 +81,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     
     @Validate
     private String projection;
+
+    private String[] languageCodes;
     
     @ValidateNestedProperties({
                 @Validate(field="minx", maxlength=255),
@@ -213,6 +217,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setProjection(String projection) {
         this.projection = projection;
     }
+
+    public String[] getLanguageCodes() { return languageCodes; }
+
+    public void setLanguageCodes(String[] languageCodes) { this.languageCodes = languageCodes; }
     //</editor-fold>
 
     @DefaultHandler
@@ -258,6 +266,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         if(projection == null && !crses.isEmpty()){
             projection = crses.get(0).getCode();
         }
+
+		String languageCodesString = context.getServletContext().getInitParameter(LANGUAGE_CODES_KEY);
+        languageCodes = StringUtils.stripAll(languageCodesString.split(","));
+
         return new ForwardResolution(JSP);
     }
 

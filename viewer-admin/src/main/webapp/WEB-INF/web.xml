@@ -104,6 +104,13 @@
         <param-name>flamingo.projections.epsgnames</param-name>
         <param-value>RD,WGS84</param-value>
     </context-param>
+    <context-param>
+        <description>
+            List of supported language codes (comma-separated)
+        </description>
+        <param-name>flamingo.i18n.languagecodes</param-name>
+        <param-value>nl_NL,en_US</param-value>
+    </context-param>
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
