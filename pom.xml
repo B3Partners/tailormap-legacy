@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.3.6-SNAPSHOT</version>
+    <version>5.3.6</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -11,7 +11,7 @@
         <connection>scm:git:git@github.com:flamingo-mc/flamingo.git</connection>
         <developerConnection>scm:git:git@github.com:flamingo-mc/flamingo.git</developerConnection>
         <url>https://github.com/flamingo-mc/flamingo.git</url>
-        <tag>HEAD</tag>
+        <tag>v5.3.6</tag>
     </scm>
     <distributionManagement>
         <repository>
@@ -34,7 +34,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.3.6-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.3.6</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
