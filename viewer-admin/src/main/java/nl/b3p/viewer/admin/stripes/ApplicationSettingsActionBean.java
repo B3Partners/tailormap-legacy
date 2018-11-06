@@ -248,6 +248,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             CRS c = new CRS(names[i], codes[i]);
             crses.add(c);
         }
+        if(projection == null && !crses.isEmpty()){
+            projection = crses.get(0).getCode();
+        }
         return new ForwardResolution(JSP);
     }
 
