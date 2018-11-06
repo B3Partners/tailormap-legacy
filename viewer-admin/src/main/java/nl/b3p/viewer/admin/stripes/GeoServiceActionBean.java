@@ -61,6 +61,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
+import nl.b3p.viewer.config.app.StartLayer;
 
 /**
  *
@@ -756,7 +757,7 @@ public class GeoServiceActionBean implements ActionBean {
             SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
         }
 
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.getTransaction().commit();
 
         updatedService = new JSONObject();
         updatedService.put("id", "s" + service.getId());
@@ -770,7 +771,6 @@ public class GeoServiceActionBean implements ActionBean {
 
         return new ForwardResolution(JSP);
     }
-
     @ValidationMethod(on = "add")
     public void validateParams(ValidationErrors errors) {
         if (protocol.equals(ArcIMSService.PROTOCOL) || protocol.equals(TileService.PROTOCOL)) {

@@ -154,51 +154,51 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     @Before
     public void synchronizeFeatureType() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
         // Synchronize configured attributes with layer feature type
+        if (layer != null) {
+            if (layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
+                applicationLayer.getAttributes().clear();
+            } else {
+                List<String> attributesToRetain = new ArrayList();
 
-        if(layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
-            applicationLayer.getAttributes().clear();
-        } else {
-            List<String> attributesToRetain = new ArrayList();
-            
-            SimpleFeatureType sft = layer.getFeatureType(); 
-            // Rebuild ApplicationLayer.attributes according to Layer FeatureType
-            // New attributes are added at the end of the list; the original
-            // order is only used when the Application.attributes list is empty
-            // So a feature for reordering attributes per applicationLayer is
-            // possible.
-            // New Attributes from a join or related featureType are added at the 
-            //end of the list.                                  
-            attributesToRetain = rebuildAttributes(sft);
-            
-             
-            // Remove ConfiguredAttributes which are no longer present
-            List<ConfiguredAttribute> attributesToRemove = new ArrayList();
-            for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
-                if (ca.getFeatureType()==null){
-                    ca.setFeatureType(layer.getFeatureType());
-                }
-                if(!attributesToRetain.contains(ca.getFullName())) {
-                    // Do not modify list we are iterating over
-                    attributesToRemove.add(ca);
-                    if(!"save".equals(getContext().getEventName())) {
-                        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationtreelayeractionbean.unavailable"), ca.getAttributeName()));
+                SimpleFeatureType sft = layer.getFeatureType();
+                // Rebuild ApplicationLayer.attributes according to Layer FeatureType
+                // New attributes are added at the end of the list; the original
+                // order is only used when the Application.attributes list is empty
+                // So a feature for reordering attributes per applicationLayer is
+                // possible.
+                // New Attributes from a join or related featureType are added at the 
+                //end of the list.                                  
+                attributesToRetain = rebuildAttributes(sft);
+
+                // Remove ConfiguredAttributes which are no longer present
+                List<ConfiguredAttribute> attributesToRemove = new ArrayList();
+                for (ConfiguredAttribute ca : applicationLayer.getAttributes()) {
+                    if (ca.getFeatureType() == null) {
+                        ca.setFeatureType(layer.getFeatureType());
+                    }
+                    if (!attributesToRetain.contains(ca.getFullName())) {
+                        // Do not modify list we are iterating over
+                        attributesToRemove.add(ca);
+                        if (!"save".equals(getContext().getEventName())) {
+                            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationtreelayeractionbean.unavailable"), ca.getAttributeName()));
+                        }
                     }
                 }
+                for (ConfiguredAttribute ca : attributesToRemove) {
+                    applicationLayer.getAttributes().remove(ca);
+                    em.remove(ca);
+                }
+                if (attributesJSON.has(ATTRIBUTES_CONFIG_KEY)) {
+                    attributesConfig = attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY);
+                } else {
+                    attributesConfig = new JSONArray();
+                    // JSON info about attributed required for editing
+                    makeAttributeJSONArray(layer.getFeatureType());
+                }
             }
-            for(ConfiguredAttribute ca: attributesToRemove) {
-                applicationLayer.getAttributes().remove(ca);
-                em.remove(ca);
-            }
-            if (attributesJSON.has(ATTRIBUTES_CONFIG_KEY)) {
-                attributesConfig = attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY);
-            } else {
-                attributesConfig = new JSONArray();
-                // JSON info about attributed required for editing
-                makeAttributeJSONArray(layer.getFeatureType());
-            }
-        }        
+        }
     }
     
     @DontValidate
@@ -211,13 +211,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
-            
+
             // Fill visible checkboxes
             for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
                 if(ca.isVisible()) {
                     selectedAttributes.add(ca.getFullName());
                 }
-            }            
+            }
         }
 
         return new ForwardResolution(JSP);

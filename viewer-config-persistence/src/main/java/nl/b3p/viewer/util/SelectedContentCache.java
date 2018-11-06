@@ -56,7 +56,14 @@ public class SelectedContentCache {
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT = "cachedExpandedSelectedContent";
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY = "cachedExpandedSelectedContentDirty";
 
-    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
+    
+    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, 
+            EntityManager em) throws JSONException {
+        return getSelectedContent(request, app, validXmlTags, includeAppLayerAttributes, includeRelations, em, true);
+    }
+    
+    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, 
+            EntityManager em, boolean shouldProcessCache) throws JSONException {
 
         // Don't use cache when any of these parameters is true, cache only
         // the JSON variant used when starting up the viewer
@@ -75,9 +82,12 @@ public class SelectedContentCache {
             ClobElement el = app.getDetails().get(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT);
             cached = new JSONObject(el.getValue());
         }
-
-        JSONObject selectedContent = processCache(request, cached, em);
-        return selectedContent;
+        if (shouldProcessCache) {
+            JSONObject selectedContent = processCache(request, cached, em);
+            return selectedContent;
+        } else {
+            return cached;
+        }
     }
 
     private JSONObject processCache(HttpServletRequest request, JSONObject cached, EntityManager em) throws JSONException {
