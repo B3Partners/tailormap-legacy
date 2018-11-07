@@ -181,37 +181,6 @@
             <fo:external-graphic src="url('logo.png')" width="155px" height="55px"/>
         </fo:block>
     </xsl:template>
-    <xsl:template name="table-2column">
-        <!-- create a simple 2-column table, width can be given in mm for either column, default is 50 -->
-        <xsl:param name="tWidthLeft">65</xsl:param>
-        <xsl:param name="tWidthRight">65</xsl:param>
-        <fo:block xsl:use-attribute-sets="default-font">
-            <fo:table table-layout="fixed" width="{$tWidthLeft + $tWidthRight}mm">
-                <fo:table-column column-width="{$tWidthLeft}mm"/>
-                <fo:table-column column-width="{$tWidthRight}mm"/>
-                <fo:table-body>
-                    <xsl:for-each select="*">
-                        <xsl:for-each select="*">
-                            <fo:table-row>
-                                <fo:table-cell>
-                                    <fo:block>
-                                        <xsl:call-template name="string-remove-underscores">
-                                            <xsl:with-param name="text" select="local-name()"/>
-                                        </xsl:call-template>
-                                    </fo:block>
-                                </fo:table-cell>
-                                <fo:table-cell>
-                                    <fo:block>
-                                        <xsl:value-of select="normalize-space(.)"/>
-                                    </fo:block>
-                                </fo:table-cell>
-                            </fo:table-row>
-                        </xsl:for-each>
-                    </xsl:for-each>
-                </fo:table-body>
-            </fo:table>
-        </fo:block>
-    </xsl:template>
     <xsl:template name="table-related">
         <!-- create a simple multi-column table with auto sizing-->
         <xsl:choose>
@@ -223,20 +192,25 @@
                         <fo:table-header xsl:use-attribute-sets="table-header-font">
                             <xsl:comment>header rij</xsl:comment>
                             <fo:table-row>
-                                <xsl:for-each select="*">
-                                    <xsl:if test="position() = last()">
-                                        <xsl:for-each select="array">
-                                            <fo:table-cell>
-                                                <fo:block>
-                                                    <xsl:for-each select="*">
+                                <!-- loop over eerste set van arrays om juiste aantal kolommen te bepalen -->
+                                <xsl:for-each select="*[1]/array">
+                                    <!-- bepaal per kolom of er een label in zit -->
+                                    <xsl:variable name="pos" select="position()"/>
+                                    <!-- kijk op de juiste positie in de array van alle records en alleen als er iets in zit -->
+                                    <xsl:for-each select="../../*/array[$pos]/node()[not(local-name()='related_features')]">
+                                        <!-- neem nu het eerste resultaat voor de kolomnaam -->
+                                        <xsl:if test="position()=1">
+                                            <fo:table-cell padding="0.5mm">
+                                                <fo:block-container overflow="hidden">
+                                                    <fo:block>
                                                         <xsl:call-template name="string-remove-underscores">
                                                             <xsl:with-param name="text" select="local-name()"/>
                                                         </xsl:call-template>
-                                                    </xsl:for-each>
-                                                </fo:block>
+                                                    </fo:block>
+                                                </fo:block-container> 
                                             </fo:table-cell>
-                                        </xsl:for-each>
-                                    </xsl:if>
+                                        </xsl:if>
+                                    </xsl:for-each>
                                 </xsl:for-each>
                             </fo:table-row>
                         </fo:table-header>
@@ -244,12 +218,25 @@
                             <xsl:for-each select="*">
                                 <fo:table-row>
                                     <xsl:comment>data rij</xsl:comment>
+                                    <!-- loop over de set van arrays  op de zelfde manier als bij het bepalen van de kolomnamen-->
                                     <xsl:for-each select="*">
-                                        <fo:table-cell>
-                                            <fo:block>
-                                                <xsl:value-of select="normalize-space(.)"/>
-                                            </fo:block>
-                                        </fo:table-cell>
+                                        <!-- bepaal waarde -->
+                                        <xsl:variable name="thevalue" select="normalize-space(.)"/>
+                                        <!-- bepaal per kolom of er een label in zit -->
+                                        <xsl:variable name="pos" select="position()"/>
+                                        <!-- kijk op de juiste positie in de array van alle records en alleen als er iets in zit en geen related features zijn -->
+                                        <xsl:for-each select="../../*/array[$pos]/node()[not(local-name()='related_features')]">
+                                            <!-- neem nu het eerste resultaat voor de waarde -->
+                                            <xsl:if test="position()=1">
+                                                <fo:table-cell padding="0.5mm">
+												<fo:block-container overflow="hidden">
+                                                        <fo:block>
+                                                            <xsl:value-of select="$thevalue"/>
+                                                        </fo:block>
+                                                </fo:block-container> 
+                                                </fo:table-cell>
+                                            </xsl:if>
+                                        </xsl:for-each>
                                     </xsl:for-each>
                                 </fo:table-row>
                             </xsl:for-each>
