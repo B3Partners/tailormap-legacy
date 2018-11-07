@@ -292,7 +292,9 @@ public class BufferActionBean implements ActionBean {
                 Geometry g = (Geometry) f.getDefaultGeometry();
                 if (g!=null){
                     g = g.buffer(buffer);                
-                    wkts.add(new CombineImageWkt(g.toText()));
+                    CombineImageWkt cwkt  = new CombineImageWkt(g.toText());
+                    cwkt.getStyle().setFillColor(color);
+                    wkts.add(cwkt);
                 }
             }
         } finally {
