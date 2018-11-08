@@ -91,7 +91,7 @@
                                     </xsl:for-each>
 
                                     <!-- uploads, if any -->
-                                    <xsl:if test="count(//extra/info[@classname='feature']/root/attr/__UPLOADS__) &gt; 0">
+                                    <xsl:if test="//extra/info[@classname='feature']/root/attr/__UPLOADS__/*">
                                         <xsl:for-each select="extra/info[@classname='feature']/root">
                                             <fo:block xsl:use-attribute-sets="header-font">Uploads</fo:block>
                                             <xsl:call-template name="table-uploads"/>
@@ -289,25 +289,47 @@
         <xsl:choose>
             <xsl:when test="features">
                 <fo:block xsl:use-attribute-sets="default-font">
-                    <xsl:variable name="numOfCols" select="colCount" as="xsl:integer"/>
-                    <xsl:variable name="numOfrows" select="rowCount" as="xsl:integer"/>
-                    
+                    <xsl:variable name="maxNumOfCols" select="'15'" as="xsl:integer"/>
                     <fo:table table-layout="fixed" inline-progression-dimension="auto">
                         <fo:table-header xsl:use-attribute-sets="table-header-font">
                             <xsl:comment>header rij</xsl:comment>
                             <fo:table-row>
-                                <xsl:for-each select="features">
-                                    <xsl:if test ="position() = last()">
-                                        <xsl:for-each select="array/*">
-                                            <fo:table-cell>
-                                                <fo:block>
-                                                    <xsl:call-template name="string-remove-underscores">
-                                                        <xsl:with-param name="text" select="local-name()" />
-                                                    </xsl:call-template>
-                                                </fo:block>
+                                <!-- loop over eerste set van arrays om juiste aantal kolommen te bepalen -->
+                                <xsl:for-each select="features[1]/array">
+                                    <!-- bepaal per kolom of er een label in zit -->
+                                    <xsl:variable name="pos" select="position()"/>
+                                    <!-- max aantal kolommen anders loopt hij mogelijk vast -->
+                                    <xsl:choose>
+                                        <xsl:when test="$pos &lt; $maxNumOfCols">
+                                            <!-- kijk op de juiste positie in de array van alle records en alleen als er iets in zit -->
+                                            <xsl:for-each select="../../features/array[$pos]/node()[not(local-name()='related_features') and not(local-name()='__UPLOADS__') ]">
+                                                <!-- neem nu het eerste resultaat voor de kolomnaam -->
+                                                <xsl:if test="position()=1">
+                                                    <fo:table-cell padding="0.5mm">
+                                                        <fo:block-container overflow="hidden">
+                                                            <fo:block>
+                                                                <!--xsl:value-of select="$pos"/>
+                                                                <xsl:text>:</xsl:text -->
+                                                                <xsl:call-template name="string-remove-underscores">
+                                                                    <xsl:with-param name="text" select="local-name()"/>
+                                                                </xsl:call-template>
+                                                            </fo:block>
+                                                        </fo:block-container>
+                                                    </fo:table-cell>
+                                                </xsl:if>
+                                            </xsl:for-each>
+                                        </xsl:when>
+                                        <xsl:when test="position() = $maxNumOfCols">
+                                            <!-- indicator dat er meer kolommen zijn -->
+                                            <fo:table-cell padding="0.5mm" width="5mm">
+                                                <fo:block-container overflow="hidden">
+                                                    <fo:block>
+                                                        <xsl:text>...</xsl:text>
+                                                    </fo:block>
+                                                </fo:block-container>
                                             </fo:table-cell>
-                                        </xsl:for-each>
-                                    </xsl:if>
+                                        </xsl:when>
+                                    </xsl:choose>
                                 </xsl:for-each>
                             </fo:table-row>
                         </fo:table-header>
@@ -316,16 +338,43 @@
                                 <fo:table-row>
                                     <xsl:comment>data rij</xsl:comment>
                                     <xsl:for-each select="*">
-                                        <fo:table-cell>
-                                            <fo:block>
-                                                <xsl:value-of select="normalize-space(.)" />
-                                            </fo:block>
-                                        </fo:table-cell>
+                                        <!-- bepaal per kolom of er een label in zit -->
+                                        <xsl:variable name="pos" select="position()"/>
+                                        <!-- bepaal waarde -->
+                                        <xsl:variable name="thevalue" select="normalize-space(.)"/>
+                                        <!-- max aantal kolommen anders loopt hij mogelijk vast -->
+                                        <xsl:choose>
+                                            <xsl:when test="$pos &lt; $maxNumOfCols">
+                                                <!-- kijk op de juiste positie in de array van alle records en alleen als er iets in zit -->
+                                                <xsl:for-each select="../../*/array[$pos]/node()[not(local-name()='related_features') and not(local-name()='__UPLOADS__') ]">
+                                                    <!-- neem nu het eerste resultaat voor de kolomnaam -->
+                                                    <xsl:if test="position()=1">
+                                                        <fo:table-cell padding="0.5mm">
+                                                            <fo:block-container overflow="hidden">
+                                                                <fo:block>
+                                                                    <xsl:value-of select="$thevalue"/>
+                                                                </fo:block>
+                                                            </fo:block-container>
+                                                        </fo:table-cell>
+                                                    </xsl:if>
+                                                </xsl:for-each>
+                                            </xsl:when>
+                                            <xsl:when test="position() = $maxNumOfCols">
+                                                <!-- indicator dat er meer kolommen zijn -->
+                                                <fo:table-cell padding="0.5mm" width="5mm">
+                                                    <fo:block-container overflow="hidden">
+                                                        <fo:block>
+                                                            <xsl:text>
+                                                            </xsl:text>
+                                                        </fo:block>
+                                                    </fo:block-container>
+                                                </fo:table-cell>
+                                            </xsl:when>
+                                        </xsl:choose>
                                     </xsl:for-each>
                                 </fo:table-row>
                             </xsl:for-each>
                         </fo:table-body>
-
                     </fo:table>
                 </fo:block>
                 <fo:block xsl:use-attribute-sets="disclaimer-font">
