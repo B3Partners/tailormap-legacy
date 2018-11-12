@@ -339,7 +339,7 @@
                 <!-- override the version provided by hibernate -->
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.22.0-CR2</version>
+                <version>3.24.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
