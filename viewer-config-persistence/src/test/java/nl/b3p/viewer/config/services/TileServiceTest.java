@@ -107,10 +107,10 @@ public class TileServiceTest extends TestUtil{
         assertEquals(1, brt.getBoundingBoxes().size());
 
         BoundingBox bbox = brt.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
-        assertEquals(595323.04, bbox.getMaxx(), 0.01);
-        assertEquals(903386.77, bbox.getMaxy(), 0.01);
-        assertEquals(-370485.00, bbox.getMinx(), 0.01);
-        assertEquals(5307.86, bbox.getMiny(), 0.01);
+        assertEquals(595401.9, bbox.getMaxx(), 0.1);
+        assertEquals(903401.9, bbox.getMaxy(), 0.1);
+        assertEquals(-370406.0, bbox.getMinx(), 0.1);
+        assertEquals(5328.8, bbox.getMiny(), 0.1);
         
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
@@ -148,10 +148,10 @@ public class TileServiceTest extends TestUtil{
         assertEquals(1, tijdreis.getBoundingBoxes().size());
 
         BoundingBox bbox = tijdreis.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
-        assertEquals(-7191.98, bbox.getMiny(), 0.01);
-        assertEquals(-22948.36, bbox.getMinx(), 0.01);
-        assertEquals(312588.49, bbox.getMaxx(), 0.01);
-        assertEquals(662400.48, bbox.getMaxy(), 0.01);
+        assertEquals(-7170.5, bbox.getMiny(), 0.1);
+        assertEquals(-22869.1, bbox.getMinx(), 0.1);
+        assertEquals(312667.7, bbox.getMaxx(), 0.1);
+        assertEquals(662419.8, bbox.getMaxy(), 0.1);
         
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
