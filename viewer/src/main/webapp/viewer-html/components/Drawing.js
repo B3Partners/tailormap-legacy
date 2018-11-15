@@ -182,18 +182,18 @@ Ext.define ("viewer.components.Drawing",{
         var drawingItems = [{
                 xtype: "splitbutton",
                 icon: this.iconPath + "circle.png",
-            id: this.drawingButtonIds.point,
-            listeners: {
-                click:{
-                    scope: me,
-                    fn: me.drawPoint
-                }
+                id: this.drawingButtonIds.point,
+                listeners: {
+                    click: {
+                        scope: me,
+                        fn: me.drawPoint
+                    }
                 },
                 menu: new Ext.menu.Menu({
                     items: [
                         {
                             icon: this.iconPath + "circle.png",
-                            text: 'Rondje',
+                            text: i18next.t('viewer_components_drawing_0'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -202,7 +202,7 @@ Ext.define ("viewer.components.Drawing",{
                             }
                         },
                         {
-                            text: 'Vierkant',
+                            text: i18next.t('viewer_components_drawing_27'),
                             icon: this.iconPath + "square.png",
                             listeners: {
                                 click: {
@@ -213,7 +213,7 @@ Ext.define ("viewer.components.Drawing",{
                         },
                         {
                             icon: this.iconPath + "cross.png",
-                            text: 'Kruis',
+                            text: i18next.t('viewer_components_drawing_28'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -223,7 +223,7 @@ Ext.define ("viewer.components.Drawing",{
                         },
                         {
                             icon: this.iconPath + "star.png",
-                            text: 'Ster',
+                            text: i18next.t('viewer_components_drawing_29'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -233,7 +233,7 @@ Ext.define ("viewer.components.Drawing",{
                         },
                         {
                             icon: this.iconPath + "x.png",
-                            text: 'X',
+                            text: i18next.t('viewer_components_drawing_30'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -243,7 +243,7 @@ Ext.define ("viewer.components.Drawing",{
                         },
                         {
                             icon: this.iconPath + "triangle.png",
-                            text: 'Driehoek',
+                            text: i18next.t('viewer_components_drawing_31'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -302,7 +302,7 @@ Ext.define ("viewer.components.Drawing",{
         drawingItems.push({
             xtype: 'button',
             icon: this.iconPath+"delete.png",
-            tooltip: "Verwijder geselecteerd object",
+            tooltip: i18next.t('viewer_components_drawing_7'),
             listeners: {
                 click:{
                     scope: me,
@@ -585,7 +585,7 @@ Ext.define ("viewer.components.Drawing",{
             name: 'featureFile',
             allowBlank: false,
             msgTarget: 'side',
-            buttonText: 'Bladeren',
+            buttonText: i18next.t('viewer_components_drawing_13'),
             id: 'featureFile',
             margin: '0 0 2 0'
         });
@@ -656,7 +656,7 @@ Ext.define ("viewer.components.Drawing",{
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Verwijder alles',
+                            text: i18next.t('viewer_components_drawing_4'),
                             handler: function() {
                                 me.deleteAll();
                             }
