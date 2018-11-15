@@ -66,16 +66,17 @@ after_success:
 jdk:
   - oraclejdk8
   - openjdk8
-  - oraclejdk9
 
 os:
   - linux
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - jdk: oraclejdk9
 
 cache:
   directories:
   - $HOME/.m2
+
+notifications:
+  slack:
+    secure: mYodD7XUMo+NQ0InmhW4VqYaoOg5GDupzoWBHZIp9WlA5FrkDw9aWqt730BxTYMAkImYZdArxiyPsD05BNWM1Y9Cf8OJRpKlcSRXYvl6rHzTiOT3PUjXn7FBfh10lxIj4u3q3Tg9YOU9mS9WSMZFss1GV0ZuNt2RASAsebDbsys=

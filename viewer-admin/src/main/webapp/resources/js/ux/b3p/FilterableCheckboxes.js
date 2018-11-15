@@ -92,7 +92,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             items: [{
                 xtype: 'textfield',
                 name: 'filterField',
-                fieldLabel: 'Filter',
+                fieldLabel: i18next.t('viewer_admin_filterablecheckboxes_0'),
                 enableKeyEvents: true,
                 listeners: {
                     keyup: function(textfield, e, eOpts) {
@@ -170,7 +170,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
                 me.render();
             },
             failure: function() {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                Ext.MessageBox.alert(i18next.t('viewer_admin_filterablecheckboxes_1'), i18next.t('viewer_admin_filterablecheckboxes_2'));
             }
         });
     },

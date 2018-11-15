@@ -214,7 +214,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         EntityManager em = Stripersist.getEntityManager();
 
         try {
-            appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true,em);
+            appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true,em, false);
         } catch(JSONException je) {
         }
         

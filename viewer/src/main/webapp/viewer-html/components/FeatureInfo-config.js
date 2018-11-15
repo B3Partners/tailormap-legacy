@@ -33,32 +33,32 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         this.form.add([{
             xtype: 'textfield',
-            fieldLabel: 'Link naar meer',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_67'),
             name: 'moreLink',
             value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : 'Meer',
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: 'Hoogte ballon',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_68'),
             name: 'height',
             value: this.configObject.height !== undefined ? this.configObject.height : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: 'Breedte ballon',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_69'),
             name: 'width',
             value: this.configObject.width !== undefined ? this.configObject.width : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: 'Vaste hoogte omschrijving',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_70'),
             name: 'heightDescription',
             value: this.configObject.heightDescription !== undefined ? this.configObject.heightDescription : "",
             labelWidth: this.labelWidth
         },
          {
             xtype: 'numberfield',
-            fieldLabel: 'Klik nauwkeurigheid',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_71'),
             name: 'clickRadius',
             value: this.configObject.clickRadius !== undefined ? this.configObject.clickRadius : 4,
             labelWidth:this.labelWidth,
@@ -67,7 +67,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         },{
             xtype: 'checkbox',
-            fieldLabel: 'Toon laadanimatie op plek van klikken (uit gebruikt de cursor)',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_72'),
             name: 'spinnerWhileIdentify',
             inputValue: true,
             checked: this.configObject.spinnerWhileIdentify !== undefined ? this.configObject.spinnerWhileIdentify : false,
@@ -75,7 +75,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         },
         {
             xtype: 'checkbox',
-            fieldLabel: '"null" waarden verbergen',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_73'),
             name: 'detailHideNullValues',
             id: 'detailHideNullValues',
             inputValue: true,
@@ -86,7 +86,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype : 'fieldset',
             collapsible: true,
             collapsed: true,
-            title: 'Bepaal hieronder wat er wordt getoond in het detail scherm (na klikken op \'link naar meer\')',
+            title: i18next.t('viewer_components_customconfiguration_74'),
             layout : {
                 type: 'table',
                 columns: 2,
@@ -95,7 +95,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [
                 {
                     xtype: 'checkbox',
-                    fieldLabel: 'Toon samenvatting titel',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_75'),
                     name: 'detailShowTitle',
                     id: 'detailShowTitle',
                     inputValue: true,
@@ -106,7 +106,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: 'Toon samenvatting plaatje',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_76'),
                     name: 'detailShowImage',
                     id: 'detailShowImage',
                     inputValue: true,
@@ -114,7 +114,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     labelWidth:this.labelWidth
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: 'Toon samenvatting omschrijving',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_77'),
                     name: 'detailShowDesc',
                     id: 'detailShowDesc',
                     inputValue: true,
@@ -125,7 +125,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: 'Toon lijst met attributen',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_78'),
                     name: 'detailShowAttr',
                     id: 'detailShowAttr',
                     inputValue: true,
@@ -133,7 +133,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     labelWidth:this.labelWidth
                 }, {
                     xtype: 'checkbox',
-                    fieldLabel: 'Verberg geometrie attributen',
+                    fieldLabel: i18next.t('viewer_components_customconfiguration_79'),
                     name: 'detailHideGeomAttr',
                     id: 'detailHideGeomAttr',
                     inputValue: true,

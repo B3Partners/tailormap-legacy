@@ -30,7 +30,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.form.add([
             {
                 xtype: 'checkbox',
-                fieldLabel: 'Bookmark kopieëren bij werkversie',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_9'),
                 name: 'copyBookmarkForWorkversion',
                 labelWidth:this.labelWidth,
                 inputValue: false,
@@ -41,7 +41,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'label',
-                text: 'Toon de links',
+                text: i18next.t('viewer_components_customconfiguration_10'),
                 style: { 
                     fontWeight: 'bold'
                 }
@@ -53,7 +53,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 },
                 items: [{
                         xtype: 'checkbox',
-                        boxLabel: 'Volledige link',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_11'),
                         name: 'showFullUrl',
                         //value: true,
                         inputValue: true,
@@ -63,7 +63,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                 },{
                         xtype: 'checkbox',
-                        boxLabel: 'Compacte link',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_12'),
                         name: 'showShortUrl',
                         value: true,
                         //inputValue: true,
@@ -74,7 +74,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 }]
             },{
                         xtype: 'checkbox',
-                        boxLabel: 'Laat labels zien voor velden',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_13'),
                         name: 'showLabels',
                         //value: true,
                         inputValue: true,
@@ -84,7 +84,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                 },{
                 xtype: 'label',
-                text: 'Toon \'deel\' knoppen in venster',
+                text: i18next.t('viewer_components_customconfiguration_14'),
                 style: {
                     fontWeight: 'bold'
                 }
@@ -97,7 +97,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 items: [
                     {
                         xtype: 'checkbox',
-                        boxLabel: 'E-mail',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_15'),
                         name: 'shareEmail',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -108,7 +108,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: 'Twitter',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_16'),
                         name: 'shareTwitter',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -120,7 +120,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: 'LinkedIn',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_17'),
                         name: 'shareLinkedIn',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -131,7 +131,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: 'Google+',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_18'),
                         name: 'shareGooglePlus',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -142,7 +142,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: 'Facebook',
+                        boxLabel: i18next.t('viewer_components_customconfiguration_19'),
                         name: 'shareFacebook',
                         /*columnWidth : 0.5,*/
                         //value: true,
@@ -155,14 +155,14 @@ Ext.define("viewer.components.CustomConfiguration", {
                 ]
             },{
                 xtype: 'textfield',
-                fieldLabel: 'Default \'deel tekst\' titel',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_20'),
                 name: 'shareTitle',
                 value: this.configObject.shareTitle != undefined ? this.configObject.shareTitle : "Sharing",
                 labelWidth:this.labelWidth,
                 width: 700
             },{
                 xtype: 'textareafield',
-                fieldLabel: 'Default \'deel tekst\'',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_21'),
                 name: 'shareText',
                 grow: true,
                 value: this.configObject.shareText != undefined ? this.configObject.shareText : "I'd like to share this with #FlamingoMC: ",

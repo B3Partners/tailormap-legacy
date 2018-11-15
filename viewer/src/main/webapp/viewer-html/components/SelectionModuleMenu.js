@@ -39,7 +39,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
             },
             items: [
                 {
-                    text: 'Nieuwe map aanmaken',
+                    text: i18next.t('viewer_components_selectionmodulemenu_0'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/add.png",
                     listeners: {
                         click: {
@@ -55,7 +55,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                     }
                 },
                 {
-                    text: 'Map verwijderen',
+                    text: i18next.t('viewer_components_selectionmodulemenu_1'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/delete.png",
                     listeners: {
                         click: {
@@ -64,7 +64,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 var me = this;
                                 me.record = record;
                                 Ext.Msg.show({
-                                    title: 'Map verwijderen?',
+                                    title: i18next.t('viewer_components_selectionmodulemenu_2'),
                                     message: 'Weet u zeker dat u de geselecteerde map wilt verwijderen?',
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
@@ -80,7 +80,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                     }
                 },
                 {
-                    text: 'Naam wijzigen',
+                    text: i18next.t('viewer_components_selectionmodulemenu_3'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/wrench.png",
                     listeners: {
                         click: {
@@ -108,7 +108,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
             },
             items: [
                 {
-                    text: 'Kaartlaag verwijderen',
+                    text: i18next.t('viewer_components_selectionmodulemenu_4'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/delete.png",
                     listeners: {
                         click: {
@@ -117,7 +117,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                                 var me = this;
                                 me.record = record;
                                 Ext.Msg.show({
-                                    title: 'Kaartlaag verwijderen?',
+                                    title: i18next.t('viewer_components_selectionmodulemenu_5'),
                                     message: 'Weet u zeker dat u de geselecteerde kaartlaag wilt verwijderen?',
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
@@ -133,7 +133,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
                     }
                 },
                 {
-                    text: 'Naam wijzigen',
+                    text: i18next.t('viewer_components_selectionmodulemenu_6'),
                     icon: FlamingoAppLoader.get('contextPath') + "/resources/images/wrench.png",
                     listeners: {
                         click: {
@@ -174,7 +174,7 @@ Ext.define("viewer.components.SelectionModuleMenu", {
         var newLevel = typeof type === "undefined";
         Ext.MessageBox.show({
             title: newLevel ? 'Nieuwe map aanmaken' : 'Naam wijzigen',
-            msg: 'Naam van ' + (newLevel ? "nieuwe map" : type) +':',
+            msg: i18next.t('viewer_components_selectionmodulemenu_7') + (newLevel ? "nieuwe map" : type) +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,// record.data.text,

@@ -28,7 +28,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         height: 600,
         useMarker: false,
         usePopup: false,
-        title: "Streetview",
+        title: i18next.t('viewer_components_tools_streetview_0'),
         nonSticky: false,
         titlebarIcon : "",
         tooltip : "Streetview"

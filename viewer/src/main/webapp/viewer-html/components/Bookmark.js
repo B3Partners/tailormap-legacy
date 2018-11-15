@@ -83,7 +83,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: 'Email',
+                //text: i18next.t('viewer_components_bookmark_0'),
                 icon: imagePath + 'email-16.png',
                 listeners: {
                     click:{
@@ -98,7 +98,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: 'Twitter',
+                //text: i18next.t('viewer_components_bookmark_1'),
                 icon: imagePath + 'twitter-16.png',
                 listeners: {
                     click:{
@@ -113,7 +113,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: 'LinkedIn',
+                //text: i18next.t('viewer_components_bookmark_2'),
                 icon: imagePath+"in-16.png",
                 listeners: {
                     click:{
@@ -128,7 +128,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: 'Google+',
+                //text: i18next.t('viewer_components_bookmark_3'),
                 icon: imagePath + 'gplus-16.png',
                 listeners: {
                     click:{
@@ -143,7 +143,7 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                //text: 'Facebook',        
+                //text: i18next.t('viewer_components_bookmark_4'),        
                 icon: imagePath + 'fb-16.png',
                 listeners: {
                     click:{
@@ -190,7 +190,7 @@ Ext.define ("viewer.components.Bookmark",{
             formItems.push({ 
                 xtype: 'button',
                 margin: '10px 0px 0px 0px',
-                text: 'Toevoegen aan favorieten',
+                text: i18next.t('viewer_components_bookmark_5'),
                 listeners: {
                     click:{
                         scope: this,
@@ -202,7 +202,7 @@ Ext.define ("viewer.components.Bookmark",{
         formItems.push({ 
             xtype: 'button',
             margin: '10px 0px 0px 10px',
-            text: 'Sluiten',
+            text: i18next.t('viewer_components_bookmark_6'),
             listeners: {
                 click:{
                     scope: this,

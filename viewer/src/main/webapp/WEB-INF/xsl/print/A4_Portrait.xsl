@@ -115,14 +115,15 @@
 					<xsl:with-param name="left" select="'4.0cm'"/>
 				</xsl:call-template>
 			</fo:block>
-			<!-- create scalebar -->
-			<fo:block margin-top="5mm">
-				<fo:inline font-weight="bold">
-				<xsl:text>schaal 1: </xsl:text>
-				<xsl:value-of select="scale"/>
-				</fo:inline>
-			</fo:block>
-
+                        <!-- create scalebar -->
+                        <xsl:if test="scale != ''">
+                            <fo:block margin-top="5mm">
+                                <fo:inline font-weight="bold">
+                                    <xsl:text>schaal 1: </xsl:text>
+                                    <xsl:value-of select="scale"/>
+                                </fo:inline>
+                            </fo:block>
+                        </xsl:if>
 			<fo:block>
 				<xsl:variable name="local-scale">
 					<xsl:call-template name="calc-local-scale">

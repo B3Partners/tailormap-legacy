@@ -3,13 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.3.6-SNAPSHOT</version>
+    <version>5.3.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
-    <prerequisites>
-        <maven>3.2.5</maven>
-    </prerequisites>
     <scm>
         <connection>scm:git:git@github.com:flamingo-mc/flamingo.git</connection>
         <developerConnection>scm:git:git@github.com:flamingo-mc/flamingo.git</developerConnection>
@@ -20,12 +17,12 @@
         <repository>
             <id>repo.b3p.nl</id>
             <name>B3Partners releases repository</name>
-            <url>http://repo.b3p.nl/nexus/content/repositories/releases/</url>
+            <url>https://repo.b3p.nl/nexus/repository/releases/</url>
         </repository>
         <snapshotRepository>
             <id>repo.b3p.nl</id>
             <name>B3Partners snapshots repository</name>
-            <url>http://repo.b3p.nl/nexus/content/repositories/snapshots/</url>
+            <url>https://repo.b3p.nl/nexus/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <licenses>
@@ -37,7 +34,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.3.6-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.3.8-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -55,7 +52,7 @@
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
-        <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
         <tomcat.version>7.0.91</tomcat.version>
     </properties>
     <dependencyManagement>
@@ -342,7 +339,7 @@
                 <!-- override the version provided by hibernate -->
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.22.0-CR2</version>
+                <version>3.24.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -515,7 +512,7 @@
         <repository>
             <id>B3Partners</id>
             <name>Releases hosted by B3Partners</name>
-            <url>http://repo.b3p.nl/nexus/content/groups/public/</url>
+            <url>https://repo.b3p.nl/nexus/repository/public/</url>
         </repository>
     </repositories>
     <build>
@@ -618,7 +615,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.3.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
@@ -825,25 +822,25 @@
             <name>Matthijs Laan</name>
             <email>matthijslaan@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
             <name>Meine Toonen</name>
             <email>meinetoonen@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
             <name>Roy Braam</name>
             <email>roybraam@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
             <name>Mark Prins</name>
             <email>markprins@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
-            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+            <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
     </developers>
 </project>

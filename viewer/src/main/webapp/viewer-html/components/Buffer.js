@@ -76,7 +76,7 @@ Ext.define ("viewer.components.Buffer",{
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             id: this.name + "Radius",
-            fieldLabel: "Straal"
+            fieldLabel: i18next.t('viewer_components_buffer_0')
         });
         
         this.colorPicker = Ext.create("Ext.ux.ColorField",{ 
@@ -96,7 +96,7 @@ Ext.define ("viewer.components.Buffer",{
         this.buffer = Ext.create("Ext.button.Button",{
             name: "buffer" ,
             id: this.name + "BufferButton",
-            text: "Buffer",
+            text: i18next.t('viewer_components_buffer_1'),
             margin: '10px 0px 0px 0px',
             listeners: {
                 click:{
@@ -109,7 +109,7 @@ Ext.define ("viewer.components.Buffer",{
         this.remove = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
-            text: "Huidige buffer verwijderen", 
+            text: i18next.t('viewer_components_buffer_2'), 
             margin: '10px 0px 0px 10px',           
             listeners: {
                 click:{

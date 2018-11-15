@@ -209,7 +209,7 @@ Ext.define('Ext.ux.b3p.CrudGrid', {
 
     removeObject: function(record) {
         Ext.MessageBox.show({
-            title: "Bevestiging",
+            title: i18next.t('viewer_admin_crudgrid_0'),
             msg: this.removeConfirmMessage(record),
             buttons: Ext.MessageBox.OKCANCEL,
             fn: function(btn){

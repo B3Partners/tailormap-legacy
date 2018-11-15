@@ -205,50 +205,50 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
 
     /* Abstract functions below: */
     getId :function (){
-        Ext.Error.raise({msg: "ArcLayer.getId() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_0')});
     },
     reload : function (){
-        Ext.Error.raise({msg: "ArcLayer.reload() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_1')});
     },
     getName : function (){
-        Ext.Error.raise({msg: "ArcLayer.getName() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_2')});
     },
     //TODO: remove Not for all arclayers!
     getServer :function (){
-        Ext.Error.raise({msg: "ArcLayer.getServer() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_3')});
     },
     //TODO: remove Not for all arclayers!
     getService : function (){
-        Ext.Error.raise({msg: "ArcLayer.getService() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_4')});
     },
     //TODO: remove Not for all arclayers!
     getServlet : function (){
-        Ext.Error.raise({msg: "ArcLayer.getServlet() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_5')});
     },
     //TODO: remove Not for all arclayers!
     getMapservice : function (){
-        Ext.Error.raise({msg: "ArcLayer.getMapservice() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_6')});
     },
     getLayers : function(){
-        Ext.Error.raise({msg: "ArcLayer.getLayers() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_7')});
     },
     setMaptips: function(maptips){
-        Ext.Error.raise({msg: "ArcLayer.setMaptips() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_8')});
     },
     passMaptips: function(){
-        Ext.Error.raise({msg: "ArcLayer.passMaptips() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_9')});
     },    
     setVisible : function (visible){
-        Ext.Error.raise({msg: "ArcLayer.setVisible() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_10')});
     },
     getLegendGraphic: function (){
-        Ext.Error.raise({msg: "ArcLayer.getLegendGraphic() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_11')});
     },
     setBuffer : function (radius,layer){
-        Ext.Error.raise({msg: "ArcLayer.setBuffer() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_12')});
     },
     removeBuffer: function(layer){        
-        Ext.Error.raise({msg: "ArcLayer.removeBuffer() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_arclayer_13')});
     }
 });
 

@@ -27,7 +27,7 @@ Ext.onReady(function() {
         bodyPadding: 5, // Don't want content to crunch against the borders
         width: 400,
         height: 500,
-        title: 'Zoekcomponent',
+        title: i18next.t('viewer_admin_search_0'),
         layout: {
             type: "vbox"
         },
@@ -43,8 +43,8 @@ Ext.onReady(function() {
                 },
                 items: [{
                         xtype: "combo",
-                        emptyText: 'Zoeken',
-                        fieldLabel: "Zoeken",
+                        emptyText: i18next.t('viewer_admin_search_1'),
+                        fieldLabel: i18next.t('viewer_admin_search_2'),
                         hideTrigger: true,
                         minChars: 1,
                         triggerAction: 'query',
@@ -78,14 +78,14 @@ Ext.onReady(function() {
                         }
                     }, {
                         xtype: "button",
-                        text: "Zoek",
+                        text: i18next.t('viewer_admin_search_3'),
                         handler: search
                     }]
 
             },
             {
                 xtype: "label",
-                html: "<b>Resultaten</b>"
+                html: { tag: 'b', html: i18next.t('viewer_admin_search_4') }
             },
             {
                 xtype: "panel",
@@ -127,14 +127,14 @@ function search() {
             if (msg.success) {
                 processResults(msg.response.docs);
             } else {
-                Ext.MessageBox.show({title: "Fout", msg: "Kan de VRI niet ophalen. Probeer het opnieuw of neem contact op met de applicatie beheerder." + msg.error, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.ERROR});
+                Ext.MessageBox.show({title: i18next.t('viewer_admin_search_5'), msg: i18next.t('viewer_admin_search_6') + msg.error, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.ERROR});
             }
         },
         failure: function(response) {
 
             var results = Ext.getCmp("searchResults");
             results.setLoading(false);
-            Ext.MessageBox.show({title: "Ajax fout", msg: "Kan de VRI niet ophalen. Probeer het opnieuw of neem contact op met de applicatie beheerder." + response.responseText, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.ERROR});
+            Ext.MessageBox.show({title: i18next.t('viewer_admin_search_7'), msg: i18next.t('viewer_admin_search_8') + response.responseText, buttons: Ext.MessageBox.OK, icon: Ext.MessageBox.ERROR});
         }
     });
 }

@@ -26,7 +26,7 @@ Ext.define ("viewer.components.Keyboard",{
     keyboardTool:null,
     config:{
         name: "keyboard",
-        tooltip: "Keyboard navigation"
+        tooltip: i18next.t('viewer_components_keyboard_0')
     },
     constructor: function (conf){        
         this.initConfig(conf);

@@ -256,7 +256,7 @@ Ext.define ("viewer.components.Print",{
                 width: '100%',
                 items: [/*{
                     xtype: "label",
-                    text: "Kaart voorbeeld: "
+                    text: i18next.t('viewer_components_print_0')
                 }*/{
                     xtype: 'container',
                     id: 'legendContainer',
@@ -272,7 +272,7 @@ Ext.define ("viewer.components.Print",{
                     flex: 0.6,
                     height: 200,
                     layout: 'fit',
-                    html: '<div id="previewImg" style="width: 100%; height: 100%;"></div>'
+                    html: { tag: "div", id: "previewImg", style: "width: 100%; height: 100%;" }
                 }]
             },{
                 //bottom container (2)
@@ -307,7 +307,7 @@ Ext.define ("viewer.components.Print",{
                     flex: 0.4,
                     items: [{
                         xtype: "label",
-                        text: "Titel"
+                        text: i18next.t('viewer_components_print_2')
                     },{
                         xtype: 'textfield',
                         width: '100%',
@@ -315,14 +315,14 @@ Ext.define ("viewer.components.Print",{
                         value: ""
                     },{
                         xtype: "label",
-                        text: "Subtitel"
+                        text: i18next.t('viewer_components_print_3')
                     },{
                         xtype: 'textfield',
                         name: 'subtitle',
                         value: ""
                     },{
                         xtype: "label",
-                        text: "Optionele Tekst"
+                        text: i18next.t('viewer_components_print_4')
                     },{
                         xtype: 'textfield',
                         name: 'extraTekst',
@@ -338,7 +338,7 @@ Ext.define ("viewer.components.Print",{
                         width: '100%',
                         items: [{
                             xtype: "label",
-                            text: "Kwaliteit"
+                            text: i18next.t('viewer_components_print_5')
                         },{
                             xtype: 'container',
                             layout: {
@@ -364,7 +364,7 @@ Ext.define ("viewer.components.Print",{
                                 flex: 1
                             },{
                                 xtype: 'button',
-                                text: '<',
+                                text: i18next.t('viewer_components_print_6'),
                                 width: /*MobileManager.isMobile() ? 50 : */30,
                                 listeners: {
                                     click:{
@@ -406,18 +406,18 @@ Ext.define ("viewer.components.Print",{
                             flex: 0.5,
                             items: [{
                                 xtype: 'label',
-                                text: 'Orientatie'
+                                text: i18next.t('viewer_components_print_7')
                             },{
                                 xtype: 'radiogroup',
                                 name: "orientation",
                                 width: 150,
                                 items: [{
-                                    boxLabel: 'Liggend',
+                                    boxLabel: i18next.t('viewer_components_print_8'),
                                     name: 'orientation',
                                     inputValue: 'landscape',
                                     checked: me.getOrientation()=='landscape'
                                 },{
-                                    boxLabel: 'Staand',
+                                    boxLabel: i18next.t('viewer_components_print_9'),
                                     name: 'orientation',
                                     inputValue: 'portrait',
                                     checked: !(me.getOrientation()=='landscape')
@@ -427,7 +427,7 @@ Ext.define ("viewer.components.Print",{
                                 name: 'includeLegend',
                                 checked: me.getLegend(),
                                 inputValue: true,
-                                boxLabel: 'Legenda toevoegen',
+                                boxLabel: i18next.t('viewer_components_print_10'),
                                 listeners:{
                                     change:{
                                         fn: function(obj, on){
@@ -443,11 +443,11 @@ Ext.define ("viewer.components.Print",{
                                 inputValue: true,
                                 checked: false,
                                 disabled: true,
-                                boxLabel: 'Attributen toevoegen'
+                                boxLabel: i18next.t('viewer_components_print_11')
                             }, {
                                 name: 'scale',
                                 itemId: 'scale',
-                                fieldLabel: 'Schaal',
+                                fieldLabel: i18next.t('viewer_components_print_12'),
                                 xtype:"textfield",
                                 value: this.config.viewerController.mapComponent.getMap().getActualScale()
                             },{
@@ -455,7 +455,7 @@ Ext.define ("viewer.components.Print",{
                                 name: 'includeOverview',
                                 hidden: !me.shouldAddOverview(),
                                 inputValue: true,
-                                boxLabel: 'Overzichtskaart toevoegen'
+                                boxLabel: i18next.t('viewer_components_print_13')
                             }]
                         },{
                             //(8)
@@ -483,11 +483,11 @@ Ext.define ("viewer.components.Print",{
                             },
                             items: [{
                                 xtype: 'label',
-                                text: "Pagina formaat"
+                                text: i18next.t('viewer_components_print_14')
                             },{
                                 xtype: "combobox",
                                 name: 'pageformat',
-                                emptyText:'Maak uw keuze',
+                                emptyText: i18next.t('viewer_components_print_15'),
                                 forceSelection: true,
                                 queryMode: 'local',
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
@@ -504,7 +504,7 @@ Ext.define ("viewer.components.Print",{
                                 maxValue: 360,
                                 width: 100,
                                 labelAlign: "top",
-                                fieldLabel: 'Kaart draaien *',
+                                fieldLabel: i18next.t('viewer_components_print_16'),
                                 tipText: function(tumb){
                                     return tumb.value+"º";
                                 },
@@ -523,7 +523,7 @@ Ext.define ("viewer.components.Print",{
             },{
                 xtype: "label",
                 hidden:this.config.mailPrint === "cantMail",
-                text: "Mailadres"
+                text: i18next.t('viewer_components_print_17')
             },{
                 xtype: 'textfield',
                 name: 'mailTo',
@@ -535,7 +535,7 @@ Ext.define ("viewer.components.Print",{
                  style: {
                      marginTop: "5px"
                  },
-                 text: "* Door het draaien van de kaart kan niet de maximale kwaliteit worden opgehaald."
+                 text: i18next.t('viewer_components_print_18')
             },{
                 //button container 2b
                 xtype: 'container',
@@ -545,7 +545,7 @@ Ext.define ("viewer.components.Print",{
                 },
                 items: [{
                     xtype: 'button',
-                    text: 'Sluiten',
+                    text: i18next.t('viewer_components_print_19'),
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -560,7 +560,7 @@ Ext.define ("viewer.components.Print",{
                     }
                 },{
 //                    xtype: 'button',
-//                    text: 'Opslaan als RTF'  ,
+//                    text: i18next.t('viewer_components_print_20')  ,
 //                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
 //                    style: {
 //                        "float": "right",
@@ -576,7 +576,7 @@ Ext.define ("viewer.components.Print",{
 //                    }
 //                },{
                     xtype: 'button',
-                    text: 'Printen via PDF'  ,
+                    text: i18next.t('viewer_components_print_21')  ,
                     hidden: this.config.mailPrint === "canOnlyMail",
                     style: {
                         "float": "right",
@@ -592,7 +592,7 @@ Ext.define ("viewer.components.Print",{
                     }
                 },{
                     xtype: 'button',
-                    text: 'Verstuur per mail',
+                    text: i18next.t('viewer_components_print_22'),
                     hidden:this.config.mailPrint === "cantMail",
                     style: {
                         "float": "right",
@@ -613,14 +613,14 @@ Ext.define ("viewer.components.Print",{
                                         },
                                         success: function(result) {
                                             var response = result.responseText;
-                                            Ext.MessageBox.alert('Info', "Print wordt gemaakt en wordt via de mail verzonden. Dit kan enige minuten duren");
+                                            Ext.MessageBox.alert(i18next.t('viewer_components_print_24'), i18next.t('viewer_components_print_25'));
                                         },
                                         failure: function(result) {
-                                           Ext.MessageBox.alert('Fout', "Print mislukt.");
+                                           Ext.MessageBox.alert(i18next.t('viewer_components_print_26'), i18next.t('viewer_components_print_27'));
                                         }
                                     });
                                 }else{
-                                    Ext.MessageBox.alert('Fout', "Vul een geldig e-mailadres in.");
+                                    Ext.MessageBox.alert(i18next.t('viewer_components_print_28'), i18next.t('viewer_components_print_29'));
                                 }
                             }
                         }
@@ -662,7 +662,7 @@ Ext.define ("viewer.components.Print",{
             var checkboxes= new Array();
             checkboxes.push({
                 xtype: "label",
-                text: "Opnemen in legenda:"
+                text: i18next.t('viewer_components_print_23')
             });
             for (var key  =0 ; key < this.legends.length ;key++){
                 if(this.legends.hasOwnProperty(key)){
@@ -883,6 +883,9 @@ Ext.define ("viewer.components.Print",{
         properties.angle = this.rotateSlider.getValue();
         properties.quality = this.qualitySlider.getValue();
         properties.appId = this.viewerController.app.id;
+        if(properties.scale === ""){
+            delete properties.scale;
+        }
         var mapProperties=this.getMapValues();
         Ext.apply(properties, mapProperties);
         return properties;

@@ -307,7 +307,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     addTool : function(tool){        
         if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
             Ext.Error.raise({
-                msg: "The given tool is not of type 'FlamingoTool'"               
+                msg: i18next.t('viewer_viewercontroller_flamingomapcomponent_0')               
             });
         }
         //calc the number of visible tools.
@@ -428,7 +428,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      **/
     removeTool : function (tool){
         if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
-            Ext.Error.raise({msg: "The given tool is not of type 'FlamingoTool'"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingomapcomponent_1')});
         }
         this.viewerObject.callMethod(tool.getId(),'setVisible',false);
         MapComponent.prototype.removeTool.call(this,tool);
@@ -439,7 +439,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     removeToolById : function (id){
         var tool = this.getTool(id);
         if(tool == null || !(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
-            Ext.Error.raise({msg: "The given tool is not of type 'FlamingoTool' or the given id does not exist"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingomapcomponent_2')});
         }
         this.removeTool(tool);
     },
@@ -450,7 +450,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     addComponent: function(component){
         if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
             Ext.Error.raise({
-                msg: "The given Component is not of type 'FlamingoComponent'"               
+                msg: i18next.t('viewer_viewercontroller_flamingomapcomponent_3')               
             });
         }
         viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
@@ -484,7 +484,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     addMap : function (map){
         if (!(map instanceof viewer.viewercontroller.flamingo.FlamingoMap)){
-            Ext.Error.raise({msg: "FlamingoMapComponent.addMap(): The given map is not of the type 'FlamingoMap'"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingomapcomponent_4')});
         }
         this.viewerObject.callMethod(this.mainContainerId,'addComponent',map.toXML()); 
         this.maps.push(map);
@@ -508,7 +508,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             }
         }
         return null;
-        //Ext.Error.raise({msg: "FlamingoMapComponent.getMap(): Map with id: "+mapId+" not found! Available maps: "+availableMaps});
+        //Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingomapcomponent_5')+mapId+" not found! Available maps: "+availableMaps});
     },
     /****************************************************************Event handling***********************************************************/
 

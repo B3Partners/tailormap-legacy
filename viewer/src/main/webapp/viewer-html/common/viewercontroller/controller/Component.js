@@ -54,7 +54,7 @@ Ext.define("viewer.viewercontroller.controller.Component",{
      *@param vis true or false
      */
     setVisible: function (vis){
-        Ext.Error.raise({msg: "setVisible() function must be implemented in implementation"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_component_0')});
     },
 
     /**

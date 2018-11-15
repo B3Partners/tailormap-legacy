@@ -113,27 +113,27 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             items: [{
                 name: "label",
-                fieldLabel: "Label",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_130'),
                 value: labelValue,
                 xtype: 'textfield',
                 labelWidth: 50,
                 flex: 1
             }, {
                 name: "distance",
-                fieldLabel: "Afstand",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_131'),
                 value: distance,
                 xtype: 'textfield',
                 labelWidth: 50,
                 width: 150
             }, {
                 xtype: "checkbox",
-                fieldLabel: "Fan",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_132'),
                 labelWidth: 50,
                 name: "fan",
                 value: fan_value
             }, {
                 xtype: "button",
-                text: " X ",
+                text: i18next.t('viewer_components_customconfiguration_133'),
                 listeners:{
                     click: function(btn) {
                         var container = btn.up('.panel');

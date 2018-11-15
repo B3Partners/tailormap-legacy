@@ -79,28 +79,28 @@ Ext.define('LayoutManager', {
         {id:'footer', htmlId:'layout_footer', configure: ['height', 'tabs', 'backgroundcolor']}
     ],
     configurationOptions: {
-        width: { title: 'Breedte', key: 'width', type: 'text' },
+        width: { title: i18next.t('viewer_admin_layoutmanager_0'), key: 'width', type: 'text' },
         widthmeasure: { key: 'widthmeasure', options: ['px', '%'], type: 'select' },
         maxwidth: { key: 'maxwidth', type: 'text' },
-        height: { title: 'Hoogte', key: 'height', type: 'text' },
+        height: { title: i18next.t('viewer_admin_layoutmanager_1'), key: 'height', type: 'text' },
         heightmeasure: { key: 'heightmeasure', options: ['px', '%'], type: 'select' },
         maxheight: { key: 'maxheight', type: 'text' },
-        tabs: { title: 'Gebruik tabs bij meerdere componenten', key: 'useTabs', type: 'checkbox' },
-        collapse: { title: 'Balk in/uit kunnen klappen', key: 'enableCollapse', type: 'checkbox' },
-        collapse_default: { title: 'Balk standaard ingeklapt', key: 'defaultCollapsed', type: 'checkbox' },
-        floating: { title: 'Maak balk zwevend', key: 'enableFloating', type: 'checkbox' },
-        floatingposition: { title: 'Positie zwevende balk', key: 'floatingPosition', type: 'select', options: [
+        tabs: { title: i18next.t('viewer_admin_layoutmanager_2'), key: 'useTabs', type: 'checkbox' },
+        collapse: { title: i18next.t('viewer_admin_layoutmanager_3'), key: 'enableCollapse', type: 'checkbox' },
+        collapse_default: { title: i18next.t('viewer_admin_layoutmanager_4'), key: 'defaultCollapsed', type: 'checkbox' },
+        floating: { title: i18next.t('viewer_admin_layoutmanager_5'), key: 'enableFloating', type: 'checkbox' },
+        floatingposition: { title: i18next.t('viewer_admin_layoutmanager_6'), key: 'floatingPosition', type: 'select', options: [
             { value: 'tl', label: 'Links-boven' },
             { value: 'bl', label: 'Links-onder' },
             { value: 'tr', label: 'Rechts-boven' },
             { value: 'br', label: 'Rechts-onder' }
         ]},
-        paneltitle: { title: 'Titel in/uitklapbare balk / zwevend paneel', key: 'panelTitle', type: 'text' },
-        position: { title: 'Startpositie (leeg = gecentreerd)' },
-        posx: { title: 'x', key: 'posx', type: 'text' },
-        posy: { title: 'y', key: 'posy', type: 'text' },
-        title: { title: 'Popup titel', key: 'title', type: 'text' },
-        backgroundcolor: { title: 'Achtergrondkleur', key: 'bgcolor', type: 'text' }
+        paneltitle: { title: i18next.t('viewer_admin_layoutmanager_7'), key: 'panelTitle', type: 'text' },
+        position: { title: i18next.t('viewer_admin_layoutmanager_8') },
+        posx: { title: i18next.t('viewer_admin_layoutmanager_9'), key: 'posx', type: 'text' },
+        posy: { title: i18next.t('viewer_admin_layoutmanager_10'), key: 'posy', type: 'text' },
+        title: { title: i18next.t('viewer_admin_layoutmanager_11'), key: 'title', type: 'text' },
+        backgroundcolor: { title: i18next.t('viewer_admin_layoutmanager_12'), key: 'bgcolor', type: 'text' }
     },
     layoutRegionsStore: null,
     configuredComponents: [],
@@ -141,7 +141,7 @@ Ext.define('LayoutManager', {
         });
         
         this.popupWin = Ext.create('Ext.window.Window', {
-            title: 'Configuratie',
+            title: i18next.t('viewer_admin_layoutmanager_13'),
             closable: true,
             closeAction: 'hide',
             width: 800,
@@ -347,7 +347,7 @@ Ext.define('LayoutManager', {
 
         if(layoutHtml.length !== 0) {
             var window = Ext.create('Ext.window.Window', {
-                title: 'Configuratie ' + layoutRegionTitle,
+                title: i18next.t('viewer_admin_layoutmanager_14') + layoutRegionTitle,
                 closable: true,
                 closeAction: 'hide',
                 width: 400,
@@ -359,7 +359,7 @@ Ext.define('LayoutManager', {
                 resizable: false,
                 bodyPadding: 10,
                 fbar: [
-                    { type: 'button', text: 'Opslaan', handler: function() { this.saveLayout(false); window.hide(); }.bind(this) }
+                    { type: 'button', text: i18next.t('viewer_admin_layoutmanager_15'), handler: function() { this.saveLayout(false); window.hide(); }.bind(this) }
                 ]
             });
             layoutRegionElement.querySelector('.layoutregion_title').addEventListener('click', function() {
@@ -515,7 +515,7 @@ Ext.define('LayoutManager', {
         
         Ext.create("Ext.panel.Panel",{
             name:"toolbox",
-            title:"Werkbank",
+            title: i18next.t('viewer_admin_layoutmanager_16'),
             animCollapse: true,
             autoScroll:true,
             height: "100%",
@@ -835,7 +835,7 @@ Ext.define('LayoutManager', {
                                 name: componentName
                             }, 
                             success: function ( result, request ) { 
-                                Ext.MessageBox.alert("Gelukt", "Het component is verwijderd.");
+                                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_17'), i18next.t('viewer_admin_layoutmanager_18'));
                                 me.saveLayout(false);
                             }, 
                             failure: function ( result, request) { 
@@ -1022,7 +1022,7 @@ Ext.define('LayoutManager', {
                 if(!displaySuccessMessage){
                     return;
                 }
-                Ext.MessageBox.alert("Gelukt", "De layout is opgeslagen.");
+                Ext.MessageBox.alert(i18next.t('viewer_admin_layoutmanager_19'), i18next.t('viewer_admin_layoutmanager_20'));
             }, 
             failure: function ( result, request) { 
                 Ext.MessageBox.alert('Foutmelding', result.responseText); 

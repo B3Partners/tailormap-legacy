@@ -134,14 +134,14 @@ Ext.define ("viewer.components.AttributeList",{
                 {
                     xtype: 'button',
                     itemId: 'zoomToAll',
-                    text: 'Zoom naar getoonde lijst',
+                    text: i18next.t('viewer_components_attributelist_0'),
                     disabled: true,
                     scope: this,
                     handler: this.zoomToAllFeatures,
                     hidden: !this.config.addZoomTo
                 },
                 { xtype: 'container', flex: 1 },
-                {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: 'Download',disabled:true, scope:this, handler:function(){
+                {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: i18next.t('viewer_components_attributelist_1'),disabled:true, scope:this, handler:function(){
                         this.download();
                     }},
                 {
@@ -207,7 +207,7 @@ Ext.define ("viewer.components.AttributeList",{
             // topContainerOptions.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 0 10 0';
         } else {
             closingPanelOptions.items.push({
-                xtype: 'button', text: 'Sluiten', handler: function() {
+                xtype: 'button', text: i18next.t('viewer_components_attributelist_2'), handler: function() {
                     me.popup.hide();
                 }
             });
@@ -824,7 +824,7 @@ Ext.define ("viewer.components.AttributeList",{
         url += '&params=' + this.config.downloadParams;
 
         var w =new Ext.Window({
-            title: "Download",
+            title: i18next.t('viewer_components_attributelist_3'),
             width: 400,
             height: 150,
             layout: 'fit',

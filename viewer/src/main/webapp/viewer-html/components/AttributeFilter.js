@@ -76,10 +76,10 @@ Ext.define ("viewer.components.AttributeFilter",{
 					fields: ['id','title'],
 					data : [{
 						id:"OR",
-						title:"of"
+						title: i18next.t('viewer_components_attributefilter_0')
 					}, {
 						id:"AND",
-						title:"en"
+						title: i18next.t('viewer_components_attributefilter_1')
 					}]
 				});
 				this.logicOperator = Ext.create('Ext.form.ComboBox', {

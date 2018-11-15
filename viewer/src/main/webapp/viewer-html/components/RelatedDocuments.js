@@ -86,7 +86,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
                     xtype: "container",
                     autoScroll: true,
                     flex: 1,
-                    html: '<div id="' + me.contentId + '" style="width: 100%; height: 100%;"></div>'
+                    html: { tag: "div", id: me.contentId, style: "width: 100%; height: 100%;" }
                 },{
                     id: this.config.name + 'ClosingPanel',
                     xtype: "container",
@@ -99,7 +99,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
                         pack:'end'
                     },
                     items: [
-                        {xtype: 'button', text: 'Sluiten', handler: function() {
+                        {xtype: 'button', text: i18next.t('viewer_components_relateddocuments_1'), handler: function() {
                             me.popup.hide();
                         }}
                     ]

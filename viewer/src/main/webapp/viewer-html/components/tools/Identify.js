@@ -24,7 +24,7 @@ Ext.define ("viewer.components.tools.Identify",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "identify",
-        tooltip: "Identify"
+        tooltip: i18next.t('viewer_components_tools_identify_0')
     },
     /**
      * @Constructor

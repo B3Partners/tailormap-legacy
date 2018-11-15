@@ -85,7 +85,7 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
-        this.iconPath = FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
+        this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
             this.popup.addListener("hide", this.hideWindow, this);
@@ -132,7 +132,6 @@ Ext.define ("viewer.components.Drawing",{
             'strokeOpacity': 0.5
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);
-        
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
@@ -184,12 +183,12 @@ Ext.define ("viewer.components.Drawing",{
         var drawingItems = [{
                 xtype: "splitbutton",
                 icon: this.iconPath + "circle.png",
-                id: this.drawingButtonIds.point,                
-                listeners: {
-                    click:{
-                        scope: me,
-                        fn: me.drawPoint
-                    }
+            id: this.drawingButtonIds.point,
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: me.drawPoint
+                }
                 },
                 menu: new Ext.menu.Menu({
                     items: [
@@ -200,7 +199,7 @@ Ext.define ("viewer.components.Drawing",{
                                 click: {
                                     scope: me,
                                     fn: function () { this.drawingTypeChanged("circle", true);}
-                                }
+            }
                             }
                         },
                         {
@@ -255,12 +254,12 @@ Ext.define ("viewer.components.Drawing",{
                         }                        
                     ]
                 })
-            },
-            {
+        },
+        {
             xtype: 'button',
             id: this.drawingButtonIds.line,
             icon: this.iconPath+"line_red.png",
-            tooltip: "Teken een lijn",
+            tooltip: i18next.t('viewer_components_drawing_1'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             listeners: {
@@ -274,7 +273,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
             icon: this.iconPath+"shape_square_red.png",
-            tooltip: "Teken een polygoon",
+            tooltip: i18next.t('viewer_components_drawing_2'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
             listeners: {
@@ -289,7 +288,7 @@ Ext.define ("viewer.components.Drawing",{
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
-                tooltip: "Teken een cirkel",
+                tooltip: i18next.t('viewer_components_drawing_3'),
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
                 listeners: {
@@ -303,10 +302,10 @@ Ext.define ("viewer.components.Drawing",{
         drawingItems.push(this.colorPicker);
         drawingItems.push({
             xtype: 'button',
-            icon: this.iconPath + "delete.png",
+            icon: this.iconPath+"delete.png",
             tooltip: "Verwijder geselecteerd object",
             listeners: {
-                click: {
+                click:{
                     scope: me,
                     fn: me.deleteObject
                 }
@@ -325,7 +324,7 @@ Ext.define ("viewer.components.Drawing",{
                 items: [
                     {
                         xtype: 'label',
-                        text: 'Objecten op de kaart tekenen'
+                        text: i18next.t('viewer_components_drawing_5')
                     },
                     {
                         xtype: 'fieldset',
@@ -467,7 +466,7 @@ Ext.define ("viewer.components.Drawing",{
                                         }
                                     }
                                 }]
-                        }
+                    }
                 ]
             }]
         });
@@ -494,7 +493,7 @@ Ext.define ("viewer.components.Drawing",{
                 items: [
                     {
                         xtype: 'label',
-                        text: 'Label geselecteerd object'
+                        text: i18next.t('viewer_components_drawing_6')
                     },
                     {
                         xtype: 'container',
@@ -502,7 +501,7 @@ Ext.define ("viewer.components.Drawing",{
                         margin: '5 0 0 0',
                         items: [
                             this.labelField,
-                             {
+                            {
                                 xtype: 'button',
                                 icon: this.iconPath+"calculator_edit.png",
                                 tooltip: "Gebruik lengte/oppervlakte als label",
@@ -522,7 +521,7 @@ Ext.define ("viewer.components.Drawing",{
 
         // Convience accessor
         this.titleField = Ext.create("Ext.form.field.Text",{
-            fieldLabel: 'Titel',
+            fieldLabel: i18next.t('viewer_components_drawing_8'),
             name: 'title',
             allowBlank:false,
             id: 'title'+ this.name,
@@ -530,7 +529,7 @@ Ext.define ("viewer.components.Drawing",{
         });
         this.description = Ext.create("Ext.form.field.TextArea",
         {
-            fieldLabel: 'Opmerking',
+            fieldLabel: i18next.t('viewer_components_drawing_9'),
             allowBlank:false,
             name: 'description',
             id: 'description',
@@ -551,7 +550,7 @@ Ext.define ("viewer.components.Drawing",{
             items: [
                 {
                     xtype: 'label',
-                    text: 'Op de kaart getekende objecten opslaan',
+                    text: i18next.t('viewer_components_drawing_10'),
                     margin: '0 0 5 0'
                 },
                 this.titleField,
@@ -570,7 +569,7 @@ Ext.define ("viewer.components.Drawing",{
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Opslaan als bestand',
+                            text: i18next.t('viewer_components_drawing_11'),
                             listeners: {
                                 click:{
                                     scope: me,
@@ -600,7 +599,7 @@ Ext.define ("viewer.components.Drawing",{
             items: [
                 {
                     xtype: 'label',
-                    text: 'Bestand met getekende objecten openen',
+                    text: i18next.t('viewer_components_drawing_12'),
                     margin: '0 0 5 0'
                 },
                 this.file,
@@ -613,7 +612,7 @@ Ext.define ("viewer.components.Drawing",{
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Bestand openen',
+                            text: i18next.t('viewer_components_drawing_13'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -656,7 +655,7 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     margin: 5,
                     items: [
-                         {
+                        {
                             xtype: 'button',
                             text: 'Verwijder alles',
                             handler: function() {
@@ -665,7 +664,7 @@ Ext.define ("viewer.components.Drawing",{
                         },
                         {
                             xtype: 'button',
-                            text: 'Sluiten',
+                            text:  i18next.t('viewer_components_drawing_14'),
                             handler: function() {
                                 me.popup.hide();
                             }
@@ -702,12 +701,13 @@ Ext.define ("viewer.components.Drawing",{
         }else{
             if(this.activeFeature.getId() === feature.getId()){
                 this.changeFormToCurrentFeature(feature);
-            }
+        }
         }
         if(this.activeFeature){
-            this.labelField.setValue(this.activeFeature.label);
+        this.labelField.setValue(this.activeFeature.label);
         }
     },
+    //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
         this.activeFeature.config.wktgeom = feature.config.wktgeom;
         Ext.Object.each(this.drawingButtonIds, function(key, id) {
@@ -758,7 +758,7 @@ Ext.define ("viewer.components.Drawing",{
         if(this.activeFeature){
             this.features[this.activeFeature.getId()].setStyle(featureStyle);
             layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
-        }
+            }
     },
     changeFormToCurrentFeature: function(feature){
         var featureStyle = this.vectorLayer.frameworkStyleToFeatureStyle(feature);
@@ -833,8 +833,8 @@ Ext.define ("viewer.components.Drawing",{
     },
     deleteAll: function() {
         Ext.Msg.show({
-            title: "Weet u het zeker?",
-            msg: "Weet u zeker dat u alle tekenobjecten wilt weggooien?",
+            title: i18next.t('viewer_components_drawing_15'),
+            msg: i18next.t('viewer_components_drawing_16'),
             fn: function(button) {
                 if (button === 'yes') {
                     this.vectorLayer.removeAllFeatures();
@@ -869,8 +869,8 @@ Ext.define ("viewer.components.Drawing",{
     },
     deleteObject: function() {
         Ext.Msg.show({
-            title: "Weet u het zeker?",
-            msg: "Weet u zeker dat u het geselecteerde object wil weggooien?",
+            title: i18next.t('viewer_components_drawing_17'),
+            msg: i18next.t('viewer_components_drawing_18'),
             fn: function(button) {
                 if (button === 'yes') {
                     delete this.features[this.activeFeature.id];
@@ -901,7 +901,7 @@ Ext.define ("viewer.components.Drawing",{
                 features.push(feature.toJsonObject());
             }
         }
-       form.setValues({
+        form.setValues({
             "saveObject":Ext.JSON.encode(features)
         });
         this.formsave.submit({
@@ -929,7 +929,7 @@ Ext.define ("viewer.components.Drawing",{
                     }
                 },
                 failure: function (){
-                    Ext.Msg.alert('Mislukt', 'Uw bestand kon niet gelezen worden.');
+                    Ext.MessageBox.alert(i18next.t('viewer_components_drawing_19'), i18next.t('viewer_components_drawing_20'));
                 }
             });
         }
@@ -946,12 +946,13 @@ Ext.define ("viewer.components.Drawing",{
         for ( var i = 0 ; i < features.length;i++){
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
-            this.vectorLayer.addFeature(featureObject);
-            
-            this.vectorLayer.setFeatureStyle(featureObject.getId(), featureObject.style);
+            this.vectorLayer.style.fillcolor = featureObject._color;
+            this.vectorLayer.style.strokecolor = featureObject._color;
             this.vectorLayer.adjustStyle();
+            this.vectorLayer.addFeature(featureObject);
             this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
         }
+
     },
 
     getBookmarkState: function(shortUrl){

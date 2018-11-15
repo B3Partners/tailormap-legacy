@@ -41,19 +41,19 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.form.add([
             {
                 xtype: 'textfield',
-                fieldLabel: 'Subtitel (wordt samengevoegd met featureinfo titel)',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_80'),
                 name: 'subTitle',
                 value: this.configObject.subTitle = this.configObject.subTitle || "",
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'textfield',
-                fieldLabel: 'Klik locatie label (mag leeg zijn)',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_81'),
                 name: 'clickLabel',
                 value: this.configObject.clickLabel = this.configObject.clickLabel || "",
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'numberfield',
-                fieldLabel: 'Maximum aantal related features',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_82'),
                 name: 'numOfRelatedFeatures',
                 value: this.configObject.numOfRelatedFeatures = this.configObject.numOfRelatedFeatures || 10,
                 minValue: 1,
@@ -61,7 +61,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'textfield',
-                fieldLabel: 'XSL Template',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_83'),
                 name: 'template',
                 value: this.configObject.template = this.configObject.template || "FeatureReport.xsl",
                 labelWidth: this.labelWidth
@@ -69,7 +69,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 xtype: "checkbox",
                 name: "overview",
                 checked: this.configObject.overview ? this.configObject.overview : false,
-                boxLabel: "Neem de overzichtskaart op als de overzichtskaart aanwezig is"
+                boxLabel: i18next.t('viewer_components_customconfiguration_84')
             }]);
 
         this.layersArrayIndexesToAppLayerIds(this.configObject);
@@ -100,7 +100,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         //create the formpanel
         var me = this;
         this.legendCheckPanel = Ext.create("Ext.form.FormPanel", {
-            title: "Selecteer de kaartlagen waarvan de legenda moet worden opgenomen",
+            title: i18next.t('viewer_components_customconfiguration_85'),
             id: "legendLayerListContainer",
             style: {
                 marginTop: "10px"

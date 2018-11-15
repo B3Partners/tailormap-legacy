@@ -111,7 +111,7 @@ Ext.define("viewer.components.Graph", {
                     xtype: "container",
                     items: [{
                         xtype: 'button',
-                        text: 'Selecteer punt voor grafiek',
+                        text: i18next.t('viewer_components_graph_0'),
                         listeners: {
                             click: {
                                 scope: me,
@@ -157,7 +157,7 @@ Ext.define("viewer.components.Graph", {
 
         var appLayer = this.layerSelector.getValue();
         if(appLayer === null) {
-            Ext.Msg.alert('Let op', 'Selecteer eerst een kaartlaag');
+            Ext.MessageBox.alert(i18next.t('viewer_components_graph_2'), i18next.t('viewer_components_graph_3'));
             return;
         }
         var graphConfig = this.getConfigByAppLayer(appLayer.id);
@@ -173,7 +173,7 @@ Ext.define("viewer.components.Graph", {
                 graphPanel.add({
                     xtype: 'container',
                     title: graphConfig[i].title,
-                    html: 'Bezig met laden...',
+                    html: i18next.t('viewer_components_graph_1'),
                     padding: 10,
                     id: 'placeholderContainer' + i
                 });
@@ -203,7 +203,7 @@ Ext.define("viewer.components.Graph", {
         }
     },
     failed: function(msg) {
-        Ext.Msg.alert('Fout', 'Fout bij het ophalen van de grafiek gegevens');
+        Ext.MessageBox.alert(i18next.t('viewer_components_graph_4'), i18next.t('viewer_components_graph_5'));
     },
     featuresReceived : function (features,attributes, config, index){
         var json = {};

@@ -29,6 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css">
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/i18n/i18next.11.9.0.min.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/i18n/locales/nl.js"></script>
         <script type="text/javascript">
             var uxpath = '${contextPath}/resources/js/ux';
             var csspath = '${contextPath}/resources/css/';

@@ -83,7 +83,7 @@ Ext.define("viewer.components.ConfigObject",{
         //create the formpanel
         var me=this;                
         this.checkPanel=Ext.create("Ext.form.FormPanel",{
-            title: "Selecteer de kaartlagen waarop deze tool van toepassing is",
+            title: i18next.t('viewer_components_configobject_0'),
             id: "layerListContainer",
             style: {
                 marginTop: "10px"

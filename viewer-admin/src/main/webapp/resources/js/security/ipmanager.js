@@ -36,7 +36,7 @@ Ext.define('vieweradmin.components.IpManager', {
 
     initForm: function() {
         this.formPanel = Ext.create('Ext.form.Panel', {
-            title: 'IP adressen',
+            title: i18next.t('viewer_admin_ipmanager_0'),
             width: 300,
             maxHeight: 300,
             autoScroll: true,
@@ -46,7 +46,7 @@ Ext.define('vieweradmin.components.IpManager', {
             items: [{
                 xtype: 'button',
                 name: 'add-ip',
-                text: 'IP adres toevoegen',
+                text: i18next.t('viewer_admin_ipmanager_1'),
                 handler: function() {
                     this.addIpField();
                 },

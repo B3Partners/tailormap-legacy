@@ -36,7 +36,7 @@ Ext.define('vieweradmin.components.Document', {
         return [
             {
                 id: 'name',
-                text: "Naam",
+                text: i18next.t('viewer_admin_document_0'),
                 dataIndex: 'name',
                 flex: 1,
                 filter: {
@@ -44,7 +44,7 @@ Ext.define('vieweradmin.components.Document', {
                 }
             },{
                 id: 'category',
-                text: "Rubriek",
+                text: i18next.t('viewer_admin_document_1'),
                 dataIndex: 'category',
                 flex: 1,
                 filter: {
@@ -52,7 +52,7 @@ Ext.define('vieweradmin.components.Document', {
                 }
             },{
                 id: 'url',
-                text: "Document URL",
+                text: i18next.t('viewer_admin_document_2'),
                 dataIndex: 'url',
                 flex: 1,
                 filter: {

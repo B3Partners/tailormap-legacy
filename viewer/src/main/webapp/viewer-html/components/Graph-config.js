@@ -52,7 +52,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             height: 350,
             layout: 'auto',
             autoScroll: true,
-            title: "Maak grafieken",
+            title: i18next.t('viewer_components_customconfiguration_86'),
             id: "layerListContainer",
             style: {
                 marginTop: "10px"
@@ -63,7 +63,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 {
                     xtype: 'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: 'Grafiekconfiguratie toevoegen',
+                    text: i18next.t('viewer_components_customconfiguration_87'),
                     listeners: {
                         click: function() {
                             me.addGraphConfig();
@@ -94,7 +94,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         var nextId = me.nextId;
         var newconfig = config || {
             id: 'graph' + nextId,
-            title: 'Grafiek ' + nextId
+            title: i18next.t('viewer_components_customconfiguration_88') + nextId
         };
         me.graphConfigs.push(newconfig);
         var collapsed = true;
@@ -136,17 +136,17 @@ Ext.define("viewer.components.CustomConfiguration", {
             defaultType: 'textfield',
             items: [
                    {
-                       fieldLabel: 'Titel',
+                       fieldLabel: i18next.t('viewer_components_customconfiguration_89'),
                        name: 'title',
                        value: config.title,
                        id: 'title'+config.id
                    },
                    {
-                       fieldLabel: "Kies grafiektype",
+                       fieldLabel: i18next.t('viewer_components_customconfiguration_90'),
                        name : "type" + config.id,
                        id: "type" + config.id,
                        xtype: "combo",
-                       emptyText:'Maak uw keuze',
+                       emptyText: i18next.t('viewer_components_customconfiguration_91'),
                        store: me.graphTypeStore,
                        queryMode: 'local',
                        displayField: 'naam',
@@ -154,11 +154,11 @@ Ext.define("viewer.components.CustomConfiguration", {
                        value: config.type || null
                    },
                    {
-                       fieldLabel: "Laag",
+                       fieldLabel: i18next.t('viewer_components_customconfiguration_92'),
                        name : "layer" + config.id,
                        id: "layer" + config.id,
                        xtype: "combo",
-                       emptyText:'Maak uw keuze',
+                       emptyText: i18next.t('viewer_components_customconfiguration_93'),
                        store: me.layers,
                        queryMode: 'local',
                        displayField: 'alias',
@@ -171,12 +171,12 @@ Ext.define("viewer.components.CustomConfiguration", {
                        }
                    },
                    {
-                       fieldLabel: "x-as",
+                       fieldLabel: i18next.t('viewer_components_customconfiguration_94'),
                        name : "categoryAttribute"+config.id,
                        id: "categoryAttribute"+config.id,
                        disabled:true,
                        xtype: "combo",
-                       emptyText:'Maak uw keuze',
+                       emptyText: i18next.t('viewer_components_customconfiguration_95'),
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
@@ -185,13 +185,13 @@ Ext.define("viewer.components.CustomConfiguration", {
                        width: 400
                    },
                    {
-                       fieldLabel: "y-as",
+                       fieldLabel: i18next.t('viewer_components_customconfiguration_96'),
                        name : "serieAttribute"+config.id,
                        id: "serieAttribute"+config.id,
                        disabled:true,
                        xtype: "combo",
                        multiSelect: true,
-                       emptyText:'Maak uw keuze',
+                       emptyText: i18next.t('viewer_components_customconfiguration_97'),
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
@@ -200,14 +200,14 @@ Ext.define("viewer.components.CustomConfiguration", {
                        width: 400
                    },
                    {
-                       fieldLabel: 'x-as label',
+                       fieldLabel: i18next.t('viewer_components_customconfiguration_98'),
                        name: 'xlabel',
                        disabled:true,
                        value: config.xlabel,
                        id: 'xlabel'+config.id
                    },
                    {
-                       fieldLabel: 'y-as label',
+                       fieldLabel: i18next.t('viewer_components_customconfiguration_99'),
                        name: 'ylabel',
                        value: config.ylabel,
                        disabled:true,
@@ -217,7 +217,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             tbar: ["->", {
                 xtype:'button',
                 iconCls: 'x-fa fa-minus-circle',
-                text: 'Grafiekconfiguratie verwijderen',
+                text: i18next.t('viewer_components_customconfiguration_100'),
                 listeners: {
                     click: function() {
                         me.removeGraphConfig(config.id);
@@ -243,7 +243,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 me.addInitialGraphConfig();
             },
             failure: function() {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_251'), i18next.t('viewer_components_customconfiguration_252'));
             }
         });
     },
@@ -286,7 +286,7 @@ Ext.define("viewer.components.CustomConfiguration", {
             failure: function() {
                 serie.setLoading(false);
                 category.setLoading(false);
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_253'), i18next.t('viewer_components_customconfiguration_254'));
             }
         });
     },

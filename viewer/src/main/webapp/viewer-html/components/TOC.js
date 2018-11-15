@@ -52,7 +52,7 @@ Ext.define ("viewer.components.TOC",{
         groupCheck:true,
         layersChecked:true,
         showBaselayers:true,
-        title: "Table of Contents",
+        title: i18next.t('viewer_components_toc_0'),
         showLeafIcon: true,
         showNodeIcon: true,
         zoomToScaleText: "Zoom to scale",
@@ -103,7 +103,7 @@ Ext.define ("viewer.components.TOC",{
         var store = Ext.create('Ext.data.TreeStore', {
             model: 'Maps',
             root: {
-                text: 'Root',
+                text: i18next.t('viewer_components_toc_1'),
                 expanded: me.config.expandOnStartup,
                 checked: false,
                 children: []
@@ -176,7 +176,7 @@ Ext.define ("viewer.components.TOC",{
             return;
         }
         viewer.components.TOC.superclass.renderButton.call(this,{
-            text: 'TOC',
+            text: i18next.t('viewer_components_toc_2'),
             icon: me.config.iconUrl,
             tooltip: me.config.tooltip,
             label: me.config.label,
@@ -237,7 +237,7 @@ Ext.define ("viewer.components.TOC",{
         }
         var levelId = "level-"+level.id;
         var treeNodeLayer = {
-            text: '<span id="span_'+levelId+'">'+level.name+'</span>',
+            text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', levelId, level.name),
             // id: levelId,
             expandable: !level.background,
             collapsible: !level.background,
@@ -330,7 +330,7 @@ Ext.define ("viewer.components.TOC",{
         var layerId = "layer-"+appLayerObj.id;
         var me = this;
         var treeNodeLayer = {
-            text: '<span id="span_'+ layerId+'">'+layerTitle +'</span>',
+            text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', layerId, layerTitle),
             // id: layerId,
             expanded: me.config.expandOnStartup,
             leaf: true,
@@ -403,7 +403,7 @@ Ext.define ("viewer.components.TOC",{
                 }
             }
             var background = {
-                text: "Achtergrond",
+                text: i18next.t('viewer_components_toc_5'),
                 // id: this.name + "Achtergrond",
                 expanded: this.config.expandOnStartup,
                 expandable: true,

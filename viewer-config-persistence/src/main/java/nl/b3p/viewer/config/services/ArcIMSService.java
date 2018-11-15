@@ -142,8 +142,7 @@ public class ArcIMSService extends GeoService implements Updatable {
             return ims;
         } finally {
             status.setCurrentAction("");
-            status.setProgress(100);
-            status.setFinished(true);
+            status.setProgress(90);
         }
     }
     

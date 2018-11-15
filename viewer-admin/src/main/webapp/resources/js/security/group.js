@@ -36,7 +36,7 @@ Ext.define('vieweradmin.components.Group', {
         return [
             {
                 id: 'name',
-                text: "Naam",
+                text: i18next.t('viewer_admin_group_0'),
                 dataIndex: 'name',
                 flex: 1,
                 filter: {
@@ -44,7 +44,7 @@ Ext.define('vieweradmin.components.Group', {
                 }
             },{
                 id: 'description',
-                text: "Extra informatie",
+                text: i18next.t('viewer_admin_group_1'),
                 dataIndex: 'description',
                 flex: 1,
                 filter: {

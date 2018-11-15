@@ -82,7 +82,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
     showDownloadWindow: function() {
         var imageUrl = this.lastImageUrl;
         Ext.Msg.show({
-            title:'Afbeelding van de kaart downloaden',
+            title: i18next.t('viewer_components_tools_downloadmap_0'),
             message: [
                 'De afbeelding van de kaart is beschikbaar via',
                 '<br /><br />',

@@ -159,12 +159,12 @@ Ext.define ("viewer.components.Filter",{
                         }
                         this.handleUniqueValues(values);
                     }else{
-                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);   
+                        Ext.MessageBox.alert(i18next.t('viewer_components_filter_0'), i18next.t('viewer_components_filter_1') + res.msg);   
                         this.config.parentMainContainer.setLoading(false);
                     }
                 }, 
                 failure: function ( result, request) {
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);   
+                    Ext.MessageBox.alert(i18next.t('viewer_components_filter_2'), i18next.t('viewer_components_filter_3') + result.responseText);   
                     this.config.parentMainContainer.setLoading(false);
                 } 
             });

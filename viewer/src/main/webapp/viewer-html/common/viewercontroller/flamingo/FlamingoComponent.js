@@ -127,7 +127,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             }           
         }else if(config.type == viewer.viewercontroller.controller.Component.OVERVIEW){
         } else{
-            Ext.Error.raise({msg: "Can't find type of component or component not supported"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_flamingo_flamingocomponent_0')});
         }    
         return this;
     },

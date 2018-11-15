@@ -45,7 +45,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
-            title: 'Configureer dit component',
+            title: i18next.t('viewer_components_customconfiguration_245'),
             bodyPadding: me.formPadding,
             defaults: {
                 anchor: '100%'
@@ -53,21 +53,21 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: me.formWidth,
             items: [{
                 xtype: 'textfield',
-                fieldLabel: 'Top/bottom positie',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_246'),
                 name: 'top',
                 value: (this.configObject != null && this.configObject.top != undefined) ? this.configObject.top : '10',
                 labelWidth:me.labelWidth
             },
             {
                 xtype: 'textfield',
-                fieldLabel: 'Linker/rechter positie',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_247'),
                 name: 'left',
                 value: (this.configObject != null && this.configObject.left != undefined) ? this.configObject.left : '10',
                 labelWidth:me.labelWidth
             },
             { 
                 xtype: 'combobox',
-                fieldLabel: 'Uitlijning',
+                fieldLabel: i18next.t('viewer_components_customconfiguration_248'),
                 name: 'alignposition',
                 value: (this.configObject != null && this.configObject.alignposition != undefined) ? this.configObject.alignposition : 'tl',
                 labelWidth: me.labelWidth,

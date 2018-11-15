@@ -30,7 +30,7 @@ Ext.define ("viewer.components.FlamingoComponent",{
         this.initConfig(conf);
 		viewer.components.FlamingoComponent.superclass.constructor.call(this, this.config);
         if (!FlamingoAppLoader.get("viewerController").mapComponent instanceof viewer.viewercontroller.FlamingoMapComponent){
-            Ext.Error.raise({msg: "Can't add FlamingoComponent to a non flamingo viewer."});
+            Ext.Error.raise({msg: i18next.t('viewer_components_flamingocomponent_0')});
         }
         FlamingoAppLoader.get("viewerController").mapComponent.addComponentXml(conf.xml);
         return this;

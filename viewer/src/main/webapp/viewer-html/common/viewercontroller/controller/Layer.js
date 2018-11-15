@@ -131,35 +131,35 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      * Gets the layer type (WMS, ArcServer, ArcIms, Vector etc.)
      */
     getType: function (){
-        Ext.Error.raise({msg: "Layer.getType() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_0')});
     },
     /**
      *sets or overwrites a option
      */
     setOption : function(optionKey,optionValue){
-        Ext.Error.raise({msg: "Layer.getOption() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_1')});
     },
     /**
      *Gets the layer that are set in this layer
      */
     getLayers: function (){
-        Ext.Error.raise({msg: "Get layers must be implemented by implementation"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_2')});
     },
     /**
      * Changes the opacity of a layer.
      * @param alpha percentage: a value between 0 and 100
      */
     setAlpha : function (alpha){
-        Ext.Error.raise({msg: "Layer.setAlpha() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_3')});
     },
     setVisible : function (visible){
-        Ext.Error.raise({msg: "Layer.setVisible() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_4')});
     },
     getVisible : function (){
-        Ext.Error.raise({msg: "Layer.getVisible() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_5')});
     },
     setQuery : function (query){
-        Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_6')});
     },
     /**
      * must be implemented in subclass. 
@@ -172,7 +172,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      *        encoded image 27x27 PNG (no label) by ArcGIS
      **/
     getLayerLegendInfo: function (){
-        Ext.Error.raise({msg: "Layer.getLayerLegendInfo() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_7')});
     },
     /**
      * Needs to return a object with the last request
@@ -181,10 +181,10 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      *  object.body (optional) the body of the request
      */
     getLastMapRequest: function(){
-        Ext.Error.raise({msg: "Layer.getLastMapRequest() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_8')});
     },
     reload: function(){
-        Ext.Error.raise({msg: "Layer.reload() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_9')});
     },
     fire : function (event,options){
         this.fireEvent(event,this,options);

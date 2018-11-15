@@ -20,7 +20,7 @@
  */
 Ext.define ("viewer.components.Logger",{    
     config:{
-        title: "Logger",
+        title: i18next.t('viewer_components_logger_0'),
         logLevel: 0,
         details: {
             minWidth: 400,
@@ -100,7 +100,7 @@ Ext.define ("viewer.components.Logger",{
                 width: '100%',
                 items:{
                     xtype: 'button',
-                    text: 'Clear'  ,
+                    text: i18next.t('viewer_components_logger_1')  ,
                     style: {
                         "float": "right",
                         marginLeft: '5px'

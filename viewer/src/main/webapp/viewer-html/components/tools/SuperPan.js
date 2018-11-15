@@ -24,7 +24,7 @@ Ext.define ("viewer.components.tools.SuperPan",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "superPan",
-        tooltip: "SuperPan"
+        tooltip: i18next.t('viewer_components_tools_superpan_0')
     },
     constructor: function (conf){        
         this.initConfig(conf);

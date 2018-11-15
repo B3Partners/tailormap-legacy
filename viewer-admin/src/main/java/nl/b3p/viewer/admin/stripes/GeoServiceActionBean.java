@@ -61,6 +61,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
+import nl.b3p.viewer.config.app.StartLayer;
 
 /**
  *
@@ -733,7 +734,7 @@ public class GeoServiceActionBean implements ActionBean {
             SelectedContentCache.setApplicationCacheDirty(application, true, false,em);
         }
 
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.getTransaction().commit();
 
         updatedService = new JSONObject();
         updatedService.put("id", "s" + service.getId());
@@ -747,7 +748,6 @@ public class GeoServiceActionBean implements ActionBean {
 
         return new ForwardResolution(JSP);
     }
-
     @ValidationMethod(on = "add")
     public void validateParams(ValidationErrors errors) {
         if (protocol.equals(ArcIMSService.PROTOCOL) || protocol.equals(TileService.PROTOCOL)) {
@@ -794,7 +794,12 @@ public class GeoServiceActionBean implements ActionBean {
         }
 
         getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
-        return edit();
+        status.setCurrentAction("Initialiseren pagina.");
+        Resolution editResolution = edit();
+        
+        status.setProgress(100);
+        status.setFinished(true);
+        return editResolution;
     }
 
     protected void addService(EntityManager em) throws Exception{
@@ -846,7 +851,7 @@ public class GeoServiceActionBean implements ActionBean {
         category = em.find(Category.class, category.getId());
         service.setCategory(category);
         category.getServices().add(service);
-
+        status.setCurrentAction("Service opslaan.");
         em.persist(service);
         em.getTransaction().commit();
 

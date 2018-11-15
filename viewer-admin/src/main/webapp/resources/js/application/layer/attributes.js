@@ -98,7 +98,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                     items: [
                         {
                             id: 'toggleAllLayersButton',
-                            text: "Alles aan / uit",
+                            text: i18next.t('viewer_admin_attributes_0'),
                             listeners: {
                                 click: {
                                     fn: function() { this.toggleAttributesChecked(); },
@@ -183,7 +183,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
             items: [
                 {
                     itemId: "createFolder",
-                    text: 'Nieuwe map aanmaken',
+                    text: i18next.t('viewer_admin_attributes_1'),
                     icon: this.config.imagePath + "add.png",
                     listeners: {
                         click: {
@@ -204,7 +204,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                 },
                 {
                     itemId: "removeFolder",
-                    text: 'Map verwijderen',
+                    text: i18next.t('viewer_admin_attributes_2'),
                     icon: this.config.imagePath + "delete.png",
                     listeners: {
                         click: {
@@ -213,7 +213,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                                     return;
                                 }
                                 Ext.Msg.show({
-                                    title: 'Map verwijderen?',
+                                    title: i18next.t('viewer_admin_attributes_3'),
                                     message: 'Weet u zeker dat u de geselecteerde map wilt verwijderen?',
                                     buttons: Ext.Msg.YESNO,
                                     icon: Ext.Msg.QUESTION,
@@ -237,7 +237,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
                 },
                 {
                     itemId: "changeName",
-                    text: 'Naam wijzigen',
+                    text: i18next.t('viewer_admin_attributes_4'),
                     icon: this.config.imagePath + "wrench.png",
                     listeners: {
                         click: {
@@ -261,7 +261,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerAttributes', {
     editAttributeFolderName: function(newLevel, okFunction, initialText, scope) {
         Ext.MessageBox.show({
             title: newLevel ? 'Nieuwe map aanmaken' : 'Naam wijzigen',
-            msg: 'Naam van ' + (newLevel ? "nieuwe map" : "map") +':',
+            msg: i18next.t('viewer_admin_attributes_5') + (newLevel ? "nieuwe map" : "map") +':',
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             value: initialText,

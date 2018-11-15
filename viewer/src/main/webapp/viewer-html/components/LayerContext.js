@@ -112,7 +112,7 @@ Ext.define ("viewer.components.LayerContext",{
             var url =  typeof layerObj.url !== 'undefined' ? layerObj.url : layerObj.metadata;
             this.linksContainer.add({
                 xtype: 'box',
-                html: '<a target="_BLANK" href="' + url + '">Metadata</a>',
+                html: { tag: "a", target: "_blank", href: url, html: i18next.t('viewer_components_layercontext_0') },
                 height: 20,
                 width: 80
             });
@@ -120,7 +120,7 @@ Ext.define ("viewer.components.LayerContext",{
         if(typeof layerObj.download !== 'undefined') {
             this.linksContainer.add({
                 xtype: 'box',
-                html: '<a target="_BLANK" href="' + layerObj.download + '">Downloadlink</a>',
+                html: { tag: "a", target: "_blank", href: layerObj.download, html: i18next.t('viewer_components_layercontext_1') },
                 height: 20,
                 width: 80
             });

@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         {
             xtype: "textfield",
             name: "maxFeatures",
-            fieldLabel: "Maximum aantal unieke objecten",
+            fieldLabel: i18next.t('viewer_components_customconfiguration_32'),
             labelWidth:this.labelWidth,
             width: 500,
             id: "maxFeatures",
@@ -39,7 +39,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         },
         {
             xtype: 'checkbox',
-            fieldLabel: 'Open attributenlijst na filteren',
+            fieldLabel: i18next.t('viewer_components_customconfiguration_33'),
             inputValue: true,
             name: 'openAttributeListAfterFilter',
             checked: this.configObject.openAttributeListAfterFilter || false,

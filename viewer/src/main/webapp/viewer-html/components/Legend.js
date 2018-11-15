@@ -57,7 +57,7 @@ Ext.define("viewer.components.Legend", {
     treenodes: null,
     treelegendcache: {},
     config: {
-        title: "Legenda",
+        title: i18next.t('viewer_components_legend_0'),
         titlebarIcon: "",
         tooltip: "",
         margin: "0px",

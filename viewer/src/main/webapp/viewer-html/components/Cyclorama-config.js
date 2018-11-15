@@ -34,7 +34,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.width,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: "Breedte popup"
+                fieldLabel: i18next.t('viewer_components_customconfiguration_26')
             },
             {
                 xtype: "textfield",
@@ -42,12 +42,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: this.configObject.height,
                 width: 500,
                 labelWidth:this.labelWidth,
-                fieldLabel: "Hoogte popup"
+                fieldLabel: i18next.t('viewer_components_customconfiguration_27')
             },
             {
                 xtype: "combo",
                 id: "keyCombo",
-                fieldLabel: "Key (PFX bestand)",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_28'),
                 labelWidth:this.labelWidth,
                 store: this.keyStore,
                 queryMode: "local",
@@ -62,7 +62,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: "combo",
                 width: 500,
                 id: "layerCombo",
-                fieldLabel: "Laag",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_29'),
                 labelWidth:this.labelWidth,
                 store: this.createLayerStore(),
                 queryMode: "local",
@@ -79,7 +79,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }, {
                 xtype: "combo",
                 id: "attributeCombo1",
-                fieldLabel: "Foto id attribuut",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_30'),
                 store: Ext.create("Ext.data.Store", {
                     fields: ["id", "alias", "type"]
                 }),
@@ -98,7 +98,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             }, {
                 xtype: "combo",
                 id: "attributeCombo2",
-                fieldLabel: "Foto beschrijving attribuut",
+                fieldLabel: i18next.t('viewer_components_customconfiguration_31'),
                 store: Ext.create("Ext.data.Store", {
                     fields: ["id", "alias", "type"]
                 }),
@@ -188,7 +188,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 Ext.getCmp("keyCombo").setValue(value);
             },
             failure: function() {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                Ext.MessageBox.alert(i18next.t('viewer_components_customconfiguration_249'), i18next.t('viewer_components_customconfiguration_250'));
             }
         });
     }

@@ -68,23 +68,23 @@ Ext.define("vieweradmin.components.ConfigPage", {
         var tabs = [{
             itemId: 'config-tab',
             contentEl:'config',
-            title: 'Configuratie',
+            title: i18next.t('viewer_admin_configpage_0'),
             autoScroll: true
         },{
             itemId: 'rights-tab',
             contentEl:'rights',
-            title: 'Rechten'
+            title: i18next.t('viewer_admin_configpage_1')
         }];
         tabs.push({
             itemId: 'layout-tab',
             contentEl:'layout',
-            title: 'Layout'
+            title: i18next.t('viewer_admin_configpage_2')
         });
         if(this.showHelp()){
             tabs.push({
                 itemId: 'help-tab',
                 contentEl:'help',
-                title: 'Help'
+                title: i18next.t('viewer_admin_configpage_3')
             });
         }
 
@@ -114,7 +114,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                                 height: 400,
                                 maxHeight: 400,
                                 value: this.config.configObject.helpText ? this.config.configObject.helpText : '',
-                                fieldLabel: 'Help Tekst',
+                                fieldLabel: i18next.t('viewer_admin_configpage_4'),
                                 labelWidth: 100,
                                 plugins: [
                                     new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
@@ -132,7 +132,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
             },
             bbar: ["->", {
                 xtype: 'button',
-                text: 'Annuleren',
+                text: i18next.t('viewer_admin_configpage_5'),
                 id: 'cancalConfigButton',
                 iconCls: 'x-fa fa-times',
                 listeners: {
@@ -145,7 +145,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 }
             }, {
                 xtype: 'button',
-                text: 'Opslaan',
+                text: i18next.t('viewer_admin_configpage_6'),
                 id: 'saveConfigButton',
                 iconCls: 'x-fa fa-floppy-o',
                 listeners: {
@@ -212,7 +212,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 extConfigSource = source;
             }
             this.propertyGrid = Ext.create('Ext.grid.property.Grid', {
-                title: 'Pas de instellingen aan',
+                title: i18next.t('viewer_admin_configpage_7'),
                 renderTo: "config",
                 hideHeaders:true,
                 scroll: 'vertical',
@@ -243,7 +243,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
             items: [{
                 xtype:'fieldset',
                 columnWidth: 0.5,
-                title: 'Help',
+                title: i18next.t('viewer_admin_configpage_8'),
                 collapsible: false,
                 defaultType: 'textfield',
                 layout: 'anchor',
@@ -253,7 +253,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 items:[
                     {
                         xtype: 'checkbox',
-                        fieldLabel: 'Help knop tonen',
+                        fieldLabel: i18next.t('viewer_admin_configpage_9'),
                         id: "showHelpButton",
                         name: 'showHelpButton',
                         checked: this.parseBooleanValue(this.config.configObject.showHelpButton),
@@ -261,7 +261,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'textfield',
-                        fieldLabel: 'Help URL',
+                        fieldLabel: i18next.t('viewer_admin_configpage_10'),
                         id: "helpUrl",
                         name: 'helpUrl',
                         value: this.config.configObject.helpUrl ? this.config.configObject.helpUrl : '',
@@ -269,7 +269,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'container',
-                        html: '<div id="helpHtmlEditorContainer" style="width: 700px; height: 500px;"></div>'
+                        html: { tag: 'div', id: 'helpHtmlEditorContainer', style: 'width: 700px; height: 500px;' }
                     }]
             }],
             renderTo: "help"
@@ -315,7 +315,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
             items: [{
                 xtype:'fieldset',
                 columnWidth: 0.5,
-                title: 'Vensterpositie',
+                title: i18next.t('viewer_admin_configpage_12'),
                 collapsible: false,
                 defaultType: 'textfield',
                 layout: 'anchor',
@@ -329,13 +329,13 @@ Ext.define("vieweradmin.components.ConfigPage", {
                         labelWidth:350,
                         items: [
                             {
-                                boxLabel: 'Gecentreerd',
+                                boxLabel: i18next.t('viewer_admin_configpage_13'),
                                 name: 'position',
                                 inputValue: 'center' ,
                                 checked: this.config.details.position === "center"
                             },
                             {
-                                boxLabel: 'Vaste Positie',
+                                boxLabel: i18next.t('viewer_admin_configpage_14'),
                                 name: 'position',
                                 checked: this.config.details.position === "fixed",
                                 inputValue: 'fixed',
@@ -352,7 +352,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'textfield',
-                        fieldLabel: 'x',
+                        fieldLabel: i18next.t('viewer_admin_configpage_15'),
                         id: "x",
                         name: 'x',
                         value: this.config.details.x,
@@ -361,7 +361,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'textfield',
-                        fieldLabel: 'y',
+                        fieldLabel: i18next.t('viewer_admin_configpage_16'),
                         id: "y",
                         name: 'y',
                         value: this.config.details.y,
@@ -370,7 +370,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'combobox',
-                        fieldLabel: 'Uitlijning',
+                        fieldLabel: i18next.t('viewer_admin_configpage_17'),
                         id: "alignposition",
                         name: 'alignposition',
                         value: this.config.details.alignposition,
@@ -383,7 +383,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                     },
                     {
                         xtype: 'checkbox',
-                        fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
+                        fieldLabel: i18next.t('viewer_admin_configpage_18'),
                         inputValue: true,
                         name: 'changeablePosition',
                         checked: this.parseBooleanValue(this.config.details.changeablePosition),
@@ -393,13 +393,13 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 {
                     xtype:'fieldset',
                     columnWidth: 0.5,
-                    title: 'Venstergrootte',
+                    title: i18next.t('viewer_admin_configpage_19'),
                     collapsible: false,
                     defaultType: 'textfield',
                     layout: 'anchor',
                     items:[{
                             xtype: 'textfield',
-                            fieldLabel: 'Breedte',
+                            fieldLabel: i18next.t('viewer_admin_configpage_20'),
                             name: 'width',
                             value: this.config.details.width || defaults.minWidth || defaults.width,
                             labelWidth:100,
@@ -424,7 +424,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                         },
                         {
                             xtype: 'textfield',
-                            fieldLabel: 'Hoogte',
+                            fieldLabel: i18next.t('viewer_admin_configpage_21'),
                             name: 'height',
                             value: this.config.details.height || defaults.minHeight || defaults.height,
                             labelWidth:100,
@@ -449,7 +449,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: 'Gebruiker kan de grootte van de popup aanpassen',
+                            fieldLabel: i18next.t('viewer_admin_configpage_22'),
                             inputValue: true,
                             name: 'changeableSize',
                             checked: this.parseBooleanValue(this.config.details.changeableSize),
@@ -475,18 +475,18 @@ Ext.define("vieweradmin.components.ConfigPage", {
             border: 0,
             items: [{
                 xtype:'fieldset',
-                title: 'Minimale afmetingen waarbij component zichtbaar is',
+                title: i18next.t('viewer_admin_configpage_23'),
                 collapsible: false,
                 items:[{
                     xtype: 'numberfield',
-                    fieldLabel: 'Minimale schermbreedte (px)',
+                    fieldLabel: i18next.t('viewer_admin_configpage_24'),
                     id: "requiredScreenWidth",
                     name: 'requiredScreenWidth',
                     value: minWidth,
                     labelWidth: 180
                 },{
                     xtype: 'container',
-                    html: 'Indien deze waarde is ingesteld wordt dit gebruikt om bij het starten van de applicatie' +
+                    html: i18next.t('viewer_admin_configpage_25') +
                     'te bepalen of een component wel of niet getoond moet worden. Als de schermafmetingen op dat' +
                     'moment kleiner zijn dan bovenstaande waarde dan wordt het component niet getoond.<br /><br />' +
                     'Bij een lege waarde (of 0) wordt het component altijd getoond'
@@ -508,13 +508,13 @@ Ext.define("vieweradmin.components.ConfigPage", {
             items: [{
                 xtype:'fieldset',
                 columnWidth: 0.5,
-                title: 'Component afmetingen',
+                title: i18next.t('viewer_admin_configpage_26'),
                 collapsible: false,
                 defaultType: 'textfield',
                 layout: 'anchor',
                 items:[{
                     xtype: 'numberfield',
-                    fieldLabel: 'Hoogte (px)',
+                    fieldLabel: i18next.t('viewer_admin_configpage_27'),
                     id: "componentHeight",
                     name: 'componentHeight',
                     value: compHeight,

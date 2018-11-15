@@ -25,7 +25,7 @@ Ext.define ("viewer.components.tools.ZoomOut",{
     extend: "viewer.components.tools.Tool",
     config:{
         name: "zoomOut",
-        tooltip: "Zoom out"
+        tooltip: i18next.t('viewer_components_tools_zoomout_0')
     },
     constructor: function (conf){        
         this.initConfig(conf);

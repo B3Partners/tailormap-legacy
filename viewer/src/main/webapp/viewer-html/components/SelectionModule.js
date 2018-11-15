@@ -470,12 +470,12 @@ Ext.define ("viewer.components.SelectionModule",{
                 type:'hbox'
             },
             items: [
-                    {xtype:"label", text:"Tip: toevoegen kaarten kan ook door dubbelklikken.", margin: '3 0 0 0'},
+                    {xtype:"label", text: i18next.t('viewer_components_selectionmodule_0'), margin: '3 0 0 0'},
                     {xtype:'tbfill'},
-                    {xtype: 'button', text: 'Annuleren', handler: function() {
+                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_1'), handler: function() {
                         me.cancelSelection();
                     }},
-                    {xtype: 'button', text: 'OK', style: {marginLeft: '10px'},handler: function() {
+                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_2'), style: {marginLeft: '10px'},handler: function() {
                         me.saveSelection();
                     }}
             ],
@@ -529,19 +529,19 @@ Ext.define ("viewer.components.SelectionModule",{
                                 },
                                 defaultType: 'textfield',
                                 items: [
-                                    {hidden: true, itemId: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
-                                    {xtype: "combobox", store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, itemId: 'customServiceUrlSelect', width: 100, emptyText:'Maak uw keuze'},
-                                    {xtype: 'button', text: 'Service ophalen', hidden: true, itemId: 'customServiceUrlButton', handler: function() {
+                                    {hidden: true, itemId: 'customServiceUrlTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_3')},
+                                    {xtype: "combobox", store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, itemId: 'customServiceUrlSelect', width: 100, emptyText: i18next.t('viewer_components_selectionmodule_4')},
+                                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_5'), hidden: true, itemId: 'customServiceUrlButton', handler: function() {
                                             me.loadCustomService();
                                     }},
-                                    {hidden: true, itemId: 'cswServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in', value : this.config.defaultCswUrl !== undefined ? this.config.defaultCswUrl : "" },
-                                    {hidden: true, itemId: 'cswSearchTextfield', flex: 1, emptyText:'Zoekterm', listeners: {
+                                    {hidden: true, itemId: 'cswServiceUrlTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_6'), value : this.config.defaultCswUrl !== undefined ? this.config.defaultCswUrl : "" },
+                                    {hidden: true, itemId: 'cswSearchTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_7'), listeners: {
                                     specialkey: function(field, e){
                                         if (e.getKey() === e.ENTER) {
                                             me.loadCustomService();
                                         }
                                     }}},
-                                    {xtype: 'button', text: 'Zoeken', hidden: true, itemId: 'cswServiceUrlButton', handler: function() {
+                                    {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_8'), hidden: true, itemId: 'cswServiceUrlButton', handler: function() {
                                             me.loadCustomService();
                                     }}
                                 ]
@@ -550,7 +550,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 xtype: 'panel',
                                 itemId: 'cswAdvancedSearchField',
                                 header: { 
-                                    title: 'Geavanceerd zoeken'
+                                    title: i18next.t('viewer_components_selectionmodule_9')
                                 },
                                 collapsible: true,
                                 collapsed: !this.config.alwaysShow,
@@ -676,7 +676,7 @@ Ext.define ("viewer.components.SelectionModule",{
             // padding: MobileManager.isMobile() ? '0 2px' : undefined,
             layout: { type: 'vbox', align: 'center' },
             items: [
-                { xtype: 'container', html: '<div></div>', flex: 1 },
+                { xtype: 'container', html: { tag: 'div' }, flex: 1 },
                 {
                     xtype: 'button',
                     icon: config.iconTop,
@@ -691,7 +691,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     // height: MobileManager.isMobile() ? undefined : 22,
                     handler: config.handlerBottom
                 },
-                { xtype: 'container', html: '<div></div>', flex: 1 }
+                { xtype: 'container', html: { tag: 'div' }, flex: 1 }
             ]
         };
     },
@@ -702,7 +702,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var defaultStoreConfig = {
             model: select.TreeNode,
             root: {
-                text: 'Root',
+                text: i18next.t('viewer_components_selectionmodule_12'),
                 expanded: true,
                 checked: false,
                 children: []
@@ -837,7 +837,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 }},
                 {
                     xtype: 'button',
-                    text: 'Zoeken',
+                    text: i18next.t('viewer_components_selectionmodule_13'),
                     handler: function() {
                         searchFn(treePanels[treePanelType].treePanel, Ext.getCmp(searchFieldId).getValue());
                     }

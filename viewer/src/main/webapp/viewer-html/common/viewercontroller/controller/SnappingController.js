@@ -51,25 +51,25 @@ Ext.define("viewer.viewercontroller.controller.SnappingController", {
      * @param {type} snappingLayer
      */
     addAppLayer: function (appLayer) {
-        Ext.Error.raise({msg: "SnappingController.addAppLayer() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_snappingcontroller_0')});
     },
     /**
      * remove all snapping targets.
      */
     removeAll: function () {
-        Ext.Error.raise({msg: "SnappingController.removeAll() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_snappingcontroller_1')});
     },
     /**
      * remove the snapping target.
      * @param {type} snappingLayer
      */
     removeLayer: function (appLayer) {
-        Ext.Error.raise({msg: "SnappingController.removeLayer() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_snappingcontroller_2')});
     },
     /**
      * activate snapping, if there are snapping targets.
      */
     activate: function () {
-        Ext.Error.raise({msg: "SnappingController.activate() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_snappingcontroller_3')});
     }
 });

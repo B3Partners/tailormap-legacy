@@ -1194,7 +1194,7 @@ Ext.define("viewer.components.sf.Date", {
             this.from = Ext.create({
                 xtype: 'datefield',
                 anchor: '100%',
-                fieldLabel: 'Van',
+                fieldLabel: i18next.t('viewer_components_sf_simplefilterbase_0'),
                 name: 'from_date',
                 format:'d-m-Y',
                 value: start,
@@ -1210,7 +1210,7 @@ Ext.define("viewer.components.sf.Date", {
             this.to = Ext.create({
                 xtype: 'datefield',
                 anchor: '100%',
-                fieldLabel: 'Tot',
+                fieldLabel: i18next.t('viewer_components_sf_simplefilterbase_1'),
                 name: 'to_date',
                 value: end,
                 format:'d-m-Y',

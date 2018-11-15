@@ -609,10 +609,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addTool : function(tool){
         /* if (!(tool instanceof OpenLayersTool)){
-        Ext.Error.raise({msg: "The given tool is not of type 'OpenLayersTool'"});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_0')});
     }*/
         if (this.maps.length==0){
-            Ext.Error.raise({msg: "No map in MapComponent!"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_1')});
         }
         if( tool instanceof Array){
             for(var i = 0 ; i < tool.length; i++){
@@ -715,7 +715,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     removeTool : function (tool){
         if (!(tool instanceof OpenLayersTool)){
-            Ext.Error.raise({msg: "The given tool is not of type 'OpenLayersTool'"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_2')});
         }
         if (tool.type==Tool.NAVIGATION_HISTORY){
             OpenLayers.Util.removeItem(this.getPanel().controls, tool.getFrameworkTool().next);
@@ -748,10 +748,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addMap : function (map){
         if (!(map instanceof viewer.viewercontroller.openlayers.OpenLayersMap)){
-            Ext.Error.raise({msg: "The given map is not of the type 'OpenLayersMap'"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_3')});
         }
         if (this.maps.length>=1)
-            Ext.Error.raise({msg: "Multiple maps not supported yet"});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_openlayersmapcomponent_4')});
         this.maps.push(map);
 
         this.createMenus(this.mapOptions.options.top,this.mapOptions.options.bottom);
