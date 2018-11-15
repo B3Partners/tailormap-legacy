@@ -39,6 +39,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class AttributeActionBean implements ActionBean {
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     private static final String JSP = "/WEB-INF/jsp/services/attribute.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editattribute.jsp";
     
@@ -75,6 +76,23 @@ public class AttributeActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        if (bundle==null) {
+            bundle = ResourceBundle.getBundle("ViewerResources");
+        }
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public AttributeDescriptor getAttribute() {
@@ -158,6 +176,11 @@ public class AttributeActionBean implements ActionBean {
     }
     //</editor-fold>
     
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -175,7 +198,7 @@ public class AttributeActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(attribute);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Attribuut is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributeactionbean.attsaved")));
         return new ForwardResolution(EDITJSP);
     }
     

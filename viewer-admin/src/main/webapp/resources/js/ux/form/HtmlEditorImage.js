@@ -541,7 +541,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
                             value: 100,
 							minValue:0,
 							maxValue:200,
-                            fieldLabel: i18next.t('viewer_admin_htmleditorimage_1'),
+                            fieldLabel: i18next.t('viewer_admin_htmleditorimage_0'),
 							listeners:{
 								change:me._sliderChange,
 								scope:me
@@ -557,7 +557,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
                     style: {
                         'float': 'right'
                     },
-                    text: i18next.t('viewer_admin_htmleditorimage_2'),
+                    text: i18next.t('viewer_admin_htmleditorimage_1'),
                     handler: me.close,
                     scope: me
                 }, {
@@ -566,7 +566,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
                         'float': 'right',
                         'margin-right': '8px'
                     },
-                    text: i18next.t('viewer_admin_htmleditorimage_3'),
+                    text: i18next.t('viewer_admin_htmleditorimage_2'),
                     handler: me._cropImage,
                     scope: me
                 }]
@@ -626,8 +626,8 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
         var me = this;
 
         Ext.Msg.show({
-			title: i18next.t('viewer_admin_htmleditorimage_4'),
-			msg: i18next.t('viewer_admin_htmleditorimage_5'),
+			title: i18next.t('viewer_admin_htmleditorimage_3'),
+			msg: i18next.t('viewer_admin_htmleditorimage_4'),
 			buttons: Ext.Msg.YESNO,
 			closable: false,
 			fn: function (btn) {
@@ -653,7 +653,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
 								me.imgSrc = result.data['src'];
 								me.fireEvent('imagecropped');
 							}else{
-								Ext.MessageBox.alert(i18next.t('viewer_admin_htmleditorimage_22'), i18next.t('viewer_admin_htmleditorimage_23') + result.errors);
+								Ext.MessageBox.alert(i18next.t('viewer_admin_htmleditorimage_5'), i18next.t('viewer_admin_htmleditorimage_6') + result.errors);
 							}
 						}
 					});
@@ -795,7 +795,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 disabled:true,
                 handler: me._openCropDialogClick,
                 scope:me,
-                tooltip: i18next.t('viewer_admin_htmleditorimage_6')
+                tooltip: i18next.t('viewer_admin_htmleditorimage_7')
             },{
                 xtype:'button',
                 itemId:'rotateButton',
@@ -803,7 +803,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 iconCls:'x-htmleditor-imageupload-rotatebutton',
                 handler: me._rotateImageClick,
                 scope:me,
-                tooltip: i18next.t('viewer_admin_htmleditorimage_7')
+                tooltip: i18next.t('viewer_admin_htmleditorimage_8')
             },{
                 xtype:'button',
                 itemId:'resizeButton',
@@ -811,7 +811,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 iconCls:'x-htmleditor-imageupload-resizebutton',
                 handler: me._resizeImageClick,
                 scope:me,
-                tooltip: i18next.t('viewer_admin_htmleditorimage_8')
+                tooltip: i18next.t('viewer_admin_htmleditorimage_9')
             }];
         }
         
@@ -832,7 +832,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                     xtype: 'combobox',
                     name: 'src',
                     queryMode: 'remote',
-                    fieldLabel: i18next.t('viewer_admin_htmleditorimage_9'),
+                    fieldLabel: i18next.t('viewer_admin_htmleditorimage_10'),
                     labelWidth: 50,
                     columnWidth: 0.70,
                     margin: '0 4 0 0',
@@ -860,7 +860,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                     tpl: '<tpl for="."><table class="x-boundlist-item" style="width:50%;float:left"><tr><td style="vertical-align:top;width:12px"><tpl if="'+me.disableDelete+' == false"><a title="' + me.t('Delete Image') + '" href="#" img_fullname="{fullname}" class="x-htmleditor-imageupload-delete"></a></tpl></td><td><div class="x-htmleditor-imageupload-thumbcontainer"><img src="{thumbSrc}"/></div></td></tr><tr><td colspan="2" style="text-align:center;font-size:12px">{name}</td></tr></table></tpl>',
                     listConfig: {
                         loadingText: 'Searching...',
-                        emptyText: i18next.t('viewer_admin_htmleditorimage_10'),
+                        emptyText: i18next.t('viewer_admin_htmleditorimage_11'),
                         listeners: {
                             el: {
                                 click: {
@@ -977,7 +977,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             width: 48,
                             editable: false,
                             allowBlank: false,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_11'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_12'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1015,7 +1015,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             width: 48,
                             editable: false,
                             allowBlank: false,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_12'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_13'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1045,7 +1045,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 								iconCls:'x-htmleditor-imageupload-deletebutton',
 								handler: me._deleteImageClick,
 								scope:me,
-								tooltip: i18next.t('viewer_admin_htmleditorimage_13')
+								tooltip: i18next.t('viewer_admin_htmleditorimage_14')
 						}])
 					},{
                         xtype: 'hiddenfield',
@@ -1117,7 +1117,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             width: 48,
                             editable: false,
                             allowBlank: false,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_14'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_15'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1133,7 +1133,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             width: 48,
                             editable: false,
                             allowBlank: false,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_15'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_16'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1149,7 +1149,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             editable: false,
                             allowBlank: false,
                             width: 48,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_16'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_17'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1165,7 +1165,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             editable: false,
                             allowBlank: false,
                             width: 48,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_17'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_18'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1198,7 +1198,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             width: 48,
                             editable: false,
                             allowBlank: false,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_18'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_19'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1214,7 +1214,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             width: 48,
                             editable: false,
                             allowBlank: false,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_19'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_20'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1230,7 +1230,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             editable: false,
                             allowBlank: false,
                             width: 48,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_20'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_21'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1246,7 +1246,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                             editable: false,
                             allowBlank: false,
                             width: 48,
-                            emptyText: i18next.t('viewer_admin_htmleditorimage_21'),
+                            emptyText: i18next.t('viewer_admin_htmleditorimage_22'),
                             value: 'px',
                             store: unitsStore,
                             displayField: 'name',
@@ -1528,7 +1528,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                     me._setPreviewImage(result.data['src'], true);
 					
 				}else{
-					Ext.MessageBox.alert(i18next.t('viewer_admin_htmleditorimage_24'), i18next.t('viewer_admin_htmleditorimage_25') + result.errors);
+					Ext.MessageBox.alert(i18next.t('viewer_admin_htmleditorimage_23'), i18next.t('viewer_admin_htmleditorimage_24') + result.errors);
 				}
 			}
 		});

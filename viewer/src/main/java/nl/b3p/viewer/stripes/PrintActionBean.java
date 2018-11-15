@@ -50,11 +50,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -65,7 +67,7 @@ import java.util.Locale;
  */
 @UrlBinding("/action/print")
 @StrictBinding
-public class PrintActionBean implements ActionBean {
+public class PrintActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
     public static final String A5_Landscape = "A5_Landscape.xsl";
@@ -294,7 +296,7 @@ public class PrintActionBean implements ActionBean {
                         if(useMailer){
                             this.setAttachment(false);
                             response.setContentType("plain/text");
-                            Thread t = new Thread(new PrintGenerator(info, mimeType, f, filename,fromName, fromMail, toMail));
+                            Thread t = new Thread(new PrintGenerator(info, mimeType, f, filename,fromName, fromMail, toMail, context.getRequest().getLocale()));
                             t.start();
                             response.getWriter().println("success");
                             response.getWriter().close();
@@ -389,7 +391,7 @@ public class PrintActionBean implements ActionBean {
         JSONArray features = ftjson.getJSONFeatures(appLayer, layer.getFeatureType(), fs, q, em, application, request);
 
         fs.getDataStore().dispose();
-
+        
         for (int i = 0; i < features.length(); i++) {
             JSONArray jFeat = features.getJSONArray(i);
             FeaturePropertiesArrayHelper.removeKey(jFeat, FID);
@@ -448,10 +450,12 @@ public class PrintActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                                String msg = MessageFormat.format(getBundle().getString("viewer.printactionbean.moreitems"), this.maxrelatedfeatures);
+                                info.putOnce("moreMessage", msg);
                             }
                         } else {
-                            info.putOnce("errorMessage", "Kolom met naam '" + leftSide + "' moet beschikbaar zijn voor het ophalen van gerelateerde items.");
+                            String msg = MessageFormat.format(getBundle().getString("viewer.printactionbean.columnmissing"), leftSide);
+                            info.putOnce("errorMessage", msg);
                         }
 
                         JSONObject related = new JSONObject();
@@ -477,7 +481,7 @@ public class PrintActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
+
     public String getParams() {
         return params;
     }

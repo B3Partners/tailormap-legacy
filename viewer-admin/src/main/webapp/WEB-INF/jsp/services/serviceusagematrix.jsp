@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Service Usage Matrix</title>
+        <title><fmt:message key="viewer_admin.serviceusagematrix.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -43,15 +43,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     success: function ( result  ) {
                         result = Ext.JSON.decode(result.responseText);
                         if (result.success){
-                            Ext.MessageBox.alert("Verwijderd", "De kaart "+result.name+"("+result.id+") is verwijderd.");
+                            Ext.MessageBox.alert("Deleted", "<fmt:message key="viewer_admin.serviceusagematrix.1" />: "+result.name+"("+result.id+")");
                             var rec=store.getById(appLayerId);
                             store.remove(rec);
                         }else{
-                            Ext.MessageBox.alert("Foutmelding", "Het verwijderen is niet gelukt: "+result.message);
+                            Ext.MessageBox.alert("Error", "<fmt:message key="viewer_admin.serviceusagematrix.2" />: "+result.message);
                         }
                     },
                     failure: function() {
-                        Ext.MessageBox.alert("Foutmelding", "Er is een fout opgetreden: "+result.message);
+                        Ext.MessageBox.alert("Error", "<fmt:message key="viewer_admin.serviceusagematrix.3" />: "+result.message);
                     }
                 });
             }
@@ -60,12 +60,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 changedFeatureTypes=${actionBean.changedFeatureTypes};
             </c:if>
             var translateKey={
-                "FAILED" : "Mislukt",
-                "MISSING" : "Ontbreekt",
-                "NEW" : "Nieuw",
-                "UNMODIFIED" : "Ongewijzigd", 
-                "CHANGED" : "Gewijzigd", 
-                "UPDATED" : "Geupdate"
+                "FAILED" : "<fmt:message key="viewer_admin.serviceusagematrix.4" />",
+                "MISSING" : "<fmt:message key="viewer_admin.serviceusagematrix.5" />",
+                "NEW" : "<fmt:message key="viewer_admin.serviceusagematrix.6" />",
+                "UNMODIFIED" : "<fmt:message key="viewer_admin.serviceusagematrix.7" />", 
+                "CHANGED" : "<fmt:message key="viewer_admin.serviceusagematrix.8" />", 
+                "UPDATED" : "<fmt:message key="viewer_admin.serviceusagematrix.9" />"
             }
             function checkChanged(){
                 if (changedFeatureTypes){
@@ -92,9 +92,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(checkChanged);
         </script>
         <div id="content">
-            <h1>Service Usage Matrix</h1>
+            <h1><fmt:message key="viewer_admin.serviceusagematrix.10" /></h1>
             <div style="margin-top: 35px; margin-bottom: -20px;">&nbsp;</div>
-            <a href="javascript: void(0)" onclick="exportXsl()">Exporteer als Excel document</a><br>
+            <a href="javascript: void(0)" onclick="exportXsl()"><fmt:message key="viewer_admin.serviceusagematrix.11" /></a><br>
             <x:parse xml="${actionBean.xml}" var="doc"/>
             <script type="text/javascript">
                 Ext.define('ServiceUsage', {
@@ -143,7 +143,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </script>
             <x:forEach select="$doc/root/featureSources/featureSource" var="featureSource">                    
                 <div id='featureSource<x:out select="$featureSource/id"/>' class="usageMatrixFeatureSource">
-                    <b>Attribuutbron: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/> id: <x:out select="$featureSource/id"/>) </b>
+                    <b><fmt:message key="viewer_admin.serviceusagematrix.12" />: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/> id: <x:out select="$featureSource/id"/>) </b>
                     <x:choose>
                         <x:when select="$featureSource//applayer">
                             <script type="text/javascript">
@@ -151,13 +151,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     Ext.create('Ext.grid.Panel',{
                                         store :  store<x:out select="$featureSource/id"/>,
                                         columns : [
-                                            {text: 'Featuretype', dataIndex: 'featureType',flex: 1},
-                                            {text: 'Applicatie', dataIndex: 'application',flex: 1},
-                                            {text: 'Layernaam van service', dataIndex: 'layer',flex: 1},
-                                            {text: 'Applicatie layer (kaart)', dataIndex: 'appLayer',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.14" />', dataIndex: 'featureType',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.15" />', dataIndex: 'application',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.16" />', dataIndex: 'layer',flex: 1},
+                                            {text: '<fmt:message key="viewer_admin.serviceusagematrix.17" />', dataIndex: 'appLayer',flex: 1},
                                             {text: '', dataIndex: 'remove', flex: 1, menuDisabled: true,
                                                 renderer: function(value) {
-                                                    return Ext.String.format('<a href="javascript: void(0)" onclick="return deleteApplicationLayer({0});">Verwijder</a>', value);
+                                                    return Ext.String.format('<a href="javascript: void(0)" onclick="return deleteApplicationLayer({0});"><fmt:message key="viewer_admin.serviceusagematrix.18" /></a>', value);
                                                 },
                                                 sortable: false
                                             }
@@ -168,7 +168,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </script>
                         </x:when>
                         <x:otherwise>
-                            <br>De service wordt niet gebruikt in één van de geconfigureerde applicaties.
+                            <br><fmt:message key="viewer_admin.serviceusagematrix.13" />
                         </x:otherwise>
                     </x:choose>
                 </div> 

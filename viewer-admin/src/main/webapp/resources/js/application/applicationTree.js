@@ -328,11 +328,11 @@ function changeLevelName(record) {
                         if(response.success) {
                             record.set("text", response.name);
                         } else {
-                            Ext.MessageBox.alert("Fout", response.error);
+                            Ext.MessageBox.alert("Error", response.error);
                         }
                     },
                     failure: function (result) {
-                        Ext.MessageBox.alert("Fout", result.responseText);
+                        Ext.MessageBox.alert("Error", result.responseText);
                     }
                 });
             }
@@ -341,12 +341,12 @@ function changeLevelName(record) {
 }
 
 function removeLevel(record) {
-    if(record.data && record.data.name === "Achtergrond"){
-        Ext.MessageBox.alert(i18next.t('viewer_admin_applicationtree_12'), i18next.t('viewer_admin_applicationtree_13'));
+    if(record.data && record.data.name === i18next.t('viewer_admin_applicationsettingsbean_background') ){
+        Ext.MessageBox.alert(i18next.t('viewer_admin_applicationtree_10'), i18next.t('viewer_admin_applicationtree_11'));
     }else{
         Ext.MessageBox.show({
-            title: i18next.t('viewer_admin_applicationtree_10'),
-            msg: i18next.t('viewer_admin_applicationtree_11', { niveau: record.data.text }),
+            title: i18next.t('viewer_admin_applicationtree_12'),
+            msg: i18next.t('viewer_admin_applicationtree_13', { niveau: record.data.text }),
             buttons: Ext.MessageBox.OKCANCEL,
             fn: function(btn){
                 if(btn==='ok'){
@@ -365,11 +365,11 @@ function removeLevel(record) {
                                 record.remove();
                                 Ext.get('editFrame').dom.src = "about:blank";
                             } else {
-                                Ext.MessageBox.alert("Fout", response.error);
+                                Ext.MessageBox.alert("Error", response.error);
                             }
                         },
                         failure: function (result) {
-                            Ext.MessageBox.alert("Fout", result.responseText);
+                            Ext.MessageBox.alert("Error", result.responseText);
                         }
                     });
                 }

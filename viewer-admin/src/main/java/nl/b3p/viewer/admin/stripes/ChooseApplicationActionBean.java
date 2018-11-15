@@ -212,7 +212,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                 ex += ";\n<br>" + cause.toString();
                 cause = cause.getCause();
             }
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij verwijderen applicatie: " + ex));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.chooseapplicationactionbean.errorremapp"), ex));
         }
         return new ForwardResolution(EDITJSP);
     }
@@ -231,7 +231,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             em.remove(applicationToDelete);
             em.getTransaction().commit();
 
-            getContext().getMessages().add(new SimpleMessage("Mashup is verwijderd"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.chooseapplicationactionbean.murem")));
         } else if (applicationToDelete.getVersion() == null) {
             Date nowDate = new Date(System.currentTimeMillis());
             SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
@@ -248,13 +248,13 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                     list.add(mashup.getNameWithVersion());
                 }
                 String mashupList = StringUtils.join(list, ", ");
-                getContext().getValidationErrors().addGlobalError(new SimpleError("Deze applicatie kan niet verwijderd worden, omdat de boomstructuur wordt gebruikt in de mashups " + mashupList));
+                getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.chooseapplicationactionbean.noremapp"), mashupList));
             } else {
 
                 em.remove(applicationToDelete);
                 em.getTransaction().commit();
 
-                getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+                getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.chooseapplicationactionbean.remapp")));
             }
         }
         if (applicationToDelete.equals(application)) {
@@ -346,9 +346,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             if (app.getOwner() != null) {
                 ownername = app.getOwner().getUsername();
             }
-            String published = "Nee";
+            String published = getBundle().getString("viewer_admin.general.no");
             if (app.getVersion() == null) {
-                published = "Ja";
+                published = getBundle().getString("viewer_admin.general.yes");
             }
             JSONObject j = new JSONObject();
             j.put("id", app.getId().intValue());
@@ -372,7 +372,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                         }
                     }
                 }
-            j.put("mashup", (isMashup ? "Ja" : "Nee"));
+            j.put("mashup", (isMashup ? 
+                    getBundle().getString("viewer_admin.general.yes") : 
+                    getBundle().getString("viewer_admin.general.no")));
             jsonData.put(j);
         }
 
@@ -394,7 +396,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         try {
             Object o = em.createQuery("select 1 from Application where name = :name AND version = :version").setMaxResults(1).setParameter("name", name).setParameter("version", version).getSingleResult();
 
-            getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" en versie \"{1}\" bestaat al", name, version));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.chooseapplicationactionbean.nocopy"), name, version));
             return new RedirectResolution(this.getClass());
         } catch (NoResultException nre) {
         }
@@ -402,7 +404,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         try {
 
             Application copy = createWorkversion(applicationWorkversion, em, version);
-            getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.chooseapplicationactionbean.wvcreate")));
             setApplication(copy);
 
             return new RedirectResolution(ApplicationSettingsActionBean.class);
@@ -418,7 +420,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                 ex += ";\n<br>" + cause.toString();
                 cause = cause.getCause();
             }
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het maken van werkversie applicatie: " + ex));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.chooseapplicationactionbean.wverror"), ex));
             return new ForwardResolution(JSP);
         }
     }

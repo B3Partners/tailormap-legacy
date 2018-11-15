@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Edit gebruiker groep</title>
+        <title><fmt:message key="viewer_admin.editgroup.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -29,21 +29,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
-                    <h1 id="headertext">Gebruikers groep bewerken</h1>
+                    <h1 id="headertext"><fmt:message key="viewer_admin.editgroup.1" /></h1>
                     <stripes:hidden name="group" value="${actionBean.group.name}"/>
                     <table class="formtable">
                         <tr>
-                            <td valign="top" style="height: 30px;">Naam *:</td>
+                            <td valign="top" style="height: 30px;"><fmt:message key="viewer_admin.editgroup.2" /> *:</td>
                             <td valign="top"><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
-                            <td valign="top">Extra informatie:</td>
+                            <td valign="top"><fmt:message key="viewer_admin.editgroup.3" />:</td>
                             <td valign="top"><stripes:textarea name="description" cols="27" rows="4" class="extliketextarea" /></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="Opslaan"/>
-                        <stripes:reset class="extlikebutton" name="cancel" value="Annuleren"/>
+                        <fmt:message key="viewer_admin.editgroup.4" var="editgroup4" />
+                        <stripes:submit name="save" value="${editgroup4}"/>
+                        <fmt:message key="viewer_admin.editgroup.5" var="editgroup5" />
+                        <stripes:reset class="extlikebutton" name="cancel" value="${editgroup5}"/>
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
@@ -53,10 +55,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 frameParent.vieweradmin_components_Group.reloadGrid();
                             }
                         </script>
-                        <stripes:submit name="edit" value="Nieuwe groep"/>
+                    <fmt:message key="viewer_admin.editgroup.6" var="editgroup6" />
+                    <stripes:submit name="edit" value="${editgroup6}"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="Nieuwe groep"/>
+                    <fmt:message key="viewer_admin.editgroup.7" var="editgroup7" />
+                    <stripes:submit name="edit" value="${editgroup7}"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

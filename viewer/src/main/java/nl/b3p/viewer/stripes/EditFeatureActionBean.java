@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
@@ -61,7 +62,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/feature/edit")
 @StrictBinding
-public class EditFeatureActionBean  implements ActionBean {
+public class EditFeatureActionBean extends LocalizableApplicationActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(EditFeatureActionBean.class);
 
     private static final String FID = FeatureInfoActionBean.FID;
@@ -135,6 +136,7 @@ public class EditFeatureActionBean  implements ActionBean {
     }
 
     //</editor-fold>
+
     @DefaultHandler
     public Resolution edit() throws JSONException {
         JSONObject json = new JSONObject();
@@ -147,37 +149,37 @@ public class EditFeatureActionBean  implements ActionBean {
         try {
             do {
                 if(appLayer == null) {
-                    error = "App layer or service not found";
+                    error = getBundle().getString("viewer.editfeatureactionbean.1");
                     break;
                 }
                 if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-                    error = "U heeft geen rechten om deze kaartlaag te bewerken";
+                    error = getBundle().getString("viewer.editfeatureactionbean.2");
                     break;
                 }
 
                 layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
-                    error = "Layer not found";
+                    error = getBundle().getString("viewer.editfeatureactionbean.3");
                     break;
                 }
 
                 if(layer.getFeatureType() == null) {
-                    error ="No feature type";
+                    error =getBundle().getString("viewer.editfeatureactionbean.4");
                     break;
                 }
 
                 fs = layer.getFeatureType().openGeoToolsFeatureSource();
 
                 if(!(fs instanceof SimpleFeatureStore)) {
-                    error = "Feature source does not support editing";
+                    error = getBundle().getString("viewer.editfeatureactionbean.5");
                     break;
                 }
                 store = (SimpleFeatureStore)fs;
                 addAuditTrailLog();
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
-                     error = "U heeft geen rechten om deze feature toe te voegen, te verwijderen en/of te wijzigen";
+                     error = getBundle().getString("viewer.editfeatureactionbean.6");
                      break;
                 }
                 String fid = jsonFeature.optString(FID, null);
@@ -220,11 +222,11 @@ public class EditFeatureActionBean  implements ActionBean {
         FeatureSource fs = null;
         EntityManager em = Stripersist.getEntityManager();
         if (appLayer == null) {
-            error = "App layer or service not found";
+            error = getBundle().getString("viewer.editfeatureactionbean.7");
 
         }
         if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-            error = "U heeft geen rechten om deze kaartlaag te bewerken";
+            error = getBundle().getString("viewer.editfeatureactionbean.8");
 
         }
 
@@ -316,22 +318,22 @@ public class EditFeatureActionBean  implements ActionBean {
         try {
             do {
                 if(appLayer == null) {
-                    error = "App layer or service not found";
+                    error = getBundle().getString("viewer.editfeatureactionbean.9");
                     break;
                 }
                 if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-                    error = "U heeft geen rechten om deze kaartlaag te bewerken";
+                    error = getBundle().getString("viewer.editfeatureactionbean.10");
                     break;
                 }
 
                 layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                 if(layer == null) {
-                    error = "Layer not found";
+                    error = getBundle().getString("viewer.editfeatureactionbean.11");
                     break;
                 }
                 if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), em)) {
-                    error = "U heeft geen rechten om de geometrie van deze kaartlaag te bewerken";
+                    error = getBundle().getString("viewer.editfeatureactionbean.12");
                     break;
                 }
 
@@ -343,20 +345,20 @@ public class EditFeatureActionBean  implements ActionBean {
                 fs = layer.getFeatureType().openGeoToolsFeatureSource();
 
                 if(!(fs instanceof SimpleFeatureStore)) {
-                    error = "Feature source does not support editing";
+                    error = getBundle().getString("viewer.editfeatureactionbean.13");
                     break;
                 }
                 store = (SimpleFeatureStore)fs;
 
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
-                     error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                     error = getBundle().getString("viewer.editfeatureactionbean.14");
                      break;
                 }
                 String fid = jsonFeature.optString(FID, null);
 
                 if(fid == null) {
-                    error = "Feature without FID can't be deleted";
+                    error = getBundle().getString("viewer.editfeatureactionbean.15");
                     break;
                 } else {
                     deleteFeature(fid);
@@ -393,10 +395,10 @@ public class EditFeatureActionBean  implements ActionBean {
         EntityManager em = Stripersist.getEntityManager();
         
         if (appLayer == null) {
-            error = "App layer or service not found";
+            error = getBundle().getString("viewer.editfeatureactionbean.16");
         }
         if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-            error = "U heeft geen rechten om deze kaartlaag te bewerken";
+            error = getBundle().getString("viewer.editfeatureactionbean.17");
         }
 
         layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
@@ -411,7 +413,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     jsonFeature = new JSONObject(feature);
                     String fid = jsonFeature.optString(FID, null);
                     if (fid == null || fid.equals("")) {
-                        error = "Feature without FID can't be deleted";
+                        error = getBundle().getString("viewer.editfeatureactionbean.18");
                         break;
                     } else {
                         deleteFeature(fid);

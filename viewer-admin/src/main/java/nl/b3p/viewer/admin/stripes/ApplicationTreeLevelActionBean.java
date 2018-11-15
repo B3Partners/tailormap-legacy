@@ -36,6 +36,7 @@ import org.stripesstuff.stripersist.Stripersist;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +91,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             parent.getChildren().remove(level);
             em.persist(parent);
             em.remove(level);
-            getContext().getMessages().add(new SimpleMessage("Het niveau is verwijderd"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationtreelevelactionbean.dellevel")));
         }
         
         application.authorizationsModified();        
@@ -127,9 +128,9 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         String error = null;
         
         if(level == null) {
-            error = "Niveau niet gevonden";
+            error = getBundle().getString("viewer_admin.applicationtreelevelactionbean.nolevel");
         } else if(level.getName() == null) {
-            error = "Naam moet zijn ingevuld";
+            error = getBundle().getString("viewer_admin.applicationtreelevelactionbean.noname");
         } else {
             try {
                 EntityManager em = Stripersist.getEntityManager();
@@ -140,7 +141,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 json.put("success", Boolean.TRUE);
             } catch(Exception e) {
                 log.error("Fout bij opslaan niveau", e);
-                error = "Kan niveau niet opslaan: " + e;
+                error = MessageFormat.format(getBundle().getString("viewer.applicationtreelevelactionbean.levelnosave"), e); 
                 Throwable t = e;
                 while(t.getCause() != null) {
                     t = t.getCause();
@@ -176,15 +177,15 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
 
         StartLevel sl = level.getStartLevels().get(application);
         if(level == null) {
-            error = "Niveau niet gevonden";
+            error = getBundle().getString("viewer_admin.applicationtreelevelactionbean.nolevel");
         } else if(level.getParent() == null) {
-            error = "Bovenste niveau kan niet worden verwijderd";
+            error = getBundle().getString("viewer_admin.applicationtreelevelactionbean.upperlevel");
         } else if(level.getChildren().size() > 0) {
-            error = "Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft.";
+            error = getBundle().getString("viewer_admin.applicationtreelevelactionbean.levelsub");
         } else if(sl != null && sl.getSelectedIndex() != null && sl.isRemoved() == false) {
-            error = "Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen";
+            error = getBundle().getString("viewer_admin.applicationtreelevelactionbean.leveltoc");
         } else if(level.getLayers().size() > 0) {
-            error = "Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat.";
+            error = getBundle().getString("viewer_admin.applicationtreelevelactionbean.levelfilled");
         } else {
             try {
                 Level parent = level.getParent();
@@ -207,8 +208,8 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 em.getTransaction().commit();
 
             } catch(Exception e) {
-                log.error("Fout bij verwijderen niveau", e);
-                error = "Kan niveau niet verwijderen: " + e;
+                log.error("Can not remove level", e);
+                error = MessageFormat.format(getBundle().getString("viewer.applicationtreelevelactionbean.levelnorem"), e);  
                 Throwable t = e;
                 while(t.getCause() != null) {
                     t = t.getCause();
@@ -223,7 +224,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         
         EntityManager em = Stripersist.getEntityManager();
         saveLevel(em);
-        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationtreelevelactionbean.levelsaved")));
         return edit();
     }
     

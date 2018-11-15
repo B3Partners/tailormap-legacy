@@ -42,6 +42,7 @@ public class LayerActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     @Validate
     @ValidateNestedProperties({
         @Validate(field = "titleAlias", label="Naam"),
@@ -74,6 +75,23 @@ public class LayerActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        if (bundle==null) {
+            bundle = ResourceBundle.getBundle("ViewerResources");
+        }
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public Map<String, String> getDetails() {
@@ -172,7 +190,12 @@ public class LayerActionBean implements ActionBean {
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
 
-    @DefaultHandler
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
+   @DefaultHandler
     public Resolution edit() {
         if (layer != null) {
             details = new HashMap();
@@ -268,7 +291,7 @@ public class LayerActionBean implements ActionBean {
             SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
         }
         em.getTransaction().commit();
-        getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layeractionbean.layersaved")));
 
         return new ForwardResolution(JSP);
     }

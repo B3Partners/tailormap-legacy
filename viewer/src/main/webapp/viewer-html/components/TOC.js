@@ -55,10 +55,10 @@ Ext.define ("viewer.components.TOC",{
         title: i18next.t('viewer_components_toc_0'),
         showLeafIcon: true,
         showNodeIcon: true,
-        zoomToScaleText: "Zoom to scale",
+        zoomToScaleText: i18next.t('viewer_components_toc_1'),
         expandOnStartup: true,
-        toggleAllLayersOnText: 'All layers on',
-        toggleAllLayersOffText: 'All layers off',
+        toggleAllLayersOnText: i18next.t('viewer_components_toc_2'),
+        toggleAllLayersOffText: i18next.t('viewer_components_toc_3'),
         initToggleAllLayers: true,
         showAllLayersOff: false,
         showAllLayersOn: false,
@@ -103,7 +103,7 @@ Ext.define ("viewer.components.TOC",{
         var store = Ext.create('Ext.data.TreeStore', {
             model: 'Maps',
             root: {
-                text: i18next.t('viewer_components_toc_1'),
+                text: i18next.t('viewer_components_toc_4'),
                 expanded: me.config.expandOnStartup,
                 checked: false,
                 children: []
@@ -176,7 +176,7 @@ Ext.define ("viewer.components.TOC",{
             return;
         }
         viewer.components.TOC.superclass.renderButton.call(this,{
-            text: i18next.t('viewer_components_toc_2'),
+            text: i18next.t('viewer_components_toc_5'),
             icon: me.config.iconUrl,
             tooltip: me.config.tooltip,
             label: me.config.label,
@@ -256,11 +256,11 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.checked=  false;
         }
         if(level.info != undefined){
-            this.addQtip("Informatie over de kaart", 'span_'+levelId);
+            this.addQtip(i18next.t('viewer_components_toc_6'), 'span_'+levelId);
             treeNodeLayer.layerObj.info = level.info;
         }
         if(level.url!= undefined){
-            this.addQtip("Informatie over de kaart", 'span_'+levelId);
+            this.addQtip(i18next.t('viewer_components_toc_7'), 'span_'+levelId);
             treeNodeLayer.layerObj.url = level.url;
         }
 
@@ -351,12 +351,12 @@ Ext.define ("viewer.components.TOC",{
         }
         if(serviceLayer.details != undefined){
             if(serviceLayer.details ["metadata.stylesheet"] !== undefined){
-                this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
+                this.addQtip(i18next.t('viewer_components_toc_8'), 'span_'+layerId);
                 treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
             }
 
             if(serviceLayer.details ["download.url"] != undefined){
-                this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
+                this.addQtip(i18next.t('viewer_components_toc_9'), 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
 
@@ -403,7 +403,7 @@ Ext.define ("viewer.components.TOC",{
                 }
             }
             var background = {
-                text: i18next.t('viewer_components_toc_5'),
+                text: i18next.t('viewer_components_toc_10'),
                 // id: this.name + "Achtergrond",
                 expanded: this.config.expandOnStartup,
                 expandable: true,

@@ -21,8 +21,10 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.operation.overlay.snap.GeometrySnapper;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
@@ -69,7 +71,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/feature/merge")
 @StrictBinding
-public class MergeFeaturesActionBean implements ActionBean {
+public class MergeFeaturesActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log LOG = LogFactory.getLog(MergeFeaturesActionBean.class);
 
@@ -128,33 +130,33 @@ public class MergeFeaturesActionBean implements ActionBean {
         String error = null;
 
         if (appLayer == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.mergefeaturesactionbean.1");
         } else if (unauthorized) {
-            error = "Not authorized";
+            error = getBundle().getString("viewer.mergefeaturesactionbean.2");
         } else {
             FeatureSource fs = null;
             try {
                 if (this.fidA == null || this.fidB == null) {
-                    throw new IllegalArgumentException("Merge feature ID is null for A or B");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.mergefeaturesactionbean.3"));
                 }
                 if (this.strategy == null) {
-                    throw new IllegalArgumentException("Merge strategy is null");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.mergefeaturesactionbean.4"));
                 }
 
                 fs = this.layer.getFeatureType().openGeoToolsFeatureSource();
                 if (!(fs instanceof SimpleFeatureStore)) {
-                    throw new IllegalArgumentException("Feature source does not support editing");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.mergefeaturesactionbean.5"));
                 }
                 this.store = (SimpleFeatureStore) fs;
 
                 List<FeatureId> ids = this.mergeFeatures();
 
                 if (ids.isEmpty()) {
-                    throw new IllegalArgumentException("Merge failed, check that geometries overlap");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.mergefeaturesactionbean.6"));
                 }
 
                 if (ids.size() > 1) {
-                    throw new IllegalArgumentException("Merge failed, more than one resulting geometries.");
+                    throw new IllegalArgumentException(getBundle().getString("viewer.mergefeaturesactionbean.7"));
                 }
 
                 json.put("fids", ids);
@@ -163,7 +165,7 @@ public class MergeFeaturesActionBean implements ActionBean {
                 LOG.warn("Merge error", e);
                 error = e.getLocalizedMessage();
             } catch (Exception e) {
-                LOG.error(String.format("Exception merging feature %s to %s", this.fidB, this.fidA), e);
+                LOG.error(MessageFormat.format(getBundle().getString("viewer.mergefeaturesactionbean.8"), this.fidB, this.fidA, e ));
                 error = e.toString();
                 if (e.getCause() != null) {
                     error += "; cause: " + e.getCause().toString();
@@ -244,7 +246,7 @@ public class MergeFeaturesActionBean implements ActionBean {
                 fA = (SimpleFeature) fc.features().next();
             } else {
                 throw new IllegalArgumentException(
-                        String.format("Feature A having ID: (%s) not found in datastore.", this.fidA));
+                        MessageFormat.format(getBundle().getString("viewer.mergefeaturesactionbean.9"), this.fidA ));
             }
 
             SimpleFeature fB = null;
@@ -253,7 +255,7 @@ public class MergeFeaturesActionBean implements ActionBean {
                 fB = (SimpleFeature) fc.features().next();
             } else {
                 throw new IllegalArgumentException(
-                        String.format("Feature B having ID: (%s) not found in datastore.", this.fidB));
+                        MessageFormat.format(getBundle().getString("viewer.mergefeaturesactionbean.10"), this.fidB ));
             }
 
             String geomAttrName = store.getSchema().getGeometryDescriptor().getLocalName();
@@ -272,10 +274,10 @@ public class MergeFeaturesActionBean implements ActionBean {
             if (!geomB.intersects(geomA)) {
                 // no overlap between geometries, do some smart stuff to interpolate, then use this interpolation in the union of all geoms
                 double distance = geomA.distance(geomB);
-                LOG.info(String.format("No intersect between merge inputs, interpolating gap. Distance is: %s", distance));
+                LOG.info(MessageFormat.format(getBundle().getString("viewer.mergefeaturesactionbean.11"), distance ));
                 if (distance > this.mergeGapDist) {
                     throw new IllegalArgumentException(
-                            String.format("Merge failed, geometries too far apart (%s)", distance));
+                            MessageFormat.format(getBundle().getString("viewer.mergefeaturesactionbean.12"), distance ));
                 }
                 newGeom = GeometrySnapper.snapToSelf(geoms.collect(), mergeGapDist, true);
                 geoms.add(newGeom);
@@ -363,7 +365,7 @@ public class MergeFeaturesActionBean implements ActionBean {
             newFeats = this.handleExtraData(newFeats);
             ids = localStore.addFeatures(DataUtilities.collection(newFeats));
         } else {
-            throw new IllegalArgumentException("Unknown strategy '" + localStrategy + "', cannot merge.");
+            throw new IllegalArgumentException(MessageFormat.format(getBundle().getString("viewer.mergefeaturesactionbean.13"), localStrategy ));
         }
         return ids;
     }

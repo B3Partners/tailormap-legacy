@@ -20,11 +20,13 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
@@ -77,7 +79,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/csw/search")
 @StrictBinding
-public class CatalogSearchActionBean implements ActionBean {
+public class CatalogSearchActionBean extends LocalizableApplicationActionBean implements ActionBean {
     
     private ActionBeanContext context;
     private static final Log log = LogFactory.getLog(CatalogSearchActionBean.class);
@@ -151,7 +153,7 @@ public class CatalogSearchActionBean implements ActionBean {
     }
     
     //</editor-fold>        
-    
+
     @DefaultHandler
     public Resolution search() throws JSONException {    
         JSONObject json = new JSONObject();
@@ -159,7 +161,7 @@ public class CatalogSearchActionBean implements ActionBean {
         String error = null;
         Resolution r = ApplicationActionBean.checkRestriction(context, application, Stripersist.getEntityManager());
         if (r != null) {
-            error = "Unauthorized";
+            error = getBundle().getString("viewer.catalogsearchactionbean.1");
         } else {
             try {
                 CswServable server = new GeoNetworkCswServer(null,
@@ -180,10 +182,10 @@ public class CatalogSearchActionBean implements ActionBean {
                 json.put("success", Boolean.TRUE);
             } catch (Exception e) {
 
-                error = "Fout bij zoeken in CSW: " + e.toString();
-                log.error("Fout bij zoeken in csw:", e);
+                error = MessageFormat.format(getBundle().getString("viewer.catalogsearchactionbean.2"), e.toString() );
+                log.error("Error searching:", e);
                 if (e.getCause() != null) {
-                    error += "; oorzaak: " + e.getCause().toString();
+                    error += "; cause: " + e.getCause().toString();
                 }
             }
         }
@@ -202,7 +204,7 @@ public class CatalogSearchActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
          Resolution r = ApplicationActionBean.checkRestriction(context, application, Stripersist.getEntityManager());
         if (r != null) {
-            json.put("message","Unauthorized");
+            json.put("message",getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
         CswServable server = new GeoNetworkCswServer(null, url, null, null);

@@ -46,6 +46,7 @@ public class LayarServiceActionBean implements ActionBean {
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarservice.jsp";
     
     private ActionBeanContext context;
+    private ResourceBundle bundle;
     
     @Validate
     private int page;
@@ -75,6 +76,23 @@ public class LayarServiceActionBean implements ActionBean {
         this.context = context;
     }
     
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        if (bundle==null) {
+            bundle = ResourceBundle.getBundle("ViewerResources");
+        }
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
+
     public String getDir() {
         return dir;
     }
@@ -140,6 +158,11 @@ public class LayarServiceActionBean implements ActionBean {
     }
     //</editor-fold>
     
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
@@ -184,7 +207,7 @@ public class LayarServiceActionBean implements ActionBean {
         Stripersist.getEntityManager().remove(layarservice);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Layar service is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layarserviceactionbean.lyarrem")));
         
         return new ForwardResolution(EDITJSP);
     }
@@ -198,7 +221,7 @@ public class LayarServiceActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(layarservice);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Layar service is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layarserviceactionbean.lyarsaved")));
         
         return new ForwardResolution(EDITJSP);
     }
@@ -206,7 +229,7 @@ public class LayarServiceActionBean implements ActionBean {
     @ValidationMethod(on="save")
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
-            errors.add("name", new SimpleError("Naam is verplicht"));
+            errors.add("name", new SimpleError(getBundle().getString("viewer_admin.layarserviceactionbean.nameobl")));
             return;
         }
         
@@ -218,10 +241,10 @@ public class LayarServiceActionBean implements ActionBean {
             
             if(layarservice != null && layarservice.getId() != null){
                 if(!foundId.equals(layarservice.getId())){
-                    errors.add("name", new SimpleError("Naam moet uniek zijn"));
+                    errors.add("name", new SimpleError(getBundle().getString("viewer_admin.layarserviceactionbean.namedup")));
                 }
             }else{
-                errors.add("name", new SimpleError("Naam moet uniek zijn"));
+                errors.add("name", new SimpleError(getBundle().getString("viewer_admin.layarserviceactionbean.namedup")));
             }
             
         } catch(NoResultException nre) {

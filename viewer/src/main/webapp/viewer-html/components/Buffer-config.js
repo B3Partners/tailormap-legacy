@@ -38,7 +38,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         {
             xtype: "textfield",
             name: "maxFeatures",
-            fieldLabel: i18next.t('viewer_components_customconfiguration_22'),
+            fieldLabel: i18next.t('buffer_config_0'),
             labelWidth:this.labelWidth,
             width: 500,
             id: "maxFeatures",

@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
@@ -76,7 +77,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     @DontValidate
     public Resolution view() throws JSONException {
         if (application == null) {
-            getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
+            getContext().getMessages().add(new SimpleError(getBundle().getString("viewer_admin.applicationstartmapactionbean.actfirst")));
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
         } else {
             rootlevel = application.getRoot();
@@ -90,7 +91,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         EntityManager em = Stripersist.getEntityManager();
         saveStartMap(em);
-        getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationstartmapactionbean.skbsaved")));
         
         getCheckedLayerList(allCheckedLayers, rootlevel, application);
         
@@ -145,10 +146,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 Level level = Stripersist.getEntityManager().find(Level.class, new Long(id));
                 if(level == null) {
                     result = false;
-                    message = "Niveau met id " + id + " is onbekend!";
+                    message = MessageFormat.format(getBundle().getString("viewer_admin.applicationstartmapactionbean.unknown"), id);
                 } else {
                     if(!level.hasLayerInSubtree()) {
-                        message = "Niveau is geen kaart";
+                        message = getBundle().getString("viewer_admin.applicationstartmapactionbean.nomap");
                         result = false;
 
                     } else {
@@ -162,7 +163,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                             if(content.getString("type").equals("level")) {
                                 if(id.equals(content.getString("id"))) {
                                     result = false;
-                                    message = "Niveau is al geselecteerd";
+                                    message = getBundle().getString("viewer_admin.applicationstartmapactionbean.alreadyselected0");
                                     break;
                                 }
 
@@ -170,7 +171,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                                 if(l != null) {
                                     if(l.isInSubtreeOf(level)) {
                                         result = false;
-                                        message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
+                                        message = getBundle().getString("viewer_admin.applicationstartmapactionbean.alreadyselected1");
                                         break;
                                     }
                                 }
@@ -178,7 +179,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                                 ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(content.getString("id")));
                                 if(level.containsLayerInSubtree(appLayer)) {
                                     result = false;
-                                    message = "Niveau kan niet worden geselecteerd omdat een kaartlaag uit dit (of onderliggend) niveau al is geselecteerd";
+                                    message = getBundle().getString("viewer_admin.applicationstartmapactionbean.alreadyselected2");
                                     break;
                                 }
                             }

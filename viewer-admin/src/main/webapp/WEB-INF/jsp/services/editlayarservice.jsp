@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Edit layar services</title>
+        <title><fmt:message key="viewer_admin.editlayarservice.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
@@ -30,16 +30,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="layarservice" value="${actionBean.layarservice.id}"/>
-                    <h1 id="headertext">Layar service bewerken</h1>
+                    <h1 id="headertext"><fmt:message key="viewer_admin.editlayarservice.1" /></h1>
                     <table class="formtable">
                         <tr>
-                            <td>Naam *:</td>
+                            <td><fmt:message key="viewer_admin.editlayarservice.2" /> *:</td>
                             <td><stripes:text name="name" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
-                        <stripes:submit name="save" value="Opslaan"/>
-                        <stripes:submit name="cancel" value="Annuleren"/>
+                        <fmt:message key="viewer_admin.editlayarservice.3" var="editlayarservice3" />
+                        <fmt:message key="viewer_admin.editlayarservice.4" var="editlayarservice4" />
+                        <stripes:submit name="save" value="${editlayarservice3}" />
+                        <stripes:submit name="cancel" value="${editlayarservice4}" />
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
@@ -49,10 +51,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             frameParent.reloadGrid();
                         }
                     </script>
-                    <stripes:submit name="edit" value="Nieuwe layar service"/>
+                    <fmt:message key="viewer_admin.editlayarservice.5" var="editlayarservice5" />
+                    <stripes:submit name="edit" value="${editlayarservice5}" />
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="Nieuwe layar service"/>
+                    <fmt:message key="viewer_admin.editlayarservice.6" var="editlayarservice6" />
+                    <stripes:submit name="edit" value="${editlayarservice6}" />
                 </c:otherwise>
             </c:choose>
         </stripes:form>
