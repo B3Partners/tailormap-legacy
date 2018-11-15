@@ -90,12 +90,11 @@ Ext.define ("viewer.components.Drawing",{
         if(this.config.reactivateTools){
             this.popup.addListener("hide", this.hideWindow, this);
         }
+        
+        this.createVectorLayer();
         return this;
     },
     showWindow : function (){
-        if(this.vectorLayer === null){
-            this.createVectorLayer();
-        }
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.mobileHide = false;
         this.popup.show();
