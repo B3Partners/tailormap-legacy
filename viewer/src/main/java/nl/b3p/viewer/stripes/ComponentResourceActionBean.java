@@ -49,7 +49,7 @@ public class ComponentResourceActionBean implements ActionBean{
 
     public Resolution resource() throws IOException{
         if (className==null || getResource() == null){
-            return new ErrorMessageResolution("Both 'className' and 'resource' is required.");
+            return new ErrorMessageResolution("Both 'className' and 'resource' are required.");
         }
         ViewerComponent comp = ComponentRegistry.getInstance().getViewerComponent(className);
         String path = comp.getPath();

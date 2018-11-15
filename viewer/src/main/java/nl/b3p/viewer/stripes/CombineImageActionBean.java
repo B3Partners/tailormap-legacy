@@ -40,7 +40,7 @@ import org.json.JSONObject;
  */
 @UrlBinding("/action/combineimage")
 @StrictBinding
-public class CombineImageActionBean implements ActionBean {
+public class CombineImageActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
     private static LinkedHashMap<String,CombineImageSettings> imageSettings = new LinkedHashMap<String,CombineImageSettings>();
 
@@ -54,6 +54,7 @@ public class CombineImageActionBean implements ActionBean {
     private static int minStoredSettings=400;
 
     private ActionBeanContext context;
+
     private int maxResponseTime = 10000;
 
     @Validate
@@ -147,7 +148,7 @@ public class CombineImageActionBean implements ActionBean {
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PrintActionBean.PORTRAIT;
 
         if (orientation==null || pageFormat ==null){
-            error = "invalid parameters";
+            error = getBundle().getString("viewer.combineimageactionbean.1");
         }else{
             try{
 
@@ -201,7 +202,7 @@ public class CombineImageActionBean implements ActionBean {
      */
     public Resolution getImage() throws Exception {
         if (imageId==null || imageSettings.get(imageId)==null){
-            throw new Exception("No imageId given");
+            throw new Exception("No imageId provided");
         }
         //final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
         final CombineImageSettings settings = imageSettings.get(imageId);

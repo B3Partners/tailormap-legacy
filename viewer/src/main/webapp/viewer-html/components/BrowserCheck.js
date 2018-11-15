@@ -25,8 +25,8 @@ Ext.define("viewer.components.BrowserCheck", {
     config: {
         showPopup: true,
         test: false,
-        message: "De browser (of de versie ervan) die u gebruikt wordt mogelijk niet ondersteund. Deze website werkt het best met een recente, moderne browser.",
-        title: i18next.t('viewer_components_browsercheck_0')
+        message: i18next.t('viewer_components_browsercheck_0'),
+        title: i18next.t('viewer_components_browsercheck_1')
     },
     constructor: function (conf){
         this.initConfig(conf);

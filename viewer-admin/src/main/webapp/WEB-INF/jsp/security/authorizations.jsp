@@ -30,25 +30,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Autorisatieoverzicht voor gebruiker <c:out value="${actionBean.user.username}"/></title>
+        <title><fmt:message key="viewer_admin.authorizations.0" /> <c:out value="${actionBean.user.username}"/></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div class="textcontent">
-            <h1 id="headertext">Autorisatieoverzicht voor gebruiker <c:out value="${actionBean.user.username}"/></h1>
+            <h1 id="headertext"><fmt:message key="viewer_admin.authorizations.1" /> <c:out value="${actionBean.user.username}"/></h1>
             <stripes:errors/>
             <stripes:messages/>
-            <h2>Groeplidmaatschap</h2>
+            <h2><fmt:message key="viewer_admin.authorizations.2" /></h2>
             <c:forEach var="g" varStatus="status" items="${actionBean.user.groups}">${status.index > 0 ? "," : ""}
                 <c:out value="${g.name}"/></c:forEach>
-                <h2 style="">Gegevensregister lagen</h2>
-                <p style="font-style: italic;">Lagen die voor alle groepen geautoriseerd zijn worden niet getoond. Een schrijfbare laag is dat 
-                    praktisch alleen indien attributen ook expliciet editable zijn gemaakt in een kaartlaag en de kaartlaag in een applicatie bij een edit component is geconfigureerd.</p>
+                <h2 style=""><fmt:message key="viewer_admin.authorizations.3" /></h2>
+                <p style="font-style: italic;"><fmt:message key="viewer_admin.authorizations.4" /></p>
 
             <% UserActionBean actionBean = (UserActionBean) pageContext.findAttribute("actionBean");
                 Set readers, writers;
             %>
             <table class="formtable" border="1">
-                <thead><tr><th>ID</th><th>Naam</th></th><th>Rechten voor <c:out value="${actionBean.user.username}"/></th><th>Lezen groepen</th><th>Schrijven groepen</th></thead>
+                <thead><tr><th><fmt:message key="viewer_admin.authorizations.5" /></th><th><fmt:message key="viewer_admin.authorizations.6" /></th></th><th><fmt:message key="viewer_admin.authorizations.7" /> <c:out value="${actionBean.user.username}"/></th><th><fmt:message key="viewer_admin.authorizations.8" /></th><th><fmt:message key="viewer_admin.authorizations.9" /></th></thead>
                 <tnody>
                     <c:forEach var="e" items="<%= Authorizations.serviceCache.entrySet()%>">
                         <c:set var="gsId" value="${e.key}"/>
@@ -73,9 +72,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <%
                                             if (actionBean.getAuthorizedLayers().contains(layer)) {
                                                 boolean editable = actionBean.getAuthorizedEditableLayers().contains(layer);
-                                                out.print("<span style=\"color: green !important\">Lezen" + (editable ? " en schrijven" : "") + "</span>");
+                                                out.print("<span style=\"color: green !important\">Read" + (editable ? " and write" : "") + "</span>");
                                             } else {
-                                                out.print("<span style=\"color: red !important\">Geen</span>");
+                                                out.print("<span style=\"color: red !important\">None</span>");
                                             }
                                         %>
                                     </td>
@@ -83,8 +82,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         readers = (Set) pageContext.getAttribute("readers");
                                         writers = (Set) pageContext.getAttribute("writers");
                                     %>
-                                    <td><%= readers.isEmpty() ? "<i>iedereen</i>" : (readers.iterator().next() == null ? "<i>niemand</i>" : readers.toString())%></td>
-                                    <td><%= writers.isEmpty() ? "<i>iedereen</i>" : (writers.iterator().next() == null ? "<i>niemand</i>" : writers.toString())%></td>
+                                    <td><%= readers.isEmpty() ? "<i>any</i>" : (readers.iterator().next() == null ? "<i>none</i>" : readers.toString())%></td>
+                                    <td><%= writers.isEmpty() ? "<i>any</i>" : (writers.iterator().next() == null ? "<i>none</i>" : writers.toString())%></td>
                                 </tr>
 
                             </c:forEach>
@@ -94,11 +93,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </table>
 
             <c:if test="${actionBean.application != null}">
-                <h2>Autorisaties voor applicatie <c:out value="${actionBean.application.name}"/> <c:if test="${actionBean.application.version != null}">v${actionBean.application.version}</c:if></h2>
-                <h3>Niveau's</h3>
-                <p style="font-style: italic;">Niveau's die voor alle groepen geautoriseerd zijn worden niet getoond.</p>
+                <h2><fmt:message key="viewer_admin.authorizations.10" /> <c:out value="${actionBean.application.name}"/> <c:if test="${actionBean.application.version != null}">v${actionBean.application.version}</c:if></h2>
+                <h3><fmt:message key="viewer_admin.authorizations.11" /></h3>
+                <p style="font-style: italic;"><fmt:message key="viewer_admin.authorizations.12" /></p>
                 <table class="formtable" border="1">
-                    <thead><tr><th>ID</th><th>Naam</th><th>Toegang voor <c:out value="${actionBean.user.username}"/></th><th>Groepen met toegang</th></thead>
+                    <thead><tr><th><fmt:message key="viewer_admin.authorizations.13" /></th><th><fmt:message key="viewer_admin.authorizations.14" /></th><th><fmt:message key="viewer_admin.authorizations.15" /> <c:out value="${actionBean.user.username}"/></th><th><fmt:message key="viewer_admin.authorizations.16" /></th></thead>
                     <tbody>
                         <c:forEach var="e" items="<%= actionBean.getApplicationCache().getProtectedLevels().entrySet()%>">
                             <c:set var="levelId" value="${e.key}"/>
@@ -110,24 +109,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td>
                                     <%
                                         if (actionBean.getAuthorizedLevels().contains(level)) {
-                                            out.print("<span style=\"color: green !important\">Ja</span>");
+                                            out.print("<span style=\"color: green !important\">Yes</span>");
                                         } else {
-                                            out.print("<span style=\"color: red !important\">Nee</span>");
+                                            out.print("<span style=\"color: red !important\">No</span>");
                                         }
                                     %>
                                 </td>
                                 <%
                                     readers = (Set) pageContext.getAttribute("readers");
                                 %>
-                                <td><%= readers.isEmpty() ? "<iedereen>" : (readers.iterator().next() == null ? "<i>niemand</i>" : readers.toString())%></td>
+                                <td><%= readers.isEmpty() ? "<i>any</i>" : (readers.iterator().next() == null ? "<i>none</i>" : readers.toString())%></td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
                 <h3>Kaartlagen</h3>
-                <p style="font-style: italic;">Kaartlagen die voor alle groepen geautoriseerd zijn worden niet getoond.</p>
+                <p style="font-style: italic;"><fmt:message key="viewer_admin.authorizations.17" /></p>
                 <table class="formtable" border="1">
-                    <thead><tr><th>ID</th><th>Service ID en naam</th><th>Kaartlaag</th><th>Rechten voor <c:out value="${actionBean.user.username}"/></th><th>Lezen groepen</th><th>Schrijven groepen</th></thead>
+                    <thead><tr><th><fmt:message key="viewer_admin.authorizations.18" /></th><th><fmt:message key="viewer_admin.authorizations.19" /></th><th><fmt:message key="viewer_admin.authorizations.20" /></th><th><fmt:message key="viewer_admin.authorizations.21" /> <c:out value="${actionBean.user.username}"/></th><th><fmt:message key="viewer_admin.authorizations.22" /></th><th><fmt:message key="viewer_admin.authorizations.23" /></th></thead>
                     <tbody>
                         <c:forEach var="e" items="<%= actionBean.getApplicationCache().getProtectedAppLayers().entrySet()%>">
                             <c:set var="alId" value="${e.key}"/>
@@ -145,9 +144,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td><%
                                     if (actionBean.getAuthorizedAppLayers().contains(applicationLayer)) {
                                         boolean editable = actionBean.getAuthorizedEditableAppLayers().contains(applicationLayer);
-                                        out.print("<span style=\"color: green !important\">Lezen" + (editable ? " en schrijven" : "") + "</span>");
+                                        out.print("<span style=\"color: green !important\">Read" + (editable ? " and write" : "") + "</span>");
                                     } else {
-                                        out.print("<span style=\"color: red !important\">Geen</span>");
+                                        out.print("<span style=\"color: red !important\">None</span>");
                                     }
                                     %>
                                 </td>
@@ -155,16 +154,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     readers = (Set) pageContext.getAttribute("readers");
                                     writers = (Set) pageContext.getAttribute("writers");
                                 %>
-                                <td><%= readers.isEmpty() ? "<i>iedereen</i>" : (readers.iterator().next() == null ? "<i>niemand</i>" : readers.toString())%></td>
-                                <td><%= writers.isEmpty() ? "<i>iedereen</i>" : (writers.iterator().next() == null ? "<i>niemand</i>" : writers.toString())%></td>
+                                <td><%= readers.isEmpty() ? "<i>any</i>" : (readers.iterator().next() == null ? "<i>none</i>" : readers.toString())%></td>
+                                <td><%= writers.isEmpty() ? "<i>any</i>" : (writers.iterator().next() == null ? "<i>none</i>" : writers.toString())%></td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>            
-                <h3>Componenten</h3>
-                <p style="font-style: italic;">Componenten die voor alle groepen geautoriseerd zijn worden niet getoond.</p>
+                <h3><fmt:message key="viewer_admin.authorizations.24" /></h3>
+                <p style="font-style: italic;"><fmt:message key="viewer_admin.authorizations.25" /></p>
                 <table class="formtable" border="1">
-                    <thead><tr><th>Class</th><th>Naam</th><th>Toegang voor <c:out value="${actionBean.user.username}"/></th><th>Groepen met toegang</th></thead>
+                    <thead><tr><th><fmt:message key="viewer_admin.authorizations.26" /></th><th><fmt:message key="viewer_admin.authorizations.27" /></th><th><fmt:message key="viewer_admin.authorizations.28" /> <c:out value="${actionBean.user.username}"/></th><th><fmt:message key="viewer_admin.authorizations.29" /></th></thead>
                     <tbody>
                         <c:forEach var="cc" items="<%= actionBean.getApplication().getComponents()%>">
                             <c:if test="${!empty cc.readers}">
@@ -177,16 +176,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <%
                                             ConfiguredComponent cc = (ConfiguredComponent) pageContext.getAttribute("cc");
                                             if (actionBean.getAuthorizedComponents().contains(cc)) {
-                                                out.print("<span style=\"color: green !important\">Ja</span>");
+                                                out.print("<span style=\"color: green !important\">Yes</span>");
                                             } else {
-                                                out.print("<span style=\"color: red !important\">Nee</span>");
+                                                out.print("<span style=\"color: red !important\">No</span>");
                                             }
                                         %>
                                     </td>
                                     <%
                                         readers = (Set) pageContext.getAttribute("readers");
                                     %>
-                                    <td><%= readers.isEmpty() ? "<iedereen>" : (readers.iterator().next() == null ? "<i>niemand</i>" : readers.toString())%></td>
+                                    <td><%= readers.isEmpty() ? "<any>" : (readers.iterator().next() == null ? "<i>none</i>" : readers.toString())%></td>
                                 </tr>
                             </c:if>
                         </c:forEach>
@@ -198,13 +197,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <stripes:hidden name="user"/>
                 <p>
-                    Bekijk autorisaties voor applicatie: <stripes:select name="application">
+                    <fmt:message key="viewer_admin.authorizations.30" />: <stripes:select name="application">
                         <c:forEach var="app" items="${actionBean.applications}">
                             <stripes:option value="${app}"><c:out value="${app.name}"/>  <c:if test="${app.version != null}">v${app.version}</c:if></stripes:option>
                         </c:forEach>
                     </stripes:select>
                 </p>
-                <stripes:submit name="authorizations">Applicatie autorisaties</stripes:submit>
+                <stripes:submit name="authorizations"><fmt:message key="viewer_admin.authorizations.31" /></stripes:submit>
             </stripes:form>
         </div>        
     </stripes:layout-component>

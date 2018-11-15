@@ -85,7 +85,7 @@ Ext.define("viewer.components.Graph", {
                 this.layers.push(graph.layer);
             }
         }else{
-            this.viewerController.logger.warning("Geen grafieken geconfigureerd.");
+            this.viewerController.logger.warning(i18next.t('viewer_components_graph_0'));
         }
         this.loadWindow();
     },
@@ -111,7 +111,7 @@ Ext.define("viewer.components.Graph", {
                     xtype: "container",
                     items: [{
                         xtype: 'button',
-                        text: i18next.t('viewer_components_graph_0'),
+                        text: i18next.t('viewer_components_graph_1'),
                         listeners: {
                             click: {
                                 scope: me,
@@ -173,7 +173,7 @@ Ext.define("viewer.components.Graph", {
                 graphPanel.add({
                     xtype: 'container',
                     title: graphConfig[i].title,
-                    html: i18next.t('viewer_components_graph_1'),
+                    html: i18next.t('viewer_components_graph_4'),
                     padding: 10,
                     id: 'placeholderContainer' + i
                 });
@@ -203,7 +203,7 @@ Ext.define("viewer.components.Graph", {
         }
     },
     failed: function(msg) {
-        Ext.MessageBox.alert(i18next.t('viewer_components_graph_4'), i18next.t('viewer_components_graph_5'));
+        Ext.MessageBox.alert(i18next.t('viewer_components_graph_5'), i18next.t('viewer_components_graph_6'));
     },
     featuresReceived : function (features,attributes, config, index){
         var json = {};

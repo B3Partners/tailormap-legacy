@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Beheeromgeving geo-viewers</title>
+        <title><fmt:message key="viewer_admin.index.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -33,7 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:otherwise>
                 <img class="flamingoLogo" src="${contextPath}/resources/images/FlamingoLogo.png"/>
             </c:otherwise>
-
         </c:choose>
     </stripes:layout-component>
 </stripes:layout-render>

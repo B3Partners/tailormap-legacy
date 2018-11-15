@@ -66,7 +66,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.initConfig(conf);
 
         var config = {
-            title: this.config.title || 'Titel',
+            title: this.config.title || i18next.t('viewer_components_svgheader_0'),
             closable: true,
             closeAction: 'hide',
             hideMode: 'offsets',
@@ -138,7 +138,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false" && this.config.showHelpButton !== false) {
             config.tools = [{
                 type: 'help',
-                tooltip: i18next.t('viewer_components_svgheader_0'),
+                tooltip: i18next.t('viewer_components_svgheader_1'),
                 margin: '0 28 0 0',
                 handler: function(event, toolEl, panel){
                     conf.viewerController.showHelp(conf);

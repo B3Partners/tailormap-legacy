@@ -26,17 +26,17 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'combobox',
-            store: [[ "CSV", "csv" ], [ "XLS", "Excel" ], [ "SHP", "Shape" ]],
+            store: [[ "CSV", i18next.t('attributelist_config_0') ], [ "XLS", i18next.t('attributelist_config_1') ], [ "SHP", i18next.t('attributelist_config_2') ]],
             itemId: 'defaultDownload',
             name: 'defaultDownload',
             labelWidth: this.labelWidth,
-            fieldLabel: i18next.t('viewer_components_customconfiguration_0'),
+            fieldLabel: i18next.t('attributelist_config_3'),
             value: this.configObject.defaultDownload || "SHP"
         });
 
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_1'),
+            fieldLabel: i18next.t('attributelist_config_4'),
             inputValue: true,
             name: 'autoDownload',
             checked: this.configObject.autoDownload || false,
@@ -45,7 +45,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_2'),
+            fieldLabel: i18next.t('attributelist_config_5'),
             name: 'downloadParams',
             value: this.configObject.downloadParams,
             labelWidth: this.labelWidth,
@@ -54,12 +54,12 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'container',
-            html: i18next.t('viewer_components_customconfiguration_3')
+            html: i18next.t('attributelist_config_6')
         });
 
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_4'),
+            fieldLabel: i18next.t('attributelist_config_7'),
             inputValue: true,
             name: 'addZoomTo',
             checked: this.configObject.addZoomTo || false,
@@ -68,7 +68,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'numberfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_5'),
+            fieldLabel: i18next.t('attributelist_config_8'),
             name: 'zoomToBuffer',
             value: this.configObject.zoomToBuffer || 10,
             minValue: 0,
@@ -78,7 +78,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'numberfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_6'),
+            fieldLabel: i18next.t('attributelist_config_9'),
             name: 'requestThreshold',
             value: this.configObject.requestThreshold || 2000,
             minValue: 0,
@@ -88,7 +88,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_7'),
+            fieldLabel: i18next.t('attributelist_config_10'),
             inputValue: 'true',
             name: 'showLayerSelectorTabs',
             checked: this.configObject.showLayerSelectorTabs || false,
@@ -97,7 +97,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.form.add({
             xtype: 'checkbox',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_8'),
+            fieldLabel: i18next.t('attributelist_config_11'),
             name: 'showAttributelistLinkInFeatureInfo',
             value: this.configObject.showAttributelistLinkInFeatureInfo !== undefined ? this.configObject.showAttributelistLinkInFeatureInfo : false,
             labelWidth: this.labelWidth

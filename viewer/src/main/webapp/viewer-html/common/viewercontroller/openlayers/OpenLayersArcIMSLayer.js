@@ -60,7 +60,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
     },
     // Call the setLayerProperty to set the buffer radius. It must be a object with a radius property
     setBuffer : function (radius,layer){
-        this.config.viewerController.logger.error("OpenLayersArcIMSLayer: setBuffer() not supported!");
+        this.config.viewerController.logger.error(i18next.t('viewer_viewercontroller_openlayers_openlayersarcimslayer_0'));
         //this.map.update();
     },
     // Set the buffer property to null to remove the buffer

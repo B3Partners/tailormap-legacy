@@ -19,10 +19,12 @@ package nl.b3p.viewer.admin.stripes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -52,7 +54,8 @@ public class BookmarkActionBean implements ActionBean{
     private static final String JSP = "/WEB-INF/jsp/services/bookmark.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/bookmarkEdit.jsp";
     private ActionBeanContext context;
-
+    private ResourceBundle bundle;
+            
     @Validate
     private int limit;
 
@@ -82,6 +85,23 @@ public class BookmarkActionBean implements ActionBean{
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        if (bundle==null) {
+            bundle = ResourceBundle.getBundle("ViewerResources");
+        }
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public int getLimit() {
@@ -142,6 +162,11 @@ public class BookmarkActionBean implements ActionBean{
     // </editor-fold>
 
 
+    @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     public Resolution view(){
         return new ForwardResolution(JSP);
@@ -159,9 +184,9 @@ public class BookmarkActionBean implements ActionBean{
             EntityManager em = Stripersist.getEntityManager();
             em.remove(bookmark);
             em.getTransaction().commit();
-            context.getMessages().add(new SimpleMessage("Verwijderen gelukt"));
+            context.getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.bookmarkactionbean.remsuccess")));
         }catch(Exception e ){
-            context.getValidationErrors().add("Verwijderen",new SimpleError("Verwijderen bookmark mislukt", e.getLocalizedMessage()));
+            context.getValidationErrors().add("Verwijderen",new SimpleError(getBundle().getString("viewer_admin.bookmarkactionbean.remfailed"), e.getLocalizedMessage()));
         }
         return viewEdit();
     }

@@ -851,8 +851,8 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: "Nee",
-                yes: "Ja"
+                no: i18next.t('viewer_components_drawing_17'),
+                yes: i18next.t('viewer_components_drawing_18')
             },
             icon: Ext.Msg.WARNING
         });
@@ -869,8 +869,8 @@ Ext.define ("viewer.components.Drawing",{
     },
     deleteObject: function() {
         Ext.Msg.show({
-            title: i18next.t('viewer_components_drawing_17'),
-            msg: i18next.t('viewer_components_drawing_18'),
+            title: i18next.t('viewer_components_drawing_19'),
+            msg: i18next.t('viewer_components_drawing_20'),
             fn: function(button) {
                 if (button === 'yes') {
                     delete this.features[this.activeFeature.id];
@@ -885,8 +885,8 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: "Nee",
-                yes: "Ja"
+                no: i18next.t('viewer_components_drawing_21'),
+                yes: i18next.t('viewer_components_drawing_22')
             },
             icon: Ext.Msg.WARNING
         });
@@ -915,8 +915,8 @@ Ext.define ("viewer.components.Drawing",{
             form.submit({
                 scope:this,
                 url: actionBeans["drawing"],
-                waitMsg: 'Bezig met uploaden...',
-                waitTitle: "Even wachten...",
+                waitMsg: i18next.t('viewer_components_drawing_23'),
+                waitTitle: i18next.t('viewer_components_drawing_24'),
                 success: function(fp, o) {
                     var json = Ext.JSON.decode(o.result.content);
                     this.titleField.setValue( json.title);
@@ -929,7 +929,7 @@ Ext.define ("viewer.components.Drawing",{
                     }
                 },
                 failure: function (){
-                    Ext.MessageBox.alert(i18next.t('viewer_components_drawing_19'), i18next.t('viewer_components_drawing_20'));
+                    Ext.MessageBox.alert(i18next.t('viewer_components_drawing_25'), i18next.t('viewer_components_drawing_26'));
                 }
             });
         }

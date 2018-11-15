@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -80,6 +82,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     private List<FeatureSource> featureSources = new ArrayList();
     private List<SimpleFeatureType> featureTypes = new ArrayList();
     private ActionBeanContext context;
+    private ResourceBundle bundle;
 
     @Validate
     @ValidateNestedProperties({
@@ -125,6 +128,23 @@ public class ConfigureSolrActionBean implements ActionBean {
     @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    /**
+     * @return the bundle
+     */
+    public ResourceBundle getBundle() {
+        if (bundle==null) {
+            bundle = ResourceBundle.getBundle("ViewerResources");
+        }
+        return bundle;
+    }
+
+    /**
+     * @param bundle the bundle to set
+     */
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public SolrConf getSolrConfiguration() {
@@ -232,6 +252,11 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
     //</editor-fold>
 
+   @Before
+    protected void initBundle() {
+        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
+    }
+        
     @DefaultHandler
     public Resolution view() throws SolrServerException {
         SolrServer server = SolrInitializer.getServerInstance();
@@ -239,7 +264,7 @@ public class ConfigureSolrActionBean implements ActionBean {
             SolrPingResponse resp = server.ping();
         }catch(Exception e){
             log.error("Solr ping exception", e);
-            this.context.getValidationErrors().addGlobalError(new SimpleError("Solr server niet correct geïnitialiseerd. Neem contact op met de systeembeheerder."));
+            this.context.getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.configuresolractionbean.solrnoconfig")));
             solrInitialized = false;
         }
         return new ForwardResolution(JSP);

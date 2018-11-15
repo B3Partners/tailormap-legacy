@@ -21,40 +21,39 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
-    DEFAULT_ZONE_DISTANCES_CONSUMER: {
-        "Grondvuurwerk": { distance: 15, fan: false },
-        "Luchtvuurwerk met kaliber tot en met 1 inch": { distance: 40, fan: false },
-        "Luchtvuurwerk met kaliber van 1 inch tot 2 inch": { distance: 60, fan: false },
-        "Luchtvuurwerk met kaliber tot en met 1 inch - fanshape": { distance: 40, fan: true },
-        "Luchtvuurwerk met kaliber van 1 inch tot 2 inch - fanshape": { distance: 60, fan: true }
-    },
-    DEFAULT_ZONE_DISTANCES_PROFESSIONAL: {
-        "Vuurpijlen (schietrichting schuin van het publiek af)": {distance: 125, fan: false},
-        "Vuurpijlen (schietrichting overig)": {distance: 200, fan: false},
-        "Tekstborden": {distance: 15, fan: false},
-        "Grondvuurwerk": {distance: 30, fan: false},
-        "Romeinse kaarsen met kaliber tot en met 2 inch": {distance: 75, fan: false},
-        "Mines tot en met een kaliber van 4 inch": {distance: 60, fan: false},
-        "Mines met een kaliber vanaf 4 inch tot en met 6 inch": {distance: 100, fan: false},
-        "Dagbommen kleiner dan 21 cm diameter": {distance: 75, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber <3 inch": {distance: 120, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >3 inch": {distance: 165, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >4 inch": {distance: 200, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >5 inch": {distance: 230, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >6 inch": {distance: 265, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >8 inch": {distance: 325, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >10 inch": {distance: 390, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >12 inch": {distance: 455, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >18 inch": {distance: 645, fan: false},
-        "Romeinse kaarsen, cakeboxen, vuurwerkbommen met een kaliber >24 inch": {distance: 845, fan: false}
-    },
+    DEFAULT_ZONE_DISTANCES_CONSUMER: {},
+    DEFAULT_ZONE_DISTANCES_PROFESSIONAL: {},
     constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {};
         }
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_0')] = { distance: 15, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_1')] = { distance: 40, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_2')] = { distance: 60, fan: false };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_3')] = { distance: 40, fan: true };
+        this.DEFAULT_ZONE_DISTANCES_CONSUMER[i18next.t('ontbrandingsaanvraag_config_4')] = { distance: 60, fan: true };
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_5')] = {distance: 125, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_6')] = {distance: 200, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_7')] = {distance: 15, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_8')] = {distance: 30, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_9')] = {distance: 75, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_10')] = {distance: 60, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_11')] = {distance: 100, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_12')] = {distance: 75, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_13')] = {distance: 120, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_14')] = {distance: 165, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_15')] = {distance: 200, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_16')] = {distance: 230, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_17')] = {distance: 265, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_18')] = {distance: 325, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_19')] = {distance: 390, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_20')] = {distance: 455, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_21')] = {distance: 645, fan: false};
+        this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL[i18next.t('ontbrandingsaanvraag_config_22')] = {distance: 845, fan: false};
+
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        this.addForm(configObject, "zonedistances_consumer", "Zoneafstanden consumenten vuurwerk", "Zoneafstand consumenten vuurwerk", this.DEFAULT_ZONE_DISTANCES_CONSUMER);
-        this.addForm(configObject, "zonedistances_professional", "Zoneafstanden professioneel vuurwerk", "Zoneafstand professioneel vuurwerk", this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
+        this.addForm(configObject, "zonedistances_consumer", i18next.t('ontbrandingsaanvraag_config_23'), i18next.t('ontbrandingsaanvraag_config_24'), this.DEFAULT_ZONE_DISTANCES_CONSUMER);
+        this.addForm(configObject, "zonedistances_professional", i18next.t('ontbrandingsaanvraag_config_25'), i18next.t('ontbrandingsaanvraag_config_26'), this.DEFAULT_ZONE_DISTANCES_PROFESSIONAL);
     },
     addForm: function(configObject, paramkey, label, label_singular, defaults) {
         var distances = [];
@@ -86,7 +85,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {
                     xtype:'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: label_singular + ' toevoegen',
+                    text: i18next.t('ontbrandingsaanvraag_config_27', {label: label_singular}),
                     listeners: {
                         click: function(){
                             var distancesContainer = Ext.ComponentQuery.query("#" + containerKey)[0];
@@ -113,27 +112,27 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             items: [{
                 name: "label",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_130'),
+                fieldLabel: i18next.t('ontbrandingsaanvraag_config_28'),
                 value: labelValue,
                 xtype: 'textfield',
                 labelWidth: 50,
                 flex: 1
             }, {
                 name: "distance",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_131'),
+                fieldLabel: i18next.t('ontbrandingsaanvraag_config_29'),
                 value: distance,
                 xtype: 'textfield',
                 labelWidth: 50,
                 width: 150
             }, {
                 xtype: "checkbox",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_132'),
+                fieldLabel: i18next.t('ontbrandingsaanvraag_config_30'),
                 labelWidth: 50,
                 name: "fan",
                 value: fan_value
             }, {
                 xtype: "button",
-                text: i18next.t('viewer_components_customconfiguration_133'),
+                text: i18next.t('ontbrandingsaanvraag_config_31'),
                 listeners:{
                     click: function(btn) {
                         var container = btn.up('.panel');

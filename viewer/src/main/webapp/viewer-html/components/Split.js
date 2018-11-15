@@ -160,7 +160,7 @@ Ext.define("viewer.components.Split", {
     toSplitFeatureAdded: function (vecLayer, feature) {
         Ext.getCmp(this.name + "drawButton").setDisabled(false);
         Ext.getCmp(this.name + "selectButton").setDisabled(true);
-        Ext.getCmp(this.name + "geomLabel").setText("Teken een lijn om mee te splitsen");
+        Ext.getCmp(this.name + "geomLabel").setText(i18next.t('viewer_components_split_0'));
         this.showMobilePopup();
     },
     splitFeatureAdded: function (vecLayer, feature) {
@@ -208,8 +208,8 @@ Ext.define("viewer.components.Split", {
                             xtype: 'button',
                             id: this.name + "selectButton",
                             disabled: true,
-                            tooltip: i18next.t('viewer_components_split_0'),
-                            text: i18next.t('viewer_components_split_1'),
+                            tooltip: i18next.t('viewer_components_split_1'),
+                            text: i18next.t('viewer_components_split_2'),
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -221,8 +221,8 @@ Ext.define("viewer.components.Split", {
                             xtype: 'button',
                             id: this.name + "drawButton",
                             disabled: true,
-                            tooltip: i18next.t('viewer_components_split_2'),
-                            text: i18next.t('viewer_components_split_3'),
+                            tooltip: i18next.t('viewer_components_split_3'),
+                            text: i18next.t('viewer_components_split_4'),
                                         listeners: {
                                 click: {
                                     scope: me,
@@ -257,8 +257,8 @@ Ext.define("viewer.components.Split", {
                     items: [
                         {
                             id: this.name + "cancelButton",
-                            tooltip: i18next.t('viewer_components_split_4'),
-                            text: i18next.t('viewer_components_split_5'),
+                            tooltip: i18next.t('viewer_components_split_5'),
+                            text: i18next.t('viewer_components_split_6'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -268,8 +268,8 @@ Ext.define("viewer.components.Split", {
                         },
                         {
                             id: this.name + "saveButton",
-                            tooltip: i18next.t('viewer_components_split_6'),
-                            text: i18next.t('viewer_components_split_7'),
+                            tooltip: i18next.t('viewer_components_split_7'),
+                            text: i18next.t('viewer_components_split_8'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -310,7 +310,7 @@ Ext.define("viewer.components.Split", {
             if (appLayer.details && appLayer.details["editfunction.title"]) {
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
-            this.inputContainer.setLoading("Laadt attributen...");
+            this.inputContainer.setLoading(i18next.t('viewer_components_split_9'));
             this.inputContainer.removeAll();
             this.loadAttributes(appLayer, previousAppLayer, scope);
             this.inputContainer.setLoading(false);
@@ -363,18 +363,18 @@ Ext.define("viewer.components.Split", {
             case "multipolygon":
                 this.showGeomType = "MultiPolygon";
                 this.newGeomType = "Polygon";
-                tekst = "vlak";
+                tekst = i18next.t('viewer_components_split_10');
                 break;
             case "polygon":
                 this.showGeomType = "Polygon";
                 this.newGeomType = "Polygon";
-                tekst = "vlak";
+                tekst = i18next.t('viewer_components_split_11');
                 break;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
                 this.newGeomType = "LineString";
-                tekst = "lijn";
+                tekst = i18next.t('viewer_components_split_12');
                 break;
             case "geometry":
                 possible = true;
@@ -390,13 +390,13 @@ Ext.define("viewer.components.Split", {
         if (possible) {
             if (this.geometryEditable) {
                 if (this.newGeomType == null) {
-                    tekst = "Geometrie mag alleen bewerkt worden";
+                    tekst = i18next.t('viewer_components_split_13');
                 } else {
                     Ext.getCmp(this.name + "selectButton").setDisabled(false);
-                    tekst = 'Selecteer een ' + tekst + " in de kaart.";
+                    tekst = i18next.t('viewer_components_split_14', {type: tekst});
                 }
             } else {
-                tekst = 'Geometrie mag niet bewerkt worden.';
+                tekst = i18next.t('viewer_components_split_15');
             }
             gl.setText(tekst);
             for (var i = 0; i < attributes.length; i++) {
@@ -473,13 +473,13 @@ Ext.define("viewer.components.Split", {
                 }
             }
         } else {
-            gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
+            gl.setText(i18next.t('viewer_components_split_16'));
             Ext.getCmp(this.name + "selectButton").setDisabled(true);
         }
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
-        Ext.get(this.getContentDiv()).mask("Haalt features op...")
+        Ext.get(this.getContentDiv()).mask(i18next.t('viewer_components_split_17'))
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -552,7 +552,7 @@ Ext.define("viewer.components.Split", {
             },
             failure: function (result) {
                 if (failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText, this);
+                    failureFunction(i18next.t('viewer_components_split_18') + result.status + " " + result.statusText + ": " + result.responseText, this);
                 }
             }});
     },
@@ -611,11 +611,11 @@ Ext.define("viewer.components.Split", {
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
-        Ext.MessageBox.alert(i18next.t('viewer_components_split_11'), i18next.t('viewer_components_split_12'));
+        Ext.MessageBox.alert(i18next.t('viewer_components_split_19'), i18next.t('viewer_components_split_20'));
         me.cancel();
     },
     saveFailed: function (msg, me) {
-        Ext.Msg.alert('Mislukt', msg);
+        Ext.Msg.alert(i18next.t('viewer_components_split_21'), msg);
         me.cancel();
     },
     cancel: function () {
@@ -717,7 +717,7 @@ Ext.define("viewer.components.Split", {
                     items: [{
                             xtype: "button",
                             id: this.name + "SelectFeatureButtonFeaturesWindow",
-                            text: i18next.t('viewer_components_split_8'),
+                            text: i18next.t('viewer_components_split_22'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -728,7 +728,7 @@ Ext.define("viewer.components.Split", {
                         {
                             xtype: "button",
                             id: this.name + "CancelFeatureButtonFeaturesWindow",
-                            text: i18next.t('viewer_components_split_9'),
+                            text: i18next.t('viewer_components_split_23'),
                             listeners: {
                                 click: {
                                     scope: me,
@@ -744,7 +744,7 @@ Ext.define("viewer.components.Split", {
             width: 500,
             height: 300,
             layout: 'fit',
-            title: i18next.t('viewer_components_split_10'),
+            title: i18next.t('viewer_components_split_24'),
             items: [container]
         });
         window.show();

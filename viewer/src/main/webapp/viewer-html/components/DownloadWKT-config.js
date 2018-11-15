@@ -33,7 +33,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     addForm: function() {
         this.form.add({ 
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_47'),
+                fieldLabel: i18next.t('downloadwkt_config_0'),
                 name: 'basePath',
                 value: this.configObject.basePath,
                 labelWidth:this.labelWidth,
@@ -42,7 +42,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype: "panel",
             height: 250,
             width: '100%',
-            title: i18next.t('viewer_components_customconfiguration_48'),
+            title: i18next.t('downloadwkt_config_1'),
             layout: {
                 type: 'vbox',
                 align: 'stretch'
@@ -53,7 +53,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {
                     xtype:'button',
                     iconCls: 'x-fa fa-plus-circle',
-                    text: i18next.t('viewer_components_customconfiguration_49'),
+                    text: i18next.t('downloadwkt_config_2'),
                     listeners: {
                         click: function(){
                             this.createRow({label:'', type:''});
@@ -78,21 +78,21 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             items: [{
                 name: "label",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_50'),
+                fieldLabel: i18next.t('downloadwkt_config_3'),
                 value: typeconfig.label,
                 xtype: 'textfield',
                 labelWidth: 50,
                 flex: 1
             }, {
                 name: "type",
-                fieldLabel: i18next.t('viewer_components_customconfiguration_51'),
+                fieldLabel: i18next.t('downloadwkt_config_4'),
                 value: typeconfig.type,
                 xtype: 'textfield',
                 labelWidth: 100,
                 flex: 1
             }, {
                 xtype: "button",
-                text: i18next.t('viewer_components_customconfiguration_52'),
+                text: i18next.t('downloadwkt_config_5'),
                 listeners:{
                     click: function(btn) {
                         var container = btn.up('.panel');

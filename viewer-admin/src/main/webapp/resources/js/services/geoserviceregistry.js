@@ -291,11 +291,11 @@ function addSubcategory(record) {
                             var newNode = Ext.create('GeoServiceTreeModel', node);
                             addNode(newNode, node.parentid);
                         } else {
-                            Ext.MessageBox.alert("Fout", response.error);
+                            Ext.MessageBox.alert("Error", response.error);
                         }
                     },
                     failure: function ( result, request) {
-                        Ext.MessageBox.alert("Fout", result.responseText);
+                        Ext.MessageBox.alert("Error", result.responseText);
                     }
                 });
             }
@@ -328,11 +328,11 @@ function changeCategoryName(record) {
                         if(response.success) {
                             record.set("text", response.name);
                         } else {
-                            Ext.MessageBox.alert("Fout", response.error);
+                            Ext.MessageBox.alert("Error", response.error);
                         }
                     },
                     failure: function (result) {
-                        Ext.MessageBox.alert("Fout", result.responseText);
+                        Ext.MessageBox.alert("Error", result.responseText);
                     }
                 });
             }
@@ -343,7 +343,7 @@ function changeCategoryName(record) {
 function removeCategory(record) {
     Ext.MessageBox.show({
         title: i18next.t('viewer_admin_geoserviceregistry_11'),
-        msg: i18next.t('viewer_admin_geoserviceregistry_12') + record.data.text + " wilt verwijderen?",
+        msg: i18next.t('viewer_admin_geoserviceregistry_12', { category: record.data.text }),
         buttons: Ext.MessageBox.OKCANCEL,
         fn: function(btn){
             if(btn=='ok'){

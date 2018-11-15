@@ -127,7 +127,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         
         var index=this.getLayerIndex(layer);
         if (index==-1){
-            this.config.viewerController.logger.warning("Map.removeLayer(): Layer not available in map!");
+            this.config.viewerController.logger.warning(i18next.t('viewer_viewercontroller_controller_map_0'));
         }else{            
             this.layers.splice(index,1);
         }
@@ -141,7 +141,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     setLayerIndex : function (layer, newIndex){
         if(!(layer instanceof viewer.viewercontroller.controller.Layer)){
-            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_0')});
+            Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_1')});
         }
         var currentIndex=this.getLayerIndex(layer);
         var newLayerArray= new Array();
@@ -175,28 +175,28 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     getId : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_1')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_2')});
     },
 
     /** 
      *Gets all the wms layers in this map
      */
     getAllWMSLayers : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_2')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_3')});
     },
 
     /** 
      *Gets all the vector layers in this map
      */
     getAllVectorLayers : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_3')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_4')});
     },
     /**
      *Remove this map
      *Must be implemented by subclass
      */
     remove : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_4')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_5')});
     },
 
     /**
@@ -205,7 +205,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     zoomToExtent : function (extent){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_5')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_6')});
     },
 
     /**
@@ -213,7 +213,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * Must be implemented by subclass
      */
     zoomToMaxExtent : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_6')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_7')});
     },
 
     /**
@@ -221,7 +221,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     zoomToScale : function(scale){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_7')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_8')});
     },
 
     /**
@@ -229,14 +229,14 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     zoomToResolution : function(resolution){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_8')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_9')});
     },
     /**
      *Moves the map to the given coord
      *Must be implemented in subclass
      */
     moveTo: function(x,y){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_9')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_10')});
     },
 
     /**
@@ -244,7 +244,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     getExtent: function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_10')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_11')});
     },
 
     /**
@@ -253,7 +253,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * Must be implemented by subclass
      */
     setMaxExtent:function(extent){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_11')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_12')});
     },
     /**
      *returns the full extent as a extent object
@@ -261,7 +261,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *
      */
     getMaxExtent:function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_12')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_13')});
     },
 
     /**
@@ -271,7 +271,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     doIdentify : function(x,y){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_13')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_14')});
     },
 
     /**
@@ -279,7 +279,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     update : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_14')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_15')});
     },
 
     /**
@@ -291,7 +291,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     setMarker : function(markerName,x,y,type){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_15')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_16')});
     },
 
     /**
@@ -300,7 +300,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     removeMarker : function(markerName){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_16')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_17')});
     },
 
     /**
@@ -308,25 +308,25 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @return The current scale of this map
      */
     getScale : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_17')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_18')});
     },
 
     getActualScale: function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_18')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_19')});
     },
     /**
      * Gets the resolution of this map
      * @return The current resolution of this map
      */
     getResolution : function (){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_19')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_20')});
     },
     /**
      * Gets the resolutions for this map.
      * @return A array of numbers that represent the resolutions for this map, or null if no resolutions are set.
      */
     getResolutions : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_20')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_21')});
     },
 
     /**
@@ -336,7 +336,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @return a object with object.x the x pixel and object.y the y pixel
      */
     coordinateToPixel : function(x,y){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_21')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_22')});
     },
 
     /**
@@ -344,24 +344,24 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @return a object with object.x the .y.
      */
     getCenter : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_22')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_23')});
     },
     /**
      * Get the width in pixels of the map
      */
     getWidth : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_23')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_24')});
     },
     /**
      * Get the height of the map in pixels
      */
     getHeight : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_24')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_25')});
     },
     /**
      * Updates the size of the map to the current container.
      */
     updateSize : function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_25')});
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_26')});
     }
 });

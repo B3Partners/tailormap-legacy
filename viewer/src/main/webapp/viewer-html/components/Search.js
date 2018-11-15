@@ -387,7 +387,7 @@ Ext.define ("viewer.components.Search",{
             this.executeSearch(searchText, searchName);
             this.form.query("#cancel"+ this.name)[0].setVisible(true);
         } else {
-            Ext.MessageBox.alert(i18next.t('viewer_components_search_8'), i18next.t('viewer_components_search_9'));
+            Ext.MessageBox.alert(i18next.t('viewer_components_search_6'), i18next.t('viewer_components_search_7'));
             // search request is not complete
         }        
     },
@@ -428,7 +428,7 @@ Ext.define ("viewer.components.Search",{
             this.getExtraRequestParams(requestParams,searchName);
             var me = this;
             me.loadingContainer.setLoading({
-                msg: i18next.t('viewer_components_search_6')
+                msg: i18next.t('viewer_components_search_8')
             });
             Ext.Ajax.request({
                 url: requestPath,
@@ -436,24 +436,24 @@ Ext.define ("viewer.components.Search",{
                 success: function(result, request) {
                     var response = Ext.JSON.decode(result.responseText);
                     if (response.error) {
-                        Ext.MessageBox.alert("Foutmelding", response.error);
+                        Ext.MessageBox.alert("Error", response.error);
                     }
                     if (me.searchRequestId === parseInt(response.request.searchRequestId)&& response.results) {
                         me.searchResult = me.searchResult.concat(response.results);
                         me.showSearchResults();
                         if (response.limitReached && me.results) {
-                            me.results.setTitle(me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
+                            me.results.setTitle(me.results.title + " " + i18next.t('viewer_components_search_10'));
                         }
                     }
                     me.loadingContainer.setLoading(false);
                 },
                 failure: function(result, request) {
-                    var message = "Er is een onbekend fout opgetreden.";
+                    var message = "Unknown error";
                     try {
                         response = Ext.JSON.decode(result.responseText);
                         message = response.error;
                     } catch(e) {}
-                    Ext.MessageBox.alert("Foutmelding", message);
+                    Ext.MessageBox.alert("Error", message);
                     me.loadingContainer.setLoading(false);
                 }
             });
@@ -463,10 +463,10 @@ Ext.define ("viewer.components.Search",{
     showSearchResults : function(){
         var html = "";
         if (!Ext.isDefined(this.searchResult)) {
-            html = "<div style=\"padding: 10px; \">Fout bij het zoeken.</div>";
+            html = "<div style=\"padding: 10px; \">" + i18next.t('viewer_components_search_11') + "</div>";
         }
         if (Ext.isDefined(this.searchResult) && this.searchResult.length <= 0) {
-            html = "<div style=\"padding: 10px;\">Er zijn geen resultaten gevonden.</div>";
+            html = "<div style=\"padding: 10px;\">" + i18next.t('viewer_components_search_12') + "</div>";
         }
         var me = this;
         this.form.query("#cancel"+ this.name)[0].setVisible(false);
@@ -517,7 +517,7 @@ Ext.define ("viewer.components.Search",{
         }
         this.resultPanel.removeAll();
         var results = Ext.create('Ext.panel.Panel', {
-            title: i18next.t('viewer_components_search_7') +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
+            title: i18next.t('viewer_components_search_9') +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
             html: html,
             componentCls: 'resultPanelPanel',
             layout:{
@@ -563,7 +563,7 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             textAlign: 'left',
             // componentCls: 'searchResultButton',
-            tooltip: result.label + "<br /><br />Zoom naar locatie",
+            tooltip: result.label + "<br /><br />" + i18next.t('viewer_components_search_13'),
             itemId: "searchButton_" + index,
             listeners: {
                 click: {

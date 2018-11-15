@@ -41,19 +41,19 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.form.add([
             {
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_80'),
+                fieldLabel: i18next.t('featurereport_config_0'),
                 name: 'subTitle',
                 value: this.configObject.subTitle = this.configObject.subTitle || "",
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_81'),
+                fieldLabel: i18next.t('featurereport_config_1'),
                 name: 'clickLabel',
                 value: this.configObject.clickLabel = this.configObject.clickLabel || "",
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'numberfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_82'),
+                fieldLabel: i18next.t('featurereport_config_2'),
                 name: 'numOfRelatedFeatures',
                 value: this.configObject.numOfRelatedFeatures = this.configObject.numOfRelatedFeatures || 10,
                 minValue: 1,
@@ -61,7 +61,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: this.labelWidth
             }, {
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_83'),
+                fieldLabel: i18next.t('featurereport_config_3'),
                 name: 'template',
                 value: this.configObject.template = this.configObject.template || "FeatureReport.xsl",
                 labelWidth: this.labelWidth
@@ -69,7 +69,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 xtype: "checkbox",
                 name: "overview",
                 checked: this.configObject.overview ? this.configObject.overview : false,
-                boxLabel: i18next.t('viewer_components_customconfiguration_84')
+                boxLabel: i18next.t('featurereport_config_4')
             }]);
 
         this.layersArrayIndexesToAppLayerIds(this.configObject);
@@ -100,7 +100,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         //create the formpanel
         var me = this;
         this.legendCheckPanel = Ext.create("Ext.form.FormPanel", {
-            title: i18next.t('viewer_components_customconfiguration_85'),
+            title: i18next.t('featurereport_config_5'),
             id: "legendLayerListContainer",
             style: {
                 marginTop: "10px"

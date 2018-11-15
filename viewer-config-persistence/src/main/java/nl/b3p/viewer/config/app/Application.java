@@ -76,6 +76,10 @@ public class Application implements Comparable<Application>{
     @Column()
     private String title;
 
+    @Column()
+    // lang instead of language because language can be a reserved word in some SQL versions
+    private String lang;
+
     @Lob
     @org.hibernate.annotations.Type(type = "org.hibernate.type.StringClobType")
     private String layout;
@@ -168,6 +172,14 @@ public class Application implements Comparable<Application>{
 
     public String getTitle() {
         return title;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     public void setTitle(String title) {
@@ -432,6 +444,7 @@ public class Application implements Comparable<Application>{
         }
         o.put("version", version);
         o.put("title", title);
+        o.put("language", lang);
 
         if (!onlyServicesAndLayers) {
             JSONObject d = new JSONObject();

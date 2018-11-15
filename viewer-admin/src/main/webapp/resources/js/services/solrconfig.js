@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.SolrConfig', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "zoekbronnen",
+        itemname: i18next.t('viewer_admin_solrconfig_gtitle'),
         solrInitialized: false,
         addtoindexurl: "",
         removefromindexurl: ""
@@ -68,13 +68,13 @@ Ext.define('vieweradmin.components.SolrConfig', {
                 menuDisabled: true,
                 renderer: (function(value) {
                     var links = [
-                        Ext.String.format('<a href="#" class="editobject">Bewerken</a>'),
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                        Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_solrconfig_3') + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_solrconfig_4') + '</a>')
                     ];
                     if(this.config.solrInitialized) {
                         links.push(
-                            Ext.String.format('<a href="#" class="addtoindex">Voeg toe aan index</a>', value),
-                            Ext.String.format('<a href="#" class="removefromindex">Verwijder uit index</a>', value)
+                            Ext.String.format('<a href="#" class="addtoindex">' + i18next.t('viewer_admin_solrconfig_5') + '</a>', value),
+                            Ext.String.format('<a href="#" class="removefromindex">' + i18next.t('viewer_admin_solrconfig_6') + '</a>', value)
                         );
                     }
                     return links.join(" | ");
@@ -107,7 +107,7 @@ Ext.define('vieweradmin.components.SolrConfig', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de configuratie ", record.get("name"), " wilt verwijderen?"].join("");
+        return i18next.t('viewer_admin_solrconfig_7', {name:record.get("name")});
     },
 
     getEditUrl: function(record) {

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Applicatie instellingen</title>
+        <title><fmt:message key="viewer_admin.applicationsettings.0" /></title>
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="header">
@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="content">
-            <h1 id="headertext">Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
+            <h1 id="headertext"><fmt:message key="viewer_admin.applicationsettings.1" />: <c:out value="${actionBean.applicationName}"/></h1>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm" class="maximize">
 
                 <stripes:hidden name="application" value="${actionBean.application}"/>
@@ -43,19 +43,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                         <table class="formtable">
                             <tr>
-                                <td>Naam:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.2" />:</td>
                                 <td><stripes:text name="name" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Versie:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.3" />:</td>
                                 <td><stripes:text name="version" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Titel (optioneel):</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.4" />:</td>
                                 <td><stripes:text name="title" maxlength="255" size="30"/></td>
                             </tr>
+                            <c:if test="${fn:length(actionBean.languageCodes) > 1}">
                             <tr>
-                                <td>Steunkleur 1 (achtergrond):</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.27" />:</td>
+                                <td>
+                                    <stripes:select name="language">
+                                        <c:forEach items="${actionBean.languageCodes}" var="langCode">
+                                            <stripes:option value="${langCode}"><fmt:message key="viewer_admin.applicationsettings.${langCode}" /></stripes:option>
+                                        </c:forEach>
+                                    </stripes:select>
+                                </td>
+                            </tr>
+                            </c:if>
+                            <tr>
+                                <td><fmt:message key="viewer_admin.applicationsettings.5" />:</td>
                                 <td>
                                     <stripes:text name="details['steunkleur1']" maxlength="255" size="15" style="float: left;" id="steunkleur1" />
                                     <div id="steunkleur_colorpicker1" style="float: left;"></div>
@@ -63,7 +75,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                             </tr>
                             <tr>
-                                <td>Steunkleur 2 (tekstkleur):</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.6" />:</td>
                                 <td>
                                     <stripes:text name="details['steunkleur2']" maxlength="255" size="15" style="float: left;" id="steunkleur2" />
                                     <div id="steunkleur_colorpicker2" style="float: left;"></div>
@@ -71,51 +83,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                             </tr>
                             <tr>
-                                <td>Tekst font:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.7" />:</td>
                                 <td><stripes:text name="details['font']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Spritebestand icoontjes:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.8" />:</td>
                                 <td><stripes:text name="details['iconSprite']" maxlength="255" size="60"/></td>
                             </tr>
                             <tr>
-                                <td>Metadata link:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.9" />:</td>
                                 <td><stripes:text name="details['stylesheetMetadata']" maxlength="255" size="60"/></td>
                             </tr>
                             <tr>
-                                <td>Locatie print stylesheets</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.10" />:</td>
                                 <td><stripes:text name="details['stylesheetPrint']" maxlength="255" size="60"/></td>
                             </tr>
                             <tr>
-                                <td>Eigenaar:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.11" />:</td>
                                 <td><stripes:text name="owner" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Start extensie:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.12" />:</td>
                                 <td>
-                                    lo-x <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
-                                    lo-y <stripes:text name="startExtent.miny" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.13" /> <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.14" /> <stripes:text name="startExtent.miny" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>
-                                    rb-x <stripes:text name="startExtent.maxx" maxlength="255" size="8"/>
-                                    rb-y <stripes:text name="startExtent.maxy" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.15" /> <stripes:text name="startExtent.maxx" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.16" /> <stripes:text name="startExtent.maxy" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Maximale extensie:</td>
+                                <td><fmt:message key="viewer_admin.applicationsettings.17" />:</td>
                                 <td>
-                                    lo-x <stripes:text name="maxExtent.minx" maxlength="255" size="8"/>
-                                    lo-y <stripes:text name="maxExtent.miny" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.18" /> <stripes:text name="maxExtent.minx" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.19" /> <stripes:text name="maxExtent.miny" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>
-                                    rb-x <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
-                                    rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.20" /> <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
+                                    <fmt:message key="viewer_admin.applicationsettings.21" /> <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
                                 </td>
                             </tr>
                         </table>
@@ -125,17 +137,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table class="formtable">
                             <tr>
                                 <td colspan="2">
-                                    <label><stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht</label>
+                                    <label><stripes:checkbox name="authenticatedRequired"/> <fmt:message key="viewer_admin.applicationsettings.22" /></label>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <label><stripes:checkbox name="details['returnAfterLogout']"/> Na uitloggen direct terugkeren naar de applicatie (niet loginscherm tonen)</label>
+                                    <label><stripes:checkbox name="details['returnAfterLogout']"/> <fmt:message key="viewer_admin.applicationsettings.23" /></label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <h1>Toegang:</h1>
+                                    <h1><fmt:message key="viewer_admin.applicationsettings.24" />:</h1>
                                     <c:forEach var="group" items="${actionBean.allGroups}">
                                         <stripes:checkbox name="groupsRead" value="${group.name}"/> ${group.name}<br>
                                     </c:forEach>
@@ -145,8 +157,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                     <div id="remarks" class="tabdiv">
-                        <a href="#Instellingen_Per_Applicatie_Help" title="Help" class="helplink"></a>
-                        Opmerkingen
+                        <a href="#Instellingen_Per_Applicatie_Help" title="<fmt:message key="viewer_admin.applicationsettings.25" />" class="helplink"></a>
+                        <fmt:message key="viewer_admin.applicationsettings.26" />
                         <div id="details_opmerkingen_container" style="margin-top: 5px; width: 525px; height: 350px;">
                             <stripes:textarea id="details_opmerkingen" cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px; display: none;" />
                         </div>

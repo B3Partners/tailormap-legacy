@@ -135,7 +135,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
                 appLayer,
                 me.parseFeatures,
                 function (msg) {
-                    Ext.MessageBox.alert("Foutmelding", msg);
+                    Ext.MessageBox.alert("Error", msg);
                 }, {
             store: 1,
             limit: 1000,

@@ -23,7 +23,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "applicaties",
+        itemname: i18next.t('viewer_admin_chooseapplication_gtitle'),
         setDefaultApplication: ""
     },
 
@@ -87,10 +87,10 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 menuDisabled: true,
                 renderer: (function (value, metadata, record) {
                     return [
-                        Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">Open viewer</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
-                        Ext.String.format('<a href="#" class="makeworkversion">Maak werkversie</a>', value),
-                        Ext.String.format('<a href="{0}&application={1}">Activeren</a>', this.config.editurl, value),
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>', value)
+                        Ext.String.format('<a href="{0}/app/{1}{2}" target="_new">' + i18next.t('viewer_admin_chooseapplication_5') + '</a>', record.get('baseUrl'), record.get('baseName'), (record.get('version') ? '/v' + record.get('version') : '')),
+                        Ext.String.format('<a href="#" class="makeworkversion">' + i18next.t('viewer_admin_chooseapplication_6') + '</a>', value),
+                        Ext.String.format('<a href="{0}&application={1}">' + i18next.t('viewer_admin_chooseapplication_7') + '</a>', this.config.editurl, value),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_chooseapplication_8') + '</a>', value)
                     ].join(" | ");
                 }).bind(this)
             }
@@ -116,7 +116,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de applicatie ", record.get("name"), " wilt verwijderen?"].join("");
+        return i18next.t('viewer_admin_chooseapplication_9', {name: record.get("name")});
     },
 
     getRemoveUrl: function(record) {
@@ -125,8 +125,8 @@ Ext.define('vieweradmin.components.ChooseApplication', {
 
     makeWorkVersion: function(record){
         Ext.MessageBox.show({
-            title: i18next.t('viewer_admin_chooseapplication_5'),
-            msg: i18next.t('viewer_admin_chooseapplication_6'),
+            title: i18next.t('viewer_admin_chooseapplication_10'),
+            msg: i18next.t('viewer_admin_chooseapplication_11'),
             buttons: Ext.MessageBox.OKCANCEL,
             prompt: true,
             fn: function(btn, text){
@@ -163,10 +163,10 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             style: {
                 color: '#666666'
             },
-            html: i18next.t('viewer_admin_chooseapplication_7')
+            html: i18next.t('viewer_admin_chooseapplication_12')
         });
         Ext.create('Ext.form.ComboBox', {
-            fieldLabel: i18next.t('viewer_admin_chooseapplication_8'),
+            fieldLabel: i18next.t('viewer_admin_chooseapplication_13'),
             store: applications,
             queryMode: 'local',
             displayField: 'label',
@@ -178,7 +178,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
             listeners: {
                 change: {
                     fn: function(combo, newvalue) {
-                        combo.setLoading("Standaard applicatie opslaan");
+                        combo.setLoading(i18next.t('viewer_admin_chooseapplication_14'));
                         this.defaultApplicationChanged(combo, applications.findRecord("value", newvalue));
                     },
                     scope: this
@@ -191,7 +191,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
         var defaultApp, appLabel;
         if (application === null) {
             defaultApp = null;
-            appLabel = 'uitgezet'
+            appLabel = i18next.t('viewer_admin_chooseapplication_15')
         } else {
             defaultApp = application.get('value');
             appLabel = ': "' + application.get('label') + '"';
@@ -206,14 +206,14 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 var response = Ext.JSON.decode(result.responseText);
                 combobox.setLoading(false);
                 if(!response.success) {
-                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_9'), i18next.t('viewer_admin_chooseapplication_10'));
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_16'), i18next.t('viewer_admin_chooseapplication_17'));
                 } else {
-                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_11'), i18next.t('viewer_admin_chooseapplication_12') + appLabel);
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_18'), i18next.t('viewer_admin_chooseapplication_19') + appLabel);
                 }
             },
             failure: function(result) {
                 combobox.setLoading(false);
-                Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_13'), i18next.t('viewer_admin_chooseapplication_14'));
+                Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_20'), i18next.t('viewer_admin_chooseapplication_21'));
             }
         });
     }

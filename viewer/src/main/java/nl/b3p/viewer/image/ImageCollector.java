@@ -91,7 +91,7 @@ public class ImageCollector implements Callable<ImageCollector> {
             setMessage("");
             setStatus(COMPLETED);
         } catch (Exception ex) {
-            log.warn("error callimage collector: ", ex);
+            log.warn("error call image collector: ", ex);
             setStatus(ERROR);
         } 
         return this;
