@@ -84,6 +84,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
         }));
 
+        this.freehandLine = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
+            displayClass: 'olControlDrawFeaturePath',
+            handlerOptions: {
+                freehand: true
+            }
+        }));
+
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
         this.drawFeatureControls.push(this.polygon);
@@ -91,9 +98,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.point);
         this.drawFeatureControls.push(this.box);
         this.drawFeatureControls.push(this.freehand);
+        this.drawFeatureControls.push(this.freehandLine);
 
         // The modifyfeature control allows us to edit and select features.
-        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : true,vertexRenderIntent: "select"});
+        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : false,vertexRenderIntent: "select"});
 
         map.addControl(this.point);
         map.addControl(this.line);
@@ -101,6 +109,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.circle);
         map.addControl(this.box);
         map.addControl(this.freehand);
+        map.addControl(this.freehandLine);
         map.addControl(this.modifyFeature);
 
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
@@ -307,6 +316,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         } else if (type === "Freehand") {
             this.activeDrawFeatureControl = this.freehand;
             this.freehand.activate();
+        } else if (type === "FreehandLine") {
+            this.activeDrawFeatureControl = this.freehandLine;
+            this.freehandLine.activate();
         } else {
             this.config.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
