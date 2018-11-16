@@ -85,14 +85,21 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
         this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
             this.popup.addListener("hide", this.hideWindow, this);
         }
         
-        this.createVectorLayer();
         return this;
+    },
+    init:function(){
+        this.createVectorLayer();
+        if(this.config.dummyUser){
+            setTimeout(this.drawFreeHand.bind(this),0);
+            
+        }
     },
     showWindow : function (){
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
@@ -128,7 +135,8 @@ Ext.define ("viewer.components.Drawing",{
             'fillOpacity': 0.5,
             'strokeDashstyle' : 'solid',
             'strokeColor': '#' + this.config.color,
-            'strokeOpacity': 0.5
+            'strokeOpacity': 0.5,
+            'strokeWidth':this.config.dummyUser ? 8 : 3
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
@@ -167,6 +175,7 @@ Ext.define ("viewer.components.Drawing",{
 
         this.labelField = Ext.create("Ext.form.field.Text",{
             name: 'labelObject',
+            hidden:this.config.dummyUser,
             flex: 1,
             style: {
                 marginRight:'5px'
@@ -182,6 +191,7 @@ Ext.define ("viewer.components.Drawing",{
         var drawingItems = [{
                 xtype: "splitbutton",
                 icon: this.iconPath + "circle.png",
+                hidden: this.config.dummyUser,
                 id: this.drawingButtonIds.point,
                 listeners: {
                     click: {
@@ -197,8 +207,10 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("circle", true);}
-            }
+                                    fn: function () {
+                                        this.drawingTypeChanged("circle", true);
+                                    }
+                                }
                             }
                         },
                         {
@@ -207,7 +219,9 @@ Ext.define ("viewer.components.Drawing",{
                             listeners: {
                                 click: {
                                     scope: me,
-                                    fn: function () { this.drawingTypeChanged("square", true);}
+                                    fn: function () {
+                                        this.drawingTypeChanged("square", true);
+                                    }
                                 }
                             }
                         },
@@ -260,6 +274,7 @@ Ext.define ("viewer.components.Drawing",{
             icon: this.iconPath+"line_red.png",
             tooltip: i18next.t('viewer_components_drawing_1'),
             enableToggle: true,
+            hidden: this.config.dummyUser,
             toggleGroup: 'drawingTools',
             listeners: {
                 click:{
@@ -275,6 +290,7 @@ Ext.define ("viewer.components.Drawing",{
             tooltip: i18next.t('viewer_components_drawing_2'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
+            hidden: this.config.dummyUser,
             listeners: {
                 click:{
                     scope: me,
@@ -289,6 +305,7 @@ Ext.define ("viewer.components.Drawing",{
                 icon: this.iconPath+"shape_circle_red.png",
                 tooltip: i18next.t('viewer_components_drawing_3'),
                 enableToggle: true,
+                hidden: this.config.dummyUser,
                 toggleGroup: 'drawingTools',
                 listeners: {
                     click:{
@@ -299,18 +316,20 @@ Ext.define ("viewer.components.Drawing",{
             });
         }
         drawingItems.push(this.colorPicker);
-        drawingItems.push({
-            xtype: 'button',
-            icon: this.iconPath+"delete.png",
-            tooltip: i18next.t('viewer_components_drawing_7'),
-            listeners: {
-                click:{
-                    scope: me,
-                    fn: me.deleteObject
+        if(!this.config.dummyUser){
+            drawingItems.push({
+                xtype: 'button',
+                icon: this.iconPath + "delete.png",
+                hidden: this.config.dummyUser,
+                tooltip: i18next.t('viewer_components_drawing_7'),
+                listeners: {
+                    click: {
+                        scope: me,
+                        fn: me.deleteObject
+                    }
                 }
-            }
-        });
-
+            });
+        }
         this.formdraw = new Ext.form.FormPanel({
             border: 0,
             items: [{
@@ -343,9 +362,10 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     {
                         xtype: 'fieldset',
-                        title: "Geavanceerd",
+                        title: i18next.t('viewer_components_drawing_32'),
                         collapsed:true,
                         collapsible:true,
+                        hidden:this.config.dummyUser,
                         border: 0,
                         margin: 0,
                         padding: 0,
@@ -492,6 +512,7 @@ Ext.define ("viewer.components.Drawing",{
                 items: [
                     {
                         xtype: 'label',
+                        hidden:this.config.dummyUser,
                         text: i18next.t('viewer_components_drawing_6')
                     },
                     {
@@ -502,6 +523,7 @@ Ext.define ("viewer.components.Drawing",{
                             this.labelField,
                             {
                                 xtype: 'button',
+                                hidden:this.config.dummyUser,
                                 icon: this.iconPath+"calculator_edit.png",
                                 tooltip: "Gebruik lengte/oppervlakte als label",
                                 listeners: {
@@ -538,6 +560,7 @@ Ext.define ("viewer.components.Drawing",{
         this.formsave = new Ext.form.FormPanel({
             border: 0,
             standardSubmit: true,
+            hidden:this.config.dummyUser,
             url: actionBeans["drawing"] + "?save",
             style: {
                 marginBottom: '10px'
@@ -590,6 +613,7 @@ Ext.define ("viewer.components.Drawing",{
             margin: '0 0 2 0'
         });
         this.formopen = new Ext.form.FormPanel({
+            hidden:this.config.dummyUser,
             border: 0,
             layout: {
                 type: 'vbox',
@@ -693,17 +717,17 @@ Ext.define ("viewer.components.Drawing",{
     activeFeatureChanged : function (vectorLayer,feature){
         this.toggleSelectForm(true);
         this.activeFeature = this.features[feature.config.id];
-        if(!this.features.hasOwnProperty(feature.config.id)) {
+        if (!this.features.hasOwnProperty(feature.config.id)) {
             feature.color = feature.color || (feature.style || {}).color || this.colorPicker.getColor();
             this.features[feature.config.id] = feature;
             this.featureStyleChanged();
-        }else{
-            if(this.activeFeature.getId() === feature.getId()){
+        } else {
+            if (this.activeFeature.getId() === feature.getId()) {
                 this.changeFormToCurrentFeature(feature);
+            }
         }
-        }
-        if(this.activeFeature){
-        this.labelField.setValue(this.activeFeature.label);
+        if (this.activeFeature) {
+            this.labelField.setValue(this.activeFeature.label);
         }
     },
     //update the wkt of the active feature with the completed feature
@@ -715,6 +739,9 @@ Ext.define ("viewer.components.Drawing",{
         });
         this.showMobilePopup();
         this.featureStyleChanged();
+        if(this.config.dummyUser){
+            this.drawFreeHand();
+        }
     },
     featureStyleChanged: function(){
         var ds = this.getContentContainer().query('#dashStyle')[0];
@@ -754,10 +781,10 @@ Ext.define ("viewer.components.Drawing",{
         featureStyle.set('graphicWidth',28);
         featureStyle.set('graphicHeight', 28);
         featureStyle.set("graphicName",this.pointType);
-        if(this.activeFeature){
+        if (this.activeFeature) {
             this.features[this.activeFeature.getId()].setStyle(featureStyle);
             layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
-            }
+        }
     },
     changeFormToCurrentFeature: function(feature){
         var featureStyle = this.vectorLayer.frameworkStyleToFeatureStyle(feature);
@@ -829,6 +856,10 @@ Ext.define ("viewer.components.Drawing",{
     drawCircle: function(){
         this.hideMobilePopup();
         this.vectorLayer.drawFeature("Circle");
+    },
+    drawFreeHand: function(){
+        this.hideMobilePopup();
+        this.vectorLayer.drawFeature("FreehandLine");
     },
     deleteAll: function() {
         Ext.Msg.show({
