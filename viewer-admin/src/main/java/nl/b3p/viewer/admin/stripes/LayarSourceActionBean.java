@@ -38,6 +38,7 @@ import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import net.sourceforge.stripes.validation.ValidationErrors;
 import net.sourceforge.stripes.validation.ValidationMethod;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
@@ -63,12 +64,11 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/layarsource/{$event}")
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class LayarSourceActionBean implements ActionBean {
+public class LayarSourceActionBean extends LocalizableActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/layarsource.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarsource.jsp";
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     
     private List<LayarService> layarServices;
     
@@ -105,11 +105,6 @@ public class LayarSourceActionBean implements ActionBean {
     //for list of attributes
     @Validate
     private Long featureTypeId;
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
    @DefaultHandler
     public Resolution view() {
@@ -282,23 +277,6 @@ public class LayarSourceActionBean implements ActionBean {
     @Override
     public ActionBeanContext getContext() {
         return this.context;
-    }
-    
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public List<LayarService> getLayarServices() {

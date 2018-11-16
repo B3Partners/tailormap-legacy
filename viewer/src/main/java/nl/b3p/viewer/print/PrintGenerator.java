@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import nl.b3p.mail.Mailer;
-import nl.b3p.viewer.util.ResourceBundleProvider;
+import nl.b3p.i18n.ResourceBundleProvider;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

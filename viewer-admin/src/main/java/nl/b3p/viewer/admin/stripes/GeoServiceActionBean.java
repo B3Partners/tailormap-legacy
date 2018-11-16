@@ -61,6 +61,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.StartLayer;
 
 /**
@@ -70,14 +71,13 @@ import nl.b3p.viewer.config.app.StartLayer;
 @StrictBinding
 @UrlBinding("/action/geoservice/{service}")
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
-public class GeoServiceActionBean implements ActionBean {
+public class GeoServiceActionBean extends LocalizableActionBean {
 
     private static final Log log = LogFactory.getLog(GeoServiceActionBean.class);
     private static final String JSP = "/WEB-INF/jsp/services/geoservice.jsp";
     private static final String JSP_EDIT_SLD = "/WEB-INF/jsp/services/editsld.jsp";
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     @Validate(on = {"add"}, required = true)
     private Category category;
     @Validate(on = {"edit"}, required = true)
@@ -166,23 +166,6 @@ public class GeoServiceActionBean implements ActionBean {
 
     public String getServiceName() {
         return serviceName;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public void setServiceName(String serviceName) {
@@ -440,12 +423,7 @@ public class GeoServiceActionBean implements ActionBean {
     //</editor-fold>
 
     private JSONArray layersInApplications = new JSONArray();
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
-        
+  
     @DefaultHandler
     public Resolution edit() {
         if (service != null) {

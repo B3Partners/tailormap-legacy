@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.LayarService;
 import org.hibernate.*;
@@ -41,12 +42,11 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/layarservice/{$event}/{service}")
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class LayarServiceActionBean implements ActionBean {
+public class LayarServiceActionBean extends LocalizableActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/layarservice.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarservice.jsp";
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     
     @Validate
     private int page;
@@ -74,23 +74,6 @@ public class LayarServiceActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-    
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getDir() {
@@ -157,11 +140,6 @@ public class LayarServiceActionBean implements ActionBean {
         this.start = start;
     }
     //</editor-fold>
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     @HandlesEvent("default")

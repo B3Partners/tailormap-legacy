@@ -20,7 +20,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.xml.bind.JAXBElement;

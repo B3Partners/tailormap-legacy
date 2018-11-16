@@ -16,10 +16,10 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.i18n.LocalizableActionBean;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;

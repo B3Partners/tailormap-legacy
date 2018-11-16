@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
@@ -39,6 +38,7 @@ import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import net.sourceforge.stripes.validation.ValidationErrors;
 import net.sourceforge.stripes.validation.ValidationMethod;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
@@ -60,9 +60,8 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Roy Braam
  */
 @UrlBinding("/action/featuretyperelation/{$event}")
-public class FeatureTypeRelationActionBean implements ActionBean{
+public class FeatureTypeRelationActionBean extends LocalizableActionBean {
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     private static final String JSP = "/WEB-INF/jsp/services/featuretyperelation.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editfeaturetyperelation.jsp";
 
@@ -99,11 +98,6 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         @Validate(field="type", required=true, on="save")
     })
     private FeatureTypeRelation relation;
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     public Resolution view() {
@@ -365,23 +359,6 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public List<FeatureTypeRelation> getRelations() {

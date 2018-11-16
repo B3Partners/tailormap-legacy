@@ -19,7 +19,6 @@ package nl.b3p.viewer.stripes;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.UUID;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;

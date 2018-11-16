@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import org.apache.commons.lang3.StringUtils;
@@ -37,9 +38,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/attribute/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class AttributeActionBean implements ActionBean {
+public class AttributeActionBean extends LocalizableActionBean {
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     private static final String JSP = "/WEB-INF/jsp/services/attribute.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editattribute.jsp";
     
@@ -76,23 +76,6 @@ public class AttributeActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public AttributeDescriptor getAttribute() {
@@ -175,11 +158,6 @@ public class AttributeActionBean implements ActionBean {
         this.start = start;
     }
     //</editor-fold>
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     
     @DefaultHandler
     public Resolution view() {
