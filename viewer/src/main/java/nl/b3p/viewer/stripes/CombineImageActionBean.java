@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.image.CombineImageSettings;
 import nl.b3p.viewer.image.CombineImageWkt;
 import nl.b3p.viewer.image.CombineArcIMSUrl;

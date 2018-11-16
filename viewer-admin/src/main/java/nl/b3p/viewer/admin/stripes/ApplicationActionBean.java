@@ -27,6 +27,7 @@ import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.security.Group;
 import org.stripesstuff.plugin.session.Session;
@@ -38,11 +39,9 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
-public abstract class ApplicationActionBean implements ActionBean {
+public abstract class ApplicationActionBean extends LocalizableActionBean {
 
     protected ActionBeanContext context;
-
-    private ResourceBundle bundle;
             
     @Validate
     protected Application application;
@@ -66,23 +65,6 @@ public abstract class ApplicationActionBean implements ActionBean {
         return context;
     }
 
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-    }
-
     public Application getApplication() {
         return application;
     }
@@ -103,11 +85,6 @@ public abstract class ApplicationActionBean implements ActionBean {
         this.allGroups = allGroups;
     }
     // </editor-fold>
-
-    @After(stages = LifecycleStage.ActionBeanResolution)
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     
     public void setApplication(Application application) {
         this.application = application;

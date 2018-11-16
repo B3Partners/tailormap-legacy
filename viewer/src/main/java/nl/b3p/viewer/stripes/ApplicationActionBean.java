@@ -34,7 +34,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ComponentRegistryInitializer;
 import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.viewer.util.ResourceBundleProvider;
+import nl.b3p.i18n.ResourceBundleProvider;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
@@ -405,7 +405,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             context.getRequest().getSession().invalidate();
             return login;
         } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
-            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(context.getRequest().getLocale(), application);
+            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
             String msg = bundle.getString("viewer.applicationactionbean.norights");
             context.getValidationErrors().addGlobalError(new SimpleError(msg));
             context.getRequest().getSession().invalidate();

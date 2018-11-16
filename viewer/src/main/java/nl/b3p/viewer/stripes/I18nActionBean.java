@@ -1,10 +1,9 @@
 package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.i18n.ResourceBundleToJsProvider;
-import nl.b3p.viewer.util.ResourceBundleProvider;
+import nl.b3p.i18n.ResourceBundleProvider;
 import org.apache.commons.lang.LocaleUtils;
 
 import java.io.StringReader;

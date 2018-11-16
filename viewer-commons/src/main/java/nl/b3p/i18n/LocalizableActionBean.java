@@ -1,9 +1,8 @@
-package nl.b3p.viewer.stripes;
+package nl.b3p.i18n;
 
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.controller.LifecycleStage;
-import nl.b3p.viewer.util.ResourceBundleProvider;
 
 import java.util.ResourceBundle;
 
@@ -11,11 +10,10 @@ public abstract class LocalizableActionBean implements ActionBean {
 
     private ResourceBundle bundle;
 
-    @After(stages = LifecycleStage.BindingAndValidation)
+    @After(stages = LifecycleStage.ActionBeanResolution)
     public void initBundle() {
-        if (getBundle() != null) {
-            return;
-        }
+        // Should be called before getBundle() because of lifecycle annotation,
+        // initialize with request locale
         setBundle(ResourceBundleProvider.getResourceBundle(getContext().getRequest().getLocale()));
     }
 
@@ -23,6 +21,8 @@ public abstract class LocalizableActionBean implements ActionBean {
      * @return the bundle
      */
     public ResourceBundle getBundle() {
+        // When the initBundle() is not yet called at least provide English
+        // messages
         if (bundle == null) {
             bundle = ResourceBundleProvider.getResourceBundle();
         }

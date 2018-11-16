@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +37,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
@@ -71,7 +71,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/configuresolr")
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
-public class ConfigureSolrActionBean implements ActionBean {
+public class ConfigureSolrActionBean extends LocalizableActionBean {
     private static final Log log = LogFactory.getLog(ConfigureSolrActionBean.class);
 
     private static final String JSP = "/WEB-INF/jsp/services/solrconfig.jsp";
@@ -82,7 +82,6 @@ public class ConfigureSolrActionBean implements ActionBean {
     private List<FeatureSource> featureSources = new ArrayList();
     private List<SimpleFeatureType> featureTypes = new ArrayList();
     private ActionBeanContext context;
-    private ResourceBundle bundle;
 
     @Validate
     @ValidateNestedProperties({
@@ -128,23 +127,6 @@ public class ConfigureSolrActionBean implements ActionBean {
     @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public SolrConf getSolrConfiguration() {
@@ -252,11 +234,6 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
     //</editor-fold>
 
-   @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
-        
     @DefaultHandler
     public Resolution view() throws SolrServerException {
         SolrServer server = SolrInitializer.getServerInstance();

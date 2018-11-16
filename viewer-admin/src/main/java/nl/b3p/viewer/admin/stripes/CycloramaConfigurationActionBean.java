@@ -30,7 +30,6 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
@@ -47,6 +46,7 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.CycloramaAccount;
 import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.codec.binary.Base64;
@@ -65,14 +65,13 @@ import sun.security.rsa.RSAPrivateCrtKeyImpl;
 @UrlBinding("/action/cyclorama/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class CycloramaConfigurationActionBean implements ActionBean {
+public class CycloramaConfigurationActionBean extends LocalizableActionBean {
     private static final Log log = LogFactory.getLog(CycloramaConfigurationActionBean.class);
 
     private final String CERT_TYPE = "PKCS12";
     private final String KEY_FORMAT = "PKCS#8";
 
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     private final String JSP = "/WEB-INF/jsp/services/cyclorama.jsp";
 
     @Validate
@@ -95,23 +94,6 @@ public class CycloramaConfigurationActionBean implements ActionBean {
     @Override
     public ActionBeanContext getContext() {
         return context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public FileBean getKey() {
@@ -139,11 +121,6 @@ public class CycloramaConfigurationActionBean implements ActionBean {
     }
 
     // </editor-fold>
-
-   @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     public Resolution view() {

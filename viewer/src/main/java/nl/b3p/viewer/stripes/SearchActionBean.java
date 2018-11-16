@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.i18n.LocalizableActionBean;
 import java.io.StringReader;
 import java.util.*;
 import javax.persistence.EntityManager;

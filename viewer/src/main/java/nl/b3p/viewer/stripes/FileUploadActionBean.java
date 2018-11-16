@@ -7,7 +7,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.FileUpload;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.util.ResourceBundleProvider;
+import nl.b3p.i18n.ResourceBundleProvider;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

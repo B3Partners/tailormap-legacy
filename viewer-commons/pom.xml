@@ -73,6 +73,11 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
         </dependency>
+        <!-- Stripes -->
+        <dependency>
+            <groupId>net.sourceforge.stripes</groupId>
+            <artifactId>stripes</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.stripesstuff</groupId>
             <artifactId>stripersist</artifactId>

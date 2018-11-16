@@ -23,6 +23,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.solr.SolrInitializer;
@@ -44,11 +45,10 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/attributesource/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
-public class AttributeSourceActionBean implements ActionBean {
+public class AttributeSourceActionBean extends LocalizableActionBean {
 
     private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);
     private ActionBeanContext context;
-    private ResourceBundle bundle;
             
     private static final String JSP = "/WEB-INF/jsp/services/attributesource.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editattributesource.jsp";
@@ -95,11 +95,6 @@ public class AttributeSourceActionBean implements ActionBean {
     private Map<UpdateResult.Status,List<SimpleFeatureType>> changedFeatureTypes;
     @Validate
     private Long changedFeatureSourceId;
-    
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     public Resolution view() {
@@ -437,23 +432,6 @@ public class AttributeSourceActionBean implements ActionBean {
 
     public ActionBeanContext getContext() {
         return this.context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public int getLimit() {

@@ -21,7 +21,6 @@ import java.net.URI;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -31,6 +30,7 @@ import nl.b3p.csw.client.OutputBySearch;
 import nl.b3p.csw.server.CswServable;
 import nl.b3p.csw.server.GeoNetworkCswServer;
 import nl.b3p.csw.util.OnlineResource;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Category;
 import org.apache.commons.logging.Log;
@@ -47,14 +47,13 @@ import org.json.JSONObject;
 @UrlBinding("/action/csw/search")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class CatalogServiceActionBean implements ActionBean{
+public class CatalogServiceActionBean extends LocalizableActionBean {
     private static final Log log = LogFactory.getLog(CatalogServiceActionBean.class);
     
     private static final String JSP = "/WEB-INF/jsp/services/cswservice.jsp";
     private static final String SELECT_SERVICE = "/WEB-INF/jsp/services/selectCswServices.jsp";
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     
     @Validate
     private String searchTerm;
@@ -71,23 +70,6 @@ public class CatalogServiceActionBean implements ActionBean{
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getSearchTerm() {
@@ -108,11 +90,6 @@ public class CatalogServiceActionBean implements ActionBean{
     
     
     // </editor-fold>
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     
     public Resolution addForm (){
         return new ForwardResolution(JSP);

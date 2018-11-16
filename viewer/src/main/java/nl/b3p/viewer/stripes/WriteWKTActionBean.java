@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.ResourceBundle;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
