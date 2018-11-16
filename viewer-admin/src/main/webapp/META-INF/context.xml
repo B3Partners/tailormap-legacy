@@ -92,18 +92,8 @@ crossContext="true" is required to enable the viewer-admin to load the
   <!-- Security configuration -->
   <!-- use LockOutRealm instead of CombinedRealm to prevent brute-forcing -->
   <Realm className="org.apache.catalina.realm.LockOutRealm">
-        <Realm allRolesMode="authOnly"
-               className="org.apache.catalina.realm.DataSourceRealm"
-               dataSourceName="jdbc/geo_viewer"
-               roleNameCol="group_"
-               userCredCol="password"
-               userNameCol="username"
-               userRoleTable="user_groups"
-               userTable="user_"
-               digest="SHA-1">
-            <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
-                               algorithm="SHA-1"
-            />
+    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_">
+      <CredentialHandler algorithm="SHA-1" className="org.apache.catalina.realm.MessageDigestCredentialHandler"/>
     </Realm>
     <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
