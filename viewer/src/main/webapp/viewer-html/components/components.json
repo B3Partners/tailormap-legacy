@@ -666,7 +666,7 @@
         "shortName": "Te",
         "sources": ["../common/ColorField.js","Drawing.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Drawing-config.js"],
-        "restrictions": ["left_menu"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","left_menu"],
         "type": "popup",
         "singleton": true,
         "showHelp": true

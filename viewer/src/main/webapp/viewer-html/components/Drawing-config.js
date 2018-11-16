@@ -36,6 +36,13 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             {
                 xtype: 'checkbox',
+                fieldLabel: i18next.t('drawing_config_2'),
+                name: 'dummyUser',
+                value: this.configObject.dummyUser !== undefined ? this.configObject.dummyUser : false,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
                 fieldLabel: i18next.t('drawing_config_1'),
                 name: 'reactivateTools',
                 value: this.configObject.reactivateTools !== undefined ? this.configObject.reactivateTools : false,

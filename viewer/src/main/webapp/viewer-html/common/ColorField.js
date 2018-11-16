@@ -25,7 +25,7 @@ Ext.define('Ext.ux.ColorField', {
     blankText: i18next.t('colorfield_1'),
     
     regex: /^[0-9a-f]{3,6}$/i,
-    
+    currentColor:null,
     triggers: {
         color: {
             handler: function(colorField, trigger, e) {
@@ -63,6 +63,7 @@ Ext.define('Ext.ux.ColorField', {
     },
     
     setValue : function(hex){
+        this.currentColor = hex;
         if(this.showText == undefined || this.showText){
             Ext.ux.ColorField.superclass.setValue.call(this, hex);
         }
@@ -74,6 +75,10 @@ Ext.define('Ext.ux.ColorField', {
             'background-color': '#' + hex,
             'background-image': 'none'
         });
+    },
+    
+    getColor:function (){
+        return this.currentColor;
     },
 
     menuListeners : {
