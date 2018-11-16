@@ -32,6 +32,7 @@ import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Bookmark;
 import org.hibernate.Criteria;
@@ -49,12 +50,11 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-public class BookmarkActionBean implements ActionBean{
+public class BookmarkActionBean extends LocalizableActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/bookmark.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/bookmarkEdit.jsp";
     private ActionBeanContext context;
-    private ResourceBundle bundle;
             
     @Validate
     private int limit;
@@ -85,23 +85,6 @@ public class BookmarkActionBean implements ActionBean{
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public int getLimit() {
@@ -160,12 +143,6 @@ public class BookmarkActionBean implements ActionBean{
         this.bookmark = bookmark;
     }
     // </editor-fold>
-
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     public Resolution view(){

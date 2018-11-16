@@ -16,12 +16,12 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.i18n.LocalizableActionBean;
 import java.awt.Color;
 import java.io.*;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Map;
-import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;

@@ -1,10 +1,14 @@
 package nl.b3p.viewer.stripes;
 
+import java.util.Locale;
+import nl.b3p.i18n.LocalizableActionBean;
 import net.sourceforge.stripes.action.ActionBean;
+import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.util.ResourceBundleProvider;
+import nl.b3p.i18n.ResourceBundleProvider;
+import org.apache.commons.lang.LocaleUtils;
 
 /**
  * Abstract ActionBean which can be implemented by ActionBeans
@@ -16,12 +20,21 @@ abstract class LocalizableApplicationActionBean extends LocalizableActionBean im
     @Override
     @After(stages = LifecycleStage.BindingAndValidation)
     public void initBundle() {
-        if (getBundle() != null) {
-            return;
+        Locale locale = determineLocaleForBundle(getContext(), getApplication());
+        setBundle(ResourceBundleProvider.getResourceBundle(locale));
+    }
+
+    public static Locale determineLocaleForBundle(ActionBeanContext context, Application application) {
+        Locale locale = context.getRequest().getLocale();
+        if (application != null) {
+            try {
+                locale = LocaleUtils.toLocale(application.getLang());
+            } catch(Exception e) {
+                // Invalid app setting, use request locale
+            }
         }
-        setBundle(ResourceBundleProvider.getResourceBundle(getContext().getRequest().getLocale(), getApplication()));
+        return locale;
     }
 
     public abstract Application getApplication();
-
 }

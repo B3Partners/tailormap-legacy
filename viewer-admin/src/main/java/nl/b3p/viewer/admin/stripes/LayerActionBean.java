@@ -23,12 +23,12 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.util.SelectedContentCache;
-import org.hibernate.Hibernate;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -38,11 +38,10 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/layer")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class LayerActionBean implements ActionBean {
+public class LayerActionBean extends LocalizableActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     @Validate
     @ValidateNestedProperties({
         @Validate(field = "titleAlias", label="Naam"),
@@ -75,23 +74,6 @@ public class LayerActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public Map<String, String> getDetails() {
@@ -188,11 +170,6 @@ public class LayerActionBean implements ActionBean {
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
-    }
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
     }
         
    @DefaultHandler

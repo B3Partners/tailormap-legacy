@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
@@ -45,12 +46,11 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/user/{$event}")
 @RolesAllowed({Group.ADMIN, Group.USER_ADMIN})
-public class UserActionBean implements ActionBean {
+public class UserActionBean extends LocalizableActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/security/user.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/edituser.jsp";
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     @Validate
     private int page;
     @Validate
@@ -87,23 +87,6 @@ public class UserActionBean implements ActionBean {
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public User getUser() {
@@ -218,11 +201,6 @@ public class UserActionBean implements ActionBean {
         this.ipJSON = ipJSON;
     }
     //</editor-fold>
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     @HandlesEvent("default")

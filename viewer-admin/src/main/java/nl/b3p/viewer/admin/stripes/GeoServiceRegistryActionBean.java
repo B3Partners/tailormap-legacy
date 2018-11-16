@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
@@ -46,12 +47,11 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/geoserviceregistry")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class GeoServiceRegistryActionBean implements ActionBean {
+public class GeoServiceRegistryActionBean extends LocalizableActionBean {
     private static final Log log = LogFactory.getLog(GeoServiceRegistryActionBean.class);
     
     private static final String JSP = "/WEB-INF/jsp/services/geoserviceregistry.jsp";
     private ActionBeanContext context;
-    private ResourceBundle bundle;
 
     @Validate
     private String nodeId;
@@ -68,23 +68,6 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     
     public ActionBeanContext getContext() {
         return context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getName() {
@@ -111,11 +94,6 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         this.nodeId = nodeId;
     }
     //</editor-fold>
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     public Resolution view() {

@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
@@ -39,12 +40,11 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/document/{$event}/{service}")
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class DocumentActionBean implements ActionBean {
+public class DocumentActionBean extends LocalizableActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/document.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editdocument.jsp";
     
     private ActionBeanContext context;
-    private ResourceBundle bundle;
     
     @Validate
     private int page;
@@ -74,23 +74,6 @@ public class DocumentActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getDir() {
@@ -149,11 +132,6 @@ public class DocumentActionBean implements ActionBean {
         this.start = start;
     }
     //</editor-fold>
-    
-   @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
         
     @DefaultHandler
     @HandlesEvent("default")

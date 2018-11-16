@@ -51,6 +51,7 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
@@ -81,12 +82,11 @@ import org.xml.sax.SAXException;
 @StrictBinding
 @UrlBinding("/action/serviceUsageMatrix/{$event}")
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class ServiceUsageMatrixActionBean implements ActionBean {
+public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
     private static final Log log = LogFactory.getLog(ServiceUsageMatrixActionBean.class);
     private static final String JSP = "/WEB-INF/jsp/services/serviceusagematrix.jsp";
     private static final String xslPath="/WEB-INF/classes/xsl/ServiceUsageMatrix.xsl";
     private ActionBeanContext context;
-    private ResourceBundle bundle;
 
     @Validate
     private String xml;
@@ -102,11 +102,6 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     private String output_format;
 
     private JSONObject data;
-
-    @Before
-    protected void initBundle() {
-        setBundle(ResourceBundle.getBundle("ViewerResources", context.getRequest().getLocale()));
-    }
     
     private void createData() throws Exception {
         List<Application> applications = Stripersist.getEntityManager().createQuery("FROM Application order by name,version").getResultList();
@@ -254,22 +249,6 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     @Override
     public ActionBeanContext getContext() {
         return this.context;
-    }
-    /**
-     * @return the bundle
-     */
-    public ResourceBundle getBundle() {
-        if (bundle==null) {
-            bundle = ResourceBundle.getBundle("ViewerResources");
-        }
-        return bundle;
-    }
-
-    /**
-     * @param bundle the bundle to set
-     */
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public String getXml() {
