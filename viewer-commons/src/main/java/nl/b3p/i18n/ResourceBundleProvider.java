@@ -22,7 +22,7 @@ public class ResourceBundleProvider {
     private static final String BASE_LANGUAGE = "nl";
 
     public static ResourceBundle getResourceBundle() {
-        return ResourceBundle.getBundle(null);
+        return getResourceBundle(null);
     }
 
     public static ResourceBundle getResourceBundle(Locale locale) {
