@@ -381,7 +381,7 @@ Ext.define ("viewer.components.Drawing",{
                             items: [{
                                     xtype: 'combobox',
                                     editable: false,
-                                    fieldLabel: 'Lijntype',
+                                    fieldLabel: i18next.t('viewer_components_drawing_33'),
                                     queryMode: 'local',
                                     store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
                                     name: 'dashStyle',
@@ -395,7 +395,7 @@ Ext.define ("viewer.components.Drawing",{
                                 },{
                                     xtype: 'combobox',
                                     editable: false,
-                                    fieldLabel: 'Lijndikte',
+                                    fieldLabel: i18next.t('viewer_components_drawing_34'),
                                     queryMode: 'local',
                                     store: [['2', 'Dun'], ['3', 'Normaal'], ['8', 'Dik']],
                                     name: 'lineWidth',
@@ -409,7 +409,7 @@ Ext.define ("viewer.components.Drawing",{
                                 },{
                                     xtype: 'combobox',
                                     editable: false,
-                                    fieldLabel: 'Puntgrootte',
+                                    fieldLabel: i18next.t('viewer_components_drawing_35'),
                                     queryMode: 'local',
                                     store: [['2', 'Klein'], ['6', 'Normaal'], ['10', 'Groot']],
                                     name: 'pointRadius',
@@ -422,7 +422,7 @@ Ext.define ("viewer.components.Drawing",{
                                     }
                                 },{
                                     xtype: 'slider',
-                                    fieldLabel: 'Transparantie',
+                                    fieldLabel: i18next.t('viewer_components_drawing_36'),
                                     name: 'fillOpacity',
                                     itemId: 'fillOpacity',
                                     value: 50,
@@ -439,7 +439,7 @@ Ext.define ("viewer.components.Drawing",{
                                 },{
                                     xtype: 'combobox',
                                     editable: false,
-                                    fieldLabel: 'Labelplaatsing',
+                                    fieldLabel: i18next.t('viewer_components_drawing_37'),
                                     queryMode: 'local',
                                     store: [// First off: it's called labelAlign, but's counterintuitive: it's the position of the point
                                          //  relative to the label. So 'rb' means the anchorpoint of the label is on the right bottem of the label. Yeah.
@@ -458,7 +458,7 @@ Ext.define ("viewer.components.Drawing",{
                                 },{
                                     xtype: 'combobox',
                                     editable: false,
-                                    fieldLabel: 'Lettertypestijl',
+                                    fieldLabel: i18next.t('viewer_components_drawing_38'),
                                     queryMode: 'local',
                                     multiSelect:true,
                                     store: [ ['bold', 'Dikgedrukt'], ['italic', 'Schuin']],
@@ -473,7 +473,7 @@ Ext.define ("viewer.components.Drawing",{
                                 },{
                                     xtype: 'combobox',
                                     editable: false,
-                                    fieldLabel: 'Lettergrootte',
+                                    fieldLabel: i18next.t('viewer_components_drawing_39'),
                                     queryMode: 'local',
                                     store: [['8px', '8px'], ['13px', '13px'], ['18px', '18px'], ['24px', '24px']],
                                     name: 'fontSize',
