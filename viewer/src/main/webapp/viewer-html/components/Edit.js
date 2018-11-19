@@ -62,6 +62,8 @@ Ext.define("viewer.components.Edit", {
         editHelpText: "",
         isPopup: true,
         rememberValuesInSession:false,
+        showSplitButton:false,
+        showMergeButton:false,
         details: {
             minWidth: 400,
             minHeight: 250,
@@ -113,7 +115,7 @@ Ext.define("viewer.components.Edit", {
         });
         this.schema = new Ext.data.schema.Schema();
         this.lastUsedValues = {};
-        this.loadWindow();
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.loadWindow,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         return this;
     },
@@ -202,8 +204,40 @@ Ext.define("viewer.components.Edit", {
     getFormItems: function() {
         this.createLayerSelector();
         var bottomButtons = this.copyDeleteButtons();
+        var hasSplitComp = this.config.viewerController.getComponentsByClassName("viewer.components.Split").length > 0;
+        var hasMergeComp = this.config.viewerController.getComponentsByClassName("viewer.components.Merge").length > 0;
         bottomButtons.push(
             {
+                itemId: "splitButton",
+                text: i18next.t('viewer_components_edit_47'),
+                hidden: !(this.config.showSplitButton && hasSplitComp),
+                listeners: {
+                    click: {
+                        scope: this,
+                        fn: function(){
+                            var c = this.config.viewerController.getComponentsByClassName("viewer.components.Split");
+                            if(c.length >0){
+                                c[0].showWindow();
+                            }
+                        }
+                    }
+                }
+            },{
+                itemId: "mergeButton",
+                text: i18next.t('viewer_components_edit_46'),
+                hidden: !(this.config.showMergeButton && hasMergeComp),
+                listeners: {
+                    click: {
+                        scope: this,
+                        fn: function(){
+                            var c = this.config.viewerController.getComponentsByClassName("viewer.components.Merge");
+                            if(c.length >0){
+                                c[0].showWindow();
+                            }
+                        }
+                    }
+                }
+            },{
                 itemId: "cancelButton",
                 text: i18next.t('viewer_components_edit_0'),
                 listeners: {
@@ -963,7 +997,6 @@ Ext.define("viewer.components.Edit", {
         if(this.config.rememberValuesInSession){
             this.populateFormWithPreviousValues();
         }
-
     },
     populateFormWithPreviousValues: function(){
         var feature = this.lastUsedValues[this.layerSelector.getValue().id];

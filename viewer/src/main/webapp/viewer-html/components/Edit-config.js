@@ -76,9 +76,23 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('js_edit_config_rememberValuesInSession'),
+                fieldLabel: i18next.t('edit_config_rememberValuesInSession'),
                 name: 'rememberValuesInSession',
                 value: this.configObject.rememberValuesInSession !== undefined ? this.configObject.rememberValuesInSession : false,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_showMergeButton'),
+                name: 'showMergeButton',
+                value: this.configObject.showMergeButton !== undefined ? this.configObject.showMergeButton : false,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_showSplitButton'),
+                name: 'showSplitButton',
+                value: this.configObject.showSplitButton !== undefined ? this.configObject.showSplitButton : false,
                 labelWidth: this.labelWidth
             },
             {

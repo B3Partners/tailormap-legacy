@@ -51,14 +51,14 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                         //layout: {type: 'vbox'},
                         items: [{                     
                             xtype: 'textfield',
-                            fieldLabel: i18next.t('viewer_components_selectionwindowconfig_0'),
+                            fieldLabel: i18next.t('general_components_selectionwindowconfig_0'),
                             name: 'title',
                             value: config.title,
                             labelWidth:me.labelWidth,
                             width: 700
                         },{                        
                             xtype: 'textfield',
-                            fieldLabel: i18next.t('viewer_components_selectionwindowconfig_1'),
+                            fieldLabel: i18next.t('general_components_selectionwindowconfig_1'),
                             name: 'iconUrl',
                             value: config.iconUrl,
                             labelWidth:me.labelWidth,
@@ -77,7 +77,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                     }]
             },{ 
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_selectionwindowconfig_2'),
+                fieldLabel: i18next.t('general_components_selectionwindowconfig_2'),
                 name: 'tooltip',
                 value: config.tooltip,
                 labelWidth:me.labelWidth,
@@ -88,7 +88,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         if(showLabelconfig) {
             this.form.add({ 
                 xtype: 'textfield',
-                fieldLabel: i18next.t('viewer_components_selectionwindowconfig_3'),
+                fieldLabel: i18next.t('general_components_selectionwindowconfig_3'),
                 name: 'label',
                 value: label,
                 labelWidth: me.labelWidth,
