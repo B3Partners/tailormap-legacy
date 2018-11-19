@@ -75,6 +75,13 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: this.labelWidth
             },
             {
+                xtype: 'checkbox',
+                fieldLabel: i18next.t('js_edit_config_rememberValuesInSession'),
+                name: 'rememberValuesInSession',
+                value: this.configObject.rememberValuesInSession !== undefined ? this.configObject.rememberValuesInSession : false,
+                labelWidth: this.labelWidth
+            },
+            {
                 xtype: 'textarea',
                 fieldLabel: i18next.t('edit_config_6'),
                 name: 'editHelpText',

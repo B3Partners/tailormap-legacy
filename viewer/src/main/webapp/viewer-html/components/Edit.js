@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext */
+/* global Ext, viewer, i18next, actionBeans, FlamingoAppLoader */
 
 /**
  * Edit component
@@ -42,6 +42,7 @@ Ext.define("viewer.components.Edit", {
     editLinkInFeatureInfoCreated: false,
     afterLoadAttributes: null,
     filterFeatureId: null,
+    lastUsedValues:null,
     // Boolean to check if window is hidden temporarily for mobile mode
     mobileHide: false,
     config: {
@@ -60,6 +61,7 @@ Ext.define("viewer.components.Edit", {
         showEditLinkInFeatureInfo: false,
         editHelpText: "",
         isPopup: true,
+        rememberValuesInSession:false,
         details: {
             minWidth: 400,
             minHeight: 250,
@@ -73,16 +75,16 @@ Ext.define("viewer.components.Edit", {
         var me = this;
 
         Ext.mixin.Observable.capture(this.config.viewerController.mapComponent.getMap(), function (event) {
-            if (event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
-                    || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
-                if (me.mode == "new" || me.mode == "edit" || me.mode == "delete" || me.mode == "copy") {
+            if (event === viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
+                    || event === viewer.viewercontroller.controller.Event.ON_MAPTIP) {
+                if (me.mode === "new" || me.mode === "edit" || me.mode === "delete" || me.mode === "copy") {
                     return false;
                 }
             }
             return true;
         });
 
-        if (this.config.layers != null) {
+        if (this.config.layers !== null) {
             this.config.layers = Ext.Array.filter(this.config.layers, function (layerId) {
                 // XXX must check editAuthorized in appLayer
                 // cannot get that from this layerId
@@ -110,13 +112,13 @@ Ext.define("viewer.components.Edit", {
             viewerController: this.config.viewerController
         });
         this.schema = new Ext.data.schema.Schema();
-
+        this.lastUsedValues = {};
         this.loadWindow();
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
         return this;
     },
     selectedContentChanged: function () {
-        if (this.vectorLayer == null) {
+        if (this.vectorLayer === null) {
             this.createVectorLayer();
         } else {
             this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
@@ -142,7 +144,7 @@ Ext.define("viewer.components.Edit", {
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     showWindow: function () {
-        if (this.vectorLayer == null) {
+        if (this.vectorLayer === null) {
             this.createVectorLayer();
         }
         this.mobileHide = false;
@@ -953,12 +955,19 @@ Ext.define("viewer.components.Edit", {
         this.geomlabel.setHtml(i18next.t('viewer_components_edit_26', {tekstGeom: this.tekstGeom}));
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
-        if (this.newGeomType != null && this.geometryEditable) {
+        if (this.newGeomType !== null && this.geometryEditable) {
             this.vectorLayer.drawFeature(this.newGeomType);
         }
         this.savebutton.setText(i18next.t('viewer_components_edit_27'));
         this.untoggleButtons("newButton");
+        if(this.config.rememberValuesInSession){
+            this.populateFormWithPreviousValues();
+        }
 
+    },
+    populateFormWithPreviousValues: function(){
+        var feature = this.lastUsedValues[this.layerSelector.getValue().id];
+        this.inputContainer.getForm().setValues(feature);
     },
     edit: function () {
         this.hideMobilePopup();
@@ -1043,7 +1052,11 @@ Ext.define("viewer.components.Edit", {
             return;
         }
 
+        var me = this;
         var feature = this.inputContainer.getValues();
+        me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
+        var applayerId = me.editingLayer.getId();
+        this.lastUsedValues [applayerId] = feature;
 
         if (this.geometryEditable) {
             if (this.vectorLayer.getActiveFeature()) {
@@ -1061,14 +1074,12 @@ Ext.define("viewer.components.Edit", {
             this.currentFID = null;
             delete feature.__fid;
         }
-        var me = this;
         try {
             feature = this.changeFeatureBeforeSave(feature);
         } catch (e) {
             me.failed(e);
             return;
         }
-        me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
             viewerController: this.config.viewerController
         }).edit(
@@ -1151,7 +1162,7 @@ Ext.define("viewer.components.Edit", {
                     var inputEl = form.items.get(j).fileInputEl;
                     if (inputEl) {
 
-                        var file = inputEl.dom.files[0]
+                        var file = inputEl.dom.files[0];
                         if (file) {
                             hasFile = true;
                             break;
