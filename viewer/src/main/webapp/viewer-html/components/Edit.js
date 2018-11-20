@@ -204,40 +204,8 @@ Ext.define("viewer.components.Edit", {
     getFormItems: function() {
         this.createLayerSelector();
         var bottomButtons = this.copyDeleteButtons();
-        var hasSplitComp = this.config.viewerController.getComponentsByClassName("viewer.components.Split").length > 0;
-        var hasMergeComp = this.config.viewerController.getComponentsByClassName("viewer.components.Merge").length > 0;
         bottomButtons.push(
             {
-                itemId: "splitButton",
-                text: i18next.t('viewer_components_edit_47'),
-                hidden: !(this.config.showSplitButton && hasSplitComp),
-                listeners: {
-                    click: {
-                        scope: this,
-                        fn: function(){
-                            var c = this.config.viewerController.getComponentsByClassName("viewer.components.Split");
-                            if(c.length >0){
-                                c[0].showWindow();
-                            }
-                        }
-                    }
-                }
-            },{
-                itemId: "mergeButton",
-                text: i18next.t('viewer_components_edit_46'),
-                hidden: !(this.config.showMergeButton && hasMergeComp),
-                listeners: {
-                    click: {
-                        scope: this,
-                        fn: function(){
-                            var c = this.config.viewerController.getComponentsByClassName("viewer.components.Merge");
-                            if(c.length >0){
-                                c[0].showWindow();
-                            }
-                        }
-                    }
-                }
-            },{
                 itemId: "cancelButton",
                 text: i18next.t('viewer_components_edit_0'),
                 listeners: {
@@ -311,6 +279,31 @@ Ext.define("viewer.components.Edit", {
         }
         if (this.config.allowEdit) {
             buttons.push(this.createButton("editButton", i18next.t('viewer_components_edit_3'), this.edit, true));
+        }
+        
+        var showSplit = this.config.viewerController.getComponentsByClassName("viewer.components.Split").length > 0 && this.config.showSplitButton;
+        var showMerge = this.config.viewerController.getComponentsByClassName("viewer.components.Merge").length > 0 && this.config.showMergeButton;
+        if(showSplit){
+            buttons.push(
+                {xtype: 'button',itemId: 'splitButton',text: i18next.t('viewer_components_edit_46'),listeners: {click: {scope: this,
+                            fn: function () {
+                                var c = this.config.viewerController.getComponentsByClassName("viewer.components.Split");
+                                if (c.length > 0) {
+                                    c[0].showWindow();
+                                }
+                            }}}
+                });
+        }
+        if(showMerge){
+            buttons.push(
+             {xtype: 'button',itemId: 'mergeButton',text: i18next.t('viewer_components_edit_47'),listeners: {click: {scope: this,
+                            fn: function () {
+                                var c = this.config.viewerController.getComponentsByClassName("viewer.components.Merge");
+                                if (c.length > 0) {
+                                    c[0].showWindow();
+                                }
+                            }}}
+                });
         }
         return buttons;
     },
@@ -1026,7 +1019,7 @@ Ext.define("viewer.components.Edit", {
         }, this);
     },
     untoggleButtons: function (filter) {
-        var buttons = ["newButton", "editButton"];
+        var buttons = ["newButton", "editButton","splitButton"];
         var itemid;
         var button;
         for (var i = 0; i < buttons.length; i++) {
