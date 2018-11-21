@@ -236,21 +236,27 @@ public class OntbrandingsActionBean implements ActionBean {
         double dx = (audienceCentroid.getX() -ignitionCentroid.getX()) * factor;
         double dy = (audienceCentroid.getY() - ignitionCentroid.getY()) * factor;
 
-        double offset = 0.1;
+        double offset = 10;
         double epsilon = 0.01;
         Geometry distanceLine = null;
-        for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i+= offset) {
-            Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
-            double tempY = ignitionTestCoord.y + dy;
-            double tempX = ignitionTestCoord.x + dx;
-            Coordinate endTestLine = new Coordinate(tempX, tempY);
-            LineString ls = gf.createLineString(new Coordinate[]{ignitionTestCoord, endTestLine});
-            if (!ignition.crosses(ls)) {
-                Geometry cuttoffTestLine = ls.intersection(safetyZone);
-                double l = cuttoffTestLine.getLength();
-                if ((l + epsilon) >= fanHeight && ((l - epsilon) <= fanHeight)) {
-                    distanceLine = cuttoffTestLine;
-                    break;
+        for (int k = 1; k < 5; k++) {
+            if(distanceLine != null){
+                break;
+            }
+            offset = offset / (k*10);
+            for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i += offset) {
+                Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
+                double tempY = ignitionTestCoord.y + dy;
+                double tempX = ignitionTestCoord.x + dx;
+                Coordinate endTestLine = new Coordinate(tempX, tempY);
+                LineString ls = gf.createLineString(new Coordinate[]{ignitionTestCoord, endTestLine});
+                if (!ignition.crosses(ls)) {
+                    Geometry cuttoffTestLine = ls.intersection(safetyZone);
+                    double l = cuttoffTestLine.getLength();
+                    if ((l + epsilon) >= fanHeight && ((l - epsilon) <= fanHeight)) {
+                        distanceLine = cuttoffTestLine;
+                        break;
+                    }
                 }
             }
         }
