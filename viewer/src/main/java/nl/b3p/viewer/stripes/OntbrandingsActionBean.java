@@ -236,14 +236,14 @@ public class OntbrandingsActionBean implements ActionBean {
         double dx = (audienceCentroid.getX() -ignitionCentroid.getX()) * factor;
         double dy = (audienceCentroid.getY() - ignitionCentroid.getY()) * factor;
 
-        double offset = 10;
         double epsilon = 0.01;
         Geometry distanceLine = null;
+        double offset = 10.0;
         for (int k = 1; k < 5; k++) {
             if(distanceLine != null){
                 break;
             }
-            offset = offset / (k*10);
+            offset = offset / 10;
             for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i += offset) {
                 Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
                 double tempY = ignitionTestCoord.y + dy;
@@ -284,12 +284,12 @@ public class OntbrandingsActionBean implements ActionBean {
             double angle = Angle.angleBetweenOriented(centerTip, audienceTail, ignitionTip);
             double angleRad = Math.toRadians(angle >= 0 ? 90 : -90);
             Geometry foundLoodLijn = null;
-            offset = 10;
+            offset = 10.0;
             for (int k = 1; k < 5; k++) {
                 if(foundLoodLijn != null){
                     break;
                 }
-                offset = offset /(k*10);
+                offset = offset/ 10;
                 for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i += offset) {
                     Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
 
