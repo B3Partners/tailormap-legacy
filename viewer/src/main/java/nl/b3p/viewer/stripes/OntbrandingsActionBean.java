@@ -225,52 +225,40 @@ public class OntbrandingsActionBean implements ActionBean {
             return;
         }
         // Create safetydistances
-        Point eindpointDistanceline = audience.getCentroid();
-        Point beginpointDistanceline = ignition.getCentroid();
-        
+        Point audienceCentroid = audience.getCentroid();
+        Point ignitionCentroid = ignition.getCentroid();
+        LineString audienceIgnitionLine =gf.createLineString(new Coordinate[]{audienceCentroid.getCoordinate(),ignitionCentroid.getCoordinate()});
         Geometry ignitionBoundary = ignition.getBoundary();
         LineString ignitionBounds = (LineString) ignitionBoundary;
         LengthIndexedLine ignitionIndexedLine = new LengthIndexedLine(ignitionBounds);
         
-        Geometry audienceBoundary = audience.getBoundary();
-        LineString audienceBoundaryBounds = (LineString) audienceBoundary;
-        LengthIndexedLine audienceIndexedLine = new LengthIndexedLine(audienceBoundaryBounds);
-        
+        int factor = 3;
+        double dx = (audienceCentroid.getX() -ignitionCentroid.getX()) * factor;
+        double dy = (audienceCentroid.getY() - ignitionCentroid.getY()) * factor;
+
         double offset = 0.1;
-        double theta = 0.01;
+        double epsilon = 0.01;
         Geometry distanceLine = null;
         for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i+= offset) {
             Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
-            
-            for (double j = 0; j < audienceIndexedLine.getEndIndex(); j += offset) {
-                Coordinate audienceTestCoord = audienceIndexedLine.extractPoint(j);
-                Coordinate[] coords = {audienceTestCoord, ignitionTestCoord};
-                LineString testLine = gf.createLineString(coords);
-
-                Geometry cuttoffTestLine = testLine.intersection(safetyZone);
-                Double length = cuttoffTestLine.getLength();
-                if ((length + theta) >= fanHeight && ((length - theta) <= fanHeight)) {
+            double tempY = ignitionTestCoord.y + dy;
+            double tempX = ignitionTestCoord.x + dx;
+            Coordinate endTestLine = new Coordinate(tempX, tempY);
+            LineString ls = gf.createLineString(new Coordinate[]{ignitionTestCoord, endTestLine});
+            if (!ignition.crosses(ls)) {
+                Geometry cuttoffTestLine = ls.intersection(safetyZone);
+                double l = cuttoffTestLine.getLength();
+                if ((l + epsilon) >= fanHeight && ((l - epsilon) <= fanHeight)) {
                     distanceLine = cuttoffTestLine;
-                    beginpointDistanceline = gf.createPoint(ignitionTestCoord);
-                    eindpointDistanceline = gf.createPoint(audienceTestCoord);
                     break;
                 }
             }
-            if(distanceLine != null){
-                break;
-            }
         }
-        
         if(distanceLine == null){
-            Coordinate[] coords = {eindpointDistanceline.getCoordinate(), beginpointDistanceline.getCoordinate()};
-            LineString testLine = gf.createLineString(coords);
-            distanceLine = testLine;
+            distanceLine = audienceIgnitionLine.intersection(safetyZone).difference(ignition);
         }
-        double length = distanceLine.getLength();        
+        double length = distanceLine.getLength() ;
         gs.put(createFeature(distanceLine, "safetyDistance", showLength ? (double) Math.round(length * 10) / 10 + " m" : ""));
-        
-        double dx = beginpointDistanceline.getX() - eindpointDistanceline.getX();
-        double dy = beginpointDistanceline.getY() - eindpointDistanceline.getY();
         double ratioX = (dx / length);
         double ratioY = (dy / length);
         double fanX = ratioX * -1000;
@@ -279,46 +267,52 @@ public class OntbrandingsActionBean implements ActionBean {
         double x = referenceLine.getDouble("x");
         double y = referenceLine.getDouble("y");
         Coordinate centerTip = new Coordinate(x, y);
-        Coordinate audienceTail = eindpointDistanceline.getCoordinate();
-        Coordinate ignitionTip = beginpointDistanceline.getCoordinate();
-        
+        Coordinate audienceTail = audienceCentroid.getCoordinate();
+        Coordinate ignitionTip = ignitionCentroid.getCoordinate();        
         
         // 1. afstand tussen rand afsteekzone en safetyzone: richting publiek
-        Point eindLoodlijn = gf.createPoint(new Coordinate(beginpointDistanceline.getX() + fanX, beginpointDistanceline.getY() + fanY));
+        Point eindLoodlijn = gf.createPoint(new Coordinate(ignitionTip.x + fanX, ignitionTip.y + fanY));
      
         // 2. afstand tussen rand afsteekzone en safetyzone: haaks op lijn uit 1.
         if (isFan) {
             double angle = Angle.angleBetweenOriented(centerTip, audienceTail, ignitionTip);
-            double angleRad = Math.toRadians(angle >= 0 ? -90 : 90);
+            double angleRad = Math.toRadians(angle >= 0 ? 90 : -90);
             Geometry foundLoodLijn = null;
-            for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i += offset) {
-                Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
+            offset = 10;
+            for (int k = 1; k < 5; k++) {
+                if(foundLoodLijn != null){
+                    break;
+                }
+                offset = offset /(k*10);
+                for (double i = 0; i < ignitionIndexedLine.getEndIndex(); i += offset) {
+                    Coordinate ignitionTestCoord = ignitionIndexedLine.extractPoint(i);
 
-                AffineTransform affineTransform = AffineTransform.getRotateInstance(angleRad, ignitionTestCoord.x, ignitionTestCoord.y);
-                MathTransform mathTransform = new AffineTransform2D(affineTransform);
-                Geometry rotatedPoint = JTS.transform(eindLoodlijn, mathTransform);
-                Coordinate[] loodLijnCoords = {ignitionTestCoord, rotatedPoint.getCoordinate()};
-                LineString loodLijn = gf.createLineString(loodLijnCoords);
-                Geometry cutoffLoodlijn = loodLijn.intersection(safetyZone);
-                cutoffLoodlijn = cutoffLoodlijn.difference(ignition);
-                if (cutoffLoodlijn instanceof MultiLineString) {
-                    MultiLineString ms = (MultiLineString) cutoffLoodlijn;
-                    for (int j = 0; j < ms.getNumGeometries(); j++) {
-                        Geometry g = ms.getGeometryN(j);
-                        double l = g.getLength();
-                        if ((l + theta) >= fanLength && ((l - theta) <= fanLength)) {
-                            cutoffLoodlijn = g;
+                    AffineTransform affineTransform = AffineTransform.getRotateInstance(angleRad, ignitionTestCoord.x, ignitionTestCoord.y);
+                    MathTransform mathTransform = new AffineTransform2D(affineTransform);
+                    Geometry rotatedPoint = JTS.transform(eindLoodlijn, mathTransform);
+                    Coordinate[] loodLijnCoords = {ignitionTestCoord, rotatedPoint.getCoordinate()};
+                    LineString loodLijn = gf.createLineString(loodLijnCoords);
+                    Geometry cutoffLoodlijn = loodLijn.intersection(safetyZone);
+                    cutoffLoodlijn = cutoffLoodlijn.difference(ignition);
+                    if (cutoffLoodlijn instanceof MultiLineString) {
+                        MultiLineString ms = (MultiLineString) cutoffLoodlijn;
+                        for (int j = 0; j < ms.getNumGeometries(); j++) {
+                            Geometry g = ms.getGeometryN(j);
+                            double l = g.getLength();
+                            if ((l + epsilon) >= fanLength && ((l - epsilon) <= fanLength)) {
+                                cutoffLoodlijn = g;
+                            }
                         }
                     }
-                }
-                length = cutoffLoodlijn.getLength();
-                if ((length + theta) >= fanLength && ((length - theta) <= fanLength)) {
-                    foundLoodLijn = cutoffLoodlijn;
-                    break;
+                    length = cutoffLoodlijn.getLength();
+                    if ((length + epsilon) >= fanLength && ((length - epsilon) <= fanLength)) {
+                        foundLoodLijn = cutoffLoodlijn;
+                        break;
+                    }
                 }
             }
             if (foundLoodLijn == null) {
-                Coordinate[] endContinuousLine = {beginpointDistanceline.getCoordinate(), eindLoodlijn.getCoordinate()};
+                Coordinate[] endContinuousLine = {ignitionTip, eindLoodlijn.getCoordinate()};
                 LineString continuousLine = gf.createLineString(endContinuousLine);
                 Geometry cutoffContLine = continuousLine.intersection(safetyZone);
                 foundLoodLijn = cutoffContLine.difference(ignition);
