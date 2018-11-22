@@ -293,6 +293,8 @@ public class ProxyActionBean implements ActionBean {
                 }
 
                 sb.append("&");
+            } else {
+                log.warn("Ignored unknown param " + param);
             }
         }
         if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '&') {
