@@ -212,6 +212,8 @@ public class ProxyActionBean implements ActionBean {
         allowedParams.add("TILEROW");
         allowedParams.add("TILECOL");
         allowedParams.add("STYLE");
+        // for scale dependent getLegendGraphic
+        allowedParams.add("SCALE");
 
         String query = theUrl.getQuery();
         Map paramsMap = new HashMap(getContext().getRequest().getParameterMap());
