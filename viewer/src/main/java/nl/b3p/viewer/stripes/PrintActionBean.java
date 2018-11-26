@@ -76,12 +76,18 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
     public static final String A4_Portrait = "A4_Portrait.xsl";
     public static final String A3_Landscape = "A3_Landscape.xsl";
     public static final String A3_Portrait = "A3_Portrait.xsl";
+    public static final String A2_Landscape = "A2_Landscape.xsl";
+    public static final String A2_Portrait = "A2_Portrait.xsl";
+    public static final String A1_Landscape = "A1_Landscape.xsl";
+    public static final String A1_Portrait = "A1_Portrait.xsl";
     public static final String A0_Landscape = "A0_Landscape.xsl";
     public static final String A0_Portrait = "A0_Portrait.xsl";
     public static final String DEFAULT_TEMPLATE_PATH = "/WEB-INF/xsl/print/";
     public static final String A5 = "a5";
     public static final String A4 = "a4";
     public static final String A3 = "a3";
+    public static final String A2 = "a2";
+    public static final String A1 = "a1";
     public static final String A0 = "a0";
     public static final String LANDSCAPE = "landscape";
     public static final String PORTRAIT = "portrait";
@@ -327,6 +333,14 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
             return A3_Portrait;
         }else if (A3.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A3_Landscape;
+        }else if (A2.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A2_Portrait;
+        }else if (A2.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A2_Landscape;
+        }else if (A1.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A1_Portrait;
+        }else if (A1.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A1_Landscape;
         }else if (A0.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
             return A0_Portrait;
         }else if (A0.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
