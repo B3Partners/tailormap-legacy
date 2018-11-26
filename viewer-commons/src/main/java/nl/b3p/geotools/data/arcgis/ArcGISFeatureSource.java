@@ -16,7 +16,7 @@
  */
 package nl.b3p.geotools.data.arcgis;
 
-import com.vividsolutions.jts.geom.*;
+import org.locationtech.jts.geom.*;
 import java.io.IOException;
 import java.util.Date;
 import org.geotools.data.FeatureReader;

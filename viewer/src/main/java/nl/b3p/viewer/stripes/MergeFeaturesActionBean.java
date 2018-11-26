@@ -16,10 +16,10 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.operation.overlay.snap.GeometrySnapper;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.operation.overlay.snap.GeometrySnapper;
 import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -224,7 +224,7 @@ public class MergeFeaturesActionBean extends LocalizableApplicationActionBean im
      *
      * @see #handleStrategy(org.opengis.feature.simple.SimpleFeature,
      * org.opengis.feature.simple.SimpleFeature,
-     * com.vividsolutions.jts.geom.Geometry, org.opengis.filter.Filter,
+     * org.locationtech.jts.geom.Geometry, org.opengis.filter.Filter,
      * org.opengis.filter.Filter, org.geotools.data.simple.SimpleFeatureStore,
      * java.lang.String)
      * @see #afterMerge(java.util.List)

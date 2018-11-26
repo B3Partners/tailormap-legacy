@@ -16,9 +16,9 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;

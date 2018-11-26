@@ -16,7 +16,7 @@
  */
 package nl.b3p.geotools.data.arcims;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;

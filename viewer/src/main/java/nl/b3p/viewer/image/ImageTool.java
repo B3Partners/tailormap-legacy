@@ -22,14 +22,14 @@
 package nl.b3p.viewer.image;
 
 import com.sun.imageio.plugins.png.PNGMetadata;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -250,7 +250,7 @@ public class ImageTool {
                 gbi.setColor(fs.getStrokeColor());
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getStrokeOpacity().floatValue()));
                 gbi.draw(shape);
-            } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
+            } else if (geom instanceof org.locationtech.jts.geom.Point) {
                 int pointwidth = (int) pointRadius * 2;
                 int pointheight = (int) pointRadius * 2;
                 int xpointoffset = -pointwidth / 2;

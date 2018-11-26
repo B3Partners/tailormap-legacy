@@ -16,8 +16,8 @@
  */
 package nl.b3p.geotools.data.arcims;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Polygon;
 import java.io.IOException;
 import java.io.Writer;
 import nl.b3p.geotools.data.arcims.axl.AxlBuffer;

@@ -16,7 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
-import com.vividsolutions.jts.geom.Envelope;
+import org.locationtech.jts.geom.Envelope;
 import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;

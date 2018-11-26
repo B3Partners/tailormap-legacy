@@ -16,7 +16,7 @@
  */
 package nl.b3p.geotools.data.arcims;
 
-import com.vividsolutions.jts.geom.*;
+import org.locationtech.jts.geom.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
