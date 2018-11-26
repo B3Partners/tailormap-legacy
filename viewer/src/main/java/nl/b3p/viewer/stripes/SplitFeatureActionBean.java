@@ -16,13 +16,13 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.util.LineStringExtracter;
-import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.operation.polygonize.Polygonizer;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.util.LineStringExtracter;
+import org.locationtech.jts.io.WKTReader;
+import org.locationtech.jts.operation.polygonize.Polygonizer;
 import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
