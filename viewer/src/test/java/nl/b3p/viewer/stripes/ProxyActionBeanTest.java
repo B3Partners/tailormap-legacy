@@ -25,18 +25,14 @@ import nl.b3p.commons.HttpClientConfigured;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.util.TestActionBeanContext;
 import nl.b3p.viewer.util.TestUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
- * @author Mark Prins
  * @author Mark Prins
  */
 public class ProxyActionBeanTest extends TestUtil {
@@ -119,5 +115,25 @@ public class ProxyActionBeanTest extends TestUtil {
         URL u = ab.getRequestRL(entityManager);
         String real = u.toString();
         assertTrue(real.contains(originalUrl));
+    }
+
+    /**
+     * test of getlegend met scale param werkt.
+     *
+     * @throws java.lang.Exception if any
+     */
+    @Test
+    public void testScaledLegendUrl() throws Exception {
+        User geb = entityManager.find(User.class, "admin");
+        String legendUrl = "https://flamingo4.b3p.nl/geoserver/test_omgeving_fla5/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=antenne_register&SERVICE=WMS&SCALE=3.167838379715733";
+        context = new TestActionBeanContext(geb);
+        ab = new ProxyActionBean();
+        ab.setContext(context);
+        ab.setUrl(legendUrl);
+        ab.setMustLogin(true);
+        ab.setServiceId(4L);
+        URL u = ab.getRequestRL(entityManager);
+        String real = u.toString();
+        assertTrue("The url must contain the SCALE param", real.contains("SCALE"));
     }
 }

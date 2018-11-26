@@ -212,6 +212,8 @@ public class ProxyActionBean implements ActionBean {
         allowedParams.add("TILEROW");
         allowedParams.add("TILECOL");
         allowedParams.add("STYLE");
+        // for scale dependent getLegendGraphic
+        allowedParams.add("SCALE");
 
         String query = theUrl.getQuery();
         Map paramsMap = new HashMap(getContext().getRequest().getParameterMap());
@@ -293,6 +295,8 @@ public class ProxyActionBean implements ActionBean {
                 }
 
                 sb.append("&");
+            } else {
+                log.warn("Ignored unknown param " + param);
             }
         }
         if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '&') {
