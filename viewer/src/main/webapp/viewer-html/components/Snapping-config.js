@@ -31,10 +31,11 @@ Ext.define("viewer.components.CustomConfiguration", {
             configObject.snapFillColourOpacity = this.defaultSnapColourOpacity;
         }
         configObject.showLabelconfig = true;
+        configObject.defaultOnLayers = configObject.defaultOnLayers ? configObject.defaultOnLayers  : [];
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.createCheckBoxes(this.configObject.layers, {
             bufferable: true
-        });
+        },configObject.defaultOnLayers );
         this.addFormItems(configObject);
     },
     addFormItems: function (configObject) {
