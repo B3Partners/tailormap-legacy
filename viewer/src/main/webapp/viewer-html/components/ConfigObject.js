@@ -44,6 +44,7 @@ Ext.define("viewer.components.ConfigObject",{
         var config=new Object();        
         if (this.checkBoxes!=null){
             config.layers=this.checkBoxes.getChecked();  
+            config.defaultOnLayers = this.checkBoxes.getDefaultChecked();
         }
         Ext.apply(config,this.getValuesFromContainer(this.form));
         return config;
@@ -71,7 +72,7 @@ Ext.define("viewer.components.ConfigObject",{
      *@param checkedIds a array of id's that need to be checked at init.
      *@param requestParams the params that are send with the ajax request.
      */
-    createCheckBoxes: function (checkedIds,requestParams){
+    createCheckBoxes: function (checkedIds,requestParams, defaultOnIds){
         if (requestParams==undefined || requestParams==null){
             requestParams=new Object();
         }
@@ -81,10 +82,11 @@ Ext.define("viewer.components.ConfigObject",{
         if (checkedIds==undefined)
             checkedIds=[];
         //create the formpanel
-        var me=this;                
+        var me=this;
+        var id = 'layerListContainer' + Ext.id();
         this.checkPanel=Ext.create("Ext.form.FormPanel",{
             title: i18next.t('viewer_components_configobject_0'),
-            id: "layerListContainer",
+            id: id,
             style: {
                 marginTop: "10px"
             },
@@ -98,9 +100,10 @@ Ext.define("viewer.components.ConfigObject",{
         this.checkBoxes=Ext.create("Ext.ux.b3p.FilterableCheckboxes",{
             requestUrl: me.requestPath,
             requestParams: requestParams,
-            renderTo: "layerListContainer",
+            renderTo: id,
             checked: checkedIds,
-            layerFilter: me.configObject.layerFilter
+            layerFilter: me.configObject.layerFilter,
+            checkedDefaultOn: defaultOnIds
         });   
     },
     getActionBeanUrl: function(name) {
