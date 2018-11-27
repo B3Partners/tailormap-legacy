@@ -64,6 +64,7 @@ Ext.define("viewer.components.Edit", {
         rememberValuesInSession:false,
         showSplitButton:false,
         showMergeButton:false,
+        showSnappingButton:false,
         details: {
             minWidth: 400,
             minHeight: 250,
@@ -234,6 +235,11 @@ Ext.define("viewer.components.Edit", {
                 items: this.createEditButtons()
             },
             {
+                itemId: 'externalButtonContainer',
+                xtype: "container",
+                items: this.createExternalButtons()
+            },
+            {
                 itemId: "geomLabel",
                 margin: '5 0',
                 html: '',
@@ -280,30 +286,54 @@ Ext.define("viewer.components.Edit", {
         if (this.config.allowEdit) {
             buttons.push(this.createButton("editButton", i18next.t('viewer_components_edit_3'), this.edit, true));
         }
+       
+        return buttons;
+    },
+    createExternalButtons:function(){
+        var buttons = [];
         
         var showSplit = this.config.viewerController.getComponentsByClassName("viewer.components.Split").length > 0 && this.config.showSplitButton;
         var showMerge = this.config.viewerController.getComponentsByClassName("viewer.components.Merge").length > 0 && this.config.showMergeButton;
+        var showSnapping = this.config.viewerController.getComponentsByClassName("viewer.components.Snapping").length > 0 && this.config.showSnappingButton;
         if(showSplit){
             buttons.push(
                 {xtype: 'button',itemId: 'splitButton',text: i18next.t('viewer_components_edit_46'),listeners: {click: {scope: this,
-                            fn: function () {
-                                var c = this.config.viewerController.getComponentsByClassName("viewer.components.Split");
-                                if (c.length > 0) {
-                                    c[0].showWindow();
-                                }
-                            }}}
+                    fn: function () {
+                        var c = this.config.viewerController.getComponentsByClassName("viewer.components.Split");
+                        if (c.length > 0) {
+                            c[0].showWindow();
+                        }
+                    }}}
                 });
         }
         if(showMerge){
             buttons.push(
              {xtype: 'button',itemId: 'mergeButton',text: i18next.t('viewer_components_edit_47'),listeners: {click: {scope: this,
-                            fn: function () {
-                                var c = this.config.viewerController.getComponentsByClassName("viewer.components.Merge");
-                                if (c.length > 0) {
-                                    c[0].showWindow();
-                                }
-                            }}}
-                });
+                fn: function () {
+                    var c = this.config.viewerController.getComponentsByClassName("viewer.components.Merge");
+                    if (c.length > 0) {
+                        c[0].showWindow();
+                    }
+                }}}
+            });
+        }
+        if (showSnapping) {
+            buttons.push({
+                xtype: 'button',
+                itemId: 'snappingButton',
+                text: "Snapping",
+                listeners: {
+                    click: {
+                        scope: this,
+                        fn: function () {
+                            var c = this.config.viewerController.getComponentsByClassName("viewer.components.Snapping");
+                            if (c.length > 0) {
+                                c[0].enableAllLayers(true);
+                            }
+                        }
+                    }
+                }
+            });
         }
         return buttons;
     },
