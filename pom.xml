@@ -151,7 +151,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.1.0</version>
+                <version>5.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
