@@ -262,7 +262,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "featureReport":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureReportActionBean"/></js:quote>,
                 "ontbrandings":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.OntbrandingsActionBean"/></js:quote>,
                 "file":               <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FileUploadActionBean"/></js:quote>,
-                "wkt":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.WriteWKTActionBean"/></js:quote>
+                "wkt":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.WriteWKTActionBean"/></js:quote>,
+                "contact":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ContactActionBean"/></js:quote>
             };
 
             <c:if test="${actionBean.viewerType == 'openlayers'}">
