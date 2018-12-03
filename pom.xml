@@ -152,6 +152,12 @@
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
                 <version>5.1.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.persistence</groupId>
+                        <artifactId>persistence-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
