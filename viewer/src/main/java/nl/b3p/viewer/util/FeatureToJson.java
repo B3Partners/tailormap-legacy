@@ -458,7 +458,7 @@ public class FeatureToJson {
             }
         } else {
             /* Use the first property as sort field, otherwise geotools while give a error when quering
-         * a JDBC featureType without a primary key.
+             * a featureType without a primary key.
              */
             if ((fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore) && !propertyNames.isEmpty()) {
                 int index = 0;

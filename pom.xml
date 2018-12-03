@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in trabnsitive dependency hell -->
-        <geotools.version>20.0</geotools.version>
+        <geotools.version>20.1</geotools.version>
         <powermock.version>1.7.4</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -53,13 +53,13 @@
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
-        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-        <tomcat.version>7.0.91</tomcat.version>
+        <maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
+        <tomcat.version>7.0.92</tomcat.version>
     </properties>
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-dependency-updates > dependency-updates.log
+            mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates > dependency-updates.log
             and check the output for any available updates.
             
             To check for vulnarabilities in dependencies use the following command:
@@ -151,7 +151,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.1.0</version>
+                <version>5.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -495,9 +495,14 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-plugin-updates -T1 > plugin-updates.log
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates -T1 > plugin-updates.log
                     and check the output for any available updates
                 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
@@ -576,12 +581,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
@@ -590,7 +595,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>3.3.4</version>
+                    <version>4.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
@@ -748,7 +753,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.2.5,)</version>
+                                    <version>[3.3.9,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
