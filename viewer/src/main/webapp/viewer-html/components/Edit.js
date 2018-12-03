@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, viewer, i18next, actionBeans, FlamingoAppLoader */
+/* global Ext, viewer, i18next, actionBeans, FlamingoAppLoader, Proj4js */
 
 /**
  * Edit component
@@ -295,6 +295,7 @@ Ext.define("viewer.components.Edit", {
         var showSplit = this.config.viewerController.getComponentsByClassName("viewer.components.Split").length > 0 && this.config.showSplitButton;
         var showMerge = this.config.viewerController.getComponentsByClassName("viewer.components.Merge").length > 0 && this.config.showMergeButton;
         var showSnapping = this.config.viewerController.getComponentsByClassName("viewer.components.Snapping").length > 0 && this.config.showSnappingButton;
+        var showTrace = true;
         if(showSplit){
             buttons.push(
                 {xtype: 'button',itemId: 'splitButton',text: i18next.t('viewer_components_edit_46'),listeners: {click: {scope: this,
@@ -335,7 +336,127 @@ Ext.define("viewer.components.Edit", {
                 }
             });
         }
+        if(showTrace){
+             buttons.push({
+                xtype: 'button',
+                itemId: 'traceButton',
+                text: "Trace",
+                listeners: {
+                    click: {
+                        scope: this,
+                        fn: this.traceWindow
+                    }
+                }
+            });
+        }
         return buttons;
+    },
+    gpsLocation: null,
+    gpsWindow:null,
+    trace: null,
+    currentPoint:null,
+    traceWindow: function () {
+        this.trace = [];
+        if (!this.gpswindow) {
+            if (Proj4js.defs["EPSG:4326"] === undefined) {
+                Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
+            }
+            this.geolocationProj = new Proj4js.Proj("EPSG:4326");
+            if (Proj4js.defs["EPSG:28992"] === undefined) {
+                Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
+            }
+            this.mapProj = new Proj4js.Proj("EPSG:28992");
+            var me = this;
+            var config = this.config;
+            config.interval = 1000;
+            config.locationRetrieved = function(point){
+                me.locationRetrieved(point);
+            };
+
+            this.gpsLocation = Ext.create("viewer.components.CurrentLocation", config);
+            this.gpsLocation.startWatch();
+            var items = [
+                {
+                    xtype: "button",
+                    text: "Zet vast",
+                    listeners: {
+                        click: {
+                            scope: this,
+                            fn: function () {
+                                me.gpsLocation.stopWatch(true);
+                            }
+                        }
+                    }
+                },
+                {
+                    xtype: "button",
+                    text: "Selecteer",
+                    listeners: {
+                        click: {
+                            scope: this,
+                            fn: this.usePointForTrace
+                        }
+                    }
+                },{
+                    xtype: "button",
+                    text: "Reset",
+                    listeners: {
+                        click: {
+                            scope: this,
+                            fn: this.resetTrace
+                        }
+                    }
+                },
+                {
+                    xtype: "container",
+                    name: "coordinates" + this.config.name,
+                    itemId: "coordinates" + this.config.name,
+                    html: "coords: 12.1, 16.6"
+                }
+            ];
+            this.gpswindow = Ext.create("Ext.window.Window", {
+                id: this.name + "FeaturesWindow",
+                width: 500,
+                height: 300,
+                // layout: 'fit',
+                title: i18next.t('viewer_components_edit_45'),
+                items: items
+            });
+        }
+
+        this.gpswindow.show();
+    },
+    resetTrace:function(){
+        this.trace = [];
+    },
+    locationRetrieved:function(value){
+        this.currentPoint = value;
+        var dec = 10;
+        var value = "x: " + Math.round(dec* value.x )/dec+ ", y:" + Math.round(value.y *dec ) /dec + ". Nauwkeurigheid (m): " + value.accuracy;
+        this.gpswindow.getComponent("coordinatesedit1").setHtml(value);
+        console.log("Retrieved: " + value);
+    },
+    usePointForTrace:function(){
+        this.trace.push(this.currentPoint);
+        
+        var geom;
+        if(this.trace.length === 1){
+            geom = "POINT (" + this.trace[0].x + " " + this.trace[0].y + ")";
+        }else{
+            geom = "LINESTRING (( ";
+            for(var i = 0 ; i < this.trace.length ; i++){
+                var p = this.trace[0].x + " " + this.trace[0].y;
+                geom += p;
+                geom += ",";
+            }
+            geom = geom.substring(0, geom.length -2);
+            geom += "))";
+        }
+        
+        var feature = Ext.create("viewer.viewercontroller.controller.Feature", {wktgeom:geom});
+        this.vectorLayer.removeAllFeatures();
+        this.vectorLayer.addFeature(feature);
+        this.gpsLocation.startWatch();
     },
     copyDeleteButtons: function() {
         var buttons = [];
