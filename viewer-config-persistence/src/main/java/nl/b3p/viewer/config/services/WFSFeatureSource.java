@@ -225,7 +225,6 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
             }
             return ds;
         } catch (Exception e) {
-            params.put(WFSDataStoreFactory.PASSWORD.key, "xxx");
             throw new Exception("Cannot open datastore using parameters " + logParams, e);
         }
     }

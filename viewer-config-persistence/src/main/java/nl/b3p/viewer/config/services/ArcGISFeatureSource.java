@@ -79,8 +79,12 @@ public class ArcGISFeatureSource extends FeatureSource {
         params.put(ArcGISDataStoreFactory.URL.key, new URL(getUrl()));
         params.put(ArcGISDataStoreFactory.USER.key, getUsername());
         params.put(ArcGISDataStoreFactory.PASSWD.key, getPassword());
+        Map logParams = new HashMap(params);
+        if(getPassword() != null) {
+            logParams.put(ArcGISDataStoreFactory.PASSWD.key, new String(new char[getPassword().length()]).replace("\0", "*"));
+        }
 
-        log.debug("Opening datastore using parameters: " + params);
+        log.debug("Opening datastore using parameters: " + logParams);
 
 
         params.put(ArcGISDataStoreFactory.CRS.key, CRS.decode("EPSG:28992"));
@@ -89,12 +93,10 @@ public class ArcGISFeatureSource extends FeatureSource {
         try {
             ds = new ArcGISDataStoreFactory().createDataStore(params);
         } catch (Exception e) {
-            params.put(ArcGISDataStoreFactory.PASSWD.key, "xxx");
-            throw new Exception("Cannot open datastore using parameters " + params, e);
+            throw new Exception("Cannot open datastore using parameters " + logParams, e);
         }
         if (ds == null) {
-            params.put(ArcGISDataStoreFactory.PASSWD.key, "xxx");
-            throw new Exception("Cannot open datastore using parameters " + params);
+            throw new Exception("Cannot open datastore using parameters " + logParams);
         } else {
             return ds;
         }
