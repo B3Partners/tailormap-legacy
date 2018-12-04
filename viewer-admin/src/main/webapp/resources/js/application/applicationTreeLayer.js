@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global i18next, Ext */
+
 Ext.define('vieweradmin.components.ApplicationTreeLayer', {
 
     requires: [
@@ -619,6 +621,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                     {"type":"geometry", "label":i18next.t('viewer_admin_applicationtreelayer_36')},
                     {"type":"point", "label":i18next.t('viewer_admin_applicationtreelayer_37')},
                     {"type":"linestring", "label":i18next.t('viewer_admin_applicationtreelayer_38')},
+                    {"type":"linestringtrace", "label":"Trace"},
                     {"type":"polygon", "label":i18next.t('viewer_admin_applicationtreelayer_39')}
                 ]
             });

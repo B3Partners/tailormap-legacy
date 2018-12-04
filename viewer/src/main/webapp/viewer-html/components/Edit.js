@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, viewer, i18next, actionBeans, FlamingoAppLoader */
+/* global Ext, viewer, i18next, actionBeans, FlamingoAppLoader, Proj4js */
 
 /**
  * Edit component
@@ -348,21 +348,13 @@ Ext.define("viewer.components.Edit", {
         this.mode = "trace";
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         if (!this.gpswindow) {
-            if (Proj4js.defs["EPSG:4326"] === undefined) {
-                Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
-            }
-            this.geolocationProj = new Proj4js.Proj("EPSG:4326");
-            if (Proj4js.defs["EPSG:28992"] === undefined) {
-                Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
-            }
-            this.mapProj = new Proj4js.Proj("EPSG:28992");
             var me = this;
             var config = this.config;
             config.interval = 1000;
+            config.hideButton = true;
             config.locationRetrieved = function(point){
                 me.locationRetrieved(point);
             };
-
             this.gpsLocation = Ext.create("viewer.components.CurrentLocation", config);
             var items = [
                 {
@@ -448,6 +440,7 @@ Ext.define("viewer.components.Edit", {
         this.gpsLocation.removeMarkers();
     },
     traceFinished: function(){
+        this.gpswindow.hide();
         this.gpsLocation.stopWatch();
         this.maincontainer.setLoading(false);
         this.mode = this.prevMode;
@@ -684,6 +677,7 @@ Ext.define("viewer.components.Edit", {
 
         this.showGeomType = type;
         var possible = true;
+        var showTrace = false;
         var tekst = "";
         switch (type) {
             case "multipolygon":
@@ -702,6 +696,8 @@ Ext.define("viewer.components.Edit", {
                 this.newGeomType = "Point";
                 this.tekstGeom = i18next.t('viewer_components_edit_10');
                 break;
+            case "linestringtrace":
+                showTrace = true;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
@@ -736,7 +732,6 @@ Ext.define("viewer.components.Edit", {
                 tekst = i18next.t('viewer_components_edit_13');
             }
             this.geomlabel.setHtml(tekst);
-            var showTrace = true;
             if (showTrace) {
                 this.inputContainer.add({
                     xtype: 'button',
