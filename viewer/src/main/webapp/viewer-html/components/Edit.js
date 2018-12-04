@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, viewer, i18next, actionBeans, FlamingoAppLoader, Proj4js */
+/* global Ext, viewer, i18next, actionBeans, FlamingoAppLoader */
 
 /**
  * Edit component
@@ -295,7 +295,6 @@ Ext.define("viewer.components.Edit", {
         var showSplit = this.config.viewerController.getComponentsByClassName("viewer.components.Split").length > 0 && this.config.showSplitButton;
         var showMerge = this.config.viewerController.getComponentsByClassName("viewer.components.Merge").length > 0 && this.config.showMergeButton;
         var showSnapping = this.config.viewerController.getComponentsByClassName("viewer.components.Snapping").length > 0 && this.config.showSnappingButton;
-        var showTrace = true;
         if(showSplit){
             buttons.push(
                 {xtype: 'button',itemId: 'splitButton',text: i18next.t('viewer_components_edit_46'),listeners: {click: {scope: this,
@@ -336,27 +335,18 @@ Ext.define("viewer.components.Edit", {
                 }
             });
         }
-        if(showTrace){
-             buttons.push({
-                xtype: 'button',
-                itemId: 'traceButton',
-                text: "Trace",
-                listeners: {
-                    click: {
-                        scope: this,
-                        fn: this.traceWindow
-                    }
-                }
-            });
-        }
         return buttons;
     },
     gpsLocation: null,
     gpsWindow:null,
     trace: null,
     currentPoint:null,
+    prevMode:null,
     traceWindow: function () {
         this.trace = [];
+        this.prevMode = this.mode;
+        this.mode = "trace";
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         if (!this.gpswindow) {
             if (Proj4js.defs["EPSG:4326"] === undefined) {
                 Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
@@ -374,7 +364,6 @@ Ext.define("viewer.components.Edit", {
             };
 
             this.gpsLocation = Ext.create("viewer.components.CurrentLocation", config);
-            this.gpsLocation.startWatch();
             var items = [
                 {
                     xtype: "button",
@@ -406,6 +395,15 @@ Ext.define("viewer.components.Edit", {
                             fn: this.resetTrace
                         }
                     }
+                },{
+                    xtype: "button",
+                    text: "Opslaan",
+                    listeners: {
+                        click: {
+                            scope: this,
+                            fn: this.traceFinished
+                        }
+                    }
                 },
                 {
                     xtype: "container",
@@ -414,27 +412,52 @@ Ext.define("viewer.components.Edit", {
                     html: "coords: 12.1, 16.6"
                 }
             ];
+            
             this.gpswindow = Ext.create("Ext.window.Window", {
                 id: this.name + "FeaturesWindow",
-                width: 500,
-                height: 300,
-                // layout: 'fit',
-                title: i18next.t('viewer_components_edit_45'),
-                items: items
+                width: 330,
+                height: 100,
+                title: "Trace maken",
+                items: items,
+                closeAction: "method-hide",
+                listeners: {
+                    hide:{
+                        scope:this,
+                        fn: this.traceFinished
+                    },
+                    show:{
+                        scope:this,
+                        fn: this.resetTrace                        
+                    }
+                }
             });
         }
-
+        if(this.popup){
+            var pos = this.popup.getPosition();
+            var x = this.popup.getWidth() + pos[0];
+            var y = pos[1];
+            this.gpswindow.setPosition(x,y);
+        }
+        this.vectorLayer.removeAllFeatures();
         this.gpswindow.show();
+        this.gpsLocation.startWatch();
+        this.maincontainer.setLoading("Trace maken...");
     },
     resetTrace:function(){
         this.trace = [];
+        this.gpsLocation.removeMarkers();
+    },
+    traceFinished: function(){
+        this.gpsLocation.stopWatch();
+        this.maincontainer.setLoading(false);
+        this.mode = this.prevMode;
+        this.showAndFocusForm();
     },
     locationRetrieved:function(value){
         this.currentPoint = value;
         var dec = 10;
         var value = "x: " + Math.round(dec* value.x )/dec+ ", y:" + Math.round(value.y *dec ) /dec + ". Nauwkeurigheid (m): " + value.accuracy;
         this.gpswindow.getComponent("coordinatesedit1").setHtml(value);
-        console.log("Retrieved: " + value);
     },
     usePointForTrace:function(){
         this.trace.push(this.currentPoint);
@@ -443,14 +466,14 @@ Ext.define("viewer.components.Edit", {
         if(this.trace.length === 1){
             geom = "POINT (" + this.trace[0].x + " " + this.trace[0].y + ")";
         }else{
-            geom = "LINESTRING (( ";
+            geom = "LINESTRING (";
             for(var i = 0 ; i < this.trace.length ; i++){
-                var p = this.trace[0].x + " " + this.trace[0].y;
+                var p = this.trace[i].x + " " + this.trace[i].y;
                 geom += p;
                 geom += ",";
             }
             geom = geom.substring(0, geom.length -2);
-            geom += "))";
+            geom += ")";
         }
         
         var feature = Ext.create("viewer.viewercontroller.controller.Feature", {wktgeom:geom});
@@ -506,7 +529,7 @@ Ext.define("viewer.components.Edit", {
             button.setDisabled(disabled);
     },
     showAndFocusForm: function () {
-        if(this.mode === null) {
+        if(this.mode === null || this.mode === "trace") {
             return;
         }
         var buttons = this.maincontainer.down("#buttonPanel").query("button");
@@ -713,7 +736,20 @@ Ext.define("viewer.components.Edit", {
                 tekst = i18next.t('viewer_components_edit_13');
             }
             this.geomlabel.setHtml(tekst);
-
+            var showTrace = true;
+            if (showTrace) {
+                this.inputContainer.add({
+                    xtype: 'button',
+                    itemId: 'traceButton',
+                    text: "Trace",
+                    listeners: {
+                        click: {
+                            scope: this,
+                            fn: this.traceWindow
+                        }
+                    }
+                });
+            }
             var groupedInputs = {};
             var nonGrouped = [];
             for (var i = 0; i < attributes.length; i++) {
@@ -1130,10 +1166,13 @@ Ext.define("viewer.components.Edit", {
     createNew: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
-        this.geomlabel.setHtml(i18next.t('viewer_components_edit_26', {tekstGeom: this.tekstGeom}));
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
-        if (this.newGeomType !== null && this.geometryEditable) {
+        var trace = true;
+        if(trace){
+            this.traceWindow();
+        }else if (this.newGeomType !== null && this.geometryEditable) {
+            this.geomlabel.setHtml(i18next.t('viewer_components_edit_26', {tekstGeom: this.tekstGeom}));
             this.vectorLayer.drawFeature(this.newGeomType);
         }
         this.savebutton.setText(i18next.t('viewer_components_edit_27'));

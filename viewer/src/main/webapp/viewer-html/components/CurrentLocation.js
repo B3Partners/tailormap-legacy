@@ -117,8 +117,11 @@ Ext.define ("viewer.components.CurrentLocation",{
     stopWatch: function(keepMarker){
         navigator.geolocation.clearWatch(this.watchId);
         if(!keepMarker){
-            this.config.viewerController.mapComponent.getMap().removeMarker(this.MARKER_PREFIX+this.getName());
+            this.removeMarkers();
         }
+    },
+    removeMarkers:function(){
+        this.config.viewerController.mapComponent.getMap().removeMarker(this.MARKER_PREFIX+this.getName());
     },
     /**
      * Handles the location
