@@ -732,8 +732,10 @@ Ext.define("viewer.components.Edit", {
                 tekst = i18next.t('viewer_components_edit_13');
             }
             this.geomlabel.setHtml(tekst);
+            var groupedInputs = {};
+            var nonGrouped = [];
             if (showTrace) {
-                this.inputContainer.add({
+               nonGrouped.push({
                     xtype: 'button',
                     itemId: 'traceButton',
                     text: "Trace",
@@ -745,8 +747,6 @@ Ext.define("viewer.components.Edit", {
                     }
                 });
             }
-            var groupedInputs = {};
-            var nonGrouped = [];
             for (var i = 0; i < attributes.length; i++) {
                 var attribute = attributes[i];
                 if (appLayer.featureType && attribute.featureType === appLayer.featureType && attribute.editable) {
