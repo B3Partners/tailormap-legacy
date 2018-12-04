@@ -59,7 +59,7 @@ Ext.define("viewer.components.ConfigObject",{
                 Ext.apply(config, container.items.get(i).getValue());       
             }else if("htmleditor"==container.items.get(i).xtype) {
                 config[container.items.get(i).getName()] = container.items.get(i).getValue();
-            }else if ("container"==container.items.get(i).xtype || "checkboxgroup"==container.items.get(i).xtype){
+            }else if ("container"==container.items.get(i).xtype || "checkboxgroup"==container.items.get(i).xtype || "fieldset"==container.items.get(i).xtype){
                 Ext.apply(config,this.getValuesFromContainer(container.items.get(i)));
             }else if (container.items.get(i).name!=undefined)
                 config[container.items.get(i).name] = container.items.get(i).value;

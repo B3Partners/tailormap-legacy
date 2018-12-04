@@ -28,37 +28,137 @@ Ext.define("viewer.components.CustomConfiguration", {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.form.add([
             {
-                xtype: 'textfield',
-                fieldLabel: i18next.t('contactform_config_name_label'),
-                name: 'nameLabel',
-                value: this.configObject.nameLabel != undefined ? this.configObject.nameLabel : "",
-                labelWidth: this.labelWidth,
-                width: 500
+                xtype: 'fieldset',
+                title: i18next.t('contactform_config_receiversettings_title'),
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                items: [
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: i18next.t('contactform_config_receiver_to'),
+                        name: 'receiverTo',
+                        value: this.configObject.receiverTo != undefined ? this.configObject.receiverTo : "",
+                        labelWidth: this.labelWidth
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: i18next.t('contactform_config_receiver_subject'),
+                        name: 'receiverSubject',
+                        value: this.configObject.receiverSubject != undefined ? this.configObject.receiverSubject : "",
+                        labelWidth: this.labelWidth
+                    }
+                ]
             },
             {
-                xtype: 'textfield',
-                fieldLabel: i18next.t('contactform_config_email_label'),
-                name: 'emailLabel',
-                value: this.configObject.emailLabel != undefined ? this.configObject.emailLabel : "",
-                labelWidth: this.labelWidth,
-                width: 500
+                xtype: 'fieldset',
+                title: i18next.t('contactform_config_formsettings_title'),
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                items: [
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: i18next.t('contactform_config_name_label'),
+                        name: 'nameLabel',
+                        value: this.configObject.nameLabel != undefined ? this.configObject.nameLabel : "",
+                        labelWidth: this.labelWidth
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: i18next.t('contactform_config_email_label'),
+                        name: 'emailLabel',
+                        value: this.configObject.emailLabel != undefined ? this.configObject.emailLabel : "",
+                        labelWidth: this.labelWidth
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: i18next.t('contactform_config_message_label'),
+                        name: 'messageLabel',
+                        value: this.configObject.messageLabel != undefined ? this.configObject.messageLabel : "",
+                        labelWidth: this.labelWidth
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: i18next.t('contactform_config_submit_label'),
+                        name: 'submitLabel',
+                        value: this.configObject.submitLabel != undefined ? this.configObject.submitLabel : "",
+                        labelWidth: this.labelWidth
+                    },
+                    {
+                        xtype: 'htmleditor',
+                        fieldLabel: i18next.t('contactform_config_text_before'),
+                        name: 'textBefore',
+                        value: this.configObject.textBefore != undefined ? this.configObject.textBefore : "",
+                        labelWidth: this.labelWidth,
+                        height: 250,
+                        plugins: [
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                                submitUrl: this.getActionBeanUrl('imageupload'),
+                                managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
+                            })),
+                            new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
+                        ]
+                    },
+                    {
+                        xtype: 'htmleditor',
+                        fieldLabel: i18next.t('contactform_config_text_after'),
+                        name: 'textAfter',
+                        value: this.configObject.textAfter != undefined ? this.configObject.textAfter : "",
+                        labelWidth: this.labelWidth,
+                        height: 250,
+                        plugins: [
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                                submitUrl: this.getActionBeanUrl('imageupload'),
+                                managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
+                            })),
+                            new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
+                        ]
+                    }
+                ]
             },
             {
-                xtype: 'textfield',
-                fieldLabel: i18next.t('contactform_config_message_label'),
-                name: 'messageLabel',
-                value: this.configObject.messageLabel != undefined ? this.configObject.messageLabel : "",
-                labelWidth: this.labelWidth,
-                width: 500
+                xtype: 'fieldset',
+                title: i18next.t('contactform_config_alertsettings_title'),
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                items: [
+                    {
+                        xtype: 'htmleditor',
+                        fieldLabel: i18next.t('contactform_config_thankyoumessage'),
+                        name: 'thankyouMessage',
+                        value: this.configObject.thankyouMessage != undefined ? this.configObject.thankyouMessage : i18next.t('contactform_config_thankyoumessagedefault'),
+                        labelWidth: this.labelWidth,
+                        height: 250,
+                        plugins: [
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                                submitUrl: this.getActionBeanUrl('imageupload'),
+                                managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
+                            })),
+                            new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
+                        ]
+                    },
+                    {
+                        xtype: 'htmleditor',
+                        fieldLabel: i18next.t('contactform_config_errormessage'),
+                        name: 'errorMessage',
+                        value: this.configObject.errorMessage != undefined ? this.configObject.errorMessage : i18next.t('contactform_config_errormessagedefault'),
+                        labelWidth: this.labelWidth,
+                        height: 250,
+                        plugins: [
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(vieweradmin.components.DefaultConfgurations.getDefaultImageUploadConfig(), {
+                                submitUrl: this.getActionBeanUrl('imageupload'),
+                                managerUrl: Ext.urlAppend(this.getActionBeanUrl('imageupload'), "manage=t")
+                            })),
+                            new Ext.ux.form.HtmlEditor.Table(vieweradmin.components.DefaultConfgurations.getDefaultHtmlEditorTableConfig())
+                        ]
+                    }
+                ]
             },
-            {
-                xtype: 'textfield',
-                fieldLabel: i18next.t('contactform_config_submit_label'),
-                name: 'submitLabel',
-                value: this.configObject.submitLabel != undefined ? this.configObject.submitLabel : "",
-                labelWidth: this.labelWidth,
-                width: 500
-            }
         ]);
     },
     getDefaultValues: function() {

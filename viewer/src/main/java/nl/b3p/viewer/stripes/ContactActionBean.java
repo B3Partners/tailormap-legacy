@@ -22,14 +22,21 @@ import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.i18n.ResourceBundleProvider;
 import nl.b3p.mail.Mailer;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.text.MessageFormat;
+import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  *
@@ -40,6 +47,7 @@ import java.util.ResourceBundle;
 public class ContactActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(ContactActionBean.class);
+    private static final String COMPONENT_NAME = "viewer.components.Contactform";
 
     @Validate
     private String params;
@@ -52,16 +60,36 @@ public class ContactActionBean extends LocalizableApplicationActionBean implemen
     @DefaultHandler
     public Resolution contact() throws JSONException, Exception {
         JSONObject req = new JSONObject(params);
-        Mailer.sendMail(req.getString("name"), req.getString("email"), "chris@b3p.nl", "Message via contactform", req.getString("message"));
-        StreamingResolution res = new StreamingResolution("application/json") {
-            @Override
-            public void stream(HttpServletResponse response) throws Exception {
-                response.getWriter().println("success");
-                response.getWriter().close();
-                response.getWriter().flush();
+        JSONObject config = getContactformConfig();
+        JSONObject resp = new JSONObject();
+        resp.put("success", false);
+        if (config != null && config.has("receiverTo") && StringUtils.isNotEmpty(config.getString("receiverTo"))) {
+            String subject = getBundle().getString("viewer.contactactionbean.default_subject");
+            if (config.has("receiverSubject") && StringUtils.isNotEmpty(config.getString("receiverSubject"))) {
+                subject = config.getString("receiverSubject");
             }
-        };
-        return res;
+            Mailer.sendMail(req.getString("name"), req.getString("email"), config.getString("receiverTo"), subject, req.getString("message"));
+            resp.put("success", true);
+        } else {
+            resp.put("message", getBundle().getString("viewer.contactactionbean.not_configured"));
+        }
+        return new StreamingResolution("application/json", resp.toString());
+    }
+
+    private JSONObject getContactformConfig() throws JSONException{
+        JSONObject obj = new JSONObject();
+        if (application == null) {
+            return null;
+        }
+        Set components = application.getComponents();
+        for(Iterator it = components.iterator(); it.hasNext();){
+            ConfiguredComponent comp = (ConfiguredComponent)it.next();
+            if (comp.getClassName().equals(COMPONENT_NAME)) {
+                return new JSONObject(comp.getConfig());
+
+            }
+        }
+        return null;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">

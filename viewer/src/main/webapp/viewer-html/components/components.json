@@ -980,7 +980,8 @@
         "group": "Component",
         "shortName": "Contact",
         "sources": ["Contactform.js"],
-        "configSource": ["ConfigObject.js","Contactform-config.js"],
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Contactform-config.js"],
         "restrictions": ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom", "header","footer", "popupwindow"]
     },
 ]
