@@ -35,15 +35,18 @@ import org.opengis.feature.type.PropertyDescriptor;
  * Unit test for simple testing of reading a single feature from a WFS using GeoTools.
  *
  * Run from command line:
+ * <pre>{@code
  * cat > ~/mycredentials.properties
  * user=myusername
  * password=mypassword
  * [Control-D]
- * mvn -Durl=... -Dcredentials=/home/$USER/mycredentials.properties -Dtypename=... -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test
+ * }</pre>
+ *
+ * {@code mvn -Durl=... -Dcredentials=/home/$USER/mycredentials.properties -Dtypename=... -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test}
  *
  * Example:
  *
- * mvn -Durl=https://flamingo4.b3p.nl:443/geoserver/Test_omgeving/wfs -Dtypename=Test_omgeving:cbs_gemeente_2014 -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test
+ * {@code mvn -Durl=https://flamingo4.b3p.nl:443/geoserver/Test_omgeving/wfs -Dtypename=Test_omgeving:cbs_gemeente_2014 -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test}
  *
  * @author matthijsln
  */
