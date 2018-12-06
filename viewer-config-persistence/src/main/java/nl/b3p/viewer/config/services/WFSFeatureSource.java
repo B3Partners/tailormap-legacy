@@ -211,17 +211,21 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
         params.put(WFSDataStoreFactory.USERNAME.key, getUsername());
         params.put(WFSDataStoreFactory.PASSWORD.key, getPassword());
 
-        log.debug("Opening datastore using parameters: " + params);
+        Map logParams = new HashMap(params);
+        if(getPassword() != null) {
+            logParams.put(WFSDataStoreFactory.PASSWORD.key, new String(new char[getPassword().length()]).replace("\0", "*"));
+        }
+        if(log.isDebugEnabled()) {
+            log.debug("Opening datastore using parameters: " + logParams);
+        }
         try {
             DataStore ds = DataStoreFinder.getDataStore(params);
             if (ds == null) {
-                params.put(WFSDataStoreFactory.PASSWORD.key, "xxx");
-                throw new Exception("Cannot open datastore using parameters " + params);
+                throw new Exception("Cannot open datastore using parameters " + logParams);
             }
             return ds;
         } catch (Exception e) {
-            params.put(WFSDataStoreFactory.PASSWORD.key, "xxx");
-            throw new Exception("Cannot open datastore using parameters " + params, e);
+            throw new Exception("Cannot open datastore using parameters " + logParams, e);
         }
     }
 

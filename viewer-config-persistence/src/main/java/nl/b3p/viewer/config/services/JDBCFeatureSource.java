@@ -204,17 +204,19 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put("passwd", getPassword());
         params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
         params.put(JDBCDataStoreFactory.PK_METADATA_TABLE.key, "gt_pk_metadata");
-        log.debug("Opening datastore using parameters: " + params);
+        Map logParams = new HashMap(params);
+        if(getPassword() != null) {
+            logParams.put("passwd", new String(new char[getPassword().length()]).replace("\0", "*"));
+        }
+        log.debug("Opening datastore using parameters: " + logParams);
         try {
             DataStore ds = DataStoreFinder.getDataStore(params);
             if(ds == null) {
-                params.put("passwd", "xxx");
-                throw new Exception("Cannot open datastore using parameters " + params);
+                throw new Exception("Cannot open datastore using parameters " + logParams);
             }
             return ds;
         } catch(Exception e) {
-            params.put("passwd", "xxx");
-            throw new Exception("Cannot open datastore using parameters " + params, e);
+            throw new Exception("Cannot open datastore using parameters " + logParams, e);
         }
     }
 
