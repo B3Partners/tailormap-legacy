@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 B3Partners B.V.
+ * Copyright (C) 2018 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,35 +18,27 @@ package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.i18n.LocalizableActionBean;
-import nl.b3p.i18n.ResourceBundleProvider;
 import nl.b3p.mail.Mailer;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
-
-import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletResponse;
-import java.text.MessageFormat;
 import java.util.Iterator;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
  *
  * @author Geert Plaisier
+ * @author mprins
  */
 @UrlBinding("/action/contact")
 @StrictBinding
 public class ContactActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
-    private static final Log log = LogFactory.getLog(ContactActionBean.class);
+    private static final Log LOG = LogFactory.getLog(ContactActionBean.class);
     private static final String COMPONENT_NAME = "viewer.components.Contactform";
 
     @Validate
@@ -54,49 +46,56 @@ public class ContactActionBean extends LocalizableApplicationActionBean implemen
 
     @Validate
     private Application application;
-    
+
     private ActionBeanContext context;
-    
+
     @DefaultHandler
-    public Resolution contact() throws JSONException, Exception {
+    public Resolution contact() throws JSONException {
         JSONObject req = new JSONObject(params);
         JSONObject config = getContactformConfig();
         JSONObject resp = new JSONObject();
         resp.put("success", false);
+        resp.put("message", getBundle().getString("viewer.contactactionbean.not_configured"));
+
         if (config != null && config.has("receiverTo") && StringUtils.isNotEmpty(config.getString("receiverTo"))) {
             String subject = getBundle().getString("viewer.contactactionbean.default_subject");
             if (config.has("receiverSubject") && StringUtils.isNotEmpty(config.getString("receiverSubject"))) {
                 subject = config.getString("receiverSubject");
             }
-            Mailer.sendMail(req.getString("name"), req.getString("email"), config.getString("receiverTo"), subject, req.getString("message"));
-            resp.put("success", true);
-        } else {
-            resp.put("message", getBundle().getString("viewer.contactactionbean.not_configured"));
+            try {
+                Mailer.sendMail(req.getString("name"), req.getString("email"), config.getString("receiverTo"), subject, req.getString("message"));
+                resp.put("success", true);
+                resp.remove("message");
+            } catch (Exception ex) {
+                LOG.error("Error sending mail. " + ex.getLocalizedMessage(), ex);
+            }
         }
         return new StreamingResolution("application/json", resp.toString());
     }
 
-    private JSONObject getContactformConfig() throws JSONException{
-        JSONObject obj = new JSONObject();
-        if (application == null) {
-            return null;
-        }
-        Set components = application.getComponents();
-        for(Iterator it = components.iterator(); it.hasNext();){
-            ConfiguredComponent comp = (ConfiguredComponent)it.next();
-            if (comp.getClassName().equals(COMPONENT_NAME)) {
-                return new JSONObject(comp.getConfig());
-
+    private JSONObject getContactformConfig() throws JSONException {
+        JSONObject obj = null;
+        if (application != null) {
+            Set<ConfiguredComponent> components = application.getComponents();
+            ConfiguredComponent comp;
+            for (Iterator<ConfiguredComponent> it = components.iterator(); it.hasNext();) {
+                comp = it.next();
+                if (comp.getClassName().equals(COMPONENT_NAME)) {
+                    obj = new JSONObject(comp.getConfig());
+                    break;
+                }
             }
         }
-        return null;
+        return obj;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
+    @Override
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
+    @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -118,6 +117,4 @@ public class ContactActionBean extends LocalizableApplicationActionBean implemen
         this.application = application;
     }
     //</editor-fold>
-
-
 }
