@@ -359,7 +359,7 @@ Ext.define("viewer.components.Edit", {
             var items = [
                 {
                     xtype: "button",
-                    text: "Zet vast",
+                    text:  i18next.t('viewer_components_edit_trace_lockcoord'),
                     listeners: {
                         click: {
                             scope: this,
@@ -371,7 +371,7 @@ Ext.define("viewer.components.Edit", {
                 },
                 {
                     xtype: "button",
-                    text: "Selecteer",
+                    text:  i18next.t('viewer_components_edit_trace_selectcoord'),
                     listeners: {
                         click: {
                             scope: this,
@@ -380,7 +380,7 @@ Ext.define("viewer.components.Edit", {
                     }
                 },{
                     xtype: "button",
-                    text: "Reset",
+                    text:  i18next.t('viewer_components_edit_trace_resetcoord'),
                     listeners: {
                         click: {
                             scope: this,
@@ -389,7 +389,7 @@ Ext.define("viewer.components.Edit", {
                     }
                 },{
                     xtype: "button",
-                    text: "Opslaan",
+                    text: i18next.t('viewer_components_edit_trace_savecoord'),
                     listeners: {
                         click: {
                             scope: this,
@@ -406,10 +406,10 @@ Ext.define("viewer.components.Edit", {
             ];
             
             this.gpswindow = Ext.create("Ext.window.Window", {
-                id: this.name + "FeaturesWindow",
+                id: this.name + "gpsWindow",
                 width: 330,
                 height: 100,
-                title: "Trace maken",
+                title: i18next.t('viewer_components_edit_trace_gpswindow_title'),
                 items: items,
                 closeAction: "method-hide",
                 listeners: {
@@ -433,7 +433,7 @@ Ext.define("viewer.components.Edit", {
         this.vectorLayer.removeAllFeatures();
         this.gpswindow.show();
         this.gpsLocation.startWatch();
-        this.maincontainer.setLoading("Trace maken...");
+        this.maincontainer.setLoading(i18next.t('viewer_components_edit_trace_gpswindow_loadingmessage'));
     },
     resetTrace:function(){
         this.trace = [];
@@ -449,7 +449,7 @@ Ext.define("viewer.components.Edit", {
     locationRetrieved:function(value){
         this.currentPoint = value;
         var dec = 10;
-        var value = "x: " + Math.round(dec* value.x )/dec+ ", y:" + Math.round(value.y *dec ) /dec + ". Nauwkeurigheid (m): " + value.accuracy;
+        var value = "x: " + Math.round(dec* value.x )/dec+ ", y:" + Math.round(value.y *dec ) /dec + ". " + i18next.t('viewer_components_edit_trace_accuracy') +": " + value.accuracy;
         this.gpswindow.getComponent("coordinatesedit1").setHtml(value);
     },
     usePointForTrace:function(){
