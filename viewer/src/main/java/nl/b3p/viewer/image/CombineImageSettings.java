@@ -246,7 +246,7 @@ public class CombineImageSettings {
     public void setAngle(Integer angle) {
         this.angle = angle;
     }
-   
+
     //</editor-fold>   
     /**
      * Create a new BBOX that covers the original and the rotated bbox.
@@ -498,13 +498,17 @@ public class CombineImageSettings {
         }
         if (settings.has("bbox")){
             cis.setBbox(settings.getString("bbox"));                
-        }if (settings.has("width")){
+        }
+        if (settings.has("width")){
             cis.setWidth(settings.getInt("width"));
-        }if (settings.has("height")){
+        }
+        if (settings.has("height")){
             cis.setHeight(settings.getInt("height"));
-        }if (settings.has("srid")){
+        }
+        if (settings.has("srid")){
             cis.setSrid(settings.getInt("srid"));
-        }if (settings.has("angle")){
+        }
+        if (settings.has("angle")){
             cis.setAngle(settings.getInt("angle"));
         }
         if (settings.has("quality")){

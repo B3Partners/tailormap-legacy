@@ -87,32 +87,34 @@
 				<xsl:call-template name="windrose">
 					<xsl:with-param name="angle" select="angle"/>
 					<xsl:with-param name="top" select="'0cm'"/>
-					<xsl:with-param name="left" select="'4.0cm'"/>
-				</xsl:call-template>
-			</fo:block>
-			<!-- create scalebar -->
-			<xsl:if test="scale != ''">
-                            <fo:block margin-top="5mm">
-                                <fo:inline font-weight="bold">
-                                    <xsl:text>schaal 1: </xsl:text>
-                                    <xsl:value-of select="scale"/>
-                                </fo:inline>
+                                        <xsl:with-param name="left" select="'4.0cm'"/>
+                                </xsl:call-template>
+                        </fo:block>
+                        <!-- create scalebar -->
+                        <xsl:if test="units != 'degrees'">
+                            <xsl:if test="scale != ''">
+                                <fo:block margin-top="5mm">
+                                    <fo:inline font-weight="bold">
+                                        <xsl:text>schaal 1: </xsl:text>
+                                        <xsl:value-of select="scale"/>
+                                    </fo:inline>
+                                </fo:block>
+                            </xsl:if>
+                            <fo:block>
+                                <xsl:variable name="local-scale">
+                                    <xsl:call-template name="calc-local-scale">
+                                        <xsl:with-param name="bbox" select="bbox"/>
+                                        <xsl:with-param name="scale" select="scale"/>
+                                        <xsl:with-param name="quality" select="quality"/>
+                                    </xsl:call-template>
+                                </xsl:variable>
+                                <xsl:call-template name="calc-scale">
+                                    <xsl:with-param name="m-width" select="($map-width-px div $ppm) * ($local-scale div 1000)"/>
+                                    <xsl:with-param name="px-width" select="$map-width-px"/>
+                                </xsl:call-template>
                             </fo:block>
                         </xsl:if>
-			<fo:block>
-				<xsl:variable name="local-scale">
-					<xsl:call-template name="calc-local-scale">
-						<xsl:with-param name="bbox" select="bbox"/>
-						<xsl:with-param name="scale" select="scale"/>
-						<xsl:with-param name="quality" select="quality"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:call-template name="calc-scale">
-					<xsl:with-param name="m-width" select="($map-width-px div $ppm) * ($local-scale div 1000)"/>
-					<xsl:with-param name="px-width" select="$map-width-px"/>
-				</xsl:call-template>
-			</fo:block>
-		</fo:block>
+                </fo:block>
 		<fo:block xsl:use-attribute-sets="header-font">
 			<xsl:text>legenda</xsl:text>
 		</fo:block>

@@ -76,7 +76,7 @@ public class BufferActionBean implements ActionBean {
     @Validate
     private Integer height;
     @Validate
-    private Integer buffer;
+    private double buffer;
     @Validate
     private Integer maxFeatures = 250;
     @Validate
@@ -139,11 +139,11 @@ public class BufferActionBean implements ActionBean {
         this.width = width;
     }
 
-    public Integer getBuffer() {
+    public double getBuffer() {
         return buffer;
     }
 
-    public void setBuffer(Integer buffer) {
+    public void setBuffer(double buffer) {
         this.buffer = buffer;
     }
 
@@ -259,7 +259,7 @@ public class BufferActionBean implements ActionBean {
         }
 
         FeatureSource fs = l.getFeatureType().openGeoToolsFeatureSource();
-
+        
         String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
 
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
@@ -267,7 +267,7 @@ public class BufferActionBean implements ActionBean {
         WKTReader reader = new WKTReader2(gf);
         Polygon p = (Polygon) reader.read(bbox.toWKT());
         Filter featureFilter = ff.intersects(ff.property(geomAttribute),ff.literal(p));
-
+        
         if(filter != null){
             Filter attributeFilter = FlamingoCQL.toFilter(filter, em);
             attributeFilter = (Filter)attributeFilter.accept(new ChangeMatchCase(false), null);
@@ -283,7 +283,7 @@ public class BufferActionBean implements ActionBean {
         q.setFilter(featureFilter);
         
         q.setMaxFeatures(Math.min(maxFeatures, MAX_FEATURES));
-
+        
         FeatureIterator<SimpleFeature> it = fs.getFeatures(q).features();
 
         try {

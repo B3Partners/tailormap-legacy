@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, MobileManager, actionBeans */
+/* global Ext, MobileManager, actionBeans, i18next, viewer */
 /**
  * Print component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
@@ -126,7 +126,7 @@ Ext.define ("viewer.components.Print",{
      */
     loadLegend : function (layer){
         var appLayer = this.viewerController.getAppLayerById(layer.appLayerId);
-        if (appLayer==undefined || appLayer==null){
+        if (appLayer===undefined || appLayer===null){
             return;
         }
         //make the var ready, so we now it's loading.
@@ -187,7 +187,7 @@ Ext.define ("viewer.components.Print",{
                 continue;
             }
             //if there is a var for the legend, it's not yet succesfully loaded nor it failed
-            if (this.legends[key]==null){
+            if (this.legends[key]===null){
                 return true;
             }
         }
@@ -415,12 +415,12 @@ Ext.define ("viewer.components.Print",{
                                     boxLabel: i18next.t('viewer_components_print_8'),
                                     name: 'orientation',
                                     inputValue: 'landscape',
-                                    checked: me.getOrientation()=='landscape'
+                                    checked: me.getOrientation()==='landscape'
                                 },{
                                     boxLabel: i18next.t('viewer_components_print_9'),
                                     name: 'orientation',
                                     inputValue: 'portrait',
-                                    checked: !(me.getOrientation()=='landscape')
+                                    checked: !(me.getOrientation()==='landscape')
                                 }]
                             },{
                                 xtype: 'checkbox',
@@ -743,7 +743,7 @@ Ext.define ("viewer.components.Print",{
      */
     getMaxQualityWithAngle: function(angle){
         //only if a rotation must be done.
-        if (angle==0 || angle==360)
+        if (angle===0 || angle===360)
             return this.max_imagesize;
 
         var width = this.viewerController.mapComponent.getMap().getWidth();
@@ -883,6 +883,10 @@ Ext.define ("viewer.components.Print",{
         properties.angle = this.rotateSlider.getValue();
         properties.quality = this.qualitySlider.getValue();
         properties.appId = this.viewerController.app.id;
+        var projection = this.viewerController.projection;
+        
+        properties.srid = projection.substring(projection.indexOf(":") +1);
+        properties.units = this.config.viewerController.mapComponent.getMap().units;
         if(properties.scale === ""){
             delete properties.scale;
         }
@@ -1046,7 +1050,7 @@ Ext.define ("viewer.components.Print",{
         if(config.includeAttributes){
             var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
             if(attributeLists.length > 0) {
-                var attributeList = attributeLists[0]
+                var attributeList = attributeLists[0];
                 var appLayer = attributeList.layerSelector.getValue();
                 if (appLayer) {
                     var appLayerId = appLayer.id;

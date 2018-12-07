@@ -1,0 +1,1 @@
+alter table application add column varchar2(255 char);

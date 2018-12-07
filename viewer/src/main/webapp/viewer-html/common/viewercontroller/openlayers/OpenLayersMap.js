@@ -416,8 +416,12 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         return this.getResolution();
     },
     getActualScale: function(){
-        var curScale = OpenLayers.Util.getScaleFromResolution(this.getResolution(), this.units);
-        return  Math.round( curScale  );;
+        if (this.units === "degrees") {
+            return "";
+        } else {
+            var curScale = OpenLayers.Util.getScaleFromResolution(this.getResolution(), this.units);
+            return  Math.round(curScale);
+        }
     },
     
     /**

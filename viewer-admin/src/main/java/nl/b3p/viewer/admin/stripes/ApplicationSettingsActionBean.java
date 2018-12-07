@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.CRS;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
@@ -48,6 +49,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     private static final String DEFAULT_SPRITE = "/viewer/viewer-html/sprite.svg";
     private static final String LANGUAGE_CODES_KEY = "flamingo.i18n.languagecodes";
+    public static final String PROJECTION_NAMES_KEY = "flamingo.projections.epsgnames";
+    public static final String PROJECTION_CODES_KEY = "flamingo.projections.epsgcodes";
 
     @Validate
     private String name;
@@ -75,7 +78,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
     private String[] languageCodes;
-
+    private List<CRS> crses;
+    
+    @Validate
+    private String projection;
     @ValidateNestedProperties({
                 @Validate(field="minx", maxlength=255),
                 @Validate(field="miny", maxlength=255),
@@ -141,7 +147,6 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public String getTitle() { return title; }
 
     public void setTitle(String title) { this.title = title; }
-
     public String getLanguage() { return language; }
 
     public void setLanguage(String language) { this.language = language; }
@@ -193,10 +198,24 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setGroupsRead(List<String> groupsRead) {
         this.groupsRead = groupsRead;
     }
-
     public String[] getLanguageCodes() { return languageCodes; }
 
     public void setLanguageCodes(String[] languageCodes) { this.languageCodes = languageCodes; }
+    public List<CRS> getCrses() {
+        return crses;
+    }
+
+    public void setCrses(List<CRS> crses) {
+        this.crses = crses;
+    }
+
+    public String getProjection() {
+        return projection;
+    }
+
+    public void setProjection(String projection) {
+        this.projection = projection;
+    }
     //</editor-fold>
 
     @DefaultHandler
@@ -215,6 +234,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
             groupsRead.addAll (application.getReaders());
+            projection = application.getProjectionCode();
         }
         // DEFAULT VALUES
         if(!details.containsKey("iconSprite")) {
@@ -228,10 +248,20 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             // TODO: Default value stylesheet printen
             details.put("stylesheetPrint", new ClobElement(""));
         }
-
         String languageCodesString = context.getServletContext().getInitParameter(LANGUAGE_CODES_KEY);
         languageCodes = StringUtils.stripAll(languageCodesString.split(","));
-
+        String codesString = context.getServletContext().getInitParameter(PROJECTION_CODES_KEY);
+        String namesString = context.getServletContext().getInitParameter(PROJECTION_NAMES_KEY);
+        String[] codes = codesString.split(";");
+        String[] names = namesString.split(",");
+        crses = new ArrayList<>();
+        for (int i = 0; i < names.length; i++) {
+            CRS c = new CRS(names[i], codes[i]);
+            crses.add(c);
+        }
+        if(projection == null && !crses.isEmpty()){
+            projection = crses.get(0).getCode();
+        }
         return new ForwardResolution(JSP);
     }
 
@@ -245,7 +275,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         details.put("stylesheetMetadata", new ClobElement(""));
         // TODO: Default value stylesheet printen
         details.put("stylesheetPrint", new ClobElement(""));
-        return new ForwardResolution(JSP);
+        return view();
     }
 
     @DontBind
@@ -310,6 +340,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         application.authorizationsModified();
 
+        application.setProjectionCode(projection);
         Map<String, ClobElement> backupDetails = new HashMap();
         for (Map.Entry<String, ClobElement> e : application.getDetails().entrySet()) {
             if (Application.preventClearDetails.contains(e.getKey())) {

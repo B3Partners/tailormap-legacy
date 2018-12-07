@@ -297,7 +297,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         ClobElement ce = layer.getService().getDetails().get(GeoService.DETAIL_USE_INTERSECT);
                         useIntersect = Boolean.parseBoolean(ce.getValue());
                     }
-                    if (!useIntersect){
+                    if (false){
                         Point point = new GeometryFactory().createPoint(new Coordinate(
                             Double.parseDouble(x),
                             Double.parseDouble(y)));

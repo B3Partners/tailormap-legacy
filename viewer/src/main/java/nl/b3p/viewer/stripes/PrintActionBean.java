@@ -157,7 +157,9 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
         if(jRequest.has("scale")){
             info.setScale(jRequest.optString("scale"));
         }
-        
+        if(jRequest.has("units")){
+            info.setUnits(jRequest.getString("units"));
+        }
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
                 JSONArray jarray=null;

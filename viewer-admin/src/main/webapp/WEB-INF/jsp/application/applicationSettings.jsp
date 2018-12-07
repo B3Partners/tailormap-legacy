@@ -102,6 +102,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td><fmt:message key="viewer_admin.applicationsettings.11" />:</td>
                                 <td><stripes:text name="owner" maxlength="255" size="30"/></td>
                             </tr>
+                            <c:choose>
+                                <c:when test="${fn:length(actionBean.crses) ==1}">
+                                    <stripes:hidden name="projection"  value="${actionBean.crses[0].code}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr>
+                                        <td>Projectie:</td>
+                                        <td><stripes:select name="projection">
+                                                <stripes:option label="-- Kies een projectie --"/>
+                                                <stripes:options-collection collection="${actionBean.crses}" label="name" value="code"/>
+                                            </stripes:select></td>
+                                    </tr>
+                                </c:otherwise>
+                            </c:choose>
                             <tr>
                                 <td><fmt:message key="viewer_admin.applicationsettings.12" />:</td>
                                 <td>
