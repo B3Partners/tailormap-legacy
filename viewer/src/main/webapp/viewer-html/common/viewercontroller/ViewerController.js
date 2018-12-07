@@ -3,9 +3,6 @@
 /**
  * ViewerController
  * @class Controller for a GIS application
- * @constructor
- * @param viewerType The type of the viewer: flamingo/openlayers/etc..
- * @param mapId The id of the div in which the map has to be shown.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */

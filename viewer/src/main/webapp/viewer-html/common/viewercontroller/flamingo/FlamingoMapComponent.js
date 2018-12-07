@@ -23,7 +23,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     /**
      * 
-     * @constructur
      */
     constructor :function (viewerController, domId, config){
         viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId,config);   
@@ -220,7 +219,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      * @see viewer.viewercontroller.MapComponent#createTool
      * As addition: 
-     * @param conf.listenTo set if the tool must listen to another object then the map
+     * param conf.listenTo set if the tool must listen to another object then the map
      **/
     createTool: function (conf){   
         if (Ext.isEmpty(conf.listenTo)){
@@ -250,7 +249,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     
     /**
      *Create a flamingo component.
-     *@param Configuration object
+     *param Configuration object
      *@see viewer.viewercontroller.flamingo.FlamingoComponent#constructor
      */
     createComponent: function (conf){  
@@ -274,7 +273,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     /**
      * Creates a ToolGroup that is needed to add tools.
-     * @param configuration has all the xml configurations that are passed to the flamingo call.
+     * param configuration has all the xml configurations that are passed to the flamingo call.
      */
     createToolGroup : function(configuration){
         var layout= this.viewerController.getLayout('top_menu');
@@ -388,7 +387,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     /**
      * Create the bottomcontent container
-     * @param component. The first component
+     * param component. The first component
      * @return the id of the new container of null if it's not created
      */
     createBottomContent : function(){
@@ -445,7 +444,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     /**
      * Adds a container to flamingo.
-     * @param component the FlamingoComponent that must be added.
+     * param component the FlamingoComponent that must be added.
      */
     addComponent: function(component){
         if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
@@ -491,7 +490,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     /**
      *Get the map by id. If no id is given and 1 map is available that map wil be returned
-     *@param mapId the mapId
+     *param mapId the mapId
      *@returns the Map with the id, or the only map.
      */
     getMap : function (mapId){

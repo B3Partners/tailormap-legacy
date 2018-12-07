@@ -1,19 +1,21 @@
 /**
  * @class 
- * @constructor
  * @description There are 2 ways to create a extent:
  *- With 1 string that has 4 comma seperated coords(xxx,xxx,xxx,xxx)
  *- With 4 numbers
- * @param minx The minimal x of the extent. Can also be used for a comma seperated string. In that case the minx had all the coords in the form xxx,xxx,xxx,xxx and the rest of the params are undefined
- * @param miny The minimal y of the extent.
- * @param maxx The maximal x of the extent.
- * @param maxy The maximal y of the extent.
  **/
 Ext.define("viewer.viewercontroller.controller.Extent",{
     minx: null,
     maxx: null,
     miny: null,
     maxy: null,
+    /**
+     * 
+     * @param minx The minimal x of the extent. Can also be used for a comma seperated string. In that case the minx had all the coords in the form xxx,xxx,xxx,xxx and the rest of the params are undefined
+     * @param miny The minimal y of the extent.
+     * @param maxx The maximal x of the extent.
+     * @param maxy The maximal y of the extent.
+     */
     constructor: function (minx,miny,maxx,maxy){
         if (minx!=undefined && miny==undefined && maxx==undefined && maxy==undefined){
             var tokens=minx.split(",");

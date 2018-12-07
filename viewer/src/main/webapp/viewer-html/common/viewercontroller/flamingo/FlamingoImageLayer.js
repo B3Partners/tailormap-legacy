@@ -16,7 +16,6 @@
  */
 /**
  * @class 
- * @constructor
  * @description Flamingo Image layer class 
  **/
 

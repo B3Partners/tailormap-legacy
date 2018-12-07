@@ -1,7 +1,6 @@
 /**
  * @class 
  * @description The superclass for all maps 
- * @param frameworkMap The frameworkspecific layer
  * Map object interface class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
@@ -21,11 +20,12 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     /**
      * @constructor
      * Create a Map Object
-     * @param config configuration object
-     * @property config.id the id of this map
-     * @property config.viewerController the viewer controller (viewer.viewercontroller.ViewerController)
-     * @property config.mapComponent the mapping component (viewer.viewercontroller.MapComponent)
-     * @property config.options options for the map @see viewer.viewercontroller.MapComponent#createMap
+     * param config - configuration object
+     * param config.id the id of this map
+     * param config.frameworkMap The frameworkspecific layer
+     * param config.viewerController the viewer controller (viewer.viewercontroller.ViewerController)
+     * param config.mapComponent the mapping component (viewer.viewercontroller.MapComponent)
+     * param config.options options for the map @see viewer.viewercontroller.MapComponent#createMap
      */
     constructor: function(config){
         viewer.viewercontroller.controller.Map.superclass.constructor.call(this, config);

@@ -1,10 +1,7 @@
 /**  
  * Layer
  * @class 
- * @constructor
  * @description The superclass for all layers 
- * @param frameworkLayer The frameworkspecific layer
- * @param id The id of the layer
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
@@ -36,7 +33,11 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         frameworkLayer: null,
         details: null //if not a applayer, this can hold some details / settings
     },
-    
+    /**
+     * 
+     * @param frameworkLayer The frameworkspecific layer
+     * @param id The id of the layer
+     */
     constructor: function (config){        
         this.initConfig(config);        
         this.callParent(arguments);

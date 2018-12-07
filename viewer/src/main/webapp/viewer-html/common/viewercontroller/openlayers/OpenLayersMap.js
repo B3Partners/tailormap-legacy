@@ -16,7 +16,6 @@
  */
 /**
  * @class 
- * @constructor
  * @description
  * The openlayers map object wrapper
  */

@@ -1,6 +1,5 @@
 /** 
  * @class 
- * @constructor
  * @description The flamingo Tool Class 
  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
@@ -20,16 +19,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         units: null
     },       
     /** Create a new FlamingoTool
-     *@construct
-     *@param config.id id of this object
-     *@param config.type the type name of the component
-     *@param config.width the width of the component
-     *@param config.height the height of the component
-     *@param config.left margin at the left side
-     *@param config.right margin of the right side
-     *@param config.bottom margin at the bottom side
-     *@param config.tooltip the tool tip of this component
-     *@param config.listenTo the component id to listen to
+     *param config.id id of this object
+     *param config.type the type name of the component
+     *param config.width the width of the component
+     *param config.height the height of the component
+     *param config.left margin at the left side
+     *param config.right margin of the right side
+     *param config.bottom margin at the bottom side
+     *param config.tooltip the tool tip of this component
+     *param config.listenTo the component id to listen to
      */
     constructor : function (config){
         //replace the . for flamingo
@@ -43,7 +41,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     },
     /**
      * Sets the tool visibility
-     * @param visibility the visibility
+     * param visibility the visibility
      * @see MapComponent#setVisible
      */
     setVisible: function (vis){
