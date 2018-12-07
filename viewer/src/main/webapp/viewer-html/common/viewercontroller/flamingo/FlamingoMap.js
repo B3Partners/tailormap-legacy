@@ -1,7 +1,6 @@
 /** 
  * Flamingomap 
  * @class 
- * @constructor
  * @description
  * 
  */
@@ -82,7 +81,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
 
     /**
      *Add a layer(service) to the map
-     *@param layer a FlamingoLayer that needs to be added.
+     *param layer a FlamingoLayer that needs to be added.
      *see @link Map.addLayer
      **/
     addLayer : function(layer){

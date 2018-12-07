@@ -17,7 +17,6 @@
 
 /**
  * @class
- * @constructor
  * @description Flamingo ArcIMS layer class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  **/

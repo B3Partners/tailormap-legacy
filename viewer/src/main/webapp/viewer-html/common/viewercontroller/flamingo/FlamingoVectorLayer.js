@@ -1,6 +1,5 @@
 /**
  * @class 
- * @constructor
  * @description The FlamingoVectorLayer class. In flamingo also known as EditMap. 
  **/
 
@@ -13,10 +12,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     gisId: null,
     /**
      * Creates a vector layer
-     * @constructor
-     * @param config.visible visible true/false
-     * @param config.geometrytypes Array of allowed geometry types on this layer. Possible values: "Point,LineString,Polygon,MultiPolygon,Circle"
-     * @param config.showmeasures true/false show measures of the drawing object
+     * param {Object} config - Config object
+     * param {String} config.visible - visible true/false
+     * param config.geometrytypes - Array of allowed geometry types on this layer. Possible values: "Point,LineString,Polygon,MultiPolygon,Circle"
+     * param {String} config.showmeasures - true/false show measures of the drawing object
      */
     constructor: function(config){
         if(config.labelPropertyName == null){
@@ -98,7 +97,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     
     /**
      * Removes the given feature from this vectorlayer
-     * @param feature The feature to be removed
+     * param feature The feature to be removed
      */
     removeFeature : function (feature){
         var flamingoObj = this.map.getFrameworkMap();
@@ -124,7 +123,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
 
     /**
      * Get the feature on the given index
-     * @param index The index of the feature.
+     * param index The index of the feature.
      * @return The generic feature type on index
      */
     getFeature : function(index){
@@ -133,7 +132,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
 
     /**
      * Add a feature to this vector layer.
-     * @param feature The generic feature to be added to this vector layer.
+     * param feature The generic feature to be added to this vector layer.
      */
     addFeature : function(feature){
         this.map.getFrameworkMap().callMethod(this.map.editMapId,'addFeature',this.getId(),this.toFlamingoFeature(feature));
@@ -166,7 +165,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
 
     /**
      * Orders the flamingo map to start drawing a geometry type
-     * @param type the type of the geometry (Point, Polygon, LineString, MultiPolygon)
+     * param type the type of the geometry (Point, Polygon, LineString, MultiPolygon)
      */
     drawFeature : function(type){     
         if (this.map!=null && this.map.editMapId!=null)
@@ -191,7 +190,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
 
     /**
      * Helper function: Converts the given Flamingo Feature to a generic feature.
-     * @param flamingoFeature The FlamingoFeature to be converted
+     * param flamingoFeature The FlamingoFeature to be converted
      * @return The generic feature
      */
     fromFlamingoFeature : function(flamingoFeature){
@@ -201,7 +200,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     },
     /**
      * Converts th feature to a FlamingoFeature
-     * @param feature a viewer.viewercontroller.controller.Feature object
+     * param feature a viewer.viewercontroller.controller.Feature object
      * @return The Flamingotype feature
      */
     toFlamingoFeature : function(feature){

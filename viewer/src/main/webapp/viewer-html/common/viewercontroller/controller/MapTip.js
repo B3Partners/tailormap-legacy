@@ -1,6 +1,5 @@
 /**
  * @class 
- * @constructor
  * @description The superclass for a maptip
  * @param layer The layer on which this maptip applies to
  * @param mapTipField The field which must be shown in the maptip
