@@ -220,27 +220,21 @@ public class AttributesActionBeanTest extends TestUtil{
      */
     @Test //at the time of committing, the service was down.
     public void testStoreFirstPageDG() throws Exception {
-        try{
-            System.out.println("store");
+        System.out.println("store");
 
-            instance.setFeatureType(ftDeegree);
-            instance.setStart(0);
-            instance.setLimit(10);
-            instance.setAppLayer(applayerDG);
+        instance.setFeatureType(ftDeegree);
+        instance.setStart(0);
+        instance.setLimit(10);
+        instance.setAppLayer(applayerDG);
 
-            JSONObject result = instance.executeStore(entityManager);
+        JSONObject result = instance.executeStore(entityManager);
 
+        if (result.has("features")) {
             JSONArray features = result.getJSONArray("features");
             assertEquals(10, features.length());
-        } catch (Exception ste) {
-            if(ste instanceof SocketTimeoutException){
-                log.error("Stupid service is unreliable");
-            }else{
-                throw ste;
-            }
         }
     }
-    
+
     /**
      * Test of store method, of class AttributesActionBean.
      *
@@ -248,27 +242,21 @@ public class AttributesActionBeanTest extends TestUtil{
      */
     @Test //at the time of committing, the service was down.
     public void testStoreSecondPageDG() throws Exception {
-        try {
-            System.out.println("store");
+        System.out.println("store");
 
-            instance.setFeatureType(ftDeegree);
-            instance.setStart(10);
-            instance.setLimit(10);
-            instance.setAppLayer(applayerDG);
+        instance.setFeatureType(ftDeegree);
+        instance.setStart(10);
+        instance.setLimit(10);
+        instance.setAppLayer(applayerDG);
 
-            JSONObject result = instance.executeStore(entityManager);
+        JSONObject result = instance.executeStore(entityManager);
 
+        if (result.has("features")) {
             JSONArray features = result.getJSONArray("features");
             assertEquals(10, features.length());
-        } catch (Exception ste) {
-            if (ste instanceof SocketTimeoutException) {
-                log.error("Stupid service is unreliable");
-            } else {
-                throw ste;
-            }
         }
     }
-    
+
     /**
      *
      * @throws Exception if any
