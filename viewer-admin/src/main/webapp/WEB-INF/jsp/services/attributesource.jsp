@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     
     <stripes:layout-component name="head">
-        <title>Gegevensregister</title>
+        <title><fmt:message key="viewer_admin.attributesource.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Attribuutbronnen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1>
+            <h1><fmt:message key="viewer_admin.attributesource.1" /><a href="#Attribuutbronnen_Help" title="<fmt:message key="viewer_admin.attributesource.2" />" class="helplink"></a></h1>
 
             <div id="grid-container" class="attributesources">
                 

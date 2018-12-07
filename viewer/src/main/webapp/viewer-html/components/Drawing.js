@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, contextPath, MobileManager, actionBeans */
+/* global Ext, contextPath, MobileManager, actionBeans, i18next, viewer */
 
 /**
  * Drawing component
@@ -42,6 +42,8 @@ Ext.define ("viewer.components.Drawing",{
     features:null,
     // Boolean to check if window is hidden temporarily for mobile mode
     mobileHide: false,
+    pointType:"circle",
+    defaultProps:null,
     config:{
         title: "",
         reactivateTools:null,
@@ -83,17 +85,23 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
         this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
             this.popup.addListener("hide", this.hideWindow, this);
         }
+        
         return this;
     },
-    showWindow : function (){
-        if(this.vectorLayer === null){
-            this.createVectorLayer();
+    init:function(){
+        this.createVectorLayer();
+        if(this.config.dummyUser){
+            setTimeout(this.drawFreeHand.bind(this),0);
+            
         }
+    },
+    showWindow : function (){
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.mobileHide = false;
         this.popup.show();
@@ -115,17 +123,29 @@ Ext.define ("viewer.components.Drawing",{
         }
     },
     createVectorLayer : function (){
+        this.config.color = this.config.color ?  this.config.color : 'FF0000';
+        this.defaultProps = {
+            'fontColor': "#000000",
+            'fontSize': "13px",
+            'labelOutlineColor': "#ffffff",
+            'labelOutlineWidth': 2,
+            'pointRadius': 6,
+            'labelAlign': "cm",
+            'fillColor': '#' + this.config.color,
+            'fillOpacity': 0.5,
+            'strokeDashstyle' : 'solid',
+            'strokeColor': '#' + this.config.color,
+            'strokeOpacity': 0.5,
+            'strokeWidth':this.config.dummyUser ? 8 : 3
+        };
+        this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
-            showmeasures:false,
+            showmeasures:true,
             viewerController: this.config.viewerController,
-            style: {
-                'fillcolor': this.config.color || 'FF0000',
-                'fillopacity': 50,
-                'strokecolor': this.config.color ||"FF0000",
-                'strokeopacity': 50
-            }
+            defaultFeatureStyle: this.defaultStyle,
+            addStyleToFeature: true
         });
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
@@ -147,7 +167,7 @@ Ext.define ("viewer.components.Drawing",{
             value: this.config.color ? this.config.color : 'FF0000',
             listeners :{
                 select : {
-                    fn: this.colorChanged,
+                    fn: this.featureStyleChanged,
                     scope : this
                 }
             }
@@ -155,6 +175,7 @@ Ext.define ("viewer.components.Drawing",{
 
         this.labelField = Ext.create("Ext.form.field.Text",{
             name: 'labelObject',
+            hidden:this.config.dummyUser,
             flex: 1,
             style: {
                 marginRight:'5px'
@@ -168,18 +189,84 @@ Ext.define ("viewer.components.Drawing",{
             }
         });
         var drawingItems = [{
-            xtype: 'button',
-            id: this.drawingButtonIds.point,
-            icon: this.iconPath+"bullet_red.png",
-            tooltip: i18next.t('viewer_components_drawing_0'),
-            enableToggle: true,
-            toggleGroup: 'drawingTools',
-            listeners: {
-                click:{
-                    scope: me,
-                    fn: me.drawPoint
-                }
-            }
+                xtype: "splitbutton",
+                icon: this.iconPath + "circle.png",
+                hidden: this.config.dummyUser,
+                id: this.drawingButtonIds.point,
+                listeners: {
+                    click: {
+                        scope: me,
+                        fn: me.drawPoint
+                    }
+                },
+                menu: new Ext.menu.Menu({
+                    items: [
+                        {
+                            icon: this.iconPath + "circle.png",
+                            text: i18next.t('viewer_components_drawing_0'),
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () {
+                                        this.drawingTypeChanged("circle", true);
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            text: i18next.t('viewer_components_drawing_27'),
+                            icon: this.iconPath + "square.png",
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () {
+                                        this.drawingTypeChanged("square", true);
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "cross.png",
+                            text: i18next.t('viewer_components_drawing_28'),
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("cross", true);}
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "star.png",
+                            text: i18next.t('viewer_components_drawing_29'),
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("star", true);}
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "x.png",
+                            text: i18next.t('viewer_components_drawing_30'),
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("x", true);}
+                                }
+                            }
+                        },
+                        {
+                            icon: this.iconPath + "triangle.png",
+                            text: i18next.t('viewer_components_drawing_31'),
+                            listeners: {
+                                click: {
+                                    scope: me,
+                                    fn: function () { this.drawingTypeChanged("triangle", true);}
+                                }
+                            }
+                        }                        
+                    ]
+                })
         },
         {
             xtype: 'button',
@@ -187,6 +274,7 @@ Ext.define ("viewer.components.Drawing",{
             icon: this.iconPath+"line_red.png",
             tooltip: i18next.t('viewer_components_drawing_1'),
             enableToggle: true,
+            hidden: this.config.dummyUser,
             toggleGroup: 'drawingTools',
             listeners: {
                 click:{
@@ -202,6 +290,7 @@ Ext.define ("viewer.components.Drawing",{
             tooltip: i18next.t('viewer_components_drawing_2'),
             enableToggle: true,
             toggleGroup: 'drawingTools',
+            hidden: this.config.dummyUser,
             listeners: {
                 click:{
                     scope: me,
@@ -216,6 +305,7 @@ Ext.define ("viewer.components.Drawing",{
                 icon: this.iconPath+"shape_circle_red.png",
                 tooltip: i18next.t('viewer_components_drawing_3'),
                 enableToggle: true,
+                hidden: this.config.dummyUser,
                 toggleGroup: 'drawingTools',
                 listeners: {
                     click:{
@@ -226,18 +316,20 @@ Ext.define ("viewer.components.Drawing",{
             });
         }
         drawingItems.push(this.colorPicker);
-        drawingItems.push({
-            xtype: 'button',
-            icon: this.iconPath+"delete.png",
-            tooltip: i18next.t('viewer_components_drawing_4'),
-            listeners: {
-                click:{
-                    scope: me,
-                    fn: me.deleteAll
+        if(!this.config.dummyUser){
+            drawingItems.push({
+                xtype: 'button',
+                icon: this.iconPath + "delete.png",
+                hidden: this.config.dummyUser,
+                tooltip: i18next.t('viewer_components_drawing_7'),
+                listeners: {
+                    click: {
+                        scope: me,
+                        fn: me.deleteObject
+                    }
                 }
-            }
-        });
-
+            });
+        }
         this.formdraw = new Ext.form.FormPanel({
             border: 0,
             items: [{
@@ -267,6 +359,132 @@ Ext.define ("viewer.components.Drawing",{
                             margin: '5 5 0 0'
                         },
                         items: drawingItems
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: i18next.t('viewer_components_drawing_32'),
+                        collapsed:true,
+                        collapsible:true,
+                        hidden:this.config.dummyUser,
+                        border: 0,
+                        margin: 0,
+                        padding: 0,
+                        style: {
+                            border: 0
+                        },
+                        layout:{
+                            type: 'vbox'
+                        },
+                        defaults: {
+                                margin: '5 5 0 0'
+                            },
+                            items: [{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: i18next.t('viewer_components_drawing_33'),
+                                    queryMode: 'local',
+                                    store: [['solid', 'Doorgetrokken lijn'], ['dot', 'Stippellijn'], ['dash', 'Gestreepte lijn']],
+                                    name: 'dashStyle',
+                                    itemId: 'dashStyle',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: i18next.t('viewer_components_drawing_34'),
+                                    queryMode: 'local',
+                                    store: [['2', 'Dun'], ['3', 'Normaal'], ['8', 'Dik']],
+                                    name: 'lineWidth',
+                                    itemId: 'lineWidth',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: i18next.t('viewer_components_drawing_35'),
+                                    queryMode: 'local',
+                                    store: [['2', 'Klein'], ['6', 'Normaal'], ['10', 'Groot']],
+                                    name: 'pointRadius',
+                                    itemId: 'pointRadius',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'slider',
+                                    fieldLabel: i18next.t('viewer_components_drawing_36'),
+                                    name: 'fillOpacity',
+                                    itemId: 'fillOpacity',
+                                    value: 50,
+                                    increment: 10,
+                                    min: 0,
+                                    width: "100%",
+                                    max: 100,
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: i18next.t('viewer_components_drawing_37'),
+                                    queryMode: 'local',
+                                    store: [// First off: it's called labelAlign, but's counterintuitive: it's the position of the point
+                                         //  relative to the label. So 'rb' means the anchorpoint of the label is on the right bottem of the label. Yeah.
+                                         // Also: This is not very useful for something other than points, as for lines it uses the first
+                                        ['rm', 'Links'],  // point and polygons it's center.
+                                        ['cm', 'Midden'], 
+                                        ['lm', 'Rechts']],
+                                    name: 'labelAlign',
+                                    itemId: 'labelAlign',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: i18next.t('viewer_components_drawing_38'),
+                                    queryMode: 'local',
+                                    multiSelect:true,
+                                    store: [ ['bold', 'Dikgedrukt'], ['italic', 'Schuin']],
+                                    name: 'fontStyle',
+                                    itemId: 'fontStyle',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                },{
+                                    xtype: 'combobox',
+                                    editable: false,
+                                    fieldLabel: i18next.t('viewer_components_drawing_39'),
+                                    queryMode: 'local',
+                                    store: [['8px', '8px'], ['13px', '13px'], ['18px', '18px'], ['24px', '24px']],
+                                    name: 'fontSize',
+                                    itemId: 'fontSize',
+                                    listeners: {
+                                        change: {
+                                            scope: this,
+                                            fn: this.featureStyleChanged
+                                        }
+                                    }
+                                }]
                     }
                 ]
             }]
@@ -294,6 +512,7 @@ Ext.define ("viewer.components.Drawing",{
                 items: [
                     {
                         xtype: 'label',
+                        hidden:this.config.dummyUser,
                         text: i18next.t('viewer_components_drawing_6')
                     },
                     {
@@ -304,12 +523,13 @@ Ext.define ("viewer.components.Drawing",{
                             this.labelField,
                             {
                                 xtype: 'button',
-                                icon: this.iconPath+"delete.png",
-                                tooltip: i18next.t('viewer_components_drawing_7'),
+                                hidden:this.config.dummyUser,
+                                icon: this.iconPath+"calculator_edit.png",
+                                tooltip: "Gebruik lengte/oppervlakte als label",
                                 listeners: {
                                     click:{
                                         scope: me,
-                                        fn: me.deleteObject
+                                        fn: me.measureToLabel
                                     }
                                 }
                             }
@@ -340,6 +560,7 @@ Ext.define ("viewer.components.Drawing",{
         this.formsave = new Ext.form.FormPanel({
             border: 0,
             standardSubmit: true,
+            hidden:this.config.dummyUser,
             url: actionBeans["drawing"] + "?save",
             style: {
                 marginBottom: '10px'
@@ -387,11 +608,12 @@ Ext.define ("viewer.components.Drawing",{
             name: 'featureFile',
             allowBlank: false,
             msgTarget: 'side',
-            buttonText: 'Bladeren',
+            buttonText: i18next.t('viewer_components_drawing_13'),
             id: 'featureFile',
             margin: '0 0 2 0'
         });
         this.formopen = new Ext.form.FormPanel({
+            hidden:this.config.dummyUser,
             border: 0,
             layout: {
                 type: 'vbox',
@@ -458,7 +680,14 @@ Ext.define ("viewer.components.Drawing",{
                     items: [
                         {
                             xtype: 'button',
-                            text: i18next.t('viewer_components_drawing_14'),
+                            text: i18next.t('viewer_components_drawing_4'),
+                            handler: function() {
+                                me.deleteAll();
+                            }
+                        },
+                        {
+                            xtype: 'button',
+                            text:  i18next.t('viewer_components_drawing_14'),
                             handler: function() {
                                 me.popup.hide();
                             }
@@ -471,6 +700,15 @@ Ext.define ("viewer.components.Drawing",{
         this.formselect.setVisible(false);
     },
 
+    drawingTypeChanged: function (type, activateDraw) {
+        var cmp = Ext.getCmp(this.drawingButtonIds.point);
+        cmp.setIcon(this.iconPath + type+".png");
+        this.pointType = type;
+        this.featureStyleChanged();
+        if(activateDraw){
+            this.drawPoint();
+        }
+    },
     /**
      * @param vectorLayer The vectorlayer from which the feature comes
      * @param feature the feature which has been activated
@@ -478,17 +716,19 @@ Ext.define ("viewer.components.Drawing",{
      **/
     activeFeatureChanged : function (vectorLayer,feature){
         this.toggleSelectForm(true);
-        if(!this.features.hasOwnProperty(feature.config.id)) {
-            feature.color = feature.color || (feature.style || {}).color || this.config.color;
-            this.features[feature.config.id] = feature;
-        }else{
-            var color = this.features[feature.config.id].color;
-         //   color = color.substring(2);
-            this.colorPicker.setColor(color);
-            this.config.color = color;
-        }
         this.activeFeature = this.features[feature.config.id];
-        this.labelField.setValue(this.activeFeature.label);
+        if (!this.features.hasOwnProperty(feature.config.id)) {
+            feature.color = feature.color || (feature.style || {}).color || this.colorPicker.getColor();
+            this.features[feature.config.id] = feature;
+            this.featureStyleChanged();
+        } else {
+            if (this.activeFeature.getId() === feature.getId()) {
+                this.changeFormToCurrentFeature(feature);
+            }
+        }
+        if (this.activeFeature) {
+            this.labelField.setValue(this.activeFeature.label);
+        }
     },
     //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
@@ -498,22 +738,85 @@ Ext.define ("viewer.components.Drawing",{
             if(button) button.toggle(false);
         });
         this.showMobilePopup();
+        this.featureStyleChanged();
+        if(this.config.dummyUser){
+            this.drawFreeHand();
+        }
     },
-    colorChanged : function (hexColor){
-        this.config.color = hexColor;
-        this.vectorLayer.style.fillcolor = this.config.color;
-        this.vectorLayer.style.strokecolor = this.config.color;
-        this.vectorLayer.adjustStyle();
-        if(this.activeFeature !== null){
-            this.activeFeature.color = this.config.color;
-            var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
-            this.activeFeature.config.wktgeom = feature.config.wktgeom;
-            if(this.activeFeature.label) {
-                this.activeFeature.config.label = this.activeFeature.label;
-            }
-            this.vectorLayer.removeFeature(this.activeFeature);
-            delete this.features[this.activeFeature.getId()];
-            this.vectorLayer.addFeature(this.activeFeature);
+    featureStyleChanged: function(){
+        var ds = this.getContentContainer().query('#dashStyle')[0];
+        var lw = this.getContentContainer().query('#lineWidth')[0];
+        var fo = this.getContentContainer().query('#fillOpacity')[0];
+        var fs = this.getContentContainer().query('#fontSize')[0];
+        var la = this.getContentContainer().query('#labelAlign')[0];
+        var fw = this.getContentContainer().query('#fontStyle')[0];
+        var pr = this.getContentContainer().query('#pointRadius')[0];
+        
+        var dashstyle = ds.getValue();
+        var width = lw.getValue();        
+        var color = this.colorPicker.getColor();
+        var opacity = fo.getValue()/ 100;
+        var fontsize = fs.getValue();
+        var labelAlign = la.getValue();
+        var font = fw.getValue();
+        var pointRadius = pr.getValue();
+        var fontWeight = font && font.indexOf("bold") !== -1;
+        var fontStyle = font && font.indexOf("italic") !== -1;
+        
+        var layer = this.vectorLayer;
+        
+        var featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);// this.defaultStyle;// layer.mapStyleConfigToFeatureStyle();
+        
+        featureStyle.set('strokeColor', '#' + color);
+        featureStyle.set('fillColor', '#' + color);
+        featureStyle.set('fillOpacity', opacity);
+        featureStyle.set('strokeDashstyle', dashstyle);
+        featureStyle.set('strokeWidth',width);
+        featureStyle.set('fontSize', fontsize);
+        featureStyle.set('labelAlign', labelAlign);
+        featureStyle.set('pointRadius', pointRadius);
+        featureStyle.set('fontStyle', fontStyle ? "italic" : "normal");
+        featureStyle.set('fontWeight', fontWeight ? "bold" : "normal");
+        
+        featureStyle.set('graphicWidth',28);
+        featureStyle.set('graphicHeight', 28);
+        featureStyle.set("graphicName",this.pointType);
+        if (this.activeFeature) {
+            this.features[this.activeFeature.getId()].setStyle(featureStyle);
+            layer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
+        }
+    },
+    changeFormToCurrentFeature: function(feature){
+        var featureStyle = this.vectorLayer.frameworkStyleToFeatureStyle(feature);
+        var ds = this.getContentContainer().query('#dashStyle')[0];
+        var lw = this.getContentContainer().query('#lineWidth')[0];
+        var fo = this.getContentContainer().query('#fillOpacity')[0];
+        var fs = this.getContentContainer().query('#fontSize')[0];
+        var la = this.getContentContainer().query('#labelAlign')[0];
+        var fw = this.getContentContainer().query('#fontStyle')[0];
+        var pr = this.getContentContainer().query('#pointRadius')[0];
+        
+        var color = feature.style.fillColor;
+        color = color.substring(1);
+        this.colorPicker.setValue(color);
+        this.config.color = color;
+        
+        var fontWeight = featureStyle.getFontWeight();
+        fontWeight = fontWeight === "normal" ? null : fontWeight;
+        var fontStyle = featureStyle.getFontStyle();
+        
+        fontStyle = fontStyle === "normal" ? null : fontStyle;
+        var font = [fontWeight,fontStyle];
+        
+        ds.setValue(featureStyle.getStrokeDashstyle());
+        lw.setValue(featureStyle.getStrokeWidth());
+        pr.setValue(featureStyle.getPointRadius());
+        fo.setValue(featureStyle.getFillOpacity()*100);
+        fs.setValue(featureStyle.getFontSize());
+        la.setValue(featureStyle.getLabelAlign());
+        fw.setValue(font);
+        if(featureStyle.getGraphicName()){
+            this.drawingTypeChanged(featureStyle.getGraphicName(),false);
         }
     },
     labelChanged : function (field,newValue){
@@ -554,6 +857,10 @@ Ext.define ("viewer.components.Drawing",{
         this.hideMobilePopup();
         this.vectorLayer.drawFeature("Circle");
     },
+    drawFreeHand: function(){
+        this.hideMobilePopup();
+        this.vectorLayer.drawFeature("FreehandLine");
+    },
     deleteAll: function() {
         Ext.Msg.show({
             title: i18next.t('viewer_components_drawing_15'),
@@ -574,16 +881,26 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: "Nee",
-                yes: "Ja"
+                no: i18next.t('viewer_components_drawing_17'),
+                yes: i18next.t('viewer_components_drawing_18')
             },
             icon: Ext.Msg.WARNING
         });
     },
+    measureToLabel: function(){
+      var feature = this.activeFeature;
+      if(feature){
+          var size = this.vectorLayer.getFeatureSize(feature.getId());
+          if(size){
+              var postfix = feature.getWktgeom().indexOf("LINESTRING") !== -1 ? " m" : " m2";
+              this.labelField.setValue(Math.round(size * 100) / 100 + postfix);
+          }
+      }
+    },
     deleteObject: function() {
         Ext.Msg.show({
-            title: i18next.t('viewer_components_drawing_17'),
-            msg: i18next.t('viewer_components_drawing_18'),
+            title: i18next.t('viewer_components_drawing_19'),
+            msg: i18next.t('viewer_components_drawing_20'),
             fn: function(button) {
                 if (button === 'yes') {
                     delete this.features[this.activeFeature.id];
@@ -598,8 +915,8 @@ Ext.define ("viewer.components.Drawing",{
             scope: this,
             buttons: Ext.Msg.YESNO,
             buttonText: {
-                no: "Nee",
-                yes: "Ja"
+                no: i18next.t('viewer_components_drawing_21'),
+                yes: i18next.t('viewer_components_drawing_22')
             },
             icon: Ext.Msg.WARNING
         });
@@ -628,8 +945,8 @@ Ext.define ("viewer.components.Drawing",{
             form.submit({
                 scope:this,
                 url: actionBeans["drawing"],
-                waitMsg: 'Bezig met uploaden...',
-                waitTitle: "Even wachten...",
+                waitMsg: i18next.t('viewer_components_drawing_23'),
+                waitTitle: i18next.t('viewer_components_drawing_24'),
                 success: function(fp, o) {
                     var json = Ext.JSON.decode(o.result.content);
                     this.titleField.setValue( json.title);
@@ -642,7 +959,7 @@ Ext.define ("viewer.components.Drawing",{
                     }
                 },
                 failure: function (){
-                    Ext.MessageBox.alert(i18next.t('viewer_components_drawing_19'), i18next.t('viewer_components_drawing_20'));
+                    Ext.MessageBox.alert(i18next.t('viewer_components_drawing_25'), i18next.t('viewer_components_drawing_26'));
                 }
             });
         }

@@ -99,7 +99,7 @@ Ext.define("viewer.AppLoader", {
             },
             failure: function(result) {
                 if(failureFunction !== undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    failureFunction(i18next.t('viewer_apploader_0') + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
         });
@@ -157,7 +157,7 @@ Ext.define("viewer.AppLoader", {
      * @param {boolean} hideLog
      */
     exposeVariable: function(variable, name, hideLog) {
-        var warningMessage = "Warning! You are using global variable [var], please use FlamingoAppLoader.get('[var]').";
+        var warningMessage = i18next.t('viewer_apploader_1');
         Object.defineProperty(window, name, {
             get: function() {
                 if(console.warn && !hideLog) console.warn(warningMessage.replace(/\[var\]/ig, name));
@@ -202,12 +202,12 @@ Ext.define("viewer.AppLoader", {
         }
         var link = document.getElementById("loginLink");
         if(link) {
-            link.innerHTML = "Uitloggen";
+            link.innerHTML = i18next.t('viewer_apploader_2');
             link.onclick = this.logout.bind(this);
         }
         var info = document.getElementById("loginInfo");
         if(info) {
-            info.innerHTML = "Ingelogd als <b>" + this.config.user.name + "</b>";
+            info.innerHTML = i18next.t('viewer_apploader_3') + "<b>" + this.config.user.name + "</b>";
         }
     },
 

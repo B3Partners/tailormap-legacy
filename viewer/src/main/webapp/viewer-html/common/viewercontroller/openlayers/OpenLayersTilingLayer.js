@@ -16,7 +16,6 @@
  */
 /**
  * @class
- * @constructor
  * @description
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
@@ -32,7 +31,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);
 
         if(!Ext.Array.contains(["TMS", "ArcGisRest", "WMTS"], this.getProtocol())) {
-            throw new Error("OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol());
+            throw new Error(i18next.t('viewer_viewercontroller_openlayers_openlayerstilinglayer_0') + this.getProtocol());
         }
 
         this.mixins.openLayersLayer.constructor.call(this,config);

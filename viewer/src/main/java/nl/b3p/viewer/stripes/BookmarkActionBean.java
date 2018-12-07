@@ -39,7 +39,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/bookmark")
 @StrictBinding
-public class BookmarkActionBean implements ActionBean {
+public class BookmarkActionBean extends LocalizableApplicationActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(BookmarkActionBean.class);
     
     private ActionBeanContext context;
@@ -79,7 +79,7 @@ public class BookmarkActionBean implements ActionBean {
         this.application = application;
     }
     //</editor-fold>
-    
+
     public Resolution create() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -88,9 +88,9 @@ public class BookmarkActionBean implements ActionBean {
         EntityManager em = Stripersist.getEntityManager();
         Resolution r = ApplicationActionBean.checkRestriction(context, application, em);
         if( r != null){
-            error = "Not authorized";
+            error = getBundle().getString("viewer.bookmarkactionbean.1");
         }else if(bookmark == null || bookmark.getParams() == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.bookmarkactionbean.2");
         } else {
             try {
                 String createdBy =bookmark.createCreatedBy(context);

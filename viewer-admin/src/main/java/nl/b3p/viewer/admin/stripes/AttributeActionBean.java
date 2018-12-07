@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/attribute/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class AttributeActionBean implements ActionBean {
+public class AttributeActionBean extends LocalizableActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/attribute.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editattribute.jsp";
@@ -175,7 +176,7 @@ public class AttributeActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(attribute);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Attribuut is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributeactionbean.attsaved")));
         return new ForwardResolution(EDITJSP);
     }
     

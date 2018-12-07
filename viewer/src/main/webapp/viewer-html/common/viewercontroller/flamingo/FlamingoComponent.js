@@ -41,15 +41,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         showZoomerButtons: null
     },       
     /** Create a new FlamingoTool
-     *@construct
-     *@param config.id id of this object
-     *@param config.type the type of the component
-     *@param config.width the width of the component
-     *@param config.height the height of the component
-     *@param config.left margin at the left side
-     *@param config.right margin of the right side
-     *@param config.bottom margin at the bottom side
-     *@param config.listenTo the component id to listen to
+     *param config.id id of this object
+     *param config.type the type of the component
+     *param config.width the width of the component
+     *param config.height the height of the component
+     *param config.left margin at the left side
+     *param config.right margin of the right side
+     *param config.bottom margin at the bottom side
+     *param config.listenTo the component id to listen to
      */
     constructor : function (config){
         //replace the . for flamingo
@@ -133,7 +132,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
     },
     /**
      * Sets the tool visibility
-     * @param visibility the visibility
+     * param visibility the visibility
      * @see MapComponent#setVisible
      */
     setVisible: function (visibility){
@@ -182,15 +181,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
     },
     /**
      * Adds a string to the FlamingoComponent.
-     * @param key the name of the string
-     * @param string the string
+     * param key the name of the string
+     * param string the string
      */
     addString: function(key,string){
         this.strings[key]=string;
     },
     /**
      * Get the string
-     * @param key the key of the string
+     * param key the key of the string
      * @return the string that is set for the given key
      */
     getString: function(key){

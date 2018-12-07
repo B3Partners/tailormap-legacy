@@ -34,6 +34,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
@@ -45,6 +46,7 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.CycloramaAccount;
 import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.codec.binary.Base64;
@@ -63,7 +65,7 @@ import sun.security.rsa.RSAPrivateCrtKeyImpl;
 @UrlBinding("/action/cyclorama/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class CycloramaConfigurationActionBean implements ActionBean {
+public class CycloramaConfigurationActionBean extends LocalizableActionBean {
     private static final Log log = LogFactory.getLog(CycloramaConfigurationActionBean.class);
 
     private final String CERT_TYPE = "PKCS12";
@@ -119,7 +121,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
     }
 
     // </editor-fold>
-
+        
     @DefaultHandler
     public Resolution view() {
         accounts = getAccountList();
@@ -135,7 +137,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
                 key.delete();
             }else{
                 if(account.getPrivateBase64Key() == null){
-                    context.getValidationErrors().add("Key", new SimpleError("Geef een PFX bestand op."));
+                    context.getValidationErrors().add("Key", new SimpleError(getBundle().getString("viewer_admin.cycloramaconfigurationactionbean.pfx")));
                 }
             }
             EntityManager em = Stripersist.getEntityManager();
@@ -143,7 +145,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
             em.getTransaction().commit();
 
         } catch (Exception ex) {
-            context.getValidationErrors().add("Key", new SimpleError("Something is wrong with the key"));
+            context.getValidationErrors().add("Key", new SimpleError(getBundle().getString("viewer_admin.cycloramaconfigurationactionbean.keywrong")));
             log.error("Something went wrong with reading the key",ex);
         }
         return view();
@@ -154,7 +156,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
         em.remove(account);
         em.getTransaction().commit();
         account = new CycloramaAccount();
-        this.context.getMessages().add(new SimpleMessage("Key verwijderd."));
+        this.context.getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.cycloramaconfigurationactionbean.keyrem")));
         return view();
     }
 

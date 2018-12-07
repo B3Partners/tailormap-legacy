@@ -25,7 +25,10 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -38,6 +41,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import nl.b3p.mail.Mailer;
+import nl.b3p.i18n.ResourceBundleProvider;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,9 +63,10 @@ public class PrintGenerator  implements Runnable{
     private final String filename;
     private final String fromName;
     private final String fromMail;
-    private final  String toMail;
+    private final String toMail;
+    private final Locale locale;
 
-    public PrintGenerator(PrintInfo info, String mimeType, File xsl, String filename, String fromName, String fromMail, String toMail) {
+    public PrintGenerator(PrintInfo info, String mimeType, File xsl, String filename, String fromName, String fromMail, String toMail, Locale locale) {
         this.info = info;
         this.mimeType = mimeType;
         this.xsl = xsl;
@@ -69,6 +74,7 @@ public class PrintGenerator  implements Runnable{
         this.fromName = fromName;
         this.fromMail = fromMail;
         this.toMail = toMail;
+        this.locale = locale;
     }
 
     @Override
@@ -78,7 +84,10 @@ public class PrintGenerator  implements Runnable{
         } catch (Exception ex) {
             log.error("Cannot create print.", ex);
             try {
-                Mailer.sendMail(fromName, fromMail,toMail, "Fout bij printen", "De print kon niet worden gemaakt. De foutmelding is: " + ex.getLocalizedMessage());
+                ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(locale);
+                String subject = bundle.getString("viewer.printgenerator.subject_fail");
+                String mailContent = MessageFormat.format(bundle.getString("viewer.printgenerator.mailContent_fail"), ex.getLocalizedMessage());
+                Mailer.sendMail(fromName, fromMail,toMail, subject, mailContent);
             } catch (Exception ex1) {
                 log.error("Cannot send mail for reporting exception");
             }
@@ -93,7 +102,10 @@ public class PrintGenerator  implements Runnable{
             String path = new File(xsl.getParent()).toURI().toString();
             //        PrintInfo info, String mimeType, InputStream xslIs, String basePath, OutputStream ou
             createOutput(info, mimeType, new FileInputStream(xsl), path, fos, filename);
-            Mailer.sendMail(fromName, fromMail,toMail,"Print is klaar", "De print is klaar en staat in de bijlage", temp, filename);
+            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(locale);
+            String subject = bundle.getString("viewer.printgenerator.subject_success");
+            String mailContent = bundle.getString("viewer.printgenerator.mailContent_success");
+            Mailer.sendMail(fromName, fromMail, toMail, subject, mailContent, temp, filename);
         } finally {
             temp.delete();
         }
@@ -160,12 +172,13 @@ public class PrintGenerator  implements Runnable{
         try {
             /* Construct fop */
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            foUserAgent.setCreator("Flamingo");
-            foUserAgent.setProducer("Flamingo");
+            String fop_creator_text = "Webgis";
+            foUserAgent.setCreator(fop_creator_text);
+            foUserAgent.setProducer(fop_creator_text);
 
             Date now = new Date();
             foUserAgent.setCreationDate(now);
-            foUserAgent.setTitle("Kaart");
+            foUserAgent.setTitle("Map");
 
             Fop fop = fopFactory.newFop(mimeType, foUserAgent, out);
 
@@ -188,7 +201,7 @@ public class PrintGenerator  implements Runnable{
             transformer.transform(src, res);
           
          } catch (FOPException | JAXBException | TransformerException ex) {
-            log.error("Fout tijdens print output: ", ex);
+            log.error("Error during print output: ", ex);
         } finally {
             out.close();
         }

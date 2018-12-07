@@ -16,8 +16,8 @@
  */
 package nl.b3p.geotools.data.arcgis;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 import java.io.IOException;
 import java.util.*;
 import org.apache.commons.logging.Log;

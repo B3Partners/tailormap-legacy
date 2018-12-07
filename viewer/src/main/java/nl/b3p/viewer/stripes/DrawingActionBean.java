@@ -16,9 +16,9 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -112,7 +112,7 @@ public class DrawingActionBean implements ActionBean {
                 in.close();
                 out.close();
             } catch (IOException ex) {
-                log.error("Fout sluiten streams:", ex);
+                log.error("Error closing streams:", ex);
             }
             String contents = FileUtils.readFileToString(features);
 
@@ -121,9 +121,9 @@ public class DrawingActionBean implements ActionBean {
             json.put("success", Boolean.TRUE);
             json.put("content", contents);
         } catch (JSONException ex) {
-            log.error("Fout met jsoon", ex);
+            log.error("Error on json", ex);
         } catch (IOException e) {
-            log.error("Fout lezen gmlfile:", e);
+            log.error("Error reading gml file:", e);
         } finally {
             features.delete();
         }
@@ -200,7 +200,7 @@ public class DrawingActionBean implements ActionBean {
                         features.delete();
                     }
                 } catch (Exception e) {
-                    log.error("Fout bij maken sld: ", e);
+                    log.error("Error creating sld: ", e);
                     response.setContentType("text/html;charset=UTF-8");
                     PrintWriter pw = new PrintWriter(out);
                     pw.write(e.getMessage());

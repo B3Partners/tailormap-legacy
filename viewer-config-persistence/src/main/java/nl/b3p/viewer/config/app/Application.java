@@ -76,6 +76,9 @@ public class Application implements Comparable<Application>{
     @Column()
     private String title;
 
+    @Column()
+    // lang instead of language because language can be a reserved word in some SQL versions
+    private String lang;
     @Lob
     @org.hibernate.annotations.Type(type = "org.hibernate.type.StringClobType")
     private String layout;
@@ -140,7 +143,6 @@ public class Application implements Comparable<Application>{
     @ElementCollection
     @Column(name = "role_name")
     private Set<String> readers = new HashSet<String>();
-    
     private String projectionCode;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -170,6 +172,14 @@ public class Application implements Comparable<Application>{
 
     public String getTitle() {
         return title;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     public void setTitle(String title) {
@@ -442,6 +452,7 @@ public class Application implements Comparable<Application>{
         }
         o.put("version", version);
         o.put("title", title);
+        o.put("language", lang);
         o.put("projectionCode", projectionCode != null ? projectionCode : "EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]");
 
         if (!onlyServicesAndLayers) {

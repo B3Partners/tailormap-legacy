@@ -16,7 +16,6 @@
  */
 /**
  * @class 
- * @constructor
  * @description
  */
 //TODO: Add getFeatureInfo through the framework (is used when no featuretype for layer)

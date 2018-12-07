@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>5.3.6-SNAPSHOT</version>
+        <version>5.3.8-SNAPSHOT</version>
     </parent>
     <name>viewer-commons</name>
   
@@ -72,6 +72,11 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
+        </dependency>
+        <!-- Stripes -->
+        <dependency>
+            <groupId>net.sourceforge.stripes</groupId>
+            <artifactId>stripes</artifactId>
         </dependency>
         <dependency>
             <groupId>org.stripesstuff</groupId>

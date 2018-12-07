@@ -16,7 +16,6 @@
  */
 /**
  * @class 
- * @constructor
  * @description OpenLayers Arc layer super class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  **/
@@ -66,10 +65,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
         return null;
     },
     setBuffer : function (radius,layer){
-        console.log("OpenLayersArcLayer.setBuffer: .setBuffer() must be made!");
+        console.log(i18next.t('viewer_viewercontroller_openlayers_openlayersarclayer_0'));
     },
     removeBuffer: function(layer){        
-        console.log("OpenLayersArcLayer.removeBuffer: .removeBuffer() must be made!");
+        console.log(i18next.t('viewer_viewercontroller_openlayers_openlayersarclayer_1'));
     },
     getType : function (){
         return this.mixins.openLayersLayer.getType.call(this);

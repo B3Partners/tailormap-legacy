@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +71,6 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -86,12 +86,11 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/downloadfeatures")
 @StrictBinding
-public class DownloadFeaturesActionBean implements ActionBean {
+public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(DownloadFeaturesActionBean.class);
 
     private ActionBeanContext context;
-
     private boolean unauthorized;
 
     @Validate
@@ -218,7 +217,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
         JSONObject json = new JSONObject();
         if (unauthorized) {
             json.put("success", false);
-            json.put("message", "Not authorized");
+            json.put("message", getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
         String sId = context.getRequest().getSession().getId();
@@ -260,7 +259,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
             json.put("success", false);
 
-            String message = "Fout bij ophalen features: " + e.toString();
+            String message = MessageFormat.format(getBundle().getString("viewer.downloadfeaturesactionbean.1"), e.toString() );
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();

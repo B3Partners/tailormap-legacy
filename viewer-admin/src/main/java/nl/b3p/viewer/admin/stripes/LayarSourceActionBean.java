@@ -20,10 +20,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -36,6 +38,7 @@ import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import net.sourceforge.stripes.validation.ValidationErrors;
 import net.sourceforge.stripes.validation.ValidationMethod;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
@@ -61,7 +64,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/layarsource/{$event}")
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class LayarSourceActionBean implements ActionBean {
+public class LayarSourceActionBean extends LocalizableActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/layarsource.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarsource.jsp";
 
@@ -102,8 +105,8 @@ public class LayarSourceActionBean implements ActionBean {
     //for list of attributes
     @Validate
     private Long featureTypeId;
-    
-    @DefaultHandler
+        
+   @DefaultHandler
     public Resolution view() {
         layarServices = Stripersist.getEntityManager().createQuery("from LayarService").getResultList();
         return new ForwardResolution(JSP);
@@ -116,7 +119,7 @@ public class LayarSourceActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(layarSource);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Layarsource is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layarsourceactionbean.lssaved")));
         return new ForwardResolution(EDITJSP);
     }
     
@@ -138,7 +141,7 @@ public class LayarSourceActionBean implements ActionBean {
     public Resolution delete() {
         Stripersist.getEntityManager().remove(layarSource);
         Stripersist.getEntityManager().getTransaction().commit();
-        getContext().getMessages().add(new SimpleMessage("Layar bron is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layarsourceactionbean.lsrem")));
         return new ForwardResolution(EDITJSP);
     }
     
@@ -275,7 +278,7 @@ public class LayarSourceActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return this.context;
     }
-    
+
     public List<LayarService> getLayarServices() {
         return layarServices;
     }

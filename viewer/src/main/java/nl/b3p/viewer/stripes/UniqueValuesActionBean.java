@@ -16,11 +16,14 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.i18n.LocalizableActionBean;
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
@@ -41,10 +44,11 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-public class UniqueValuesActionBean implements ActionBean {
+public class UniqueValuesActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(UniqueValuesActionBean.class);
 
     private ActionBeanContext context;
+
     @Validate
     private ApplicationLayer applicationLayer;
     @Validate
@@ -144,7 +148,7 @@ public class UniqueValuesActionBean implements ActionBean {
 
         } catch (Exception e) {
             log.error("getUniqueValues() failed", e);
-            json.put("msg", "Unieke waardes ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
+            json.put("msg", MessageFormat.format(getBundle().getString("viewer.uniquevaluesactionbean.1"), applicationLayer.getLayerName(), e.toString() ));
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
@@ -160,7 +164,7 @@ public class UniqueValuesActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
         try {
             if (attributes.length != 2) {
-                throw new IllegalArgumentException("Aantal attributen moet 2 zijn voor deze functie, een sleutel en een label veld.");
+                throw new IllegalArgumentException(getBundle().getString("viewer.uniquevaluesactionbean.2"));
             }
 
             if (this.featureType == null) {
@@ -177,7 +181,7 @@ public class UniqueValuesActionBean implements ActionBean {
             json.put("msg", e.toString());
         } catch (Exception e) {
             log.error("getKeyValuePairs() failed", e);
-            json.put("msg", "Waarde paren ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
+            json.put("msg", MessageFormat.format(getBundle().getString("viewer.uniquevaluesactionbean.3"), applicationLayer.getLayerName(), e.toString() ));
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
@@ -203,7 +207,7 @@ public class UniqueValuesActionBean implements ActionBean {
             }
         } catch (Exception e) {
             log.error("getMinMaxValue() failed", e);
-            json.put("msg", "Minmax waardes bepalen mislukt voor attribuut " + attribute + ": " + e.toString());
+            json.put("msg", MessageFormat.format(getBundle().getString("viewer.uniquevaluesactionbean.4"), attribute,  e.toString() ));
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }

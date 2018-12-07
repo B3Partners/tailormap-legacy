@@ -85,7 +85,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void loadInfo() throws JSONException{
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         if(layer == null) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Laag niet gevonden bij originele service - verwijder deze laag uit niveau"));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.applicationtreelayeractionbean.notfound")));
             return;
         }
 
@@ -94,7 +94,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             JSONObject styleTitleJson = new JSONObject();
 
             style.put("id", "sld:" + sld.getId());
-            style.put("title", "SLD stijl: " + sld.getTitle() + (sld.isDefaultStyle() ? " (standaard)" : ""));
+            style.put("title", "SLD style: " + sld.getTitle() + (sld.isDefaultStyle() ? " (default)" : ""));
 
             // Find stuff for layerName
             if(sld.getNamedLayerUserStylesJson() != null) {
@@ -123,7 +123,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 JSONObject wmsStyle = wmsStyles.getJSONObject(i);
                 Map style = new HashMap();
                 style.put("id", "wms:" + wmsStyle.getString("name"));
-                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : ""));
+                style.put("title", "WMS server style: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : ""));
                 JSONObject styleTitleJson = new JSONObject();
                 styleTitleJson.put("styleTitle", wmsStyle.has("title") ? wmsStyle.getString("title") : wmsStyle.getString("name"));
                 styles.add(style);
@@ -134,11 +134,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             List<Map> temp = new ArrayList();
             Map s = new HashMap();
             s.put("id", "registry_default");
-            s.put("title", "In gegevensregister als standaard ingestelde SLD");
+            s.put("title", getBundle().getString("viewer_admin.applicationtreelayeractionbean.defstyle"));
             temp.add(s);
             s = new HashMap();
             s.put("id", "none");
-            s.put("title", "Geen: standaard stijl van WMS service zelf");
+            s.put("title", getBundle().getString("viewer_admin.applicationtreelayeractionbean.nodefstyle"));
             temp.add(s);
             temp.addAll(styles);
             styles = temp;
@@ -154,51 +154,51 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     @Before
     public void synchronizeFeatureType() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
         // Synchronize configured attributes with layer feature type
+        if (layer != null) {
+            if (layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
+                applicationLayer.getAttributes().clear();
+            } else {
+                List<String> attributesToRetain = new ArrayList();
 
-        if(layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
-            applicationLayer.getAttributes().clear();
-        } else {
-            List<String> attributesToRetain = new ArrayList();
-            
-            SimpleFeatureType sft = layer.getFeatureType(); 
-            // Rebuild ApplicationLayer.attributes according to Layer FeatureType
-            // New attributes are added at the end of the list; the original
-            // order is only used when the Application.attributes list is empty
-            // So a feature for reordering attributes per applicationLayer is
-            // possible.
-            // New Attributes from a join or related featureType are added at the 
-            //end of the list.                                  
-            attributesToRetain = rebuildAttributes(sft);
-            
-             
-            // Remove ConfiguredAttributes which are no longer present
-            List<ConfiguredAttribute> attributesToRemove = new ArrayList();
-            for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
-                if (ca.getFeatureType()==null){
-                    ca.setFeatureType(layer.getFeatureType());
-                }
-                if(!attributesToRetain.contains(ca.getFullName())) {
-                    // Do not modify list we are iterating over
-                    attributesToRemove.add(ca);
-                    if(!"save".equals(getContext().getEventName())) {
-                        getContext().getMessages().add(new SimpleMessage("Attribuut \"{0}\" niet meer beschikbaar in attribuutbron: wordt verwijderd na opslaan", ca.getAttributeName()));
+                SimpleFeatureType sft = layer.getFeatureType();
+                // Rebuild ApplicationLayer.attributes according to Layer FeatureType
+                // New attributes are added at the end of the list; the original
+                // order is only used when the Application.attributes list is empty
+                // So a feature for reordering attributes per applicationLayer is
+                // possible.
+                // New Attributes from a join or related featureType are added at the 
+                //end of the list.                                  
+                attributesToRetain = rebuildAttributes(sft);
+
+                // Remove ConfiguredAttributes which are no longer present
+                List<ConfiguredAttribute> attributesToRemove = new ArrayList();
+                for (ConfiguredAttribute ca : applicationLayer.getAttributes()) {
+                    if (ca.getFeatureType() == null) {
+                        ca.setFeatureType(layer.getFeatureType());
+                    }
+                    if (!attributesToRetain.contains(ca.getFullName())) {
+                        // Do not modify list we are iterating over
+                        attributesToRemove.add(ca);
+                        if (!"save".equals(getContext().getEventName())) {
+                            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationtreelayeractionbean.unavailable"), ca.getAttributeName()));
+                        }
                     }
                 }
+                for (ConfiguredAttribute ca : attributesToRemove) {
+                    applicationLayer.getAttributes().remove(ca);
+                    em.remove(ca);
+                }
+                if (attributesJSON.has(ATTRIBUTES_CONFIG_KEY)) {
+                    attributesConfig = attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY);
+                } else {
+                    attributesConfig = new JSONArray();
+                    // JSON info about attributed required for editing
+                    makeAttributeJSONArray(layer.getFeatureType());
+                }
             }
-            for(ConfiguredAttribute ca: attributesToRemove) {
-                applicationLayer.getAttributes().remove(ca);
-                em.remove(ca);
-            }
-            if (attributesJSON.has(ATTRIBUTES_CONFIG_KEY)) {
-                attributesConfig = attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY);
-            } else {
-                attributesConfig = new JSONArray();
-                // JSON info about attributed required for editing
-                makeAttributeJSONArray(layer.getFeatureType());
-            }
-        }        
+        }
     }
     
     @DontValidate
@@ -211,13 +211,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
-            
+
             // Fill visible checkboxes
             for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
                 if(ca.isVisible()) {
                     selectedAttributes.add(ca.getFullName());
                 }
-            }            
+            }
         }
 
         return new ForwardResolution(JSP);
@@ -257,13 +257,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 em.persist(ca);
                 
                 if(!"save".equals(getContext().getEventName())) {
-                    String message ="Nieuw attribuut \"{0}\" gevonden in ";
+                    String message =getBundle().getString("viewer_admin.applicationtreelayeractionbean.newattr") + " ";
                     if(layer.getFeatureType().getId()!=sft.getId()){
-                        message+="gekoppelde ";
+                        message+=getBundle().getString("viewer_admin.applicationtreelayeractionbean.joined") + " ";
                     }
-                    message+="attribuutbron";
+                    message+=getBundle().getString("viewer_admin.applicationtreelayeractionbean.attrsrc") + " ";
                     if(layer.getFeatureType().getId()==sft.getId()){
-                        message+=": wordt zichtbaar na opslaan";
+                        message+=": "+ getBundle().getString("viewer_admin.applicationtreelayeractionbean.visible");
                     }
                     getContext().getMessages().add(new SimpleMessage(message, name));
                 }
@@ -395,7 +395,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
         makeAttributeJSONArray(layer.getFeatureType());
 
-        getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationtreelayeractionbean.layersaved")));
         return edit();
     }
     

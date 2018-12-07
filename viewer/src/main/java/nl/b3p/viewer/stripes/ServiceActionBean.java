@@ -16,12 +16,14 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.i18n.LocalizableActionBean;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
@@ -42,10 +44,10 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/service/info")
 @StrictBinding
-public class ServiceActionBean implements ActionBean {
+public class ServiceActionBean extends LocalizableActionBean implements ActionBean {
     
     private ActionBeanContext context;
-    
+
     @Validate
     private String protocol;
     @Validate
@@ -86,7 +88,7 @@ public class ServiceActionBean implements ActionBean {
         this.url = url;
     }
     //</editor-fold>
-    
+
     public Resolution info() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -96,7 +98,7 @@ public class ServiceActionBean implements ActionBean {
         EntityManager em = Stripersist.getEntityManager();
         
         if(protocol == null || url == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.serviceactionbean.1");
         } else {
             
             Map params = new HashMap();
@@ -111,13 +113,13 @@ public class ServiceActionBean implements ActionBean {
                     params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
                     service = new ArcIMSService().loadFromUrl(url, params, em);
                 } else {
-                    error = "Invalid protocol";
+                    error = getBundle().getString("viewer.serviceactionbean.2");
                 }            
             } catch(Exception e) {
                 
-                error = "Fout bij laden service " + e.toString();
+                error = "Error loading service " + e.toString();
                 if(e.getCause() != null) {
-                    error += "; oorzaak: " + e.getCause().toString();
+                    error += "; cause: " + e.getCause().toString();
                 }
             }
         }

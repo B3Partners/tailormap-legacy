@@ -16,8 +16,8 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
@@ -53,6 +53,7 @@ import org.stripesstuff.stripersist.Stripersist;
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +62,7 @@ import java.util.List;
  */
 @UrlBinding("/action/featurereport")
 @StrictBinding
-public class FeatureReportActionBean implements ActionBean {
+public class FeatureReportActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private static final Log LOG = LogFactory.getLog(FeatureReportActionBean.class);
 
@@ -74,6 +75,7 @@ public class FeatureReportActionBean implements ActionBean {
     private Layer layer = null;
     private boolean unauthorized;
     private ActionBeanContext context;
+
     /**
      * feature id to report.
      */
@@ -156,7 +158,7 @@ public class FeatureReportActionBean implements ActionBean {
                     // each iteration multiply with 10, max 4 steps, so [1,10, 100, 1000]
                     // if geom still too large bail out and use bbox
                     LOG.debug("Simplify selected feature geometry with distance of: " + simplify);
-                    geomModified = " (vereenvoudigde geometrie)";
+                    geomModified = getBundle().getString("viewer.featurereportactionbean.modified");
                     geom = TopologyPreservingSimplifier.simplify(geom, simplify);
                     geomTxt = geom.toText();
                     simplify = 10 * simplify;
@@ -167,7 +169,10 @@ public class FeatureReportActionBean implements ActionBean {
                     wktGeom.put("_wktgeom", geomTxt);
                 }
                 wktGeom.put("color", "FF00FF");
-                wktGeom.put("label", "Geselecteerd object: " + this.fid.replace(layer.getFeatureType().getTypeName() + ".", "") + geomModified);
+                wktGeom.put("label", 
+                        MessageFormat.format(getBundle().getString("viewer.featurereportactionbean.mm"), 
+                        this.fid.replace(layer.getFeatureType().getTypeName() + ".", ""), 
+                        geomModified));
                 wktGeom.put("strokeWidth", 8);
                 params.getJSONArray("geometries").put(wktGeom);
             }
@@ -251,10 +256,12 @@ public class FeatureReportActionBean implements ActionBean {
                             info.putOnce("rowCount", featureCount);
 
                             if (numFeats > this.maxrelatedfeatures) {
-                                info.putOnce("moreMessage", "Er zijn meer dan " + this.maxrelatedfeatures + " gerelateerde items.");
+                                String msg = MessageFormat.format(getBundle().getString("viewer.featurereportactionbean.moreitems"), this.maxrelatedfeatures);
+                                info.putOnce("moreMessage", msg);
                             }
                         } else {
-                            info.putOnce("errorMessage", "Kolom met naam '" + leftSide + "' moet beschikbaar zijn voor het ophalen van gerelateerde items.");
+                            String msg = MessageFormat.format(getBundle().getString("viewer.featurereportactionbean.columnmissing"), leftSide);
+                            info.putOnce("errorMessage", msg);
                         }
                         
                         extra = new JSONObject()

@@ -116,7 +116,7 @@ public class CombineWmsUrl extends CombineImageUrl{
                 result[1] = new Integer(heightString);
             } catch (NumberFormatException nfe) {
                 result = null;
-                log.debug("Height en/of Width zijn geen integers: Heigth: " + heightString + "Width: " + widthString);
+                log.debug("Height and/or Width are no integers: Heigth: " + heightString + "Width: " + widthString);
             }
         }
         return result;
@@ -145,7 +145,7 @@ public class CombineWmsUrl extends CombineImageUrl{
                     bb[3] = Double.parseDouble(stringBbox.split(",")[3]);
                 } catch (NumberFormatException nfe) {
                     bb = null;
-                    log.debug("Geen geldige double waarden in de bbox: " + stringBbox);
+                    log.debug("No valid doubles in the bbox: " + stringBbox);
                 }
             }
         }

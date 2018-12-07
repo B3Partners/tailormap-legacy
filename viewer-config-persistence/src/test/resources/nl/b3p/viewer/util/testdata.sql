@@ -1,7 +1,7 @@
 SET DATABASE REFERENTIAL INTEGRITY FALSE;
 SET WRITE_DELAY 0
 
-INSERT INTO application (id, authenticated_required, authorizations_modified, layout, max_crs, max_maxx, max_maxy, max_minx, max_miny, name, title, start_crs, start_maxx, start_maxy, start_minx, start_miny, version, owner, root) VALUES (1, false, '2015-09-15 16:35:27.956', NULL, NULL, NULL, NULL, NULL, NULL, 'test', 'test title', NULL, NULL, NULL, NULL, NULL, '1', NULL, 2);
+INSERT INTO application (id, authenticated_required, authorizations_modified, layout, max_crs, max_maxx, max_maxy, max_minx, max_miny, name, title, lang, start_crs, start_maxx, start_maxy, start_minx, start_miny, version, owner, root) VALUES (1, false, '2015-09-15 16:35:27.956', NULL, NULL, NULL, NULL, NULL, NULL, 'test', 'test title', 'nl_NL', NULL, NULL, NULL, NULL, NULL, '1', NULL, 2);
 
 INSERT INTO application_details (application, value, details_key) VALUES (1, '#000000', 'steunkleur2');
 INSERT INTO application_details (application, value, details_key) VALUES (1, '/resources/images/default_sprite.png', 'iconSprite');
@@ -208,21 +208,26 @@ INSERT INTO feature_type_attributes (feature_type, attribute_descriptor, list_in
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('tiled', 1, '2015-09-15 16:33:48.096', false, true, 'Openbasiskaart', NULL, 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd', NULL, 'TMS', NULL, NULL, NULL, 1, 1);
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('wms', 2, '2015-09-15 16:34:14.961', false, true, 'Groen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&', 'B3P', NULL, 'Inimage', false, NULL, 2, 3);
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('wms', 3, '2015-09-15 16:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map&', 'B3P', NULL, 'Inimage', false, NULL, 2, 9);
+INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, service_name, category, top_layer) VALUES ('wms', 4, '2018-11-22 13:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'https://flamingo4.b3p.nl/geoserver/test_omgeving_fla5/wms', 'B3P', NULL, 'Inimage', false, NULL, 2, 1);
 
 insert into geo_service_readers (geo_service, role_name) values (2, 'Admin');
+insert into geo_service_readers (geo_service, role_name) values (4, 'Admin');
 
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (1, 'false', 'useIntersect');
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (2, 'false', 'useProxy');
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (2, 'false', 'useIntersect');
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (3, 'false', 'useProxy');
 INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (3, 'false', 'useIntersect');
+INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (4, 'true', 'useProxy');
+INSERT INTO geo_service_details (geoservice, value, details_key) VALUES (4, 'true', 'useIntersect');
 
 
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (2, 'WMS');
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (2, 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&');
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (3, 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map');
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (3, 'WMS');
-
+INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (4, 'https://flamingo4.b3p.nl/geoserver/test_omgeving_fla5/wms');
+INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (4, 'WMS');
 
 
 INSERT INTO group_ (name, description) VALUES ('Admin', 'Groep met toegang tot beheerapplicatie viewer');

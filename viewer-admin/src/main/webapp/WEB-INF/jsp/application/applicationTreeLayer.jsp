@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Boomstructuur met kaarten</title>
+        <title><fmt:message key="viewer_admin.applicationtreelayer.0" /></title>
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
@@ -29,137 +29,101 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
             <div id="tabs" class="maximize">
                 <div id="settings-tab" class="tabdiv">
-                    <a href="#Instellingen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
+                    <a href="#Instellingen_Per_Kaartlaag_Help" title="<fmt:message key="viewer_admin.applicationtreelayer.1" />" class="helplink"></a>
                     <stripes:errors/>
                     <stripes:messages/>
                     <table class="formtable">
                         <tr>
-                            <td>Weergavenaam:</td>
+                            <td><fmt:message key="viewer_admin.applicationtreelayer.2" />:</td>
                             <td>
                                 <stripes:text id="titleAlias" name="details['titleAlias']" maxlength="255" size="30"/>
-                                Laat leeg om de naam uit het gegevensregister te gebruiken.
+                                <fmt:message key="viewer_admin.applicationtreelayer.3" />
                             </td>
                         </tr>
                         <tr>
-                            <td>Titel voor editing:</td>
+                            <td><fmt:message key="viewer_admin.applicationtreelayer.4" />:</td>
                             <td><stripes:text name="details['editfunction.title']" maxlength="255" size="30"/></td>
                         </tr>
                         <c:choose>
                             <c:when test="${!empty actionBean.styles}">
                                 <tr>
-                                    <td style="vertical-align: top">Style/SLD:</td>
+                                    <td style="vertical-align: top"><fmt:message key="viewer_admin.applicationtreelayer.5" />:</td>
                                     <td>
                                         <stripes:select id="styleSelect" name="details['style']">
                                             <stripes:options-collection collection="${actionBean.styles}" value="id" label="title"/>
                                         </stripes:select><br>
-                                        Titel van laag uit SLD: <a href="#" id="layerTitle">-</a><br>
-                                        Titel van stijl uit SLD: <a href="#"  id="styleTitle">-</a><br>
-                                        <i>Klik op een titel om deze in te vullen bij weergavenaam.</i>
+                                        <fmt:message key="viewer_admin.applicationtreelayer.6" />: <a href="#" id="layerTitle">-</a><br>
+                                        <fmt:message key="viewer_admin.applicationtreelayer.7" />: <a href="#"  id="styleTitle">-</a><br>
+                                        <i><fmt:message key="viewer_admin.applicationtreelayer.8" /></i>
                                     </td>
                                 </tr>
                             </c:when>
                             <c:otherwise>
                                 <tr>
-                                    <td>Style/SLD:</td>
-                                    <td>Geen stijlen beschikbaar</td>
+                                    <td><fmt:message key="viewer_admin.applicationtreelayer.9" />:</td>
+                                    <td><fmt:message key="viewer_admin.applicationtreelayer.10" /></td>
                                 </tr>
                             </c:otherwise>
                         </c:choose>
                         <tr>
-                            <td style="vertical-align: top">Alternatieve legenda afbeelding:</td>
+                            <td style="vertical-align: top"><fmt:message key="viewer_admin.applicationtreelayer.11" />:</td>
                             <td>
                                 <stripes:text name="details['legendImageUrl']" maxlength="255" size="80"/><br>
-                                Laat leeg om de standaardafbeelding uit het gegevensregister of de afbeelding
-                                zoals deze door de service wordt gegenereerd te gebruiken.
+                                <fmt:message key="viewer_admin.applicationtreelayer.12" />
                             </td>
                         </tr>
                         <tr>
-                            <td>Transparantie beginwaarde:</td>
+                            <td><fmt:message key="viewer_admin.applicationtreelayer.13" />:</td>
                             <td>
                                 <stripes:text name="details['transparency']" maxlength="255" size="10" style="display: none;" id="details_transparency" />
                                 <div id="details_transparency_slider" style="width: 200px; float: left;"></div>
-                                <div style="float: left; margin-left: 15px;" id="transpSliderWarning">Wordt overschreven wanneer een slider wordt toegevoegd aan deze laag</div>
+                                <div style="float: left; margin-left: 15px;" id="transpSliderWarning"><fmt:message key="viewer_admin.applicationtreelayer.14" /></div>
                                 <div style="clear: both;"></div>
                             </td>
                         </tr>
                         <tr>
-                            <td>Straalinvloedsgebied:</td>
+                            <td><fmt:message key="viewer_admin.applicationtreelayer.15" />:</td>
                             <td>
                                 <stripes:text name="details['influenceradius']" maxlength="255" size="10"/>
-                                Werkt in combinatie met component Invloedsgebied, afstand in meters
+                                <fmt:message key="viewer_admin.applicationtreelayer.16" />
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <fieldset style="border: 1px gray ridge; width: 100%; padding: 2px;">
-                                    <legend style="margin-left: 5px; padding: 2px">Samenvatting (maptip, featureinfo)</legend>
-                                    <i>Om de waarde van een attribuut te gebruiken, zet de naam van het attribuut in blokhaken, bijvoorbeeld: [naam]. Zie de "Attributen" tab voor de beschikbare attributen.</i>
+                                    <legend style="margin-left: 5px; padding: 2px"><fmt:message key="viewer_admin.applicationtreelayer.17" /></legend>
+                                    <i><fmt:message key="viewer_admin.applicationtreelayer.18" /></i>
                                     <table class="formtable">
                                         <tr>
-                                            <td>Titel:</td>
+                                            <td><fmt:message key="viewer_admin.applicationtreelayer.19" />:</td>
                                             <td><stripes:text name="details['summary.title']" maxlength="255" size="30"/></td>
                                         </tr>
                                         <tr>
-                                            <td>Afbeelding URL:</td>
+                                            <td><fmt:message key="viewer_admin.applicationtreelayer.20" />:</td>
                                             <td><stripes:text name="details['summary.image']" maxlength="255" size="30"/></td>
                                         </tr>
                                         <tr>
-                                            <td valign="top">Omschrijving:</td>
+                                            <td valign="top"><fmt:message key="viewer_admin.applicationtreelayer.21" />:</td>
                                             <td>
                                                 <div>
-                                                    <stripes:checkbox class="use-plain-text-editor" name="details['summary.texteditor']" value="plain-text-editor" /> Standaard tekst veld gebruiken in plaats van HTML editor
+                                                    <stripes:checkbox class="use-plain-text-editor" name="details['summary.texteditor']" value="plain-text-editor" /> <fmt:message key="viewer_admin.applicationtreelayer.22" />
                                                 </div>
                                                 <div id="details_summary_description_container" style="width: 475px; height: 150px;"></div>
                                                 <stripes:textarea name="details['summary.description']" rows="5" cols="27" style="display: none; width: 475px; height: 150px;" id="details_summary_description" />
-                                                <a href="#" class="inlinehelp-toggle" data-target="related-features-help">Related features gebruiken?</a>
-                                                <div class="inline-help related-features-help" style="display: none;">
-                                                    Het is ook mogelijk gebruik te maken van related features. Gebruik hiervoor de "standaard tekst veld" weergave.<br />
-                                                    Blokken waarin de related features moeten komen beginnen met een [begin.FEATURETYPE] en eindigen met [end.FEATURETYPE].<br />
-                                                    Om de related features weer te geven moet worden begonnen met [begin.repeat.FEATURETYPE] en eindigen met [end.repeat.FEATURETYPE].<br />
-                                                    Daarbinnen het is mogelijk om attributen uit de releated featuretype te gebruiken.
-                                                    (Waar hierboven FEATURETYPE staat moet de naam van de related featuretype staan.)<br /><br />
-                                                    Voorbeeld:
-                                                    <pre>Gemeente: [gm_code] - [gm_naam]&lt;br /&gt;
-Wijken: &lt;br /&gt;
-[begin.wijk_2014]
-    &lt;table&gt;
-        &lt;thead&gt;
-            &lt;tr&gt;
-                &lt;th&gt;Wijk code&lt;/th&gt;
-                &lt;th&gt;Wijk naam&lt;/th&gt;
-            &lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-            &lt;!-- LET OP: tr en td tags om begin-
-            veld is nodig ivm HTML editor. --&gt;
-            &lt;tr&gt;&lt;td colspan="2"&gt;
-              [begin.repeat.wijk_2014]
-            &lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;
-                &lt;td&gt;[wk_code]&lt;/td&gt;
-                &lt;td&gt;[wk_naam]&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;!-- LET OP: tr en td tags om end-
-            veld is nodig ivm HTML editor. --&gt;
-            &lt;tr&gt;&lt;td colspan="2"&gt;
-            	[end.repeat.wijk_2014]
-            &lt;/td&gt;&lt;/tr&gt;
-        &lt;/tbody&gt;
-    &lt;/table&gt;
-[end.wijk_2014]</pre>
-                                                </div>
+                                                <a href="#" class="inlinehelp-toggle" data-target="related-features-help"><fmt:message key="viewer_admin.applicationtreelayer.23" /></a>
+                                                <div class="inline-help related-features-help" style="display: none;"><fmt:message key="viewer_admin.applicationtreelayer.24" /></div>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Link:</td>
+                                            <td><fmt:message key="viewer_admin.applicationtreelayer.25" />:</td>
                                             <td><stripes:text name="details['summary.link']" maxlength="255" size="30"/></td>
                                         </tr>
                                         <tr>
-                                            <td valign="top">Opties:</td>
+                                            <td valign="top"><fmt:message key="viewer_admin.applicationtreelayer.26" />:</td>
                                             <td>
-                                                <label><stripes:checkbox name="details['summary.noHtmlEncode']"/>HTML tags in attribuutwaarden toestaan</label><br>
-                                                <label><stripes:checkbox name="details['summary.nl2br']"/>Regeleindes in attribuutwaarden toestaan</label><br>
-                                                <label><stripes:checkbox name="details['summary.retrieveUploads']"/>Laat uploads zien</label><br>
+                                                <label><stripes:checkbox name="details['summary.noHtmlEncode']"/><fmt:message key="viewer_admin.applicationtreelayer.27" /></label><br>
+                                                <label><stripes:checkbox name="details['summary.nl2br']"/><fmt:message key="viewer_admin.applicationtreelayer.28" /></label><br>
+                                                <label><stripes:checkbox name="details['summary.retrieveUploads']"/><fmt:message key="viewer_admin.applicationtreelayer.29" /></label><br>
                                             </td>
                                         </tr>
                                     </table>
@@ -170,10 +134,10 @@ Wijken: &lt;br /&gt;
                 </div>
                 <div id="rights-tab" class="tabdiv">
                     <h1>
-                        Rechten:
-                        <a href="#Rechten_Op_Kaartlaag_Help" title="Help" class="helplink"></a>
+                        <fmt:message key="viewer_admin.applicationtreelayer.30" />:
+                        <a href="#Rechten_Op_Kaartlaag_Help" title="<fmt:message key="viewer_admin.applicationtreelayer.31" />" class="helplink"></a>
                     </h1>
-                    L &nbsp; B <br/>
+                    <fmt:message key="viewer_admin.applicationtreelayer.32" /> <br/>
                     <c:forEach var="group" items="${actionBean.allGroups}">
                         <stripes:checkbox name="groupsRead" value="${group.name}"/>
                         <stripes:checkbox name="groupsWrite" value="${group.name}"/>
@@ -184,25 +148,25 @@ Wijken: &lt;br /&gt;
                     <stripes:hidden name="details['editfeature.usernameAttribute']" id="details_editfeature_usernameAttribute"/>
                     <stripes:hidden name="details['editfeature.uploadDocument']" id="details_editfeature_uploadDocument"/>
                     <stripes:hidden name="details['editfeature.uploadDocument.types']" id="details_editfeature_uploadDocument_types"/>
-                    <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
+                    <a href="#Edit_Per_Kaartlaag_Help" title="<fmt:message key="viewer_admin.applicationtreelayer.33" />" class="helplink"></a>
                     <c:choose>
                         <c:when test="${actionBean.editable}">
-                            Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                            <fmt:message key="viewer_admin.applicationtreelayer.34" />
                         </c:when>
                         <c:otherwise>
-                            De attribuutbron van deze kaartlaag is niet van het type JDBC en is daarom niet editbaar.
+                            <fmt:message key="viewer_admin.applicationtreelayer.35" />
                         </c:otherwise>
                     </c:choose>
                 </div>
                 <div id="filter-tab" class="tabdiv">
-                    <a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
-                    Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                    <a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="<fmt:message key="viewer_admin.applicationtreelayer.36" />" class="helplink"></a>
+                    <fmt:message key="viewer_admin.applicationtreelayer.37" />
                 </div>
                 <div id="context-tab" class="tabdiv">
-                    <a href="#Context_Info_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
+                    <a href="#Context_Info_Per_Kaartlaag_Help" title="<fmt:message key="viewer_admin.applicationtreelayer.38" />" class="helplink"></a>
                     <stripes:textarea cols="150" rows="5" name="details['context']" id="context_textarea" style="display: none;" />
                     <div id="contextHtmlEditorContainer" style="width: 475px; height: 400px;"></div>
-                    (Metadata)url: <stripes:text name="details['metadataurl']" style="width: 390px;"/>
+                    <fmt:message key="viewer_admin.applicationtreelayer.39" />: <stripes:text name="details['metadataurl']" style="width: 390px;"/>
                 </div>
             </div>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>

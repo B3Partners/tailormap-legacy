@@ -22,14 +22,14 @@
 package nl.b3p.viewer.image;
 
 import com.sun.imageio.plugins.png.PNGMetadata;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -250,18 +250,18 @@ public class ImageTool {
                 gbi.setColor(fs.getStrokeColor());
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getStrokeOpacity().floatValue()));
                 gbi.draw(shape);
-            } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
+            } else if (geom instanceof org.locationtech.jts.geom.Point) {
                 int pointwidth = (int) pointRadius * 2;
                 int pointheight = (int) pointRadius * 2;
-                int xpointoffset =  -pointwidth / 2;
+                int xpointoffset = -pointwidth / 2;
                 int ypointoffset = -pointheight / 2;
-                centerPoint = calculateCenter(shape, srid, bbox, width, height,xpointoffset , ypointoffset);
+                centerPoint = calculateCenter(shape, srid, bbox, width, height, xpointoffset, ypointoffset);
                 Shape s;
                 AffineTransform at = gbi.getTransform();
-            
-                if(fs.getGraphicName() != null && !fs.getGraphicName().isEmpty()){
+
+                if (fs.getGraphicName() != null && !fs.getGraphicName().isEmpty()) {
                     s = drawPointGraphic(centerPoint, fs, xpointoffset, ypointoffset, gbi);
-            } else {
+                } else {
                     s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
                 }
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
@@ -347,6 +347,161 @@ public class ImageTool {
     }
 
     private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi) {
+        Shape s = null;
+        switch(fs.getGraphicName()){
+            case "square":
+                s = createSquare(origin, fs, xoffset, yoffset, gbi);
+                break;
+            case "circle":
+                int length = fs.getPointRadius().intValue() * 2;
+                s = new Ellipse2D.Double(origin.getX(), origin.getY(), length, length);
+                break;
+            case "triangle":
+                 s = createTriangle(origin, fs, xoffset, yoffset, gbi);
+                break;
+            case "cross":
+                s = createCross(origin, fs, xoffset, yoffset, gbi);
+                break;
+            case "x":
+                s = createX(origin, fs, xoffset, yoffset, gbi);
+                break;
+            case "star":
+                s = createStar(origin, fs, xoffset, yoffset, gbi);
+                break;
+            default:
+                log.error("Cannot create type: " + fs.getGraphicName() + ". Creating default circle.");
+                s = new Ellipse2D.Double(origin.getX(), origin.getY(), fs.getPointRadius().intValue(), fs.getPointRadius().intValue());
+                break;
+        }
+        return s;
+    }
+    
+    private static Shape createStar(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi){
+        int originX = (int) origin.getX();
+        int originY = (int) origin.getY();
+        
+        int sideLength = fs.getPointRadius().intValue() /2;
+        int [] x ={
+            originX + 1 * sideLength,
+            originX + 2 * sideLength,
+            originX + 0 * sideLength,
+            originX + 3 * sideLength,
+            originX + 4 * sideLength,
+            originX + 5 * sideLength,
+            originX + 8 * sideLength,
+            originX + 6 * sideLength,
+            originX + 7 * sideLength,
+            originX + 4 * sideLength,
+            originX + 1 * sideLength          
+        };
+        
+        int [] y = {
+            originY + 8 * sideLength,
+            originY + 5 * sideLength,
+            originY + 3 * sideLength,
+            originY + 3 * sideLength,
+            originY + 0 * sideLength,
+            originY + 3 * sideLength,
+            originY + 3 * sideLength,
+            originY + 5 * sideLength,
+            originY + 8 * sideLength,
+            originY + 6 * sideLength,
+            originY + 8 * sideLength
+        };
+        Shape s = new java.awt.Polygon(x, y, x.length);
+        return s;
+    }
+    
+    private static Shape createCross(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi){
+        int originX = (int) origin.getX();
+        int originY = (int) origin.getY();
+        
+        int sideLength = fs.getPointRadius().intValue() ;
+        
+        int [] x ={
+            originX + 1 * sideLength,
+            originX + 2 * sideLength,
+            originX + 2 * sideLength,
+            originX + 3 * sideLength,
+            originX + 3 * sideLength,
+            originX + 2 * sideLength,
+            originX + 2 * sideLength,
+            originX + 1 * sideLength,
+            originX + 1 * sideLength,
+            originX + 0 * sideLength,
+            originX + 0 * sideLength,
+            originX + 1 * sideLength,
+            originX + 1 * sideLength            
+        };
+        
+        int [] y = {
+            originY + 3 * sideLength,
+            originY + 3 * sideLength,
+            originY + 2 * sideLength,
+            originY + 2 * sideLength,
+            originY + 1 * sideLength,
+            originY + 1 * sideLength,
+            originY + 0 * sideLength,
+            originY + 0 * sideLength,
+            originY + 1 * sideLength,
+            originY + 1 * sideLength,
+            originY + 2 * sideLength,
+            originY + 2 * sideLength,
+            originY + 3 * sideLength  
+        };
+        Shape s = new java.awt.Polygon(x, y, x.length);
+        return s;
+    }
+    private static Shape createX(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi){
+        int originX = (int) origin.getX();
+        int originY = (int) origin.getY();
+        
+        int sideLength = fs.getPointRadius().intValue();
+        
+        int [] x ={
+            originX + 1 * sideLength,
+            originX + 2 * sideLength,
+            originX + 3 * sideLength,
+            originX + 4 * sideLength,
+            originX + 3 * sideLength,
+            originX + 4 * sideLength,
+            originX + 3 * sideLength,
+            originX + 2 * sideLength,
+            originX + 1 * sideLength,
+            originX + 0 * sideLength,
+            originX + 1 * sideLength,
+            originX + 0 * sideLength,
+            originX + 1 * sideLength            
+        };
+        
+        int [] y = {
+            originY + 0 * sideLength,
+            originY + 1 * sideLength,
+            originY + 0 * sideLength,
+            originY + 1 * sideLength,
+            originY + 2 * sideLength,
+            originY + 3 * sideLength,
+            originY + 4 * sideLength,
+            originY + 3 * sideLength,
+            originY + 4 * sideLength,
+            originY + 3 * sideLength,
+            originY + 2 * sideLength,
+            originY + 1 * sideLength,
+            originY + 0 * sideLength  
+        };
+        Shape s = new java.awt.Polygon(x, y, x.length);
+        return s;
+    }
+    
+    private static Shape createSquare(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi){
+        int originX = (int) origin.getX();
+        int originY = (int) origin.getY();
+        int length = fs.getPointRadius().intValue() * 2;
+        Shape s = new java.awt.Rectangle(originX, originY, length, length);
+        return s;
+    }
+    
+    private static Shape createTriangle(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi){
         double rotation = fs.getRotation();
         int length = fs.getPointRadius().intValue() * 2;
         int halfLength = length/2;

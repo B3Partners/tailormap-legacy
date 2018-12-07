@@ -101,7 +101,7 @@ public class IPAuthenticationFilter implements Filter {
                 }
 
                 if(possibleUsers.isEmpty()){
-                    log.debug("No possible users found for ip");
+                    log.debug("No eligible users found for ip");
                 }else if( possibleUsers.size() == 1){
                     u = possibleUsers.get(0);
                     u.setAuthenticatedByIp(true);
@@ -110,7 +110,7 @@ public class IPAuthenticationFilter implements Filter {
                     session.setAttribute(USER_CHECK, u);
                     session.setAttribute(TIME_USER_CHECKED, System.currentTimeMillis());
                 }else{
-                    log.debug("Too many possible users found for ip.");
+                    log.debug("Too many eligible users found for ip.");
                 }
                 Stripersist.requestComplete();
             }else{
@@ -215,7 +215,7 @@ public class IPAuthenticationFilter implements Filter {
          * Ip ranges mogen ook via een asterisk */
         for(String ipAddress: (Set<String>)user.getIps()) {
 
-            log.debug("Controleren ip: " + ipAddress + " tegen: " + remoteAddress);
+            log.debug("Check ip: " + ipAddress + " against: " + remoteAddress);
 
             if (ipAddress.contains("*")) {
                 if (isRemoteAddressWithinIpRange(ipAddress, remoteAddress)) {
@@ -227,7 +227,7 @@ public class IPAuthenticationFilter implements Filter {
                 return true;
             }
         }
-        log.info("IP adres " + remoteAddress + " niet toegestaan voor gebruiker " + user.getName());
+        log.info("IP address " + remoteAddress + " not allowed for user " + user.getName());
 
         return false;
     }

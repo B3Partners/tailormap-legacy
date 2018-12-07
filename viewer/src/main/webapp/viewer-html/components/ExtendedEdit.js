@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext */
+/* global Ext, i18next */
 
 /**
  * ExtendedEdit component
@@ -33,16 +33,27 @@ Ext.define ("viewer.components.ExtendedEdit",{
     currentCoords: null,
     currentLayer: null,
     initialLoad: false,
+    config:{
+        showSplitButton:false,
+        showMergeButton:false  
+    },
     constructor: function (conf){
         conf.isPopup = false;
         this.initConfig(conf);
+        
+        this.lastUsedValues = {};
         viewer.components.Edit.superclass.constructor.call(this, this.config);
         var me = this;
-
+        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, this.initComponent, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
+        return this;
+    },
+    initComponent: function () {
         this.schema = new Ext.data.schema.Schema();
 
-        this.navigateBackButton = this.createPaginationButton('left', 'Vorige');
-        this.navigateForwardButton = this.createPaginationButton('right', 'Volgende');
+        this.navigateBackButton = this.createPaginationButton('left', i18next.t('viewer_components_extendededit_0'));
+        this.navigateForwardButton = this.createPaginationButton('right', i18next.t('viewer_components_extendededit_1'));
         this.buttons = Ext.create('Ext.toolbar.Toolbar', {
             xtype: 'toolbar',
             dock: 'bottom',
@@ -57,7 +68,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         formItems.push({
             xtype: 'container',
             itemId: 'removeMessage',
-            html: i18next.t('viewer_components_extendededit_0'),
+            html: i18next.t('viewer_components_extendededit_2'),
             hidden: true,
             componentCls: 'alert-message success'
         });
@@ -87,19 +98,13 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.savebutton = this.maincontainer.down("#saveButton");
         this.buttonPanel = this.maincontainer.down("#buttonPanel");
         var editButton = this.buttonPanel.down("#editButton");
-        if(editButton) {
+        if (editButton) {
             editButton.setVisible(false);
         }
-        
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, function () {
-            this.createVectorLayer();
-        }, this);
-
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
+        this.createVectorLayer();
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO, this.startEdit, this);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS, this.layerSelectorInit, this);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE, this.selectedLayerChanged, this);
-        return this;
     },
     layerSelectorInit: function() {
         if(this.currentLayer === null) {
@@ -290,7 +295,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
 
         this.setFormVisible(false);
         this.buttonPanel.setVisible(true);
-        this.savebutton.setText("Opslaan");
+        this.savebutton.setText(i18next.t('viewer_components_extendededit_3'));
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
         if(this.config.allowEdit) {

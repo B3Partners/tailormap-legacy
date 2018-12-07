@@ -23,12 +23,12 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.util.SelectedContentCache;
-import org.hibernate.Hibernate;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -38,7 +38,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/layer")
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class LayerActionBean implements ActionBean {
+public class LayerActionBean extends LocalizableActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";
     private ActionBeanContext context;
@@ -171,8 +171,8 @@ public class LayerActionBean implements ActionBean {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
-
-    @DefaultHandler
+        
+   @DefaultHandler
     public Resolution edit() {
         if (layer != null) {
             details = new HashMap();
@@ -268,7 +268,7 @@ public class LayerActionBean implements ActionBean {
             SelectedContentCache.setApplicationCacheDirty(application, true, false, em);
         }
         em.getTransaction().commit();
-        getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.layeractionbean.layersaved")));
 
         return new ForwardResolution(JSP);
     }

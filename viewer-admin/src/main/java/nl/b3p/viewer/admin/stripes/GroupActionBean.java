@@ -22,6 +22,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
 import org.hibernate.*;
@@ -36,7 +37,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/group/{$event}/{service}")
 @RolesAllowed({Group.ADMIN,Group.USER_ADMIN})
-public class GroupActionBean implements ActionBean {
+public class GroupActionBean extends LocalizableActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/editgroup.jsp";
@@ -145,7 +146,7 @@ public class GroupActionBean implements ActionBean {
         this.start = start;
     }
     //</editor-fold>
-
+        
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
@@ -179,7 +180,7 @@ public class GroupActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(group);
         Stripersist.getEntityManager().getTransaction().commit();
 
-        getContext().getMessages().add(new SimpleMessage("Gebruikersgroep is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.groupactionbean.ugsaved")));
         return new ForwardResolution(EDITJSP);
     }
 
@@ -187,14 +188,14 @@ public class GroupActionBean implements ActionBean {
     public void validate(ValidationErrors errors) throws Exception {
         if (group == null) {
             if(name == null) {
-                errors.add("name", new SimpleError("Naam is verplicht"));
+                errors.add("name", new SimpleError(getBundle().getString("viewer_admin.groupactionbean.nameobl")));
                 return;
             }
             
             try {
                 Object o = Stripersist.getEntityManager().createQuery("select 1 from Group where name = :name").setMaxResults(1).setParameter("name", name).getSingleResult();
 
-                errors.add("name", new SimpleError("Naam moet uniek zijn"));
+                errors.add("name", new SimpleError(getBundle().getString("viewer_admin.groupactionbean.namenotunique")));
                 return;
 
             } catch (NoResultException nre) {
@@ -206,17 +207,17 @@ public class GroupActionBean implements ActionBean {
     @DontValidate
     public Resolution delete() {
         if (!group.getMembers().isEmpty()) {
-            getContext().getValidationErrors().add("group", new SimpleError("De groep kan niet worden verwijderd omdat deze nog gebruikers heeft."));
+            getContext().getValidationErrors().add("group", new SimpleError(getBundle().getString("viewer_admin.groupactionbean.ughasu")));
             return new ForwardResolution(EDITJSP);
         }
         if(groupInUse()){
-            getContext().getValidationErrors().add("group", new SimpleError("De groep kan niet worden verwijderd omdat deze nog in gebruik is."));
+            getContext().getValidationErrors().add("group", new SimpleError(getBundle().getString("viewer_admin.groupactionbean.uginuse")));
             return new ForwardResolution(EDITJSP);
         }
         Stripersist.getEntityManager().remove(group);
         Stripersist.getEntityManager().getTransaction().commit();
 
-        getContext().getMessages().add(new SimpleMessage("Gebruikersgroep is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.groupactionbean.ugrem")));
 
         return new ForwardResolution(EDITJSP);
     }

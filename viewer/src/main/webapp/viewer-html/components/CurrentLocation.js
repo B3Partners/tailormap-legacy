@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global i18next */
 /**
  * CurrentLocation tool
  * Gets the location by using the Geo API
@@ -29,7 +30,8 @@ Ext.define ("viewer.components.CurrentLocation",{
     MARKER_PREFIX: "CurrentLocation_",
     config: {
         interval: null,
-        tooltip: i18next.t('viewer_components_currentlocation_0')
+        tooltip: i18next.t('viewer_components_currentlocation_0'),
+        locationRetrieved:null
     },
     constructor: function(config){
         this.callParent(arguments);
@@ -42,12 +44,13 @@ Ext.define ("viewer.components.CurrentLocation",{
             Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
         }
         this.geolocationProj= new Proj4js.Proj("EPSG:4326");
-        
         if (this.viewerController.projectionString !== "" && Proj4js.defs[this.viewerController.projection] == undefined ){
             Proj4js.defs[this.viewerController.projection]= this.viewerController.projectionString;
         }
         this.mapProj= new Proj4js.Proj(this.viewerController.projection);
-        this.createButton();
+        if(!config.hideButton){
+        	this.createButton();
+        }
     },
     /**
      * Create the button
@@ -106,13 +109,18 @@ Ext.define ("viewer.components.CurrentLocation",{
             me.errorHandler(pos);
         },{
             timeout: this.config.interval
-        })
+        });
     },
     /**
      *Stop watching the position
      */
-    stopWatch: function(){
+    stopWatch: function(keepMarker){
         navigator.geolocation.clearWatch(this.watchId);
+        if(!keepMarker){
+            this.removeMarkers();
+        }
+    },
+    removeMarkers:function(){
         this.config.viewerController.mapComponent.getMap().removeMarker(this.MARKER_PREFIX+this.getName());
     },
     /**
@@ -124,6 +132,11 @@ Ext.define ("viewer.components.CurrentLocation",{
         this.lastPoint = this.transformLatLon(lon,lat);
         this.config.viewerController.mapComponent.getMap().moveTo(this.lastPoint.x,this.lastPoint.y);
         this.config.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
+        if(this.config.locationRetrieved){
+            var val = this.lastPoint;
+            val.accuracy = position.coords.accuracy;
+            this.config.locationRetrieved(this.lastPoint);
+        }
     },
     /**
      * Handle errors.
@@ -131,18 +144,17 @@ Ext.define ("viewer.components.CurrentLocation",{
     errorHandler: function(error){
         var message="";
         if (error.code == error.PERMISSION_DENIED){
-            message="PERMISSION_DENIED! You did not allowed this site to get your position.";
+            message=i18next.t('viewer_components_currentlocation_1');
         }if (error.code == error.POSITION_UNAVAILABLE){
-            message="POSITION_UNAVAILABLE! Can't get your position, are you on planet earth?";
+            message=i18next.t('viewer_components_currentlocation_2');
         }if (error.code == error.TIMEOUT){
-            message="TIMEOUT! Did you allowed this site to ALWAYS get your position? If not, "+
-                "we can't follow your position and can only update your position one time.";
+            message=i18next.t('viewer_components_currentlocation_3');
         }
         this.button.deactivate();
         if (this.lastPoint!=null){
             this.config.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
         }
-        this.config.viewerController.logger.error("Error while recieving location: "+message);
+        this.config.viewerController.logger.error(i18next.t('viewer_components_currentlocation_4')+message);
     },
     transformLatLon: function(x,y){
         var point = new Proj4js.Point(x,y);

@@ -155,7 +155,7 @@ Ext.define ("viewer.components.AttributeList",{
                     valueField: 'type',
                     style: { marginRight: '5px' },
                     store:  Ext.create('Ext.data.Store', {
-                        fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"GEOJSON", label:"GeoJSON" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }]
+                        fields: ['type','label'], data : [{type:"CSV", label: i18next.t('viewer_components_attributelist_2') },{type:"GEOJSON", label: i18next.t('viewer_components_attributelist_3') },{type:"XLS", label: i18next.t('viewer_components_attributelist_4') },{type:"SHP", label: i18next.t('viewer_components_attributelist_5') }]
                     })
                 }
             ]
@@ -207,7 +207,7 @@ Ext.define ("viewer.components.AttributeList",{
             // topContainerOptions.bodyPadding = this.config.viewerController.layoutManager.isTabComponent(this.name) ? '10 0 10 10' : '10 0 10 0';
         } else {
             closingPanelOptions.items.push({
-                xtype: 'button', text: i18next.t('viewer_components_attributelist_2'), handler: function() {
+                xtype: 'button', text: i18next.t('viewer_components_attributelist_6'), handler: function() {
                     me.popup.hide();
                 }
             });
@@ -332,7 +332,7 @@ Ext.define ("viewer.components.AttributeList",{
             clearTimeout(this.requestThresholdCounter);
         }
         if (this.grids.main) {
-            this.grids.main.getView().setLoading("Bezig met laden...");
+            this.grids.main.getView().setLoading(i18next.t('viewer_components_attributelist_7'));
         }
         me.loadLayerOnPopupShow = "";
         this.requestThresholdCounter = setTimeout(function(){
@@ -622,17 +622,17 @@ Ext.define ("viewer.components.AttributeList",{
 
                         if(msg == null) {
                             if(response.timedout) {
-                                msg = "Request timed out";
+                                msg = i18next.t('viewer_components_attributelist_8');
                             } else if(response.statusText != null && response.statusText != "") {
                                 msg = response.statusText;
                             } else {
-                                msg = "Unknown error";
+                                msg = i18next.t('viewer_components_attributelist_9');
                             }
                         }
 
                         Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
 
-                        Ext.MessageBox.alert("Foutmelding", msg);
+                        Ext.MessageBox.alert(i18next.t('viewer_components_attributelist_10'), msg);
 
                     }
                 }
@@ -753,9 +753,9 @@ Ext.define ("viewer.components.AttributeList",{
                 id: name + 'Pager',
                 store: store,
                 displayInfo: true,
-                displayMsg: 'Feature {0} - {1} van {2}',
-                afterPageText : 'van {0}',
-                emptyMsg: "Geen features om weer te geven"
+                displayMsg: i18next.t('viewer_components_attributelist_11'),
+                afterPageText : i18next.t('viewer_components_attributelist_12'),
+                emptyMsg: i18next.t('viewer_components_attributelist_13')
             });
             Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
@@ -824,7 +824,7 @@ Ext.define ("viewer.components.AttributeList",{
         url += '&params=' + this.config.downloadParams;
 
         var w =new Ext.Window({
-            title: i18next.t('viewer_components_attributelist_3'),
+            title: i18next.t('viewer_components_attributelist_14'),
             width: 400,
             height: 150,
             layout: 'fit',

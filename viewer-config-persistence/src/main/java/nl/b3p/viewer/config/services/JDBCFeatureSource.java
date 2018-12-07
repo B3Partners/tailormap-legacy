@@ -131,19 +131,19 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
 
                         /* XXX use instanceof... */
                         String type = "";
-                        if(binding.equals("com.vividsolutions.jts.geom.MultiPolygon")){
+                        if(binding.equals("org.locationtech.jts.geom.MultiPolygon")){
                             type = AttributeDescriptor.TYPE_GEOMETRY_MPOLYGON;
-                        }else if(binding.equals("com.vividsolutions.jts.geom.Polygon")){
+                        }else if(binding.equals("org.locationtech.jts.geom.Polygon")){
                             type = AttributeDescriptor.TYPE_GEOMETRY_POLYGON;
-                        }else if(binding.equals("com.vividsolutions.jts.geom.Geometry")){
+                        }else if(binding.equals("org.locationtech.jts.geom.Geometry")){
                             type = AttributeDescriptor.TYPE_GEOMETRY;
-                        }else if(binding.equals("com.vividsolutions.jts.geom.LineString")){
+                        }else if(binding.equals("org.locationtech.jts.geom.LineString")){
                             type = AttributeDescriptor.TYPE_GEOMETRY_LINESTRING;
-                        }else if(binding.equals("com.vividsolutions.jts.geom.Point")){
+                        }else if(binding.equals("org.locationtech.jts.geom.Point")){
                             type = AttributeDescriptor.TYPE_GEOMETRY_POINT;
-                        }else if(binding.equals("com.vividsolutions.jts.geom.MultiLineString")){
+                        }else if(binding.equals("org.locationtech.jts.geom.MultiLineString")){
                             type = AttributeDescriptor.TYPE_GEOMETRY_MLINESTRING;
-                        }else if(binding.equals("com.vividsolutions.jts.geom.MultiPoint")){
+                        }else if(binding.equals("org.locationtech.jts.geom.MultiPoint")){
                             type = AttributeDescriptor.TYPE_GEOMETRY_MPOINT;
                         }else if(binding.equals("java.lang.Boolean")){
                             type = AttributeDescriptor.TYPE_BOOLEAN;
@@ -204,17 +204,19 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put("passwd", getPassword());
         params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
         params.put(JDBCDataStoreFactory.PK_METADATA_TABLE.key, "gt_pk_metadata");
-        log.debug("Opening datastore using parameters: " + params);
+        Map logParams = new HashMap(params);
+        if(getPassword() != null) {
+            logParams.put("passwd", new String(new char[getPassword().length()]).replace("\0", "*"));
+        }
+        log.debug("Opening datastore using parameters: " + logParams);
         try {
             DataStore ds = DataStoreFinder.getDataStore(params);
             if(ds == null) {
-                params.put("passwd", "xxx");
-                throw new Exception("Cannot open datastore using parameters " + params);
+                throw new Exception("Cannot open datastore using parameters " + logParams);
             }
             return ds;
         } catch(Exception e) {
-            params.put("passwd", "xxx");
-            throw new Exception("Cannot open datastore using parameters " + params, e);
+            throw new Exception("Cannot open datastore using parameters " + logParams, e);
         }
     }
 

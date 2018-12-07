@@ -110,7 +110,7 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
     },
     /**
      * Show selected state
-     * @param selected true/false if true the button selected state is shown
+     * param selected true/false if true the button selected state is shown
      */
     setSelectedState : function (selected){
         this.frameworkObject.callMethod(this.getId(),"setSelectedState",selected);

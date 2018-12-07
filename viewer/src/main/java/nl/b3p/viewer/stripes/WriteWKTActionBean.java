@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
@@ -45,7 +46,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/wkt")
 @StrictBinding
-public class WriteWKTActionBean implements ActionBean{
+public class WriteWKTActionBean extends LocalizableApplicationActionBean implements ActionBean{
 
     private static final Log log = LogFactory.getLog(SplitFeatureActionBean.class);
 
@@ -86,7 +87,7 @@ public class WriteWKTActionBean implements ActionBean{
                     File base = new File(basepath, type + File.separator);
                     if(!base.exists()){
                         if(!base.mkdir()){
-                            log.error("Kan folder " + base.getAbsolutePath() + " niet maken.");
+                            log.error("Can not create folder " + base.getAbsolutePath() + ".");
                         }
                     }
                     if (base.exists() && base.canWrite()) {
@@ -105,15 +106,15 @@ public class WriteWKTActionBean implements ActionBean{
 
                             obj.put("success", true);
                         } catch (IOException ex) {
-                            obj.put("message", "Fout met wegschrijven bestand. Neem contact op met de systeembeheerder.");
+                            obj.put("message", getBundle().getString("viewer.writewktactionbean.1"));
                             log.error("Error writing wkt file: ", ex);
                         }
                     } else {
-                        obj.put("message", "Fout met wegschrijven bestand. Neem contact op met de systeembeheerder (pad bestaat niet of geen rechten om te schrijven).");
+                        obj.put("message", getBundle().getString("viewer.writewktactionbean.2"));
                     }
                 } else {
-                    obj.put("message", "Base path niet geconfigureerd. Neem contact op met de systeembeheerder.");
-                    log.error("Error writing wkt file: Base path niet geconfigureerd. Neem contact op met de systeembeheerder." );
+                    obj.put("message", getBundle().getString("viewer.writewktactionbean.3"));
+                    log.error("Error writing wkt file: Base path not configured. Contact your administrator." );
                 }
                 break;
             }

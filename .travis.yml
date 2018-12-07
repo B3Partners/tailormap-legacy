@@ -9,9 +9,7 @@ addons:
     - flamingo
   apt:
     packages:
-      - oracle-java8-installer
       - haveged
-      - openjdk-8-jdk
       - git-lfs
 
 services:
@@ -76,3 +74,7 @@ matrix:
 cache:
   directories:
   - $HOME/.m2
+
+notifications:
+  slack:
+    secure: mYodD7XUMo+NQ0InmhW4VqYaoOg5GDupzoWBHZIp9WlA5FrkDw9aWqt730BxTYMAkImYZdArxiyPsD05BNWM1Y9Cf8OJRpKlcSRXYvl6rHzTiOT3PUjXn7FBfh10lxIj4u3q3Tg9YOU9mS9WSMZFss1GV0ZuNt2RASAsebDbsys=

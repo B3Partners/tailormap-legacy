@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
              for the Stripesstuff SecurityManager to work
         --%>
         <meta http-equiv="refresh" content="0;url=${url}">
+        <meta name="teststring" content="<title>Beheeromgeving geo-viewers</title>">
     </head>
     <body>
     </body>

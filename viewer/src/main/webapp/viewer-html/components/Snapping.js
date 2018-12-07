@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global i18next, Ext, actionBeans, FlamingoAppLoader */
+
 /**
  * Snapping component for Flamingo.
  * @author <a href="mailto:markprins@b3partners.nl">Mark Prins</a>
@@ -44,6 +46,7 @@ Ext.define("viewer.components.Snapping", {
         iconUrl: "",
         tooltip: "",
         layers: null,
+        defaultOnLayers: null,
         label: "",
         snapColour: "FF00FF",
         snapFillColour: "FF00FF",
@@ -56,7 +59,7 @@ Ext.define("viewer.components.Snapping", {
     },
     constructor: function (conf) {
         this.initConfig(conf);
-		viewer.components.Snapping.superclass.constructor.call(this, this.config);
+        viewer.components.Snapping.superclass.constructor.call(this, this.config);
 
         // ajax to get the list of available layers
         var requestPath = actionBeans["layerlist"];
@@ -81,7 +84,7 @@ Ext.define("viewer.components.Snapping", {
                 me.initWindow();
             },
             failure: function (a, b, c) {
-                Ext.MessageBox.alert(i18next.t('viewer_components_snapping_1'), i18next.t('viewer_components_snapping_2'));
+                Ext.MessageBox.alert(i18next.t('viewer_components_snapping_0'), i18next.t('viewer_components_snapping_1'));
             }
         });
 
@@ -107,6 +110,20 @@ Ext.define("viewer.components.Snapping", {
         // create a group of checkboxes
         var ckkboxItems = [];
         var lyr;
+        var allChecker = {
+            xtype: 'checkbox',
+            boxLabel: i18next.t('viewer_components_snapping_3'),
+            name: 'snaplayer',
+            inputValue: 'all',
+            checked: false,
+            margin: '0 0 0 10',
+            listeners: {
+                change: function (field, data) {
+                    this.enableAllLayers(data);
+                },
+                scope:this
+            }
+        };
         for (var i = 0; i < this.layerList.length; i++) {
             lyr = this.layerList[i];
             ckkboxItems.push({
@@ -146,10 +163,11 @@ Ext.define("viewer.components.Snapping", {
             items: [{
                     forId: 'snapLayers',
                     xtype: 'label',
-                    text: i18next.t('viewer_components_snapping_0'),
+                    text: i18next.t('viewer_components_snapping_2'),
                     margin: '10 0 5 10'
-                }
-                , this.layerSelector]
+                },
+                allChecker,
+                this.layerSelector]
         });
     },
     /**
@@ -162,7 +180,7 @@ Ext.define("viewer.components.Snapping", {
         if (me.snapCtl === null) {
             me.createController();
         }
-
+        
         if (!checkboxgroup.getValue().snaplayer) {
             // nothing checked...
             for (var i = 0; i < this.switchedLayerIds.length; i++) {
@@ -223,7 +241,26 @@ Ext.define("viewer.components.Snapping", {
         if (this.snapCtl === null) {
             this.createController();
         }
+        this.maincontainer.updateLayout();
         this.popup.popupWin.setTitle(this.config.title);
+        this.enableAllDefaultLayers();
         this.popup.show();
+    },
+    enableAllDefaultLayers: function () {
+        this.setLayersEnabled(this.config.defaultOnLayers,true);
+    },
+    enableAllLayers: function(toggle){
+        this.setLayersEnabled(this.config.layers,toggle);
+    },
+    setLayersEnabled: function (layers,enabled) {
+        var checkboxgroup = this.maincontainer.getComponent("snapLayers");
+        checkboxgroup.items.each(function (item) {
+            for (var i = 0; i < layers.length; i++) {
+                if (layers[i] === item.inputValue) {
+                    item.setValue(enabled);
+                }
+            }
+        });
+
     }
 });

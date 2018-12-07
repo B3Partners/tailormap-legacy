@@ -23,6 +23,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.solr.SolrInitializer;
@@ -44,10 +45,11 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/attributesource/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
-public class AttributeSourceActionBean implements ActionBean {
+public class AttributeSourceActionBean extends LocalizableActionBean {
 
     private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);
     private ActionBeanContext context;
+            
     private static final String JSP = "/WEB-INF/jsp/services/attributesource.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editattributesource.jsp";
     @Validate
@@ -93,8 +95,7 @@ public class AttributeSourceActionBean implements ActionBean {
     private Map<UpdateResult.Status,List<SimpleFeatureType>> changedFeatureTypes;
     @Validate
     private Long changedFeatureSourceId;
-    
-    
+        
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -123,7 +124,7 @@ public class AttributeSourceActionBean implements ActionBean {
         EntityManager em = Stripersist.getEntityManager();
 
         deleteFeatureSource(em, SolrInitializer.getServerInstance());
-        getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributesourceactionbean.asremoved")));
         return new ForwardResolution(EDITJSP);
     }
 
@@ -158,7 +159,7 @@ public class AttributeSourceActionBean implements ActionBean {
             if (e.getCause() != null) {
                 s += "; cause: " + e.getCause().toString();
             }
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het laden van de attribuutbron: {2}", s));
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.attributesourceactionbean.errorload"), s));
         }
 
         return new ForwardResolution(EDITJSP);
@@ -184,7 +185,7 @@ public class AttributeSourceActionBean implements ActionBean {
 
             featureSource = fs;
 
-            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributesourceactionbean.asloaded")));
 
         } else if (protocol.equals("wfs")) {
             params.put(WFSDataStoreFactory.URL.key, url);
@@ -198,10 +199,10 @@ public class AttributeSourceActionBean implements ActionBean {
 
             featureSource = fs;
 
-            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributesourceactionbean.asloaded")));
 
         } else {
-            getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
+            getContext().getValidationErrors().add("protocol", new SimpleError(getBundle().getString("viewer_admin.attributesourceactionbean.invalid")));
         }
     }
 
@@ -219,14 +220,14 @@ public class AttributeSourceActionBean implements ActionBean {
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
 
-        getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributesourceactionbean.asloaded")));
 
         return edit();
     }
     
     public Resolution update() throws Exception{
         if(!isUpdatable()) {
-            getContext().getMessages().add(new SimpleMessage("Attribuutbron van protocol {0} kunnen niet worden geupdate",
+            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributesourceactionbean.noupdate"),
                     featureSource.getProtocol()));
             return new ForwardResolution(EDITJSP);
         }
@@ -254,12 +255,12 @@ public class AttributeSourceActionBean implements ActionBean {
         this.changedFeatureTypes = result.getFeatureTypeByStatus();
         this.changedFeatureSourceId = featureSource.getId();
         
-        getContext().getMessages().add(new SimpleMessage(String.format("De attribuutbron is geupdate. Er is/zijn %d featuretypes gewijzigd, %d ongewijzigd, %d nieuw en %d verwijderd",
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.attributesourceactionbean.aschanged"),
             byStatus.get(UpdateResult.Status.UPDATED).size(),
             byStatus.get(UpdateResult.Status.UNMODIFIED).size(),
             byStatus.get(UpdateResult.Status.NEW).size(),
             byStatus.get(UpdateResult.Status.MISSING).size()
-        )));
+        ));
         
         em.persist(featureSource);
         em.getTransaction().commit();
@@ -270,7 +271,7 @@ public class AttributeSourceActionBean implements ActionBean {
     @ValidationMethod(on = {"save", "saveEdit"})
     public void validate(ValidationErrors errors) throws Exception {
         if (name == null) {
-            errors.add("name", new SimpleError("Naam is verplicht"));
+            errors.add("name", new SimpleError(getBundle().getString("viewer_admin.attributesourceactionbean.nameobl")));
             return;
         }
 
@@ -278,7 +279,7 @@ public class AttributeSourceActionBean implements ActionBean {
             try {
                 Object o = Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name").setMaxResults(1).setParameter("name", name).getSingleResult();
 
-                errors.add("name", new SimpleError("Naam moet uniek zijn."));
+                errors.add("name", new SimpleError(getBundle().getString("viewer_admin.attributesourceactionbean.uniquename")));
                 return;
 
             } catch (NoResultException nre) {
@@ -289,7 +290,7 @@ public class AttributeSourceActionBean implements ActionBean {
                 Object o = Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name "
                         + "and id != :id").setMaxResults(1).setParameter("name", name).setParameter("id", featureSource.getId()).getSingleResult();
 
-                errors.add("name", new SimpleError("Naam moet uniek zijn."));
+                errors.add("name", new SimpleError(getBundle().getString("viewer_admin.attributesourceactionbean.uniquename")));
                 return;
 
             } catch (NoResultException nre) {

@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -36,6 +37,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
@@ -69,7 +71,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/configuresolr")
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
-public class ConfigureSolrActionBean implements ActionBean {
+public class ConfigureSolrActionBean extends LocalizableActionBean {
     private static final Log log = LogFactory.getLog(ConfigureSolrActionBean.class);
 
     private static final String JSP = "/WEB-INF/jsp/services/solrconfig.jsp";
@@ -239,7 +241,7 @@ public class ConfigureSolrActionBean implements ActionBean {
             SolrPingResponse resp = server.ping();
         }catch(Exception e){
             log.error("Solr ping exception", e);
-            this.context.getValidationErrors().addGlobalError(new SimpleError("Solr server niet correct geïnitialiseerd. Neem contact op met de systeembeheerder."));
+            this.context.getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.configuresolractionbean.solrnoconfig")));
             solrInitialized = false;
         }
         return new ForwardResolution(JSP);

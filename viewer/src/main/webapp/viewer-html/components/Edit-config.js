@@ -31,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.form.add([
             {
                 xtype: 'numberfield',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_55'),
+                fieldLabel: i18next.t('edit_config_0'),
                 name: 'clickRadius',
                 value: this.configObject.clickRadius !== undefined ? this.configObject.clickRadius : 4,
                 labelWidth: this.labelWidth,
@@ -41,42 +41,70 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_56'),
+                fieldLabel: i18next.t('edit_config_1'),
                 name: 'allowEdit',
                 value: this.configObject.allowEdit !== undefined ? this.configObject.allowEdit : true,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_57'),
+                fieldLabel: i18next.t('edit_config_2'),
                 name: 'allowDelete',
                 value: this.configObject.allowDelete !== undefined ? this.configObject.allowDelete : false,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_58'),
+                fieldLabel: i18next.t('edit_config_3'),
                 name: 'allowCopy',
                 value: this.configObject.allowCopy !== undefined ? this.configObject.allowCopy : false,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_59'),
+                fieldLabel: i18next.t('edit_config_4'),
                 name: 'allowNew',
                 value: this.configObject.allowNew !== undefined ? this.configObject.allowNew : true,
                 labelWidth: this.labelWidth
             },
             {
                 xtype: 'checkbox',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_60'),
+                fieldLabel: i18next.t('edit_config_5'),
                 name: 'showEditLinkInFeatureInfo',
                 value: this.configObject.showEditLinkInFeatureInfo !== undefined ? this.configObject.showEditLinkInFeatureInfo : false,
                 labelWidth: this.labelWidth
             },
             {
+                xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_rememberValuesInSession'),
+                name: 'rememberValuesInSession',
+                value: this.configObject.rememberValuesInSession !== undefined ? this.configObject.rememberValuesInSession : false,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_showMergeButton'),
+                name: 'showMergeButton',
+                value: this.configObject.showMergeButton !== undefined ? this.configObject.showMergeButton : false,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_showSplitButton'),
+                name: 'showSplitButton',
+                value: this.configObject.showSplitButton !== undefined ? this.configObject.showSplitButton : false,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_showSnappingButton'),
+                name: 'showSnappingButton',
+                value: this.configObject.showSnappingButton !== undefined ? this.configObject.showSnappingButton : false,
+                labelWidth: this.labelWidth
+            },
+            {
                 xtype: 'textarea',
-                fieldLabel: i18next.t('viewer_components_customconfiguration_61'),
+                fieldLabel: i18next.t('edit_config_6'),
                 name: 'editHelpText',
                 value: this.configObject.hasOwnProperty("editHelpText") ? this.configObject.editHelpText : "",
                 labelWidth: this.labelWidth,

@@ -16,7 +16,7 @@
  */
 package nl.b3p.geotools.data.arcims.axl;
 
-import com.vividsolutions.jts.geom.*;
+import org.locationtech.jts.geom.*;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -104,7 +104,7 @@ public class AxlField {
             return Double.parseDouble(value.replace(',', '.'));
         } else if(binding.equals(Date.class)) {
             return new Date(Long.parseLong(value));
-        } else if(binding.getName().startsWith("com.vividsolutions.jts.geom.")) {
+        } else if(binding.getName().startsWith("org.locationtech.jts.geom.")) {
             
             if(this.feature == null) {
                 return null;

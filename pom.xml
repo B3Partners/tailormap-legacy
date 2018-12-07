@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.3.6-SNAPSHOT</version>
+    <version>5.3.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -34,7 +34,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.3.6-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.3.8-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -42,23 +42,24 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>19.2</geotools.version>
+        <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in trabnsitive dependency hell -->
+        <geotools.version>20.1</geotools.version>
         <powermock.version>1.7.4</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.5</postgresql.version>
-        <apache.poi.version>4.0.0</apache.poi.version>
+        <apache.poi.version>4.0.1</apache.poi.version>
         <apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
-        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-        <tomcat.version>7.0.91</tomcat.version>
+        <maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
+        <tomcat.version>7.0.92</tomcat.version>
     </properties>
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-dependency-updates > dependency-updates.log
+            mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates > dependency-updates.log
             and check the output for any available updates.
             
             To check for vulnarabilities in dependencies use the following command:
@@ -150,31 +151,11 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.0.5</version>
+                <version>5.1.1</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
                         <artifactId>persistence-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.geotools</groupId>
-                        <artifactId>gt-epsg-hsql</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.geotools</groupId>
-                        <artifactId>gt-opengis</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.geotools.xsd</groupId>
-                        <artifactId>gt-xsd-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.geotools.xsd</groupId>
-                        <artifactId>gt-xsd-gml2</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.geotools.xsd</groupId>
-                        <artifactId>gt-xsd-gml3</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -256,7 +237,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.23.0</version>
+                <version>2.23.4</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -339,7 +320,7 @@
                 <!-- override the version provided by hibernate -->
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.22.0-CR2</version>
+                <version>3.24.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -520,9 +501,14 @@
             <plugins>
                 <!--
                     To check for plugin updates use the following command:
-                    mvn -U org.codehaus.mojo:versions-maven-plugin:2.5:display-plugin-updates -T1 > plugin-updates.log
+                    mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates -T1 > plugin-updates.log
                     and check the output for any available updates
                 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
@@ -596,17 +582,17 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <version>2.4</version>
-                </plugin>
+                    <version>2.4</version> 
+               </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
@@ -615,7 +601,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>3.3.4</version>
+                    <version>4.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
@@ -773,7 +759,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.2.5,)</version>
+                                    <version>[3.3.9,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>

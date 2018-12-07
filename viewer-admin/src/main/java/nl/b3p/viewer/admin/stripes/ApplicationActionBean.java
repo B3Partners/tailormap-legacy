@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
@@ -26,6 +27,7 @@ import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.security.Group;
 import org.stripesstuff.plugin.session.Session;
@@ -37,10 +39,10 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
-public abstract class ApplicationActionBean implements ActionBean {
+public abstract class ApplicationActionBean extends LocalizableActionBean {
 
     protected ActionBeanContext context;
-    
+            
     @Validate
     protected Application application;
     

@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             window.onerror = FlamingoErrorLogger;
         </script>
         <script type="text/javascript" src="${contextPath}/viewer-html/i18n/i18next.11.9.0.min.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/i18n/locales/nl.js"></script>
+        <script type="text/javascript" src="<stripes:url beanclass="nl.b3p.viewer.stripes.I18nActionBean" event="i18nextJs"><stripes:param name="language" value="${actionBean.language}"/></stripes:url>"></script>
 
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
@@ -56,11 +56,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <body>
 
         <div id="appLoader">
-            <div class="spinner">Loading...</div>
+            <div class="spinner"><fmt:message key="viewer.app.0" /></div>
         </div>
 
         <div id="loadwrapper">
-            <div id="loader">Loading...</div>
+            <div id="loader"><fmt:message key="viewer.app.1" /></div>
         </div>
 
         <div id="wrapper"></div>
@@ -79,7 +79,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
+        <c:if test="${actionBean.language eq 'nl_NL'}">
         <script type="text/javascript" src="${contextPath}/extjs/locale/locale-nl${param.debug == true ? '-debug' : ''}.js"></script>
+        </c:if>
 
         <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
 
@@ -262,7 +264,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "featureReport":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureReportActionBean"/></js:quote>,
                 "ontbrandings":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.OntbrandingsActionBean"/></js:quote>,
                 "file":               <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FileUploadActionBean"/></js:quote>,
-                "wkt":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.WriteWKTActionBean"/></js:quote>
+                "wkt":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.WriteWKTActionBean"/></js:quote>,
+                "contact":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ContactActionBean"/></js:quote>
             };
 
             <c:if test="${actionBean.viewerType == 'openlayers'}">

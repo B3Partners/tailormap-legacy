@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Geo service</title>
+        <title><fmt:message key="viewer_admin.geoservice.0" /></title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
@@ -62,8 +62,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:hidden name="category"/>
     <stripes:hidden name="service"/>
 
-    <c:if test="${!edit}"><h1 id="headertext">Nieuwe service toevoegen aan <c:out value="${actionBean.category.name}"/></h1></c:if>
-    <c:if test="${edit}"><h1 id="headertext">Service <c:out value="${actionBean.service.name}"/> bewerken</h1></c:if>
+    <c:if test="${!edit}"><h1 id="headertext"><fmt:message key="viewer_admin.geoservice.1" /> <c:out value="${actionBean.category.name}"/></h1></c:if>
+    <c:if test="${edit}"><h1 id="headertext"><fmt:message key="viewer_admin.geoservice.2" /> <c:out value="${actionBean.service.name}"/> </h1></c:if>
 
     <p>
     <script type="text/javascript">
@@ -90,10 +90,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </script>
     <table class="formtable">
         <tr>
-            <td>URL van de service *:</td>
+            <td><fmt:message key="viewer_admin.geoservice.3" /> *:</td>
             <td><stripes:text name="url" onchange="urlChanged();" maxlength="255" size="80"/></td>
         </tr>
-        <tr><td>Protocol *:</td>
+        <tr><td><fmt:message key="viewer_admin.geoservice.4" /> *:</td>
             <td>
                 <stripes:select name="protocol" disabled="${edit}" onchange="checkProtocol()" onkeyup="checkProtocol()">
                     <stripes:option value="wms">WMS</stripes:option>
@@ -105,42 +105,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </tr>
         <tr id="agsVersion">
             <td>
-                ArcGIS server versie:
+                <fmt:message key="viewer_admin.geoservice.5" />:
             </td>
             <td>
                 <stripes:select name="agsVersion" disabled="${edit}" onchange="checkProtocol()" onkeyup="checkProtocol()">
-                    <stripes:option value="">Automatisch</stripes:option>
+                    <stripes:option value=""><fmt:message key="viewer_admin.geoservice.6" /></stripes:option>
                     <stripes:option value="10.x">10.x</stripes:option>
                     <stripes:option value="9.x">9.x</stripes:option>
                 </stripes:select>
-                Selecteer een versie indien <i>http://server/ArcGIS/rest/services?f=json</i> is afgeschermd maar de service zelf niet.
+                <fmt:message key="viewer_admin.geoservice.7" />
             </td>
         </tr>
         <tr id="useUrlTr">
             <td colspan="2">
                 <label>
-                    <stripes:checkbox name="overrideUrl"/> Gebruik altijd ingevulde URL in plaats van URLs in GetCapabilities
+                    <stripes:checkbox name="overrideUrl"/> <fmt:message key="viewer_admin.geoservice.8" />
                 </label>
             </td>
         </tr>
         <tr id="useWFSTr">
             <td colspan="2">
                 <label>
-                    <stripes:checkbox name="skipDiscoverWFS"/> Sla ontdekken en koppelen van WFS attribuutbron over
+                    <stripes:checkbox name="skipDiscoverWFS"/> <fmt:message key="viewer_admin.geoservice.9" />
                 </label>
             </td>
         </tr>
         <tr id="wmsExcTr">
-            <td>Exceptiontype:</td>
+            <td><fmt:message key="viewer_admin.geoservice.10" />:</td>
             <td>
                 <stripes:select value="Inimage" name="exception_type" id="exception_type">
-                    <stripes:option value="-1">Kies..</stripes:option>
+                    <stripes:option value="-1"><fmt:message key="viewer_admin.geoservice.11" /></stripes:option>
                     <stripes:options-enumeration enum="nl.b3p.viewer.config.services.WMSExceptionType"  />
                 </stripes:select>
             </td>
         </tr>
         <tr id="serviceNameTr">
-            <td>Service name *:</td>
+            <td><fmt:message key="viewer_admin.geoservice.12" /> *:</td>
             <td>
             <label>
                 <stripes:text name="serviceName" maxlength="255" size="30" disabled="${edit}"/>
@@ -148,7 +148,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr id="tileSizeTr">
-            <td>Tile size:</td>
+            <td><fmt:message key="viewer_admin.geoservice.13" />:</td>
             <td>
             <label>
                 <stripes:text name="tileSize"/>
@@ -156,7 +156,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr id="resolutionsTr">
-            <td>Resolutions:</td>
+            <td><fmt:message key="viewer_admin.geoservice.14" />:</td>
             <td>
             <label>
                 <stripes:text name="resolutions" size="80"/>
@@ -164,7 +164,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr id="tilingProtocolTr">
-            <td>Tiling Protocol:</td>
+            <td><fmt:message key="viewer_admin.geoservice.15" />:</td>
             <td>
             <label>
                 <stripes:select name="tilingProtocol" onchange="checkProtocol()" onkeyup="checkProtocol()">
@@ -178,7 +178,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr id="serviceBboxTr">
-            <td>Service Bounding Box</td>
+            <td><fmt:message key="viewer_admin.geoservice.16" />:</td>
             <td>
             <label>
                 <stripes:text name="serviceBbox" size="80"/>
@@ -186,7 +186,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr id="crsTr">
-            <td>Coordinate Reference System</td>
+            <td><fmt:message key="viewer_admin.geoservice.17" />:</td>
             <td>
             <label>
                 <stripes:text name="crs"/>
@@ -194,7 +194,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr id="extensionTr">
-            <td>Image extension</td>
+            <td><fmt:message key="viewer_admin.geoservice.18" />:</td>
             <td>
             <label>
                 <stripes:text name="imageExtension"/>
@@ -202,35 +202,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr>
-            <td>Weergavenaam:</td>
+            <td><fmt:message key="viewer_admin.geoservice.19" />:</td>
             <td><stripes:text name="name" maxlength="255" size="30"/></td>
         </tr>
         <tr>
-            <td>Gebruikersnaam:</td>
+            <td><fmt:message key="viewer_admin.geoservice.20" />:</td>
             <td><stripes-dynattr:text name="username" maxlength="255" size="30">${username}</stripes-dynattr:text></td>
         </tr>
         <tr>
-            <td>Wachtwoord:</td>
+            <td><fmt:message key="viewer_admin.geoservice.21" />:</td>
             <td><stripes-dynattr:password name="password" autocomplete="new-password" maxlength="255" size="30"/></td>
         </tr>
         <tr>
             <td colspan="2">
-                <stripes:checkbox name="useIntersect"/> Gebruik 'intersect' filter (in plaats van 'DWithin') om data op te halen.
+                <stripes:checkbox name="useIntersect"/> <fmt:message key="viewer_admin.geoservice.22" />
             </td>
         </tr>
         <tr id="useProxy">
             <td colspan="2">
-                <stripes:checkbox name="useProxy"/> Gebruik proxy om kaarten op te halen.
+                <stripes:checkbox name="useProxy"/> <fmt:message key="viewer_admin.geoservice.23" />
             </td>
         </tr>
         <tr>
             <td valign="top">
-                <h1>Beveiliging:</h1>                           
+                <h1><fmt:message key="viewer_admin.geoservice.24" />:</h1>                           
                 <table summary="Groepen">
                     <thead>
                         <tr>
-                            <th scope="col" style="text-align:center" title="Lezen">Toegestaan</th>
-                            <th scope="col" style="text-align:left">Groep</th>
+                            <th scope="col" style="text-align:center" title="<fmt:message key="viewer_admin.geoservice.25" />"><fmt:message key="viewer_admin.geoservice.26" /></th>
+                            <th scope="col" style="text-align:left"><fmt:message key="viewer_admin.geoservice.27" /></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -246,16 +246,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </tr>
         <c:if test="${!edit}">
             <tr>
-                <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service
-                        automatisch bepaald. Bovenstaand kan optioneel een alternatieve weergavenaam
-                        worden ingevuld.</i>
+                <td colspan="2"><i><fmt:message key="viewer_admin.geoservice.28" /></i>
                 </td>
             </tr>
         </c:if>
         <c:if test="${not empty actionBean.layersInApplications}">
             <tr>
                 <td colspan="2">
-                    <h1>Service wordt gebruikt in de volgende applicaties:</h1>
+                    <h1><fmt:message key="viewer_admin.geoservice.29" />:</h1>
                     <div class="geoservice-tree-container"></div>
                 </td>
             </tr>
@@ -277,26 +275,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
-                <stripes:submit name="add" value="Service inladen"/>
-                <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="Annuleren"/>
+                <fmt:message key="viewer_admin.geoservice.30" var="geoservice30" />
+                <stripes:submit name="add" value="${geoservice30}"/>
+                <fmt:message key="viewer_admin.geoservice.31" var="geoservice31" />
+                <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="${geoservice31}"/>
                 <script>function urlChanged(){}</script>
             </c:when>
             <c:otherwise>
-                <stripes:submit name="save" value="Opslaan" onclick="return saveConfirm();"/>
-                <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
-                <stripes:submit name="update" onclick="return updateConfirm();" value="Update"/>
-                <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
+                <fmt:message key="viewer_admin.geoservice.32" var="geoservice32" />
+                <stripes:submit name="save" value="${geoservice32}" onclick="return saveConfirm()" />
+                <fmt:message key="viewer_admin.geoservice.33" var="geoservice33" />
+                <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="${geoservice33}"/>
+                <fmt:message key="viewer_admin.geoservice.34" var="geoservice34" />
+                <stripes:submit name="update" onclick="return updateConfirm();" value="${geoservice34}"/>
+                <fmt:message key="viewer_admin.geoservice.35" var="geoservice35" />
+                <stripes:reset name="cancel" class="extlikebutton" value="${geoservice35}"/>
                 <script type="text/javascript">
                     function deleteServiceConfirm() {
-                        return confirm('Weet u zeker dat u deze service wilt verwijderen?');
+                        return confirm('<fmt:message key="viewer_admin.geoservice.36" />');
                     }
                     function updateConfirm() {
                         <c:if test="${!actionBean.updatable}">
-                            alert('Deze service kan niet worden geupdate!');
+                            alert('<fmt:message key="viewer_admin.geoservice.37" />');
                             return false;
                         </c:if>
                         <c:if test="${actionBean.updatable}">
-                            return confirm('Weet u zeker dat u deze service wilt updaten? Lagen die de server niet meer aanbiedt worden verwijderd.');
+                            return confirm('<fmt:message key="viewer_admin.geoservice.38" />');
                         </c:if>
                     }
                     var isUrlChanged = false;
@@ -306,7 +310,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     
                     function saveConfirm(){
                         if(isUrlChanged){
-                            return confirm('U heeft de url naar de service aangepast. Dit kan onvoorziene consequenties hebben. Weet u zeker dat u deze service wilt opslaan?');
+                            return confirm('<fmt:message key="viewer_admin.geoservice.39" />');
                         }
                     }
                 </script>
@@ -340,16 +344,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     
         <c:choose>
             <c:when test="${empty actionBean.service.styleLibraries}">
-                Voor deze service zijn geen styled layer descriptors ingesteld.
+                <fmt:message key="viewer_admin.geoservice.40" />
             </c:when>
             <c:otherwise>
                     
                 <table>
                     <tr>
-                        <td style="padding: 2px"><b>Naam</b></td>
-                        <td style="padding: 2px"><b>Standaard voor kaartlagen</b></td>
-                        <td style="padding: 2px"><b>Omschrijving</b></td>
-                        <td style="padding: 2px"><b>Actie</b></td>
+                        <td style="padding: 2px"><b><fmt:message key="viewer_admin.geoservice.41" /></b></td>
+                        <td style="padding: 2px"><b><fmt:message key="viewer_admin.geoservice.42" /></b></td>
+                        <td style="padding: 2px"><b><fmt:message key="viewer_admin.geoservice.43" /></b></td>
+                        <td style="padding: 2px"><b><fmt:message key="viewer_admin.geoservice.44" /></b></td>
                     </tr>
                     <c:forEach var="sld" items="${actionBean.service.styleLibraries}">
                         <tr>
@@ -357,22 +361,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td style="padding: 2px"><c:out value="${sld.defaultStyle ? 'Ja' : 'Nee'}"/></td>
                             <td style="padding: 2px">
                                 <c:if test="${sld.externalUrl != null}">
-                                    Externe SLD op <stripes:link href="${sld.externalUrl}" target="_blank"><c:out value="${sld.externalUrl}"/></stripes:link>
+                                    <fmt:message key="viewer_admin.geoservice.45" /> <stripes:link href="${sld.externalUrl}" target="_blank"><c:out value="${sld.externalUrl}"/></stripes:link>
                                 </c:if>
                                 <c:if test="${sld.externalUrl == null}">
-                                    Opgeslagen SLD
+                                    <fmt:message key="viewer_admin.geoservice.46" />
                                 </c:if>
                             </td>
                             <td style="padding: 2px">
                                 <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="editSld">
                                     <stripes:param name="service" value="${actionBean.service.id}"/>
                                     <stripes:param name="sld" value="${sld.id}"/>
-                                    Bewerken
+                                    <fmt:message key="viewer_admin.geoservice.47" />
                                 </stripes:link>
-                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="deleteSld" onclick="return confirm('Weet u zeker dat u deze SLD wilt verwijderen?')">
+                                <fmt:message key="viewer_admin.geoservice.48" var="geoservice48" />
+                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="deleteSld" onclick="return confirm('${geoservice48}')">
                                     <stripes:param name="service" value="${actionBean.service.id}"/>
                                     <stripes:param name="sld" value="${sld.id}"/>
-                                    Verwijderen
+                                    <fmt:message key="viewer_admin.geoservice.49" />
                                 </stripes:link>
                                 
                             </td>
@@ -383,7 +388,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <br>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
             <stripes:hidden name="service"/>
-            <stripes:submit name="addSld" value="Toevoegen"/>
+            <fmt:message key="viewer_admin.geoservice.50" var="geoservice50" />
+            <stripes:submit name="addSld" value="${geoservice50}"/>
         </stripes:form>            
     </div>
 </c:if>

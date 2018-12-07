@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.DontBind;
 import net.sourceforge.stripes.action.DontValidate;
@@ -37,6 +38,7 @@ import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import net.sourceforge.stripes.validation.ValidationErrors;
 import net.sourceforge.stripes.validation.ValidationMethod;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
@@ -58,7 +60,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Roy Braam
  */
 @UrlBinding("/action/featuretyperelation/{$event}")
-public class FeatureTypeRelationActionBean implements ActionBean{
+public class FeatureTypeRelationActionBean extends LocalizableActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/featuretyperelation.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editfeaturetyperelation.jsp";
@@ -96,7 +98,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         @Validate(field="type", required=true, on="save")
     })
     private FeatureTypeRelation relation;
-    
+        
     @DefaultHandler
     public Resolution view() {
         //relations = Stripersist.getEntityManager().createQuery("from FeatureTypeRelation").getResultList();
@@ -112,7 +114,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
             Long leftId= leftSide.get(i);
             Long rightId= rightSide.get(i);
             if (leftId==null || rightId==null || leftId ==-1 || rightId ==-1){
-                getContext().getMessages().add(new SimpleError("Niet alle attribuut relaties zijn ingevuld"));
+                getContext().getMessages().add(new SimpleError(getBundle().getString("viewer_admin.featuretyperelationactionbean.relmissing")));
                 return new ForwardResolution(EDITJSP);
             }
             AttributeDescriptor left = Stripersist.getEntityManager().find(AttributeDescriptor.class, leftId);
@@ -123,7 +125,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         Stripersist.getEntityManager().persist(relation);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Join/Relatie is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.featuretyperelationactionbean.relsaved")));
         return new ForwardResolution(EDITJSP);
     }
     
@@ -147,7 +149,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     public Resolution delete() {
         Stripersist.getEntityManager().remove(relation);
         Stripersist.getEntityManager().getTransaction().commit();
-        getContext().getMessages().add(new SimpleMessage("Featuretype relatie is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.featuretyperelationactionbean.relrem")));
         return new ForwardResolution(EDITJSP);
     }
     
@@ -271,7 +273,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
             json.put("attributes", array);
             success=true;
         }else{
-            json.put("error", "No featureType found");
+            json.put("error", getBundle().getString("viewer_admin.featuretyperelationactionbean.noftfound"));
         }
         json.put("success", success);
         return new StreamingResolution("application/json") {
@@ -312,7 +314,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
                 json.put("featuretypes", array);            
                 success=true;
             }else{
-                json.put("error", "No featureType found");
+                json.put("error", getBundle().getString("viewer_admin.featuretyperelationactionbean.noftfound"));
             }
         }
         json.put("success", success);
@@ -344,7 +346,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     public void validate(ValidationErrors errors){
         if (relation!=null){
             if (leftSide.isEmpty() || rightSide.isEmpty()){
-                getContext().getValidationErrors().addGlobalError(new SimpleError("Minstens 1 relatie moet worden gelegd tussen de attributen van de featuretypen."));
+                getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.featuretyperelationactionbean.relmiss")));
                 return;
             }
         }

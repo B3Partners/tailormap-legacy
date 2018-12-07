@@ -3,9 +3,6 @@
 /**
  * ViewerController
  * @class Controller for a GIS application
- * @constructor
- * @param viewerType The type of the viewer: flamingo/openlayers/etc..
- * @param mapId The id of the div in which the map has to be shown.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
@@ -149,7 +146,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }else if(viewerType === "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else{
-            this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
+            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_0') + viewerType);
         }
 
         this.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
@@ -177,7 +174,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
 
     showLoading: function(msg) {
-        var loadingMsg = 'Loading...';
+        var loadingMsg = i18next.t('viewer_viewercontroller_viewercontroller_1');
         if(msg) loadingMsg += ' ' + msg;
         document.getElementById('loader').innerHTML = loadingMsg;
         document.getElementById('loader').style.display = 'block';
@@ -220,13 +217,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 success: function(result) {
                     var response = Ext.JSON.decode(result.responseText);
                     if(response.success) {
-                        me.logger.debug("DataStore spinup result success: " + response.message);
+                        me.logger.debug(i18next.t('viewer_viewercontroller_viewercontroller_2') + response.message);
                     } else {
-                        me.logger.debug("DataStore spinup result error: " + response.error);
+                        me.logger.debug(i18next.t('viewer_viewercontroller_viewercontroller_3') + response.error);
                     }
                 },
                 failure: function(result) {
-                    me.logger.error("DataStore spinup Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    me.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_4') + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             });
         }
@@ -323,7 +320,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
     createComponent: function(name, className, config, details){
         if(this.components[name] != undefined) {
-            throw "Component with name " + name + " (class " + className + ") already added, cannot add component of class " + className + " with the same name";
+            throw i18next.t('viewer_viewercontroller_viewercontroller_5', { name: name, className: className });
         }
 
         // XXX
@@ -347,7 +344,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             };
         } catch(e) {
 
-            this.logger.error("Error creating component with className " + className + ": error "+e+ " with config"+ config);
+            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_6', { className: className, e: e, config: config }));
 
             if(this.isDebug()){
                 if(e instanceof Error) {
@@ -773,14 +770,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //if deprecatedParam is given, the old (and wrong)way of calling this function is used.
         if (deprecatedParam){
             if(this.isDebug()){
-                this.logger.warning("getLayer() old method call is used!");
+                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_7'));
             }
         }
         if(this.layers[appLayer.id] == undefined){
             if (!this.layersInitialized){
-                this.logger.warning("Layers not initialized! getLayer() caller should wait for the layers to be added!");
+                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_8'));
             }else{
-                this.logger.warning("The layer #" + appLayer.id + " can't be found!");
+                this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_9', { appLayerId: appLayer.id }));
             }
             return null;
         }
@@ -815,7 +812,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *Use viewer.viewerController.ViewerController#getAppLayerById
      */
     getAppLayer : function (serviceId, layerName){
-        this.logger.warning("viewerController.getAppLayer() with serviceId and LayerName is not unique");
+        this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_10'));
         var count=0;
         var foundAppLayer=null;
         for ( var i in this.app.appLayers) {
@@ -831,8 +828,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         if (count>1){
-            this.logger.warning("viewerController.getAppLayer() with serviceId and LayerName found "+count+
-                " application layers with serviceId: '"+serviceId+"' and layerName: '"+layerName+"' returning the first");
+            this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_11', { count: count, serviceId: serviceId, layerName: layerName }));
         }
 
         return foundAppLayer;
@@ -950,7 +946,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         try {
                             layerConfig.extraLegendParameters = Ext.Object.fromQueryString(sld.extraLegendParameters);
                         } catch(e) {
-                            this.logger.error("Invalid extra legend parameters for SLD '" + sld.title + "': " + sld.extraLegendParameters + "; error: " + e);
+                            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_12', { sldTitle: sld.title, sldLegendParams: sld.extraLegendParameters, e: e }));
                         }
                     }
                 } else if(/^wms:/.test(style)) {
@@ -1037,12 +1033,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
             }
         } catch(e) {
-            var msg = Ext.String.format("Error creating layer object for appLayer #{0} ({1} {2} layer {3}: {4}",
-                id,
-                service.protocol,
-                service.url,
-                appLayer.layerName,
-                e);
+            var msg = i18next.t('viewer_viewercontroller_viewercontroller_13', {
+                id: id,
+                serviceProtocol: service.protocol,
+                serviceUrl: service.url,
+                appLayerLayerName: appLayer.layerName,
+                e: e
+            });
             this.logger.error(msg);
 
             if(this.isDebug()){
@@ -1086,7 +1083,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@return viewer.viewercontroller.controller.Layer object
      */
     getLayerByLayerId : function (id){
-        this.logger.warning("viewerController.getLayerByLayerId() is not returning a unique layer!");
+        this.logger.warning(i18next.t('viewer_viewercontroller_viewercontroller_14'));
         for (var i in this.app.services) {
             if(!this.app.services.hasOwnProperty(i)) {
                 continue;
@@ -1479,12 +1476,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     }
                     );
             } else {
-                this.logger.error("Layer class " + l.$className + " does not support getLayerLegendInfo");
+                this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_15', {className:l.$className}));
                 failure(appLayer);
             }
 
         } catch(e) {
-            this.logger.error("Error creating legend info for appLayerId " + appLayer.id + ": " + e);
+            this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_16',  {appLayerId: appLayer.id, e: e}));
             failure(appLayer);
         }
     },
@@ -1555,7 +1552,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED, appLayer.filter, appLayer);
             }, function (message) {
                 //failure
-                me.logger.error("Error while transforming SLD for joined/related featuretypes: " + message);
+                me.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_17',  {message: message}));
             }
         );
     },
@@ -1686,7 +1683,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     if (typeof cmps[i].cancel === "function") {
                         cmps[i].cancel();
                     } else {
-                        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_viewercontroller_0') + cmps[i].self.getName()});
+                        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_viewercontroller_18') + cmps[i].self.getName()});
                     }
                 }
             }
@@ -1897,7 +1894,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.valuesFromURL(params);
     },
     failureReadUrl : function(code){
-        this.logger.error("Cannot retrieve bookmarklayers. " + code);
+        this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_19', { code: code }));
     },
     getBookmarkUrl : function(){
         var paramJSON = {

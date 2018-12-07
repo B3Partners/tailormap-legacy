@@ -796,3 +796,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .x-tree-icon {
     pointer-events: none;
 }
+
+.filterableCheckboxesLabel{
+    border: 1px solid black;
+}

@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +62,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/attributes")
 @StrictBinding
-public class AttributesActionBean implements ActionBean {
+public class AttributesActionBean extends LocalizableApplicationActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(AttributesActionBean.class);
 
     private ActionBeanContext context;
@@ -325,9 +326,9 @@ public class AttributesActionBean implements ActionBean {
         String error = null;
 
         if(appLayer == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.attributesactionbean.1");
         } else if(unauthorized) {
-            error = "Not authorized";
+            error = getBundle().getString("viewer.attributesactionbean.2");
         } else {
 
             appLayer.addAttributesJSON(json, true, Stripersist.getEntityManager());
@@ -469,7 +470,7 @@ public class AttributesActionBean implements ActionBean {
         JSONObject json = new JSONObject();
         if (unauthorized) {
             json.put("success", false);
-            json.put("message", "Not authorized");
+            json.put("message", getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
         json = executeStore(Stripersist.getEntityManager());
@@ -547,7 +548,7 @@ public class AttributesActionBean implements ActionBean {
 
             json.put("success", false);
 
-            String message = "Fout bij ophalen features: " + e.toString();
+            String message = MessageFormat.format(getBundle().getString("viewer.attributesactionbean.ff"), e.toString());
             Throwable cause = e.getCause();
             while(cause != null) {
                 message += "; " + cause.toString();

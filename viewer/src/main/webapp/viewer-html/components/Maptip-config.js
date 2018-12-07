@@ -30,41 +30,41 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.checkPanelHeight = 210;
         this.form.add([{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_116'),
+            fieldLabel: i18next.t('maptip_config_0'),
             name: 'maptipdelay',
             /*columnWidth : 0.5,*/
             value: this.configObject.maptipdelay !== undefined ? this.configObject.maptipdelay : 500,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_117'),
+            fieldLabel: i18next.t('maptip_config_1'),
             name: 'moreLink',
             /*columnWidth : 0.5,*/
-            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : 'Meer',
+            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : i18next.t('featureinfo_config_1'),
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_118'),
+            fieldLabel: i18next.t('maptip_config_2'),
             name: 'height',
             /*columnWidth : 0.5,*/
             value: this.configObject.height !== undefined ? this.configObject.height : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_119'),
+            fieldLabel: i18next.t('maptip_config_3'),
             name: 'width',
             /*columnWidth : 0.5,*/
             value: this.configObject.width !== undefined ? this.configObject.width : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_120'),
+            fieldLabel: i18next.t('maptip_config_4'),
             name: 'heightDescription',
             value: this.configObject.heightDescription != undefined ? this.configObject.heightDescription : "",
             labelWidth: this.labelWidth
         },{
             xtype: 'checkbox',
-            fieldLabel: i18next.t('viewer_components_customconfiguration_121'),
+            fieldLabel: i18next.t('maptip_config_5'),
             name: 'detailHideNullValues',
             id: 'detailHideNullValues',
             inputValue: true,
@@ -72,7 +72,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth:this.labelWidth
         },{
             xtype: 'label',
-            text: i18next.t('viewer_components_customconfiguration_122'),
+            text: i18next.t('maptip_config_6'),
             style: {
                 fontWeight: 'bold'
             }
@@ -86,7 +86,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [
                 {
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_123'),
+                    fieldLabel: i18next.t('maptip_config_7'),
                     name: 'detailShowTitle',
                     /*columnWidth : 0.5,*/
                     value: true,
@@ -98,7 +98,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_124'),
+                    fieldLabel: i18next.t('maptip_config_8'),
                     name: 'detailShowImage',
                     /*columnWidth : 0.5,*/
                     value: true,
@@ -107,7 +107,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     labelWidth:this.labelWidth
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_125'),
+                    fieldLabel: i18next.t('maptip_config_9'),
                     name: 'detailShowDesc',
                     /*columnWidth : 0.5,*/
                     value: true,
@@ -119,7 +119,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 },{
                     xtype: 'checkbox',
-                    fieldLabel: i18next.t('viewer_components_customconfiguration_126'),
+                    fieldLabel: i18next.t('maptip_config_10'),
                     name: 'detailShowAttr',
                     /*columnWidth : 0.5,*/
                     value: true,

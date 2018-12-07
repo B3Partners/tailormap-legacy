@@ -16,7 +16,8 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.vividsolutions.jts.geom.Geometry;
+import nl.b3p.i18n.LocalizableActionBean;
+import org.locationtech.jts.geom.Geometry;
 import java.io.IOException;
 import java.io.StringReader;
 import net.sourceforge.stripes.action.ActionBean;
@@ -62,7 +63,7 @@ import javax.persistence.EntityManager;
  */
 @UrlBinding("/action/extent")
 @StrictBinding
-public class FeatureExtentActionBean implements ActionBean {
+public class FeatureExtentActionBean extends LocalizableActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(FeatureExtentActionBean.class);
 
@@ -114,9 +115,9 @@ public class FeatureExtentActionBean implements ActionBean {
         String error = null;
 
         if (appLayer == null || filter == null) {
-            error = "Invalid parameters";
+            error = getBundle().getString("viewer.featureextentactionbean.1");
         } else if (unauthorized) {
-            error = "Not authorized";
+            error = getBundle().getString("viewer.featureextentactionbean.2");
         } else {
             FeatureSource fs = null;
             try {

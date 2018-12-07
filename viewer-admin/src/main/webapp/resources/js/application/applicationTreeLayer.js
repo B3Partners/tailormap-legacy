@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global i18next, Ext */
+
 Ext.define('vieweradmin.components.ApplicationTreeLayer', {
 
     requires: [
@@ -263,7 +265,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         if(!Ext.isArray(this.config.attributes) || this.config.attributes.length === 0) {
             return filterPanelItems;
         }
-        filterPanelItems.push(Ext.create('Ext.container.Container', { html: { tag: 'a', href: '#Dataselectie_Filterfunctie_Per_Kaartlaag_Help', title: i18next.t('viewer_admin_applicationtreelayer_52'), cls: "helplink" } }));
+        filterPanelItems.push(Ext.create('Ext.container.Container', { html: { tag: 'a', href: '#Dataselectie_Filterfunctie_Per_Kaartlaag_Help', title: i18next.t('viewer_admin_applicationtreelayer_11'), cls: "helplink" } }));
         Ext.Array.each(this.config.attributes, function(attribute, idx) {
             var name = attribute.alias || attribute.name;
             var isEnabled = (attribute.filterable || attribute.selectable) || false;
@@ -351,8 +353,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                 checked: attribute.defaultValue == "filterList",
                                 xtype: 'checkbox'
                             },{
-                                text: "* Als 'Lijst' is aangevinkt dan zal er voor \n\
-                                    het waarde veld van dit attribuut een lijst met alle mogelijke waarden worden gemaakt.",
+                                text: i18next.t('viewer_admin_applicationtreelayer_17'),
                                 xtype: 'label',
                                 hideMode: 'display'
                             }
@@ -371,7 +372,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                 items:[
                                     {
                                         itemId: 'min' + attribute.id,
-                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_17'),
+                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_18'),
                                         name: 'minmaxlist' + attribute.id,
                                         inputValue: 'defaultMin',
                                         checked: attribute.defaultValue == "#MIN#",
@@ -380,7 +381,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                     },
                                     {
                                         itemId: 'max' + attribute.id,
-                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_18'),
+                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_19'),
                                         name: 'minmaxlist' + attribute.id,
                                         inputValue: 'defaultMax',
                                         checked: attribute.defaultValue == "#MAX#",
@@ -389,7 +390,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                     },
                                     {
                                         itemId: 'list' + attribute.id,
-                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_19'),
+                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_20'),
                                         name: 'minmaxlist' + attribute.id,
                                         inputValue: 'defaultList',
                                         checked: attribute.defaultValue != "#MAX#" && attribute.defaultValue != "#MIN#",
@@ -425,15 +426,15 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                         hideMode: 'visibility',
                                         name: 'defaultVal' + attribute.id,
                                         itemId: 'defaultVal' + attribute.id,
-                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_20'),
-                                        emptyText: i18next.t('viewer_admin_applicationtreelayer_21'),
+                                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_21'),
+                                        emptyText: i18next.t('viewer_admin_applicationtreelayer_22'),
                                         value: attribute.defaultValue,
                                         displayField: 'id',
                                         valueField: 'id'
                                     },
                                     {
                                         xtype: 'button',
-                                        text: i18next.t('viewer_admin_applicationtreelayer_22'),
+                                        text: i18next.t('viewer_admin_applicationtreelayer_23'),
                                         style: { marginLeft: '10px' },
                                         hideMode: 'visibility',
                                         listeners: {
@@ -448,7 +449,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                                 ]
                             },
                             {
-                                itemId: 'dataselectionLabel' + attribute.id, text: i18next.t('viewer_admin_applicationtreelayer_23'),
+                                itemId: 'dataselectionLabel' + attribute.id, text: i18next.t('viewer_admin_applicationtreelayer_24'),
                                 xtype: 'label',
                                 forId:  'selectable' + attribute.id,
                                 hideMode: 'visibility'
@@ -467,7 +468,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         if(!this.config.editable || !Ext.isArray(this.config.attributes) || this.config.attributes.length === 0) {
             return editPanelItems;
         }
-        editPanelItems.push(Ext.create('Ext.container.Container', { html: { tag: 'a', href: '#Edit_Per_Kaartlaag_Help', title: i18next.t('viewer_admin_applicationtreelayer_53'), cls: "helplink" } }));
+        editPanelItems.push(Ext.create('Ext.container.Container', { html: { tag: 'a', href: '#Edit_Per_Kaartlaag_Help', title: i18next.t('viewer_admin_applicationtreelayer_25'), cls: "helplink" } }));
         var data =[];
         Ext.Array.each(this.config.attributes, function(attribute, idx) {
             var name = attribute.alias || attribute.name;
@@ -497,23 +498,21 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         }
         editPanelItems.push({
             xtype: 'panel',
-            title: i18next.t('viewer_admin_applicationtreelayer_25'),
+            title: i18next.t('viewer_admin_applicationtreelayer_26'),
             itemId: 'autorisatie-panel',
             style: {
                 "margin-top": "5px"
             },
             items: [{
                 xtype: 'label',
-                text: 'Kies een attribuut waarvan de ingelogde username het \n\
-zelfde moet zijn als een gebruiker de betreffende feature mag wijzigen. Indien leeg wordt\n\
-hier niet op gecontroleerd.'
+                text: i18next.t('viewer_admin_applicationtreelayer_27')
             },{
                 xtype: 'combobox',
                 store: attributeStore,
                 displayField: 'name',
                 queryMode: 'local',
                 hideMode: 'visibility',
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_26'),
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_28'),
                 itemId: 'ext_editfeature_usernameAttribute',
                 labelWidth: 150,
                 value: usernameAttrValue
@@ -539,7 +538,7 @@ hier niet op gecontroleerd.'
 
         editPanelItems.push({
             xtype: 'panel',
-            title: i18next.t('viewer_admin_applicationtreelayer_27'),
+            title: i18next.t('viewer_admin_applicationtreelayer_29'),
             itemId: 'upload-panel',
             id: 'upload-panel',
             style: {
@@ -547,9 +546,9 @@ hier niet op gecontroleerd.'
             },
             items: [{
                 xtype: 'label',
-                text: i18next.t('viewer_admin_applicationtreelayer_28')
+                text: i18next.t('viewer_admin_applicationtreelayer_30')
             }, {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_29'),
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_31'),
                 name: 'uploadDocuments',
                 inputValue: false,
                 itemId: 'ext_details_editfeature_uploadDocument',
@@ -564,7 +563,7 @@ hier niet op gecontroleerd.'
                 },
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_admin_applicationtreelayer_30'),
+                    text: i18next.t('viewer_admin_applicationtreelayer_32'),
                     style: {
                         marginLeft: '10px'
                     },
@@ -586,7 +585,7 @@ hier niet op gecontroleerd.'
         var container = Ext.getCmp("uploadTypes");
         var index = container ? container.items.items.length  : idx;
         var config = {
-            fieldLabel: i18next.t('viewer_admin_applicationtreelayer_31'),
+            fieldLabel: i18next.t('viewer_admin_applicationtreelayer_33'),
             name: 'uploadType' + (index),
             value: value,
             xtype: 'textfield'
@@ -601,8 +600,8 @@ hier niet op gecontroleerd.'
 
         var possibleValues = attribute.editValues;
         var possibleValuesFormItems = [
-            { fieldLabel: i18next.t('viewer_admin_applicationtreelayer_32'), name: 'editvalues', itemId: 'editvalues' + attribute.id, xtype: 'textfield',flex:1,value:possibleValues},
-            { xtype: 'button', text: i18next.t('viewer_admin_applicationtreelayer_33'), style: { marginLeft: '10px' }, listeners: {
+            { fieldLabel: i18next.t('viewer_admin_applicationtreelayer_34'), name: 'editvalues', itemId: 'editvalues' + attribute.id, xtype: 'textfield',flex:1,value:possibleValues},
+            { xtype: 'button', text: i18next.t('viewer_admin_applicationtreelayer_35'), style: { marginLeft: '10px' }, listeners: {
                 click: {
                     fn: function () {
                         this.getDBValues(attribute.name, attribute.id, "edit");
@@ -619,10 +618,11 @@ hier niet op gecontroleerd.'
             var geomTypesStore = Ext.create('Ext.data.Store', {
                 fields: ['type', 'label'],
                 data : [
-                    {"type":"geometry", "label":"Onbekend (alleen bewerken)"},
-                    {"type":"point", "label":"Punt"},
-                    {"type":"linestring", "label":"Lijn"},
-                    {"type":"polygon", "label":"Vlak"}
+                    {"type":"geometry", "label":i18next.t('viewer_admin_applicationtreelayer_36')},
+                    {"type":"point", "label":i18next.t('viewer_admin_applicationtreelayer_37')},
+                    {"type":"linestring", "label":i18next.t('viewer_admin_applicationtreelayer_38')},
+                    {"type":"linestringtrace", "label":"Trace"},
+                    {"type":"polygon", "label":i18next.t('viewer_admin_applicationtreelayer_39')}
                 ]
             });
             if(Ext.Array.contains(geomTypes, type)) {
@@ -633,7 +633,7 @@ hier niet op gecontroleerd.'
                 // edit only for single geometries
                 type = type.replace("multi","");
                 possibleValuesFormItems = [{
-                    fieldLabel: i18next.t('viewer_admin_applicationtreelayer_34'),
+                    fieldLabel: i18next.t('viewer_admin_applicationtreelayer_40'),
                     store: geomTypesStore,
                     xtype: 'combobox',
                     name: 'editvalues',
@@ -641,7 +641,7 @@ hier niet op gecontroleerd.'
                     queryMode: 'local',
                     displayField: 'label',
                     valueField: 'type',
-                    emptyText: i18next.t('viewer_admin_applicationtreelayer_35'),
+                    emptyText: i18next.t('viewer_admin_applicationtreelayer_41'),
                     value: type,
                     size: 40
                 }];
@@ -728,7 +728,7 @@ hier niet op gecontroleerd.'
         }
         return [
             {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_36'), name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_42'), name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
                 change: {
                     fn: function (field, newval) {
                         this.editPanelTitle(field.findParentByType('form'), name, newval);
@@ -738,10 +738,11 @@ hier niet op gecontroleerd.'
             }
             },
             {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_37'), value: disableUserEdit, name: 'disableUserEdit', store: [[false, 'Ja'], [true, 'Nee (alleen lezen)']], xtype: 'combobox'
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_43'), value: disableUserEdit, name: 'disableUserEdit', 
+                store: [[false, i18next.t('viewer_admin_general_yes')], [true, i18next.t('viewer_admin_general_no')]], xtype: 'combobox'
             },
             {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_38'), name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_44'), name: 'editAlias', value: attribute.editAlias, xtype: 'textfield'
             },
             {
                 xtype: 'container',
@@ -751,9 +752,9 @@ hier niet op gecontroleerd.'
                         layout: 'hbox',
                         hidden: isGeometry,
                         items: [
-                            {xtype: 'displayfield', fieldLabel: i18next.t('viewer_admin_applicationtreelayer_39'), labelWidth: '190px'},
+                            {xtype: 'displayfield', fieldLabel: i18next.t('viewer_admin_applicationtreelayer_45'), labelWidth: '190px'},
                             {
-                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_40'),
+                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_46'),
                                 name: 'valueList',
                                 itemId: 'valueListStatic' + attribute.id,
                                 inputValue: 'static',
@@ -770,7 +771,7 @@ hier niet op gecontroleerd.'
                                 }
                             },
                             {
-                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_41'),
+                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_47'),
                                 name: 'valueList',
                                 inputValue: 'dynamic',
                                 itemId: 'valueListDynamic' + attribute.id,
@@ -814,8 +815,8 @@ hier niet op gecontroleerd.'
                                 store: featureSourceStore,
                                 name: 'valueListFeatureSource',
                                 itemId: 'valueListFeatureSource' + attribute.id,
-                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_42'),
-                                emptyText: i18next.t('viewer_admin_applicationtreelayer_43'),
+                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_48'),
+                                emptyText: i18next.t('viewer_admin_applicationtreelayer_49'),
                                 displayField: 'name',
                                 valueField: 'id',
                                 listeners:{
@@ -832,8 +833,8 @@ hier niet op gecontroleerd.'
                                 store: featureTypeStore,
                                 name: 'valueListFeatureType',
                                 itemId: 'valueListFeatureType' + attribute.id,
-                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_44'),
-                                emptyText: i18next.t('viewer_admin_applicationtreelayer_45'),
+                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_50'),
+                                emptyText: i18next.t('viewer_admin_applicationtreelayer_51'),
                                 displayField: 'name',
                                 valueField: 'id',
                                 listeners: {
@@ -850,8 +851,8 @@ hier niet op gecontroleerd.'
                                 store: attributeStore,
                                 name: 'valueListValueAttribute',
                                 itemId: 'valueListValueAttribute' + attribute.id,
-                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_46'),
-                                emptyText: i18next.t('viewer_admin_applicationtreelayer_47'),
+                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_52'),
+                                emptyText: i18next.t('viewer_admin_applicationtreelayer_53'),
                                 displayField: 'attribute',
                                 valueField: 'attribute'
                             },
@@ -859,8 +860,8 @@ hier niet op gecontroleerd.'
                                 store: attributeStore,
                                 name: 'valueListLabelAttribute',
                                 itemId: 'valueListLabelAttribute' + attribute.id,
-                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_48'),
-                                emptyText: i18next.t('viewer_admin_applicationtreelayer_49'),
+                                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_54'),
+                                emptyText: i18next.t('viewer_admin_applicationtreelayer_55'),
                                 displayField: 'attribute',
                                 valueField: 'attribute'
                             }
@@ -869,13 +870,13 @@ hier niet op gecontroleerd.'
                 ]
             },
             {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_50'), name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_56'), name: 'editHeight', value: attribute.editHeight, xtype: 'textfield'
             },
             {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_51'), name: 'allowValueListOnly', inputValue: 1, checked: attribute.allowValueListOnly || 0, xtype: 'checkbox'
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_57'), name: 'allowValueListOnly', inputValue: 1, checked: attribute.allowValueListOnly || 0, xtype: 'checkbox'
             },
             {
-                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_52'), name: 'disallowNullValue', inputValue: 1, checked: attribute.disallowNullValue || 0, xtype: 'checkbox'
+                fieldLabel: i18next.t('viewer_admin_applicationtreelayer_58'), name: 'disallowNullValue', inputValue: 1, checked: attribute.disallowNullValue || 0, xtype: 'checkbox'
             }
         ];
     },

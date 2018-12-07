@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
 
     <stripes:layout-component name="head">
-        <title>Boomstructuur met kaarten</title>
+        <title><fmt:message key="viewer_admin.applicationtree.0" /></title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -32,13 +32,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <div id="content">
             <h1>
-                Boomstructuur met kaarten: <c:out value="${actionBean.application.name}"/> <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if>
-                <a href="#Boomstructuur_Applicatie_Help" title="Help" class="helplink"></a>
+                <fmt:message key="viewer_admin.applicationtree.1" />: <c:out value="${actionBean.application.name}"/> <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if>
+                <a href="#Boomstructuur_Applicatie_Help" title="<fmt:message key="viewer_admin.applicationtree.2" />" class="helplink"></a>
             </h1>
 
             <c:choose>
                 <c:when test="${!empty actionBean.application.details['isMashup'] && actionBean.application.details['isMashup'].value }">
-                    <span class="status_error">Applicatie is een mashup. Kaartboom kan niet bewerkt worden!</span>
+                    <span class="status_error"><fmt:message key="viewer_admin.applicationtree.3" /></span>
                 </div>
             </c:when>
             <c:otherwise>

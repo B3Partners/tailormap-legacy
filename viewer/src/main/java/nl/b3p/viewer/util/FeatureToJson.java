@@ -170,7 +170,7 @@ public class FeatureToJson {
      * @throws Exception if any
      */
     public JSONArray getJSONFeatures(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir, EntityManager em, Application application, HttpServletRequest request) throws IOException, JSONException, Exception{
-        Map<String,String> attributeAliases = new HashMap<String,String>();
+        Map<String,String> attributeAliases = new HashMap<>();
         if(!edit) {
             for(AttributeDescriptor ad: ft.getAttributes()) {
                 if(ad.getAlias() != null) {
@@ -182,31 +182,13 @@ public class FeatureToJson {
         if(al != null) {
             propertyNames = this.setPropertyNames(al, q, ft,edit);
         } else {
-            propertyNames = new ArrayList<String>();
+            propertyNames = new ArrayList<>();
             for(AttributeDescriptor ad: ft.getAttributes()) {
                 propertyNames.add(ad.getName());
             }
         }
-        
-        if (sort!=null){
-            setSortBy(q, propertyNames, sort, dir);
-        }
-        /* Use the first property as sort field, otherwise geotools while give a error when quering
-         * a JDBC featureType without a primary key.
-         */
-        else if ( (fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore ) && !propertyNames.isEmpty()){
-            int index = 0;
-            if (fs.getSchema().getGeometryDescriptor() != null && fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0))) {
-                if(propertyNames.size() > 1){
-                    index = 1;
-                }else {
-                    index = -1;
-                }
-            }
-            if(index != -1){
-                setSortBy(q, propertyNames.get(index),dir);
-            }
-        }
+
+        setSort(q, propertyNames, sort, dir, ft, fs);
         Integer start = q.getStartIndex();
         if (start==null){
             start=0;
@@ -457,16 +439,15 @@ public class FeatureToJson {
      * @param sort a Stringified integer. The index of the propertyname
      * @param dir sorting direction DESC or ASC
      */
-    private void setSortBy(Query q, List<String> propertyNames, String sort, String dir) {
-        if(sort != null) {
-
-            String sortAttribute = null;
-            if(arrays) {
+    private void setSort(Query q, List<String> propertyNames, String sort, String dir, SimpleFeatureType ft, FeatureSource fs) {
+        String sortAttribute = null;
+        if (sort != null) {
+            if (arrays) {
                 int i = Integer.parseInt(sort.substring(1));
 
                 int j = 0;
-                for(String name: propertyNames) {
-                    if(j == i) {
+                for (String name : propertyNames) {
+                    if (j == i) {
                         sortAttribute = name;
                         break;
                     }
@@ -475,8 +456,33 @@ public class FeatureToJson {
             } else {
                 sortAttribute = sort;
             }
-            this.setSortBy(q,sortAttribute,dir);
+        } else {
+            /* Use the first property as sort field, otherwise geotools while give a error when quering
+             * a featureType without a primary key.
+             */
+            if ((fs instanceof org.geotools.jdbc.JDBCFeatureSource || fs.getDataStore() instanceof WFSDataStore) && !propertyNames.isEmpty()) {
+                int index = 0;
+                if (fs.getSchema().getGeometryDescriptor() != null && fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0))) {
+                    if (propertyNames.size() > 1) {
+                        index = 1;
+                    } else {
+                        index = -1;
+                    }
+                }
+                if (index != -1) {
+                    sortAttribute = propertyNames.get(index);
+                } else if (index == -1 && fs.getSchema().getGeometryDescriptor() != null && fs.getSchema().getGeometryDescriptor().getLocalName().equals(propertyNames.get(0))) {
+                    // only requested attribute is the geometry, so figure out a non-requested non-geometry attribute for sorting
+                    for (AttributeDescriptor attribute : ft.getAttributes()) {
+                        if(!attribute.getName().equals(fs.getSchema().getGeometryDescriptor().getLocalName())){
+                            sortAttribute = attribute.getName();
+                            break;
+                        }
+                    }
+                }
+            }
         }
+        this.setSortBy(q, sortAttribute, dir);
     }
     /**
      * Set sort on query

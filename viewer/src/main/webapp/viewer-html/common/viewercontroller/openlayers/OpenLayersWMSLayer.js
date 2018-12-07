@@ -16,7 +16,6 @@
  */
 /**
  * @class
- * @constructor
  * @description
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{

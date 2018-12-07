@@ -25,7 +25,7 @@ Ext.define('vieweradmin.components.Bookmark', {
         gridurl: "",
         editurl: "",
         deleteurl: "",
-        itemname: "bookmarks"
+        itemname: i18next.t('viewer_admin_bookmark_gtitle')
     },
 
     constructor: function(config) {
@@ -70,7 +70,7 @@ Ext.define('vieweradmin.components.Bookmark', {
                 menuDisabled: true,
                 renderer: function(value) {
                     return [
-                        Ext.String.format('<a href="#" class="removeobject">Verwijderen</a>')
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_bookmark_3') + '</a>')
                     ].join(" | ");
                 }
             }
@@ -87,7 +87,7 @@ Ext.define('vieweradmin.components.Bookmark', {
     },
 
     removeConfirmMessage: function(record) {
-        return ["Weet u zeker dat u de bookmark voor applicatie ", record.get("application.name"), " wilt verwijderen?"].join("");
+        return i18next.t('viewer_admin_bookmark_4', {name:record.get("application.name")});
     },
 
     getRemoveUrl: function(record) {

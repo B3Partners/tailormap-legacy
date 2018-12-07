@@ -16,9 +16,9 @@
  */
 package nl.b3p.geotools.data.arcims.axl;
 
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlAttribute;

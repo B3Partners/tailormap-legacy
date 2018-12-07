@@ -34,6 +34,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ComponentRegistryInitializer;
 import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.i18n.ResourceBundleProvider;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
@@ -51,10 +52,10 @@ import org.json.JSONObject;
  */
 @UrlBinding("/app/{name}/v{version}")
 @StrictBinding
-public class ApplicationActionBean implements ActionBean {
+public class ApplicationActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private ActionBeanContext context;
-
+            
     @Validate
     private String name;
 
@@ -91,6 +92,8 @@ public class ApplicationActionBean implements ActionBean {
     private String viewerType;
 
     private String title;
+
+    private String language;
 
     private JSONObject user;
 
@@ -170,6 +173,14 @@ public class ApplicationActionBean implements ActionBean {
         this.title = title;
     }
 
+    public String getLanguage(){
+        return language;
+    }
+
+    public void setLanguage(String language){
+        this.language = language;
+    }
+
     public JSONObject getUser() {
         return user;
     }
@@ -234,7 +245,7 @@ public class ApplicationActionBean implements ActionBean {
         this.levelOrder = levelOrder;
     }
     //</editor-fold>
-
+    
     static Application findApplication(String name, String version) {
         EntityManager em = Stripersist.getEntityManager();
         if(name != null) {
@@ -354,9 +365,12 @@ public class ApplicationActionBean implements ActionBean {
 
         appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
         this.viewerType = retrieveViewerType();
-        this.title = application.getTitle();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();
+        }
+        this.language = application.getLang();
+        if(StringUtils.isBlank(language)) {
+            this.language = "nl_NL";
         }
 
         //make hashmap for jsonobject.
@@ -391,7 +405,9 @@ public class ApplicationActionBean implements ActionBean {
             context.getRequest().getSession().invalidate();
             return login;
         } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
-            context.getValidationErrors().addGlobalError(new SimpleError("Niet genoeg rechten"));
+            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
+            String msg = bundle.getString("viewer.applicationactionbean.norights");
+            context.getValidationErrors().addGlobalError(new SimpleError(msg));
             context.getRequest().getSession().invalidate();
             return new ForwardResolution("/WEB-INF/jsp/error_retry.jsp");
         }

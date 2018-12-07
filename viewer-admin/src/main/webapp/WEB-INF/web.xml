@@ -92,6 +92,13 @@
     </context-param>
     <context-param>
         <description>
+            List of supported language codes (comma-separated)
+        </description>
+        <param-name>flamingo.i18n.languagecodes</param-name>
+        <param-value>nl_NL,en_US</param-value>
+    </context-param>
+    <context-param>
+        <description>
             List of projectioncodes, separated by semicolons.
         </description>
         <param-name>flamingo.projections.epsgcodes</param-name>
