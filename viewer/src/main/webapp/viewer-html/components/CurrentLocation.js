@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global i18next */
+
 /**
  * CurrentLocation tool
  * Gets the location by using the Geo API
@@ -29,7 +31,8 @@ Ext.define ("viewer.components.CurrentLocation",{
     MARKER_PREFIX: "CurrentLocation_",
     config: {
         interval: null,
-        tooltip: i18next.t('viewer_components_currentlocation_0')
+        tooltip: i18next.t('viewer_components_currentlocation_0'),
+        locationRetrieved:null
     },
     constructor: function(config){
         this.callParent(arguments);
@@ -47,7 +50,9 @@ Ext.define ("viewer.components.CurrentLocation",{
             Proj4js.defs["EPSG:28992"]= "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
         }
         this.mapProj= new Proj4js.Proj("EPSG:28992");
-        this.createButton();
+        if(!config.hideButton){
+            this.createButton();
+        }
     },
     /**
      * Create the button
@@ -106,13 +111,18 @@ Ext.define ("viewer.components.CurrentLocation",{
             me.errorHandler(pos);
         },{
             timeout: this.config.interval
-        })
+        });
     },
     /**
      *Stop watching the position
      */
-    stopWatch: function(){
+    stopWatch: function(keepMarker){
         navigator.geolocation.clearWatch(this.watchId);
+        if(!keepMarker){
+            this.removeMarkers();
+        }
+    },
+    removeMarkers:function(){
         this.config.viewerController.mapComponent.getMap().removeMarker(this.MARKER_PREFIX+this.getName());
     },
     /**
@@ -124,6 +134,11 @@ Ext.define ("viewer.components.CurrentLocation",{
         this.lastPoint = this.transformLatLon(lon,lat);
         this.config.viewerController.mapComponent.getMap().moveTo(this.lastPoint.x,this.lastPoint.y);
         this.config.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
+        if(this.config.locationRetrieved){
+            var val = this.lastPoint;
+            val.accuracy = position.coords.accuracy;
+            this.config.locationRetrieved(this.lastPoint);
+        }
     },
     /**
      * Handle errors.

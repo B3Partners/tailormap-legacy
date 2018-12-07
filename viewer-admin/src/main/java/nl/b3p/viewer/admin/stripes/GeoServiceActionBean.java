@@ -551,6 +551,10 @@ public class GeoServiceActionBean extends LocalizableActionBean {
                 }
             }
         }
+        if (status != null) {
+            status.setFinished(true);
+            status.setProgress(100);
+        }
         return new ForwardResolution(JSP);
     }
 

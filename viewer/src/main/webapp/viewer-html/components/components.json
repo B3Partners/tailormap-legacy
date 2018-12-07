@@ -614,7 +614,7 @@
         "name": "Edit",
         "shortName": "Ed",
         "group": "Component",
-        "sources": ["Edit.js"],
+        "sources": ["Edit.js","CurrentLocation.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
         "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
         "type": "popup",
