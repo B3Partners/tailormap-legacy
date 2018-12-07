@@ -263,6 +263,15 @@ Ext.define ("viewer.components.ScreenPopup",{
             this.zIndex = updatedZIndex + 1;
         }  
     },
+    getPosition:function(){
+        return this.popupWin.getPosition();
+    },
+    getWidth: function(){
+        return this.popupWin.getWidth();        
+    },
+    getHeight: function(){
+        return this.popupWin.getHeight();        
+    },
     bringToFront: function(){
         this.computeMaxZIndex();
         this.popupWin.setZIndex(this.zIndex);

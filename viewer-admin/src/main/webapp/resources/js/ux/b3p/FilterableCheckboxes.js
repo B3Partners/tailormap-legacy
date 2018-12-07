@@ -55,6 +55,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     labelClick: null,
     //function called when layers are received, must return the same layers or a subset
     layerFilter: null,
+    createDefaultCheckboxes:false,
     /**
      * Creates a list of layers as filterable checkboxes.
      * @param config.requestUrl the url that returns the layers
@@ -64,13 +65,15 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
      * @param config.valueField the field that is used for value in the checkboxes (from the layers)
      * @param config.titleField the field that is used for title in the checkboxes (from the layers)
      * @param config.checked a list of values that need to be checked when initialized
+     * @param config.checkedDefaultOn a list of values that need to be checked in the second column when initialized
      * @param config.layerFilter a function that is called when the layers are returned by the .requestUrl
      *            function is called with list of layers as param and needs to return (a subset) list of layer objects
      *            Components can implement this function to do some extra filtering.
      */
-    constructor: function(config) {
+    constructor: function (config) {
         Ext.apply(this, config || {});
-        if(this.requestUrl != '' && (this.renderTo != '' || this.parentContainer)) {
+        this.createdefaultCheckboxes = (config.checkedDefaultOn) ? true : false;
+        if (this.requestUrl != '' && (this.renderTo != '' || this.parentContainer)) {
             this.getList();
         }
     },
@@ -79,11 +82,18 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         var me = this;
         var checkboxContainerId = Ext.id();
         var checkboxes = '<div id="' + checkboxContainerId + '">';
+        
+        checkboxes +='<table><th>Aan/uit</th>';
+        if(this.createdefaultCheckboxes){
+            checkboxes += '<th>Standaard aan</th>';
+        }
+        checkboxes += '<th>Naam</th>';
         Ext.Array.each(me.itemList, function(item) {
             item['htmlId'] = Ext.id();
-            checkboxes += (me.createCheckbox(item['htmlId'], item[me.valueField], item[me.titleField]));
+            item['htmlDefaultId'] = Ext.id();
+            checkboxes += (me.createCheckbox(item['htmlId'], item[me.valueField], item[me.titleField],item['htmlDefaultId']));
         });
-        checkboxes += '</div>';
+        checkboxes += '</table></div>';
 
         // var containerId = Ext.id();
         var fields = [{
@@ -103,7 +113,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
                         } else {
                             var regexp = new RegExp(filtervalue, "i");
                             Ext.Array.each(me.itemList, function(item) {
-                                me.setCheckboxVisible(item.htmlId, (regexp.test(item[me.titleField]) ? 'block' : 'none'));
+                                me.setCheckboxVisible(item.htmlId, (regexp.test(item[me.titleField]) ? '' : 'none'));
                             });
                         }
                     }
@@ -175,18 +185,23 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         });
     },
     
-    createCheckbox: function(id, value, name) {
+    createCheckbox: function(id, value, name,defaultId) {
         // Using ordinairy HTML checkboxes, Ext checkboxes are too slow when having large numbers
         var label = name;
         if(this.renderLabel !== null) {
             label = this.renderLabel(id, name);
         }
-        return '<div id="' + id + '"><input type="checkbox" id="checkbox-' + id + '" value="' + value + '" /> <label for="checkbox-' + id + '">' + label + '</label></div>';
+        var d = '<tr id="' + id +'"><td><input type="checkbox" id="checkbox-' + id + '" value="' + value + '" /></td>';
+        if(this.createdefaultCheckboxes){
+            d += '<td><input type="checkbox" id="checkbox-' + defaultId + '" value="' + value + '" /></td>';
+        }
+        d += '<td><label for="checkbox-' + id + '">' + label + '</label></td></tr>';
+        return d;
     },
     
     setCheckBoxesVisible: function(checkboxes, visible) {
         var me = this;
-        var visibletxt = 'block';
+        var visibletxt = '';
         if(!visible) visibletxt = 'none';
         Ext.Array.each(me.itemList, function(item) {
             me.setCheckboxVisible(item.htmlId, visibletxt);
@@ -210,6 +225,11 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             } else {
                 document.getElementById('checkbox-' + item.htmlId).checked = false;
             }
+            if(Ext.Array.contains(me.checkedDefaultOn, item[me.valueField])) {
+                document.getElementById('checkbox-' + item.htmlDefaultId).checked = true;
+            } else {
+                document.getElementById('checkbox-' + item.htmlDefaultId).checked = false;
+            }
         });
     },
     
@@ -221,6 +241,19 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
                 checked.push(item[me.valueField]);
             }
         });
+        return checked;
+    },
+    
+    getDefaultChecked: function() {
+        var me = this;
+        var checked = [];
+        if(this.createdefaultCheckboxes){
+            Ext.Array.each(me.itemList, function (item) {
+                if (document.getElementById('checkbox-' + item.htmlDefaultId).checked) {
+                    checked.push(item[me.valueField]);
+                }
+            });
+        }
         return checked;
     }
     

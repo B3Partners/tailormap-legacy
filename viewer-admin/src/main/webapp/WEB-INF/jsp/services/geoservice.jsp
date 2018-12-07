@@ -282,7 +282,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script>function urlChanged(){}</script>
             </c:when>
             <c:otherwise>
-                <fmt:message key="viewer_admin.geoservice.32" var="geoservice32" />";
+                <fmt:message key="viewer_admin.geoservice.32" var="geoservice32" />
                 <stripes:submit name="save" value="${geoservice32}" onclick="return saveConfirm()" />
                 <fmt:message key="viewer_admin.geoservice.33" var="geoservice33" />
                 <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="${geoservice33}"/>
