@@ -1,6 +1,5 @@
 /**
  * @class 
- * @constructor
  * @description Flamingo WMS layer class 
  **/
 

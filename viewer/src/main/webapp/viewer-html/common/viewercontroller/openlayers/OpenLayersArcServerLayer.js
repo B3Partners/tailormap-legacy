@@ -17,7 +17,6 @@
 
 /**
  * @class
- * @constructor
  * @description Openlayers ArcServer layer class
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/

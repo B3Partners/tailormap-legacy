@@ -16,7 +16,6 @@
  */
 /**
  * @class 
- * @constructor
  * @description Flamingo Arc layer super class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>

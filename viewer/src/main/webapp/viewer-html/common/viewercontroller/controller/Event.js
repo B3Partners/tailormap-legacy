@@ -3,7 +3,6 @@
 /**
  * Event
  * @class 
- * @constructor
  * @description The class that defines the generic events. This is a helper class to abstract the viewer specific event types.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>

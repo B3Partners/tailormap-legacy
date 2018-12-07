@@ -16,7 +16,6 @@
  */
 /**
  * @class 
- * @constructor
  * @description A drawable vector layer
  */
 

@@ -1,6 +1,5 @@
 /**
  * @class
- * @constructor
  * @augments MapComponent
  * @description MapComponent subclass for OpenLayers
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
