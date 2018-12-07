@@ -69,8 +69,11 @@ public class ArcXMLFeatureSource extends FeatureSource {
 
         params.put(ArcIMSDataStoreFactory.USER.key, getUsername());
         params.put(ArcIMSDataStoreFactory.PASSWD.key, getPassword());
-
-        log.debug("Opening datastore using parameters: " + params);
+        Map logParams = new HashMap(params);
+        if(getPassword() != null) {
+            logParams.put(ArcIMSDataStoreFactory.PASSWD.key, new String(new char[getPassword().length()]).replace("\0", "*"));
+        }
+        log.debug("Opening datastore using parameters: " + logParams);
 
         params.put(ArcIMSDataStoreFactory.CRS.key, CRS.decode("EPSG:28992"));
 
@@ -78,12 +81,10 @@ public class ArcXMLFeatureSource extends FeatureSource {
         try {
             ds = new ArcIMSDataStoreFactory().createDataStore(params);
         } catch (Exception e) {
-            params.put(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
-            throw new Exception("Cannot open datastore using parameters " + params, e);
+            throw new Exception("Cannot open datastore using parameters " + logParams, e);
         }
         if (ds == null) {
-            params.put(ArcIMSDataStoreFactory.PASSWD.key, "xxx");
-            throw new Exception("Cannot open datastore using parameters " + params);
+            throw new Exception("Cannot open datastore using parameters " + logParams);
         } else {
             return ds;
         }
