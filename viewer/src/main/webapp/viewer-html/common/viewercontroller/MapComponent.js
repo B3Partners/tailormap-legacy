@@ -3,8 +3,6 @@
 /**
  * MapComponent
  * @class 
- * 
- * @param viewerObject Het viewerObject
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */

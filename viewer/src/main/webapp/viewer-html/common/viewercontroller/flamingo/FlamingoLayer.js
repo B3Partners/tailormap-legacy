@@ -1,12 +1,11 @@
 /** The FlamingLayer Class **/
 
 /**  
- * @constructor
  * @augments Layer
  * @description The superclass for all flamingolayers 
- * @param id The id of the layer
- * @param options The options to be given to the layer
- * @param flamingoObject The flamingo object of the layer
+ * param id The id of the layer
+ * param options The options to be given to the layer
+ * param flamingoObject The flamingo object of the layer
  * 
  */
 

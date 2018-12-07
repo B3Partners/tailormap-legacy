@@ -16,7 +16,6 @@
  */
 /**
  * @class 
- * @constructor
  * @description OpenLayers Arc layer super class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  **/

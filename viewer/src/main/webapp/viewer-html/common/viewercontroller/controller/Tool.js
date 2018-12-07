@@ -14,13 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  * @class
- * @constructor
  * @description The class for controls
- * @param id The id of the tool
- * @param frameworkObject The frameworkspecific object, to store as a reference
- * @param type The type of tool to be created
  */
 Ext.define("viewer.viewercontroller.controller.Tool",{
     extend: "Ext.util.Observable",
@@ -68,7 +66,12 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         viewerController:null,
         preventActivationAsFirstTool: false
     },
-
+    /**
+     * 
+     * @param id The id of the tool
+     * @param frameworkObject The frameworkspecific object, to store as a reference
+     * @param type The type of tool to be created
+     */
     constructor: function (config){
         this.initConfig(config);
         viewer.viewercontroller.controller.Tool.superclass.constructor.call(this, this.config);

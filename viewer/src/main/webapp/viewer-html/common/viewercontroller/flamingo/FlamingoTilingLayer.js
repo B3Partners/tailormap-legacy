@@ -27,12 +27,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
     /**
      *
      * @constructor
-     * @param config.id the id
-     * @param config.url the url of the service
-     * @param config.serviceEnvelope the service envelope
-     * @param config.type the tiling type (OSM,TMS,WMSc,arcgisrest)
-     * @param config.tileHeight the height of the tiling images
-     * @param config.tileWidth the width of the tiling images
+     * param config.id the id
+     * param config.url the url of the service
+     * param config.serviceEnvelope the service envelope
+     * param config.type the tiling type (OSM,TMS,WMSc,arcgisrest)
+     * param config.tileHeight the height of the tiling images
+     * param config.tileWidth the width of the tiling images
      */
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoTilingLayer.superclass.constructor.call(this, config);
