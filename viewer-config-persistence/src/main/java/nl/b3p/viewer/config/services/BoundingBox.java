@@ -147,16 +147,16 @@ public class BoundingBox implements Cloneable {
         if (this.crs != other.crs && (this.crs == null || !this.crs.equals(other.crs))) {
             return false;
         }
-        if (this.minx != other.minx && (this.minx == null || !this.minx.equals(other.minx))) {
+        if (!this.minx.equals(other.minx )&& (this.minx == null || !this.minx.equals(other.minx))) {
             return false;
         }
-        if (this.miny != other.miny && (this.miny == null || !this.miny.equals(other.miny))) {
+        if (!this.miny.equals(other.miny) && (this.miny == null || !this.miny.equals(other.miny))) {
             return false;
         }
-        if (this.maxx != other.maxx && (this.maxx == null || !this.maxx.equals(other.maxx))) {
+        if (!this.maxx.equals(other.maxx) && (this.maxx == null || !this.maxx.equals(other.maxx))) {
             return false;
         }
-        if (this.maxy != other.maxy && (this.maxy == null || !this.maxy.equals(other.maxy))) {
+        if (!this.maxy.equals( other.maxy) && (this.maxy == null || !this.maxy.equals(other.maxy))) {
             return false;
         }
         return true;
