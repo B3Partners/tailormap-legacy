@@ -1,3 +1,5 @@
+/* global Ext, i18next */
+
 /**
  * @class
  * @constructor
@@ -29,11 +31,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.lineButton = null;
         this.polygonButton = null;
         var resolutions;
-        var startResolution;
         if(config && config.resolutions){
             if (config.resolutions === "false") {
                 resolutions = null;
-                startResolution = null;
             } else {
             var rString = (config.resolutions).split(",");
             resolutions=[];
@@ -46,7 +46,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
         }else{
             resolutions = [3440.64,1720.32,860.16,430.08,215.04,107.52,53.76,26.88,13.44,6.72,3.36,1.68,0.84,0.42,0.21,0.105];
-            startResolution = 512;
         }
         var maxExtentBounds;
         if(this.viewerController.app.maxExtent != undefined){
@@ -62,14 +61,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             allOverlays: true,
             units :proj.getUnits(),
             resolutions: resolutions
-            //resolution: startResolution
         };
         /*listen to ON_COMPONENTS_FINISHED_LOADING to check if there is a tool configured
          *Otherwise add default tool. Small delay to step out of the thread.
          */
-        var me =this
+        var me =this;
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
-            setTimeout(function(){me.checkTools()},10);
+            setTimeout(function(){me.checkTools();},10);
         },this);
         return this;
     },
@@ -478,7 +476,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             config.cssClass = "olControlMousePosition";
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
-            var frameworkOptions={}
+            var frameworkOptions={};
             frameworkOptions.bottomOutUnits='';
             frameworkOptions.bottomInUnits='';
             if (!Ext.isEmpty(config.units)){
@@ -503,7 +501,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      **/
     createTool : function (conf){
         var type = conf.type;
-        var id = conf.id;
         conf.viewerController=this.viewerController;
         var frameworkOptions={};
         if(conf.frameworkOptions) {
@@ -517,7 +514,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory(options));
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomBox(frameworkOptions))
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomBox(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMIN_BUTTON){//26,
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomIn(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
@@ -529,7 +526,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM){//7,
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Zoom(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions))
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
             frameworkOptions.enableKinetic=true;
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));
@@ -681,7 +678,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             };
             this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
         }else {
-            var ft = tool.getFrameworkTool();
             this.getPanel().addControls([tool.getFrameworkTool()]);
         }
 
@@ -736,7 +732,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.maps[0].getFrameworkMap().removeControl(tool.getFrameworkTool());
         if (this.getPanel().controls.length==0){
             this.getPanel().destroy();
-            this.panel=null
+            this.panel=null;
         }else{
             this.getPanel().redraw();
         }
