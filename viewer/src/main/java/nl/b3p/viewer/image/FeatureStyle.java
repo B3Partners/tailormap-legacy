@@ -29,7 +29,7 @@ public class FeatureStyle {
     private String labelOutlineColor = null;
     private String labelOutlineWidth = null;
     private String labelAlign = null;
-    private int fontSize = 0;
+    private float fontSize = 0;
     private String fontColor = null;
     private Double rotation = 0.0;
     private Double labelXOffset = 0.0;
@@ -39,7 +39,7 @@ public class FeatureStyle {
     private String strokeColor = null;
     private Double strokeOpacity = 0.0;
     private Double strokeWidth = 0.0;
-    private String strokeDashstyle = null;
+    private String strokeDashstyle = "solid";
     private String graphicName = null;
     private Double pointRadius = 0.0;
 
@@ -57,7 +57,7 @@ public class FeatureStyle {
         labelOutlineColor = sanitizeColorString(style.optString("labelOutlineColor"));
         labelOutlineWidth = style.optString("labelOutlineWidth");
         labelAlign = style.optString("labelAlign");
-        fontSize = style.optInt("fontSize", 12);
+        fontSize = style.optFloat("fontSize", 12);
         fontColor = sanitizeColorString(style.optString("fontColor"));
         rotation = style.optDouble("rotation", 0.0);
         labelXOffset = style.optDouble("labelXOffset", 0.0);
@@ -108,11 +108,12 @@ public class FeatureStyle {
         this.labelAlign = labelAlign;
     }
 
-    public int getFontSize() {
+    // return a float because https://docs.oracle.com/javase/8/docs/api/java/awt/Font.html#deriveFont-float-
+    public float getFontSize() {
         return fontSize;
     }
 
-    public void setFontSize(int fontSize) {
+    public void setFontSize(float fontSize) {
         this.fontSize = fontSize;
     }
 
