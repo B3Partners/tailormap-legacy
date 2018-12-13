@@ -251,7 +251,7 @@ public class CombineImageSettings {
     /**
      * Create a new BBOX that covers the original and the rotated bbox.
      *
-     * @param bbox original bbox
+     * @param bb original bbox
      * @param rotation angle in degrees
      * @return a new BBOX that covers the original and the rotated bbox
      */
@@ -512,7 +512,7 @@ public class CombineImageSettings {
             cis.setAngle(settings.getInt("angle"));
         }
         if (settings.has("quality")){
-            Integer quality = settings.getInt("quality");
+            int quality = settings.getInt("quality");
             if (cis.getWidth() > cis.getHeight()){
                 cis.setHeight(Math.round(cis.getHeight() * quality/cis.getWidth()));
                 cis.setWidth(quality);
