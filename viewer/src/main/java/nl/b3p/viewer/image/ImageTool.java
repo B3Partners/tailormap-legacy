@@ -34,7 +34,6 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -50,7 +49,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -233,7 +231,9 @@ public class ImageTool {
             gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             CombineImageWkt ciw = (CombineImageWkt) wktGeoms.get(i);
             FeatureStyle fs = ciw.getStyle();
+            log.debug("draw geomentry: " + ciw + " using style: " + fs);
             font = font.deriveFont(fs.getFontSize());
+            gbi.setFont(font);
             float strokeWidth = fs.getStrokeWidth().floatValue();
             double pointRadius = fs.getPointRadius();
             gbi.setStroke(new BasicStroke(strokeWidth));
@@ -261,7 +261,7 @@ public class ImageTool {
             
                 if(fs.getGraphicName() != null && !fs.getGraphicName().isEmpty()){
                     s = drawPointGraphic(centerPoint, fs, xpointoffset, ypointoffset, gbi);
-            } else {
+                } else {
                     s = new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), pointwidth, pointheight);
                 }
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getFillOpacity().floatValue()));
@@ -294,7 +294,6 @@ public class ImageTool {
                 gbi.setStroke(stroke);
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fs.getStrokeOpacity().floatValue()));
                 gbi.draw(shape);
-                
             }
             if (ciw.getLabel() != null && !ciw.getLabel().isEmpty()) {
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
@@ -312,7 +311,7 @@ public class ImageTool {
                 centerPoint.translate(xoffset+(int)labelXOffset, yoffset-(int)labelYOffset);
 
                 gbi.setColor(fs.getFontColor());
-                BufferedImage b = createStringImage(gbi, ciw.getLabel());
+                BufferedImage b = createStringImage(gbi, ciw.getLabel(), fs);
                 rot.translate(centerPoint.getX(), centerPoint.getY());
                 gbi.drawImage(b, rot, null);
                 gbi.setTransform(t);
@@ -322,31 +321,31 @@ public class ImageTool {
         return newBufIm;
     }
 
-    private static BufferedImage createStringImage(Graphics g, String s) {
+    private static BufferedImage createStringImage(Graphics2D g, String s, FeatureStyle fs) {
         int w = g.getFontMetrics().stringWidth(s) + 8;
         int h = g.getFontMetrics().getHeight();
 
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D gbi = image.createGraphics();
-       
-        gbi.setFont(gbi.getFont());
-        gbi.setColor(Color.WHITE);
-        
-        int halosize= 1;
-        
-        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent()-halosize);
-        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent()+halosize);
+
+        gbi.setFont(g.getFont().deriveFont(fs.getFontSize()));
+        gbi.setColor(fs.getLabelOutlineColor());
+
+        int halosize = fs.getLabelOutlineWidth();
+
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent() - halosize);
+        gbi.drawString(s, 0, h - g.getFontMetrics().getDescent() + halosize);
         gbi.drawString(s, -halosize, h - g.getFontMetrics().getDescent());
         gbi.drawString(s, halosize, h - g.getFontMetrics().getDescent());
-        
-        gbi.setColor(Color.BLACK);
+
+        gbi.setColor(fs.getFontColor());
         gbi.drawString(s, 0, h - g.getFontMetrics().getDescent());
         gbi.dispose();
 
         return image;
     }
 
-    private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset,Graphics2D gbi) {
+    private static Shape drawPointGraphic(Point origin, FeatureStyle fs, int xoffset, int yoffset, Graphics2D gbi) {
         double rotation = fs.getRotation();
         int length = fs.getPointRadius().intValue() * 2;
         int halfLength = length/2;
