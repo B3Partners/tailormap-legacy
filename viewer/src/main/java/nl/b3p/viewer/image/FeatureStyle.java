@@ -26,11 +26,11 @@ import org.json.JSONObject;
 public class FeatureStyle {
 
     private String label = "";
-    private String labelOutlineColor = null;
-    private String labelOutlineWidth = null;
+    private String labelOutlineColor = "FFFFFF";
+    private Integer labelOutlineWidth = 1;
     private String labelAlign = null;
-    private int fontSize = 0;
-    private String fontColor = null;
+    private Float fontSize = 12f;
+    private String fontColor = "000000";
     private Double rotation = 0.0;
     private Double labelXOffset = 0.0;
     private Double labelYOffset = 0.0;
@@ -39,10 +39,16 @@ public class FeatureStyle {
     private String strokeColor = null;
     private Double strokeOpacity = 0.0;
     private Double strokeWidth = 0.0;
-    private String strokeDashstyle = null;
+    private String strokeDashstyle = "solid";
     private String graphicName = null;
     private Double pointRadius = 0.0;
 
+    /**
+     *
+     * @deprecated use {@link FeatureStyle(JSONObject)} instead, as this sets up
+     * the style with aberrant properties.
+     */
+    @Deprecated
     public FeatureStyle(){
         fillColor = "ff0000";
         fillOpacity = 0.3;
@@ -54,11 +60,11 @@ public class FeatureStyle {
     
     public FeatureStyle(JSONObject style) {
         label = style.optString("label");
-        labelOutlineColor = sanitizeColorString(style.optString("labelOutlineColor"));
-        labelOutlineWidth = style.optString("labelOutlineWidth");
+        labelOutlineColor = sanitizeColorString(style.optString("labelOutlineColor", "#FFFFFF"));
+        labelOutlineWidth = style.optInt("labelOutlineWidth", 1);
         labelAlign = style.optString("labelAlign");
-        fontSize = style.optInt("fontSize", 12);
-        fontColor = sanitizeColorString(style.optString("fontColor"));
+        fontSize = style.optFloat("fontSize", 12f);
+        fontColor = sanitizeColorString(style.optString("fontColor", "#000000"));
         rotation = style.optDouble("rotation", 0.0);
         labelXOffset = style.optDouble("labelXOffset", 0.0);
         labelYOffset = style.optDouble("labelYOffset", 0.0);
@@ -70,7 +76,7 @@ public class FeatureStyle {
         fillOpacity = transparentFillColor ? 0.0 : style.optDouble("fillOpacity", 0.0);
         strokeColor = sanitizeColorString(style.optString("strokeColor"));
         strokeOpacity = style.optDouble("strokeOpacity", 0.0);
-        strokeDashstyle = style.optString("strokeDashstyle");
+        strokeDashstyle = style.optString("strokeDashstyle", "solid");
         strokeWidth = style.optDouble("strokeWidth", 3.0);
         graphicName = style.optString("graphicName");
         pointRadius = style.optDouble("pointRadius", 0.0);
@@ -92,11 +98,11 @@ public class FeatureStyle {
         this.labelOutlineColor = labelOutlineColor;
     }
 
-    public String getLabelOutlineWidth() {
+    public Integer getLabelOutlineWidth() {
         return labelOutlineWidth;
     }
 
-    public void setLabelOutlineWidth(String labelOutlineWidth) {
+    public void setLabelOutlineWidth(Integer labelOutlineWidth) {
         this.labelOutlineWidth = labelOutlineWidth;
     }
 
@@ -108,11 +114,12 @@ public class FeatureStyle {
         this.labelAlign = labelAlign;
     }
 
-    public int getFontSize() {
+    // return a float because https://docs.oracle.com/javase/8/docs/api/java/awt/Font.html#deriveFont-float-
+    public Float getFontSize() {
         return fontSize;
     }
 
-    public void setFontSize(int fontSize) {
+    public void setFontSize(Float fontSize) {
         this.fontSize = fontSize;
     }
 
@@ -222,6 +229,11 @@ public class FeatureStyle {
             color = color.substring(index+1);
         }
         return color;
-        
     }
+
+    @Override
+    public String toString() {
+        return "FeatureStyle{" + "label=" + label + ", labelOutlineColor=" + labelOutlineColor + ", labelOutlineWidth=" + labelOutlineWidth + ", labelAlign=" + labelAlign + ", fontSize=" + fontSize + ", fontColor=" + fontColor + ", rotation=" + rotation + ", labelXOffset=" + labelXOffset + ", labelYOffset=" + labelYOffset + ", fillColor=" + fillColor + ", fillOpacity=" + fillOpacity + ", strokeColor=" + strokeColor + ", strokeOpacity=" + strokeOpacity + ", strokeWidth=" + strokeWidth + ", strokeDashstyle=" + strokeDashstyle + ", graphicName=" + graphicName + ", pointRadius=" + pointRadius + '}';
+    }
+
 }
