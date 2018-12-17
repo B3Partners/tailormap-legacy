@@ -104,7 +104,7 @@ public class CombineImageWkt {
     }
 
     /**
-     * @param color the color to set
+     * @param color the color to set eg {@code 00ffff}
      * @deprecated set color on the {@link #getStyle() featurestyle} instead
      */
     @Deprecated
