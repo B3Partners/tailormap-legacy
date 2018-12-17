@@ -92,6 +92,9 @@ public class CombineImageWktTest {
         assertEquals(LABEL, c.getLabel());
         assertEquals(COLOR, c.getColor());
         assertTrue(Math.abs(STROKEWIDTH - c.getStrokeWidth()) < .01);
+
+        c.setColor(COLOR);
+        assertEquals(COLOR, c.getColor());
     }
 
 }
