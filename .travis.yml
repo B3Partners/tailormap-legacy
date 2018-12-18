@@ -78,7 +78,7 @@ matrix:
     - os: linux
       sudo: required
       dist: xenial
-      jdk: ibmjava8
+      jdk: java-8-ibm
 
 cache:
   directories:
