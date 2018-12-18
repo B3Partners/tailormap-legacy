@@ -77,7 +77,7 @@ matrix:
   include:
     - os: linux
       sudo: required
-      group: edge
+      dist: xenial
       jdk: ibmjava8
 
 cache:
