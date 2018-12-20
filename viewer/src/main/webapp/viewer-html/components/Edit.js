@@ -359,12 +359,18 @@ Ext.define("viewer.components.Edit", {
             var items = [
                 {
                     xtype: "button",
-                    text:  i18next.t('viewer_components_edit_trace_lockcoord'),
+                    text:  i18next.t('viewer_components_edit_trace_lockcoord_unlocked'),
+                    enableToggle:true,
                     listeners: {
-                        click: {
+                        toggle: {
                             scope: this,
-                            fn: function () {
-                                me.gpsLocation.stopWatch(true);
+                            fn: function (btn,state) {
+                                btn.setText(i18next.t(('viewer_components_edit_trace_lockcoord' + (state ? "_locked" : "_unlocked"))));
+                                if(state){
+                                    me.gpsLocation.stopWatch(state);
+                                }else{
+                                    me.gpsLocation.startWatch();
+                                }
                             }
                         }
                     }
