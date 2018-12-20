@@ -128,10 +128,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             var measureTool = handler === OpenLayers.Handler.Path ? this.pathMeasureControl : this.polygonMeasureControl;
             var containerPrefix = this.config.name || 'vectorMeasure';
             conf.callbacks = {
-                modify: function(evt) {
+                modify: function(evt,feature) {
                     viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.modifyHandler(measureTool, {
                         containerPrefix: containerPrefix
                     }, evt);
+                     if(this.handler.layer){
+                            this.handler.layer.events.triggerEvent("sketchmodified", {vertex: evt, feature: feature});
+                        }
                 }
             };
         }

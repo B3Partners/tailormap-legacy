@@ -30,7 +30,14 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool",{
     },
     constructor: function (conf) {
         var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
-        
+        var callbacks = {
+           /* modify: function (vertex, feature) {
+                this.handler.layer.events.triggerEvent(
+                        "sketchmodified", {vertex: vertex, feature: feature}
+                );
+            }*/
+        };
+      //  conf.frameworkOptions["callbacks"] = callbacks;
         this.frameworkTool = new OpenLayers.Control.Measure(handler, conf.frameworkOptions);
         var me =this;
         this.handler = this.frameworkTool.handler;
@@ -88,15 +95,16 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool",{
         var me = this;
         var layer = {
             getFrameworkLayer: function () {
+                console.log("Measuretool.registertosnapping: " + me.handler.layer.id);
                 return me.handler.layer;
             }
         };
         var options = {
-            layer
+           layer:layer
         };
         this.config.viewerController.registerSnappingLayer(layer);
         for(var i = 0 ; i < snappings.length; i++){
-            snappings[i].snapCtl.layerAdded(null, options);
+           snappings[i].snapCtl.layerAdded(null, options);
         }
         
     }

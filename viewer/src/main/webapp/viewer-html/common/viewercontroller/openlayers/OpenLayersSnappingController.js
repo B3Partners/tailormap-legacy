@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext */
+
 /**
  *  @description Controller component for the Snapping control.
  * @author <a href="mailto:markprins@b3partners.nl">Mark Prins</a>
