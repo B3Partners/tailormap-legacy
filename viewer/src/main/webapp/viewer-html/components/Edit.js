@@ -698,6 +698,9 @@ Ext.define("viewer.components.Edit", {
                 break;
             case "linestringtrace":
                 showTrace = true;
+                this.tekstGeom = i18next.t('viewer_components_edit_11');
+                this.newGeomType = "LineString";
+                break;
             case "multilinestring":
             case "linestring":
                 this.showGeomType = "LineString";
@@ -1163,7 +1166,7 @@ Ext.define("viewer.components.Edit", {
         this.clearFeatureAndForm();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
-        var trace = true;
+        var trace = this.showGeomType === "linestringtrace";
         if(trace){
             this.traceWindow();
         }else if (this.newGeomType !== null && this.geometryEditable) {
