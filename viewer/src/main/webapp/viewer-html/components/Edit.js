@@ -467,7 +467,7 @@ Ext.define("viewer.components.Edit", {
         this.showAndFocusForm();
     },
     locationRetrieved:function(val){
-        this.currentPoint = value;
+        this.currentPoint = val;
         var dec = 10;
         var value = "x: " + Math.round(dec* val.x )/dec+ ", y:" + Math.round(val.y *dec ) /dec + ". " + i18next.t('viewer_components_edit_trace_accuracy') +": " + val.accuracy;
         this.gpswindow.getComponent("coordinatesedit1").setHtml(value);
