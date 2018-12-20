@@ -358,6 +358,7 @@ Ext.define("viewer.components.Edit", {
             this.gpsLocation = Ext.create("viewer.components.CurrentLocation", config);
             var items = [
                 {
+                    id: "lockTracepoint" + this.name,
                     xtype: "button",
                     text:  i18next.t('viewer_components_edit_trace_lockcoord_unlocked'),
                     enableToggle:true,
@@ -445,6 +446,7 @@ Ext.define("viewer.components.Edit", {
     resetTrace:function(){
         this.trace = [];
         this.gpsLocation.removeMarkers();
+        this.vectorLayer.removeAllFeatures();
     },
     traceFinished: function(){
         this.gpswindow.hide();
@@ -480,6 +482,9 @@ Ext.define("viewer.components.Edit", {
         this.vectorLayer.removeAllFeatures();
         this.vectorLayer.addFeature(feature);
         this.gpsLocation.startWatch();
+        var btn = Ext.getCmp("lockTracepoint" + this.name);
+        btn.setText(i18next.t(('viewer_components_edit_trace_lockcoord_unlocked')));
+                                
     },
     copyDeleteButtons: function() {
         var buttons = [];
