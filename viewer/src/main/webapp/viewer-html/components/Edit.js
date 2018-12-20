@@ -365,11 +365,12 @@ Ext.define("viewer.components.Edit", {
                         toggle: {
                             scope: this,
                             fn: function (btn,state) {
-                                btn.setText(i18next.t(('viewer_components_edit_trace_lockcoord' + (state ? "_locked" : "_unlocked"))));
                                 if(state){
+                                    btn.setText(i18next.t(('viewer_components_edit_trace_lockcoord_locked')));
                                     me.gpsLocation.stopWatch(state);
                                 }else{
                                     me.gpsLocation.startWatch();
+                                    btn.setText(i18next.t(('viewer_components_edit_trace_lockcoord_unlocked')));
                                 }
                             }
                         }
