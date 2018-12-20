@@ -342,6 +342,7 @@ Ext.define("viewer.components.Edit", {
     trace: null,
     currentPoint:null,
     prevMode:null,
+    firstZoom:true,
     traceWindow: function () {
         this.trace = [];
         this.prevMode = this.mode;
@@ -423,7 +424,11 @@ Ext.define("viewer.components.Edit", {
                 listeners: {
                     hide:{
                         scope:this,
-                        fn: this.traceFinished
+                        fn: function(){
+                            this.resetTrace();
+                            this.cancel();
+                            this.maincontainer.setLoading(false);
+                        }
                     },
                     show:{
                         scope:this,
@@ -455,11 +460,16 @@ Ext.define("viewer.components.Edit", {
         this.mode = this.prevMode;
         this.showAndFocusForm();
     },
-    locationRetrieved:function(value){
+    locationRetrieved:function(val){
         this.currentPoint = value;
         var dec = 10;
-        var value = "x: " + Math.round(dec* value.x )/dec+ ", y:" + Math.round(value.y *dec ) /dec + ". " + i18next.t('viewer_components_edit_trace_accuracy') +": " + value.accuracy;
+        var value = "x: " + Math.round(dec* val.x )/dec+ ", y:" + Math.round(val.y *dec ) /dec + ". " + i18next.t('viewer_components_edit_trace_accuracy') +": " + val.accuracy;
         this.gpswindow.getComponent("coordinatesedit1").setHtml(value);
+        if(this.firstZoom){
+            this.firstZoom = false;
+            this.config.viewerController.mapComponent.getMap().zoomToResolution(3);
+            this.config.viewerController.mapComponent.getMap().moveTo(val.x,val.y);
+        }
     },
     usePointForTrace:function(){
         this.trace.push(this.currentPoint);
