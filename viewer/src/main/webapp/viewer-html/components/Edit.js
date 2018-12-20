@@ -405,6 +405,20 @@ Ext.define("viewer.components.Edit", {
                             fn: this.traceFinished
                         }
                     }
+                },{
+                    xtype: "button",
+                    text:i18next.t('viewer_components_edit_0'),
+                    listeners: {
+                        click: {
+                            scope: this,
+                            fn: function () {
+                                this.resetTrace();
+                                this.cancel();
+                                this.maincontainer.setLoading(false);
+                                this.gpswindow.hide();
+                            }
+                        }
+                    }
                 },
                 {
                     xtype: "container",
@@ -420,16 +434,8 @@ Ext.define("viewer.components.Edit", {
                 height: 100,
                 title: i18next.t('viewer_components_edit_trace_gpswindow_title'),
                 items: items,
-                closeAction: "method-hide",
+                closable:false,
                 listeners: {
-                    hide:{
-                        scope:this,
-                        fn: function(){
-                            this.resetTrace();
-                            this.cancel();
-                            this.maincontainer.setLoading(false);
-                        }
-                    },
                     show:{
                         scope:this,
                         fn: this.resetTrace                        
