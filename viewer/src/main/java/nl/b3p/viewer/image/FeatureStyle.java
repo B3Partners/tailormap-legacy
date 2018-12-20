@@ -95,7 +95,7 @@ public class FeatureStyle {
     }
 
     public void setLabelOutlineColor(String labelOutlineColor) {
-        this.labelOutlineColor = labelOutlineColor;
+        this.labelOutlineColor = this.sanitizeColorString(labelOutlineColor);
     }
 
     public Integer getLabelOutlineWidth() {
@@ -128,7 +128,7 @@ public class FeatureStyle {
     }
 
     public void setFontColor(String fontColor) {
-        this.fontColor = fontColor;
+        this.fontColor = this.sanitizeColorString(fontColor);
     }
 
     public Double getRotation() {
@@ -160,7 +160,7 @@ public class FeatureStyle {
     }
 
     public void setFillColor(String fillColor) {
-        this.fillColor = fillColor;
+        this.fillColor = this.sanitizeColorString(fillColor);
     }
 
     public Double getFillOpacity() {
@@ -176,7 +176,7 @@ public class FeatureStyle {
     }
 
     public void setStrokeColor(String strokeColor) {
-        this.strokeColor = strokeColor;
+        this.strokeColor = this.sanitizeColorString(strokeColor);
     }
 
     public Double getStrokeOpacity() {
