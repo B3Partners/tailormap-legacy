@@ -517,7 +517,7 @@ Ext.define("viewer.components.Legend", {
             var divLabel = document.createElement("div");
 
             img = document.createElement("img");
-            if (svc && svc.useProxy) {
+            if (svc && svc.useProxy && !part.isAlternative) {
                 img.src = actionBeans['proxy'] + '/wms?' +
                         Ext.Object.toQueryString({
                             serviceId: al.serviceId,
