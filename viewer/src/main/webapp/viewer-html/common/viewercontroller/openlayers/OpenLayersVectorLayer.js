@@ -58,13 +58,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
         this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
-        });
+        },this.frameworkLayer);
         this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath'
-        }));
+        },this.frameworkLayer));
         this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon'
-        }));
+        },this.frameworkLayer));
         this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon, {
             handlerOptions: {
                 sides: 40}
@@ -74,21 +74,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
                 sides: 4,
                 irregular: true
             }
-        });
+        },this.frameworkLayer);
 
         this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, this.addMeasureListener(OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon',
             handlerOptions: {
                 freehand: true
             }
-        }));
+        },this.frameworkLayer));
 
         this.freehandLine = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath',
             handlerOptions: {
                 freehand: true
             }
-        }));
+        },this.frameworkLayer));
 
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
@@ -123,20 +123,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         return !this.config.hasOwnProperty('allowselection') || this.config.allowselection;
     },
 
-    addMeasureListener: function(handler, conf) {
-        if(this.config.showmeasures) {
+    addMeasureListener: function(handler, conf,layer) {
+        if (this.config.showmeasures) {
             var measureTool = handler === OpenLayers.Handler.Path ? this.pathMeasureControl : this.polygonMeasureControl;
             var containerPrefix = this.config.name || 'vectorMeasure';
-            conf.callbacks = {
-                modify: function(evt,feature) {
+            if (layer) {
+                layer.events.on({"sketchmodified": function (evt) {
                     viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.modifyHandler(measureTool, {
                         containerPrefix: containerPrefix
-                    }, evt);
-                     if(this.handler.layer){
-                            this.handler.layer.events.triggerEvent("sketchmodified", {vertex: evt, feature: feature});
-                        }
-                }
-            };
+                    }, evt.vertex);
+                }});
+            }
         }
         return conf;
     },
@@ -299,7 +296,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
 // call superclass method to register keydown events
 
         this.superclass.drawFeature.call(this, type);
-
+        
         if (type === "Point") {
             this.activeDrawFeatureControl = this.point;
             this.point.activate();
