@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext, i18next */
+
 /**
  * Abstract component to for vectorlayers.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -84,6 +86,7 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         // listen for certain key-press events in the document to undo editing
         var me = this;
         Ext.getDoc().on('keydown', me._keyListener, me);
+        this.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_START_DRAWING,this,this);
     },
     /**
      * Note: subclasses should call this method to remove the added keylistener.

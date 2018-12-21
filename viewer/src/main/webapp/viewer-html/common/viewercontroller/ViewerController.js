@@ -1,4 +1,4 @@
-/* global Ext, actionBeans, viewer, Proj4js */
+/* global Ext, actionBeans, viewer, Proj4js, i18next */
 
 /**
  * ViewerController

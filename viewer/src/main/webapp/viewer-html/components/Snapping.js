@@ -236,6 +236,7 @@ Ext.define("viewer.components.Snapping", {
             fillOpacity: this.config.snapFillColourOpacity / 100
         };
         this.snapCtl = this.config.viewerController.mapComponent.createComponent(this.config);
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_START_DRAWING, this.forceSnappee, this);
     },
     showWindow: function () {
         if (this.snapCtl === null) {
@@ -245,6 +246,15 @@ Ext.define("viewer.components.Snapping", {
         this.popup.popupWin.setTitle(this.config.title);
         this.enableAllDefaultLayers();
         this.popup.show();
+    },
+    forceSnappee: function (layer) {
+        var isSnapping = Ext.Array.contains(this.config.viewerController.registeredSnappingLayers, layer);
+        if (isSnapping) {
+            var options = {
+                layer: layer
+            };
+            this.snapCtl.layerAdded(null, options);
+        }
     },
     enableAllDefaultLayers: function () {
         this.setLayersEnabled(this.config.defaultOnLayers,true);
