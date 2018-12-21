@@ -51,7 +51,7 @@ Ext.define('vieweradmin.components.Attributes', {
 
         var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
         this.removeChilds(simpleFeatureTypeId);
-        simpleFeatureTypeId.appendChild(this.getOption(-1, "i18next.t('viewer_admin_attribute_0')", true));
+        simpleFeatureTypeId.appendChild(this.getOption(-1, i18next.t('viewer_admin_attribute_0'), true));
 
         if(selectedValue != -1) {
             Ext.Ajax.request({
