@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Ext, actionBeans */
+/* global Ext, actionBeans, i18next */
 
 /**
  * Legend: Shows legends for layers.
@@ -506,7 +506,7 @@ Ext.define("viewer.components.Legend", {
             var divLabel = document.createElement("div");
 
             img = document.createElement("img");
-            if (svc && svc.useProxy) {
+            if (svc && svc.useProxy && !part.isAlternative) {
                 img.src = actionBeans['proxy'] + '/wms?' +
                         Ext.Object.toQueryString({
                             serviceId: al.serviceId,
