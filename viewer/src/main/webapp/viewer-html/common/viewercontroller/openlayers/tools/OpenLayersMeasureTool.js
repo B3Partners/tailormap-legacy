@@ -45,7 +45,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool",{
             me.activate.apply(me.handler);
             me.registerToSnapping();
         };
-        this.frameworkTool.handler.deactivate = this.deactivate;
         var tool = new viewer.viewercontroller.openlayers.OpenLayersTool(conf, this.frameworkTool);
         if (conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA) {
             this.frameworkTool.displayClass = 'olControlMeasureArea';
@@ -53,7 +52,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool",{
         viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool.superclass.constructor.call(this,conf,this.frameworkTool);
     },
     activate: function() {
-        if(!OpenLayers.Handler.prototype.activate.apply(this, arguments)) {
+        if(!OpenLayers.Handler.prototype.activate.apply(this, arguments) || !this.map) {
             return false;
         }
         // create temporary vector layer for rendering geometry sketch
@@ -69,25 +68,11 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool",{
         }, this.layerOptions);
         this.layer = new OpenLayers.Layer.Vector(this.CLASS_NAME, options);
         this.map.addLayer(this.layer);
-        
+         
         return true;
     },
     deactivate: function () {
-        if (!OpenLayers.Handler.prototype.deactivate.apply(this, arguments)) {
-            return false;
-        }
-        this.cancel();
-        // If a layer's map property is set to null, it means that that layer
-        // isn't added to the map. Since we ourself added the layer to the map
-        // in activate(), we can assume that if this.layer.map is null it means
-        // that the layer has been destroyed (as a result of map.destroy() for
-        // example.
-        if (this.layer.map != null) {
-            this.destroyFeature(true);
-            this.layer.destroy(false);
-        }
-        this.layer = null;
-        this.touch = false;
+        this.frameworkObject.deactivate();
         return true;
     },
     registerToSnapping: function(olVectorLayer){
@@ -95,7 +80,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool",{
         var me = this;
         var layer = {
             getFrameworkLayer: function () {
-                console.log("Measuretool.registertosnapping: " + me.handler.layer.id);
                 return me.handler.layer;
             }
         };
