@@ -187,6 +187,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                         <!-- The tools -->
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersIdentifyTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayersMeasureTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersDefaultTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersMeasureHandler.js"></script>
                     </c:when>

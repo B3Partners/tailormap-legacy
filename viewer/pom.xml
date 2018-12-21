@@ -394,6 +394,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersOverview.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersMaptip.js</param>
                                 <!-- OpenLayers Tools -->
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersMeasureTool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersMeasureHandler.js</param>

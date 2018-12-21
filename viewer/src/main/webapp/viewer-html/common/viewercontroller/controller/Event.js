@@ -264,6 +264,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @field
          * Occurs when zoom is completed
          */
-        ON_ZOOM_END                             : "ON_ZOOM_END"
+        ON_ZOOM_END                             : "ON_ZOOM_END",
+        ON_START_DRAWING                        : "ON_START_DRAWING"
     }
 });

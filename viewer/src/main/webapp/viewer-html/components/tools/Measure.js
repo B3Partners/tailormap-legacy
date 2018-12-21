@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, i18next */
+
 /**
  * Measure Tool component
  * Creates a MapComponent Tool with the given configuration by calling createTool 
@@ -34,8 +36,11 @@ Ext.define ("viewer.components.tools.Measure",{
             conf.frameworkOptions = {
                 persist: true,
                 callbacks: {
-                    modify: function (evt){
-                        viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.modifyHandler(this, conf, evt);
+                    modify: function (vertex, feature){
+                        viewer.viewercontroller.openlayers.tools.OpenLayersMeasureHandler.modifyHandler(this, conf, vertex);
+                        if(this.handler.layer){
+                            this.handler.layer.events.triggerEvent("sketchmodified", {vertex: vertex, feature: feature});
+                        }
                     }
                 }
             };
@@ -66,7 +71,7 @@ Ext.define ("viewer.components.tools.Measure",{
         }
 
         frameworkTool.events.register('measure', frameworkTool, function() {
-            this.map.div.appendChild(createMeasureClone());
+           this.map.div.appendChild(createMeasureClone());
             if(config.nonSticky){
                 config.viewerController.mapComponent.activateTool(null, true);
             }
