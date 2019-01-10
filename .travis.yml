@@ -10,7 +10,7 @@ addons:
   apt:
     packages:
       - haveged
-      - git-lfs
+      # - git-lfs should be installed on trusty images
 
 services:
   - haveged
