@@ -69,7 +69,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         });
 
         this.select = new ol.interaction.Select({
-            layers: [this.frameworkLayer],
+            layers: [this.frameworkLayer]
             //style: this.selectStyle
         });
 

@@ -296,7 +296,7 @@
                                 <param>${viewerhtml.path}/components/RequestManager.js</param>
                                 <param>${viewerhtml.path}/components/DataSelectionChecker.js</param>
                                 <!-- Common -->
-                                <param>${viewerhtml.path}/common/overrides.js</param>
+                                
                                 <param>${viewerhtml.path}/common/ScreenPopup.js</param>
                                 <param>${viewerhtml.path}/common/CQLFilterWrapper.js</param>
                                 <param>${viewerhtml.path}/common/FeatureInfoWrapper.js</param>
@@ -400,6 +400,47 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersMeasureHandler.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
+                        </compilation>
+                        <compilation>
+                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
+                            <compilerOptions>
+                                <prettyPrint>true</prettyPrint>
+                                <languageIn>ECMASCRIPT3</languageIn>
+                            </compilerOptions>
+                            <externFiles />
+                            <sourceFiles>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlMap.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/Utils.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlTilingLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlMapComponent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlComponent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/ToolMapClick.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlWMSLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlArcLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlVectorLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlArcServerLayer.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlSnappingController.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlImageLayer.js</param>
+                                
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/panZoomBar.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/LoadingPanel.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/OlLoadMonitor.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/OlMaptip.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/OlOverview.js</param>
+                                
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/OlIdentifyTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/OlDefaultTool.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/ZoomIn.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/ZoomOutButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/Measure.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/FullExtent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/ToolButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/DragPan.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/StreetViewButton.js</param>
+                            </sourceFiles>
+                            <outputFile>${minify.outputdir}/ol-min.js</outputFile>
                         </compilation>
                         <compilation>
                             <compilationLevel>WHITESPACE_ONLY</compilationLevel>
