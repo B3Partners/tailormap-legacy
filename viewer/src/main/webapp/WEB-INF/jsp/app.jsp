@@ -103,7 +103,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${actionBean.viewerType == 'ol'}">
                <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">  
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
-               
+               <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js" type="text/javascript"></script>
                <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
                <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
                
@@ -207,7 +207,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:when>
                     <c:when test="${actionBean.viewerType == 'ol'}">
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/ol"/>
-                        <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js" type="text/javascript"></script>
                         <script type="text/javascript" src="${scriptDir}/OlLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OlMap.js"></script>
                         <script type="text/javascript" src="${scriptDir}/Utils.js"></script>
