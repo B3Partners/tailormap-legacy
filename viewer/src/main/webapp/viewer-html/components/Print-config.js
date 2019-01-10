@@ -17,11 +17,9 @@
 /**
  * Custom configuration object for AttributeList configuration
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ * @author Eddy Scheper
  */
-/* Modified: 2014, Eddy Scheper, ARIS B.V.
- *           - A5 and A0 pagesizes added.
-*/
-Ext.define("viewer.components.CustomConfiguration",{
+Ext.define("viewer.components.CustomConfiguration", {
     extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId, configObject, configPage) {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
@@ -80,6 +78,18 @@ Ext.define("viewer.components.CustomConfiguration",{
                         name: "useA3",
                         checked: me.configObject.useA3 || true,
                         boxLabel: i18next.t('print_config_6')
+                    },
+                    {
+                        xtype: "checkbox",
+                        name: "useA2",
+                        checked: me.configObject.useA2 || false,
+                        boxLabel: i18next.t('print_config_A2')
+                    },
+                    {
+                        xtype: "checkbox",
+                        name: "useA1",
+                        checked: me.configObject.useA1 || false,
+                        boxLabel: i18next.t('print_config_A1')
                     },
                     {
                         xtype: "checkbox",
