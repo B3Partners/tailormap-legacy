@@ -44,7 +44,7 @@
                 <fo:simple-page-master master-name="a4-staand" page-height="297mm" page-width="210mm" margin-top="10mm" margin-bottom="10mm" margin-left="10mm" margin-right="10mm">
                     <fo:region-body region-name="body" margin-bottom="10mm" margin-top="25mm"/>
                     <fo:region-before region-name="before" extent="0mm"/>
-                    <fo:region-after region-name="after" extent="0mm"/>
+                    <fo:region-after region-name="after" extent="15mm"/>
                 </fo:simple-page-master>
         </fo:layout-master-set>
     </xsl:template>
@@ -73,7 +73,7 @@
                 </fo:static-content>
 
                  <fo:static-content flow-name="after">
-                    <fo:block-container overflow="hidden">
+                    <fo:block-container overflow="hidden" margin-top="5mm">
                         <xsl:call-template name="disclaimer-block"/>
                    </fo:block-container>
                </fo:static-content>
@@ -91,7 +91,7 @@
                                     </xsl:for-each>
 
                                     <!-- uploads, if any -->
-                                    <xsl:if test="//extra/info[@classname='feature']/root/attr/__UPLOADS__/*">
+                                    <xsl:if test="count(//extra/info[@classname='feature']/root/attr/__UPLOADS__) &gt; 0">
                                         <xsl:for-each select="extra/info[@classname='feature']/root">
                                             <fo:block xsl:use-attribute-sets="header-font">Uploads</fo:block>
                                             <xsl:call-template name="table-uploads"/>
@@ -125,24 +125,30 @@
 
     <xsl:template name="info-block">
         <fo:block xsl:use-attribute-sets="default-font">
-            <!-- create scalebar -->
-            <fo:block>
-                <xsl:text>schaal</xsl:text>
-            </fo:block>
-
-            <fo:block>
-                <xsl:variable name="local-scale">
-                    <xsl:call-template name="calc-local-scale">
-                        <xsl:with-param name="bbox" select="bbox" />
-                        <xsl:with-param name="scale" select="scale" />
-                        <xsl:with-param name="quality" select="quality" />
-                    </xsl:call-template>
-                </xsl:variable>
-                <xsl:call-template name="calc-scale">
-                    <xsl:with-param name="m-width" select="($map-width-px div $ppm) * ($local-scale div 1000)"/>
-                    <xsl:with-param name="px-width" select="$map-width-px"/>
-                </xsl:call-template>
-            </fo:block>
+					<!-- create scalebar -->
+					<xsl:if test="not(units) or units != 'degrees'">
+						<xsl:if test="(scale) and scale != ''">
+							<fo:block margin-top="5mm">
+								<fo:inline font-weight="bold">
+									<xsl:text>schaal 1: </xsl:text>
+									<xsl:value-of select="scale"/>
+								</fo:inline>
+							</fo:block>
+							<fo:block>
+								<xsl:variable name="local-scale">
+									<xsl:call-template name="calc-local-scale">
+										<xsl:with-param name="bbox" select="bbox"/>
+										<xsl:with-param name="scale" select="scale"/>
+										<xsl:with-param name="quality" select="quality"/>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:call-template name="calc-scale">
+									<xsl:with-param name="m-width" select="($map-width-px div $ppm) * ($local-scale div 1000)"/>
+									<xsl:with-param name="px-width" select="$map-width-px"/>
+								</xsl:call-template>
+							</fo:block>
+						</xsl:if>
+					</xsl:if>
         </fo:block>
          
         <fo:block xsl:use-attribute-sets="header-font">
@@ -209,7 +215,7 @@
 
     <xsl:template name="logo-block">
         <fo:block>
-            <fo:external-graphic src="url('logo.png')" width="155px" height="55px"/>
+						<fo:external-graphic src="url('logo.png')" content-height="30px" content-width="scale-to-fit" scaling="uniform"/>
         </fo:block>
     </xsl:template>
 
@@ -284,7 +290,7 @@
         </fo:block>
     </xsl:template>
 
-    <xsl:template name="table-related">
+		<xsl:template name="table-related">
         <!-- create a simple multi-column table with auto sizing-->
         <xsl:choose>
             <xsl:when test="features">
