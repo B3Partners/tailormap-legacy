@@ -99,8 +99,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </c:if>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
-        <script type="text/javascript" src="${contextPath}/resources/js/FileSaver.js"></script>
+                  
+        <c:if test="${actionBean.viewerType == 'ol'}">
+               <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">  
+               <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
+               
+               <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
+               <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
+               
+               <c:choose>
+                <c:when test="${param.ol == 'debug'}">
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/ol/ol.js"></script>
+                </c:when>
+                <c:otherwise>
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/ol/ol.js"></script>
+                </c:otherwise>
+            </c:choose>
+        </c:if>
 
         <c:choose>
             <c:when test="${!(param.debug == true)}">
@@ -121,7 +136,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/RequestManager.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/DataSelectionChecker.js"></script>
 
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
+                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/FeatureInfoWrapper.js"></script>
@@ -190,6 +205,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersMeasureTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersDefaultTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OpenLayersMeasureHandler.js"></script>
+                    </c:when>
+                    <c:when test="${actionBean.viewerType == 'ol'}">
+                        <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/ol"/>
+                        <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js" type="text/javascript"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlMap.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/Utils.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlTilingLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlMapComponent.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlComponent.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlWMSLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlArcLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlVectorLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlArcServerLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlSnappingController.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OlImageLayer.js"></script>
+                        
+                        
+                        <!-- The components -->
+                        <script type="text/javascript" src="${scriptDir}/components/panZoomBar.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OlLoadMonitor.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OlMaptip.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OlOverview.js"></script>
+                        
+                        <!-- The tools -->
+                        <script type="text/javascript" src="${scriptDir}/tools/OlIdentifyTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/OlDefaultTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/ZoomIn.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/ZoomOutButton.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/Measure.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/FullExtent.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/ToolButton.js"></script> 
+                        <script type="text/javascript" src="${scriptDir}/tools/DragPan.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/StreetViewButton.js"></script>
                     </c:when>
                     <c:otherwise>
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/flamingo"/>

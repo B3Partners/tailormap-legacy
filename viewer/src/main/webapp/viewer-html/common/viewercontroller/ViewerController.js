@@ -130,8 +130,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 continue;
             }
             var component = comps[c];
-            if(component.className === "viewer.mapcomponents.FlamingoMap" ||
-                component.className === "viewer.mapcomponents.OpenLayersMap"){
+            if(component.className == "viewer.mapcomponents.FlamingoMap" ||
+                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OlMap"){
                 config = component.config;
                 break;
             }
@@ -145,6 +145,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         }else if(viewerType === "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
+        }else if(viewerType === "ol"){
+            this.mapComponent = new viewer.viewercontroller.OlMapComponent(this, mapId, config);
+            
         }else{
             this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_0') + viewerType);
         }
@@ -155,7 +158,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType === "openlayers") {
+        if(viewerType === "openlayers" || viewerType == "ol") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
 
@@ -324,7 +327,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         // XXX
-        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap") {
+        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OlMap") {
             return null;
         }
 
