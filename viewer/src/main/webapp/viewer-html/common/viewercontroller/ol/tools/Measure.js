@@ -44,6 +44,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
     },
 
     deactivate : function() {
+        var me = this;
         this.conf.actives =false;
         this.frameworkObject.setActive(false);
         
@@ -53,7 +54,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
         this.overlay =[];
         this.mapComponent.maps[0].getFrameworkMap().removeInteraction(this.frameworkObject);
         this.mapComponent.maps[0].getFrameworkMap().removeInteraction(this.pan);
-        this.mapComponent.maps[0].getFrameworkMap().removeLayer(this.layer);
+        this.layer.getSource().clear();
     },
 
     initTool : function(type){
@@ -151,15 +152,15 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
         
         this.frameworkObject.on('drawend',
             function() {
-              this.measureTooltipElement.className = 'tooltip tooltip-static';
-              this.measureTooltip.setOffset([0, -7]);
-              // unset sketch
-              this.sketch = null;
-              // unset tooltip so that a new one can be created
-              this.measureTooltipElement = null;
-              this.createMeasureToolTip();
-              ol.Observable.unByKey(this.listener);
-            }, this);
+              me.measureTooltipElement.className = 'tooltip tooltip-static';
+              me.measureTooltip.setOffset([0, -7]);
+
+              me.sketch = null;
+
+              me.measureTooltipElement = null;
+              me.createMeasureToolTip();
+              ol.Observable.unByKey(me.listener);
+            }, me);
       },
     
     formatArea : function(polygon){
