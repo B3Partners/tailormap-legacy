@@ -12,7 +12,6 @@ addons:
       - oracle-java8-installer
       - haveged
       - openjdk-8-jdk
-      - git-lfs
 
 services:
   - haveged
