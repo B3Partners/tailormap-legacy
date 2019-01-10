@@ -5,8 +5,8 @@
     <xsl:include href="calc.xsl"/>
     <xsl:include href="styles.xsl"/>
     <xsl:param name="versionParam" select="'1.0'"/>
-    <xsl:variable name="map-width-px" select="'940'"/>
-    <xsl:variable name="map-height-px" select="'667'"/>
+    <xsl:variable name="map-width-px" select="'1436'"/>
+    <xsl:variable name="map-height-px" select="'1020'"/>
     <!-- laat deze waarde leeg indien geen vaste schaal -->
     <xsl:variable name="global-scale" select="''"/>
     <!-- omrekening van pixels naar mm -->
@@ -21,7 +21,7 @@
     <!-- master set -->
     <xsl:template name="layout-master-set">
         <fo:layout-master-set>
-            <fo:simple-page-master master-name="a3-liggend" page-height="297mm" page-width="420mm" margin-top="10mm" margin-bottom="10mm" margin-left="10mm" margin-right="10mm">
+            <fo:simple-page-master master-name="a2-liggend" page-height="420mm" page-width="594mm" margin-top="10mm" margin-bottom="10mm" margin-left="10mm" margin-right="10mm">
                 <fo:region-body region-name="body" margin-bottom="10mm" margin-top="25mm"/>
                 <fo:region-before region-name="before" extent="0mm"/>
                 <fo:region-after region-name="after" extent="15mm"/>
@@ -31,9 +31,9 @@
     <xsl:template match="info">
         <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:xlink="http://www.w3.org/1999/xlink">
             <xsl:call-template name="layout-master-set"/>
-            <fo:page-sequence master-reference="a3-liggend">
+            <fo:page-sequence master-reference="a2-liggend">
                 <fo:static-content flow-name="before">
-                    <fo:list-block provisional-label-separation="5mm" provisional-distance-between-starts="290mm">
+                    <fo:list-block provisional-label-separation="5mm" provisional-distance-between-starts="460mm">
                         <fo:list-item wrap-option="no-wrap">
                             <fo:list-item-label end-indent="label-end()">
                                 <fo:block xsl:use-attribute-sets="title-font">
