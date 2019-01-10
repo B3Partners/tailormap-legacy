@@ -108,8 +108,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
                
                <c:choose>
-                <c:when test="${param.ol == 'debug'}">
-                    <script type="text/javascript" src="${contextPath}/viewer-html/common/ol/ol.js"></script>
+                <c:when test="${param.debug == true}">
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/ol/debug/ol.js"></script>
                 </c:when>
                 <c:otherwise>
                     <script type="text/javascript" src="${contextPath}/viewer-html/common/ol/ol.js"></script>
