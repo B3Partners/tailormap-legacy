@@ -74,7 +74,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         });
 
         this.modify = new ol.interaction.Modify({
-            features: this.select.getFeatures()
+            features: this.select.getFeatures(),
+            //style: this.selectStyle
         });
 
         this.select.getFeatures().on('add', function (args) {
@@ -301,7 +302,6 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             feature.color = color;
         }
         feature.style = this.frameworkStyleToFeatureStyle(openLayersFeature).getProperties();
-        ;
         if (this.config.addAttributesToFeature) {
             feature.attributes = openLayersFeature.attributes;
         }
@@ -326,21 +326,21 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
      */
 
     featureAdded: function (object) {
-        this.select.getFeatures().clear();
-        this.select.getFeatures().push(object.feature);
         var feature = this.fromOpenLayersFeature(object.feature);
 
         // If no stylehash is set for the feature, set it to the current settings
         if (!feature.getStyle()) {
-            //feature.setStyle(this.getCurrtentStyle());
+            feature.setStyle(this.getCurrtentStyle());
+        }else {
+            this.setFeatureStyle(feature.config.id,{config:feature.getStyle()});
         }
         this.editFeature(object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this, feature);
     },
 
     editFeature: function (feature) {
-        //this.select.getFeatures().clear();
-        //this.select.getFeatures().push(feature);
+        this.select.getFeatures().clear();
+        this.select.getFeatures().push(feature);
         var featureObject = this.fromOpenLayersFeature(feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED, this, featureObject);
     },
@@ -390,8 +390,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     setFeatureStyle: function (id, featureStyle, noUpdate) {
         var olFeature = this.getFrameworkLayer().getSource().getFeatureById(id);
         if (olFeature) {
-            var colorFill = ol.color.asArray(featureStyle.config.fillColor);
-            colorFill[3] = featureStyle.config.fillOpacity;
+            var c = ol.color.asArray(featureStyle.config.fillColor);
+            var colorFinal = 'rgba('+c[0]+','+ c[1]+','+ c[2]+','+featureStyle.config.fillOpacity+')';
             
             var strokeStyle = new ol.style.Stroke({
                 color: featureStyle.config.strokeColor,
@@ -399,7 +399,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
 
             });
             var fillStyle = new ol.style.Fill({
-                color: colorFill
+                color: colorFinal
             });
             
             var style = new ol.style.Style({
@@ -410,10 +410,10 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
                     stroke: strokeStyle,
                     radius: featureStyle.config.pointRadius
                 })
-            });
+                });
 
             olFeature.setStyle(style);
+            }                  
         }
-    }
 });
    
