@@ -6,7 +6,13 @@
 		legend-scale-images-same-ratio: true() or false()
 	-->
 	<xsl:template name="legend">
+		<xsl:param name="header"/>
 		<xsl:if test="legendUrls/legendUrl[legendParts/legendPart]">
+			<xsl:if test="$header">
+				<fo:block xsl:use-attribute-sets="header-font">
+					<xsl:value-of select="$header"/>
+				</fo:block>
+			</xsl:if>
 			<fo:block margin-top="0.1cm" width="{concat($legend-width-cm,'cm')}" xsl:use-attribute-sets="legend-attributes">
 	
 				<xsl:variable name="max-width">
