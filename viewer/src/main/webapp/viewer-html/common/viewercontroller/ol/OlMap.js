@@ -21,7 +21,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
         this.initConfig(config);
         this.utils = Ext.create("viewer.viewercontroller.ol.Utils");
         var maxBounds=null;
-        
+        var me = this;
         if (config.options.maxExtent){
             maxBounds = this.utils.createBounds(config.options.maxExtent);
         }
@@ -68,7 +68,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
             this.group.getLayers().on("add",function(args){me.handleEvent(args)},me);
         }
     
-    this.group.getLayers().on('remove',this.handleEvent,this);
+    this.group.getLayers().on('remove',function(args){me.handleEvent(args)},me);
     
     this.layersLoading = 0;
         this.markerLayer=null;
@@ -80,14 +80,14 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
         this.markers=new Object();
         this.getFeatureInfoControl = null;    
     
-    this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved, this);
+    this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,me.layerRemoved, me);
         
         // Prevents the markerlayer to "disappear" beneath all the layers
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function(){
-            if(this.markerLayer){
-                this.markerLayer.setZIndex(this.frameworkMap.getLayers().getLength()+1);
+        me.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function(){
+            if(me.markerLayer){
+                me.markerLayer.setZIndex(me.frameworkMap.getLayers().getLength()+1);
             }
-        },this);
+        },me);
     
     
     return this;
@@ -223,7 +223,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
                   genericEvent==viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT){
             options.extent=this.getExtent();
         }else{
-            this.config.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
+            this.config.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OlMap.handleEvent()");
         }
         this.fireEvent(genericEvent,this,options);
     },
@@ -250,6 +250,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
     },
     
     addListener : function(event,handler,scope){
+        var me = this;
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
@@ -262,7 +263,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
                 this.enabledEvents[olSpecificEvent]++;                
             }else{
                 this.enabledEvents[olSpecificEvent] = 1;
-                this.frameworkMap.on(olSpecificEvent,this.handleEvent, this);
+                this.frameworkMap.on(olSpecificEvent,function(args){me.handleEvent(args)},me);
             }
         }
         viewer.viewercontroller.ol.OlMap.superclass.addListener.call(this,event,handler,scope);
