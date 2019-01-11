@@ -4,9 +4,9 @@ timestamps {
         properties([
             [$class: 'jenkins.model.BuildDiscarderProperty', strategy: [$class: 'LogRotator',
                 artifactDaysToKeepStr: '5',
-                artifactNumToKeepStr: '3',
+                artifactNumToKeepStr: '5',
                 daysToKeepStr: '15',
-                numToKeepStr: '3']
+                numToKeepStr: '5']
             ]]);
 
         withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven 3.6.0'}/bin:${env.JAVA_HOME}/bin"]) {
@@ -44,6 +44,9 @@ timestamps {
             } finally {
                 stage('Publish Results'){
                     junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml, **/target/failsafe-reports/TEST-*.xml'
+                }
+                stage('Test Coverage results') {
+                    jacoco exclusionPattern: '**/*Test.class', execPattern: '**/target/**.exec'
                 }
             }
             
