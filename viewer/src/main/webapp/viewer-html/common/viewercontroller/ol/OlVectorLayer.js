@@ -74,7 +74,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         });
 
         this.modify = new ol.interaction.Modify({
-            features: this.select.getFeatures(),
+            features: this.select.getFeatures()
             //style: this.selectStyle
         });
 
@@ -372,7 +372,15 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     },
 
     frameworkStyleToFeatureStyle: function (feature) {
-        var styleProps = this.getCurrentStyleHash();
+        var styleProps;
+        if(feature.style ){
+            styleProps = feature.style;
+        }else if(feature.getStyle()){
+            styleProps = feature.getStyle().featureStyle;
+        }
+        else{
+            styleProps = this.getCurrentStyleHash();
+        }
         return Ext.create('viewer.viewercontroller.controller.FeatureStyle', styleProps);
     },
 
@@ -392,10 +400,19 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         if (olFeature) {
             var c = ol.color.asArray(featureStyle.config.fillColor);
             var colorFinal = 'rgba('+c[0]+','+ c[1]+','+ c[2]+','+featureStyle.config.fillOpacity+')';
-            
+            var lineDash;
+            if(featureStyle.config.strokeDashstyle === "solid"){
+                lineDash = null;
+            } else if(featureStyle.config.strokeDashstyle === "dot"){
+                lineDash = [1,8];
+            } else if(featureStyle.config.strokeDashstyle === "dash"){
+                lineDash = [10,10];
+            }
+
             var strokeStyle = new ol.style.Stroke({
                 color: featureStyle.config.strokeColor,
-                width: featureStyle.config.strokeWidth
+                width: featureStyle.config.strokeWidth,
+                lineDash: lineDash
 
             });
             var fillStyle = new ol.style.Fill({
@@ -410,8 +427,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
                     stroke: strokeStyle,
                     radius: featureStyle.config.pointRadius
                 })
-                });
-
+                }); 
+            style.featureStyle = featureStyle.config;
             olFeature.setStyle(style);
             }                  
         }
