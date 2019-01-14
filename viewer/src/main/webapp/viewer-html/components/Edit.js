@@ -1322,17 +1322,21 @@ Ext.define("viewer.components.Edit", {
             me.failed(e);
             return;
         }
-        Ext.create("viewer.EditFeature", {
+        var ef = this.getEditFeature();
+        ef.edit(
+                me.editingLayer,
+                feature,
+                function (fid) {
+                    me.saveSucces(fid);
+                    me.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, me.editingLayer, feature);
+                }, function (error) {
+            me.failed(error);
+        });
+    },
+    getEditFeature: function(){
+        return Ext.create("viewer.EditFeature", {
             viewerController: this.config.viewerController
-        }).edit(
-            me.editingLayer,
-            feature,
-            function (fid) {
-                me.saveSucces(fid);
-                me.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS, me.editingLayer, feature);
-            }, function (error) {
-                me.failed(error);
-            });
+        });
     },
     remove: function () {
         if (!this.config.allowDelete || !this.geometryEditable) {

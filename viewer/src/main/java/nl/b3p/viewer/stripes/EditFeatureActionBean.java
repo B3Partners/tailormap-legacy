@@ -193,7 +193,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                 json.put("success", Boolean.TRUE);
             } while(false);
         } catch(Exception e) {
-            log.error(String.format("Exception editing feature", e));
+            log.error(String.format("Exception editing feature", e),e);
 
             error = e.toString();
             if(e.getCause() != null) {
@@ -294,12 +294,13 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                         json.put("success", Boolean.TRUE);
                     } catch (Exception ex) {
                         log.error(String.format("cannot save relatedFeature Exception: ",ex));
+                    }finally{
+                        if(fs != null){
+                            fs.getDataStore().dispose();
+                        }
                     }
                 }
-
             }
-
-            fs.getDataStore().dispose();
         }
 
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
