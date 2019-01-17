@@ -608,7 +608,7 @@ Ext.define ("viewer.components.Drawing",{
             name: 'featureFile',
             allowBlank: false,
             msgTarget: 'side',
-            buttonText: i18next.t('viewer_components_drawing_13'),
+            buttonText: i18next.t('viewer_components_drawing_40'),
             id: 'featureFile',
             margin: '0 0 2 0'
         });
