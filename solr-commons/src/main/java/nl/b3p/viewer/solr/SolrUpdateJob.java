@@ -250,9 +250,11 @@ public class SolrUpdateJob implements Job {
             } finally {
                 iterator.close();
             }
-
-            solrServer.add(docs);
-            solrServer.commit();
+            
+            if(!docs.isEmpty()){
+                solrServer.add(docs);
+                solrServer.commit();
+            }
         }   catch (SolrServerException ex) {
             log.error("Cannot add configuration to index", ex);
         } catch (IOException ex) {
