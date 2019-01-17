@@ -225,10 +225,12 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             } else {
                 document.getElementById('checkbox-' + item.htmlId).checked = false;
             }
-            if(Ext.Array.contains(me.checkedDefaultOn, item[me.valueField])) {
-                document.getElementById('checkbox-' + item.htmlDefaultId).checked = true;
-            } else {
-                document.getElementById('checkbox-' + item.htmlDefaultId).checked = false;
+            if(me.createDefaultCheckboxes){
+                if(Ext.Array.contains(me.checkedDefaultOn, item[me.valueField])) {
+                    document.getElementById('checkbox-' + item.htmlDefaultId).checked = true;
+                } else {
+                    document.getElementById('checkbox-' + item.htmlDefaultId).checked = false;
+                }
             }
         });
     },
