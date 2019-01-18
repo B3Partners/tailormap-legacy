@@ -43,9 +43,18 @@ public class Mailer {
         Session session = (Session)env.lookup("mail/session");
         return session;
     }
-    
+
+    /**
+     * Sends a mail with an attachment enclosed
+     * @param fromName The name which should be display as the sender.
+     * @param fromEmail The replyaddress
+     * @param email To which address the mail should be sent
+     * @param subject Subject of the mail
+     * @param mailContent The content of the message
+     * @throws Exception if any
+     */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent) throws Exception {
-        
+
         Address from = new InternetAddress(fromEmail, fromName);
         MimeMessage msg = new MimeMessage(getMailSession());
         msg.setFrom(from);
@@ -55,7 +64,32 @@ public class Mailer {
         msg.setContent(mailContent, "text/plain");
 
         Transport.send(msg);
-    }       
+    }
+
+    /**
+     * Sends a mail with an attachment enclosed
+     * @param fromName The name which should be display as the sender.
+     * @param fromEmail The replyaddress
+     * @param email To which address the mail should be sent
+     * @param subject Subject of the mail
+     * @param mailContent The content of the message
+     * @param cc A cc address
+     * @throws Exception if any
+     */
+    public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, String cc) throws Exception {
+
+        Address from = new InternetAddress(fromEmail, fromName);
+        MimeMessage msg = new MimeMessage(getMailSession());
+        msg.setFrom(from);
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        msg.addRecipient(Message.RecipientType.CC, new InternetAddress(cc));
+        msg.setSubject(subject);
+        msg.setSentDate(new Date());
+        msg.setContent(mailContent, "text/plain");
+
+        Transport.send(msg);
+    }
+
     /**
      * Sends a mail with an attachment enclosed
      * @param fromName The name which should be display as the sender.

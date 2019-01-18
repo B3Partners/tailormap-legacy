@@ -110,12 +110,10 @@ Ext.define ("viewer.components.Contactform",{
                 align: 'stretch'
             },
             items: formItems,
-            scrollable: true,
             cls: 'contactform'
         });
 
         this.messageContainer = Ext.create('Ext.container.Container', {
-            scrollable: true,
             cls: 'contactform-message',
             html: ''
         });
@@ -133,6 +131,8 @@ Ext.define ("viewer.components.Contactform",{
             ]
         })
 
+        this.getContentContainer().setHtml('');
+        this.getContentContainer().removeAll();
         this.getContentContainer().add(this.container);
 
         if (this.config.textBefore) Ext.ComponentQuery.query("#textBeforeContainer")[0].setHtml(this.config.textBefore);
