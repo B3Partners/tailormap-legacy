@@ -54,16 +54,7 @@ public class Mailer {
      * @throws Exception if any
      */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent) throws Exception {
-
-        Address from = new InternetAddress(fromEmail, fromName);
-        MimeMessage msg = new MimeMessage(getMailSession());
-        msg.setFrom(from);
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-        msg.setSubject(subject);
-        msg.setSentDate(new Date());
-        msg.setContent(mailContent, "text/plain");
-
-        Transport.send(msg);
+        sendMail(fromName, fromEmail, email, subject, mailContent, null);
     }
 
     /**
@@ -82,7 +73,9 @@ public class Mailer {
         MimeMessage msg = new MimeMessage(getMailSession());
         msg.setFrom(from);
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-        msg.addRecipient(Message.RecipientType.CC, new InternetAddress(cc));
+        if(cc != null){
+            msg.addRecipient(Message.RecipientType.CC, new InternetAddress(cc));
+        }
         msg.setSubject(subject);
         msg.setSentDate(new Date());
         msg.setContent(mailContent, "text/plain");
