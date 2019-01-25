@@ -532,9 +532,7 @@ Ext.define ("viewer.components.AttributeList",{
                 columns.push({
                     header:colName,
                     dataIndex: "c" + attIndex,
-                    // flex: 1,
                     shrinkWrap: true,
-                    maxWidth: 200,
                     filter: {
                         xtype: 'textfield'
                     }
