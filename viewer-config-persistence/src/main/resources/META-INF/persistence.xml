@@ -49,6 +49,28 @@
             <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
         </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="viewer-config-microsoft_sql_server" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
+        <mapping-file>META-INF/orm-microsoft_sql_server.xml</mapping-file>
+        <class>nl.b3p.viewer.config.services.GeoService</class>
+        <class>nl.b3p.viewer.config.services.Category</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect"/>
+
+            <!-- See comments for Oracle -->
+            <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
+      
+            <!-- workaround for Hibernate bug expecting the generated id to be the first column
+                 http://postgresql.1045698.n5.nabble.com/Problems-with-Hibernate-Discriminators-and-9-0-801-jdbc4-td4259788.html
+            -->
+            <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
+      
+            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+        </properties>
     </persistence-unit>    
     
      <persistence-unit name="viewer-config-hsqldb" transaction-type="RESOURCE_LOCAL">

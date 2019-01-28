@@ -48,6 +48,7 @@
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.5</postgresql.version>
+        <mssql.version>7.0.0.jre8</mssql.version>
         <apache.poi.version>4.0.1</apache.poi.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <apache.httpcomponents.version>4.5.7</apache.httpcomponents.version>
@@ -487,6 +488,11 @@
                 <version>${postgresql.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>${mssql.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
                 <version>1.5.0</version>
@@ -719,6 +725,10 @@
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.0.0-M2</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -853,6 +863,13 @@
             <id>jenkins</id>
             <properties>
                 <test.persistence.unit>viewer-config-oracle</test.persistence.unit>
+                <test.skip.integrationtests>true</test.skip.integrationtests>
+            </properties>
+        </profile>
+        <profile>
+            <id>appveyor</id>
+            <properties>
+                <test.persistence.unit>viewer-config-microsoft_sql_server</test.persistence.unit>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </profile>

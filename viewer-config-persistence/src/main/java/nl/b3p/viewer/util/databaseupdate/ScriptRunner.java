@@ -76,18 +76,16 @@ public class ScriptRunner {
             } finally {
                 connection.setAutoCommit(originalAutoCommit);
             }
-        } catch (IOException e) {
-            throw e;
-        } catch (SQLException e) {
+        } catch (IOException | SQLException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Error running script.  Cause: " + e, e);
+            throw new RuntimeException("Error running script.  Cause: " + e.getLocalizedMessage(), e);
         }
     }
 
     /**
      * Runs an SQL script (read in using the Reader parameter) using the
-     * connection passed in
+     * connection passed in.
      *
      * @param conn the connection to use for the script
      * @param reader the source of the script
@@ -132,7 +130,7 @@ public class ScriptRunner {
                             statement.execute(command.toString());
                         } catch (SQLException e) {
                             e.fillInStackTrace();
-                            log.error("Error executing: " + command,e);
+                            log.error("Error executing command: " + command, e);
                         }
                     }
 

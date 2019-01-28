@@ -83,7 +83,7 @@ public class DatabaseSynchronizer implements Servlet {
     static final LinkedHashMap<String, UpdateElement> updates = new LinkedHashMap<String, UpdateElement>();
     private static final String SCRIPT_PATH="/scripts";
     private String databaseProductName="postgresql";
-    private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql","oracle"};
+    private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql", "oracle", "microsoft_sql_server"};
     private ServletConfig sc;
     UpdateElement uel=    new UpdateElement(new ArrayList<String>(), String.class);
     //The updates definition
@@ -95,6 +95,7 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("0", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("0").add("schema-export.sql");
         updates.get("0").add("initialize_database.sql");
+        updates.get("0").add("initialize_categories.sql");
 
         updates.put("1", new UpdateElement (new ArrayList<String>(), String.class));
         updates.get("1").add("add_solr_config.sql");
@@ -306,8 +307,8 @@ public class DatabaseSynchronizer implements Servlet {
             if (scripts!=null){
                 for (File script : scripts){
                     String scriptName= null;
-                    if (script.getName().startsWith(this.databaseProductName.toLowerCase()+"-")){
-                        scriptName = script.getName().substring(this.databaseProductName.length()+1);
+                    if (script.getName().startsWith(this.databaseProductName.toLowerCase().replace(' ', '_') + "-")) {
+                        scriptName = script.getName().substring(this.databaseProductName.replace(' ', '_').length() + 1);
                     }else{
                         boolean forOtherProduct=false;
                         for (String supProd : SUPPORTED_DATABASE_PRODUCTS){
@@ -344,7 +345,10 @@ public class DatabaseSynchronizer implements Servlet {
         }
     }
 
-    public class ScriptWorker implements Work{
+    public class ScriptWorker implements Work {
+
+        private final Log LOG = LogFactory.getLog(ScriptWorker.class);
+
         LinkedHashMap<String, UpdateElement> updateScripts;
         private String successVersion=null;
         private boolean errored=false;
@@ -365,14 +369,15 @@ public class DatabaseSynchronizer implements Servlet {
                     for (String script : element.getElements()){
                         InputStream is = null;
                         try {
-                            String scriptName=SCRIPT_PATH+"/"+script;
+                            String scriptName = SCRIPT_PATH + "/" + script;
+                            LOG.debug("Start looking for: " + scriptName);
                             is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
                             if (is==null){
-                                scriptName= SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script;
+                                scriptName = SCRIPT_PATH + "/" + databaseProductName.toLowerCase().replace(' ', '_') + "-" + script;
                                 is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
                             }
                             if (is==null){
-                                throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
+                                throw new Exception("Update script '" + script + "' nor '" + databaseProductName.toLowerCase().replace(' ', '_') + "-" + script + "' can be found");
                             }
                             log.info("Running database upgrade script: " + scriptName);
                             runner.runScript(new InputStreamReader(is), element.canFail());
