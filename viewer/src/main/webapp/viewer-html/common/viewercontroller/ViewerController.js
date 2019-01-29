@@ -1342,10 +1342,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             //scale * (dpi / ratio dpi to dpm)
             return 96/0.0254;
         }
-        //Chose arbitrary values 750 minscale and 5000 maxscale
+        //Chose arbitrary values 50 minscale and 5000 maxscale
         //return correction for scaledenominator
-        else if (minScale > 750 ||
-                ((minScale === undefined || minScale ===0 )&& maxScale > 5000)){
+        else if (minScale >= 50 ||
+                ((minScale === undefined || minScale ===0 )&& maxScale >= 5000)){
             scaleCorrection = 1 / 0.00028;
         }
         // magic multiply
