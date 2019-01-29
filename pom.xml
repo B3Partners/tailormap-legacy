@@ -56,7 +56,7 @@
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <tomcat.version>7.0.92</tomcat.version>
-        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
         <!--<jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>-->
         <!--<jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.exec</jacoco.ut.execution.data.file>-->
     </properties>
