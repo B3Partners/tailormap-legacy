@@ -199,7 +199,7 @@ public abstract class TestUtil extends LoggingTestUtil {
             
             String layerName = "Test_omgeving:unittest";
             
-            String url = "https://flamingo4.b3p.nl/geoserver/Test_omgeving/ows";
+            String url = "https://flamingo5.b3p.nl/geoserver/Test_omgeving/ows";
             fs.setUrl(url);
             persistEntityTest(fs, FeatureSource.class);
             
