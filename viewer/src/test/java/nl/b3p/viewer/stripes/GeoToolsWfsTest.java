@@ -46,7 +46,7 @@ import org.opengis.feature.type.PropertyDescriptor;
  *
  * Example:
  *
- * {@code mvn -Durl=https://flamingo4.b3p.nl:443/geoserver/Test_omgeving/wfs -Dtypename=Test_omgeving:cbs_gemeente_2014 -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test}
+ * {@code mvn -Durl=https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wfs -Dtypename=Test_omgeving:cbs_gemeente_2014 -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test}
  *
  * @author matthijsln
  */
