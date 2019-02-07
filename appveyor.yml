@@ -15,6 +15,11 @@ install:
   - cmd: echo %PATH%
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
   - ps: .\.appveyor\set-maven-proxy.ps1
+  # load pki-overheid G2/G3 certificates
+  - ps: Invoke-WebRequest http://cert.pkioverheid.nl/RootCA-G2.cer -OutFile .\RootCA-G2.cer
+  - cmd: keytool -importcert -file .\RootCA-G2.cer -alias G2 -keystore "%JAVA_HOME%\jre\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
+  - ps: Invoke-WebRequest http://cert.pkioverheid.nl/RootCA-G3.cer -OutFile .\RootCA-G3.cer
+  - cmd: keytool -importcert -file .\RootCA-G3.cer -alias G3 -keystore "%JAVA_HOME%\jre\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
   - mvn install -U -DskipTests -pl "web-commons,viewer-commons,viewer-config-persistence" -B -V -fae -q
   
 cache:
