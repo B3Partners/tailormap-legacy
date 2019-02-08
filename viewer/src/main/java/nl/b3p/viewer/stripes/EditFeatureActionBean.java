@@ -509,7 +509,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                             }
                             values.add(g);
                         } else {
-                            String v = jsonFeature.getString(attribute);
+                            String v = jsonFeature.optString(attribute);
                             values.add(StringUtils.defaultIfBlank(v, null));
                         }
                     } else {
